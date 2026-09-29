@@ -147,7 +147,8 @@
 
 - [x] Windowsの実ブラウザで静的判定の再開、JSリンク、比較・リソース予算、scope/robots/POST、初期リダイレクト、DOM上限・証拠改変を検証。
 - [x] coreの22テストに回帰なし。
-- [ ] LinuxコンテナでAdaptiveのオフライン統合試験を確認。
+- [x] LinuxコンテナでAdaptive 8項目、core 22項目、Kaggle 15項目に成功。[CI run](https://github.com/cushionA/Searching_Experiment/actions/runs/36600414413)
+- [x] core 119,469,889 bytes、Adaptive 1,757,096,415 bytes。追加依存は任意環境のみ。非root・read-only・外部通信なしで実ブラウザを検証。
 - [ ] 実サイトの取得改善・取りこぼし・資源消費を同条件で評価。
 
 HTTP通信は既存のurllibを使用し、ブラウザの直接通信を止めて台帳経由で返す。Impit/Patchrightによる対策は含まれない。共通の待機時間を超える描画、ログイン、クリック、無限スクロール、POST/WebSocket、追加リソースのリダイレクトは未対応。取得不能を網羅性の低さと混同せず失敗へ記録する。coreへ戻す場合は新しいrunでtransport=liveを選び、実行中の設定・上限は書き換えない。
