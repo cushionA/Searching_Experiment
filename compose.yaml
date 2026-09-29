@@ -12,5 +12,34 @@ services:
     restart: "no"
     mem_limit: 512m
     cpus: 1
+  crawl-tools:
+    profiles: [tools]
+    build:
+      context: .
+      target: crawl-tools
+    image: discovery-crawl-tools:local
+    init: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:size=128m,mode=1777]
+    restart: "no"
+    mem_limit: 512m
+    cpus: 1
+  browser-tools:
+    profiles: [browser]
+    build:
+      context: .
+      target: browser-tools
+    image: discovery-browser-tools:local
+    init: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:size=256m,mode=1777]
+    shm_size: 256m
+    restart: "no"
+    mem_limit: 1g
+    cpus: 1
 volumes:
   lab-data:

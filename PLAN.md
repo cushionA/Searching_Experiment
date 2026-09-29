@@ -125,3 +125,15 @@
 - [ ] 実GPUジョブの完了・出力回収とCloudの継続機構を接続。GPUが必要な実験が決まった時点で行う。
 
 継続ファイルの生成と、終了済みCloudタスクの起動は別の責務。後者を未接続のまま完成と扱わない。
+
+# Phase 5: 取得ツールの事前配備
+
+### 範囲と接続
+
+ユーザー指示は必要時に使える既製基盤の導入まで。Crawlee Python＋Impit＋SessionPoolとPatchright＋Chromiumを任意のDocker target / Cloud setupとして配備する。通常イメージは軽量構成を維持する。ブロック対策の調整・自動切り替え・Camoufoxは今回追加しない。
+
+### 確認事項
+
+- [x] WindowsでCrawlee＋ImpitによるローカルHTTP取得とSessionPoolを確認。
+- [ ] LinuxコンテナでHTTP取得とPatchrightの起動・JavaScript実行を外部通信なしで確認。
+- 実サイトでの突破性能と既存実験器への接続は未検証・未実装。必要時に別の作業として進める。

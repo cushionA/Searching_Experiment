@@ -32,6 +32,19 @@ docker run --rm --network none --mount type=volume,src=discovery-lab-data,dst=/d
 
 最終イメージには新基盤と設定例だけを入れる。テストはビルド用stageに置く。既存コーパス、`.venv`、資格情報、実験結果はビルドコンテキストの許可リストから除外する。
 
+## 必要時に使う取得ツール
+
+Crawlee Python 1.10.3、Impit 0.14.1、SessionPoolと、Patchright 1.63.0＋Chromiumを任意の環境として用意している。通常イメージには追加しない。
+
+```bash
+docker compose --profile tools run --build --rm crawl-tools
+docker compose --profile browser run --build --rm browser-tools
+```
+
+両コマンドは導入確認。Crawleeでローカルfixtureを1件取得し、browser環境では外部通信を無効にしてJavaScript実行も確認する。実サイトのブロック突破性能を測るものではない。ツールを使うコードを実行する場合は `--entrypoint python` で入口を指定できる。
+
+Codex Cloudへまとめて導入するSetupは `bash scripts/cloud_setup.sh browser`、HTTPツールだけなら末尾を `http` にする。通常の `jse.lab` は従来の取得経路を使う。今回の追加はSDK・ブラウザの配備までで、自動切り替え、個別サイト対策、既存の予算管理への接続は必要になった段階で行う。[導入手順](docs/cloud-lab.md#取得ツールの配備)
+
 ## Codexクラウドで使う
 
 接続するGitHubリポジトリへコードを置き、Pythonを3.12以上、SetupとMaintenanceを `bash scripts/cloud_setup.sh` にする。クロール対象ドメインだけAgent internet accessで許可する。調査モデルは実行画面でGPT-6 Lunaを指定する。[設定と運転手順](docs/cloud-lab.md)に、最初の依頼文・承認・再開・保存方法をまとめた。

@@ -16,7 +16,7 @@ init → run → 計画の要求 → Lunaの回答 → 計画判断
 
 1. 接続先は `cushionA/Searching_Experiment`、branchは `main`。`scripts/package_cloud.py` は必要なコードだけをZIP化し、巨大な過去データを含めない。
 2. CodexのEnvironment設定でPython 3.12以上を指定する。
-3. Setup script: `bash scripts/cloud_setup.sh`。Maintenance scriptも同じ。依存のダウンロードや有料実行はしない。
+3. Setup script: `bash scripts/cloud_setup.sh`。Maintenance scriptも同じ。標準構成では依存のダウンロードや有料実行はしない。取得ツールを配備する場合は、以下の `http` / `browser` 引数を使う。
 4. オフラインdemoではAgent internet accessを無効のままでよい。実サイトを取得するときだけ有効にし、設定JSONの `allowed_origins` に対応するドメインとGETを許可する。別hostへリダイレクトするサイトは、実験前に両方を許可する。
 5. 実行画面のモデル選択でGPT-6 Lunaを指定する。利用できない場合は接続未完了として止める。CLIの `codex cloud exec` にモデル指定フラグがある前提にしない。モデルの自己申告は独立検証ではないため `model_runtime_verified` は常にfalseとして保存する。
 6. クロールにはSecretsは不要。任意のKaggle計算は以下のGitHub Actions経路を使う。Codex CloudのSecretsはsetup後に除去されるため、setup中のキーをファイルへ残してagent phaseへ渡さない。
@@ -152,3 +152,31 @@ gh workflow run kaggle-job.yml -R cushionA/Searching_Experiment -f operation=res
 Actions自体のRe-runでsubmitを再実行するとhelperが拒否する。APIの一時的な読み取り失敗は最大3試行。GPU再実行を伴う修復は別試行として数え、失敗でも予算を返却しない。許可した総時間を使い切ったら止める。`auto_resume.py` の無制限再開や別プロセスによる予算補充は移植していない。
 
 この受け渡しは稼働中のCodexエージェントがActions完了を待って継続するためのもの。`continuation.json` だけでは終了済みCodex Cloudタスクを自動起動できない。長時間ジョブでタスクを終了する場合、実際のrun IDが得られた時点で利用可能なCodex監視機能へ接続し、完了・失敗・人の判断が必要な変化だけ通知する。監視機能がない環境では同じチャットへrun ID付きで継続を依頼する。
+
+## 取得ツールの配備
+
+ブロッキング対策を必要時に試せるようにするための事前配備。サイト専用の調整、fingerprintの追加注入、プロキシ契約、自動fallbackは含めない。Camoufoxは未導入。
+
+| 環境 | 配備内容 | Codex CloudのSetup / Maintenance |
+|---|---|---|
+| core | 標準ライブラリによる既存の実験器 | `bash scripts/cloud_setup.sh` |
+| http | core＋Crawlee Python＋Impit＋SessionPool | `bash scripts/cloud_setup.sh http` |
+| browser | http＋Patchright＋ChromiumとOS依存 | `bash scripts/cloud_setup.sh browser` |
+
+バージョンは `requirements/crawl-tools.txt` と `requirements/browser-tools.txt` に固定している。追加環境のsetupではPyPI・ブラウザ配布元・OSパッケージ取得へのネットワーク接続が必要。API Secretや有料サービスは不要。Cloud環境でOS依存の導入権限がない場合、ブラウザ対応済み環境で実行する。導入に失敗した状態を配備済みと報告しない。
+
+通常のDocker最終イメージはcoreのまま。`--target crawl-tools` と `--target browser-tools` を明示した場合だけ追加依存を含む。ブラウザは非rootで起動し、書き込み先をtmpfsにする。ローカル・CIの起動確認は外部サイトを使わない。
+
+Dockerを使わない環境では専用venvへ次を実行する。LinuxでOS依存も必要ならinstallに `--with-deps` を付ける。
+
+```bash
+python -m pip install -r requirements/browser-tools.txt
+python -m patchright install chromium
+python -B scripts/check_crawl_tools.py --browser
+```
+
+現在の `jse.lab` は `fixture` / `live` の取得経路だけを扱う。このツール配備でブラウザ取得が自動的に組み込まれるわけではない。将来接続するときは、リダイレクト・JSの追加通信・再試行も取得範囲と予算に含め、HTTP原文と描画後DOMを区別して保存する。導入確認のローカルHTTP例をそのまま本番の予算管理と見なさない。
+
+Python版の標準HTTPクライアントはImpit。TypeScript版はgot-scrapingが標準で、`@crawlee/impit-client` を追加してImpitを選べる。今回は既存コードと同じPython版を配備する。
+
+公式資料: [Python HTTP clients](https://crawlee.dev/python/docs/guides/http-clients)、[Session management](https://crawlee.dev/python/docs/guides/session-management)、[TypeScript HTTP clients](https://crawlee.dev/js/docs/guides/http-clients)、[Patchright Python](https://github.com/Kaliiiiiiiiii-Vinyzu/patchright-python)。
