@@ -110,7 +110,7 @@ python3 -B -m jse.lab grade --run lab-runs/pilot-001 --gold /evaluation/gold.jso
 - liveはHTTPS・標準ポート・認証情報なし・許可origin内のみ。全パスが対象で、パス単位の限定は未実装。
 - 直接通信はDNS結果をpublic IPに限定し、そのIPへ接続する。クラウドのHTTPS proxy利用時は許可hostを維持し、接続先IPの制御は環境proxyのポリシーに依存する。proxy側がprivate IPを拒否する保証は未確認。任意の未信頼proxyを指定しない。
 - timeoutは接続と各読み取りへ適用し、bodyの残り時間も短縮する。OSのDNS待ちやレスポンスヘッダーを含む、厳密な総実行時間上限ではない。
-- robotsの取得不能・非対応リダイレクトは保守的に取得を止める。JavaScript、圧縮レスポンス、PDFには対応しない。charsetはHTTP、meta、UTF-8の順。誤判定の可能性は保存HTMLで確認する。
+- robotsの取得不能・非対応リダイレクトは保守的に取得を止める。JavaScriptはadaptive環境のみ、圧縮レスポンス・PDFは未対応。charsetはHTTP、meta、UTF-8の順。誤判定の可能性は保存HTMLで確認する。
 - 一般のCodexエージェントはworkspaceとコマンドへアクセスできる。この実行器は、そのエージェントが自分でコードを書き換えることまで隔離するセキュリティ境界ではない。独立評価用goldは物理的に別の環境へ置く。
 
 ## 次の実験候補
@@ -162,10 +162,11 @@ Actions自体のRe-runでsubmitを再実行するとhelperが拒否する。API�
 | core | 標準ライブラリによる既存の実験器 | `bash scripts/cloud_setup.sh` |
 | http | core＋Crawlee Python＋Impit＋SessionPool | `bash scripts/cloud_setup.sh http` |
 | browser | http＋Patchright＋ChromiumとOS依存 | `bash scripts/cloud_setup.sh browser` |
+| adaptive | browserの依存＋AdaptivePlaywrightCrawler＋Playwright | `bash scripts/cloud_setup.sh adaptive` |
 
-バージョンは `requirements/crawl-tools.txt` と `requirements/browser-tools.txt` に固定している。追加環境のsetupではPyPI・ブラウザ配布元・OSパッケージ取得へのネットワーク接続が必要。API Secretや有料サービスは不要。Cloud環境でOS依存の導入権限がない場合、ブラウザ対応済み環境で実行する。導入に失敗した状態を配備済みと報告しない。
+バージョンは `requirements/crawl-tools.txt`、`requirements/browser-tools.txt`、`requirements/adaptive-tools.txt` に固定している。追加環境のsetupではPyPI・ブラウザ配布元・OSパッケージ取得へのネットワーク接続が必要。API Secretや有料サービスは不要。Cloud環境でOS依存の導入権限がない場合、ブラウザ対応済み環境で実行する。導入に失敗した状態を配備済みと報告しない。
 
-通常のDocker最終イメージはcoreのまま。`--target crawl-tools` と `--target browser-tools` を明示した場合だけ追加依存を含む。ブラウザは非rootで起動し、書き込み先をtmpfsにする。ローカル・CIの起動確認は外部サイトを使わない。
+通常のDocker最終イメージはcoreのまま。`--target crawl-tools`、`--target browser-tools`、`--target adaptive-tools` を明示した場合だけ追加依存を含む。ブラウザは非rootで起動し、書き込み先をtmpfsにする。ローカル・CIの起動確認は外部サイトを使わない。
 
 Dockerを使わない環境では専用venvへ次を実行する。LinuxでOS依存も必要ならinstallに `--with-deps` を付ける。
 
@@ -175,7 +176,17 @@ python -m patchright install chromium
 python -B scripts/check_crawl_tools.py --browser
 ```
 
-現在の `jse.lab` は `fixture` / `live` の取得経路だけを扱う。このツール配備でブラウザ取得が自動的に組み込まれるわけではない。将来接続するときは、リダイレクト・JSの追加通信・再試行も取得範囲と予算に含め、HTTP原文と描画後DOMを区別して保存する。導入確認のローカルHTTP例をそのまま本番の予算管理と見なさない。
+`jse.lab` でブラウザ描画も使う場合はadaptive環境を導入し、新しい設定ファイルの `transport` を `adaptive` にして通常の `init` / `run` を実行する。進行中のrunの設定を変更せず、新しい比較実験として作成する。Dockerの入口は `docker compose --profile adaptive run --build --rm adaptive`。設定ファイルをコンテナへ渡す場合は読み取り専用mountを追加する。
+
+Adaptiveは共通の本文・タイトル・リンク集合をHTTPとブラウザで比較し、URLの類似性から次の取得方式を予測する。定期的な再比較も行う。比較対象は別々のHTTP取得なので時刻差があり、実サイトでは更新・広告の差も描画差に混ざり得る。判定履歴はarmごとに保存し、再開時に学習を再構成する。BFSとLunaの判定履歴は共有しない。
+
+すべてのHTTP、robots、リダイレクト、JSの追加取得、比較の二重取得を既存の台帳・回数・転送量上限に通す。ブラウザの通信をofflineにし、許可済みGETだけをPython取得器経由で返すため、HTTPクライアントは既存のurllibである。ImpitのTLS特性、Playwrightの直接通信、Patchrightの対策はこの経路に含まれない。fingerprint自動生成とSDKの自動再試行も無効にする。
+
+保存する `body_sha256` は元のHTTP本文、`dom_sha256` は描画後のDOM、`http_record_index` は取得元の台帳番号。`verify` は両方のハッシュと本文・リンクの再抽出を確認し、`export` はDOMも保存する。reportには採用した取得方式と比較試行数が加わる。
+
+追加リソースのoriginも設定とCloudのネットワーク許可に必要。サイト別のセレクタ指定は不要だが、ログインCookie、POST、WebSocket、Service Worker、追加リソースのHTTPリダイレクトは未対応。初期ページのHTTPリダイレクトは台帳で解決してからブラウザへ渡す。範囲外・robots拒否・取得失敗・予算切れは不完全な成功にせず失敗へ記録する。
+
+描画はnetworkidle後に500ms待つ共通設定。遅いタイマー・クリック・無限スクロールまでの網羅は保証しない。DOMには1応答と同じサイズ上限を適用する。取得処理は `timeout_seconds` の3倍を目安の期限とし、残時間を待機・HTTPへ伝えるが、OSのDNS解決やブラウザ起動を含む厳密な実時間上限ではない。コンテナや実行ジョブにも時間・メモリの上限を設ける。
 
 Python版の標準HTTPクライアントはImpit。TypeScript版はgot-scrapingが標準で、`@crawlee/impit-client` を追加してImpitを選べる。今回は既存コードと同じPython版を配備する。
 

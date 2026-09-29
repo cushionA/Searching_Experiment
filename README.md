@@ -43,7 +43,11 @@ docker compose --profile browser run --build --rm browser-tools
 
 両コマンドは導入確認。Crawleeでローカルfixtureを1件取得し、browser環境では外部通信を無効にしてJavaScript実行も確認する。実サイトのブロック突破性能を測るものではない。ツールを使うコードを実行する場合は `--entrypoint python` で入口を指定できる。
 
-Codex Cloudへまとめて導入するSetupは `bash scripts/cloud_setup.sh browser`、HTTPツールだけなら末尾を `http` にする。通常の `jse.lab` は従来の取得経路を使う。今回の追加はSDK・ブラウザの配備までで、自動切り替え、個別サイト対策、既存の予算管理への接続は必要になった段階で行う。[導入手順](docs/cloud-lab.md#取得ツールの配備)
+Codex Cloudへまとめて導入するSetupは `bash scripts/cloud_setup.sh browser`、HTTPツールだけなら末尾を `http` にする。[導入手順](docs/cloud-lab.md#取得ツールの配備)
+
+AdaptivePlaywrightCrawlerを実験へ接続する場合は `bash scripts/cloud_setup.sh adaptive` を実行し、新しい実験設定で `"transport": "adaptive"` を指定する。本文・リンクの比較からHTTP取得とブラウザ描画を選び、判定履歴は再開後も保持する。Dockerでは `docker compose --profile adaptive run --build --rm adaptive --help` が入口になる。
+
+比較用の二重取得とJSの追加リクエストも同じ予算へ計上し、元HTMLと描画後DOMを分けて保存する。この経路のHTTPは既存の取得器を使い、ImpitやPatchrightによるブロック対策はまだ接続していない。サイト固有のクリック・無限スクロールは自動化しない。
 
 ## Codexクラウドで使う
 
@@ -72,6 +76,6 @@ ZIPはコードの配布用。実験途中の保存には `jse.lab export` を�
 - 計画・結果の判断待ち、プロセスをまたぐ再開、二重実行の排除。
 - 保存物の再照合と引用位置の検証。別途goldがある場合の注釈URL到達率。
 
-JavaScript描画、PDF、sitemap、Common Crawl、新しい検索索引への投入は未接続。既存の古い整形済みコーパスの欠落を、日本サイト全体やCommon Crawl全体の欠落とは扱わない。
+JavaScript描画はAdaptive環境で利用できる。PDF、sitemap、Common Crawl、新しい検索索引への投入は未接続。既存の古い整形済みコーパスの欠落を、日本サイト全体やCommon Crawl全体の欠落とは扱わない。
 
 クラウド環境への実配置・クラウド側のモデル選択・ネットワーク疎通は別の接続確認が必要。モデルの実ID、トークン、Codex利用料金はこの実行器では機械検証できず、レポートに未測定として残す。

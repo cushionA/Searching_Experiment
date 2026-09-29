@@ -69,6 +69,8 @@ def export_checkpoint(store, output):
                 files.add("blobs/" + record["body_sha256"])
         for page in arm["pages"]:
             files.add("blobs/" + page["text_sha256"])
+        for rendering in arm.get("renderings", []):
+            files.add("blobs/" + rendering["dom_sha256"])
     for name in ("decision.json", "DECISION.md", "report.json"):
         if (store.directory / name).exists():
             files.add(name)

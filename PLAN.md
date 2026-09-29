@@ -99,7 +99,7 @@
 
 ### 次の未接続項目
 
-複数サイトの独立評価、sitemap、Common Crawl、JS/PDF、本文の追加観測、索引への投入。これらを既存armへ混ぜず、仮説・同じ上限・同じ評価集合を決めて比較する。
+複数サイトの独立評価、sitemap、Common Crawl、PDF、本文の追加観測、索引への投入。これらを既存armへ混ぜず、仮説・同じ上限・同じ評価集合を決めて比較する。
 
 # Plan Review
 
@@ -130,11 +130,24 @@
 
 ### 範囲と接続
 
-ユーザー指示は必要時に使える既製基盤の導入まで。Crawlee Python＋Impit＋SessionPoolとPatchright＋Chromiumを任意のDocker target / Cloud setupとして配備する。通常イメージは軽量構成を維持する。ブロック対策の調整・自動切り替え・Camoufoxは今回追加しない。
+この工程は必要時に使える既製基盤の導入。Crawlee Python＋Impit＋SessionPoolとPatchright＋Chromiumを任意のDocker target / Cloud setupとして配備する。通常イメージは軽量構成を維持する。ブロック対策の調整・Camoufoxは追加しない。Adaptiveの接続は次工程で扱う。
 
 ### 確認事項
 
 - [x] WindowsでCrawlee＋ImpitによるローカルHTTP取得・SessionPool・Patchrightの起動とJavaScript実行を確認。
 - [x] Linuxコンテナでも外部通信なしで同じ確認に成功。[CI run](https://github.com/cushionA/Searching_Experiment/actions/runs/36596324607)
 - [x] イメージ実測: core 119,452,677 bytes、HTTP tools 168,227,120 bytes、browser tools 1,348,329,422 bytes。いずれもuser 10001:10001。
-- 実サイトでの突破性能と既存実験器への接続は未検証・未実装。必要時に別の作業として進める。
+- 実サイトでの突破性能は未検証。Impit/Patchrightを既存実験器へつなぐ作業は必要時に進める。
+
+# Phase 6: Adaptiveによる描画方式の選択
+
+### 接続と検証
+
+ユーザーの追加指示により `transport=adaptive` を実装。共通の本文・タイトル・リンクを比較し、HTTPとブラウザを選択する。判定履歴はarm別に保存・再構成し、取得回数・転送量・robots・許可originの制御は既存の取得器へ集約する。DOMと原HTMLを区別して保存し、検証・exportへ接続する。
+
+- [x] Windowsの実ブラウザで静的判定の再開、JSリンク、比較・リソース予算、scope/robots/POST、初期リダイレクト、DOM上限・証拠改変を検証。
+- [x] coreの22テストに回帰なし。
+- [ ] LinuxコンテナでAdaptiveのオフライン統合試験を確認。
+- [ ] 実サイトの取得改善・取りこぼし・資源消費を同条件で評価。
+
+HTTP通信は既存のurllibを使用し、ブラウザの直接通信を止めて台帳経由で返す。Impit/Patchrightによる対策は含まれない。共通の待機時間を超える描画、ログイン、クリック、無限スクロール、POST/WebSocket、追加リソースのリダイレクトは未対応。取得不能を網羅性の低さと混同せず失敗へ記録する。coreへ戻す場合は新しいrunでtransport=liveを選び、実行中の設定・上限は書き換えない。

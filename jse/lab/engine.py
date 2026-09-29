@@ -57,6 +57,19 @@ def verify(store):
                     valid = False
                 if not valid:
                     errors.append(f"{name}: HTTP blob mismatch {sha}")
+        for rendering in arm.get("renderings", []):
+            try:
+                index = rendering["http_record_index"]
+                if type(index) is not int or not 0 <= index < len(arm["http"]):
+                    raise LabError("invalid rendering HTTP index")
+                source = arm["http"][index]
+                dom = store.artifact("blobs/" + rendering["dom_sha256"]).read_bytes()
+                if source["kind"] != "page" or source["status"] != 200 or source["truncated"] or source["url"] != rendering["url"]:
+                    raise LabError("rendering source mismatch")
+                if hashlib.sha256(dom).hexdigest() != rendering["dom_sha256"] or len(dom) > limits["bytes_per_response"]:
+                    raise LabError("DOM blob mismatch")
+            except (KeyError, OSError, ValueError, LabError) as error:
+                errors.append(f"{name}: rendering: {error}")
         for page in arm["pages"]:
             try:
                 body = store.artifact("blobs/" + page["body_sha256"]).read_bytes()
@@ -66,13 +79,28 @@ def verify(store):
                 records = [r for r in arm["http"] if r.get("body_sha256") == page["body_sha256"] and r["url"] == page["url"] and r["kind"] == "page" and r["status"] == 200 and not r["truncated"]]
                 if not records:
                     raise LabError("successful HTTP record missing")
-                title, text, links = parse_page(body, records[0]["headers"], page["url"])
+                headers = records[0]["headers"]
+                if state["config"]["transport"] == "adaptive":
+                    index = page.get("http_record_index")
+                    if type(index) is not int or not 0 <= index < len(arm["http"]) or arm["http"][index] not in records:
+                        raise LabError("adaptive page source mismatch")
+                    if page.get("source_kind") not in ("http", "dom") or (page["source_kind"] == "dom") != bool(page.get("dom_sha256")):
+                        raise LabError("adaptive source kind mismatch")
+                if page.get("dom_sha256"):
+                    if not any(r["dom_sha256"] == page["dom_sha256"] and r["http_record_index"] == page["http_record_index"] and r["url"] == page["url"] and r["attempt"] == page["attempt"] for r in arm.get("renderings", [])):
+                        raise LabError("rendering record missing")
+                    body = store.artifact("blobs/" + page["dom_sha256"]).read_bytes()
+                    headers = {"content-type": "text/html; charset=utf-8"}
+                title, text, links = parse_page(body, headers, page["url"])
                 if text.encode("utf-8") != text_bytes or title != page["title"] or links != page["links"]:
                     raise LabError("extraction replay mismatch")
                 texts[(name, page["url"], page["text_sha256"])] = text
             except (OSError, UnicodeError, LabError) as error:
                 errors.append(f"{name}: {page['url']}: {error}")
         arms[name] = {"html_pages": len(arm["pages"]), "unique_urls": len({p["url"] for p in arm["pages"]}), "unique_texts": len({p["text_sha256"] for p in arm["pages"]}), "attempts": len(arm["attempts"]), "http_requests": len(arm["http"]), "body_bytes_charged": arm["bytes_charged"], "unvisited_candidates": len(arm["frontier"]), "dropped_links": arm["dropped_links"], "stop_reason": arm["stop_reason"], "failures": dict(Counter(a.get("error", a["status"]) for a in arm["attempts"] if a["status"] != "ok")), "coverage": None, "pages": [{key: page[key] for key in ("url", "title", "text_sha256", "attempt", "acquired_at")} for page in arm["pages"]], "network_routes": dict(Counter(r["network_route"] for r in arm["http"]))}
+        if state["config"]["transport"] == "adaptive":
+            arms[name]["acquisition_modes"] = dict(Counter(p["source_kind"] for p in arm["pages"]))
+            arms[name]["adaptive_comparisons"] = sum(d.get("compare", False) for d in arm.get("adaptive_decisions", []))
     for claim in state["claims"]:
         text = texts.get(("luna", claim["url"], claim["text_sha256"]), "")
         if text[claim["offset"]:claim["offset"] + len(claim["quote"])] != claim["quote"]:
@@ -138,7 +166,7 @@ class Engine:
             self.store.event("interrupted", "中断された取得は予算を消費したまま保留。resumeで未確定として進む")
             return self.store.status()
         if self.s["phase"] == "plan":
-            self.request("plan", {"objective": self.config["objective"], "contract": self.config, "method": "同じseed・上限によるBFSとLunaのリンク選択を比較。対象内のHTMLを取得し本文・リンク・失敗を保存する。", "limits_of_method": "JavaScript、PDF、sitemap、Common Crawlは今回の実行器に未接続。既存の古い派生コーパスから日本Web全体の欠落を断定しない。"}, {"request_id": "request_idをコピー", "hypothesis": "検証する仮説", "method": "この実行器で行う手順", "success_criterion": "何を測り、何が出れば仮説を修正するか", "risks": "観測偏りと未測定事項"})
+            self.request("plan", {"objective": self.config["objective"], "contract": self.config, "method": "同じseed・上限によるBFSとLunaのリンク選択を比較。対象内のHTMLを取得し本文・リンク・失敗を保存する。", "limits_of_method": "JavaScript描画はtransport=adaptiveでのみ対応。クリック・無限スクロール、PDF、sitemap、Common Crawlは未接続。既存の古い派生コーパスから日本Web全体の欠落を断定しない。"}, {"request_id": "request_idをコピー", "hypothesis": "検証する仮説", "method": "この実行器で行う手順", "success_criterion": "何を測り、何が出れば仮説を修正するか", "risks": "観測偏りと未測定事項"})
             return self.store.status()
         while self.s["phase"] == "experiment":
             if (self.store.directory / "PAUSE").exists():

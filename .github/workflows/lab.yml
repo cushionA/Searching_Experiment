@@ -24,11 +24,13 @@ jobs:
       - run: docker image inspect discovery-lab:ci --format 'image_bytes={{.Size}} user={{.Config.User}}'
   optional-tools:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7.0.1
       - run: docker build --target crawl-tools -t discovery-crawl-tools:ci .
       - run: docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /tmp:size=128m,mode=1777 discovery-crawl-tools:ci
       - run: docker build --target browser-tools -t discovery-browser-tools:ci .
       - run: docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /tmp:size=256m,mode=1777 --shm-size=256m discovery-browser-tools:ci
-      - run: docker image inspect discovery-crawl-tools:ci discovery-browser-tools:ci --format 'image={{index .RepoTags 0}} bytes={{.Size}} user={{.Config.User}}'
+      - run: docker build --target adaptive-tools -t discovery-adaptive:ci .
+      - run: docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /tmp:size=256m,mode=1777 --shm-size=256m --mount type=bind,src="$PWD/tests",dst=/app/tests,readonly --env CRAWLEE_LOG_LEVEL=ERROR --entrypoint python discovery-adaptive:ci -B -m unittest discover -s tests -p test_adaptive.py -v
+      - run: docker image inspect discovery-crawl-tools:ci discovery-browser-tools:ci discovery-adaptive:ci --format 'image={{index .RepoTags 0}} bytes={{.Size}} user={{.Config.User}}'

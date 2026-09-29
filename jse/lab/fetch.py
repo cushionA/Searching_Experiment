@@ -181,7 +181,7 @@ class Fetcher:
         self.limits = self.config["limits"]
         self.transport = transport or (FixtureTransport() if self.config["transport"] == "fixture" else LiveTransport())
 
-    def http(self, name, url, kind, delay=None):
+    def http(self, name, url, kind, delay=None, deadline=None):
         url = canonical(url)
         if origin(url) not in self.config["allowed_origins"]:
             raise LabError("outside_scope")
@@ -195,9 +195,14 @@ class Fetcher:
         delay = max(self.config["delay_seconds"], delay or 0)
         host = origin(url)
         wait = self.store.state["last_request_at"].get(host, 0) + delay - time.time()
-        if wait > 0 and self.config["transport"] == "live":
+        if deadline is not None and max(0, wait) >= deadline - time.monotonic():
+            raise LabError("adaptive_deadline")
+        if wait > 0 and not isinstance(self.transport, FixtureTransport):
             time.sleep(wait)
-        route = "fixture" if self.config["transport"] == "fixture" else ("environment_proxy" if self.transport.proxy else "direct_public_ip")
+        timeout = self.config["timeout_seconds"] if deadline is None else min(self.config["timeout_seconds"], deadline - time.monotonic())
+        if timeout <= 0:
+            raise LabError("adaptive_deadline")
+        route = "fixture" if isinstance(self.transport, FixtureTransport) else ("environment_proxy" if self.transport.proxy else "direct_public_ip")
         record = {"url": url, "kind": kind, "time": time.time(), "status": "interrupted", "bytes_charged": cap, "network_route": route}
         arm["http"].append(record)
         arm["bytes_charged"] += cap
@@ -205,11 +210,12 @@ class Fetcher:
         self.store.state["inflight"] = {"kind": "http", "arm": name, "index": len(arm["http"]) - 1}
         self.store.save()
         try:
-            status, headers, body, truncated = self.transport.get(url, cap, self.config["timeout_seconds"], self.config["user_agent"])
+            status, headers, body, truncated = self.transport.get(url, cap, timeout, self.config["user_agent"])
             sha = hashlib.sha256(body).hexdigest()
             atomic(self.store.artifact("blobs/" + sha), body)
             arm["bytes_charged"] -= cap - len(body)
-            record.update(status=status, bytes_charged=len(body), body_sha256=sha, headers={key: headers[key] for key in ("content-type", "location") if key in headers}, truncated=truncated)
+            retained_headers = ("content-type", "location", "content-security-policy", "content-security-policy-report-only", "access-control-allow-origin", "access-control-allow-credentials", "access-control-expose-headers", "cross-origin-resource-policy", "cross-origin-embedder-policy", "cross-origin-opener-policy", "x-content-type-options", "referrer-policy")
+            record.update(status=status, bytes_charged=len(body), body_sha256=sha, headers={key: headers[key] for key in retained_headers if key in headers}, truncated=truncated)
         except (OSError, ValueError, http.client.HTTPException, LabError) as error:
             record["status"] = "error"
             record["error"] = str(error) if isinstance(error, LabError) else type(error).__name__
@@ -220,11 +226,11 @@ class Fetcher:
             self.store.save()
         return record, body
 
-    def robots(self, name, url):
+    def robots(self, name, url, deadline=None):
         arm = self.store.state["arms"][name]
         host = origin(url)
         if host not in arm["robots"]:
-            record, body = self.http(name, host + "/robots.txt", "robots")
+            record, body = self.http(name, host + "/robots.txt", "robots", deadline=deadline)
             if record["status"] in (404, 410):
                 rules = "User-agent: *\nAllow: /"
             elif record["status"] == 200 and not record["truncated"]:
@@ -255,8 +261,13 @@ class Fetcher:
             for hop in range(4):
                 if origin(url) not in self.config["allowed_origins"]:
                     raise LabError("redirect_outside_scope")
-                delay = self.robots(name, url)
-                record, body = self.http(name, url, "page", delay)
+                extra = {}
+                if self.config["transport"] == "adaptive":
+                    from .adaptive import acquire
+                    record, body, url, extra = acquire(self, name, url)
+                else:
+                    delay = self.robots(name, url)
+                    record, body = self.http(name, url, "page", delay)
                 if record["status"] in (301, 302, 303, 307, 308):
                     location = record["headers"].get("location")
                     if not location:
@@ -265,10 +276,11 @@ class Fetcher:
                     continue
                 if record["status"] != 200 or record["truncated"]:
                     raise LabError("truncated" if record["truncated"] else f"http_{record['status']}")
-                title, text, links = parse_page(body, record["headers"], url)
+                headers = {"content-type": "text/html; charset=utf-8"} if extra.get("dom_sha256") else record["headers"]
+                title, text, links = parse_page(body, headers, url)
                 text_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
                 atomic(self.store.artifact("blobs/" + text_hash), text.encode("utf-8"))
-                page = dict(candidate, url=url, requested_url=candidate["url"], title=title, text_sha256=text_hash, body_sha256=record["body_sha256"], attempt=attempt["number"], acquired_at=record["time"], links=links)
+                page = dict(candidate, url=url, requested_url=candidate["url"], title=title, text_sha256=text_hash, body_sha256=record["body_sha256"], attempt=attempt["number"], acquired_at=record["time"], links=links, **extra)
                 arm["pages"].append(page)
                 attempt.update(status="ok", final_url=url)
                 for link in links:

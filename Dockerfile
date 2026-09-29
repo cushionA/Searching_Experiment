@@ -29,6 +29,15 @@ RUN pip install --no-cache-dir -r /app/requirements/browser-tools.txt \
 USER 10001:10001
 CMD ["--browser"]
 
+FROM browser-tools AS adaptive-tools
+USER root
+COPY requirements/adaptive-tools.txt /app/requirements/adaptive-tools.txt
+RUN pip install --no-cache-dir -r /app/requirements/adaptive-tools.txt \
+    && python -m playwright install chromium
+USER 10001:10001
+ENTRYPOINT ["python", "-m", "jse.lab"]
+CMD ["--help"]
+
 FROM runtime AS final
 COPY --from=test /tmp/validated /app/validated.txt
 USER 10001:10001
