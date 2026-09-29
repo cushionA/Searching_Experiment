@@ -197,3 +197,16 @@ Impit 0.14.1には宛先IP固定APIがないため、直接通信では1リク�
 Python版の標準HTTPクライアントはImpit。TypeScript版はgot-scrapingが標準で、`@crawlee/impit-client` を追加してImpitを選べる。今回は既存コードと同じPython版を配備する。
 
 公式資料: [Python HTTP clients](https://crawlee.dev/python/docs/guides/http-clients)、[Session management](https://crawlee.dev/python/docs/guides/session-management)、[TypeScript HTTP clients](https://crawlee.dev/js/docs/guides/http-clients)、[Patchright Python](https://github.com/Kaliiiiiiiiii-Vinyzu/patchright-python)。
+
+## Impit接続の実サイト確認
+
+2026-09-30に青空文庫の作家一覧（person35）と気象庁の天気予報（bosai/forecast）を固定seedとして確認した。2方式×2arm、各arm最大2ページ・30 HTTP・保存本文3MB、追加探索なし。同じseedをBFS/Luna各armで別取得しており、Lunaの選択性能を測った試験ではない。
+
+| 方式 | 各armの成功ページ | 各armのHTTP | 各armの本文bytes | 観測 |
+|---|---:|---:|---:|---|
+| impit | 2/2 | 4 | 240,136 | 青空文庫326リンク、気象庁0リンク |
+| adaptive | 1/2 | 14 | 526,962 | 青空文庫は同じ本文・326リンク。気象庁はoutside_scopeで描画未完了 |
+
+合計36 HTTP・1,534,196 bytes。全通信にImpit・HTTP/2・direct_public_ip_tunnelを記録。両runのverifyとcheckpoint exportに成功し、結果判断待ちで保存した。気象庁の失敗は追加リソースの許可範囲による停止であり、サイト側ブロックやImpitの接続不能と混同しない。追加配信元の必要性・対象・上限を検討してから再試験する。
+
+[Linux CI](https://github.com/cushionA/Searching_Experiment/actions/runs/36603329604)では52テストが成功。coreは119,476,676 bytes、Adaptiveは1,757,103,202 bytes。生の取得結果と資格情報は公開リポジトリに含めていない。

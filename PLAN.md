@@ -163,5 +163,6 @@ ImpitのHTTPを既存取得器へ接続し、HTTP単独はtransport=impit、ブ�
 
 - [x] CONNECTの固定先・別authority拒否・期限、Impit stream上限・途中エラー時の予約保持を7テストで確認。
 - [x] Adaptiveの8テスト、coreの22テストを維持。
-- [ ] 実サイト取得・台帳・verify・exportを確認。
-- [ ] Linuxコンテナで追加したImpit経路を検証。
+- [x] 実サイトは36 HTTP・1,534,196 bytesを計上。全件Impit / HTTP/2 / direct_public_ip_tunnel。両runのverify・exportに成功し、結果判断待ちで保存。
+- [x] 青空文庫は両方式で326リンク・同一本文。気象庁はHTTP HTML取得に成功したがリンク0件。Adaptiveは許可外リソース要求で停止したため、描画完了とは扱わない。必要originの特定と追加許可は次の判断点。
+- [x] Linux CIでcore22・Kaggle15・Impit7・Adaptive8の計52テストに成功。[CI run](https://github.com/cushionA/Searching_Experiment/actions/runs/36603329604)
