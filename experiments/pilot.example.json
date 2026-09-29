@@ -1,0 +1,20 @@
+{
+  "objective": "対象サイトを設定し、調査で見つけたい情報と範囲をここへ記載する。",
+  "seeds": ["https://example.org/"],
+  "allowed_origins": ["https://example.org"],
+  "transport": "live",
+  "user_agent": "DiscoveryLab/0.1 (replace-with-contact-before-live-use)",
+  "delay_seconds": 2,
+  "timeout_seconds": 15,
+  "limits": {
+    "pages_per_arm": 12,
+    "attempts_per_arm": 20,
+    "requests_per_arm": 32,
+    "bytes_per_arm": 4000000,
+    "bytes_per_response": 250000,
+    "max_depth": 4,
+    "agent_requests": 10,
+    "frontier_size": 1000,
+    "candidates_per_request": 60
+  }
+}

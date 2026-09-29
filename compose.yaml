@@ -1,0 +1,16 @@
+services:
+  lab:
+    build: .
+    image: discovery-lab:local
+    init: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:size=32m,mode=1777]
+    volumes:
+      - lab-data:/data
+    restart: "no"
+    mem_limit: 512m
+    cpus: 1
+volumes:
+  lab-data:

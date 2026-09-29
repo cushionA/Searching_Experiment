@@ -1,0 +1,22 @@
+name: lab-validation
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: '3.12'
+      - run: bash scripts/cloud_setup.sh
+      - run: docker compose config --quiet
+      - run: docker build -t discovery-lab:ci .
+      - run: docker run --rm --network none --read-only --tmpfs /tmp:size=32m --mount type=volume,src=lab-ci,dst=/data discovery-lab:ci demo --run /data/demo
+      - run: docker run --rm --network none --read-only --mount type=volume,src=lab-ci,dst=/data discovery-lab:ci verify --run /data/demo
+      - run: docker image inspect discovery-lab:ci --format 'image_bytes={{.Size}} user={{.Config.User}}'
