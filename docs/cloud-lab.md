@@ -168,6 +168,8 @@ Actions自体のRe-runでsubmitを再実行するとhelperが拒否する。API�
 
 通常のDocker最終イメージはcoreのまま。`--target crawl-tools`、`--target browser-tools`、`--target adaptive-tools` を明示した場合だけ追加依存を含む。ブラウザは非rootで起動し、書き込み先をtmpfsにする。ローカル・CIの起動確認は外部サイトを使わない。
 
+Adaptive用Dockerイメージでは、制限付きコンテナ内のChromium起動のため `CRAWLEE_DISABLE_BROWSER_SANDBOX=true` を設定する。ブラウザ内部のsandboxが無効になるため、Composeの非root・read-only・cap_drop・no-new-privilegesを維持し、資格情報をmountしない。Docker外のsetupではこの設定を変更しない。
+
 Dockerを使わない環境では専用venvへ次を実行する。LinuxでOS依存も必要ならinstallに `--with-deps` を付ける。
 
 ```bash

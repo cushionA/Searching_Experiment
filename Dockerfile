@@ -31,6 +31,7 @@ CMD ["--browser"]
 
 FROM browser-tools AS adaptive-tools
 USER root
+ENV CRAWLEE_DISABLE_BROWSER_SANDBOX=true
 COPY requirements/adaptive-tools.txt /app/requirements/adaptive-tools.txt
 RUN pip install --no-cache-dir -r /app/requirements/adaptive-tools.txt \
     && python -m playwright install chromium
