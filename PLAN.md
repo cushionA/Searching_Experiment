@@ -134,6 +134,7 @@
 
 ### 確認事項
 
-- [x] WindowsでCrawlee＋ImpitによるローカルHTTP取得とSessionPoolを確認。
-- [ ] LinuxコンテナでHTTP取得とPatchrightの起動・JavaScript実行を外部通信なしで確認。
+- [x] WindowsでCrawlee＋ImpitによるローカルHTTP取得・SessionPool・Patchrightの起動とJavaScript実行を確認。
+- [x] Linuxコンテナでも外部通信なしで同じ確認に成功。[CI run](https://github.com/cushionA/Searching_Experiment/actions/runs/36596324607)
+- [x] イメージ実測: core 119,452,677 bytes、HTTP tools 168,227,120 bytes、browser tools 1,348,329,422 bytes。いずれもuser 10001:10001。
 - 実サイトでの突破性能と既存実験器への接続は未検証・未実装。必要時に別の作業として進める。
