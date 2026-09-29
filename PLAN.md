@@ -52,9 +52,9 @@
 
 ### 確認事項と完了条件
 
-- [x] Windowsでクロール22項目、Kaggle helper15項目のテストを実行。LinuxはCIで同じ入口を検証。
+- [x] Windows / Linux CIでクロール22項目、Kaggle helper15項目のテストを実行。
 - [x] 生データと秘密情報を配布・buildの許可リストから除外。
-- [x] GitHub CIで最終imageの起動を確認。初回imageは119,452,607 bytes、build contextは64.26kB、実行userは10001:10001。
+- [x] GitHub CIで最終imageの起動を確認。imageは119,452,677 bytes、build contextは75.56kB、実行userは10001:10001。[検証run](https://github.com/cushionA/Searching_Experiment/actions/runs/36594100732)
 - [ ] Codex Cloudの環境設定・実モデル経路・liveサイト疎通を確認。
 
 コード準備とCloud実接続を別々に記録し、未接続を完成扱いにしない。
@@ -121,7 +121,7 @@
 - [x] access tokenで実際の残量APIへ接続。GPU残量30時間を取得。quotaの実測値を使い、固定保証にしない。
 - [x] Repository Secretへtokenを登録。Gitと配布物には含めない。
 - [x] version固定、再送抑止、曖昧送信の照合、ログの秘匿、出力パスをテスト。
-- [ ] ActionsからSecretを使ったquota照会を確認。
+- [x] ActionsからSecretを使ったquota照会とartifact回収を確認。GPU残量108,000秒、起動したGPUジョブは0。[検証run](https://github.com/cushionA/Searching_Experiment/actions/runs/36594156042)
 - [ ] 実GPUジョブの完了・出力回収とCloudの継続機構を接続。GPUが必要な実験が決まった時点で行う。
 
 継続ファイルの生成と、終了済みCloudタスクの起動は別の責務。後者を未接続のまま完成と扱わない。
