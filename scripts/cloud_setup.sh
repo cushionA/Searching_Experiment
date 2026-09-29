@@ -20,3 +20,6 @@ elif [ "$profile" = adaptive ]; then
   python3 -m playwright install --with-deps chromium
   python3 -B -m unittest discover -s tests -p 'test_adaptive.py'
 fi
+if [ "$profile" != core ]; then
+  python3 -B -m unittest discover -s tests -p 'test_impit.py'
+fi

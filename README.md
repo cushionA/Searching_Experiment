@@ -43,11 +43,11 @@ docker compose --profile browser run --build --rm browser-tools
 
 両コマンドは導入確認。Crawleeでローカルfixtureを1件取得し、browser環境では外部通信を無効にしてJavaScript実行も確認する。実サイトのブロック突破性能を測るものではない。ツールを使うコードを実行する場合は `--entrypoint python` で入口を指定できる。
 
-Codex Cloudへまとめて導入するSetupは `bash scripts/cloud_setup.sh browser`、HTTPツールだけなら末尾を `http` にする。[導入手順](docs/cloud-lab.md#取得ツールの配備)
+Codex Cloudへまとめて導入するSetupは `bash scripts/cloud_setup.sh browser`、HTTPツールだけなら末尾を `http` にする。`"transport": "impit"` でブラウザを起動せずImpitのHTTP取得を使える。[導入手順](docs/cloud-lab.md#取得ツールの配備)
 
 AdaptivePlaywrightCrawlerを実験へ接続する場合は `bash scripts/cloud_setup.sh adaptive` を実行し、新しい実験設定で `"transport": "adaptive"` を指定する。本文・リンクの比較からHTTP取得とブラウザ描画を選び、判定履歴は再開後も保持する。Dockerでは `docker compose --profile adaptive run --build --rm adaptive --help` が入口になる。
 
-比較用の二重取得とJSの追加リクエストも同じ予算へ計上し、元HTMLと描画後DOMを分けて保存する。この経路のHTTPは既存の取得器を使い、ImpitやPatchrightによるブロック対策はまだ接続していない。サイト固有のクリック・無限スクロールは自動化しない。
+比較用の二重取得とJSの追加リクエストも同じ予算へ計上し、元HTMLと描画後DOMを分けて保存する。この経路のHTTPはImpitのChromeプロファイルを使い、直接通信では検査済みpublic IPへ固定する。識別用User-AgentとTLS証明書検証を維持する。Patchright、サイト固有の対策、クリック・無限スクロールは接続していない。
 
 ## Codexクラウドで使う
 

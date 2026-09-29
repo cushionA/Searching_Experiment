@@ -16,7 +16,7 @@ init → run → 計画の要求 → Lunaの回答 → 計画判断
 
 1. 接続先は `cushionA/Searching_Experiment`、branchは `main`。`scripts/package_cloud.py` は必要なコードだけをZIP化し、巨大な過去データを含めない。
 2. CodexのEnvironment設定でPython 3.12以上を指定する。
-3. Setup script: `bash scripts/cloud_setup.sh`。Maintenance scriptも同じ。標準構成では依存のダウンロードや有料実行はしない。取得ツールを配備する場合は、以下の `http` / `browser` 引数を使う。
+3. Setup script: `bash scripts/cloud_setup.sh`。Maintenance scriptも同じ。標準構成では依存のダウンロードや有料実行はしない。取得ツールを配備する場合は、以下の `http` / `browser` / `adaptive` 引数を使う。
 4. オフラインdemoではAgent internet accessを無効のままでよい。実サイトを取得するときだけ有効にし、設定JSONの `allowed_origins` に対応するドメインとGETを許可する。別hostへリダイレクトするサイトは、実験前に両方を許可する。
 5. 実行画面のモデル選択でGPT-6 Lunaを指定する。利用できない場合は接続未完了として止める。CLIの `codex cloud exec` にモデル指定フラグがある前提にしない。モデルの自己申告は独立検証ではないため `model_runtime_verified` は常にfalseとして保存する。
 6. クロールにはSecretsは不要。任意のKaggle計算は以下のGitHub Actions経路を使う。Codex CloudのSecretsはsetup後に除去されるため、setup中のキーをファイルへ残してagent phaseへ渡さない。
@@ -107,10 +107,10 @@ python3 -B -m jse.lab grade --run lab-runs/pilot-001 --gold /evaluation/gold.jso
 
 ## 境界
 
-- liveはHTTPS・標準ポート・認証情報なし・許可origin内のみ。全パスが対象で、パス単位の限定は未実装。
+- live / impit / adaptiveはHTTPS・標準ポート・認証情報なし・許可origin内のみ。全パスが対象で、パス単位の限定は未実装。
 - 直接通信はDNS結果をpublic IPに限定し、そのIPへ接続する。クラウドのHTTPS proxy利用時は許可hostを維持し、接続先IPの制御は環境proxyのポリシーに依存する。proxy側がprivate IPを拒否する保証は未確認。任意の未信頼proxyを指定しない。
 - timeoutは接続と各読み取りへ適用し、bodyの残り時間も短縮する。OSのDNS待ちやレスポンスヘッダーを含む、厳密な総実行時間上限ではない。
-- robotsの取得不能・非対応リダイレクトは保守的に取得を止める。JavaScriptはadaptive環境のみ、圧縮レスポンス・PDFは未対応。charsetはHTTP、meta、UTF-8の順。誤判定の可能性は保存HTMLで確認する。
+- robotsの取得不能・非対応リダイレクトは保守的に取得を止める。JavaScriptはadaptive環境のみ、PDFは未対応。Accept-Encodingはidentityを要求するが、ImpitのSDKが透過展開する応答は展開後の本文を保存・計上する。未展開の圧縮応答は拒否する。charsetはHTTP、meta、UTF-8の順。誤判定の可能性は保存HTMLで確認する。
 - 一般のCodexエージェントはworkspaceとコマンドへアクセスできる。この実行器は、そのエージェントが自分でコードを書き換えることまで隔離するセキュリティ境界ではない。独立評価用goldは物理的に別の環境へ置く。
 
 ## 次の実験候補
@@ -182,7 +182,11 @@ python -B scripts/check_crawl_tools.py --browser
 
 Adaptiveは共通の本文・タイトル・リンク集合をHTTPとブラウザで比較し、URLの類似性から次の取得方式を予測する。定期的な再比較も行う。比較対象は別々のHTTP取得なので時刻差があり、実サイトでは更新・広告の差も描画差に混ざり得る。判定履歴はarmごとに保存し、再開時に学習を再構成する。BFSとLunaの判定履歴は共有しない。
 
-すべてのHTTP、robots、リダイレクト、JSの追加取得、比較の二重取得を既存の台帳・回数・転送量上限に通す。ブラウザの通信をofflineにし、許可済みGETだけをPython取得器経由で返すため、HTTPクライアントは既存のurllibである。ImpitのTLS特性、Playwrightの直接通信、Patchrightの対策はこの経路に含まれない。fingerprint自動生成とSDKの自動再試行も無効にする。
+すべてのHTTP、robots、リダイレクト、JSの追加取得、比較の二重取得を既存の台帳・回数・転送量上限に通す。`transport=impit` と `adaptive` はImpitのChromeプロファイルで通信する。通常の `live` は標準ライブラリのurllibを使う。ブラウザの通信はofflineにし、許可済みGETだけを予算管理下のImpit経由で返す。Playwrightの直接通信、Patchright、fingerprint自動生成、Crawleeの自動再試行は使わない。
+
+Impit 0.14.1には宛先IP固定APIがないため、直接通信では1リクエスト専用のループバックCONNECTトンネルを作り、DNSの全候補がpublic IPであることを確認して選んだIPだけへ中継する。元のhostnameを使ったTLS・SNI・証明書照合はImpitが行う。HTTP/3、自動リダイレクト、Cookieの永続化は使わず、DiscoveryLabの識別用User-Agentを維持する。環境のHTTPS proxyがある場合は明示的にそのproxyを使い、IP制限は従来同様proxy側に依存する。proxyの資格情報は台帳に保存しない。
+
+台帳の `http_client` / `http_version` に実装名と応答プロトコル、`network_route` に `direct_public_ip_tunnel` または `environment_proxy` を記録する。streamの途中エラーは成功扱いせず、予約した本文予算を保持する。バイト上限は保存・処理する応答本文の上限であり、SDKの先読み、TLS、ヘッダーを含む通信課金の上限ではない。
 
 保存する `body_sha256` は元のHTTP本文、`dom_sha256` は描画後のDOM、`http_record_index` は取得元の台帳番号。`verify` は両方のハッシュと本文・リンクの再抽出を確認し、`export` はDOMも保存する。reportには採用した取得方式と比較試行数が加わる。
 

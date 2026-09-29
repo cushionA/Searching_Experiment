@@ -29,6 +29,7 @@ jobs:
       - uses: actions/checkout@v7.0.1
       - run: docker build --target crawl-tools -t discovery-crawl-tools:ci .
       - run: docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /tmp:size=128m,mode=1777 discovery-crawl-tools:ci
+      - run: docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /tmp:size=128m,mode=1777 --mount type=bind,src="$PWD/tests",dst=/app/tests,readonly --entrypoint python discovery-crawl-tools:ci -B -m unittest discover -s tests -p test_impit.py -v
       - run: docker build --target browser-tools -t discovery-browser-tools:ci .
       - run: docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /tmp:size=256m,mode=1777 --shm-size=256m discovery-browser-tools:ci
       - run: docker build --target adaptive-tools -t discovery-adaptive:ci .

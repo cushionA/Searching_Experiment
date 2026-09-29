@@ -101,6 +101,7 @@ def verify(store):
         if state["config"]["transport"] == "adaptive":
             arms[name]["acquisition_modes"] = dict(Counter(p["source_kind"] for p in arm["pages"]))
             arms[name]["adaptive_comparisons"] = sum(d.get("compare", False) for d in arm.get("adaptive_decisions", []))
+        arms[name]["http_clients"] = dict(Counter(r.get("http_client", "unrecorded") for r in arm["http"]))
     for claim in state["claims"]:
         text = texts.get(("luna", claim["url"], claim["text_sha256"]), "")
         if text[claim["offset"]:claim["offset"] + len(claim["quote"])] != claim["quote"]:

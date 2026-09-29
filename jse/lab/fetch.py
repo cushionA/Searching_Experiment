@@ -58,6 +58,7 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 
 class LiveTransport:
+    client_name = "urllib"
     def __init__(self):
         self.proxy = bool(urllib.request.getproxies().get("https"))
         handlers = [NoRedirect()]
@@ -101,6 +102,7 @@ class LiveTransport:
 
 class FixtureTransport:
     proxy = False
+    client_name = "fixture"
 
     def get(self, url, cap, timeout, user_agent):
         if origin(url) != "https://lab.example":
@@ -179,7 +181,13 @@ class Fetcher:
         self.store = store
         self.config = store.state["config"]
         self.limits = self.config["limits"]
-        self.transport = transport or (FixtureTransport() if self.config["transport"] == "fixture" else LiveTransport())
+        if transport is not None:
+            self.transport = transport
+        elif self.config["transport"] in ("impit", "adaptive"):
+            from .impit_transport import ImpitTransport
+            self.transport = ImpitTransport()
+        else:
+            self.transport = FixtureTransport() if self.config["transport"] == "fixture" else LiveTransport()
 
     def http(self, name, url, kind, delay=None, deadline=None):
         url = canonical(url)
@@ -203,7 +211,10 @@ class Fetcher:
         if timeout <= 0:
             raise LabError("adaptive_deadline")
         route = "fixture" if isinstance(self.transport, FixtureTransport) else ("environment_proxy" if self.transport.proxy else "direct_public_ip")
+        if self.transport.client_name == "impit" and not self.transport.proxy:
+            route = "direct_public_ip_tunnel"
         record = {"url": url, "kind": kind, "time": time.time(), "status": "interrupted", "bytes_charged": cap, "network_route": route}
+        record["http_client"] = self.transport.client_name
         arm["http"].append(record)
         arm["bytes_charged"] += cap
         self.store.state["last_request_at"][host] = time.time()
@@ -216,6 +227,8 @@ class Fetcher:
             arm["bytes_charged"] -= cap - len(body)
             retained_headers = ("content-type", "location", "content-security-policy", "content-security-policy-report-only", "access-control-allow-origin", "access-control-allow-credentials", "access-control-expose-headers", "cross-origin-resource-policy", "cross-origin-embedder-policy", "cross-origin-opener-policy", "x-content-type-options", "referrer-policy")
             record.update(status=status, bytes_charged=len(body), body_sha256=sha, headers={key: headers[key] for key in retained_headers if key in headers}, truncated=truncated)
+            if self.transport.client_name == "impit":
+                record["http_version"] = self.transport.last_http_version
         except (OSError, ValueError, http.client.HTTPException, LabError) as error:
             record["status"] = "error"
             record["error"] = str(error) if isinstance(error, LabError) else type(error).__name__

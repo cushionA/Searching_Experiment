@@ -75,8 +75,8 @@ def validate_config(config):
         raise LabError("設定のキーが実験設定の形式と一致しません")
     if not isinstance(config["objective"], str) or not 1 <= len(config["objective"]) <= 4000:
         raise LabError("objectiveは1〜4000文字にしてください")
-    if config["transport"] not in ("fixture", "live", "adaptive"):
-        raise LabError("transportはfixture、live、adaptiveです")
+    if config["transport"] not in ("fixture", "live", "impit", "adaptive"):
+        raise LabError("transportはfixture、live、impit、adaptiveです")
     for key in ("seeds", "allowed_origins"):
         if not isinstance(config[key], list) or not 1 <= len(config[key]) <= 10:
             raise LabError(f"{key}は1〜10件必要です")

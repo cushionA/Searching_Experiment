@@ -4,7 +4,7 @@
 - `docs` 全体を再帰走査しない。必要なファイルに限定し、runtime、venv、.deps、rawを避ける。
 - Python 3.12以上。新しい実験基盤の検証は `python3 -B -m unittest discover -s tests -p 'test_lab*.py'`。
 - Kaggle計算が必要な場合は `.agents/skills/kaggle-ops/SKILL.md` を読む。SecretsはGitHub Actionsの操作stepで使用する。返ったref・versionとActions run IDを保存し、ログ・成果物・continuationを取得して検証後に続ける。同じジョブの待機を新規submitへ置き換えない。
-- Crawlee＋ImpitとPatchrightは必要時の配備対象。導入だけを理由にブロック対策の調整を始めない。`transport=adaptive` はAdaptivePlaywrightCrawlerと既存取得器を接続する任意の経路で、Impit/Patchrightは使わない。`bash scripts/cloud_setup.sh adaptive` で導入し、`tests/test_adaptive.py` でブラウザ・予算・DOM証拠を検証する。
+- `transport=impit` はImpitによるHTTP取得、`transport=adaptive` はImpitとAdaptivePlaywrightCrawlerを接続する任意の経路。既存の予算・robots・証拠保存を必ず通す。`bash scripts/cloud_setup.sh adaptive` で導入し、`tests/test_impit.py` と `tests/test_adaptive.py` で検証する。Patchrightは事前配備のみで、この経路には使わない。導入だけを理由に個別サイトのブロック対策を始めない。
 
 ## 発見型クロール・自律調査を依頼された場合
 
