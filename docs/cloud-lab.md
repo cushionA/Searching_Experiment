@@ -15,7 +15,7 @@ init → run → 計画の要求 → Lunaの回答 → 計画判断
 ## クラウド環境の設定
 
 1. 接続先は `cushionA/Searching_Experiment`、branchは `main`。`scripts/package_cloud.py` は必要なコードだけをZIP化し、巨大な過去データを含めない。
-2. CodexのEnvironment設定でPython 3.12以上を指定する。
+2. CodexのEnvironment設定でPython 3.12以上を指定する。`adaptive` を制限付きCloudコンテナで使う場合、環境変数欄に `CRAWLEE_DISABLE_BROWSER_SANDBOX=true` を追加する。Secretではない。Setup内の一時的なexportだけではagent phaseに引き継がれないため、環境設定に保存する。
 3. Setup script: `bash scripts/cloud_setup.sh`。Maintenance scriptも同じ。標準構成では依存のダウンロードや有料実行はしない。取得ツールを配備する場合は、以下の `http` / `browser` / `adaptive` 引数を使う。
 4. オフラインdemoではAgent internet accessを無効のままでよい。実サイトを取得するときだけ有効にし、設定JSONの `allowed_origins` に対応するドメインとGETを許可する。別hostへリダイレクトするサイトは、実験前に両方を許可する。
 5. 実行画面のモデル選択でGPT-6 Lunaを指定する。利用できない場合は接続未完了として止める。CLIの `codex cloud exec` にモデル指定フラグがある前提にしない。モデルの自己申告は独立検証ではないため `model_runtime_verified` は常にfalseとして保存する。
@@ -168,7 +168,9 @@ Actions自体のRe-runでsubmitを再実行するとhelperが拒否する。API�
 
 通常のDocker最終イメージはcoreのまま。`--target crawl-tools`、`--target browser-tools`、`--target adaptive-tools` を明示した場合だけ追加依存を含む。ブラウザは非rootで起動し、書き込み先をtmpfsにする。ローカル・CIの起動確認は外部サイトを使わない。
 
-Adaptive用Dockerイメージでは、制限付きコンテナ内のChromium起動のため `CRAWLEE_DISABLE_BROWSER_SANDBOX=true` を設定する。ブラウザ内部のsandboxが無効になるため、Composeの非root・read-only・cap_drop・no-new-privilegesを維持し、資格情報をmountしない。Docker外のsetupではこの設定を変更しない。
+Adaptive用Dockerイメージでは、制限付きコンテナ内のChromium起動のため `CRAWLEE_DISABLE_BROWSER_SANDBOX=true` を設定する。ブラウザ内部のsandboxが無効になるため、Composeの非root・read-only・cap_drop・no-new-privilegesを維持し、資格情報をmountしない。Codex CloudはこのDockerfileを使わないため、同じ値をCloudの環境変数欄へ別途設定する。通常ホストのsandboxは無効化しない。setup script自体は設定を上書きしない。
+
+Adaptiveテストが一斉に `TargetClosedError` になる場合、まずChromiumの起動ログを確認する。sandboxを作れない制限付きコンテナやroot実行では、上記の環境変数を保存してsetupを再実行する。`renderings` のKeyErrorは描画前の失敗に伴って発生しうるため、保存物だけを修正しない。`TargetClosedError` 単独では原因を確定できず、設定後も失敗する場合は `Browser logs:` のFATAL・sandbox・共有ライブラリ不足などを確認する。Cloudでの復旧成功は8テストが通った結果で判断する。
 
 Dockerを使わない環境では専用venvへ次を実行する。LinuxでOS依存も必要ならinstallに `--with-deps` を付ける。
 

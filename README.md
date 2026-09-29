@@ -47,6 +47,8 @@ Codex Cloudへまとめて導入するSetupは `bash scripts/cloud_setup.sh brow
 
 AdaptivePlaywrightCrawlerを実験へ接続する場合は `bash scripts/cloud_setup.sh adaptive` を実行し、新しい実験設定で `"transport": "adaptive"` を指定する。本文・リンクの比較からHTTP取得とブラウザ描画を選び、判定履歴は再開後も保持する。Dockerでは `docker compose --profile adaptive run --build --rm adaptive --help` が入口になる。
 
+制限付きCodex Cloudコンテナでは、環境変数欄に `CRAWLEE_DISABLE_BROWSER_SANDBOX=true` を設定してからAdaptiveのsetupを実行する。ブラウザ内部のsandboxを無効化するため、隔離されたCloud環境で使用し、資格情報は持ち込まない。Docker用イメージには設定済みだが、Cloudへは自動では引き継がれない。
+
 比較用の二重取得とJSの追加リクエストも同じ予算へ計上し、元HTMLと描画後DOMを分けて保存する。この経路のHTTPはImpitのChromeプロファイルを使い、直接通信では検査済みpublic IPへ固定する。識別用User-AgentとTLS証明書検証を維持する。Patchright、サイト固有の対策、クリック・無限スクロールは接続していない。
 
 ## Codexクラウドで使う
