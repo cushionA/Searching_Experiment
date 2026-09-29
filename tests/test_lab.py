@@ -139,6 +139,31 @@ class LabTests(unittest.TestCase):
             self.assertGreater(arm["bytes_charged"], 0)
         self.assertTrue(verify(store)["ok"])
 
+    def test_result_gate_can_retry_transient_seed_failure_without_resetting_budget(self):
+        class Flaky(FixtureTransport):
+            calls = 0
+
+            def get(self, url, cap, timeout, user_agent):
+                self.calls += 1
+                if self.calls <= 2:
+                    raise LabError("ProxyError")
+                return super().get(url, cap, timeout, user_agent)
+
+        store, engine = self.create(transport=Flaky())
+        self.approve(store, engine)
+        engine.advance()
+        request = self.request(store)
+        engine.answer(fixture_answer(request))
+        self.assertEqual(store.state["gate"]["kind"], "result")
+        spent = {name: len(arm["http"]) for name, arm in store.state["arms"].items()}
+        engine.retry_failed("same-run retry authorized")
+        self.assertEqual(store.state["phase"], "experiment")
+        self.assertEqual(store.state["status"], "ready")
+        self.assertTrue(all(not arm["done"] for arm in store.state["arms"].values()))
+        engine.advance()
+        self.assertTrue(all(len(arm["http"]) > spent[name] for name, arm in store.state["arms"].items()))
+        self.assertEqual(store.state["decisions"][-1]["decision"], "retry")
+
     def test_robots_denial_does_not_fetch_page(self):
         store, _ = self.create()
         Fetcher(store).page("bfs", {"url": "https://lab.example/private", "parent": None, "anchor": "", "depth": 0})

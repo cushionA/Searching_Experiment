@@ -18,6 +18,7 @@ elif [ "$profile" = browser ]; then
 elif [ "$profile" = adaptive ]; then
   python3 -m pip install -r requirements/adaptive-tools.txt
   python3 -m playwright install --with-deps chromium
+  python3 -B scripts/check_cloud_environment.py --adaptive
   python3 -B -m unittest discover -s tests -p 'test_adaptive.py'
 fi
 if [ "$profile" != core ]; then

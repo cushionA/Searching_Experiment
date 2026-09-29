@@ -106,7 +106,7 @@ def main(argv=None):
     sys.stderr.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description="発見型クロールの実験・承認・検証。Codex Cloudのエージェントが回答する。")
     commands = parser.add_subparsers(dest="command", required=True)
-    for name in ("init", "run", "status", "answer", "decide", "pause", "resume", "verify", "export", "grade", "demo"):
+    for name in ("init", "run", "status", "answer", "decide", "retry", "pause", "resume", "verify", "export", "grade", "demo"):
         command = commands.add_parser(name)
         command.add_argument("--run", required=True, type=Path)
         if name == "init":
@@ -116,6 +116,8 @@ def main(argv=None):
         elif name == "decide":
             command.add_argument("--id", required=True)
             command.add_argument("--decision", required=True, choices=("approve", "reject"))
+            command.add_argument("--note", required=True)
+        elif name == "retry":
             command.add_argument("--note", required=True)
         elif name in ("export", "grade"):
             command.add_argument("--output", required=True, type=Path)
@@ -146,6 +148,8 @@ def main(argv=None):
                     engine.decide(args.id, args.decision, args.note)
                 elif args.command == "resume":
                     engine.resume()
+                elif args.command == "retry":
+                    engine.retry_failed(args.note)
                 elif args.command == "verify":
                     result = verify(store)
                 elif args.command == "export":

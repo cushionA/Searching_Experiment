@@ -14,6 +14,7 @@ RUN python -c "from pathlib import Path; Path('/tmp/validated').write_text('offl
 FROM runtime AS crawl-tools
 COPY requirements/crawl-tools.txt /app/requirements/crawl-tools.txt
 COPY scripts/check_crawl_tools.py /app/scripts/check_crawl_tools.py
+COPY scripts/check_cloud_environment.py /app/scripts/check_cloud_environment.py
 RUN pip install --no-cache-dir -r /app/requirements/crawl-tools.txt
 USER 10001:10001
 ENTRYPOINT ["python", "/app/scripts/check_crawl_tools.py"]
@@ -34,7 +35,8 @@ USER root
 ENV CRAWLEE_DISABLE_BROWSER_SANDBOX=true
 COPY requirements/adaptive-tools.txt /app/requirements/adaptive-tools.txt
 RUN pip install --no-cache-dir -r /app/requirements/adaptive-tools.txt \
-    && python -m playwright install chromium
+    && python -m playwright install chromium \
+    && python -B /app/scripts/check_cloud_environment.py --adaptive
 USER 10001:10001
 ENTRYPOINT ["python", "-m", "jse.lab"]
 CMD ["--help"]

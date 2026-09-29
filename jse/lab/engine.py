@@ -310,3 +310,29 @@ class Engine:
         self.s["status"] = "awaiting_agent" if self.s["active_request"] else "ready"
         (self.store.directory / "PAUSE").unlink(missing_ok=True)
         self.store.event("resume", "予算と履歴を保持して再開")
+
+    def retry_failed(self, note):
+        string(note, "note", 2000)
+        gate = self.s["gate"]
+        if self.s["status"] != "awaiting_human" or not gate or gate["kind"] != "result":
+            raise LabError("結果判断待ちのrunだけ再試行できます")
+        retried = []
+        for name, arm in self.s["arms"].items():
+            if arm["pages"] or not arm["attempts"]:
+                continue
+            attempt = arm["attempts"][-1]
+            if attempt.get("status") != "failed" or attempt.get("error") not in ("ProxyError", "TimeoutError"):
+                continue
+            if self.exhausted({**arm, "frontier": [attempt]}) not in (None, "frontier_empty"):
+                continue
+            candidate = {key: attempt[key] for key in ("url", "parent", "anchor", "depth")}
+            if not any(item["url"] == candidate["url"] for item in arm["frontier"]):
+                arm["frontier"].append(candidate)
+            arm.update(done=False, stop_reason=None)
+            retried.append(name)
+        if not retried:
+            raise LabError("再試行可能な一時的取得失敗がありません")
+        self.s["gate"] = None
+        self.s.update(status="ready", phase="experiment")
+        self.s["decisions"].append({"gate_id": gate["id"], "decision": "retry", "note": note, "time": time.time(), "identity_verified": False})
+        self.store.event("retry", {"arms": retried, "note": note})

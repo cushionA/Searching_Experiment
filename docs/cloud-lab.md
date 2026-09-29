@@ -18,8 +18,10 @@ init → run → 計画の要求 → Lunaの回答 → 計画判断
 2. CodexのEnvironment設定でPython 3.12以上を指定する。`adaptive` を制限付きCloudコンテナで使う場合、環境変数欄に `CRAWLEE_DISABLE_BROWSER_SANDBOX=true` を追加する。Secretではない。Setup内の一時的なexportだけではagent phaseに引き継がれないため、環境設定に保存する。
 3. Setup script: `bash scripts/cloud_setup.sh`。Maintenance scriptも同じ。標準構成では依存のダウンロードや有料実行はしない。取得ツールを配備する場合は、以下の `http` / `browser` / `adaptive` 引数を使う。
 4. オフラインdemoではAgent internet accessを無効のままでよい。実サイトを取得するときだけ有効にし、設定JSONの `allowed_origins` に対応するドメインとGETを許可する。別hostへリダイレクトするサイトは、実験前に両方を許可する。
-5. 実行画面のモデル選択でGPT-6 Lunaを指定する。利用できない場合は接続未完了として止める。CLIの `codex cloud exec` にモデル指定フラグがある前提にしない。モデルの自己申告は独立検証ではないため `model_runtime_verified` は常にfalseとして保存する。
+5. 実行画面のモデル選択でGPT-6 Lunaを指定する。利用できない場合は接続未完了として止める。モデルはコンテナの内側から選択・導入できないため、Codex CLIをイメージへ追加しても当該Cloudタスクのモデル可用性や実モデルIDは保証できない。モデルの自己申告も独立検証ではないため `model_runtime_verified` は常にfalseとして保存する。
 6. クロールにはSecretsは不要。任意のKaggle計算は以下のGitHub Actions経路を使う。Codex CloudのSecretsはsetup後に除去されるため、setup中のキーをファイルへ残してagent phaseへ渡さない。
+
+`adaptive`のコンテナ前提は `python3 -B scripts/check_cloud_environment.py --adaptive` で確認する。この検査はPython、Crawlee、Impit、Playwright、AdaptivePlaywrightCrawler、sandbox環境変数を検証するが、モデル実体の検証ではない。`model_selection_surface=codex_execution_ui` と `model_runtime_verified=false` を出力するのは、この境界を機械可読にするためである。
 
 Codex Cloudの公式経路は標準 `universal` イメージとsetup scriptである。このリポジトリのDockerfileをクラウド設定が直接ビルドするとは想定しない。Dockerfileはローカル・通常のLinuxコンテナで同じPythonコードを検証するために用意した。
 
@@ -78,6 +80,13 @@ python3 -B -m jse.lab resume --run lab-runs/pilot-001
 python3 -B -m jse.lab run --run lab-runs/pilot-001
 python3 -B -m jse.lab verify --run lab-runs/pilot-001
 python3 -B -m jse.lab export --run lab-runs/pilot-001 --output pilot-001-checkpoint.zip
+```
+
+結果判断待ちで、ページを1件も取得できず最後の試行が`ProxyError`または`TimeoutError`だったarmは、明示的な再試行許可があれば同じrunの履歴・消費済み予算を保持して再試行できる。新しいrunで予算を戻さず、同じ失敗を無制限に繰り返さない。
+
+```bash
+python3 -B -m jse.lab retry --run lab-runs/pilot-001 --note '<実際のユーザー許可>'
+python3 -B -m jse.lab run --run lab-runs/pilot-001
 ```
 
 pauseは次の取得境界で反映する。強制停止した取得は確定できないため、再開時に失敗・未確定として残す。HTTP前にリクエスト数と最大応答サイズを予約して保存し、正常終了時のみ実測バイトへ減額する。プロセス停止で上限が元に戻ることはない。エラー中の消費量は保守的に最大応答サイズを数える。OSのファイルロックがプロセス終了時に解除されるので、古いPIDを手で削除する必要はない。
