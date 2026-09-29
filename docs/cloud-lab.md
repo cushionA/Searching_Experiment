@@ -19,7 +19,7 @@ init → run → 計画の要求 → Lunaの回答 → 計画判断
 3. Setup script: `bash scripts/cloud_setup.sh`。Maintenance scriptも同じ。依存のダウンロードや有料実行はしない。
 4. オフラインdemoではAgent internet accessを無効のままでよい。実サイトを取得するときだけ有効にし、設定JSONの `allowed_origins` に対応するドメインとGETを許可する。別hostへリダイレクトするサイトは、実験前に両方を許可する。
 5. 実行画面のモデル選択でGPT-6 Lunaを指定する。利用できない場合は接続未完了として止める。CLIの `codex cloud exec` にモデル指定フラグがある前提にしない。モデルの自己申告は独立検証ではないため `model_runtime_verified` は常にfalseとして保存する。
-6. Secretsは不要。将来Responses APIへ別経路で接続するときにはキーの注入方法を別設計する。Codex CloudのSecretsはsetup後に除去されるため、setup中のキーをファイルへ残してagent phaseへ渡さない。
+6. クロールにはSecretsは不要。任意のKaggle計算は以下のGitHub Actions経路を使う。Codex CloudのSecretsはsetup後に除去されるため、setup中のキーをファイルへ残してagent phaseへ渡さない。
 
 Codex Cloudの公式経路は標準 `universal` イメージとsetup scriptである。このリポジトリのDockerfileをクラウド設定が直接ビルドするとは想定しない。Dockerfileはローカル・通常のLinuxコンテナで同じPythonコードを検証するために用意した。
 
@@ -118,3 +118,37 @@ python3 -B -m jse.lab grade --run lab-runs/pilot-001 --gold /evaluation/gold.jso
 まず小さい複数サイトで、seed・取得予算・独立した評価集合を固定して比較する。到達しない原因を、入口不足、リンク選択、JS依存、失敗、古いページ、抽出欠落に分ける。
 
 候補は、アンカーテキストの利用、未探索の枝へ予算を残す選択、sitemapとの併用、Common CrawlのURL索引と原HTML回収。既存の過去実験では、答えが分かるURLを後から投入した結果を発見性能に数えない。新しい取得方式は独立したarmとして追加し、既存の固定条件・失敗台帳・同一評価を通してから比較する。
+
+## Kaggleへの計算委譲
+
+Kaggle 2.0.0とSDK 0.1.37を別プロセスに固定し、Repository Secret `KAGGLE_API_TOKEN` を `kaggle-job.yml` の操作stepだけに渡す。token値は引数・Git・Notebookへ渡さない。2026-09-30にRepository Secretを登録した。`KAGGLE_USERNAME` はaccess token認証では必須ではない。
+
+ワークフローはpush時にはGPUを起動しない。GitHub ActionsのRun workflowまたはGitHubの操作権限がある `gh` から起動する。CloudタスクのGitHub接続がActionsの起動・読み取り権限も持つかは別途確認する。Git checkoutができるだけでその権限を得たとは扱わない。
+
+```bash
+gh workflow run kaggle-job.yml -R cushionA/Searching_Experiment -f operation=quota
+gh workflow run kaggle-job.yml -R cushionA/Searching_Experiment -f operation=submit -f notebook_folder=experiments/gpu/example -f wait_seconds=18000
+gh run list -R cushionA/Searching_Experiment --workflow kaggle-job.yml --limit 5
+gh run view RUN_ID -R cushionA/Searching_Experiment
+gh run download RUN_ID -R cushionA/Searching_Experiment --name kaggle-results --dir .lab-output/kaggle-RUN_ID
+```
+
+submitの例はテンプレート。GPU用Notebookはまだ登録していない。必要性・データ・実行時間を具体化したら、既存の許可に収まる試行を専用ディレクトリへ作成する。`training-params.json` の `timeout_seconds` とlive quotaを照合する。ワークフローはmainのコードを使うため、試行コードの保存後に起動する。出力は7日で失効するため、必要な結果を期限内に回収する。公開リポジトリのActions artifact・ログは機密保管先ではない。非公開データを扱う試行ではprivateな実行先を用意する。
+
+開始したActions run IDを当該クロールrunの作業記録へ保存し、`job.json` のref・versionと結び付ける。実行中はversion固定のログstreamとstatusを確認する。stream終了だけで成功とせず、Kaggle completeと出力回収を経て継続する。
+
+| continuation.json | 次の行動 |
+|---|---|
+| `ready_for_verification: true`, `next_phase: verification` | 出力manifestのSHA256を再計算し、目的に対する結果を検証して調査へ戻る |
+| `failure_review` | 保存ログを調べ、修復案を作る。再投入は残予算と既存許可を再確認する |
+| `waiting_kaggle` / `waiting_timeout` | 同じref・versionで待機を再開する。新しいNotebookを送らない |
+| `recovering_outputs` | 同じversionの出力回収を再開する。取得未完了を成功扱いしない |
+| `submission_unknown`（job.json） | Kaggle側の時刻・コード・新しいversionを照合するまで再送しない |
+
+```bash
+gh workflow run kaggle-job.yml -R cushionA/Searching_Experiment -f operation=resume -f kernel_ref=owner/kernel-slug -f kernel_version=7 -f wait_seconds=18000
+```
+
+Actions自体のRe-runでsubmitを再実行するとhelperが拒否する。APIの一時的な読み取り失敗は最大3試行。GPU再実行を伴う修復は別試行として数え、失敗でも予算を返却しない。許可した総時間を使い切ったら止める。`auto_resume.py` の無制限再開や別プロセスによる予算補充は移植していない。
+
+この受け渡しは稼働中のCodexエージェントがActions完了を待って継続するためのもの。`continuation.json` だけでは終了済みCodex Cloudタスクを自動起動できない。長時間ジョブでタスクを終了する場合、実際のrun IDが得られた時点で利用可能なCodex監視機能へ接続し、完了・失敗・人の判断が必要な変化だけ通知する。監視機能がない環境では同じチャットへrun ID付きで継続を依頼する。

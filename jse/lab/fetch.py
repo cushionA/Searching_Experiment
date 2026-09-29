@@ -89,6 +89,8 @@ class LiveTransport:
                 if remaining_time <= 0:
                     raise LabError("body_deadline")
                 raw_response = response.fp if isinstance(response, urllib.error.HTTPError) else response
+                if raw_response.fp is None:
+                    break
                 raw_response.fp.raw._sock.settimeout(remaining_time)
                 chunk = response.read1(min(16384, cap - len(body)))
                 if not chunk:

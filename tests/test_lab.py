@@ -285,6 +285,25 @@ class LabTests(unittest.TestCase):
                 transport.get("https://example.org/", 512, 1, "DiscoveryLab/0.1")
         self.assertEqual(timeouts, [0.5])
 
+    def test_http_body_complete_closes_file_pointer(self):
+        class Response:
+            status = 200
+            headers = {"content-type": "text/html"}
+            fp = SimpleNamespace(raw=SimpleNamespace(_sock=SimpleNamespace(settimeout=lambda _: None)))
+            def __enter__(self):
+                return self
+            def __exit__(self, *args):
+                return None
+            def read1(self, cap):
+                self.fp = None
+                return b"<title>done</title>"
+        transport = LiveTransport()
+        with patch.object(transport.opener, "open", return_value=Response()):
+            status, _, body, truncated = transport.get("https://example.org/", 512, 1, "DiscoveryLab/0.1")
+        self.assertEqual(status, 200)
+        self.assertEqual(body, b"<title>done</title>")
+        self.assertFalse(truncated)
+
 
 if __name__ == "__main__":
     unittest.main()

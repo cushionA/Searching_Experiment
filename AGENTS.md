@@ -3,6 +3,7 @@
 - 日本語で短く回答する。既存の400M索引や過去実験の生データを移動・削除しない。
 - `docs` 全体を再帰走査しない。必要なファイルに限定し、runtime、venv、.deps、rawを避ける。
 - Python 3.12以上。新しい実験基盤の検証は `python3 -B -m unittest discover -s tests -p 'test_lab*.py'`。
+- Kaggle計算が必要な場合は `.agents/skills/kaggle-ops/SKILL.md` を読む。SecretsはGitHub Actionsの操作stepで使用する。返ったref・versionとActions run IDを保存し、ログ・成果物・continuationを取得して検証後に続ける。同じジョブの待機を新規submitへ置き換えない。
 
 ## 発見型クロール・自律調査を依頼された場合
 

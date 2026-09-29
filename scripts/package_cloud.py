@@ -10,7 +10,8 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    files = ["AGENTS.md", "README.md", "PLAN.md", "Dockerfile", ".dockerignore", ".gitignore", ".gitattributes", ".github/workflows/lab.yml", "compose.yaml", "jse/__init__.py", "docs/cloud-lab.md", "scripts/cloud_setup.sh", "scripts/package_cloud.py", "experiments/pilot.example.json", "tests/test_lab.py"]
+    files = ["AGENTS.md", "README.md", "PLAN.md", "Dockerfile", ".dockerignore", ".gitignore", ".gitattributes", ".github/workflows/lab.yml", ".github/workflows/kaggle-job.yml", "compose.yaml", "jse/__init__.py", "docs/cloud-lab.md", "scripts/cloud_setup.sh", "scripts/package_cloud.py", "experiments/pilot.example.json", "tests/test_lab.py", "tests/test_kaggle_ops.py"]
+    files.extend(".agents/skills/kaggle-ops/" + name for name in ("SKILL.md", "requirements.txt", "agents/openai.yaml", "references/notebooks.md", "scripts/kaggle_ops.py"))
     files.extend(str(path.relative_to(root)).replace("\\", "/") for path in sorted((root / "jse/lab").glob("*.py")))
     if (root / "LICENSE").is_file():
         files.append("LICENSE")

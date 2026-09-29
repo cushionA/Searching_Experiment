@@ -2,7 +2,7 @@
 
 網羅性を優先して、探索方法・取りこぼし・取得条件を検証するための実験基盤。従来の検索エンジンと既存データはローカル側へ保管し、この配布リポジトリには新しい `jse.lab` と運転・検証に必要なファイルだけを載せる。
 
-CodexクラウドのGPT-6 Lunaが実験案・リンク選択・結果整理を担当し、Pythonが取得上限、保存、再開、引用照合を担当する。追加のAPIキー、pipパッケージ、ブラウザは不要。Dockerだけを起動してもモデルは呼ばれず、Codex側が要求JSONへ回答する。
+CodexクラウドのGPT-6 Lunaが実験案・リンク選択・結果整理を担当し、Pythonが取得上限、保存、再開、引用照合を担当する。通常のクロールには追加のAPIキー、pipパッケージ、ブラウザは不要。Dockerだけを起動してもモデルは呼ばれず、Codex側が要求JSONへ回答する。
 
 ## すぐに動作確認
 
@@ -43,6 +43,12 @@ python3 -B scripts/package_cloud.py --output .lab-output/discovery-lab-cloud.zip
 ```
 
 ZIPはコードの配布用。実験途中の保存には `jse.lab export` を使う。
+
+## GPUが必要な場合
+
+[Kaggle操作スキル](.agents/skills/kaggle-ops/SKILL.md)と手動起動の `kaggle-job.yml` を使う。Repository Secretの `KAGGLE_API_TOKEN` で認証し、GPU残量の確認、Notebook送信、versionを固定したログ待機、結果回収まで実行する。通常のコンテナにKaggleやGPUの依存は含めない。
+
+結果artifactの `continuation.json` が検証工程への受け渡しになる。[クラウドのKaggle運転手順](docs/cloud-lab.md#kaggleへの計算委譲)を参照。終了済みCodexタスクの自動起動は別途監視機構への接続が必要。
 
 ## 動く範囲
 
