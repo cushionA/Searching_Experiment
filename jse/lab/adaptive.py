@@ -24,6 +24,7 @@ class AdaptiveFetch:
         self.arm = self.store.state["arms"][name]
         self.config = fetcher.config
         self.error = None
+        self.error_diagnostics = {}
         self.lock = asyncio.Lock()
         self.sources = {}
         self.initial = []
@@ -70,6 +71,7 @@ class AdaptiveFetch:
                 return record, body, len(self.arm["http"]) - 1
             except LabError as error:
                 self.error = str(error)
+                self.error_diagnostics = getattr(error, "diagnostics", {})
                 raise
 
     async def document(self, url):
@@ -289,7 +291,9 @@ class AdaptiveFetch:
         except Exception as error:
             decision["error"] = self.error or (str(error) if isinstance(error, LabError) else type(error).__name__)
             self.store.save()
-            raise LabError(decision["error"]) from error
+            failure = LabError(decision["error"])
+            failure.diagnostics = self.error_diagnostics or getattr(error, "diagnostics", {})
+            raise failure from error
         finally:
             self.accepting = False
             await (await crawler.get_request_manager()).drop()

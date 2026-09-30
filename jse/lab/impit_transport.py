@@ -8,6 +8,7 @@ from contextlib import nullcontext
 from urllib.parse import urlsplit
 
 from .fetch import public_addresses
+from .network import environment_proxy, error_diagnostics, proxy_metadata
 from .state import LabError, canonical
 
 
@@ -97,9 +98,14 @@ class ImpitTransport:
     client_name = "impit"
 
     def __init__(self):
-        self.proxy_url = urllib.request.getproxies().get("https")
+        self.proxies = urllib.request.getproxies()
+        self.proxy_url = self.proxies.get("https")
         self.proxy = bool(self.proxy_url)
         self.last_http_version = None
+
+    def route_metadata(self, url):
+        proxy = environment_proxy(url, self.proxies)
+        return {"network_route": "environment_proxy" if proxy else "direct_public_ip_tunnel", **proxy_metadata(proxy)}
 
     def get(self, url, cap, timeout, user_agent):
         try:
@@ -107,6 +113,9 @@ class ImpitTransport:
         except ImportError as error:
             raise LabError("impitにはrequirements/crawl-tools.txtの導入が必要です") from error
         url = canonical(url)
+        self.proxy_url = environment_proxy(url, self.proxies)
+        self.proxy = bool(self.proxy_url)
+        self.last_http_version = None
         host = urlsplit(url).hostname
         try:
             literal = ipaddress.ip_address(host)
@@ -139,4 +148,8 @@ class ImpitTransport:
                         return response.status_code, headers, bytes(body), len(body) >= cap
         except (HTTPError, InvalidURL, StreamError) as error:
             reason = tunnel.error if isinstance(tunnel, PinnedTunnel) and tunnel.error else type(error).__name__
-            raise LabError(reason) from None
+            failure = LabError(reason)
+            failure.diagnostics = error_diagnostics(error, self.proxy_url)
+            if isinstance(tunnel, PinnedTunnel) and tunnel.error:
+                failure.diagnostics["tunnel_error"] = tunnel.error
+            raise failure from None

@@ -78,7 +78,7 @@ class ImpitTests(unittest.TestCase):
                 transport.get("https://example.org/", 100, 1, "DiscoveryLab/test")
         self.assertFalse(self.calls)
 
-    def test_stream_failure_keeps_reserved_budget_and_hides_error_detail(self):
+    def test_stream_failure_keeps_reserved_budget_and_safe_error_detail(self):
         def broken():
             yield b"partial"
             raise impit.ReadError("sensitive diagnostic")
@@ -95,6 +95,8 @@ class ImpitTests(unittest.TestCase):
             self.assertEqual(arm["bytes_charged"], config["limits"]["bytes_per_response"])
             self.assertEqual(arm["http"][0]["http_client"], "impit")
             self.assertEqual(arm["http"][0]["network_route"], "environment_proxy")
+            self.assertEqual(arm["http"][0]["error_detail"], "sensitive diagnostic")
+            self.assertEqual(arm["http"][0]["error_type"], "ReadError")
             self.assertEqual(len(self.calls), 1)
 
     def test_redirect_is_returned_to_budgeted_fetcher(self):

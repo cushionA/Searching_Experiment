@@ -161,7 +161,7 @@ class Store:
         atomic(self.path, encoded(self.state))
 
     def artifact(self, name):
-        if not isinstance(name, str) or not re.fullmatch(r"(?:state\.json|decision\.json|DECISION\.md|report\.json|requests/\d{3}\.json|answers/\d{3}\.json|blobs/[0-9a-f]{64})", name):
+        if not isinstance(name, str) or not re.fullmatch(r"(?:state\.json|decision\.json|DECISION\.md|report\.json|requests/\d{3}\.json|answers/\d{3}\.json|model-calls/\d{3}\.json|blobs/[0-9a-f]{64})", name):
             raise LabError("不正な成果物パスです")
         path = self.directory / name
         if not path.resolve().is_relative_to(self.directory.resolve()):
@@ -177,4 +177,5 @@ class Store:
 
     def status(self):
         s = self.state
-        return {"status": s["status"], "phase": s["phase"], "model_requested": MODEL, "model_runtime_verified": False, "transport": s["config"]["transport"], "gate": s["gate"], "active_request": s["active_request"], "agent_requests": len(s["agent_requests"]), "arms": {name: {"pages": len(arm["pages"]), "attempts": len(arm["attempts"]), "http_requests": len(arm["http"]), "bytes_charged": arm["bytes_charged"], "stop_reason": arm["stop_reason"]} for name, arm in s["arms"].items()}}
+        from .agent import model_evidence
+        return {"status": s["status"], "phase": s["phase"], "model_requested": MODEL, **model_evidence(s), "transport": s["config"]["transport"], "gate": s["gate"], "active_request": s["active_request"], "agent_requests": len(s["agent_requests"]), "arms": {name: {"pages": len(arm["pages"]), "attempts": len(arm["attempts"]), "http_requests": len(arm["http"]), "bytes_charged": arm["bytes_charged"], "stop_reason": arm["stop_reason"]} for name, arm in s["arms"].items()}}

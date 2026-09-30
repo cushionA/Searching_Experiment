@@ -13,6 +13,9 @@ def main():
     files = ["AGENTS.md", "README.md", "PLAN.md", "Dockerfile", ".dockerignore", ".gitignore", ".gitattributes", ".github/workflows/lab.yml", ".github/workflows/kaggle-job.yml", "compose.yaml", "jse/__init__.py", "docs/cloud-lab.md", "scripts/cloud_setup.sh", "scripts/package_cloud.py", "experiments/pilot.example.json", "tests/test_lab.py", "tests/test_kaggle_ops.py"]
     files.extend(".agents/skills/kaggle-ops/" + name for name in ("SKILL.md", "requirements.txt", "agents/openai.yaml", "references/notebooks.md", "scripts/kaggle_ops.py"))
     files.extend(["requirements/crawl-tools.txt", "requirements/browser-tools.txt", "requirements/adaptive-tools.txt", "scripts/check_crawl_tools.py", "tests/test_adaptive.py", "tests/test_impit.py"])
+    files.extend([".codex/config.toml", ".codex/agents/luna.toml", "scripts/check_cloud_environment.py",
+                  "scripts/setup_model_runner.sh", "tests/test_cloud_environment.py", "tests/test_lab_network.py",
+                  "tests/test_lab_retry.py", "tests/test_lab_agent.py", "tests/__init__.py"])
     files.extend(str(path.relative_to(root)).replace("\\", "/") for path in sorted((root / "jse/lab").glob("*.py")))
     if (root / "LICENSE").is_file():
         files.append("LICENSE")

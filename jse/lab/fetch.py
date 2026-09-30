@@ -13,6 +13,7 @@ from urllib.parse import urljoin, urlsplit
 from urllib.robotparser import RobotFileParser
 
 from .state import LabError, atomic, canonical, origin
+from .network import environment_proxy, error_diagnostics, proxy_metadata, sanitize_detail
 
 
 FIXTURES = {
@@ -60,13 +61,24 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 class LiveTransport:
     client_name = "urllib"
     def __init__(self):
-        self.proxy = bool(urllib.request.getproxies().get("https"))
+        self.proxies = urllib.request.getproxies()
+        self.proxy = bool(self.proxies.get("https"))
         handlers = [NoRedirect()]
-        if not self.proxy:
+        if self.proxy:
+            handlers.append(urllib.request.ProxyHandler({"https": self.proxies["https"]}))
+        else:
             handlers.extend([urllib.request.ProxyHandler({}), PublicHTTPSHandler()])
         self.opener = urllib.request.build_opener(*handlers)
+        self.direct_opener = urllib.request.build_opener(NoRedirect(), urllib.request.ProxyHandler({}), PublicHTTPSHandler()) if self.proxy else self.opener
+
+    def route_metadata(self, url):
+        proxy = environment_proxy(url, self.proxies)
+        return {"network_route": "environment_proxy" if proxy else "direct_public_ip", **proxy_metadata(proxy)}
 
     def get(self, url, cap, timeout, user_agent):
+        self.proxy_url = environment_proxy(url, self.proxies)
+        self.proxy = bool(self.proxy_url)
+        opener = self.opener if self.proxy else self.direct_opener
         host = urlsplit(url).hostname
         try:
             address = ipaddress.ip_address(host)
@@ -77,7 +89,7 @@ class LiveTransport:
         request = urllib.request.Request(url, headers={"User-Agent": user_agent, "Accept": "text/html,text/plain;q=0.8", "Accept-Encoding": "identity"})
         deadline = time.monotonic() + timeout
         try:
-            response = self.opener.open(request, timeout=timeout)
+            response = opener.open(request, timeout=timeout)
         except urllib.error.HTTPError as error:
             response = error
         with response:
@@ -214,6 +226,8 @@ class Fetcher:
         if self.transport.client_name == "impit" and not self.transport.proxy:
             route = "direct_public_ip_tunnel"
         record = {"url": url, "kind": kind, "time": time.time(), "status": "interrupted", "bytes_charged": cap, "network_route": route}
+        if hasattr(self.transport, "route_metadata"):
+            record.update(self.transport.route_metadata(url))
         record["http_client"] = self.transport.client_name
         arm["http"].append(record)
         arm["bytes_charged"] += cap
@@ -231,8 +245,16 @@ class Fetcher:
                 record["http_version"] = self.transport.last_http_version
         except (OSError, ValueError, http.client.HTTPException, LabError) as error:
             record["status"] = "error"
-            record["error"] = str(error) if isinstance(error, LabError) else type(error).__name__
-            raise LabError(record["error"]) from None
+            record["error"] = sanitize_detail(error) if isinstance(error, LabError) else type(error).__name__
+            if isinstance(error, urllib.error.URLError):
+                if isinstance(error.reason, TimeoutError):
+                    record["error"] = "TimeoutError"
+                elif record["network_route"] == "environment_proxy":
+                    record["error"] = "ProxyError"
+            record.update(getattr(error, "diagnostics", error_diagnostics(error, getattr(self.transport, "proxy_url", None))))
+            failure = LabError(record["error"])
+            failure.diagnostics = {key: record[key] for key in ("error_type", "error_detail", "failure_stage_hint")}
+            raise failure from None
         finally:
             self.store.state["inflight"] = None
             self.store.state["last_request_at"][host] = time.time()
@@ -309,4 +331,5 @@ class Fetcher:
             raise LabError("redirect_limit")
         except LabError as error:
             attempt.update(status="failed", error=str(error))
+            attempt.update(getattr(error, "diagnostics", {}))
             self.store.save()
