@@ -8,7 +8,9 @@ COPY experiments /app/experiments
 
 FROM runtime AS test
 COPY tests /app/tests
+COPY scripts/check_cloud_environment.py /app/scripts/check_cloud_environment.py
 RUN python -m unittest discover -s tests -p "test_lab*.py"
+RUN python -m unittest discover -s tests -p "test_cloud_environment.py"
 RUN python -c "from pathlib import Path; Path('/tmp/validated').write_text('offline tests passed\n')"
 
 FROM runtime AS crawl-tools
@@ -35,9 +37,9 @@ USER root
 ENV CRAWLEE_DISABLE_BROWSER_SANDBOX=true
 COPY requirements/adaptive-tools.txt /app/requirements/adaptive-tools.txt
 RUN pip install --no-cache-dir -r /app/requirements/adaptive-tools.txt \
-    && python -m playwright install chromium \
-    && python -B /app/scripts/check_cloud_environment.py --adaptive
+    && python -m playwright install chromium
 USER 10001:10001
+RUN python -B /app/scripts/check_cloud_environment.py --adaptive
 ENTRYPOINT ["python", "-m", "jse.lab"]
 CMD ["--help"]
 

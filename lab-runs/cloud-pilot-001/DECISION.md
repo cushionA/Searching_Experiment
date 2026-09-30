@@ -2,12 +2,20 @@
 
 種別: result
 
-判断ID: `02571583ac74c6c02773`
+判断ID: `6ca040f577e045e9f347`
 
 対象・上限・提案を確認して、このIDを指定して承認または却下してください。
 
 ```json
 {
+  "diagnostic": {
+    "arm": "luna",
+    "client": "urllib",
+    "network_route": "environment_proxy",
+    "origin_block_confirmed": false,
+    "status": 200,
+    "url": "https://www.aozora.gr.jp/robots.txt"
+  },
   "report": {
     "agent_requests": 3,
     "arms": {
@@ -15,7 +23,7 @@
         "acquisition_modes": {},
         "adaptive_comparisons": 0,
         "attempts": 2,
-        "body_bytes_charged": 2000000,
+        "body_bytes_charged": 2000115,
         "coverage": null,
         "dropped_links": 0,
         "failures": {
@@ -23,11 +31,27 @@
         },
         "html_pages": 0,
         "http_clients": {
-          "impit": 2
+          "impit": 3
         },
-        "http_requests": 2,
+        "http_failures": [
+          {
+            "error": "ProxyError",
+            "http_client": "impit",
+            "kind": "robots",
+            "network_route": "environment_proxy",
+            "url": "https://www.aozora.gr.jp/robots.txt"
+          },
+          {
+            "error": "ProxyError",
+            "http_client": "impit",
+            "kind": "robots",
+            "network_route": "environment_proxy",
+            "url": "https://www.aozora.gr.jp/robots.txt"
+          }
+        ],
+        "http_requests": 3,
         "network_routes": {
-          "environment_proxy": 2
+          "environment_proxy": 3
         },
         "pages": [],
         "stop_reason": "frontier_empty",
@@ -39,7 +63,7 @@
         "acquisition_modes": {},
         "adaptive_comparisons": 0,
         "attempts": 2,
-        "body_bytes_charged": 2000000,
+        "body_bytes_charged": 2000115,
         "coverage": null,
         "dropped_links": 0,
         "failures": {
@@ -47,11 +71,28 @@
         },
         "html_pages": 0,
         "http_clients": {
-          "impit": 2
+          "impit": 2,
+          "urllib": 1
         },
-        "http_requests": 2,
+        "http_failures": [
+          {
+            "error": "ProxyError",
+            "http_client": "impit",
+            "kind": "robots",
+            "network_route": "environment_proxy",
+            "url": "https://www.aozora.gr.jp/robots.txt"
+          },
+          {
+            "error": "ProxyError",
+            "http_client": "impit",
+            "kind": "robots",
+            "network_route": "environment_proxy",
+            "url": "https://www.aozora.gr.jp/robots.txt"
+          }
+        ],
+        "http_requests": 3,
         "network_routes": {
-          "environment_proxy": 2
+          "environment_proxy": 3
         },
         "pages": [],
         "stop_reason": "frontier_empty",
@@ -64,10 +105,12 @@
     "coverage_note": "独立した正解集合がないため網羅率は未測定。URL数は正解数ではない。",
     "errors": [],
     "evidence_quotes": 0,
+    "model_calls": 0,
     "model_cost": null,
     "model_requested": "gpt-6-luna",
     "model_runtime_verified": false,
     "model_tokens": null,
+    "model_usage": [],
     "ok": true,
     "semantic_verification": "not_performed",
     "transport": "adaptive"

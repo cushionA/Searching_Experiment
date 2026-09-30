@@ -4,8 +4,9 @@ import time
 from collections import Counter
 
 from . import MODEL
+from .agent import model_evidence
 from .fetch import Fetcher, parse_page
-from .state import LabError, atomic, canonical, digest, encoded
+from .state import LabError, atomic, canonical, digest, encoded, origin
 
 
 def string(value, name, limit=4000):
@@ -26,6 +27,18 @@ def verify(store):
     texts = {}
     arms = {}
     requests = {}
+    for call in state.get("model_calls", []):
+        try:
+            envelope = json.loads(store.artifact(call["path"]).read_text(encoding="utf-8"))
+            if digest(envelope) != call["hash"] or envelope != {key: value for key, value in call.items() if key not in ("path", "hash")}:
+                raise LabError("model call hash mismatch")
+            source = next(r for r in state["agent_requests"] if r["id"] == call["request_id"])
+            if source["hash"] != call["request_hash"] or call["model_requested"] != MODEL:
+                raise LabError("model call request mismatch")
+            if call["status"] == "accepted" and call.get("answer_hash") != source.get("answer_hash"):
+                raise LabError("model call answer mismatch")
+        except (KeyError, StopIteration, OSError, ValueError, LabError) as error:
+            errors.append(f"model artifact: {error}")
     for request in state["agent_requests"]:
         try:
             data = json.loads(store.artifact(request["path"]).read_text(encoding="utf-8"))
@@ -102,6 +115,7 @@ def verify(store):
             arms[name]["acquisition_modes"] = dict(Counter(p["source_kind"] for p in arm["pages"]))
             arms[name]["adaptive_comparisons"] = sum(d.get("compare", False) for d in arm.get("adaptive_decisions", []))
         arms[name]["http_clients"] = dict(Counter(r.get("http_client", "unrecorded") for r in arm["http"]))
+        arms[name]["http_failures"] = [{key: r[key] for key in ("url", "kind", "error", "error_type", "error_detail", "failure_stage_hint", "network_route", "http_client", "proxy_scheme", "proxy_host", "proxy_port") if key in r} for r in arm["http"] if r["status"] == "error"]
     for claim in state["claims"]:
         text = texts.get(("luna", claim["url"], claim["text_sha256"]), "")
         if text[claim["offset"]:claim["offset"] + len(claim["quote"])] != claim["quote"]:
@@ -115,7 +129,7 @@ def verify(store):
                 errors.append("claim: quote not in supplied observation")
     if len(state["agent_requests"]) > limits["agent_requests"]:
         errors.append("agent request budget exceeded")
-    return {"ok": not errors, "errors": errors, "transport": state["config"]["transport"], "model_requested": MODEL, "model_runtime_verified": False, "agent_requests": len(state["agent_requests"]), "model_tokens": None, "model_cost": None, "arms": arms, "evidence_quotes": len(state["claims"]), "semantic_verification": "not_performed", "coverage_note": "独立した正解集合がないため網羅率は未測定。URL数は正解数ではない。", "comparison_note": "BFSを先に実行し、Lunaは別取得する。同じ上限でも取得時刻差があり、品質差の因果推論はしない。"}
+    return {"ok": not errors, "errors": errors, "transport": state["config"]["transport"], "model_requested": MODEL, **model_evidence(state), "agent_requests": len(state["agent_requests"]), "model_tokens": None, "arms": arms, "evidence_quotes": len(state["claims"]), "semantic_verification": "not_performed", "coverage_note": "独立した正解集合がないため網羅率は未測定。URL数は正解数ではない。", "comparison_note": "BFSを先に実行し、Lunaは別取得する。同じ上限でも取得時刻差があり、品質差の因果推論はしない。"}
 
 
 class Engine:
@@ -311,28 +325,78 @@ class Engine:
         (self.store.directory / "PAUSE").unlink(missing_ok=True)
         self.store.event("resume", "予算と履歴を保持して再開")
 
-    def retry_failed(self, note):
-        string(note, "note", 2000)
+    def result_gate(self):
         gate = self.s["gate"]
         if self.s["status"] != "awaiting_human" or not gate or gate["kind"] != "result":
-            raise LabError("結果判断待ちのrunだけ再試行できます")
-        retried = []
+            raise LabError("結果判断待ちでのみ実行できます")
+        unsigned = {key: value for key, value in gate.items() if key != "id"}
+        if digest(unsigned)[:20] != gate["id"] or gate["config_hash"] != self.s["config_hash"]:
+            raise LabError("判断内容が変更されています")
+        if not verify(self.store)["ok"]:
+            raise LabError("保存物の検証に失敗しました")
+        return gate
+
+    def retry_failed(self, note):
+        string(note, "note", 2000)
+        gate = self.result_gate()
+        candidates = []
         for name, arm in self.s["arms"].items():
             if arm["pages"] or not arm["attempts"]:
                 continue
             attempt = arm["attempts"][-1]
-            if attempt.get("status") != "failed" or attempt.get("error") not in ("ProxyError", "TimeoutError"):
+            if attempt["status"] != "failed" or attempt.get("error") not in ("ProxyError", "TimeoutError"):
                 continue
-            if self.exhausted({**arm, "frontier": [attempt]}) not in (None, "frontier_empty"):
+            counts = (("pages_per_arm", len(arm["pages"])), ("attempts_per_arm", len(arm["attempts"])),
+                      ("requests_per_arm", len(arm["http"])), ("bytes_per_arm", arm["bytes_charged"]))
+            if any(count >= self.limits[key] for key, count in counts):
                 continue
             candidate = {key: attempt[key] for key in ("url", "parent", "anchor", "depth")}
-            if not any(item["url"] == candidate["url"] for item in arm["frontier"]):
-                arm["frontier"].append(candidate)
+            if not any(c["url"] == candidate["url"] for c in arm["frontier"]) and len(arm["frontier"]) >= self.limits["frontier_size"]:
+                continue
+            candidates.append((name, candidate))
+        if not candidates:
+            raise LabError("残予算内で再試行できる最後のProxyError/TimeoutErrorがありません")
+        if len(self.s["agent_requests"]) >= self.limits["agent_requests"]:
+            raise LabError("再試行後の結果整理に必要なagent要求予算がありません")
+        for name, candidate in candidates:
+            arm = self.s["arms"][name]
+            arm["frontier"] = [candidate] + [c for c in arm["frontier"] if c["url"] != candidate["url"]]
             arm.update(done=False, stop_reason=None)
-            retried.append(name)
-        if not retried:
-            raise LabError("再試行可能な一時的取得失敗がありません")
+            cached = arm["robots"].get(origin(candidate["url"]))
+            if isinstance(cached, dict) and cached.get("error") in ("ProxyError", "TimeoutError"):
+                del arm["robots"][origin(candidate["url"])]
+        decision = {"gate_id": gate["id"], "decision": "retry", "note": note, "time": time.time(),
+                    "identity_verified": False, "arms": [name for name, _ in candidates]}
+        self.s["decisions"].append(decision)
+        self.s.update(gate=None, status="ready", phase="experiment")
+        self.store.event("retry", {"arms": decision["arms"], "note": note})
+        return self.store.status()
+
+    def diagnose_proxy(self, name, client):
+        gate = self.result_gate()
+        if name not in self.s["arms"] or client not in ("impit", "urllib"):
+            raise LabError("診断armまたはclientが不正です")
+        failures = [r for r in self.s["arms"][name]["http"] if r["kind"] == "robots" and r["status"] == "error"]
+        if not failures:
+            raise LabError("同じarmに失敗したrobots取得がありません")
+        url = failures[-1]["url"]
+        if client == "impit":
+            from .impit_transport import ImpitTransport
+            transport = ImpitTransport()
+        else:
+            from .fetch import LiveTransport
+            transport = LiveTransport()
+        fetcher = Fetcher(self.store, transport)
+        try:
+            record, _ = fetcher.http(name, url, "proxy_diagnostic")
+            result = {"status": record["status"], "network_route": record["network_route"]}
+        except LabError as error:
+            result = {"error": str(error)}
+        result.update(arm=name, client=client, url=url, origin_block_confirmed=False)
+        # The diagnostic changes the ledger, so issue a fresh, content-addressed result gate.
         self.s["gate"] = None
-        self.s.update(status="ready", phase="experiment")
-        self.s["decisions"].append({"gate_id": gate["id"], "decision": "retry", "note": note, "time": time.time(), "identity_verified": False})
-        self.store.event("retry", {"arms": retried, "note": note})
+        report = verify(self.store)
+        self.store.write("report.json", report)
+        self.gate("result", {"review": gate["content"].get("review"), "report": report, "diagnostic": result})
+        self.store.event("proxy_diagnostic", result)
+        return result

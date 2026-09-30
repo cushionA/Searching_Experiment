@@ -2,7 +2,7 @@
 
 ## 役割と判断点
 
-Codex側がGPT-6 Lunaとして調査し、実行器がJSONで次に必要な判断材料を返す。APIキーを埋め込まず、クラウドタスク自身のモデルを利用する。Python単独ではエージェント回答待ちで終了する。
+実行器がJSONで次に必要な判断材料を返し、調査回答をGPT-6 Lunaが担当する。親タスクが別モデルでも、対応する環境ではLuna専用サブエージェントへ要求JSONだけを渡せる。任意の独立CLI/API実行経路も用意している。標準の `run` はエージェント回答待ちで終了し、勝手にモデル呼出しや認証を始めない。
 
 ```text
 init → run → 計画の要求 → Lunaの回答 → 計画判断
@@ -18,10 +18,8 @@ init → run → 計画の要求 → Lunaの回答 → 計画判断
 2. CodexのEnvironment設定でPython 3.12以上を指定する。`adaptive` を制限付きCloudコンテナで使う場合、環境変数欄に `CRAWLEE_DISABLE_BROWSER_SANDBOX=true` を追加する。Secretではない。Setup内の一時的なexportだけではagent phaseに引き継がれないため、環境設定に保存する。
 3. Setup script: `bash scripts/cloud_setup.sh`。Maintenance scriptも同じ。標準構成では依存のダウンロードや有料実行はしない。取得ツールを配備する場合は、以下の `http` / `browser` / `adaptive` 引数を使う。
 4. オフラインdemoではAgent internet accessを無効のままでよい。実サイトを取得するときだけ有効にし、設定JSONの `allowed_origins` に対応するドメインとGETを許可する。別hostへリダイレクトするサイトは、実験前に両方を許可する。
-5. 実行画面のモデル選択でGPT-6 Lunaを指定する。利用できない場合は接続未完了として止める。モデルはコンテナの内側から選択・導入できないため、Codex CLIをイメージへ追加しても当該Cloudタスクのモデル可用性や実モデルIDは保証できない。モデルの自己申告も独立検証ではないため `model_runtime_verified` は常にfalseとして保存する。
+5. 親自身が回答する場合は実行画面でGPT-6 Lunaを選ぶ。親が別モデルなら以下のLunaへの委譲手順を使う。Cloudの利用権限やspawn機能の有無はリポジトリ設定だけでは変更できない。CLIの `codex cloud exec` にモデル指定フラグがある前提にしない。UI・サブエージェント・CLI引数だけでは実モデルの独立検証にならず、`model_runtime_verified=false`。Responses APIではサーバー応答のモデルと回答の保存証跡を記録する。
 6. クロールにはSecretsは不要。任意のKaggle計算は以下のGitHub Actions経路を使う。Codex CloudのSecretsはsetup後に除去されるため、setup中のキーをファイルへ残してagent phaseへ渡さない。
-
-`adaptive`のコンテナ前提は `python3 -B scripts/check_cloud_environment.py --adaptive` で確認する。この検査はPython、Crawlee、Impit、Playwright、AdaptivePlaywrightCrawler、sandbox環境変数を検証するが、モデル実体の検証ではない。`model_selection_surface=codex_execution_ui` と `model_runtime_verified=false` を出力するのは、この境界を機械可読にするためである。
 
 Codex Cloudの公式経路は標準 `universal` イメージとsetup scriptである。このリポジトリのDockerfileをクラウド設定が直接ビルドするとは想定しない。Dockerfileはローカル・通常のLinuxコンテナで同じPythonコードを検証するために用意した。
 
@@ -74,19 +72,91 @@ python3 -B -m jse.lab run --run lab-runs/pilot-001
 
 ## 保存・停止・再開
 
+### 同一run内の通信再試行
+
+結果判断待ち（`awaiting_human`・result gate）で、ページ未取得のarmの最後の試行が `ProxyError` / `TimeoutError` の場合に限り使える。試行・HTTP・本文bytes・モデル要求・過去回答を保持し、失敗したseedを同じarmへ戻す。対象・上限・runは変更しない。予約済みbytesも返却しない。結果整理用の要求予算が残っていなければ拒否する。
+
+```bash
+python3 -B -m jse.lab retry --run lab-runs/cloud-pilot-001 --note '同一run・残予算内で再試行を許可'
+python3 -B -m jse.lab run --run lab-runs/cloud-pilot-001
+```
+
+noteは実際のユーザー許可を記録する欄であり、この例を許可として使わない。HTTP 403、robots拒否、範囲外、成功済み・完了済みrunには適用しない。
+
+### Proxyの診断
+
+まず通信せずに経路・導入状況を確認する。`--probe-proxy` は環境proxyへのDNS/TCP接続だけを行い、取得先へのCONNECT・TLS・HTTPは送らない。成功しても取得先へのCONNECT許可や青空文庫からの応答を確認したことにはならない。
+
+```bash
+python3 -B scripts/check_cloud_environment.py --adaptive
+python3 -B scripts/check_cloud_environment.py --url https://www.aozora.gr.jp/robots.txt --probe-proxy
+```
+
+取得台帳に `error` に加えて `error_type`、安全化した `error_detail`、`failure_stage_hint`、URLごとの `network_route`、資格情報を含まない `proxy_scheme/host/port` を保存する。Impitとurllibは同じNO_PROXY条件を適用する。環境のproxy設定自体は変更しない。Cloudが強制するproxyは、NO_PROXYへの追記で回避できるとは限らず、対処として勝手に追記しない。
+
+失敗したrobots URLでクライアントの違いを比較する場合は、結果判断待ちで次を実行する。対象URLはそのarmの過去の失敗から選び、新しいoriginは追加しない。通常のHTTPと同じ待機・回数・本文bytes上限を消費し、`proxy_diagnostic` として保存する。設定のtransportと探索履歴は変更しない。診断後は台帳が変わるため結果判断IDを更新する。
+
+```bash
+python3 -B -m jse.lab diagnose --run lab-runs/cloud-pilot-001 --arm bfs --client urllib
+python3 -B -m jse.lab diagnose --run lab-runs/cloud-pilot-001 --arm luna --client impit
+python3 -B -m jse.lab verify --run lab-runs/cloud-pilot-001
+```
+
+両クライアントでproxy接続が失敗するなら環境経路の問題、urllibだけ成功するならImpitとの互換性を疑う材料になる。いずれも原因の確定ではない。例外内の403/407/502と取得先のHTTP応答を区別する。`failure_stage_hint` は例外文字列からの手掛かりであり、DNSのどちら側・TLS終端・接続先IP・サイト側拒否を断定しない。詳細を捨てた過去のcheckpointから元の例外本文は復元できない。
+
+この変更の作業環境では、通常sandbox内でproxyへのTCP接続がPermissionErrorになり、ネットワーク許可後の同じ検査ではTCP接続に成功した。元レポートの `http://proxy:8080` とは異なる環境であり、元のCloud失敗原因を確定した結果ではない。
+
+同じrunでの追加診断ではImpit/urllibとも `https://www.aozora.gr.jp/robots.txt` をHTTP 200で取得し、同一の115bytesとSHA256を保存した。各armは累計3 HTTP・2,000,115 charged bytesとなった。この環境でImpit 0.14.1とproxy経路が動くことは確認できたが、元のCloud proxyのCONNECT許可・障害時の応答は未確認である。
+
+レポートの3コミットの変更は [PR #1](https://github.com/cushionA/Searching_Experiment/pull/1) に `bc6e58e` としてまとまっており、再試行2回までを含む元の `cloud-pilot-001` checkpointも同PRから引き継ぐ。元checkpointの過去の例外本文は欠落しているため、今回の詳細保存で遡って復元はできない。
+
+### 別モデルによる回答
+
+| 経路 | 親と異なるモデルの指定 | 実行条件・検証 |
+|---|---|---|
+| Nativeサブエージェント | `.codex/agents/luna.toml` またはspawn時の `gpt-6-luna` 指定 | 親の会話側にモデル指定spawnが必要。CLI・APIキーは不要。コンテナから利用権限や実モデルは検証できない |
+| 独立Codex CLI | `agent --backend codex` が `codex exec --model gpt-6-luna` を実行 | CLIの独立認証・ネットワーク許可が必要。親の認証は自動継承しない。引数指定だけなので実モデル検証はfalse |
+| Responses API | `agent --backend responses` が `model: gpt-6-luna` を送信 | 実行プロセスのOPENAI_API_KEYとapi.openai.comへのPOST許可が必要。APIは別課金。サーバー応答のモデルを確認 |
+
+Native経路では親のモデルを変更する必要はない。例えば親へ「調査回答はLunaサブエージェントに委譲し、active_requestのJSONだけを渡して」と依頼する。親が要求JSONを読む→LunaにJSONだけを渡す→回答を `answer --file ...` で検証・保存→親が `run` を続ける。LunaにBFSの取得履歴やcheckout全体を読ませない。Cloudでcustom agent設定の読み込みやモデル指定spawnを使えない場合、この経路は未接続として扱う。
+
+独立CLIは任意の追加配備。`bash scripts/setup_model_runner.sh` が `.deps/codex` に `@openai/codex@0.156.1` を固定して導入する。`adaptive-agent` setup profileではブラウザ依存とCLIを導入するが、ログインや有料推論は行わない。
+
+以下の `agent` は `status=awaiting_agent` のrunに対して使う。保存済みの `cloud-pilot-001` は結果判断待ちなので、そのままではモデルを呼ばない。同じrunを再試行する場合は先に上記の `retry` と `run` を実行し、新しい要求が出てから回答する。
+
+```bash
+bash scripts/cloud_setup.sh adaptive-agent
+python3 -B scripts/check_cloud_environment.py --adaptive --agent-backend codex
+python3 -B -m jse.lab agent --run lab-runs/pilot-001 --backend codex
+python3 -B -m jse.lab run --run lab-runs/pilot-001
+```
+
+独立認証が既にある信頼できるCLI環境では、保存認証を利用できる。APIキーを使うなら `CODEX_API_KEY` をその実行プロセスだけに渡す。親Cloudの認証ファイルを探索・コピーしない。Cloudのsetup-only Secretsをファイルへ残してagent phaseに持ち越さない。ブラウザ依存だけのDockerイメージにはCLIを含めない。
+
+API利用が明示的に許可され、実行プロセスへ安全にキーを渡せる環境では次を使える。Cloudのsetup Secretを登録しただけではagent phaseで利用できないので、Native経路、信頼できる別の実行環境、または管理された認証経路が必要になる。
+
+```bash
+python3 -B scripts/check_cloud_environment.py --agent-backend responses
+python3 -B -m jse.lab agent --run lab-runs/pilot-001 --backend responses --max-output-tokens 4000
+python3 -B -m jse.lab run --run lab-runs/pilot-001
+```
+
+`agent` は1つのactive_requestだけを新規セッションへ渡し、自動のクロール・承認・新run作成は行わない。要求ハッシュ、要求モデル、既存の回答形式・候補URL・引用を検証する。CLIは空の一時ディレクトリ・read-only・ephemeral・ユーザー設定を読まない構成で起動する。APIにはツールを渡さず、JSON Schema付きResponses APIを使う。認証・403・モデル利用権限のエラーでは停止し、代替モデルやdirect通信へfallbackしない。
+
+モデル呼出しを開始する前に台帳へ予約し、失敗・中断も1回と数える。各要求の既定上限は1回。明示的な再実行は `--retry-call --max-calls 2`（最大3回）。HTTP予算と別に `model_calls`、usage、`model-calls/*.json` を保存し、verify/exportへ含める。自動再試行はしない。`--max-output-tokens` はResponses APIで適用され、CLI側では上限保証できないことをmetadataへ記録する。
+
+`model_runtime_verified` は回答済み要求のすべてがサーバーのモデルフィールドと保存回答に対応する場合だけtrueになる。Native/手動/CLI回答を混ぜたrunではfalse。料金の推測はしない。APIの応答モデルがLunaまたはLunaの日付snapshotでなければ回答を受け付けない。preflightは推論を送らないため常にfalseであり、認証情報の存在や導入確認だけでモデル利用権限を保証しない。
+
+公式資料: [Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)、[Non-interactive mode](https://learn.chatgpt.com/docs/non-interactive-mode)、[Authentication](https://learn.chatgpt.com/docs/auth)、[Structured model outputs](https://developers.openai.com/api/docs/guides/structured-outputs)。
+
+### 一時停止とcheckpoint
+
 ```bash
 python3 -B -m jse.lab pause --run lab-runs/pilot-001
 python3 -B -m jse.lab resume --run lab-runs/pilot-001
 python3 -B -m jse.lab run --run lab-runs/pilot-001
 python3 -B -m jse.lab verify --run lab-runs/pilot-001
 python3 -B -m jse.lab export --run lab-runs/pilot-001 --output pilot-001-checkpoint.zip
-```
-
-結果判断待ちで、ページを1件も取得できず最後の試行が`ProxyError`または`TimeoutError`だったarmは、明示的な再試行許可があれば同じrunの履歴・消費済み予算を保持して再試行できる。新しいrunで予算を戻さず、同じ失敗を無制限に繰り返さない。
-
-```bash
-python3 -B -m jse.lab retry --run lab-runs/pilot-001 --note '<実際のユーザー許可>'
-python3 -B -m jse.lab run --run lab-runs/pilot-001
 ```
 
 pauseは次の取得境界で反映する。強制停止した取得は確定できないため、再開時に失敗・未確定として残す。HTTP前にリクエスト数と最大応答サイズを予約して保存し、正常終了時のみ実測バイトへ減額する。プロセス停止で上限が元に戻ることはない。エラー中の消費量は保守的に最大応答サイズを数える。OSのファイルロックがプロセス終了時に解除されるので、古いPIDを手で削除する必要はない。
@@ -99,7 +169,7 @@ Cloudの環境キャッシュを成果物保管庫として扱わない。同じ
 |---|---|
 | 取得予算 | armごと。robots、リダイレクト、HTTP失敗もHTTP数へ加算。別にURL試行数を数える |
 | バイト | 応答bodyの上限。HTTP/TLSヘッダーやネットワーク全体の転送課金上限ではない |
-| エージェント予算 | 発行する要求数。Codex内部の思考量・トークン・利用料金は制御も計測もできない |
+| エージェント予算 | 発行する要求数。独立実行ではモデル呼出しと取得できたusageも保存する。Native/Cloud内部の思考量・料金は計測できない |
 | 観測 | 最近3ページの先頭6000文字ずつと、先頭N件の候補。切り詰めを表示する |
 | 引用検証 | モデルへ実際に渡した原文と一致し、保存本文の同じ位置に存在するか |
 | 意味検証 | 未実装。原文一致だけで人物・情報の正しさや最新性は認定しない |

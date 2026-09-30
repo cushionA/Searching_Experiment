@@ -63,6 +63,9 @@ def export_checkpoint(store, output):
         files.add(request["path"])
         if request.get("answer_path"):
             files.add(request["answer_path"])
+    for call in store.state.get("model_calls", []):
+        if call.get("path"):
+            files.add(call["path"])
     for arm in store.state["arms"].values():
         for record in arm["http"]:
             if record.get("body_sha256"):
@@ -106,18 +109,28 @@ def main(argv=None):
     sys.stderr.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description="発見型クロールの実験・承認・検証。Codex Cloudのエージェントが回答する。")
     commands = parser.add_subparsers(dest="command", required=True)
-    for name in ("init", "run", "status", "answer", "decide", "retry", "pause", "resume", "verify", "export", "grade", "demo"):
+    for name in ("init", "run", "status", "answer", "decide", "retry", "diagnose", "agent", "pause", "resume", "verify", "export", "grade", "demo"):
         command = commands.add_parser(name)
         command.add_argument("--run", required=True, type=Path)
         if name == "init":
             command.add_argument("--config", required=True, type=Path)
         elif name == "answer":
             command.add_argument("--file", required=True, type=Path)
+        elif name == "retry":
+            command.add_argument("--note", required=True)
+        elif name == "diagnose":
+            command.add_argument("--arm", required=True, choices=("bfs", "luna"))
+            command.add_argument("--client", required=True, choices=("impit", "urllib"))
+        elif name == "agent":
+            command.add_argument("--backend", required=True, choices=("codex", "responses"))
+            command.add_argument("--model", default="gpt-6-luna")
+            command.add_argument("--timeout", type=int, default=120)
+            command.add_argument("--max-output-tokens", type=int, default=4000)
+            command.add_argument("--max-calls", type=int, default=1)
+            command.add_argument("--retry-call", action="store_true")
         elif name == "decide":
             command.add_argument("--id", required=True)
             command.add_argument("--decision", required=True, choices=("approve", "reject"))
-            command.add_argument("--note", required=True)
-        elif name == "retry":
             command.add_argument("--note", required=True)
         elif name in ("export", "grade"):
             command.add_argument("--output", required=True, type=Path)
@@ -146,10 +159,16 @@ def main(argv=None):
                     engine.answer(read_json(args.file))
                 elif args.command == "decide":
                     engine.decide(args.id, args.decision, args.note)
-                elif args.command == "resume":
-                    engine.resume()
                 elif args.command == "retry":
                     engine.retry_failed(args.note)
+                elif args.command == "diagnose":
+                    result = engine.diagnose_proxy(args.arm, args.client)
+                elif args.command == "agent":
+                    from .agent import answer_with_model
+                    result = answer_with_model(engine, args.backend, args.model, args.timeout,
+                                               args.max_output_tokens, args.max_calls, args.retry_call)
+                elif args.command == "resume":
+                    engine.resume()
                 elif args.command == "verify":
                     result = verify(store)
                 elif args.command == "export":
