@@ -1,10 +1,19 @@
 """Playwright Chromiumを外部通信なしで起動確認する。"""
 import json
 
-from playwright.sync_api import sync_playwright
+
+def _sync_playwright():
+    # Keep Playwright optional at import time so unit tests can inject a fake
+    # factory before the adaptive Cloud profile installs browser dependencies.
+    from playwright.sync_api import sync_playwright
+
+    return sync_playwright()
 
 
-def check_browser(playwright_factory=sync_playwright):
+def check_browser(playwright_factory=None):
+    if playwright_factory is None:
+        playwright_factory = _sync_playwright
+
     with playwright_factory() as driver:
         browser = driver.chromium.launch(headless=True, chromium_sandbox=False)
         try:

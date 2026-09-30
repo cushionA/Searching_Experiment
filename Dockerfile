@@ -9,6 +9,7 @@ COPY experiments /app/experiments
 FROM runtime AS test
 COPY tests /app/tests
 COPY scripts/check_cloud_environment.py /app/scripts/check_cloud_environment.py
+COPY scripts/check_playwright_browser.py /app/scripts/check_playwright_browser.py
 RUN python -m unittest discover -s tests -p "test_lab*.py"
 RUN python -m unittest discover -s tests -p "test_cloud_environment.py"
 RUN python -c "from pathlib import Path; Path('/tmp/validated').write_text('offline tests passed\n')"
