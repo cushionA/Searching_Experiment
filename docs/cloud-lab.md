@@ -245,6 +245,8 @@ Actions自体のRe-runでsubmitを再実行するとhelperが拒否する。API�
 
 バージョンは `requirements/crawl-tools.txt`、`requirements/browser-tools.txt`、`requirements/adaptive-tools.txt` に固定している。追加環境のsetupではPyPI・ブラウザ配布元・OSパッケージ取得へのネットワーク接続が必要。API Secretや有料サービスは不要。Cloud環境でOS依存の導入権限がない場合、ブラウザ対応済み環境で実行する。導入に失敗した状態を配備済みと報告しない。
 
+`adaptive` setupは、まず外部通信なしのfixtureでPlaywright Chromiumの起動とJavaScript実行を確認する。成功時は既存ブラウザを再利用し、失敗時だけ `playwright install --with-deps chromium` を実行してから同じ確認を再実行する。実行ファイルの存在だけで導入済みとは判定しない。
+
 通常のDocker最終イメージはcoreのまま。`--target crawl-tools`、`--target browser-tools`、`--target adaptive-tools` を明示した場合だけ追加依存を含む。ブラウザは非rootで起動し、書き込み先をtmpfsにする。ローカル・CIの起動確認は外部サイトを使わない。
 
 Adaptive用Dockerイメージでは、制限付きコンテナ内のChromium起動のため `CRAWLEE_DISABLE_BROWSER_SANDBOX=true` を設定する。ブラウザ内部のsandboxが無効になるため、Composeの非root・read-only・cap_drop・no-new-privilegesを維持し、資格情報をmountしない。Codex CloudはこのDockerfileを使わないため、同じ値をCloudの環境変数欄へ別途設定する。通常ホストのsandboxは無効化しない。setup script自体は設定を上書きしない。
