@@ -53,7 +53,7 @@ AdaptivePlaywrightCrawlerを実験へ接続する場合は `bash scripts/cloud_s
 
 ## Codexクラウドで使う
 
-接続するGitHubリポジトリへコードを置き、Pythonを3.12以上、SetupとMaintenanceを `bash scripts/cloud_setup.sh` にする。クロール対象ドメインだけAgent internet accessで許可する。調査モデルは実行画面でGPT-6 Lunaを指定する。[設定と運転手順](docs/cloud-lab.md)に、最初の依頼文・承認・再開・保存方法をまとめた。
+接続するGitHubリポジトリへコードを置き、Pythonを3.12以上、SetupとMaintenanceを `bash scripts/cloud_setup.sh` にする。標準構成にCodex CLI・Node.js/npmは不要。Kaggleも使う場合は続けて `bash scripts/setup_kaggle.sh` を実行する。クロール対象ドメインだけAgent internet accessで許可する。調査モデルは実行画面でGPT-6 Lunaを指定する。[設定と運転手順](docs/cloud-lab.md)に、最初の依頼文・承認・再開・保存方法をまとめた。
 
 このローカルフォルダ全体をアップロードせず、小さい配布物を作る場合:
 
@@ -65,9 +65,9 @@ ZIPはコードの配布用。実験途中の保存には `jse.lab export` を�
 
 ## GPUが必要な場合
 
-[Kaggle操作スキル](.agents/skills/kaggle-ops/SKILL.md)と手動起動の `kaggle-job.yml` を使う。Repository Secretの `KAGGLE_API_TOKEN` で認証し、GPU残量の確認、Notebook送信、versionを固定したログ待機、結果回収まで実行する。通常のコンテナにKaggleやGPUの依存は含めない。
+[Kaggle操作スキル](.agents/skills/kaggle-ops/SKILL.md)を使い、個人用保管庫のネットワークシークレット `KAGGLE_API_TOKEN` でCloudから直接接続する。`api.kaggle.com` と `www.kaggle.com` を送信先として設定し、`bash scripts/setup_kaggle.sh` で専用venvへ固定バージョンを導入する。GPU残量の確認、Notebook送信、versionを固定した待機、結果回収まで同梱helperで実行する。設定フォルダは書き込み可能な `.deps/kaggle-config` を自動選択し、トークンをファイルへ保存しない。通常コンテナにはGPUライブラリを入れない。
 
-結果artifactの `continuation.json` が検証工程への受け渡しになる。[クラウドのKaggle運転手順](docs/cloud-lab.md#kaggleへの計算委譲)を参照。終了済みCodexタスクの自動起動は別途監視機構への接続が必要。
+回収結果の `continuation.json` が検証工程への受け渡しになる。[クラウドのKaggle運転手順](docs/cloud-lab.md#kaggleへの計算委譲)を参照。終了済みCodexタスクの自動起動は別途監視機構への接続が必要。
 
 ## 動く範囲
 

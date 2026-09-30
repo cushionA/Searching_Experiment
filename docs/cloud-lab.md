@@ -18,8 +18,8 @@ init → run → 計画の要求 → Lunaの回答 → 計画判断
 2. CodexのEnvironment設定でPython 3.12以上を指定する。`adaptive` を制限付きCloudコンテナで使う場合、環境変数欄に `CRAWLEE_DISABLE_BROWSER_SANDBOX=true` を追加する。Secretではない。Setup内の一時的なexportだけではagent phaseに引き継がれないため、環境設定に保存する。
 3. Setup script: `bash scripts/cloud_setup.sh`。Maintenance scriptも同じ。標準構成では依存のダウンロードや有料実行はしない。取得ツールを配備する場合は、以下の `http` / `browser` / `adaptive` 引数を使う。
 4. オフラインdemoではAgent internet accessを無効のままでよい。実サイトを取得するときだけ有効にし、設定JSONの `allowed_origins` に対応するドメインとGETを許可する。別hostへリダイレクトするサイトは、実験前に両方を許可する。
-5. 親自身が回答する場合は実行画面でGPT-6 Lunaを選ぶ。親が別モデルなら以下のLunaへの委譲手順を使う。Cloudの利用権限やspawn機能の有無はリポジトリ設定だけでは変更できない。CLIの `codex cloud exec` にモデル指定フラグがある前提にしない。UI・サブエージェント・CLI引数だけでは実モデルの独立検証にならず、`model_runtime_verified=false`。Responses APIではサーバー応答のモデルと回答の保存証跡を記録する。
-6. クロールにはSecretsは不要。任意のKaggle計算は以下のGitHub Actions経路を使う。Codex CloudのSecretsはsetup後に除去されるため、setup中のキーをファイルへ残してagent phaseへ渡さない。
+5. 親自身が回答する場合は実行画面でGPT-6 Lunaを選ぶ。親が別モデルなら以下のLunaへの委譲手順を使う。Cloudの利用権限やspawn機能の有無はリポジトリ設定だけでは変更できない。Codex CLIの導入・ログインは不要。UI・サブエージェントの指定だけでは実モデルの独立検証にならず、`model_runtime_verified=false`。Responses APIではサーバー応答のモデルと回答の保存証跡を記録する。
+6. クロールにはSecretsは不要。Kaggle計算は個人用保管庫の `KAGGLE_API_TOKEN` を使い、Cloudから直接接続する。送信先は `api.kaggle.com` と `www.kaggle.com`。Setupに `bash scripts/setup_kaggle.sh` を追加する。値をチャット・Git・Notebook・設定ファイルに保存しない。
 
 Codex Cloudの公式経路は標準 `universal` イメージとsetup scriptである。このリポジトリのDockerfileをクラウド設定が直接ビルドするとは想定しない。Dockerfileはローカル・通常のLinuxコンテナで同じPythonコードを検証するために用意した。
 
@@ -115,23 +115,11 @@ python3 -B -m jse.lab verify --run lab-runs/cloud-pilot-001
 | 経路 | 親と異なるモデルの指定 | 実行条件・検証 |
 |---|---|---|
 | Nativeサブエージェント | `.codex/agents/luna.toml` またはspawn時の `gpt-6-luna` 指定 | 親の会話側にモデル指定spawnが必要。CLI・APIキーは不要。コンテナから利用権限や実モデルは検証できない |
-| 独立Codex CLI | `agent --backend codex` が `codex exec --model gpt-6-luna` を実行 | CLIの独立認証・ネットワーク許可が必要。親の認証は自動継承しない。引数指定だけなので実モデル検証はfalse |
 | Responses API | `agent --backend responses` が `model: gpt-6-luna` を送信 | 実行プロセスのOPENAI_API_KEYとapi.openai.comへのPOST許可が必要。APIは別課金。サーバー応答のモデルを確認 |
 
 Native経路では親のモデルを変更する必要はない。例えば親へ「調査回答はLunaサブエージェントに委譲し、active_requestのJSONだけを渡して」と依頼する。親が要求JSONを読む→LunaにJSONだけを渡す→回答を `answer --file ...` で検証・保存→親が `run` を続ける。LunaにBFSの取得履歴やcheckout全体を読ませない。Cloudでcustom agent設定の読み込みやモデル指定spawnを使えない場合、この経路は未接続として扱う。
 
-独立CLIは任意の追加配備。`bash scripts/setup_model_runner.sh` が `.deps/codex` に `@openai/codex@0.156.1` を固定して導入する。`adaptive-agent` setup profileではブラウザ依存とCLIを導入するが、ログインや有料推論は行わない。
-
-以下の `agent` は `status=awaiting_agent` のrunに対して使う。保存済みの `cloud-pilot-001` は結果判断待ちなので、そのままではモデルを呼ばない。同じrunを再試行する場合は先に上記の `retry` と `run` を実行し、新しい要求が出てから回答する。
-
-```bash
-bash scripts/cloud_setup.sh adaptive-agent
-python3 -B scripts/check_cloud_environment.py --adaptive --agent-backend codex
-python3 -B -m jse.lab agent --run lab-runs/pilot-001 --backend codex
-python3 -B -m jse.lab run --run lab-runs/pilot-001
-```
-
-独立認証が既にある信頼できるCLI環境では、保存認証を利用できる。APIキーを使うなら `CODEX_API_KEY` をその実行プロセスだけに渡す。親Cloudの認証ファイルを探索・コピーしない。Cloudのsetup-only Secretsをファイルへ残してagent phaseに持ち越さない。ブラウザ依存だけのDockerイメージにはCLIを含めない。
+Codex CLIの導入経路は削除した。以下の `agent` は `status=awaiting_agent` のrunに対してだけ使う。保存済みのrunを再開するときは先に `status` を確認する。
 
 API利用が明示的に許可され、実行プロセスへ安全にキーを渡せる環境では次を使える。Cloudのsetup Secretを登録しただけではagent phaseで利用できないので、Native経路、信頼できる別の実行環境、または管理された認証経路が必要になる。
 
@@ -141,13 +129,13 @@ python3 -B -m jse.lab agent --run lab-runs/pilot-001 --backend responses --max-o
 python3 -B -m jse.lab run --run lab-runs/pilot-001
 ```
 
-`agent` は1つのactive_requestだけを新規セッションへ渡し、自動のクロール・承認・新run作成は行わない。要求ハッシュ、要求モデル、既存の回答形式・候補URL・引用を検証する。CLIは空の一時ディレクトリ・read-only・ephemeral・ユーザー設定を読まない構成で起動する。APIにはツールを渡さず、JSON Schema付きResponses APIを使う。認証・403・モデル利用権限のエラーでは停止し、代替モデルやdirect通信へfallbackしない。
+`agent` は1つのactive_requestだけを新規セッションへ渡し、自動のクロール・承認・新run作成は行わない。要求ハッシュ、要求モデル、既存の回答形式・候補URL・引用を検証する。APIにはツールを渡さず、JSON Schema付きResponses APIを使う。認証・403・モデル利用権限のエラーでは停止し、代替モデルやdirect通信へfallbackしない。
 
-モデル呼出しを開始する前に台帳へ予約し、失敗・中断も1回と数える。各要求の既定上限は1回。明示的な再実行は `--retry-call --max-calls 2`（最大3回）。HTTP予算と別に `model_calls`、usage、`model-calls/*.json` を保存し、verify/exportへ含める。自動再試行はしない。`--max-output-tokens` はResponses APIで適用され、CLI側では上限保証できないことをmetadataへ記録する。
+モデル呼出しを開始する前に台帳へ予約し、失敗・中断も1回と数える。各要求の既定上限は1回。明示的な再実行は `--retry-call --max-calls 2`（最大3回）。HTTP予算と別に `model_calls`、usage、`model-calls/*.json` を保存し、verify/exportへ含める。自動再試行はしない。`--max-output-tokens` はResponses APIで適用される。
 
-`model_runtime_verified` は回答済み要求のすべてがサーバーのモデルフィールドと保存回答に対応する場合だけtrueになる。Native/手動/CLI回答を混ぜたrunではfalse。料金の推測はしない。APIの応答モデルがLunaまたはLunaの日付snapshotでなければ回答を受け付けない。preflightは推論を送らないため常にfalseであり、認証情報の存在や導入確認だけでモデル利用権限を保証しない。
+`model_runtime_verified` は回答済み要求のすべてがサーバーのモデルフィールドと保存回答に対応する場合だけtrueになる。Native/手動回答を混ぜたrunではfalse。料金の推測はしない。APIの応答モデルがLunaまたはLunaの日付snapshotでなければ回答を受け付けない。preflightは推論を送らないため常にfalseであり、認証情報の存在や導入確認だけでモデル利用権限を保証しない。
 
-公式資料: [Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)、[Non-interactive mode](https://learn.chatgpt.com/docs/non-interactive-mode)、[Authentication](https://learn.chatgpt.com/docs/auth)、[Structured model outputs](https://developers.openai.com/api/docs/guides/structured-outputs)。
+公式資料: [Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)、[Structured model outputs](https://developers.openai.com/api/docs/guides/structured-outputs)。
 
 ### 一時停止とcheckpoint
 
@@ -200,37 +188,42 @@ python3 -B -m jse.lab grade --run lab-runs/pilot-001 --gold /evaluation/gold.jso
 
 ## Kaggleへの計算委譲
 
-Kaggle 2.0.0とSDK 0.1.37を別プロセスに固定し、Repository Secret `KAGGLE_API_TOKEN` を `kaggle-job.yml` の操作stepだけに渡す。token値は引数・Git・Notebookへ渡さない。2026-09-30にRepository Secretを登録した。`KAGGLE_USERNAME` はaccess token認証では必須ではない。
-
-ワークフローはpush時にはGPUを起動しない。GitHub ActionsのRun workflowまたはGitHubの操作権限がある `gh` から起動する。CloudタスクのGitHub接続がActionsの起動・読み取り権限も持つかは別途確認する。Git checkoutができるだけでその権限を得たとは扱わない。
+KaggleはCloudから直接接続する。個人用保管庫のネットワークシークレット `KAGGLE_API_TOKEN` を環境へ紐付け、送信先を `api.kaggle.com` と `www.kaggle.com` に設定する。`KAGGLE_USERNAME` はaccess token認証では必須ではない。値を引数・Git・Notebook・認証ファイルへ保存しない。
 
 ```bash
-gh workflow run kaggle-job.yml -R cushionA/Searching_Experiment -f operation=quota
-gh workflow run kaggle-job.yml -R cushionA/Searching_Experiment -f operation=submit -f notebook_folder=experiments/gpu/example -f wait_seconds=18000
-gh run list -R cushionA/Searching_Experiment --workflow kaggle-job.yml --limit 5
-gh run view RUN_ID -R cushionA/Searching_Experiment
-gh run download RUN_ID -R cushionA/Searching_Experiment --name kaggle-results --dir .lab-output/kaggle-RUN_ID
+bash scripts/setup_kaggle.sh
+.deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py doctor
+.deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py quota
 ```
 
-submitの例はテンプレート。GPU用Notebookはまだ登録していない。必要性・データ・実行時間を具体化したら、既存の許可に収まる試行を専用ディレクトリへ作成する。`training-params.json` の `timeout_seconds` とlive quotaを照合する。ワークフローはmainのコードを使うため、試行コードの保存後に起動する。出力は7日で失効するため、必要な結果を期限内に回収する。公開リポジトリのActions artifact・ログは機密保管先ではない。非公開データを扱う試行ではprivateな実行先を用意する。
+専用venvへKaggle 2.0.0、kagglesdk 0.1.37、python-dotenv 1.2.3を導入する。helperはKaggle import前に書き込み可能な `.deps/kaggle-config` を自動選択し、明示済みの `KAGGLE_CONFIG_DIR` は維持する。通常SetupはGPUを開始しない。
 
-開始したActions run IDを当該クロールrunの作業記録へ保存し、`job.json` のref・versionと結び付ける。実行中はversion固定のログstreamとstatusを確認する。stream終了だけで成功とせず、Kaggle completeと出力回収を経て継続する。
+Notebookは非公開、転送専用フォルダから送信する。`training-params.json` の `timeout_seconds` と取得したGPU残量を確認する。実験ごとに新しい結果ディレクトリを使い、既存jobを上書きしない。
+
+```bash
+.deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py submit --folder experiments/gpu/my-notebook --output .lab-output/kaggle-job-001
+.deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py wait --job .lab-output/kaggle-job-001/job.json --output .lab-output/kaggle-job-001 --wait-seconds 3600
+```
+
+返ったref・version・ソース署名をjob.jsonへ保存し、同じversionのstatusとログを確認して出力を回収する。新規名へのGetKernelの403は、自分のNotebook一覧全ページに存在しないことを確認できた場合だけ新規作成として扱う。既存Notebookや他人の403は権限エラーのまま止める。
+
+送信応答が曖昧でも再送しない。保存された新しいversionのコード・非公開設定・GPU/Internet設定が一致した場合だけ照合して待機へ進む。一致しなければsubmission_unknownを保持し、次のreconcileで指定versionと元ソースを照合する。
+
+```bash
+.deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py reconcile --job .lab-output/kaggle-job-001/job.json --version N
+```
 
 | continuation.json | 次の行動 |
 |---|---|
-| `ready_for_verification: true`, `next_phase: verification` | 出力manifestのSHA256を再計算し、目的に対する結果を検証して調査へ戻る |
-| `failure_review` | 保存ログを調べ、修復案を作る。再投入は残予算と既存許可を再確認する |
-| `waiting_kaggle` / `waiting_timeout` | 同じref・versionで待機を再開する。新しいNotebookを送らない |
-| `recovering_outputs` | 同じversionの出力回収を再開する。取得未完了を成功扱いしない |
-| `submission_unknown`（job.json） | Kaggle側の時刻・コード・新しいversionを照合するまで再送しない |
+| `ready_for_verification: true`, `next_phase: verification` | manifestのSHA256と計算結果を検証する |
+| `failure_review` | 保存ログと残予算を確認する。自動再投入しない |
+| `waiting_kaggle` / `waiting_timeout` | 同じref・versionで待機を再開する |
+| `recovering_outputs` | 同じversionの回収を再開する |
+| `submission_unknown`（job.json） | 新しいversion・元ソース・設定が一致するまで再送しない |
 
-```bash
-gh workflow run kaggle-job.yml -R cushionA/Searching_Experiment -f operation=resume -f kernel_ref=owner/kernel-slug -f kernel_version=7 -f wait_seconds=18000
-```
+読み取り通信の一時的失敗は最大3試行。待機時間切れだけでジョブを停止・再投入しない。`continuation.json` だけでは終了済みCloudタスクを自動起動できないため、継続時は同じjob.jsonを渡す。
 
-Actions自体のRe-runでsubmitを再実行するとhelperが拒否する。APIの一時的な読み取り失敗は最大3試行。GPU再実行を伴う修復は別試行として数え、失敗でも予算を返却しない。許可した総時間を使い切ったら止める。`auto_resume.py` の無制限再開や別プロセスによる予算補充は移植していない。
-
-この受け渡しは稼働中のCodexエージェントがActions完了を待って継続するためのもの。`continuation.json` だけでは終了済みCodex Cloudタスクを自動起動できない。長時間ジョブでタスクを終了する場合、実際のrun IDが得られた時点で利用可能なCodex監視機能へ接続し、完了・失敗・人の判断が必要な変化だけ通知する。監視機能がない環境では同じチャットへrun ID付きで継続を依頼する。
+非公開・外部通信なしのダミーNotebookでTesla T4を2基認識し、両方のCUDA行列積・完了・出力回収・SHA256照合まで検証済み。[検証記録](cloud-validation.md)
 
 ## 取得ツールの配備
 

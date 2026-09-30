@@ -2,15 +2,11 @@
 import json
 import os
 import re
-import shutil
-import subprocess
-import tempfile
 import time
 import urllib.request
-from pathlib import Path
 
 from . import MODEL
-from .network import error_diagnostics, environment_proxy, sanitize_detail
+from .network import error_diagnostics, environment_proxy
 from .state import LabError, digest, encoded
 
 
@@ -44,11 +40,6 @@ def model_evidence(state):
                          and c.get("model_runtime_verified") and c.get("answer_hash") == r["answer_hash"] for c in calls) for r in answered)
     return {"model_runtime_verified": verified, "model_calls": len(calls),
             "model_usage": [c["usage"] for c in calls if c.get("usage")], "model_cost": None}
-
-
-def codex_binary():
-    local = Path(__file__).resolve().parents[2] / ".deps/codex/node_modules/.bin/codex"
-    return str(local) if local.is_file() else shutil.which("codex")
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -91,51 +82,10 @@ def responses_answer(request, model, timeout, max_output_tokens):
                     "verification_source": "responses_api_model_field", "response_id": data.get("id"), "usage": data.get("usage")}
 
 
-def codex_answer(request, model, timeout, max_output_tokens):
-    binary = codex_binary()
-    if not binary:
-        raise LabError("Codex CLIが未導入です。bash scripts/setup_model_runner.sh を実行してください")
-    with tempfile.TemporaryDirectory(prefix="jse-model-") as directory:
-        root = Path(directory)
-        schema = root / "schema.json"
-        output = root / "answer.json"
-        schema.write_bytes(encoded(answer_schema(request["kind"])))
-        prompt = ("添付のlab要求JSONだけから回答JSONを作ってください。ツールを使わず、ファイルやWebを読まないでください。"
-                  "設定や承認を変更せず、別モデルへ切り替えないでください。要求JSON:\n" + encoded(request).decode("utf-8"))
-        command = [binary, "exec", "--model", model, "--sandbox", "read-only", "--ephemeral",
-                   "--ignore-user-config", "--skip-git-repo-check", "--disable", "shell_tool", "--disable", "multi_agent",
-                   "--json", "--output-schema", str(schema),
-                   "--output-last-message", str(output), "-c", 'model_reasoning_effort="high"',
-                   "-c", 'web_search="disabled"', "-"]
-        result = subprocess.run(command, input=prompt, capture_output=True, encoding="utf-8",
-                                cwd=root, timeout=timeout, check=False)
-        if result.returncode != 0:
-            raise LabError("Codex CLI実行失敗: " + sanitize_detail(result.stderr))
-        usage = None
-        completed = False
-        for line in result.stdout.splitlines():
-            try:
-                event = json.loads(line)
-            except ValueError:
-                continue
-            if event.get("type") in ("turn.failed", "error"):
-                raise LabError("Codex CLIがエラーを返しました")
-            if event.get("type") == "turn.completed":
-                completed = True
-                usage = event.get("usage")
-        if not completed or not output.is_file() or output.stat().st_size > 65536:
-            raise LabError("Codex CLIの完了イベントまたは回答ファイルがありません")
-        answer = json.loads(output.read_text(encoding="utf-8"))
-    # A CLI argument and the model's self-report do not independently verify the served model.
-    return answer, {"model_runtime_verified": False, "model_returned": None,
-                    "verification_source": "explicit_cli_argument_only", "usage": usage,
-                    "max_output_tokens_enforced": False}
-
-
 def answer_with_model(engine, backend, model=MODEL, timeout=120, max_output_tokens=4000, max_calls=1, retry_call=False):
     if model != MODEL:
         raise LabError(f"この実験の調査担当は{MODEL}です。代替モデルへ自動変更できません")
-    if backend not in ("codex", "responses") or not 1 <= timeout <= 300 or not 128 <= max_output_tokens <= 16000 or not 1 <= max_calls <= 3:
+    if backend != "responses" or not 1 <= timeout <= 300 or not 128 <= max_output_tokens <= 16000 or not 1 <= max_calls <= 3:
         raise LabError("backendまたはモデル実行の上限が不正です")
     state = engine.s
     if state["status"] != "awaiting_agent" or not state["active_request"]:
@@ -147,8 +97,6 @@ def answer_with_model(engine, backend, model=MODEL, timeout=120, max_output_toke
     # Check installation/credentials before reserving a paid inference attempt.
     if backend == "responses" and not os.environ.get("OPENAI_API_KEY"):
         raise LabError("OPENAI_API_KEYが実行プロセスにありません。API利用は別課金です")
-    if backend == "codex" and not codex_binary():
-        raise LabError("Codex CLIが未導入です。bash scripts/setup_model_runner.sh を実行してください")
     calls = state.setdefault("model_calls", [])
     previous = [c for c in calls if c["request_id"] == record["id"]]
     if len(previous) >= max_calls:
@@ -165,7 +113,7 @@ def answer_with_model(engine, backend, model=MODEL, timeout=120, max_output_toke
     engine.store.save()
     metadata = {}
     try:
-        answer, metadata = (responses_answer if backend == "responses" else codex_answer)(request, model, timeout, max_output_tokens)
+        answer, metadata = responses_answer(request, model, timeout, max_output_tokens)
         call.update(metadata)
         call["status"] = "received"
         envelope = {key: value for key, value in call.items() if key not in ("path", "hash")}
@@ -173,7 +121,7 @@ def answer_with_model(engine, backend, model=MODEL, timeout=120, max_output_toke
         call["hash"] = digest(envelope)
         engine.answer(answer)
         call.update(status="accepted", answer_hash=record["answer_hash"])
-    except (LabError, OSError, ValueError, subprocess.TimeoutExpired) as error:
+    except (LabError, OSError, ValueError) as error:
         call.update(status="failed", **error_diagnostics(error, environment_proxy(API_URL)))
         raise LabError("別モデルの実行に失敗: " + call["error_detail"]) from None
     finally:

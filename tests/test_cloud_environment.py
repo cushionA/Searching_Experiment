@@ -54,13 +54,10 @@ class CloudEnvironmentTests(unittest.TestCase):
         self.assertTrue(result["no_proxy_applies"])
         self.assertEqual(result["proxy_probe"]["status"], "not_applicable")
 
-    def test_missing_cli_or_api_auth_never_claims_ready(self):
-        with patch.dict("os.environ", {}, clear=True), patch("scripts.check_cloud_environment.codex_binary", return_value=None):
-            cli = check_environment(backend="codex")
+    def test_missing_api_auth_and_native_model_access_are_not_claimed_ready(self):
+        with patch.dict("os.environ", {}, clear=True):
             api = check_environment(backend="responses")
             native = check_environment(backend="native")
-        self.assertFalse(cli["ok"])
-        self.assertTrue(cli["codex_cli_required"])
         self.assertFalse(api["ok"])
         self.assertFalse(native["native_tools_runtime_verified"])
 

@@ -5,7 +5,6 @@ import unittest
 import urllib.error
 import zipfile
 from pathlib import Path
-from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 from jse.lab.__main__ import demo_config, export_checkpoint, fixture_answer
@@ -105,23 +104,11 @@ class AgentTests(unittest.TestCase):
         self.assertEqual(restored.state["model_calls"][0]["status"], "interrupted")
         self.assertTrue(verify(restored)["ok"])
 
-    def test_cli_runs_in_empty_directory_with_explicit_model_and_no_shell_interpolation(self):
-        request = self.request()
-        def run(command, **kwargs):
-            self.assertEqual(command[command.index("--model") + 1], "gpt-6-luna")
-            self.assertEqual(command[command.index("--sandbox") + 1], "read-only")
-            self.assertIn("--ignore-user-config", command)
-            self.assertIn("--ephemeral", command)
-            self.assertNotEqual(kwargs["cwd"], self.store.directory)
-            self.assertFalse(kwargs.get("shell", False))
-            self.assertEqual(json.loads(kwargs["input"].split("要求JSON:\n", 1)[1]), request)
-            Path(command[command.index("--output-last-message") + 1]).write_bytes(encoded(fixture_answer(request)))
-            return SimpleNamespace(returncode=0, stderr="", stdout='{"type":"turn.completed","usage":{"input_tokens":100,"output_tokens":10}}\n')
-        with patch("jse.lab.agent.codex_binary", return_value="/fake/codex"), patch("jse.lab.agent.subprocess.run", side_effect=run):
-            result = answer_with_model(self.engine, "codex")
-        self.assertFalse(result["model_call"]["model_runtime_verified"])
-        self.assertFalse(result["model_call"]["max_output_tokens_enforced"])
-        self.assertTrue(verify(self.store)["ok"])
+    def test_removed_cli_backend_does_not_consume_a_model_call(self):
+        with self.assertRaises(LabError):
+            answer_with_model(self.engine, "codex")
+        self.assertEqual(self.store.state.get("model_calls", []), [])
+        self.assertFalse(self.store.state["agent_requests"][0]["answered"])
 
     def test_model_metadata_tampering_is_detected(self):
         with patch.dict("os.environ", {"OPENAI_API_KEY": "test-key"}), patch("jse.lab.agent.urllib.request.build_opener", return_value=self.api(self.response())):

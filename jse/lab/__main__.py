@@ -122,7 +122,7 @@ def main(argv=None):
             command.add_argument("--arm", required=True, choices=("bfs", "luna"))
             command.add_argument("--client", required=True, choices=("impit", "urllib"))
         elif name == "agent":
-            command.add_argument("--backend", required=True, choices=("codex", "responses"))
+            command.add_argument("--backend", required=True, choices=("responses",))
             command.add_argument("--model", default="gpt-6-luna")
             command.add_argument("--timeout", type=int, default=120)
             command.add_argument("--max-output-tokens", type=int, default=4000)

@@ -13,6 +13,16 @@ from pathlib import Path
 _original_open = builtins.open
 
 
+def configure():
+    """Use an ignored writable directory, without persisting authentication."""
+    directory = os.environ.get("KAGGLE_CONFIG_DIR")
+    if not directory:
+        directory = str(Path(__file__).resolve().parents[4] / ".deps/kaggle-config")
+        os.environ["KAGGLE_CONFIG_DIR"] = directory
+    Path(directory).expanduser().mkdir(parents=True, exist_ok=True)
+    return directory
+
+
 def utf8_open(file, mode="r", *args, **kwargs):
     if "b" not in mode and len(args) < 2 and "encoding" not in kwargs:
         kwargs["encoding"] = "utf-8"
@@ -55,6 +65,7 @@ def validate_job(job):
 def api():
     if not os.environ.get("KAGGLE_API_TOKEN"):
         raise ValueError("KAGGLE_API_TOKEN is not configured")
+    configure()
     if sys.platform == "win32":
         builtins.open = utf8_open
     import requests
@@ -118,20 +129,68 @@ def status(client, ref, version=None):
     return read_retry(get)
 
 
-def latest_version(client, ref):
-    import requests
+def get_kernel(client, ref):
     from kagglesdk.kernels.types.kernels_api_service import ApiGetKernelRequest
     request = ApiGetKernelRequest()
     request.user_name, request.kernel_slug = kernel_ref(ref).split("/")
     def get():
         with client.build_kaggle_client() as sdk:
-            return sdk.kernels.kernels_api_client.get_kernel(request).metadata.current_version_number
+            return sdk.kernels.kernels_api_client.get_kernel(request)
+    return read_retry(get)
+
+
+def owned_kernel_absent(client, ref):
+    """A 403 alone cannot distinguish a new notebook from a permission failure."""
+    owner = getattr(client, "config_values", {}).get("username")
+    if ref.split("/")[0] != owner:
+        return False
+    for page in range(1, 101):
+        kernels = read_retry(lambda: client.kernels_list(mine=True, page_size=100, page=page))
+        if any(kernel.ref == ref for kernel in kernels):
+            return False
+        if not kernels:
+            return True
+    raise ValueError("own notebook listing exceeded the preflight limit")
+
+
+def latest_version(client, ref):
+    import requests
     try:
-        return read_retry(get)
+        return get_kernel(client, ref).metadata.current_version_number
     except requests.HTTPError as error:
         if error.response is not None and error.response.status_code == 404:
             return 0
+        if error.response is not None and error.response.status_code == 403 and owned_kernel_absent(client, ref):
+            return 0
         raise
+
+
+def source_signature(source, kernel_type):
+    if kernel_type == "notebook":
+        notebook = json.loads(source)
+        cells = [(cell["cell_type"], "".join(cell["source"]) if isinstance(cell["source"], list) else cell["source"])
+                 for cell in notebook["cells"]]
+        source = json.dumps(cells, ensure_ascii=False, separators=(",", ":"))
+    return hashlib.sha256(source.encode("utf-8")).hexdigest()
+
+
+def verify_saved_version(client, job, version=None):
+    """Reconcile only a newer saved version containing exactly our code."""
+    if not job.get("source_signature"):
+        raise ValueError("job lacks a source signature; inspect the remote source before reconciling")
+    remote = get_kernel(client, job["ref"])
+    current = remote.metadata.current_version_number
+    if current <= job.get("previous_version", 0) or (version is not None and current != version):
+        raise ValueError("saved notebook version does not match the new submission")
+    if remote.blob.kernel_type != job["kernel_type"]:
+        raise ValueError("saved notebook type does not match")
+    if source_signature(remote.blob.source, job["kernel_type"]) != job["source_signature"]:
+        raise ValueError("saved notebook source does not match the submitted code")
+    if remote.metadata.is_private is not True or remote.metadata.enable_gpu != job["enable_gpu"]:
+        raise ValueError("saved notebook privacy or GPU setting does not match")
+    if remote.metadata.enable_internet != job["enable_internet"]:
+        raise ValueError("saved notebook Internet setting does not match")
+    return current
 
 
 def clean_upload(folder):
@@ -180,19 +239,28 @@ def submit(client, folder, output):
     previous_version = latest_version(client, ref)
     if previous_version and status(client, ref, previous_version)["status"] not in ("complete", "error", "cancel_acknowledged"):
         raise ValueError("an existing kernel version is active; resume it instead of submitting")
-    job = {"ref": ref, "state": "submission_unknown", "previous_version": previous_version, "timeout_seconds": seconds, "quota_before": budget, "code_sha256": hashlib.sha256(code.read_bytes()).hexdigest(), "created_at": time.time()}
+    job = {"ref": ref, "state": "submission_unknown", "previous_version": previous_version, "timeout_seconds": seconds, "quota_before": budget, "code_sha256": hashlib.sha256(code.read_bytes()).hexdigest(), "created_at": time.time(),
+           "kernel_type": metadata["kernel_type"], "source_signature": source_signature(code.read_text(encoding="utf-8"), metadata["kernel_type"]),
+           "enable_gpu": bool(metadata.get("enable_gpu")), "enable_internet": metadata.get("enable_internet", True)}
     output.mkdir(parents=True, exist_ok=True)
     with job_path.open("x", encoding="utf-8") as handle:
         json.dump(job, handle, ensure_ascii=False, indent=2)
         handle.flush()
         os.fsync(handle.fileno())
     response = client.kernels_push(str(folder), timeout=str(seconds))
-    if getattr(response, "error", ""):
-        raise ValueError("Kaggle rejected the submitted version; inspect status before retry")
-    job.update(ref=kernel_ref(response.ref or ref), version=response.version_number, state="submitted")
-    if not job["version"]:
-        save(job_path, job)
-        raise ValueError("submission response lacks version; reconcile without resubmitting")
+    job["submission_response"] = {"ref": response.ref, "version": response.version_number,
+                                  "error": redact(getattr(response, "error", ""))}
+    save(job_path, job)
+    returned_ref = kernel_ref(response.ref.removeprefix("/code/")) if response.ref else ref
+    if returned_ref != ref:
+        raise ValueError("submission response has an unexpected ref; inspect without resubmitting")
+    version = response.version_number
+    if getattr(response, "error", "") or not version:
+        version = verify_saved_version(client, job)
+        job["source_verified"] = True
+    if version <= previous_version:
+        raise ValueError("submission response lacks a newer version; inspect without resubmitting")
+    job.update(version=version, state="submitted")
     save(job_path, job)
     return job
 
@@ -201,8 +269,9 @@ def reconcile(client, job_path, version):
     job = load(job_path)
     if job.get("state") != "submission_unknown" or version <= job.get("previous_version", 0):
         raise ValueError("reconcile requires an unknown submission and a newer verified version")
+    verify_saved_version(client, job, version)
     current = status(client, job["ref"], version)
-    job.update(version=version, state="submitted", reconciliation_status=current["status"])
+    job.update(version=version, state="submitted", source_verified=True, reconciliation_status=current["status"])
     save(job_path, job)
     return job
 
@@ -328,46 +397,17 @@ def wait(client, job_path, output, wait_seconds=21600, interval=30):
         time.sleep(min(interval, max(0, deadline - time.monotonic())))
 
 
-def cloud_run(client, output):
-    operation = os.environ.get("KAGGLE_JOB_ACTION", "quota")
-    output = Path(output)
-    if operation == "quota":
-        result = quota(client)
-        save(output / "quota.json", result)
-        return result
-    wait_seconds = int(os.environ.get("KAGGLE_WAIT_SECONDS", "18000"))
-    if not 1 <= wait_seconds <= 19800:
-        raise ValueError("cloud wait_seconds must be 1..19800")
-    if operation == "submit":
-        if os.environ.get("GITHUB_RUN_ATTEMPT", "1") != "1":
-            raise ValueError("do not rerun submit; resume the recorded version instead")
-        workspace = Path(os.environ["GITHUB_WORKSPACE"]).resolve()
-        folder_name = os.environ.get("KAGGLE_NOTEBOOK_FOLDER", "")
-        if not folder_name:
-            raise ValueError("notebook folder is required")
-        folder = (workspace / folder_name).resolve()
-        if folder == workspace or not folder.is_relative_to(workspace):
-            raise ValueError("notebook folder must be a subdirectory of the checkout")
-        submit(client, folder, output)
-    elif operation == "resume":
-        job = validate_job({"ref": os.environ.get("KAGGLE_KERNEL_REF", ""), "version": int(os.environ.get("KAGGLE_KERNEL_VERSION", "0")), "state": "submitted"})
-        save(output / "job.json", job)
-    else:
-        raise ValueError("unknown cloud operation")
-    return wait(client, output / "job.json", output, wait_seconds)
-
-
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stderr.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser()
     parser.add_argument("--env-file", default=".env")
     commands = parser.add_subparsers(dest="command", required=True)
-    for name in ("doctor", "quota", "kernel-list", "kernel-status", "kernel-output", "submit", "reconcile", "wait", "cloud-run", "dataset-create", "dataset-update", "dataset-download"):
+    for name in ("doctor", "quota", "kernel-list", "kernel-status", "kernel-output", "submit", "reconcile", "wait", "dataset-create", "dataset-update", "dataset-download"):
         sub = commands.add_parser(name)
         if name in ("kernel-status", "kernel-output", "dataset-download"):
             sub.add_argument("--ref", required=True, type=kernel_ref)
-        if name in ("kernel-output", "submit", "wait", "cloud-run", "dataset-download"):
+        if name in ("kernel-output", "submit", "wait", "dataset-download"):
             sub.add_argument("--output", required=True, type=Path)
         if name in ("submit", "dataset-create", "dataset-update"):
             sub.add_argument("--folder", required=True, type=Path)
@@ -383,6 +423,7 @@ def main():
     from dotenv import load_dotenv
     load_dotenv(args.env_file, override=False, interpolate=False)
     try:
+        configure()
         if args.command == "doctor":
             result = {"kaggle_version": importlib.metadata.version("kaggle"), "token_present": bool(os.environ.get("KAGGLE_API_TOKEN")), "username_present": bool(os.environ.get("KAGGLE_USERNAME"))}
         else:
@@ -400,8 +441,6 @@ def main():
                 result = submit(client, args.folder, args.output)
             elif args.command == "wait":
                 result = wait(client, args.job, args.output, args.wait_seconds)
-            elif args.command == "cloud-run":
-                result = cloud_run(client, args.output)
             elif args.command == "reconcile":
                 result = reconcile(client, args.job, args.version)
             elif args.command == "dataset-create":
@@ -417,7 +456,7 @@ def main():
         return 0 if result.get("ready_for_verification", True) else 3
     except (Exception, SystemExit) as error:
         message = str(error) if isinstance(error, ValueError) else type(error).__name__
-        print(redact(json.dumps({"error": message}, ensure_ascii=False)), file=sys.stderr)
+        print(redact(json.dumps({"error": message, "http_status": getattr(getattr(error, "response", None), "status_code", None), "errno": getattr(error, "errno", None)}, ensure_ascii=False)), file=sys.stderr)
         return 2
 
 

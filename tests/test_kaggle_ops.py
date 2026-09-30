@@ -24,21 +24,96 @@ class KaggleTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.folder = self.root / "notebook"
         self.folder.mkdir()
-        self.metadata = {"id": "owner/notebook", "code_file": "run.py", "is_private": True, "enable_gpu": True, "enable_tpu": False}
+        self.metadata = {"id": "owner/notebook", "code_file": "run.py", "kernel_type": "script", "is_private": True, "enable_gpu": True, "enable_tpu": False, "enable_internet": False}
         self.write_metadata()
         (self.folder / "run.py").write_text("print('done')", encoding="utf-8")
         ops.save(self.folder / "training-params.json", {"timeout_seconds": 600})
         self.output = self.root / "results"
         self.job = {"ref": "owner/notebook", "version": 7, "state": "submitted"}
-        latest = patch.object(ops, "latest_version", return_value=0)
-        latest.start()
-        self.addCleanup(latest.stop)
+        self.latest = patch.object(ops, "latest_version", return_value=0)
+        self.latest.start()
+        self.addCleanup(self.latest.stop)
 
     def write_metadata(self):
         ops.save(self.folder / "kernel-metadata.json", self.metadata)
 
     def client(self, api):
         return SimpleNamespace(build_kaggle_client=lambda: contextlib.nullcontext(SimpleNamespace(kernels=SimpleNamespace(kernels_api_client=api))))
+
+    def remote(self, version=7, source="print('done')", private=True):
+        return SimpleNamespace(metadata=SimpleNamespace(current_version_number=version, is_private=private, enable_gpu=True, enable_internet=False),
+                               blob=SimpleNamespace(kernel_type="script", source=source))
+
+    def test_config_directory_is_writable_without_using_home_or_saving_credentials(self):
+        directory = self.root / "config"
+        with patch.dict(os.environ, {"KAGGLE_CONFIG_DIR": str(directory), "KAGGLE_API_TOKEN": "fake-secret"}):
+            self.assertEqual(ops.configure(), str(directory))
+        self.assertTrue(directory.is_dir())
+        self.assertEqual(list(directory.iterdir()), [])
+        with patch.dict(os.environ, {}, clear=True):
+            configured = Path(ops.configure())
+            self.assertEqual(configured, ROOT / ".deps/kaggle-config")
+            self.assertEqual(os.environ["KAGGLE_CONFIG_DIR"], str(configured))
+
+    def test_new_own_notebook_403_checks_all_listing_pages(self):
+        self.latest.stop()
+        response = requests.Response()
+        response.status_code = 403
+        client = SimpleNamespace(config_values={"username": "owner"}, kernels_list=Mock(side_effect=[
+            [SimpleNamespace(ref="owner/other")], []]))
+        with patch.object(ops, "get_kernel", side_effect=requests.HTTPError(response=response)):
+            self.assertEqual(ops.latest_version(client, "owner/notebook"), 0)
+        self.assertEqual([call.kwargs["page"] for call in client.kernels_list.call_args_list], [1, 2])
+
+    def test_existing_or_other_owners_403_remains_a_permission_failure(self):
+        self.latest.stop()
+        response = requests.Response()
+        response.status_code = 403
+        client = SimpleNamespace(config_values={"username": "owner"}, kernels_list=Mock(return_value=[SimpleNamespace(ref="owner/notebook")]))
+        with patch.object(ops, "get_kernel", side_effect=requests.HTTPError(response=response)):
+            with self.assertRaises(requests.HTTPError):
+                ops.latest_version(client, "owner/notebook")
+            client.kernels_list.reset_mock()
+            with self.assertRaises(requests.HTTPError):
+                ops.latest_version(client, "another/notebook")
+        client.kernels_list.assert_not_called()
+
+    def test_missing_submission_version_recovers_matching_source_without_resubmission(self):
+        client = SimpleNamespace(kernels_push=Mock(return_value=SimpleNamespace(ref="owner/notebook", version_number=0, error="")))
+        with patch.object(ops, "quota", return_value={"gpu": {"remaining_seconds": 1000}}), patch.object(ops, "get_kernel", return_value=self.remote()):
+            result = ops.submit(client, self.folder, self.output)
+        self.assertEqual(result["version"], 7)
+        self.assertTrue(result["source_verified"])
+        self.assertEqual(result["submission_response"]["version"], 0)
+        client.kernels_push.assert_called_once()
+
+    def test_error_response_with_saved_matching_source_is_reconciled_once(self):
+        client = SimpleNamespace(kernels_push=Mock(return_value=SimpleNamespace(ref="owner/notebook", version_number=7, error="ambiguous response")))
+        with patch.object(ops, "quota", return_value={"gpu": {"remaining_seconds": 1000}}), patch.object(ops, "get_kernel", return_value=self.remote()):
+            result = ops.submit(client, self.folder, self.output)
+        self.assertEqual(result["state"], "submitted")
+        self.assertTrue(result["source_verified"])
+        client.kernels_push.assert_called_once()
+
+    def test_unmatched_source_or_privacy_keeps_submission_unknown_and_never_retries(self):
+        for remote in (self.remote(source="print('different')"), self.remote(private=False)):
+            output = self.root / ("mismatch" if remote.metadata.is_private else "public")
+            client = SimpleNamespace(kernels_push=Mock(return_value=SimpleNamespace(ref="owner/notebook", version_number=0, error="")))
+            with patch.object(ops, "quota", return_value={"gpu": {"remaining_seconds": 1000}}), patch.object(ops, "get_kernel", return_value=remote):
+                with self.assertRaises(ValueError):
+                    ops.submit(client, self.folder, output)
+                self.assertEqual(ops.load(output / "job.json")["state"], "submission_unknown")
+                with self.assertRaisesRegex(ValueError, "already exists"):
+                    ops.submit(client, self.folder, output)
+            client.kernels_push.assert_called_once()
+
+    def test_notebook_source_signature_ignores_server_output_but_checks_executed_code(self):
+        notebook = {"cells": [{"cell_type": "code", "source": ["print('done')\n"], "outputs": []}]}
+        signature = ops.source_signature(json.dumps(notebook), "notebook")
+        notebook["cells"][0].update(source="print('done')\n", outputs=[{"output_type": "stream", "text": "done"}])
+        self.assertEqual(ops.source_signature(json.dumps(notebook), "notebook"), signature)
+        notebook["cells"][0]["source"] = "print('different')\n"
+        self.assertNotEqual(ops.source_signature(json.dumps(notebook), "notebook"), signature)
 
     def test_utf8_open_preserves_binary_and_positional_encoding(self):
         path = self.root / "text"
@@ -62,11 +137,23 @@ class KaggleTests(unittest.TestCase):
         self.assertEqual(client.kernels_push.call_count, 1)
 
     def test_submit_pins_returned_version(self):
-        client = SimpleNamespace(kernels_push=Mock(return_value=SimpleNamespace(ref="owner/notebook", version_number=7, error="")))
+        client = SimpleNamespace(kernels_push=Mock(return_value=SimpleNamespace(ref="/code/owner/notebook", version_number=7, error="")))
         with patch.object(ops, "quota", return_value={"gpu": {"remaining_seconds": 1000}}):
             result = ops.submit(client, self.folder, self.output)
         self.assertEqual(result["version"], 7)
+        self.assertEqual(result["ref"], "owner/notebook")
+        self.assertEqual(result["submission_response"]["ref"], "/code/owner/notebook")
         client.kernels_push.assert_called_once_with(str(self.folder), timeout="600")
+
+    def test_unexpected_submission_ref_stays_unknown_and_never_resubmits(self):
+        client = SimpleNamespace(kernels_push=Mock(return_value=SimpleNamespace(ref="/code/another/notebook", version_number=7, error="")))
+        with patch.object(ops, "quota", return_value={"gpu": {"remaining_seconds": 1000}}):
+            with self.assertRaisesRegex(ValueError, "unexpected ref"):
+                ops.submit(client, self.folder, self.output)
+            with self.assertRaisesRegex(ValueError, "already exists"):
+                ops.submit(client, self.folder, self.output)
+        self.assertEqual(ops.load(self.output / "job.json")["state"], "submission_unknown")
+        client.kernels_push.assert_called_once()
 
     def test_unknown_quota_and_unsafe_uploads_block_submission(self):
         client = Mock()
@@ -153,12 +240,6 @@ class KaggleTests(unittest.TestCase):
             ops.read_retry(read)
         self.assertEqual(read.call_count, 1)
 
-    def test_cloud_rerun_submit_is_rejected(self):
-        with patch.dict(os.environ, {"KAGGLE_JOB_ACTION": "submit", "GITHUB_RUN_ATTEMPT": "2"}), patch.object(ops, "submit") as submit:
-            with self.assertRaisesRegex(ValueError, "do not rerun"):
-                ops.cloud_run(Mock(), self.output)
-        submit.assert_not_called()
-
     def test_active_remote_job_blocks_new_output_directory(self):
         client = Mock()
         with patch.object(ops, "quota", return_value={"gpu": {"remaining_seconds": 1000}}), patch.object(ops, "latest_version", return_value=6), patch.object(ops, "status", return_value={"status": "running"}):
@@ -173,14 +254,26 @@ class KaggleTests(unittest.TestCase):
                 ops.clean_upload(self.folder)
 
     def test_reconciliation_requires_newer_version_and_preserves_identity(self):
-        job = dict(self.job, state="submission_unknown", previous_version=6, code_sha256="digest")
+        job = dict(self.job, state="submission_unknown", previous_version=6, code_sha256="digest", kernel_type="script",
+                   source_signature=ops.source_signature("print('done')", "script"), enable_gpu=True, enable_internet=False)
         ops.save(self.output / "job.json", job)
         with self.assertRaises(ValueError):
             ops.reconcile(Mock(), self.output / "job.json", 6)
-        with patch.object(ops, "status", return_value={"status": "running"}):
+        with patch.object(ops, "get_kernel", return_value=self.remote()), patch.object(ops, "status", return_value={"status": "running"}):
             result = ops.reconcile(Mock(), self.output / "job.json", 7)
         self.assertEqual(result["code_sha256"], "digest")
         self.assertEqual(result["state"], "submitted")
+
+    def test_reconciliation_cannot_accept_a_different_or_old_notebook_version(self):
+        job = dict(self.job, state="submission_unknown", previous_version=6, kernel_type="script",
+                   source_signature=ops.source_signature("print('done')", "script"), enable_gpu=True, enable_internet=False)
+        ops.save(self.output / "job.json", job)
+        for remote in (self.remote(version=6), self.remote(source="print('different')")):
+            with patch.object(ops, "get_kernel", return_value=remote), patch.object(ops, "status") as status:
+                with self.assertRaises(ValueError):
+                    ops.reconcile(Mock(), self.output / "job.json", 7)
+            status.assert_not_called()
+        self.assertEqual(ops.load(self.output / "job.json")["state"], "submission_unknown")
 
 
 if __name__ == "__main__":
