@@ -3,6 +3,7 @@
 - 日本語で短く回答する。既存の400M索引や過去実験の生データを移動・削除しない。
 - `docs` 全体を再帰走査しない。必要なファイルに限定し、runtime、venv、.deps、rawを避ける。
 - Python 3.12以上。新しい実験基盤の検証は `python3 -B -m unittest discover -s tests -p 'test_lab*.py'`。
+- 簡単なタスクと調査全般をサブエージェントへ委譲する場合は、指定モデル `gpt-6-luna` を使う。モデル指定可能な起動方法を優先し、利用できなければLuna指定を受け付ける明示的に配備・認証・許可済みの経路を使う。いずれも利用できなければ代替モデルを勝手に使わず報告する。モデルの自己申告だけを実モデルIDの検証と扱わない。
 - Kaggle計算が必要な場合は `.agents/skills/kaggle-ops/SKILL.md` を読む。SecretsはGitHub Actionsの操作stepで使用する。返ったref・versionとActions run IDを保存し、ログ・成果物・continuationを取得して検証後に続ける。同じジョブの待機を新規submitへ置き換えない。
 - `transport=impit` はImpitによるHTTP取得、`transport=adaptive` はImpitとAdaptivePlaywrightCrawlerを接続する任意の経路。既存の予算・robots・証拠保存を必ず通す。`bash scripts/cloud_setup.sh adaptive` で導入し、`tests/test_impit.py` と `tests/test_adaptive.py` で検証する。Patchrightは事前配備のみで、この経路には使わない。導入だけを理由に個別サイトのブロック対策を始めない。
 
