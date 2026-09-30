@@ -9,6 +9,21 @@ if [ "$profile" = adaptive-agent ]; then
   bash scripts/setup_model_runner.sh
   profile=adaptive
 fi
+
+# Codex Cloud images do not necessarily expose the Codex CLI on PATH.
+# Install it explicitly so model-selectable CLI experiments are available.
+if ! command -v codex >/dev/null 2>&1; then
+  npm install -g @openai/codex@latest
+fi
+command -v codex
+codex --version
+# Do not require credentials during setup. Authentication is checked only when
+# a later task actually invokes a model.
+if codex login status >/dev/null 2>&1; then
+  echo "Codex CLI authentication: available"
+else
+  echo "Codex CLI authentication: not configured"
+fi
 python3 -B -c 'import sys; assert sys.version_info >= (3, 12), "Python 3.12+ is required"'
 python3 -B -m unittest discover -s tests -p 'test_lab*.py'
 python3 -B -m jse.lab --help
