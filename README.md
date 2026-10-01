@@ -34,6 +34,8 @@ docker run --rm --network none --mount type=volume,src=discovery-lab-data,dst=/d
 
 ## 必要時に使う取得ツール
 
+OxiBrowser 0.25.0を使った[Google・Amazon・ジョーシン・Homes・Indeedの比較結果と使用セレクタ](docs/oxibrowser-experiment.md)を記録した。実サイトのHTTP取得と、保存HTML上のAI操作を分けて検証している。
+
 Crawlee Python 1.10.3、Impit 0.14.1、SessionPoolと、Patchright 1.63.0＋Chromiumを任意の環境として用意している。通常イメージには追加しない。
 
 ```bash
