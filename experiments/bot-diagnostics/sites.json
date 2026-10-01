@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "tools": ["wreq-js", "impit", "patchright", "rebrowser-lightpanda"],
+  "limits": {"requests_per_tool_site": 25, "body_bytes_per_tool_site": 8388608},
+  "operations_status": "waiting_for_user_selector_section",
+  "recovery_plan": {"max_attempts": 1, "return_home_after_success": true, "wait_seconds": 4, "retry_original_target": true},
+  "sites": [
+    {
+      "id": "amazon",
+      "origins": ["https://www.amazon.co.jp"],
+      "links": {"home": "https://www.amazon.co.jp/", "targets": ["https://www.amazon.co.jp/haul/store", "https://www.amazon.co.jp/s?k={query}"]},
+      "params": {"query": "USBケーブル"},
+      "selectors": {"primary": "#twotabsearchtextbox", "challenge": null},
+      "selector_evidence": "selector-candidates.json",
+      "url_evidence": "haul/store observed on homepage; search template is a proposed path, not tested"
+    },
+    {
+      "id": "joshin",
+      "origins": ["https://joshinweb.jp"],
+      "links": {"home": "https://joshinweb.jp/", "targets": ["https://joshinweb.jp/tobuy.html", "https://joshinweb.jp/javacookie.html"]},
+      "params": {},
+      "selectors": {"primary": "#suggest_input", "challenge": null},
+      "selector_evidence": "selector-candidates.json",
+      "url_evidence": "both links observed on homepage; fetch behavior is untested"
+    },
+    {
+      "id": "homes",
+      "origins": ["https://www.homes.co.jp"],
+      "links": {"home": "https://www.homes.co.jp/", "targets": ["https://www.homes.co.jp/chintai/", "https://www.homes.co.jp/mansion/shinchiku/"]},
+      "params": {},
+      "selectors": {"primary": "button[data-open-menu][aria-controls=\"Menu\"]", "challenge": null},
+      "selector_evidence": "selector-candidates.json",
+      "url_evidence": "both links observed on homepage; fetch behavior is untested"
+    },
+    {
+      "id": "indeed",
+      "origins": ["https://jp.indeed.com"],
+      "links": {"home": "https://jp.indeed.com/", "targets": ["https://jp.indeed.com/jobs?q={query}&l={location}"]},
+      "params": {"query": "エンジニア", "location": "東京"},
+      "selectors": {"primary": "#returnHome", "challenge": null},
+      "selector_evidence": "selector-candidates.json",
+      "url_evidence": "search template proposed; returnHome was observed on a blocked page and points outside the JP origin"
+    },
+    {
+      "id": "google",
+      "final_stage": true,
+      "enabled": false,
+      "origins": ["https://www.google.com"],
+      "links": {"home": "https://www.google.com/", "targets": ["https://www.google.com/search?q={query}"]},
+      "params": {"query": "東京 天気"},
+      "selectors": {"primary": null, "challenge": null},
+      "url_evidence": "proposed final stage; not measured, robots applies"
+    }
+  ]
+}

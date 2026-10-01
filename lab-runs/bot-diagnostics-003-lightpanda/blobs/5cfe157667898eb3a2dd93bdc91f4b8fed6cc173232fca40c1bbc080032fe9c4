@@ -1,0 +1,7 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>BotD 2.0.0 fixture</title>
+  </head><body><textarea id="result">pending</textarea><script type="module">
+  import {load} from '/botd.esm.js';
+  try { const agent=await load({monitoring:false}); const result=agent.detect();
+    document.querySelector('#result').value=JSON.stringify({result,components:agent.getComponents(),detections:agent.getDetections()});
+  } catch(e) { document.querySelector('#result').value=JSON.stringify({error:{name:e.name,message:e.message}}); }
+  </script></body></html>

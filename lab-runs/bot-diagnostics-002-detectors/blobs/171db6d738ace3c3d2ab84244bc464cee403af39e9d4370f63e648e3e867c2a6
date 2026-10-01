@@ -1,0 +1,109 @@
+<!DOCTYPE html><html lang="en"><head>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Security-Policy" content="default-src * data: 'unsafe-eval' 'unsafe-inline' blob:; script-src blob: 'self' 'unsafe-eval' 'unsafe-inline' https://static.cloudflareinsights.com https://cloudflareinsights.com;">
+        <title>rebrowser-bot-detector</title>
+        <meta name="description" content="Set of modern tests for browser automation. Check your Puppeteer and Playwright for leaks and detections.">
+        <script src="index.js?2"></script>
+        <link rel="stylesheet" href="index.css?2">
+    <script type="text/javascript" src="https://www.w3schools.com/js/myScript.js"></script></head>
+    <body>
+        <h1>🕵️ rebrowser-bot-detector </h1>
+        <div class="text-secondary">Modern tests to detect automated browser behavior. See <a href="https://github.com/rebrowser/rebrowser-bot-detector" target="_blank">github repo</a> for more details. <span onclick="toggleHowTo();" class="text-secondary dashed cursor-pointer">How to properly run the tests?</span></div>
+        <div id="how-to-run-test" class="d-none">
+            <p>These tests are designed for Chromium based browsers only.</p>
+            <p>To properly trigger all the tests you need to add the code below to your automation script and open this page again.</p>
+            <pre class="codeblock">                /* puppeteer &amp; playwright */
+                // dummyFn - must be called in the main context
+                await page.evaluate(() =&gt; window.dummyFn())
+                
+                // exposeFunctionLeak
+                await page.exposeFunction('exposedFn', () =&gt; { console.log('exposedFn call') })
+                
+                // sourceUrlLeak
+                await page.evaluate(() =&gt; document.getElementById('detections-json'))
+                
+                // mainWorldExecution - must be called in an isolated context
+                /* puppeteer */
+                await page.mainFrame().isolatedRealm().evaluate(() =&gt; document.getElementsByClassName('div'))
+                
+                /* 
+                playwright - there is no way to explicitly evaluate script in an isolated context
+                follow rebrowser-patches on github for the fix
+                */
+                await page.evaluate(() =&gt; document.getElementsByClassName('div'))
+            </pre>
+        </div>
+        
+        <table id="detections-table">
+            <thead>
+                <tr>
+                    <th>Test name</th>
+                    <th>Time since load</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody><tr><td><span class="text-nowrap">⚪️ dummyFn</span></td><td><span class="text-nowrap">0.8 ms</span></td><td>
+        Call <code>window.dummyFn()</code> to test if you can access main world objects.
+        
+      </td></tr><tr><td><span class="text-nowrap">⚪️ sourceUrlLeak</span></td><td><span class="text-nowrap">4.4 ms</span></td><td>
+        Call <code>document.getElementById('detections-json')</code> to test sourceUrl leak.
+        
+      </td></tr><tr><td><span class="text-nowrap">⚪️ mainWorldExecution</span></td><td><span class="text-nowrap">5.3 ms</span></td><td>
+        Call <code>document.getElementsByClassName('div')</code> to trigger this test. If you did and the test wasn't triggered, then you're running it in an isolated world, which is safe and not detectable.
+        
+      </td></tr><tr><td><span class="text-nowrap">🟢 runtimeEnableLeak</span></td><td><span class="text-nowrap">5.8 ms</span></td><td>
+        No leak detected.
+        
+      </td></tr><tr><td><span class="text-nowrap">🔴 exposeFunctionLeak</span></td><td><span class="text-nowrap">613.6 ms</span></td><td>
+        
+        <div>You're using unpatched Playwright and method <code>page.exposeFunction</code>.</div>
+        <div>No fix available. Follow <a href="https://github.com/rebrowser/rebrowser-patches" target="_blank">rebrowser-patches</a> to stay up-to-date.</div>
+        <div>Remove <code>page.exposeFunction</code> from your code to avoid this leak.</div>
+      
+        
+          <pre>{
+  "exposedFn.toString()": "(...args) =&gt; {\n    const me = globalThis[bindingName];\n    if (needsHandle &amp;&amp; args.slice(1).some((arg) =&gt; arg !== void 0))\n      throw new Error(`exposeBindingHandle supports a single argument, ${args.length} received`);\n    let callbacks = me[\"callbacks\"];\n    if (!callbacks) {\n      callbacks = /* @__PURE__ */ new Map();\n      me[\"callbacks\"] = callbacks;\n    }\n    const seq = (me[\"lastSeq\"] || 0) + 1;\n    me[\"lastSeq\"] = seq;\n    let handles = me[\"handles\"];\n    if (!handles) {\n      handles = /* @__PURE__ */ new Map();\n      me[\"handles\"] = handles;\n    }\n    const promise = new Promise((resolve, reject) =&gt; callbacks.set(seq, { resolve, reject }));\n    let payload;\n    if (needsHandle) {\n      handles.set(seq, args[0]);\n      payload = { name: bindingName, seq };\n    } else {\n      const serializedArgs = [];\n      for (let i = 0; i &lt; args.length; i++) {\n        serializedArgs[i] = serializeAsCallArgument2(args[i], (v) =&gt; {\n          return { fallThrough: v };\n        });\n      }\n      payload = { name: bindingName, seq, serializedArgs };\n    }\n    binding(JSON.stringify(payload));\n    return promise;\n  }"
+}</pre>
+        
+      </td></tr><tr><td><span class="text-nowrap">🟢 navigatorWebdriver</span></td><td><span class="text-nowrap">12.5 ms</span></td><td>
+        No webdriver presented.
+        
+      </td></tr><tr><td><span class="text-nowrap">🔴 viewport</span></td><td><span class="text-nowrap">68.1 ms</span></td><td>
+        Viewport has default Playwright values. Use <code>viewport: null</code> in options.
+        
+          <pre>{
+  "width": 1280,
+  "height": 720
+}</pre>
+        
+      </td></tr><tr><td><span class="text-nowrap">🟢 pwInitScripts</span></td><td><span class="text-nowrap">69.6 ms</span></td><td>
+        No <code>window.__pwInitScripts</code> detected.
+        
+      </td></tr><tr><td><span class="text-nowrap">🔴 useragent</span></td><td><span class="text-nowrap">88.3 ms</span></td><td>
+        
+    <div>Google Chrome is not presented in <code>navigator.userAgentData</code>. You might be using Google Chrome for Testing which is a red flag.</div>
+    <div>Try to specify <code>executablePath</code> and use Google Chrome (stable channel).</div>
+    
+        
+          <pre>{
+  "useragentVersionItems": [
+    {
+      "brand": "Chromium",
+      "version": "151.0.7922.173"
+    }
+  ]
+}</pre>
+        
+      </td></tr><tr><td><span class="text-nowrap">🟢 bypassCsp</span></td><td><span class="text-nowrap">99.6 ms</span></td><td>
+        Content Security Policy (CSP) is enabled, it's expected behavior.
+        
+      </td></tr></tbody>
+        </table>
+        
+        <h3>JSON</h3>
+        <textarea id="detections-json"></textarea>
+    
+        <footer>Sponsored by <a href="https://rebrowser.net">rebrowser.net</a> — the ultimate stealth browser and scraping solution fueled by AI.</footer>
+    
+
+</body></html>

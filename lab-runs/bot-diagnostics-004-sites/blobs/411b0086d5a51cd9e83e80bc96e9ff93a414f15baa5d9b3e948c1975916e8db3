@@ -1,0 +1,47 @@
+import { Controller } from '@hotwired/stimulus';
+
+export default class extends Controller {
+  static targets = ['hisfavLink'];
+
+  connect() {
+    if (document.getElementById('prg-addFromSaleToHisFavUrl') !== null) {
+      // Handle when have update on normal list page
+      pubsub.subscribe('search.list.update.done', () => {
+        this.setHisFavUrl();
+      });
+      // Handle when have update on map page
+      pubsub.subscribe('condition.ra.changed', () => {
+        this.setHisFavUrl();
+      });
+    }
+  }
+  setHisFavUrl() {
+    const mbgCheckedCheckboxes = document.querySelectorAll(
+      'input[type="checkbox"][id^="cond_mbg_"]:checked',
+    );
+
+    const isOnlyCheckedBKodate =
+      mbgCheckedCheckboxes.length === 1 &&
+      mbgCheckedCheckboxes[0].value === '1003';
+
+    if (isOnlyCheckedBKodate) {
+      this.hisfavLinkTargets.forEach((link) => {
+        const url = new URL(link.href);
+
+        if (!url.searchParams.has('from_sale')) {
+          url.searchParams.append('from_sale', '1');
+          link.href = url.toString();
+        }
+      });
+    } else {
+      this.hisfavLinkTargets.forEach((link) => {
+        const url = new URL(link.href);
+
+        if (url.searchParams.has('from_sale')) {
+          url.searchParams.delete('from_sale');
+          link.href = url.toString();
+        }
+      });
+    }
+  }
+}

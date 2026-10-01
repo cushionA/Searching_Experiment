@@ -1,0 +1,73 @@
+import { Controller } from '@hotwired/stimulus';
+
+import { tealiumClient } from '/library/tealium.js';
+
+export default class extends Controller {
+  static values = {
+    udata: { type: Object, default: {} },
+    udataByType: {
+      type: Object,
+      default: {
+        /** [eventName]: object */
+      },
+    },
+    // Key of parameter to include/exclude from utag_data
+    includes: { type: Array, default: [] },
+    excludes: { type: Array, default: [] },
+  };
+
+  connect() {
+    this.dispatch('connect');
+  }
+
+  send(_evt) {
+    const udata = { ...this.udataValue, ..._evt?.detail?.udata };
+    Object.keys(udata).length &&
+      tealiumClient.link(udata, this.includesValue, this.excludesValue);
+  }
+
+  /**
+   * イベント、セレクタに応じたパラメータを発火する
+   * pattern syntax: eventName.key@{selector} (key, selector は optional)
+   *
+   * 例1: tealium で dispatch されたイベントに応じて切り替える場合
+   * data-tealium-udata-by-type-value={JSON.stringify({
+   *   favorite_add: { ... }
+   *   favorite_remove: { ... }
+   * }})}
+   * data-action="
+   *   favorite_add@document->tealium#sendByEventType
+   *   favorite_remove@document->tealium#sendByEventType
+   * "
+   * data-action="change->tealium#sendByType"
+   *
+   * 例2: チェックの状態に応じて切り替える場合
+   * data-tealium-udata-by-type-value={JSON.stringify({
+   *   'change@{:checked}': { ... }
+   *   'change@{:not(:checked)}: { ... }
+   * }})}
+   * data-action="change->tealium#sendByEventType"
+   */
+  sendByEventType(evt) {
+    const type = evt.type.toLowerCase();
+    const found = Object.entries(this.udataByTypeValue).find(([pattern]) => {
+      let [eventName, , selector] = /^(.+?)(?:\.(.+?))?(?:@\{(.+?)\})?$/
+        .exec(pattern)
+        .slice(1);
+
+      // shift, ctrl 等のメタキーは現在非対応。対応が必要になったらその時対処。
+      return (
+        type === eventName && (!selector || this.element.matches(selector))
+      );
+    });
+
+    if (!found) {
+      return;
+    }
+
+    const value = found[1];
+    const udata = { ...value, ...evt.detail?.udata };
+    Object.keys(udata).length &&
+      tealiumClient.link(udata, this.includesValue, this.excludesValue);
+  }
+}

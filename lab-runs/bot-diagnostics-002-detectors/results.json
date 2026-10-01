@@ -1,0 +1,633 @@
+[
+  {
+    "client": "wreq-js",
+    "detector": "rebrowser",
+    "outcome": "not_applicable_no_javascript",
+    "html_status": 200,
+    "note": "HTML fetch is not a detector pass. No navigator/DOM/JavaScript runtime."
+  },
+  {
+    "client": "wreq-js",
+    "detector": "botd",
+    "outcome": "not_applicable_no_javascript",
+    "html_status": 200,
+    "note": "HTML fetch is not a detector pass. No navigator/DOM/JavaScript runtime."
+  },
+  {
+    "client": "impit",
+    "detector": "rebrowser",
+    "outcome": "not_applicable_no_javascript",
+    "html_status": 200,
+    "note": "HTML fetch is not a detector pass. No navigator/DOM/JavaScript runtime."
+  },
+  {
+    "client": "impit",
+    "detector": "botd",
+    "outcome": "not_applicable_no_javascript",
+    "html_status": 200,
+    "note": "HTML fetch is not a detector pass. No navigator/DOM/JavaScript runtime."
+  },
+  {
+    "client": "playwright-baseline",
+    "detector": "rebrowser",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "trigger_errors": [],
+    "page_errors": [],
+    "detections": [
+      {
+        "type": "dummyFn",
+        "rating": -1,
+        "note": "<code>window.dummyFn()</code> was called! It means you can interact with main world objects.",
+        "msSinceLoad": 629
+      },
+      {
+        "type": "sourceUrlLeak",
+        "rating": 1,
+        "note": "Error stack contains <code>UtilityScript.</code>. You're using unpatched Playwright. Use <a href=\"https://github.com/rebrowser/rebrowser-patches\" target=\"_blank\">rebrowser-patches</a> to fix it.",
+        "debug": "Error: Detection Error\n    at testSourceUrlError (http://127.0.0.1:42263/index.js?2:373:19)\n    at HTMLDocument.getElementById (http://127.0.0.1:42263/index.js?2:401:7)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:16)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+        "msSinceLoad": 663.2
+      },
+      {
+        "type": "mainWorldExecution",
+        "rating": 1,
+        "note": "You've called <code>document.getElementsByClassName()</code> in the main world. Use <a href=\"https://github.com/rebrowser/rebrowser-patches\" target=\"_blank\">rebrowser-patches</a> to run your scripts in an isolated world.",
+        "debug": {
+          "args": [
+            "div"
+          ]
+        },
+        "msSinceLoad": 669
+      },
+      {
+        "type": "runtimeEnableLeak",
+        "rating": -1,
+        "note": "No leak detected.",
+        "msSinceLoad": 7.8
+      },
+      {
+        "type": "exposeFunctionLeak",
+        "note": "\n            <div>You're using unpatched Playwright and method <code>page.exposeFunction</code> as it creates <code>window.__playwright__binding__</code> object.</div>\n            <div>No fix available. Follow <a href=\"https://github.com/rebrowser/rebrowser-patches\" target=\"_blank\">rebrowser-patches</a> to stay up-to-date.</div>\n            <div>Remove <code>page.exposeFunction</code> from your code to avoid this leak.</div>\n          ",
+        "rating": 1,
+        "debug": {
+          "windowKey": "__playwright__binding__"
+        },
+        "msSinceLoad": 751.4
+      },
+      {
+        "type": "navigatorWebdriver",
+        "rating": 1,
+        "debug": "typeof navigator.webdriver = boolean; navigator.webdriver = true",
+        "note": "<code>navigator.webdriver = true</code> indicates that browser is automated. Use <code>--disable-blink-features=AutomationControlled</code> switch for Chrome.",
+        "msSinceLoad": 15.9
+      },
+      {
+        "type": "viewport",
+        "rating": 1,
+        "debug": {
+          "width": 1280,
+          "height": 720
+        },
+        "note": "Viewport has default Playwright values. Use <code>viewport: null</code> in options.",
+        "msSinceLoad": 114.8
+      },
+      {
+        "type": "pwInitScripts",
+        "rating": -1,
+        "note": "No <code>window.__pwInitScripts</code> detected.",
+        "msSinceLoad": 119.7
+      },
+      {
+        "type": "useragent",
+        "rating": 1,
+        "debug": {
+          "useragentVersionItems": [
+            {
+              "brand": "Chromium",
+              "version": "151.0.7922.173"
+            }
+          ]
+        },
+        "note": "\n    <div>Google Chrome is not presented in <code>navigator.userAgentData</code>. You might be using Google Chrome for Testing which is a red flag.</div>\n    <div>Try to specify <code>executablePath</code> and use Google Chrome (stable channel).</div>\n    ",
+        "msSinceLoad": 136
+      },
+      {
+        "type": "bypassCsp",
+        "rating": -1,
+        "note": "Content Security Policy (CSP) is enabled, it's expected behavior.",
+        "msSinceLoad": 140.3
+      }
+    ],
+    "outcome": "detector_completed",
+    "red_flags": [
+      "sourceUrlLeak",
+      "mainWorldExecution",
+      "exposeFunctionLeak",
+      "navigatorWebdriver",
+      "viewport",
+      "useragent"
+    ],
+    "unassessed": [],
+    "dom_sha256": "df8c2c8d0be2e476addcd279b823b17ee2760196b012aaa5f2aa1f6348d9ff10"
+  },
+  {
+    "client": "playwright-baseline",
+    "detector": "botd",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "trigger_errors": [],
+    "page_errors": [],
+    "botd": {
+      "result": {
+        "bot": true,
+        "botKind": "headless_chrome"
+      },
+      "components": {
+        "process": {
+          "state": -1,
+          "error": "BotdError: window.process is undefined"
+        },
+        "android": {
+          "value": false,
+          "state": 0
+        },
+        "browserKind": {
+          "value": "chrome",
+          "state": 0
+        },
+        "browserEngineKind": {
+          "value": "chromium",
+          "state": 0
+        },
+        "documentFocus": {
+          "value": true,
+          "state": 0
+        },
+        "userAgent": {
+          "value": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+          "state": 0
+        },
+        "appVersion": {
+          "value": "5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+          "state": 0
+        },
+        "rtt": {
+          "value": 100,
+          "state": 0
+        },
+        "windowSize": {
+          "value": {
+            "outerWidth": 1280,
+            "outerHeight": 720,
+            "innerWidth": 1280,
+            "innerHeight": 720
+          },
+          "state": 0
+        },
+        "pluginsLength": {
+          "value": 5,
+          "state": 0
+        },
+        "pluginsArray": {
+          "value": true,
+          "state": 0
+        },
+        "errorTrace": {
+          "value": "TypeError: Cannot read properties of null (reading '0')\n    at getErrorTrace (http://127.0.0.1:42263/botd.esm.js:344:13)\n    at http://127.0.0.1:42263/botd.esm.js:83:30\n    at Array.map (<anonymous>)\n    at collect (http://127.0.0.1:42263/botd.esm.js:79:35)\n    at BotDetector.collect (http://127.0.0.1:42263/botd.esm.js:777:33)\n    at load (http://127.0.0.1:42263/botd.esm.js:806:20)\n    at http://127.0.0.1:42263/botd:4:27",
+          "state": 0
+        },
+        "productSub": {
+          "value": "20030107",
+          "state": 0
+        },
+        "windowExternal": {
+          "value": "[object External]",
+          "state": 0
+        },
+        "mimeTypesConsistent": {
+          "value": true,
+          "state": 0
+        },
+        "evalLength": {
+          "value": 33,
+          "state": 0
+        },
+        "webGL": {
+          "value": {
+            "vendor": "WebKit",
+            "renderer": "WebKit WebGL"
+          },
+          "state": 0
+        },
+        "webDriver": {
+          "value": true,
+          "state": 0
+        },
+        "languages": {
+          "value": [
+            [
+              "en-US"
+            ]
+          ],
+          "state": 0
+        },
+        "documentElementKeys": {
+          "value": [],
+          "state": 0
+        },
+        "functionBind": {
+          "value": "function bind() { [native code] }",
+          "state": 0
+        },
+        "distinctiveProps": {
+          "value": {
+            "awesomium": false,
+            "cef": false,
+            "cefsharp": false,
+            "coachjs": false,
+            "fminer": false,
+            "geb": false,
+            "nightmarejs": false,
+            "phantomas": false,
+            "phantomjs": false,
+            "rhino": false,
+            "selenium": false,
+            "webdriverio": false,
+            "webdriver": false,
+            "headless_chrome": false
+          },
+          "state": 0
+        },
+        "notificationPermissions": {
+          "value": false,
+          "state": 0
+        }
+      },
+      "detections": {
+        "detectAppVersion": {
+          "bot": true,
+          "botKind": "headless_chrome"
+        },
+        "detectDocumentAttributes": {
+          "bot": false
+        },
+        "detectErrorTrace": {
+          "bot": false
+        },
+        "detectEvalLengthInconsistency": {
+          "bot": false
+        },
+        "detectFunctionBind": {
+          "bot": false
+        },
+        "detectLanguagesLengthInconsistency": {
+          "bot": false
+        },
+        "detectNotificationPermissions": {
+          "bot": false
+        },
+        "detectPluginsArray": {
+          "bot": false
+        },
+        "detectPluginsLengthInconsistency": {
+          "bot": false
+        },
+        "detectProcess": {
+          "bot": false
+        },
+        "detectUserAgent": {
+          "bot": true,
+          "botKind": "headless_chrome"
+        },
+        "detectWebDriver": {
+          "bot": true,
+          "botKind": "headless_chrome"
+        },
+        "detectWebGL": {
+          "bot": false
+        },
+        "detectWindowExternal": {
+          "bot": false
+        },
+        "detectWindowSize": {
+          "bot": false
+        },
+        "detectMimeTypesConsistent": {
+          "bot": false
+        },
+        "detectProductSub": {
+          "bot": false
+        },
+        "detectDistinctiveProperties": {
+          "bot": false
+        }
+      }
+    },
+    "outcome": "detector_completed",
+    "dom_sha256": "5cfe157667898eb3a2dd93bdc91f4b8fed6cc173232fca40c1bbc080032fe9c4"
+  },
+  {
+    "client": "patchright",
+    "detector": "rebrowser",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "trigger_errors": [
+      {
+        "trigger": "dummyFn",
+        "name": "Error",
+        "message": "page.evaluate: TypeError: window.dummyFn is not a function\n    at eval (eval at evaluate (:337:30), <anonymous>:1:14)\n    at UtilityScript.evaluate (<anonymous>:339:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      }
+    ],
+    "page_errors": [],
+    "detections": [
+      {
+        "type": "dummyFn",
+        "rating": 0,
+        "note": "Call <code>window.dummyFn()</code> to test if you can access main world objects.",
+        "msSinceLoad": 0.8
+      },
+      {
+        "type": "sourceUrlLeak",
+        "rating": 0,
+        "note": "Call <code>document.getElementById('detections-json')</code> to test sourceUrl leak.",
+        "msSinceLoad": 4.4
+      },
+      {
+        "type": "mainWorldExecution",
+        "rating": 0,
+        "note": "Call <code>document.getElementsByClassName('div')</code> to trigger this test. If you did and the test wasn't triggered, then you're running it in an isolated world, which is safe and not detectable.",
+        "msSinceLoad": 5.3
+      },
+      {
+        "type": "runtimeEnableLeak",
+        "rating": -1,
+        "note": "No leak detected.",
+        "msSinceLoad": 5.8
+      },
+      {
+        "type": "exposeFunctionLeak",
+        "note": "\n        <div>You're using unpatched Playwright and method <code>page.exposeFunction</code>.</div>\n        <div>No fix available. Follow <a href=\"https://github.com/rebrowser/rebrowser-patches\" target=\"_blank\">rebrowser-patches</a> to stay up-to-date.</div>\n        <div>Remove <code>page.exposeFunction</code> from your code to avoid this leak.</div>\n      ",
+        "rating": 1,
+        "debug": {
+          "exposedFn.toString()": "(...args) => {\n    const me = globalThis[bindingName];\n    if (needsHandle && args.slice(1).some((arg) => arg !== void 0))\n      throw new Error(`exposeBindingHandle supports a single argument, ${args.length} received`);\n    let callbacks = me[\"callbacks\"];\n    if (!callbacks) {\n      callbacks = /* @__PURE__ */ new Map();\n      me[\"callbacks\"] = callbacks;\n    }\n    const seq = (me[\"lastSeq\"] || 0) + 1;\n    me[\"lastSeq\"] = seq;\n    let handles = me[\"handles\"];\n    if (!handles) {\n      handles = /* @__PURE__ */ new Map();\n      me[\"handles\"] = handles;\n    }\n    const promise = new Promise((resolve, reject) => callbacks.set(seq, { resolve, reject }));\n    let payload;\n    if (needsHandle) {\n      handles.set(seq, args[0]);\n      payload = { name: bindingName, seq };\n    } else {\n      const serializedArgs = [];\n      for (let i = 0; i < args.length; i++) {\n        serializedArgs[i] = serializeAsCallArgument2(args[i], (v) => {\n          return { fallThrough: v };\n        });\n      }\n      payload = { name: bindingName, seq, serializedArgs };\n    }\n    binding(JSON.stringify(payload));\n    return promise;\n  }"
+        },
+        "msSinceLoad": 613.6
+      },
+      {
+        "type": "navigatorWebdriver",
+        "rating": -1,
+        "note": "No webdriver presented.",
+        "msSinceLoad": 12.5
+      },
+      {
+        "type": "viewport",
+        "rating": 1,
+        "debug": {
+          "width": 1280,
+          "height": 720
+        },
+        "note": "Viewport has default Playwright values. Use <code>viewport: null</code> in options.",
+        "msSinceLoad": 68.1
+      },
+      {
+        "type": "pwInitScripts",
+        "rating": -1,
+        "note": "No <code>window.__pwInitScripts</code> detected.",
+        "msSinceLoad": 69.6
+      },
+      {
+        "type": "useragent",
+        "rating": 1,
+        "debug": {
+          "useragentVersionItems": [
+            {
+              "brand": "Chromium",
+              "version": "151.0.7922.173"
+            }
+          ]
+        },
+        "note": "\n    <div>Google Chrome is not presented in <code>navigator.userAgentData</code>. You might be using Google Chrome for Testing which is a red flag.</div>\n    <div>Try to specify <code>executablePath</code> and use Google Chrome (stable channel).</div>\n    ",
+        "msSinceLoad": 88.3
+      },
+      {
+        "type": "bypassCsp",
+        "rating": -1,
+        "note": "Content Security Policy (CSP) is enabled, it's expected behavior.",
+        "msSinceLoad": 99.6
+      }
+    ],
+    "outcome": "detector_partial",
+    "red_flags": [
+      "exposeFunctionLeak",
+      "viewport",
+      "useragent"
+    ],
+    "unassessed": [
+      "dummyFn",
+      "sourceUrlLeak",
+      "mainWorldExecution"
+    ],
+    "dom_sha256": "171db6d738ace3c3d2ab84244bc464cee403af39e9d4370f63e648e3e867c2a6"
+  },
+  {
+    "client": "patchright",
+    "detector": "botd",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "trigger_errors": [],
+    "page_errors": [],
+    "botd": {
+      "result": {
+        "bot": true,
+        "botKind": "headless_chrome"
+      },
+      "components": {
+        "process": {
+          "state": -1,
+          "error": "BotdError: window.process is undefined"
+        },
+        "android": {
+          "value": false,
+          "state": 0
+        },
+        "browserKind": {
+          "value": "chrome",
+          "state": 0
+        },
+        "browserEngineKind": {
+          "value": "chromium",
+          "state": 0
+        },
+        "documentFocus": {
+          "value": true,
+          "state": 0
+        },
+        "userAgent": {
+          "value": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+          "state": 0
+        },
+        "appVersion": {
+          "value": "5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+          "state": 0
+        },
+        "rtt": {
+          "value": 100,
+          "state": 0
+        },
+        "windowSize": {
+          "value": {
+            "outerWidth": 1280,
+            "outerHeight": 720,
+            "innerWidth": 1280,
+            "innerHeight": 720
+          },
+          "state": 0
+        },
+        "pluginsLength": {
+          "value": 5,
+          "state": 0
+        },
+        "pluginsArray": {
+          "value": true,
+          "state": 0
+        },
+        "errorTrace": {
+          "value": "TypeError: Cannot read properties of null (reading '0')\n    at getErrorTrace (http://127.0.0.1:42263/botd.esm.js:344:13)\n    at http://127.0.0.1:42263/botd.esm.js:83:30\n    at Array.map (<anonymous>)\n    at collect (http://127.0.0.1:42263/botd.esm.js:79:35)\n    at BotDetector.collect (http://127.0.0.1:42263/botd.esm.js:777:33)\n    at load (http://127.0.0.1:42263/botd.esm.js:806:20)\n    at http://127.0.0.1:42263/botd:4:27",
+          "state": 0
+        },
+        "productSub": {
+          "value": "20030107",
+          "state": 0
+        },
+        "windowExternal": {
+          "value": "[object External]",
+          "state": 0
+        },
+        "mimeTypesConsistent": {
+          "value": true,
+          "state": 0
+        },
+        "evalLength": {
+          "value": 33,
+          "state": 0
+        },
+        "webGL": {
+          "value": {
+            "vendor": "WebKit",
+            "renderer": "WebKit WebGL"
+          },
+          "state": 0
+        },
+        "webDriver": {
+          "value": false,
+          "state": 0
+        },
+        "languages": {
+          "value": [
+            [
+              "en-US"
+            ]
+          ],
+          "state": 0
+        },
+        "documentElementKeys": {
+          "value": [],
+          "state": 0
+        },
+        "functionBind": {
+          "value": "function bind() { [native code] }",
+          "state": 0
+        },
+        "distinctiveProps": {
+          "value": {
+            "awesomium": false,
+            "cef": false,
+            "cefsharp": false,
+            "coachjs": false,
+            "fminer": false,
+            "geb": false,
+            "nightmarejs": false,
+            "phantomas": false,
+            "phantomjs": false,
+            "rhino": false,
+            "selenium": false,
+            "webdriverio": false,
+            "webdriver": false,
+            "headless_chrome": false
+          },
+          "state": 0
+        },
+        "notificationPermissions": {
+          "value": false,
+          "state": 0
+        }
+      },
+      "detections": {
+        "detectAppVersion": {
+          "bot": true,
+          "botKind": "headless_chrome"
+        },
+        "detectDocumentAttributes": {
+          "bot": false
+        },
+        "detectErrorTrace": {
+          "bot": false
+        },
+        "detectEvalLengthInconsistency": {
+          "bot": false
+        },
+        "detectFunctionBind": {
+          "bot": false
+        },
+        "detectLanguagesLengthInconsistency": {
+          "bot": false
+        },
+        "detectNotificationPermissions": {
+          "bot": false
+        },
+        "detectPluginsArray": {
+          "bot": false
+        },
+        "detectPluginsLengthInconsistency": {
+          "bot": false
+        },
+        "detectProcess": {
+          "bot": false
+        },
+        "detectUserAgent": {
+          "bot": true,
+          "botKind": "headless_chrome"
+        },
+        "detectWebDriver": {
+          "bot": false
+        },
+        "detectWebGL": {
+          "bot": false
+        },
+        "detectWindowExternal": {
+          "bot": false
+        },
+        "detectWindowSize": {
+          "bot": false
+        },
+        "detectMimeTypesConsistent": {
+          "bot": false
+        },
+        "detectProductSub": {
+          "bot": false
+        },
+        "detectDistinctiveProperties": {
+          "bot": false
+        }
+      }
+    },
+    "outcome": "detector_completed",
+    "dom_sha256": "5cfe157667898eb3a2dd93bdc91f4b8fed6cc173232fca40c1bbc080032fe9c4"
+  },
+  {
+    "client": "rebrowser-lightpanda",
+    "detector": "browser_setup_or_execution",
+    "outcome": "execution_error",
+    "error": {
+      "name": "SyntaxError",
+      "message": "Unexpected end of JSON input"
+    },
+    "log": "$time=1790810468509 $scope=app $level=warn $msg=\"create data dir\" err=ReadOnlyFileSystem path=kAEDAAAAAACywVW+jBKcP2FsL3NoYXJlL2xpZ2h0cGFuZGE\n$time=1790810468510 $scope=note $level=note $msg=\"server running\" address=127.0.0.1:43975 max_connections=16247 max_browser_connections=16\n"
+  }
+]
