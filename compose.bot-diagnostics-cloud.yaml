@@ -1,0 +1,26 @@
+# Optional cloud-only proxy/CA wiring. The normal Compose file needs no host cache or session CA.
+services:
+  bot-diagnostics:
+    build:
+      secrets: [proxy_ca, system_ca]
+      additional_contexts:
+        lightpanda-input: ${BOT_DIAGNOSTICS_LIGHTPANDA_CONTEXT:-./.lab-output/lightpanda-build}
+    environment:
+      NODE_EXTRA_CA_CERTS: /run/proxy-ca.pem
+      SSL_CERT_FILE: /run/system-ca.pem
+      REQUESTS_CA_BUNDLE: /run/system-ca.pem
+      BOT_DIAGNOSTICS_CA: /run/proxy-ca.pem
+    volumes:
+      - type: bind
+        source: ${CODEX_PROXY_CERT:?Set CODEX_PROXY_CERT to the provided public proxy CA}
+        target: /run/proxy-ca.pem
+        read_only: true
+      - type: bind
+        source: ${SSL_CERT_FILE:-/etc/ssl/certs/ca-certificates.crt}
+        target: /run/system-ca.pem
+        read_only: true
+secrets:
+  proxy_ca:
+    file: ${CODEX_PROXY_CERT:?Set CODEX_PROXY_CERT to the provided public proxy CA}
+  system_ca:
+    file: ${SSL_CERT_FILE:-/etc/ssl/certs/ca-certificates.crt}

@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import http from 'node:http';
 import crypto from 'node:crypto';
+import os from 'node:os';
 import { spawn, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
@@ -9,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repo = path.resolve(here, '../..');
 const deps = path.resolve(process.env.BOT_DIAGNOSTICS_DEPS || path.join(repo, '.deps/bot-diagnostics'));
+const state = path.resolve(process.env.BOT_DIAGNOSTICS_STATE || path.join(os.tmpdir(), 'bot-diagnostics-state'));
 const require = createRequire(path.join(deps, 'package.json'));
 const config = JSON.parse(fs.readFileSync(path.join(here, 'config.json')));
 const L = config.limits;
@@ -240,12 +242,14 @@ async function startFixture() {
 }
 
 export async function openBrowser(name, {extensions = []} = {}) {
+  fs.mkdirSync(state, {recursive:true});
   if (name === 'rebrowser-lightpanda' && extensions.length) throw new Error('unsupported_capability:extensions');
   if (name !== 'rebrowser-lightpanda') {
     const { chromium } = require(name === 'patchright' ? 'patchright' : 'playwright');
     const launch = { executablePath: process.env.BOT_DIAGNOSTICS_CHROMIUM || '/usr/bin/chromium',
-      headless: true, chromiumSandbox: false, proxy: { server: proxy, bypass: '127.0.0.1,localhost' },
-      env: { ...process.env, XDG_DATA_HOME: path.join(deps, 'chromium-data') } };
+      headless: true, chromiumSandbox: false,
+      ...(proxy ? {proxy:{server:proxy,bypass:'127.0.0.1,localhost'}} : {}),
+      env: { ...process.env, XDG_DATA_HOME: path.join(state, 'chromium-data') } };
     const browser = await chromium.launch(launch);
     const probe = await browser.newContext();
     const page = await probe.newPage();
@@ -253,7 +257,7 @@ export async function openBrowser(name, {extensions = []} = {}) {
     await probe.close();
     if (extensions.length) {
       await browser.close();
-      const profile = fs.mkdtempSync(path.join(deps, 'extension-profile-'));
+      const profile = fs.mkdtempSync(path.join(state, 'extension-profile-'));
       let context;
       try {
         context = await chromium.launchPersistentContext(profile, {...launch, userAgent:ua,
@@ -279,12 +283,12 @@ export async function openBrowser(name, {extensions = []} = {}) {
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   const port = server.address().port;
   await new Promise(resolve => server.close(resolve));
-  const args = ['serve', '--host', '127.0.0.1', '--port', String(port), '--http-proxy', proxy,
+  const args = ['serve', '--host', '127.0.0.1', '--port', String(port), ...(proxy ? ['--http-proxy',proxy] : []),
     '--user-agent-suffix', config.identification, '--http-max-response-size', String(L.bytes_per_response),
     '--http-timeout', String(L.navigation_timeout_ms), '--http-max-concurrent', '1', '--log-level', 'warn'];
   const cert = process.env.SSL_CERT_FILE || '/etc/ssl/certs/ca-certificates.crt';
   args.push('--ca-cert', cert);
-  const child = spawn(path.join(deps, 'lightpanda'), args, { env: { ...process.env, XDG_DATA_HOME: path.join(deps, 'lightpanda-data'), LIGHTPANDA_DISABLE_TELEMETRY: 'true', LIGHTPANDA_DISABLE_CORE_DUMP: 'true' } });
+  const child = spawn(path.join(deps, 'lightpanda'), args, { env: { ...process.env, XDG_DATA_HOME: path.join(state, 'lightpanda-data'), LIGHTPANDA_DISABLE_TELEMETRY: 'true', LIGHTPANDA_DISABLE_CORE_DUMP: 'true' } });
   child.stderr.on('data', chunk => log.push(chunk.toString()));
   let browser;
   try {

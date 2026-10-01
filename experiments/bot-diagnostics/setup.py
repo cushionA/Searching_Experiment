@@ -28,6 +28,7 @@ def download(url, cap):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--with-browser", action="store_true", help="Install the pinned Playwright Chrome for Testing in the workspace")
+    parser.add_argument("--lightpanda-file", type=Path, help="Use an existing public Lightpanda binary after checking the pinned SHA256")
     args = parser.parse_args()
     DEPS.mkdir(parents=True, exist_ok=True)
     for name in ("package.json", "package-lock.json"):
@@ -51,6 +52,12 @@ def main():
             "executable": str(executable), "version": browser["browserVersion"],
             "revision": browser["revision"], "sha256": hashlib.sha256(executable.read_bytes()).hexdigest(),
         }, indent=2) + "\n")
+        link = DEPS / "chromium"
+        if link.is_symlink():
+            link.unlink()
+        elif link.exists():
+            raise RuntimeError("Refusing to replace a non-symlink Chromium path")
+        link.symlink_to(executable.relative_to(DEPS))
         print("BOT_DIAGNOSTICS_CHROMIUM=" + str(executable))
     commit = VERSIONS["detector_commit"]
     archive = download(
@@ -72,6 +79,11 @@ def main():
         "repo": "https://github.com/rebrowser/rebrowser-bot-detector", "commit": commit,
     }, indent=2) + "\n")
     binary = DEPS / "lightpanda"
+    if args.lightpanda_file:
+        body = args.lightpanda_file.read_bytes()
+        if hashlib.sha256(body).hexdigest() != VERSIONS["lightpanda_sha256"]:
+            raise RuntimeError("Supplied Lightpanda hash mismatch")
+        binary.write_bytes(body)
     if not binary.exists():
         body = download(VERSIONS["lightpanda_url"], 256_000_000)
         if hashlib.sha256(body).hexdigest() != VERSIONS["lightpanda_sha256"]:
