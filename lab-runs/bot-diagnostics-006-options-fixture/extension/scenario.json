@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "tools": [
+    "wreq-js",
+    "impit",
+    "patchright",
+    "rebrowser-lightpanda",
+    "playwright-baseline"
+  ],
+  "limits": {
+    "requests_per_tool_site": 25,
+    "body_bytes_per_tool_site": 8388608
+  },
+  "options": {
+    "selectors": false,
+    "recoverSimple": false,
+    "seed": 1,
+    "recoveryMaxAttempts": 1
+  },
+  "recovery_plan": {
+    "max_attempts": 1,
+    "return_home_after_success": true,
+    "wait_seconds": 0,
+    "retry_original_target": true
+  },
+  "profiles": [
+    {
+      "id": "extension",
+      "humanlike": false,
+      "extensions": [
+        "/workspace/Searching_Experiment/experiments/bot-diagnostics/extensions/observation-probe"
+      ],
+      "extension_probe": {
+        "kind": "attribute",
+        "selector": "html",
+        "name": "data-bot-diagnostics-extension",
+        "value": "loaded"
+      }
+    }
+  ],
+  "sites": [
+    {
+      "id": "fixture",
+      "origins": [
+        "http://127.0.0.1:34895"
+      ],
+      "links": {
+        "home": "http://127.0.0.1:34895/",
+        "targets": [
+          "http://127.0.0.1:34895/inside"
+        ]
+      },
+      "params": {},
+      "selectors": {
+        "primary": "#query"
+      },
+      "operations": [],
+      "recovery": {
+        "kind": "simple_button",
+        "selector": "#solve",
+        "success": {
+          "kind": "present",
+          "selector": "#normal-content"
+        }
+      },
+      "enabled": true
+    }
+  ]
+}

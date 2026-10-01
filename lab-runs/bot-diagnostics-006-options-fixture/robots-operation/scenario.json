@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "tools": [
+    "patchright",
+    "rebrowser-lightpanda",
+    "playwright-baseline"
+  ],
+  "limits": {
+    "requests_per_tool_site": 25,
+    "body_bytes_per_tool_site": 8388608
+  },
+  "options": {
+    "selectors": true,
+    "recoverSimple": true,
+    "seed": 17,
+    "recoveryMaxAttempts": 1
+  },
+  "recovery_plan": {
+    "max_attempts": 1,
+    "return_home_after_success": true,
+    "wait_seconds": 0,
+    "retry_original_target": true
+  },
+  "profiles": [
+    {
+      "id": "baseline",
+      "extensions": []
+    }
+  ],
+  "sites": [
+    {
+      "id": "fixture-robots",
+      "origins": [
+        "http://127.0.0.1:34895"
+      ],
+      "links": {
+        "home": "http://127.0.0.1:34895/network-action",
+        "targets": []
+      },
+      "params": {},
+      "selectors": {
+        "primary": "#query"
+      },
+      "operations": [
+        {
+          "op": "click",
+          "selector": "#forbidden",
+          "expect": {
+            "kind": "url",
+            "value": "http://127.0.0.1:34895/forbidden"
+          }
+        }
+      ],
+      "recovery": null,
+      "enabled": true
+    }
+  ]
+}

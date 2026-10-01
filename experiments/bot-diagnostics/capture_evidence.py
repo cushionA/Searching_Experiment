@@ -96,7 +96,7 @@ def main():
     (OUTPUT / "challenge-index.json").write_text(json.dumps(challenges, ensure_ascii=False, indent=2) + "\n")
     files = {str(p.relative_to(OUTPUT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in OUTPUT.iterdir() if p.is_file() and p.name != "SHA256.json"}
     (OUTPUT / "SHA256.json").write_text(json.dumps(files, indent=2) + "\n")
-    lines = ["# セレクタ候補とチャレンジ画面", "", "操作は保留。保存済みDOM内の一致確認まで実施した。ボタンだけで突破できるCAPTCHAは今回確認できていない。IndeedのReturn homeは通常の遷移リンクで、CAPTCHA突破ボタンではない。", "", "| サイト | 候補 | DOM一致数 |", "|---|---|---|"]
+    lines = ["# セレクタ候補とチャレンジ画面", "", "初回実サイト調査では操作は未実施。保存済みDOM内の一致確認まで実施した。共通フレームワークの操作オプションは別途fixtureで検証する。ボタンだけで突破できるCAPTCHAは今回確認できていない。IndeedのReturn homeは通常の遷移リンクで、CAPTCHA突破ボタンではない。", "", "| サイト | 候補 | DOM一致数 |", "|---|---|---|"]
     lines += [f"| {c['site']} | `{c['selector']}` | {c['saved_dom_match_count']} |" for c in candidates]
     lines += ["", "## チャレンジ・拒否画面", ""]
     for c in challenges:

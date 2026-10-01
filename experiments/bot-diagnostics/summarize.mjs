@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { classify, decodeBody, verify } from './runner.mjs';
+import { providerHints } from './providers.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const sites = path.join(repo, 'lab-runs/bot-diagnostics-004-sites');
@@ -18,6 +19,7 @@ for (const [key, r] of latest) {
     : record?.body_sha256 ? fs.readFileSync(path.join(sites, 'blobs', record.body_sha256)) : null;
   const html = r.dom_sha256 ? body?.toString('utf8') : body ? decodeBody(body, record.headers) : null;
   observations.push({ ...r, ...(html ? classify(r.http_status, html, record?.headers) : {}),
+    provider_observation:providerHints({html:html || '',headers:record?.headers,url:r.final_url || r.url}),
     evidence_source: r.dom_sha256 ? 'rendered_dom' : 'raw_response',
     ledger_key: key, evidence_sha256: r.dom_sha256 || record?.body_sha256 });
 }
@@ -62,6 +64,8 @@ ${rows}
 
 検知器が指摘した特徴と、実サイトが拒否した理由は別の観測である。サイト側のWAFルール・スコア・ログを取得していないため、「どの指紋が原因だったか」は確定できない。
 
+Rebrowserの公開rating条件、BotDの公開detectorとgetComponents/getDetectionsによる判定は確認できる。BotDは一般的な数値のBotスコアを返す道具ではない。Akamai・Cloudflare・AWS WAF等の製品はヘッダーやチャレンジHTMLの手掛かりから推定できるが、製品の内部点数・重み・閾値は公開応答だけでは確定できない。サイト管理者側のログが必要で、同じIP・TLS条件の単変量比較でも分かるのは傾向までである。
+
 ## Rebrowser Bot Detector / FingerprintJS BotD v2
 
 | 方式 | Rebrowser | BotD 2.0.0 |
@@ -101,7 +105,22 @@ Rebrowserソース: e1a25b1ff264cc9a5b5ea7fe8a6dfc26e3b1c718。Lightpanda SHA256
 - Lightpandaの特徴・互換性: [results.json](../lab-runs/bot-diagnostics-005-lightpanda-compatibility/results.json)
 - 再現手順: [README](../experiments/bot-diagnostics/README.md)
 
-原HTML・DOMは各runのblobs/SHA256へ保存し、スクリーンショットも保持した。summaryは現在の分類処理で原証拠を再分類した派生物で、旧分類を含む履歴は保持している。保存bodyのハッシュ、台帳の回数・bytes、予算上限、未確定取得の解消を検証した。既存Python検証43件と新しい診断のNode検証6件は成功した。
+原HTML・DOMは各runのblobs/SHA256へ保存し、スクリーンショットも保持した。summaryは現在の分類処理で原証拠を再分類した派生物で、旧分類を含む履歴は保持している。保存bodyのハッシュ、台帳の回数・bytes、予算上限、未確定取得の解消を検証した。Python検証44件、診断・フレームワークのNode検証19件が成功した。
+
+## 再利用する共通フレームワーク
+
+mainのOxiBrowser比較PR #6へリベースし、観測済みCSSセレクタと「API成功だけで操作成功と扱わない」という確認方法を取り込んだ。共通メインループへURL・セレクタ・役割を注入し、各ツールのnative機能で実行する。検索欄への入力、クリック・ホバー、簡単なボタンチャレンジ、トップ・待機・元URLへの1回再訪、操作速度と拡張の比較、Googleの最終段階をオプションとして実装した。
+
+全5方式のローカルfixtureでCookieを持ち越す連続アクセスと302/200の計上を検証した。Patchright・対照Playwright・Lightpandaでfill/click/hoverのDOM効果、通常・操作速度変更の両条件で簡単なチャレンジの成功確認と1回の再訪が通った。操作が発生させるrobots禁止URLは3ブラウザすべてで送信前に止めた。HTTPクライアントのDOM操作・人間風入力、Lightpandaの拡張は未対応として保存する。
+
+管理Chromium151は拡張の追加を管理ポリシーで拒否した。拡張の機能検証には専用Chrome for Testing153を使用し、Patchrightと対照Playwrightでnativeの拡張IDとDOMマーカーを確認した。初回実サイト応答の比較とはブラウザ条件が異なるため合算しない。同梱拡張は観測用であり、検知回避のパッチを加えない。
+
+内部URL・Google・実サイトでの操作や突破は本レポートの実測には含めない。実サイトで簡単な突破ボタンが確認できていないためrecovery設定はnull。Google検索はrobotsにより止まる場合がある。ローカルでの機能確認を実サイトの突破率として扱わない。
+
+- [共通インターフェイス・全オプションの手順](../experiments/bot-diagnostics/README.md)
+- [シナリオを毎回作成するSkill](../.agents/skills/bot-blocking-scenarios/SKILL.md)
+- [セレクタ・チャレンジ画面](bot-diagnostics-evidence.md)
+- [オプションのfixture検証](../lab-runs/bot-diagnostics-006-options-fixture/checks.json)
 
 公式資料: [Rebrowser Bot Detector](https://github.com/rebrowser/rebrowser-bot-detector)、[rebrowser-patches](https://github.com/rebrowser/rebrowser-patches)、[BotD v2](https://github.com/fingerprintjs/botd/tree/v2.0.0)、[Lightpanda](https://github.com/lightpanda-io/browser)、[Patchright](https://github.com/Kaliiiiiiiiii-Vinyzu/patchright)、[wreq-js](https://github.com/sqdshguy/wreq-js)、[impit](https://github.com/apify/impit)。
 `;

@@ -1,0 +1,387 @@
+[
+  {
+    "client": "patchright",
+    "target": "fixture-robots",
+    "profile": "baseline",
+    "role": "adapter_setup",
+    "outcome": "adapter_ready",
+    "capabilities": {
+      "fetch": false,
+      "goto": true,
+      "session": true,
+      "selectorOperations": true,
+      "challengeActions": true,
+      "extensions": true
+    },
+    "runtime": {
+      "executable": "/workspace/Searching_Experiment/.deps/bot-diagnostics/browsers/chromium-1243/chrome-linux64/chrome",
+      "version": "153.0.8010.12"
+    },
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1"
+  },
+  {
+    "client": "patchright",
+    "target": "fixture-robots",
+    "url": "http://127.0.0.1:34895/network-action",
+    "blocked_requests": [
+      {
+        "url": "http://127.0.0.1:34895/favicon.ico",
+        "reason": "resource_policy"
+      }
+    ],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/network-action",
+    "dom_sha256": "e137e4da073e67d30afd333043258be8b3a4413c0231620fbeea8b15dd75d6b7",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 0,
+      "actions_executed": false
+    },
+    "screenshot": "patchright-fixture-robots-baseline-homepage-1-1.png",
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Blocked path",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 2,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "homepage",
+    "navigation_method": "goto",
+    "session_sequence": 1,
+    "profile": "baseline",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "patchright",
+    "target": "fixture-robots",
+    "url": "http://127.0.0.1:34895/network-action",
+    "blocked_requests": [
+      {
+        "url": "http://127.0.0.1:34895/forbidden",
+        "reason": "robots_denied"
+      }
+    ],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "operation": {
+      "outcome": "postcondition_failed",
+      "observations": [
+        {
+          "step": {
+            "op": "click",
+            "selector": "#forbidden",
+            "expect": {
+              "kind": "url",
+              "value": "http://127.0.0.1:34895/forbidden"
+            }
+          },
+          "before": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Blocked path"
+          },
+          "after": {
+            "count": 0,
+            "value": null
+          },
+          "api_completed": true,
+          "postcondition": false,
+          "effect_verified": false,
+          "already_satisfied": false
+        }
+      ]
+    },
+    "final_url": "chrome-error://chromewebdata/",
+    "dom_sha256": "828b068f9f714c15131692bd00576dd972fbe58a25dc5e25a34ac0c562b33afd",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 0,
+      "actions_executed": false
+    },
+    "screenshot": "patchright-fixture-robots-baseline-selector_probe-2-2.png",
+    "outcome": "navigation_unverified",
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "selector_probe",
+    "navigation_method": "native_operation",
+    "session_sequence": 2,
+    "profile": "baseline",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "rebrowser-lightpanda",
+    "target": "fixture-robots",
+    "profile": "baseline",
+    "role": "adapter_setup",
+    "outcome": "adapter_ready",
+    "capabilities": {
+      "fetch": false,
+      "goto": true,
+      "session": true,
+      "selectorOperations": true,
+      "challengeActions": true,
+      "extensions": false
+    },
+    "runtime": {
+      "executable": "/workspace/Searching_Experiment/.deps/bot-diagnostics/lightpanda",
+      "version": "1.0.0-nightly.9929+e774f9bba"
+    },
+    "user_agent": "Lightpanda/1.0 DiscoveryLab/0.1"
+  },
+  {
+    "client": "rebrowser-lightpanda",
+    "target": "fixture-robots",
+    "url": "http://127.0.0.1:34895/network-action",
+    "blocked_requests": [],
+    "page_errors": [],
+    "user_agent": "Lightpanda/1.0 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/network-action",
+    "dom_sha256": "e137e4da073e67d30afd333043258be8b3a4413c0231620fbeea8b15dd75d6b7",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 0,
+      "actions_executed": false
+    },
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Blocked path",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 5,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "homepage",
+    "navigation_method": "goto",
+    "session_sequence": 1,
+    "profile": "baseline",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "rebrowser-lightpanda",
+    "target": "fixture-robots",
+    "url": "http://127.0.0.1:34895/network-action",
+    "blocked_requests": [
+      {
+        "url": "http://127.0.0.1:34895/forbidden",
+        "reason": "robots_denied"
+      }
+    ],
+    "page_errors": [],
+    "user_agent": "Lightpanda/1.0 DiscoveryLab/0.1",
+    "operation": {
+      "outcome": "postcondition_failed",
+      "observations": [
+        {
+          "step": {
+            "op": "click",
+            "selector": "#forbidden",
+            "expect": {
+              "kind": "url",
+              "value": "http://127.0.0.1:34895/forbidden"
+            }
+          },
+          "before": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Blocked path"
+          },
+          "after": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Blocked path"
+          },
+          "api_completed": true,
+          "postcondition": false,
+          "effect_verified": false,
+          "already_satisfied": false
+        }
+      ]
+    },
+    "final_url": "http://127.0.0.1:34895/network-action",
+    "dom_sha256": "e137e4da073e67d30afd333043258be8b3a4413c0231620fbeea8b15dd75d6b7",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 0,
+      "actions_executed": false
+    },
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Blocked path",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 5,
+    "status_source": "previous_document_response; no new document response during operation",
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "selector_probe",
+    "navigation_method": "native_operation",
+    "session_sequence": 2,
+    "profile": "baseline",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "playwright-baseline",
+    "target": "fixture-robots",
+    "profile": "baseline",
+    "role": "adapter_setup",
+    "outcome": "adapter_ready",
+    "capabilities": {
+      "fetch": false,
+      "goto": true,
+      "session": true,
+      "selectorOperations": true,
+      "challengeActions": true,
+      "extensions": true
+    },
+    "runtime": {
+      "executable": "/workspace/Searching_Experiment/.deps/bot-diagnostics/browsers/chromium-1243/chrome-linux64/chrome",
+      "version": "153.0.8010.12"
+    },
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1"
+  },
+  {
+    "client": "playwright-baseline",
+    "target": "fixture-robots",
+    "url": "http://127.0.0.1:34895/network-action",
+    "blocked_requests": [
+      {
+        "url": "http://127.0.0.1:34895/favicon.ico",
+        "reason": "resource_policy"
+      }
+    ],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/network-action",
+    "dom_sha256": "e137e4da073e67d30afd333043258be8b3a4413c0231620fbeea8b15dd75d6b7",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 0,
+      "actions_executed": false
+    },
+    "screenshot": "playwright-baseline-fixture-robots-baseline-homepage-1-7.png",
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Blocked path",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 8,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "homepage",
+    "navigation_method": "goto",
+    "session_sequence": 1,
+    "profile": "baseline",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "playwright-baseline",
+    "target": "fixture-robots",
+    "url": "http://127.0.0.1:34895/network-action",
+    "blocked_requests": [
+      {
+        "url": "http://127.0.0.1:34895/forbidden",
+        "reason": "robots_denied"
+      }
+    ],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "operation": {
+      "outcome": "postcondition_failed",
+      "observations": [
+        {
+          "step": {
+            "op": "click",
+            "selector": "#forbidden",
+            "expect": {
+              "kind": "url",
+              "value": "http://127.0.0.1:34895/forbidden"
+            }
+          },
+          "before": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Blocked path"
+          },
+          "after": {
+            "count": 0,
+            "value": null
+          },
+          "api_completed": true,
+          "postcondition": false,
+          "effect_verified": false,
+          "already_satisfied": false
+        }
+      ]
+    },
+    "final_url": "chrome-error://chromewebdata/",
+    "dom_sha256": "2e8f0ad90256c600f83239b90aef5a5bc582295d00b67605a78094275b6b4a81",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 0,
+      "actions_executed": false
+    },
+    "screenshot": "playwright-baseline-fixture-robots-baseline-selector_probe-2-8.png",
+    "outcome": "navigation_unverified",
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "selector_probe",
+    "navigation_method": "native_operation",
+    "session_sequence": 2,
+    "profile": "baseline",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  }
+]

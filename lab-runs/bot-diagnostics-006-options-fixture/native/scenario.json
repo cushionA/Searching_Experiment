@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "tools": [
+    "wreq-js",
+    "impit",
+    "patchright",
+    "rebrowser-lightpanda",
+    "playwright-baseline"
+  ],
+  "limits": {
+    "requests_per_tool_site": 25,
+    "body_bytes_per_tool_site": 8388608
+  },
+  "options": {
+    "selectors": true,
+    "recoverSimple": true,
+    "seed": 17,
+    "recoveryMaxAttempts": 1
+  },
+  "recovery_plan": {
+    "max_attempts": 1,
+    "return_home_after_success": true,
+    "wait_seconds": 0,
+    "retry_original_target": true
+  },
+  "profiles": [
+    {
+      "id": "baseline",
+      "humanlike": false,
+      "extensions": []
+    }
+  ],
+  "sites": [
+    {
+      "id": "fixture",
+      "origins": [
+        "http://127.0.0.1:34895"
+      ],
+      "links": {
+        "home": "http://127.0.0.1:34895/",
+        "targets": [
+          "http://127.0.0.1:34895/challenge",
+          "http://127.0.0.1:34895/redirect"
+        ]
+      },
+      "params": {},
+      "selectors": {
+        "primary": "#query"
+      },
+      "operations": [
+        {
+          "op": "fill",
+          "selector": "#query",
+          "value": "Test"
+        },
+        {
+          "op": "click",
+          "selector": "#apply",
+          "expect": {
+            "kind": "text",
+            "selector": "#result",
+            "value": "applied"
+          }
+        },
+        {
+          "op": "hover",
+          "selector": "#hover",
+          "expect": {
+            "kind": "attribute",
+            "selector": "#hover",
+            "name": "data-over",
+            "value": "true"
+          }
+        }
+      ],
+      "recovery": {
+        "kind": "simple_button",
+        "selector": "#solve",
+        "success": {
+          "kind": "present",
+          "selector": "#normal-content"
+        }
+      },
+      "enabled": true
+    }
+  ]
+}

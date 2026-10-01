@@ -1,0 +1,1279 @@
+[
+  {
+    "client": "patchright",
+    "target": "fixture",
+    "profile": "humanlike",
+    "role": "adapter_setup",
+    "outcome": "adapter_ready",
+    "capabilities": {
+      "fetch": false,
+      "goto": true,
+      "session": true,
+      "selectorOperations": true,
+      "challengeActions": true,
+      "extensions": true
+    },
+    "runtime": {
+      "executable": "/workspace/Searching_Experiment/.deps/bot-diagnostics/browsers/chromium-1243/chrome-linux64/chrome",
+      "version": "153.0.8010.12"
+    },
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1"
+  },
+  {
+    "client": "patchright",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/",
+    "blocked_requests": [
+      {
+        "url": "http://127.0.0.1:34895/favicon.ico",
+        "reason": "resource_policy"
+      }
+    ],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/",
+    "dom_sha256": "9d3eb5f4bedaaf83a2d368ef4786c4b0733ed317252d937b7f37b01233dce932",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 1,
+      "actions_executed": false
+    },
+    "screenshot": "patchright-fixture-humanlike-homepage-1-1.png",
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Apply pending Hover",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 2,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "homepage",
+    "navigation_method": "goto",
+    "session_sequence": 1,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "patchright",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/",
+    "blocked_requests": [],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "operation": {
+      "outcome": "operation_confirmed",
+      "observations": [
+        {
+          "step": {
+            "op": "fill",
+            "selector": "#query",
+            "value": "Test"
+          },
+          "before": {
+            "count": 1,
+            "tag": "input",
+            "type": "text",
+            "value": "",
+            "text": ""
+          },
+          "after": {
+            "count": 1,
+            "tag": "input",
+            "type": "text",
+            "value": "Test",
+            "text": ""
+          },
+          "api_completed": true,
+          "postcondition": true,
+          "effect_verified": true,
+          "already_satisfied": false
+        },
+        {
+          "step": {
+            "op": "click",
+            "selector": "#apply",
+            "expect": {
+              "kind": "text",
+              "selector": "#result",
+              "value": "applied"
+            }
+          },
+          "before": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Apply"
+          },
+          "after": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Apply"
+          },
+          "api_completed": true,
+          "postcondition": true,
+          "effect_verified": true,
+          "already_satisfied": false
+        },
+        {
+          "step": {
+            "op": "hover",
+            "selector": "#hover",
+            "expect": {
+              "kind": "attribute",
+              "selector": "#hover",
+              "name": "data-over",
+              "value": "true"
+            }
+          },
+          "before": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Hover"
+          },
+          "after": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Hover"
+          },
+          "api_completed": true,
+          "postcondition": true,
+          "effect_verified": true,
+          "already_satisfied": false
+        }
+      ],
+      "humanlike": true,
+      "seed": 19
+    },
+    "final_url": "http://127.0.0.1:34895/",
+    "dom_sha256": "82b96feb2f9f3ac7ced5069d430bdbf1ec1a57e7e0e3e564e0253e1915caafa7",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 1,
+      "actions_executed": false
+    },
+    "screenshot": "patchright-fixture-humanlike-selector_probe-2-2.png",
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Apply applied Hover",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 2,
+    "status_source": "previous_document_response; no new document response during operation",
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "selector_probe",
+    "navigation_method": "native_operation",
+    "session_sequence": 2,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "patchright",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/challenge",
+    "blocked_requests": [
+      {
+        "url": "http://127.0.0.1:34895/favicon.ico",
+        "reason": "resource_policy"
+      }
+    ],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/challenge",
+    "dom_sha256": "5bfa17d2d144657e32150bafa31b941d826120e46f64406c56fa706970bfb57f",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 0,
+      "actions_executed": false
+    },
+    "screenshot": "patchright-fixture-humanlike-target-3-3.png",
+    "outcome": "challenge_observed",
+    "title": "Security Check",
+    "visible_text_prefix": "Security Check Verify that you are human Continue",
+    "signals": [
+      {
+        "name": "human_verification",
+        "evidence": "Security Check Verify that you are human Continue"
+      }
+    ],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 403,
+    "main_record": 5,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "target",
+    "navigation_method": "goto",
+    "session_sequence": 3,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "patchright",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/challenge",
+    "blocked_requests": [
+      {
+        "url": "http://127.0.0.1:34895/favicon.ico",
+        "reason": "resource_policy"
+      }
+    ],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "operation": {
+      "outcome": "operation_confirmed",
+      "observations": [
+        {
+          "step": {
+            "op": "click",
+            "selector": "#solve",
+            "expect": {
+              "kind": "present",
+              "selector": "#normal-content"
+            }
+          },
+          "before": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Continue"
+          },
+          "after": {
+            "count": 0,
+            "value": null
+          },
+          "api_completed": true,
+          "postcondition": true,
+          "effect_verified": true,
+          "already_satisfied": false
+        }
+      ],
+      "humanlike": true,
+      "seed": 21
+    },
+    "final_url": "http://127.0.0.1:34895/unlock",
+    "dom_sha256": "28dd466a7cc5d5a807a56c98c2db93c50343bf7bdbd03ad7886e85c7a183aec8",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 0,
+      "actions_executed": false
+    },
+    "screenshot": "patchright-fixture-humanlike-recover_simple_challenge-4-4.png",
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 7,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "recover_simple_challenge",
+    "navigation_method": "native_operation",
+    "session_sequence": 4,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "patchright",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/",
+    "blocked_requests": [
+      {
+        "url": "http://127.0.0.1:34895/favicon.ico",
+        "reason": "resource_policy"
+      }
+    ],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/",
+    "dom_sha256": "9d3eb5f4bedaaf83a2d368ef4786c4b0733ed317252d937b7f37b01233dce932",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 1,
+      "actions_executed": false
+    },
+    "screenshot": "patchright-fixture-humanlike-return_home-5-5.png",
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Apply pending Hover",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 9,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "return_home",
+    "navigation_method": "goto",
+    "session_sequence": 5,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "patchright",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/challenge",
+    "blocked_requests": [
+      {
+        "url": "http://127.0.0.1:34895/favicon.ico",
+        "reason": "resource_policy"
+      }
+    ],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/challenge",
+    "dom_sha256": "9d3eb5f4bedaaf83a2d368ef4786c4b0733ed317252d937b7f37b01233dce932",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 1,
+      "actions_executed": false
+    },
+    "screenshot": "patchright-fixture-humanlike-target-6-6.png",
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Apply pending Hover",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 11,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "target",
+    "navigation_method": "goto",
+    "session_sequence": 6,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "patchright",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/redirect",
+    "blocked_requests": [
+      {
+        "url": "http://127.0.0.1:34895/favicon.ico",
+        "reason": "resource_policy"
+      }
+    ],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/inside",
+    "dom_sha256": "9d3eb5f4bedaaf83a2d368ef4786c4b0733ed317252d937b7f37b01233dce932",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 1,
+      "actions_executed": false
+    },
+    "screenshot": "patchright-fixture-humanlike-target-7-7.png",
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Apply pending Hover",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 14,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "target",
+    "navigation_method": "goto",
+    "session_sequence": 7,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "rebrowser-lightpanda",
+    "target": "fixture",
+    "profile": "humanlike",
+    "role": "adapter_setup",
+    "outcome": "adapter_ready",
+    "capabilities": {
+      "fetch": false,
+      "goto": true,
+      "session": true,
+      "selectorOperations": true,
+      "challengeActions": true,
+      "extensions": false
+    },
+    "runtime": {
+      "executable": "/workspace/Searching_Experiment/.deps/bot-diagnostics/lightpanda",
+      "version": "1.0.0-nightly.9929+e774f9bba"
+    },
+    "user_agent": "Lightpanda/1.0 DiscoveryLab/0.1"
+  },
+  {
+    "client": "rebrowser-lightpanda",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/",
+    "blocked_requests": [],
+    "page_errors": [],
+    "user_agent": "Lightpanda/1.0 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/",
+    "dom_sha256": "9d3eb5f4bedaaf83a2d368ef4786c4b0733ed317252d937b7f37b01233dce932",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 1,
+      "actions_executed": false
+    },
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Apply pending Hover",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 16,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "homepage",
+    "navigation_method": "goto",
+    "session_sequence": 1,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "rebrowser-lightpanda",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/",
+    "blocked_requests": [],
+    "page_errors": [],
+    "user_agent": "Lightpanda/1.0 DiscoveryLab/0.1",
+    "operation": {
+      "outcome": "operation_confirmed",
+      "observations": [
+        {
+          "step": {
+            "op": "fill",
+            "selector": "#query",
+            "value": "Test"
+          },
+          "before": {
+            "count": 1,
+            "tag": "input",
+            "type": "text",
+            "value": "",
+            "text": ""
+          },
+          "after": {
+            "count": 1,
+            "tag": "input",
+            "type": "text",
+            "value": "Test",
+            "text": ""
+          },
+          "api_completed": true,
+          "postcondition": true,
+          "effect_verified": true,
+          "already_satisfied": false
+        },
+        {
+          "step": {
+            "op": "click",
+            "selector": "#apply",
+            "expect": {
+              "kind": "text",
+              "selector": "#result",
+              "value": "applied"
+            }
+          },
+          "before": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Apply"
+          },
+          "after": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Apply"
+          },
+          "api_completed": true,
+          "postcondition": true,
+          "effect_verified": true,
+          "already_satisfied": false
+        },
+        {
+          "step": {
+            "op": "hover",
+            "selector": "#hover",
+            "expect": {
+              "kind": "attribute",
+              "selector": "#hover",
+              "name": "data-over",
+              "value": "true"
+            }
+          },
+          "before": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Hover"
+          },
+          "after": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Hover"
+          },
+          "api_completed": true,
+          "postcondition": true,
+          "effect_verified": true,
+          "already_satisfied": false
+        }
+      ],
+      "humanlike": true,
+      "seed": 19
+    },
+    "final_url": "http://127.0.0.1:34895/",
+    "dom_sha256": "08574432d655b7e3b50d609bcfaae24ad495c4e95289a546d2e2ba58c4679c89",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 1,
+      "actions_executed": false
+    },
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Apply applied Hover",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 16,
+    "status_source": "previous_document_response; no new document response during operation",
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "selector_probe",
+    "navigation_method": "native_operation",
+    "session_sequence": 2,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "rebrowser-lightpanda",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/challenge",
+    "blocked_requests": [],
+    "page_errors": [],
+    "user_agent": "Lightpanda/1.0 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/challenge",
+    "dom_sha256": "5bfa17d2d144657e32150bafa31b941d826120e46f64406c56fa706970bfb57f",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 0,
+      "actions_executed": false
+    },
+    "outcome": "challenge_observed",
+    "title": "Security Check",
+    "visible_text_prefix": "Security Check Verify that you are human Continue",
+    "signals": [
+      {
+        "name": "human_verification",
+        "evidence": "Security Check Verify that you are human Continue"
+      }
+    ],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 403,
+    "main_record": 19,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "target",
+    "navigation_method": "goto",
+    "session_sequence": 3,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "rebrowser-lightpanda",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/challenge",
+    "blocked_requests": [],
+    "page_errors": [],
+    "user_agent": "Lightpanda/1.0 DiscoveryLab/0.1",
+    "operation": {
+      "outcome": "operation_confirmed",
+      "observations": [
+        {
+          "step": {
+            "op": "click",
+            "selector": "#solve",
+            "expect": {
+              "kind": "present",
+              "selector": "#normal-content"
+            }
+          },
+          "before": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Continue"
+          },
+          "after": {
+            "count": 0,
+            "value": null
+          },
+          "api_completed": true,
+          "postcondition": true,
+          "effect_verified": true,
+          "already_satisfied": false
+        }
+      ],
+      "humanlike": true,
+      "seed": 21
+    },
+    "final_url": "http://127.0.0.1:34895/unlock",
+    "dom_sha256": "28dd466a7cc5d5a807a56c98c2db93c50343bf7bdbd03ad7886e85c7a183aec8",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 0,
+      "actions_executed": false
+    },
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 21,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "recover_simple_challenge",
+    "navigation_method": "native_operation",
+    "session_sequence": 4,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "rebrowser-lightpanda",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/",
+    "blocked_requests": [],
+    "page_errors": [],
+    "user_agent": "Lightpanda/1.0 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/",
+    "dom_sha256": "9d3eb5f4bedaaf83a2d368ef4786c4b0733ed317252d937b7f37b01233dce932",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 1,
+      "actions_executed": false
+    },
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Apply pending Hover",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 23,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "return_home",
+    "navigation_method": "goto",
+    "session_sequence": 5,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "rebrowser-lightpanda",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/challenge",
+    "blocked_requests": [],
+    "page_errors": [],
+    "user_agent": "Lightpanda/1.0 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/challenge",
+    "dom_sha256": "9d3eb5f4bedaaf83a2d368ef4786c4b0733ed317252d937b7f37b01233dce932",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 1,
+      "actions_executed": false
+    },
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Apply pending Hover",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 25,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "target",
+    "navigation_method": "goto",
+    "session_sequence": 6,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "rebrowser-lightpanda",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/redirect",
+    "blocked_requests": [],
+    "page_errors": [],
+    "user_agent": "Lightpanda/1.0 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/inside",
+    "dom_sha256": "9d3eb5f4bedaaf83a2d368ef4786c4b0733ed317252d937b7f37b01233dce932",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 1,
+      "actions_executed": false
+    },
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Apply pending Hover",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 28,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "target",
+    "navigation_method": "goto",
+    "session_sequence": 7,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "playwright-baseline",
+    "target": "fixture",
+    "profile": "humanlike",
+    "role": "adapter_setup",
+    "outcome": "adapter_ready",
+    "capabilities": {
+      "fetch": false,
+      "goto": true,
+      "session": true,
+      "selectorOperations": true,
+      "challengeActions": true,
+      "extensions": true
+    },
+    "runtime": {
+      "executable": "/workspace/Searching_Experiment/.deps/bot-diagnostics/browsers/chromium-1243/chrome-linux64/chrome",
+      "version": "153.0.8010.12"
+    },
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1"
+  },
+  {
+    "client": "playwright-baseline",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/",
+    "blocked_requests": [
+      {
+        "url": "http://127.0.0.1:34895/favicon.ico",
+        "reason": "resource_policy"
+      }
+    ],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/",
+    "dom_sha256": "9d3eb5f4bedaaf83a2d368ef4786c4b0733ed317252d937b7f37b01233dce932",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 1,
+      "actions_executed": false
+    },
+    "screenshot": "playwright-baseline-fixture-humanlike-homepage-1-17.png",
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Apply pending Hover",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 30,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "homepage",
+    "navigation_method": "goto",
+    "session_sequence": 1,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "playwright-baseline",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/",
+    "blocked_requests": [],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "operation": {
+      "outcome": "operation_confirmed",
+      "observations": [
+        {
+          "step": {
+            "op": "fill",
+            "selector": "#query",
+            "value": "Test"
+          },
+          "before": {
+            "count": 1,
+            "tag": "input",
+            "type": "text",
+            "value": "",
+            "text": ""
+          },
+          "after": {
+            "count": 1,
+            "tag": "input",
+            "type": "text",
+            "value": "Test",
+            "text": ""
+          },
+          "api_completed": true,
+          "postcondition": true,
+          "effect_verified": true,
+          "already_satisfied": false
+        },
+        {
+          "step": {
+            "op": "click",
+            "selector": "#apply",
+            "expect": {
+              "kind": "text",
+              "selector": "#result",
+              "value": "applied"
+            }
+          },
+          "before": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Apply"
+          },
+          "after": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Apply"
+          },
+          "api_completed": true,
+          "postcondition": true,
+          "effect_verified": true,
+          "already_satisfied": false
+        },
+        {
+          "step": {
+            "op": "hover",
+            "selector": "#hover",
+            "expect": {
+              "kind": "attribute",
+              "selector": "#hover",
+              "name": "data-over",
+              "value": "true"
+            }
+          },
+          "before": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Hover"
+          },
+          "after": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Hover"
+          },
+          "api_completed": true,
+          "postcondition": true,
+          "effect_verified": true,
+          "already_satisfied": false
+        }
+      ],
+      "humanlike": true,
+      "seed": 19
+    },
+    "final_url": "http://127.0.0.1:34895/",
+    "dom_sha256": "82b96feb2f9f3ac7ced5069d430bdbf1ec1a57e7e0e3e564e0253e1915caafa7",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 1,
+      "actions_executed": false
+    },
+    "screenshot": "playwright-baseline-fixture-humanlike-selector_probe-2-18.png",
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Apply applied Hover",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 30,
+    "status_source": "previous_document_response; no new document response during operation",
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "selector_probe",
+    "navigation_method": "native_operation",
+    "session_sequence": 2,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "playwright-baseline",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/challenge",
+    "blocked_requests": [
+      {
+        "url": "http://127.0.0.1:34895/favicon.ico",
+        "reason": "resource_policy"
+      }
+    ],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/challenge",
+    "dom_sha256": "5bfa17d2d144657e32150bafa31b941d826120e46f64406c56fa706970bfb57f",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 0,
+      "actions_executed": false
+    },
+    "screenshot": "playwright-baseline-fixture-humanlike-target-3-19.png",
+    "outcome": "challenge_observed",
+    "title": "Security Check",
+    "visible_text_prefix": "Security Check Verify that you are human Continue",
+    "signals": [
+      {
+        "name": "human_verification",
+        "evidence": "Security Check Verify that you are human Continue"
+      }
+    ],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 403,
+    "main_record": 33,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "target",
+    "navigation_method": "goto",
+    "session_sequence": 3,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "playwright-baseline",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/challenge",
+    "blocked_requests": [
+      {
+        "url": "http://127.0.0.1:34895/favicon.ico",
+        "reason": "resource_policy"
+      }
+    ],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "operation": {
+      "outcome": "operation_confirmed",
+      "observations": [
+        {
+          "step": {
+            "op": "click",
+            "selector": "#solve",
+            "expect": {
+              "kind": "present",
+              "selector": "#normal-content"
+            }
+          },
+          "before": {
+            "count": 1,
+            "tag": "button",
+            "type": "submit",
+            "value": "",
+            "text": "Continue"
+          },
+          "after": {
+            "count": 0,
+            "value": null
+          },
+          "api_completed": true,
+          "postcondition": true,
+          "effect_verified": true,
+          "already_satisfied": false
+        }
+      ],
+      "humanlike": true,
+      "seed": 21
+    },
+    "final_url": "http://127.0.0.1:34895/unlock",
+    "dom_sha256": "28dd466a7cc5d5a807a56c98c2db93c50343bf7bdbd03ad7886e85c7a183aec8",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 0,
+      "actions_executed": false
+    },
+    "screenshot": "playwright-baseline-fixture-humanlike-recover_simple_challenge-4-20.png",
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 35,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "recover_simple_challenge",
+    "navigation_method": "native_operation",
+    "session_sequence": 4,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "playwright-baseline",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/",
+    "blocked_requests": [
+      {
+        "url": "http://127.0.0.1:34895/favicon.ico",
+        "reason": "resource_policy"
+      }
+    ],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/",
+    "dom_sha256": "9d3eb5f4bedaaf83a2d368ef4786c4b0733ed317252d937b7f37b01233dce932",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 1,
+      "actions_executed": false
+    },
+    "screenshot": "playwright-baseline-fixture-humanlike-return_home-5-21.png",
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Apply pending Hover",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 37,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "return_home",
+    "navigation_method": "goto",
+    "session_sequence": 5,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "playwright-baseline",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/challenge",
+    "blocked_requests": [
+      {
+        "url": "http://127.0.0.1:34895/favicon.ico",
+        "reason": "resource_policy"
+      }
+    ],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/challenge",
+    "dom_sha256": "9d3eb5f4bedaaf83a2d368ef4786c4b0733ed317252d937b7f37b01233dce932",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 1,
+      "actions_executed": false
+    },
+    "screenshot": "playwright-baseline-fixture-humanlike-target-6-22.png",
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Apply pending Hover",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 39,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "target",
+    "navigation_method": "goto",
+    "session_sequence": 6,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  },
+  {
+    "client": "playwright-baseline",
+    "target": "fixture",
+    "url": "http://127.0.0.1:34895/redirect",
+    "blocked_requests": [
+      {
+        "url": "http://127.0.0.1:34895/favicon.ico",
+        "reason": "resource_policy"
+      }
+    ],
+    "page_errors": [],
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 DiscoveryLab/0.1",
+    "final_url": "http://127.0.0.1:34895/inside",
+    "dom_sha256": "9d3eb5f4bedaaf83a2d368ef4786c4b0733ed317252d937b7f37b01233dce932",
+    "dom_truncated": false,
+    "selector_observation": {
+      "selector": "#query",
+      "match_count": 1,
+      "actions_executed": false
+    },
+    "screenshot": "playwright-baseline-fixture-humanlike-target-7-23.png",
+    "outcome": "content_observed",
+    "title": "Fixture page",
+    "visible_text_prefix": "Fixture page Normal content Apply pending Hover",
+    "signals": [],
+    "site_block_reason": null,
+    "reason_certainty": "response evidence only; site policy/logs unavailable",
+    "http_status": 200,
+    "main_record": 42,
+    "resource_policy": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+    "role": "target",
+    "navigation_method": "goto",
+    "session_sequence": 7,
+    "profile": "humanlike",
+    "provider_observation": {
+      "hints": [],
+      "proprietary_score": null,
+      "scoring_weights": null,
+      "scoring_threshold": null,
+      "limitation": "Visible technology/widget markers do not prove a block or its cause."
+    }
+  }
+]
