@@ -1,0 +1,279 @@
+{
+  "observed_date": "2026-10-01",
+  "oxibrowser_version": "0.25.0",
+  "upstream_revision": "0aaa7d04a565d8840f889cfb57deb44b424c6cc2",
+  "evidence_file": "oxi-replay-actions-immediate.json",
+  "procedure": [
+    "OXI.getInteractiveElements",
+    "selectorを現在の観測で再照合",
+    "OXI.fillRef / OXI.clickRef",
+    "Runtime.evaluateで直後の状態を確認"
+  ],
+  "limitations": [
+    "AI操作は保存HTMLのオフライン再生のみ。実サイトの検索完了やブロック突破は未検証。",
+    "API成功フラグとDOMへの効果は別に記録。refは観測ごとに変わり再利用不可。",
+    "Impitとの比較はHTTP取得。入力・クリックはOxiだけで実施。"
+  ],
+  "sites": [
+    {
+      "site": "Google",
+      "urls": [
+        "https://www.google.com/",
+        "https://www.google.com/search?q=OxiBrowser&hl=ja"
+      ],
+      "live_validated": false,
+      "operations": [],
+      "reason": "robots判定で取得前に停止。トップの判定にはRobotFileParserのクエリ規則互換性問題を含む。"
+    },
+    {
+      "site": "Amazon",
+      "url": "https://www.amazon.co.jp/",
+      "source_kind": "data_url_replay",
+      "live_validated": false,
+      "source_record": "impit:2",
+      "body_sha256": "fb2db0d37e11d60a9a5b60494fc3dc3a55fb9d8c5504904ee0f010fec19a4fb8",
+      "replay_body_sha256": "15b12153d260a76196a1615d9f19fbd269e904ae6a6e28658825efb832ab532d",
+      "replay_truncated": true,
+      "replay_charset": "utf-8",
+      "operations": [
+        {
+          "selector": "#twotabsearchtextbox",
+          "element": {
+            "tag": "input",
+            "role": "searchbox",
+            "inputType": "text",
+            "name": "Amazon.co.jpを検索",
+            "nameAttr": "field-keywords"
+          },
+          "action": {
+            "op": "fill",
+            "selector": "#twotabsearchtextbox",
+            "value": "USB-C"
+          },
+          "api_response": {
+            "filled": true,
+            "ref": "e91"
+          },
+          "immediate_dom": {
+            "value": "",
+            "text": ""
+          }
+        },
+        {
+          "selector": "#nav-search-submit-button",
+          "element": {
+            "tag": "input",
+            "role": "button",
+            "inputType": "submit",
+            "name": "検索",
+            "nameAttr": null
+          },
+          "action": {
+            "op": "click",
+            "selector": "#nav-search-submit-button"
+          },
+          "api_response": {
+            "clicked": true,
+            "ref": "e172"
+          },
+          "immediate_dom": {
+            "value": "検索",
+            "text": "検索"
+          }
+        }
+      ],
+      "final_dom": {
+        "title": "Amazon | 本, ファッション, 家電から食品まで | アマゾン",
+        "js": null,
+        "inputs": [
+          {
+            "id": "",
+            "value": "カタカナ"
+          },
+          {
+            "id": "twotabsearchtextbox",
+            "value": ""
+          },
+          {
+            "id": "nav-search-submit-button",
+            "value": "検索"
+          }
+        ]
+      }
+    },
+    {
+      "site": "Amazon検索",
+      "url": "https://www.amazon.co.jp/s?k=USB-C",
+      "live_validated": false,
+      "operations": [],
+      "reason": "両HTTPクライアントとも503。通常の検索結果を取得できず操作なし。"
+    },
+    {
+      "site": "Joshin",
+      "url": "https://joshinweb.jp/top.html",
+      "source_kind": "data_url_replay",
+      "live_validated": false,
+      "source_record": "impit:6",
+      "body_sha256": "d6b5ef909c89e9c91cf89590978486dc609d08ef7b452e98451256b19783c921",
+      "replay_body_sha256": "120114a31f1958d162af5dc6b17c78ca2f43071b497849b9d29d361509af1ef9",
+      "replay_truncated": false,
+      "replay_charset": "cp932",
+      "operations": [
+        {
+          "selector": "#suggest_input",
+          "element": {
+            "tag": "input",
+            "role": "textbox",
+            "inputType": "text",
+            "name": "キーワードで探す",
+            "nameAttr": "QK"
+          },
+          "action": {
+            "op": "fill",
+            "selector": "#suggest_input",
+            "value": "USB-C"
+          },
+          "api_response": {
+            "filled": true,
+            "ref": "e1204"
+          },
+          "immediate_dom": {
+            "value": "",
+            "text": ""
+          }
+        }
+      ],
+      "final_dom": {
+        "title": "ジョーシン公式家電通販サイト｜Joshin webショップ【家電・日用品・お酒など何でも揃う】",
+        "js": null,
+        "inputs": [
+          {
+            "id": "",
+            "value": ""
+          },
+          {
+            "id": "",
+            "value": "ZS_ALL"
+          },
+          {
+            "id": "",
+            "value": "ALL"
+          },
+          {
+            "id": "suggest_input",
+            "value": ""
+          },
+          {
+            "id": "suggest_category",
+            "value": ""
+          },
+          {
+            "id": "",
+            "value": "1"
+          },
+          {
+            "id": "",
+            "value": ""
+          },
+          {
+            "id": "",
+            "value": "ZS_ALL"
+          },
+          {
+            "id": "",
+            "value": "ALL"
+          }
+        ]
+      }
+    },
+    {
+      "site": "Homes",
+      "urls": [
+        "https://www.homes.co.jp/",
+        "https://www.homes.co.jp/chintai/tokyo/"
+      ],
+      "live_validated": false,
+      "operations": [],
+      "reason": "両HTTPクライアントとも200。Oxiの保存HTML再生はPage.navigateが20秒でタイムアウト。"
+    },
+    {
+      "site": "Indeed",
+      "urls": [
+        "https://jp.indeed.com/",
+        "https://jp.indeed.com/jobs?q=Python&l=%E6%9D%B1%E4%BA%AC%E9%83%BD"
+      ],
+      "live_validated": false,
+      "operations": [],
+      "reason": "両HTTPクライアントとも403。Security Check/追加検証画面で停止。"
+    }
+  ],
+  "fixture": {
+    "site": "Local fixture",
+    "url": "offline-search",
+    "source_kind": "data_url_replay",
+    "live_validated": false,
+    "source_record": "fixture",
+    "body_sha256": "6a3c1f8885572e1b79121d8f3e7c93a0f6f30485eec926ed49b2ddfc27acffd8",
+    "replay_body_sha256": "6a3c1f8885572e1b79121d8f3e7c93a0f6f30485eec926ed49b2ddfc27acffd8",
+    "replay_truncated": false,
+    "replay_charset": "utf-8",
+    "operations": [
+      {
+        "selector": "#query",
+        "element": {
+          "tag": "input",
+          "role": "textbox",
+          "inputType": null,
+          "name": "Search query",
+          "nameAttr": null
+        },
+        "action": {
+          "op": "fill",
+          "selector": "#query",
+          "value": "OxiBrowser"
+        },
+        "api_response": {
+          "filled": true,
+          "ref": "e4"
+        },
+        "immediate_dom": {
+          "value": "OxiBrowser",
+          "text": ""
+        }
+      },
+      {
+        "selector": "#search",
+        "element": {
+          "tag": "button",
+          "role": "button",
+          "inputType": null,
+          "name": "Search",
+          "nameAttr": null
+        },
+        "action": {
+          "op": "click",
+          "selector": "#search"
+        },
+        "api_response": {
+          "clicked": true,
+          "ref": "e8"
+        },
+        "immediate_dom": {
+          "value": "",
+          "text": "Search"
+        }
+      }
+    ],
+    "final_dom": {
+      "title": "Offline search fixture",
+      "js": "executed",
+      "result": "No results yet",
+      "inputs": [
+        {
+          "id": "query",
+          "value": "OxiBrowser"
+        }
+      ]
+    }
+  }
+}
