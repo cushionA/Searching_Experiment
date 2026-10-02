@@ -14,6 +14,7 @@ from urllib.robotparser import RobotFileParser
 
 from .state import LabError, atomic, canonical, origin
 from .network import environment_proxy, error_diagnostics, proxy_metadata, sanitize_detail
+from .discovery import in_scope, parse_crossref, unwrap_search_link
 
 
 FIXTURES = {
@@ -86,7 +87,8 @@ class LiveTransport:
             address = None
         if address is not None and not address.is_global:
             raise LabError("private_address")
-        request = urllib.request.Request(url, headers={"User-Agent": user_agent, "Accept": "text/html,text/plain;q=0.8", "Accept-Encoding": "identity"})
+        accept = "application/json" if origin(url) == "https://api.crossref.org" and urlsplit(url).path == "/works" else "text/html,text/plain;q=0.8"
+        request = urllib.request.Request(url, headers={"User-Agent": user_agent, "Accept": accept, "Accept-Encoding": "identity"})
         deadline = time.monotonic() + timeout
         try:
             response = opener.open(request, timeout=timeout)
@@ -164,8 +166,10 @@ class HTML(HTMLParser):
                 self.anchor[1].append(data)
 
 
-def parse_page(body, headers, url):
+def parse_page(body, headers, url, discovery=False):
     content_type = headers.get("content-type", "")
+    if discovery and origin(url) == "https://api.crossref.org" and urlsplit(url).path == "/works" and "application/json" in content_type.lower():
+        return parse_crossref(body, url)
     if not any(kind in content_type.lower() for kind in ("text/html", "application/xhtml+xml")):
         raise LabError("not_html")
     message = Message()
@@ -182,7 +186,8 @@ def parse_page(body, headers, url):
     links = []
     for link in parser.links:
         try:
-            links.append({"url": canonical(urljoin(url, link["href"])), "anchor": link["anchor"]})
+            target = urljoin(url, link["href"])
+            links.append({"url": unwrap_search_link(target) if discovery else canonical(target), "anchor": link["anchor"]})
         except LabError:
             continue
     return "".join(parser.title).strip(), text, links
@@ -203,9 +208,13 @@ class Fetcher:
 
     def http(self, name, url, kind, delay=None, deadline=None):
         url = canonical(url)
-        if origin(url) not in self.config["allowed_origins"]:
+        if not in_scope(self.config, url):
             raise LabError("outside_scope")
         arm = self.store.state["arms"][name]
+        if "discovery" in self.config:
+            hosts = {origin(r["url"]) for r in arm["http"]}
+            if origin(url) not in hosts and len(hosts) >= self.config["discovery"]["max_origins_per_arm"]:
+                raise LabError("origin_budget")
         if len(arm["http"]) >= self.limits["requests_per_arm"]:
             raise LabError("request_budget")
         remaining = self.limits["bytes_per_arm"] - arm["bytes_charged"]
@@ -294,7 +303,7 @@ class Fetcher:
         url = candidate["url"]
         try:
             for hop in range(4):
-                if origin(url) not in self.config["allowed_origins"]:
+                if not in_scope(self.config, url):
                     raise LabError("redirect_outside_scope")
                 extra = {}
                 if self.config["transport"] == "adaptive":
@@ -312,14 +321,14 @@ class Fetcher:
                 if record["status"] != 200 or record["truncated"]:
                     raise LabError("truncated" if record["truncated"] else f"http_{record['status']}")
                 headers = {"content-type": "text/html; charset=utf-8"} if extra.get("dom_sha256") else record["headers"]
-                title, text, links = parse_page(body, headers, url)
+                title, text, links = parse_page(body, headers, url, discovery="discovery" in self.config)
                 text_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
                 atomic(self.store.artifact("blobs/" + text_hash), text.encode("utf-8"))
                 page = dict(candidate, url=url, requested_url=candidate["url"], title=title, text_sha256=text_hash, body_sha256=record["body_sha256"], attempt=attempt["number"], acquired_at=record["time"], links=links, **extra)
                 arm["pages"].append(page)
                 attempt.update(status="ok", final_url=url)
                 for link in links:
-                    if origin(link["url"]) not in self.config["allowed_origins"] or link["url"] in arm["seen"]:
+                    if not in_scope(self.config, link["url"]) or link["url"] in arm["seen"]:
                         continue
                     if candidate["depth"] >= self.limits["max_depth"] or len(arm["seen"]) >= self.limits["frontier_size"]:
                         arm["dropped_links"] += 1
