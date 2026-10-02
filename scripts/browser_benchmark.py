@@ -322,6 +322,36 @@ def free_port():
         return connection.getsockname()[1]
 
 
+class LightpandaBrowser:
+    """One server process; LightPanda 1.0 allows one context per CDP connection."""
+
+    def __init__(self, driver, endpoint, version, timeout_ms):
+        self.driver = driver
+        self.endpoint = endpoint
+        self.version = version
+        self.timeout_ms = timeout_ms
+
+    async def connect(self):
+        return await self.driver.chromium.connect_over_cdp(self.endpoint, timeout=self.timeout_ms)
+
+
+@asynccontextmanager
+async def fresh_context(browser):
+    # Independent CDP sessions retain true concurrency on one LightPanda process.
+    # Connection setup/teardown is included in each page's measured latency.
+    connection = await browser.connect() if isinstance(browser, LightpandaBrowser) else browser
+    try:
+        context = await connection.new_context()
+        try:
+            yield context
+        finally:
+            await context.close()
+    finally:
+        if connection is not browser:
+            # Playwright closes an attached browser's connection, not the server.
+            await connection.close()
+
+
 @asynccontextmanager
 async def open_browser(driver, config):
     panda = None
@@ -332,7 +362,8 @@ async def open_browser(driver, config):
             port = free_port()
             # Inherit the worker process group so memory/timeout cleanup includes it.
             panda = subprocess.Popen([config["lightpanda"], "serve", "--host", "127.0.0.1", "--port", str(port)],
-                                     stdout=sys.stderr, stderr=sys.stderr)
+                                     stdout=sys.stderr, stderr=sys.stderr,
+                                     env={**os.environ, "LIGHTPANDA_DISABLE_TELEMETRY": "true"})
             deadline = time.monotonic() + config["timeout_ms"] / 1000
             while time.monotonic() < deadline:
                 if panda.poll() is not None:
@@ -344,14 +375,19 @@ async def open_browser(driver, config):
                     await asyncio.sleep(0.025)
             else:
                 raise TimeoutError("LightPanda CDP server startup timed out")
-            browser = await driver.chromium.connect_over_cdp(f"ws://127.0.0.1:{port}", timeout=config["timeout_ms"])
+            endpoint = f"ws://127.0.0.1:{port}"
+            browser = await driver.chromium.connect_over_cdp(endpoint, timeout=config["timeout_ms"])
+            handle = LightpandaBrowser(driver, endpoint, browser.version, config["timeout_ms"])
+            await browser.close()
+            browser = None
         else:
             options = {"headless": config["display_mode"] == "headless", "chromium_sandbox": False,
                        "timeout": config["timeout_ms"]}
             if config["chromium"]:
                 options["executable_path"] = config["chromium"]
             browser = await driver.chromium.launch(**options)
-        yield browser, (time.perf_counter() - started) * 1000
+            handle = browser
+        yield handle, (time.perf_counter() - started) * 1000
     finally:
         try:
             if browser:
@@ -367,8 +403,7 @@ async def open_browser(driver, config):
 
 
 async def extract_page(browser, config, phase, index):
-    context = await browser.new_context()
-    try:
+    async with fresh_context(browser) as context:
         page = await context.new_page()
         page.set_default_timeout(config["timeout_ms"])
         url = f'{config["base_url"]}/run/{config["token"]}/{phase}/{config["scenario"]}/{index}'
@@ -386,8 +421,6 @@ async def extract_page(browser, config, phase, index):
             if time.monotonic() >= deadline:
                 raise TimeoutError(f"Fixture never became ready: {result}")
             await asyncio.sleep(0.01)
-    finally:
-        await context.close()
 
 
 async def run_page(driver, browser, config, phase, index, semaphore):
@@ -652,7 +685,8 @@ def preflight(args):
         with binary.open("rb") as source:
             versions["lightpanda_sha256"] = hashlib.file_digest(source, "sha256").hexdigest()
         try:
-            version = subprocess.run([args.lightpanda, "--version"], capture_output=True, text=True, timeout=5)
+            version = subprocess.run([args.lightpanda, "version"], capture_output=True, text=True, timeout=5,
+                                     env={**os.environ, "LIGHTPANDA_DISABLE_TELEMETRY": "true"})
             versions["lightpanda_version"] = (version.stdout or version.stderr).strip()[:500] if version.returncode == 0 else "unavailable"
         except (OSError, subprocess.TimeoutExpired):
             versions["lightpanda_version"] = "unavailable"
@@ -725,7 +759,7 @@ def main(argv=None):
                 "scope": "Local HTTP fixtures only; identical verified DOM extraction; no external websites",
                 "memory_method": "Sampled sum of Linux /proc/<pid>/stat RSS for the worker process tree, retaining observed descendants that detach or reparent and checking PID start time. Includes Python, automation driver, browser children and private Xvfb when used; shared pages may be counted multiple times; controller, fixture server and an existing shared DISPLAY excluded",
                 "traffic_method": "Actual uncompressed plaintext HTTP/1.1 request/response bytes at the fixture server, including headers; excludes CDP, TCP/IP, TLS and background browser traffic",
-                "timing_method": "Fresh context per page; warm reuses browser, cold includes browser start/close per page; warmup excluded; nearest-rank p95; parallel schedule shares host resources"}
+                "timing_method": "Fresh context per page; warm reuses browser process, cold includes browser start/close per page; LightPanda uses a separate CDP connection per context including connection setup/teardown in page latency; warmup excluded; nearest-rank p95; parallel schedule shares host resources"}
     try:
         server = FixtureServer(args.items, args.delay_ms)
     except OSError as error:

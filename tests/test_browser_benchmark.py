@@ -79,6 +79,72 @@ class FixtureTests(unittest.TestCase):
 
 
 class ExecutionTests(unittest.IsolatedAsyncioTestCase):
+    async def test_lightpanda_concurrent_contexts_use_independent_connections(self):
+        connections = []
+        active = 0
+        overlap = asyncio.Event()
+
+        class Connection:
+            closed = False
+            context_closed = False
+
+            async def new_context(self):
+                connection = self
+
+                class Context:
+                    async def close(self):
+                        connection.context_closed = True
+
+                return Context()
+
+            async def close(self):
+                self.closed = True
+
+        class Chromium:
+            async def connect_over_cdp(self, endpoint, **kwargs):
+                self.assert_endpoint = endpoint
+                connection = Connection()
+                connections.append(connection)
+                return connection
+
+        chromium = Chromium()
+        browser = benchmark.LightpandaBrowser(SimpleNamespace(chromium=chromium), "ws://fixture", "1.0", 100)
+
+        async def page():
+            nonlocal active
+            async with benchmark.fresh_context(browser):
+                active += 1
+                if active == 4:
+                    overlap.set()
+                await asyncio.wait_for(overlap.wait(), timeout=1)
+
+        await asyncio.gather(*(page() for _ in range(4)))
+        self.assertEqual(len(connections), 4)
+        self.assertEqual(chromium.assert_endpoint, "ws://fixture")
+        self.assertTrue(all(c.closed and c.context_closed for c in connections))
+
+    async def test_lightpanda_context_creation_failure_disconnects(self):
+        class Connection:
+            closed = False
+
+            async def new_context(self):
+                raise RuntimeError("context rejected")
+
+            async def close(self):
+                self.closed = True
+
+        connection = Connection()
+
+        class Chromium:
+            async def connect_over_cdp(self, *_args, **_kwargs):
+                return connection
+
+        browser = benchmark.LightpandaBrowser(SimpleNamespace(chromium=Chromium()), "ws://fixture", "1.0", 100)
+        with self.assertRaisesRegex(RuntimeError, "context rejected"):
+            async with benchmark.fresh_context(browser):
+                self.fail("A failed context cannot be yielded")
+        self.assertTrue(connection.closed)
+
     async def test_wrong_extraction_is_failure_and_closes_context(self):
         class Page:
             def set_default_timeout(self, _timeout):

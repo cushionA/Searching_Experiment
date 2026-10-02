@@ -45,7 +45,7 @@ jobs:
       - name: Compare identical local fixtures with all three engines
         run: >-
           bash scripts/run_browser_benchmark.sh --display-modes headless
-          --iterations 2 --pages 3 --output .lab-output/browser-benchmark-ci
+          --iterations 2 --pages 4 --output .lab-output/browser-benchmark-ci
       - name: Summarize measured outcomes
         if: always()
         run: |
@@ -59,10 +59,10 @@ jobs:
               else:
                   data = json.loads(report.read_text())
                   summary.write('Local fixtures, headless, serial engine schedule. RSS is sampled process-tree RSS.\n\n')
-                  summary.write('| Engine | Scenario | Mode | Concurrency | Status | Pages | Median ms | Peak RSS MiB | HTTP bytes |\n')
+                  summary.write('| Engine | Scenario | Mode | Concurrency | Status | Pages | Median ms | Median peak RSS MiB | HTTP bytes |\n')
                   summary.write('|---|---|---|---|---|---|---|---|---|\n')
                   for row in data['summary']:
-                      values = [row.get(key) for key in ('engine', 'scenario', 'mode', 'concurrency', 'status', 'successful_pages', 'median_latency_ms', 'peak_rss_mib')]
+                      values = [row.get(key) for key in ('engine', 'scenario', 'mode', 'concurrency', 'status', 'successful_pages', 'median_latency_ms', 'median_peak_rss_mib')]
                       values.append(row['http_upload_bytes'] + row['http_download_bytes'])
                       summary.write('| ' + ' | '.join(str(v) for v in values) + ' |\n')
           PY
