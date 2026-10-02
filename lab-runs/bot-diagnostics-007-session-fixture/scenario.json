@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "tools": [
+    "wreq-js",
+    "impit",
+    "patchright",
+    "rebrowser-lightpanda",
+    "playwright-baseline"
+  ],
+  "limits": {
+    "requests_per_tool_site": 25,
+    "body_bytes_per_tool_site": 8388608
+  },
+  "operations_status": "waiting_for_user_selector_section",
+  "sites": [
+    {
+      "id": "fixture",
+      "origins": [
+        "http://127.0.0.1:38473"
+      ],
+      "links": {
+        "home": "http://127.0.0.1:38473/",
+        "targets": [
+          "http://127.0.0.1:38473/redirect",
+          "http://127.0.0.1:38473/inside2"
+        ]
+      },
+      "params": {},
+      "selectors": {
+        "primary": "#fixture-link"
+      },
+      "operations": [],
+      "enabled": true
+    }
+  ],
+  "options": {
+    "selectors": false,
+    "recoverSimple": false,
+    "seed": 1,
+    "recoveryMaxAttempts": 1
+  },
+  "recovery_plan": {
+    "max_attempts": 1,
+    "return_home_after_success": true,
+    "wait_seconds": 4,
+    "retry_original_target": true
+  },
+  "profiles": [
+    {
+      "id": "baseline",
+      "humanlike": false,
+      "extensions": []
+    }
+  ]
+}

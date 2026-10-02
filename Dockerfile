@@ -5,6 +5,7 @@ RUN groupadd --gid 10001 lab && useradd --uid 10001 --gid lab --no-create-home l
 COPY jse/__init__.py /app/jse/__init__.py
 COPY jse/lab /app/jse/lab
 COPY experiments /app/experiments
+RUN chmod -R a+rX /app
 
 FROM runtime AS test
 COPY tests /app/tests
@@ -16,8 +17,8 @@ RUN python -c "from pathlib import Path; Path('/tmp/validated').write_text('offl
 
 FROM runtime AS crawl-tools
 COPY requirements/crawl-tools.txt /app/requirements/crawl-tools.txt
-COPY scripts/check_crawl_tools.py /app/scripts/check_crawl_tools.py
-COPY scripts/check_cloud_environment.py /app/scripts/check_cloud_environment.py
+COPY --chmod=0644 scripts/check_crawl_tools.py /app/scripts/check_crawl_tools.py
+COPY --chmod=0644 scripts/check_cloud_environment.py /app/scripts/check_cloud_environment.py
 RUN pip install --no-cache-dir -r /app/requirements/crawl-tools.txt
 USER 10001:10001
 ENTRYPOINT ["python", "/app/scripts/check_crawl_tools.py"]

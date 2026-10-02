@@ -1,0 +1,46 @@
+export class TealiumClient {
+  async link(variables) {
+    const ready = (window.utag && window.utag_data) || await this.ready;
+
+    if (!ready) return;
+
+    const baseParams = this.baseParameters;
+    const mergedParams = Object.assign({}, baseParams, variables);
+    // mergedParams に undefined な値があれば除外
+    const filteredParams = Object.keys(mergedParams).reduce((hash, key) => {
+      if (mergedParams[key] != null) {
+        hash[key] = mergedParams[key];
+      }
+      return hash;
+    }, {});
+
+    window.utag.link(filteredParams);
+  }
+
+  get ready() {
+    return (async () => {
+      let ready = false;
+
+      for (let i = 0; i < 100 && !ready; i++) {
+        ready = await new Promise(resolve => setTimeout(() => resolve(window.utag && window.utag_data), 100));
+      }
+
+      return ready;
+    })();
+  }
+
+  get baseParameters() {
+    return {
+      page_type: window.utag_data.page_type,
+      page_category_type: window.utag_data.page_category_type,
+      page_subcategory_type: window.utag_data.page_subcategory_type,
+      market_category_type: window.utag_data.market_category_type,
+      market_type: window.utag_data.market_type,
+      oem_id: window.utag_data.oem_id,
+      indiv_id_login: window.utag_data.indiv_id_login,
+      login_status: window.utag_data.login_status
+    };
+  }
+}
+
+export const tealiumClient = new TealiumClient();
