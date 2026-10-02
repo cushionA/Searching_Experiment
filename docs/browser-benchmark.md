@@ -14,7 +14,9 @@ npm run benchmark:quick
 npm run benchmark:browsers
 ```
 
-導入スクリプトは専用venv・ブラウザを`.deps/`に配置する。Chromiumの共有ライブラリが足りない環境では、OS依存を`PLAYWRIGHT_BROWSERS_PATH="$PWD/.deps/benchmark-browsers" .deps/browser-benchmark-venv/bin/python -m playwright install --with-deps chromium`で導入する。既存のLightPandaは`LIGHTPANDA_BIN=/absolute/path/to/lightpanda`で指定できる。未導入時の既定取得先は公式nightly。固定リリースを使う場合は`LIGHTPANDA_DOWNLOAD_URL`と`LIGHTPANDA_SHA256`を導入時に設定する。実測結果にはPythonパッケージのバージョン、ブラウザのバージョン、LightPandaバイナリのSHA-256を保存する。
+導入スクリプトは専用venv・ブラウザを`.deps/`に配置する。Chromiumの共有ライブラリが足りない環境では、OS依存を`PLAYWRIGHT_BROWSERS_PATH="$PWD/.deps/benchmark-browsers" .deps/browser-benchmark-venv/bin/python -m playwright install --with-deps chromium`で導入する。既存のLightPandaは`LIGHTPANDA_BIN=/absolute/path/to/lightpanda`で指定できる。未導入時は公式1.0.0を取得し、公式リリースのSHA-256と一致したバイナリだけを配置する。別リリースを使う場合は`LIGHTPANDA_DOWNLOAD_URL`と`LIGHTPANDA_SHA256`の両方を指定する。実測結果にはPythonパッケージのバージョン、ブラウザのバージョン、LightPandaバイナリのSHA-256を保存する。
+
+Playwrightが配備済みでLightPanda本体だけ追加する場合は `bash scripts/setup_browser_benchmark.sh lightpanda` を使う。外部通信を制限している環境では、取得先の `github.com` とリリース配信先への通信許可が必要。ベンチマーク実行時はlocalhostのHTTP/CDP通信だけを使う。
 
 ```bash
 # 3エンジンを同時に走らせる。ヘッドフルではChromiumの2エンジンを並走
