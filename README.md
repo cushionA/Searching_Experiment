@@ -38,6 +38,8 @@ docker run --rm --network none --mount type=volume,src=discovery-lab-data,dst=/d
 
 ## 必要時に使う取得ツール
 
+LightPanda・Playwright・Patchrightの速度、メモリ、HTTP通信量をローカルfixtureで比較する場合は、`npm run benchmark:setup`の後に`npm run benchmark:quick`を実行する。Chromiumはヘッドレス・ヘッドフル両方、並列数1/4、ブラウザの再利用/毎回起動で比較する。`npm run benchmark:parallel`はエンジン間も同時実行する。[比較条件・導入・出力の詳細](docs/browser-benchmark.md)
+
 OxiBrowser 0.25.0を使った[Google・Amazon・ジョーシン・Homes・Indeedの比較結果と使用セレクタ](docs/oxibrowser-experiment.md)を記録した。実サイトのHTTP取得と、保存HTML上のAI操作を分けて検証している。
 
 wreq-js・impit・Patchright・rebrowser-patches＋Lightpandaの[Bot検知と初回応答の比較](docs/bot-diagnostics-2026-10-01.md)、[共通シナリオとオプションの実行手順](experiments/bot-diagnostics/README.md)、[サイト別シナリオを追加するSkill](.agents/skills/bot-blocking-scenarios/SKILL.md)も用意した。
