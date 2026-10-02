@@ -4,7 +4,21 @@ Rebrowser Bot DetectorとFingerprintJS BotD 2.0.0の項目別診断、指定4サ
 
 ## 共通インターフェイス
 
-`framework.mjs`がメインループ、`scenario.mjs`が役割、`adapters.mjs`がツール別のnative fetch/goto/入力、`runner.mjs`がrobots・取得予算・証拠の共通実行器。`sites.json`にhome、targets、params、selectors、操作手順と成功条件を注入する。サイトごとにクロールの実行器を書き直す必要はない。
+`sites.json`にhome、targets、params、selectors、操作手順と成功条件を注入する。サイトごとにクロールの実行器を書き直す必要はない。
+
+| モジュール | 担当 |
+|---|---|
+| `framework.mjs` | 比較条件のメインループ、セッション、再開と結果保存 |
+| `manifest.mjs` | URL展開、対象範囲、操作・拡張・比較条件の検査 |
+| `scenario.mjs` | 注入された役割、トップ→内部URL、回復と再訪の段階 |
+| `adapters.mjs` | 各ツールのnative fetch/goto/入力とCookie継続 |
+| `runner.mjs` | robotsと同一originを検査して実際の通信を実行 |
+| `evidence.mjs` | 共有予算、失敗の計上、原body・DOM・台帳の保存とverify |
+| `observations.mjs` | 文字コードと観測した応答の分類 |
+| `runtime.mjs` | 共通の上限・UA・依存と一時データの配置・ソース証拠 |
+| `runner-cli.mjs` | 初回応答・検知器の旧CLIの実装 |
+
+`runner.mjs`と`framework.mjs`の既存CLI・公開メソッドは引き続き使える。新しいrunは分割後の全実装を自動でハッシュ保存する。過去の台帳と設定は同じverifyで照合できる。`runner.mjs verify`は破損した証拠を検出すると非ゼロで終了する。
 
 ```mermaid
 flowchart LR
@@ -148,6 +162,8 @@ node experiments/bot-diagnostics/options-smoke.mjs .lab-output/new-options-fixtu
 前者は全5方式のCookie継続・内部URL・302/200の計上、後者はネイティブ操作、操作速度、簡単なチャレンジ、1回の再訪、拡張の実読み込み、未対応機能、完了後の再開を実ブラウザとローカルfixtureで検証する。実サイトの突破成功を意味しない。新しい出力先を使う。
 
 ## チェックポイントを取り出す
+
+コードだけを新環境へ配布する場合は、リポジトリ全体の`python3 -B scripts/package_cloud.py --output .lab-output/your-cloud.zip`を使う。標準Python基盤と診断用のコード・テスト・Docker・Skillを含め、CRCとSHA256を照合する。配置先は公開ソースの許可リストだけから選択する。実行途中の証拠を含める場合は以下のexportを使う。
 
 ```bash
 python3 -B experiments/bot-diagnostics/export.py --run lab-runs/your-new-run --output .lab-output/your-checkpoint.zip

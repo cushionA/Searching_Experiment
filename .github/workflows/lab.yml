@@ -17,6 +17,13 @@ jobs:
       - run: python -B -m unittest discover -s tests -p 'test_cloud_setup.py'
       - run: python -m pip install -r .agents/skills/kaggle-ops/requirements.txt
       - run: python -B -m unittest discover -s tests -p 'test_kaggle_ops.py'
+      - name: Restore and validate the public code distribution
+        run: |
+          python -B scripts/package_cloud.py --output "$RUNNER_TEMP/lab-source.zip"
+          python -m zipfile -e "$RUNNER_TEMP/lab-source.zip" "$RUNNER_TEMP/lab-source"
+          cd "$RUNNER_TEMP/lab-source"
+          python -B -m unittest discover -s tests -p 'test_lab*.py'
+          node experiments/bot-diagnostics/framework.mjs plan --all-options
       - run: docker compose config --quiet
       - run: docker build -t discovery-lab:ci .
       - run: docker run --rm --network none --read-only --tmpfs /tmp:size=32m --mount type=volume,src=lab-ci,dst=/data discovery-lab:ci demo --run /data/demo

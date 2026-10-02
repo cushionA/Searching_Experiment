@@ -1,150 +1,16 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {pathToFileURL, fileURLToPath} from 'node:url';
-import {Evidence, verify, safeError} from './runner.mjs';
-import {ToolAdapter, TOOL_NAMES} from './adapters.mjs';
-import {roles as defaultRoles} from './scenario.mjs';
-import {validateSteps,validateExpectation} from './operations.mjs';
+import {here, snapshotSources} from './runtime.mjs';
+import {Evidence, verify, safeError} from './evidence.mjs';
+import {ToolAdapter} from './adapters.mjs';
+import {roles as defaultRoles, runScenario} from './scenario.mjs';
+import {prepare, extensionFiles} from './manifest.mjs';
 
-const here=path.dirname(fileURLToPath(import.meta.url));
-export function injectURL(template,params) {
-  return template.replace(/\{([A-Za-z_][A-Za-z0-9_]*)\}/g,(_,key)=>{
-    if(!Object.hasOwn(params,key)) throw new Error(`missing_parameter:${key}`);
-    return encodeURIComponent(String(params[key]));
-  });
-}
-const injectValue=(value,params)=>value.replace(/\{([A-Za-z_][A-Za-z0-9_]*)\}/g,(_,key)=>{
-  if(!Object.hasOwn(params,key)) throw new Error(`missing_parameter:${key}`);
-  return String(params[key]);
-});
-function extensionFiles(directory) {
-  const files=[];
-  const walk=(current,depth=0)=>{
-    if(depth>4) throw new Error('extension_directory_too_deep');
-    for(const entry of fs.readdirSync(current,{withFileTypes:true})) {
-      if(entry.name.startsWith('.')) continue;
-      const filename=path.join(current,entry.name);
-      if(entry.isSymbolicLink()) throw new Error('extension_symlinks_unsupported');
-      if(entry.isDirectory()) walk(filename,depth+1);
-      else if(entry.isFile()) {
-        if(files.length>=32 || fs.statSync(filename).size>262144) throw new Error('extension_source_limit');
-        files.push(filename);
-      }
-    }
-  };
-  walk(directory);return files;
-}
-function checkExtension(directory) {
-  const manifest=JSON.parse(fs.readFileSync(path.join(directory,'manifest.json')));
-  // Background-network traffic is outside this page-scoped interception boundary.
-  if(manifest.manifest_version!==3 || manifest.background || manifest.permissions?.length || manifest.host_permissions?.length
-    || manifest.web_accessible_resources?.length) throw new Error('unsupported_capability:extension_requires_unaccounted_background_or_permissions');
-  extensionFiles(directory);return directory;
-}
-export function prepare(manifest,{includeGoogle=false,fixture=false,selectors=false,recoverSimple=false,
-  humanlike=false,extensions=false,extensionPaths=[],baseDirectory=here}={}) {
-  if(manifest.schema!==1 || !Array.isArray(manifest.sites) || !Array.isArray(manifest.tools)) throw new Error('invalid_manifest');
-  if(manifest.tools.some(tool=>!TOOL_NAMES.includes(tool)) || new Set(manifest.tools).size!==manifest.tools.length) throw new Error('unknown_or_duplicate_tool');
-  if(manifest.limits?.requests_per_tool_site!==25 || manifest.limits?.body_bytes_per_tool_site!==8388608) throw new Error('limits_must_match_executor');
-  const recoveryPlan={max_attempts:1,return_home_after_success:true,wait_seconds:4,retry_original_target:true,...manifest.recovery_plan};
-  if(![0,1].includes(recoveryPlan.max_attempts) || !Number.isFinite(recoveryPlan.wait_seconds)
-    || recoveryPlan.wait_seconds<0 || recoveryPlan.wait_seconds>60) throw new Error('invalid_recovery_budget_or_wait');
-  const options={selectors:!!(selectors||humanlike||manifest.options?.selectors),
-    recoverSimple:!!(recoverSimple||manifest.options?.recoverSimple),seed:manifest.options?.seed??1,
-    recoveryMaxAttempts:recoveryPlan.max_attempts};
-  if(!Number.isInteger(options.seed)) throw new Error('integer_seed_required');
-  const profiles=structuredClone(manifest.profiles||[{id:'baseline',humanlike:false,extensions:[]}]);
-  if(humanlike) profiles.push({id:'humanlike',humanlike:true,extensions:[]});
-  if(extensions) profiles.push({id:'extension',humanlike:false,extensions:[path.join(here,'extensions/observation-probe')],
-    extension_probe:{kind:'attribute',selector:'html',name:'data-bot-diagnostics-extension',value:'loaded'}});
-  if(extensionPaths.length) profiles.push({id:'custom-extension',humanlike:false,extensions:extensionPaths});
-  const profileIDs=new Set();
-  for(const profile of profiles) {
-    if(!/^[a-z][a-z0-9-]*$/.test(profile.id) || profileIDs.has(profile.id)) throw new Error('invalid_or_duplicate_profile_id');
-    profileIDs.add(profile.id);
-    profile.extensions=(profile.extensions||[]).map(dir=>checkExtension(path.resolve(baseDirectory,dir)));
-    if(profile.extension_probe) validateExpectation(profile.extension_probe);
-  }
-  const ids=new Set();
-  const sites=manifest.sites.map(site=>{
-    if(!/^[a-z][a-z0-9-]*$/.test(site.id) || ids.has(site.id)) throw new Error('invalid_or_duplicate_site_id');
-    ids.add(site.id);
-    const params=site.params||{};
-    const links={home:injectURL(site.links.home,params),targets:site.links.targets.map(url=>injectURL(url,params))};
-    for(const url of [links.home,...links.targets]) {
-      const parsed=new URL(url),local=fixture&&['127.0.0.1','localhost'].includes(parsed.hostname)&&parsed.protocol==='http:';
-      if((!local&&parsed.protocol!=='https:') || parsed.username || parsed.password || parsed.hash
-        || !site.origins.includes(parsed.origin)) throw new Error('url_outside_site_scope');
-    }
-    const operations=(site.operations||[]).map(step=>({...step,...(step.value!==undefined?{value:injectValue(step.value,params)}:{}),
-      ...(step.expect?{expect:{...step.expect,value:step.expect.kind==='url'?injectURL(step.expect.value,params):step.expect.value}}:{})}));
-    validateSteps(operations);
-    if(site.recovery) {
-      if(site.recovery.kind!=='simple_button' || typeof site.recovery.selector!=='string') throw new Error('only_configured_simple_button_recovery_supported');
-      validateExpectation(site.recovery.success);
-    }
-    return {...site,links,operations,enabled:site.final_stage?includeGoogle:site.enabled!==false};
-  });
-  return {...manifest,options,recovery_plan:recoveryPlan,profiles,
-    sites:sites.filter(s=>s.enabled).sort((a,b)=>Number(!!a.final_stage)-Number(!!b.final_stage))};
-}
-export function classifyGate(result) {
-  if(result.outcome==='content_observed') return 'continue';
-  if(result.outcome==='challenge_observed') return 'capture_challenge';
-  if(['access_denied_observed','rate_limited_observed'].includes(result.outcome)) return 'site_rejected';
-  if(/robots/.test(result.outcome)) return 'robots_stop';
-  return 'preflight_or_measurement_failure';
-}
-/** Small site role modules consume injected links/selectors; budgets and sessions remain shared. */
-export async function runScenario({adapter,site,roles=defaultRoles,recoveryPlan={},options={},profile={id:'baseline'}}) {
-  const context={adapter,site,links:site.links,selectors:site.selectors||{},params:site.params||{}};
-  const events=[];
-  const invoke=async(role,extra={})=>{
-    const result=await (roles[role]||defaultRoles[role])({...context,...extra});
-    events.push({role,result});return result;
-  };
-  const finish=state=>({site:site.id,tool:adapter.tool,profile:profile.id,state,events});
-  const recovery={max_attempts:1,return_home_after_success:true,wait_seconds:4,retry_original_target:true,...recoveryPlan};
-  let attempts=0;
-  const gate=async(result,{url,homepage=false}={})=>{
-    const state=classifyGate(result);
-    if(state!=='capture_challenge') return state;
-    if(attempts>=recovery.max_attempts) return 'recovery_budget_exhausted';
-    attempts++;
-    const recovered=await invoke('recoverSimpleChallenge',{url,observation:result});
-    if(recovered.outcome!=='recovery_confirmed') return state;
-    if(recovery.return_home_after_success && classifyGate(await invoke('returnHome'))!=='continue') return 'revisit_failed';
-    await new Promise(resolve=>setTimeout(resolve,Math.max(0,Math.min(60,recovery.wait_seconds))*1000));
-    if(!recovery.retry_original_target) return 'recovery_confirmed_without_target_retry';
-    return classifyGate(await invoke(homepage?'homepage':'target',{url,retry:true}))==='continue'?'continue':'retry_failed';
-  };
-  let result=await invoke('homepage');
-  if(profile.extensions?.length) {
-    const probe=await invoke('extensionProbe');
-    if(probe.outcome==='extension_loading_failed') return finish('extension_loading_failed');
-  }
-  let state=await gate(result,{url:site.links.home,homepage:true});
-  if(state!=='continue') return finish(state);
-  if(options.selectors) {
-    const probe=await invoke('selectorProbe');
-    if(probe.observation && classifyGate(probe.observation)!=='continue') {
-      state=await gate(probe.observation,{url:site.links.home,homepage:true});
-      if(state!=='continue') return finish(state);
-    }
-  }
-  for(const url of site.links.targets) {
-    result=await invoke('target',{url});state=await gate(result,{url});
-    if(state!=='continue') return finish(state);
-  }
-  return finish('navigation_completed');
-}
-function snapshotSources(evidence,roleSource=null) {
-  const files=['framework.mjs','adapters.mjs','runner.mjs','scenario.mjs','operations.mjs','providers.mjs',
-    'config.json','versions.json','package.json','package-lock.json','smoke.mjs','options-smoke.mjs','setup.py'];
-  const sources=Object.fromEntries(files.map(name=>[name,evidence.blob(fs.readFileSync(path.join(here,name)))]));
-  if(roleSource) sources.custom_roles=evidence.blob(fs.readFileSync(roleSource));
-  return sources;
-}
+// Existing entry points remain available to callers after the responsibility split.
+export {injectURL, prepare} from './manifest.mjs';
+export {classifyGate, runScenario} from './scenario.mjs';
+
 export function latestOutcomes(outcomes) {
   return [...new Map(outcomes.map(o=>[`${o.tool}/${o.site}/${o.profile}`,o])).values()];
 }
