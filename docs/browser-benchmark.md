@@ -76,8 +76,39 @@ headfulは`DISPLAY`があれば利用し、なければワーカーごとにXvfb
 
 **通信量:** fixtureサーバーで受けたHTTP要求と送ったHTTP応答のバイト数。HTTPヘッダーを含み、本文バイトも別に記録する。圧縮なし・キャッシュなし・HTTP/1.1・各要求後に接続を終了する。同じサーバー上でworker tokenごとに分離し、API・JS・CSS・画像を合算する。CDP通信、ブラウザのバックグラウンド通信、TCP/IP・TLSのオーバーヘッドは含まない。OSのネットワークインターフェース総通信量ではない。
 
-## 検証状況（2026-10-02）
+## 実測結果（2026-10-03 JST）
 
-- 計測・fixture・不一致/タイムアウト・別プロセスグループへ分離した子プロセスのRSS・ヘッドフル起動オプション・並走時の条件分岐を検証する16テストが成功。既存の`test_lab*.py`42テストも成功。
-- 配備済みPlaywright 1.62.0 / Chromium 151.0.7922.173のheadlessで、4シナリオ × warm/cold × 並列数1/4の16条件、各4ページ、計64ページが成功。通信量処理の最終変更後もquick相当の24ページが成功。
-- 外部通信が無効の環境のため、未配備のLightPanda・Patchright・Xvfbは導入できず、それらの実測は未実施。導入時の固定バージョン1.63.0の実測も未実施。モックによる分岐検証は実測と区別する。
+GitHub ActionsのUbuntu・4 CPU環境へ公式LightPanda **1.0.0**、Playwright **1.63.0**、Patchright **1.63.0**を導入した。4シナリオ × warm/cold × 並列数1/4 × 3エンジンの**48条件**を2回ずつ、各4ページで実行し、**96試行・384ページすべてで抽出照合に成功**した。各エンジン128ページ。ヘッドレスのみの測定で、ヘッドフルは未測定。
+
+[成功した実測と生ログ](https://github.com/cushionA/Searching_Experiment/actions/runs/37044116207)。再実行コマンド:
+
+```bash
+bash scripts/setup_browser_benchmark.sh
+PLAYWRIGHT_BROWSERS_PATH="$PWD/.deps/benchmark-browsers" .deps/browser-benchmark-venv/bin/python -m playwright install --with-deps chromium
+bash scripts/run_browser_benchmark.sh --display-modes headless --iterations 2 --pages 4
+```
+
+warm・並列数1のページ遅延中央値と、試行ごとのピークRSSの中央値:
+
+| シナリオ | LightPanda ms | Playwright ms | Patchright ms | LightPanda MiB | Playwright MiB | Patchright MiB |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| static | 21.827 | 64.783 | 69.144 | 208.913 | 606.748 | 602.299 |
+| dom | 23.223 | 70.790 | 65.962 | 212.228 | 611.173 | 605.706 |
+| fetch | 63.915 | 101.390 | 102.840 | 209.165 | 604.697 | 606.543 |
+| assets | 21.025 | 82.052 | 81.613 | 209.166 | 609.160 | 626.434 |
+
+この4条件ではLightPandaの遅延・RSSが低かった。短いローカルfixtureを共有runner上で2回測った観測であり、実サイトや長時間運転の性能保証ではない。assetsのHTTP通信量は1ページ平均でLightPanda 18,552 B、Chromium系119,016 B。LightPandaがCSS・画像を取得しない既定動作による違いを含み、描画機能が同じ比較ではない。
+
+### 実測で見つかった修正
+
+[初回実測](https://github.com/cushionA/Searching_Experiment/actions/runs/37042765190)では、LightPandaのwarm・並列数4だけが失敗し、全体288ページ中16ページが `Cannot have more than one browser context at a time` となった。初回は各試行3ページなので、指定並列数4に対して実際の上限は3だった。
+
+[公式1.0.0のCDP実装](https://github.com/lightpanda-io/browser/blob/1.0.0/src/server/cdp/CDP.zig)で1接続1 contextの制限を確認し、同じサーバープロセスへcontextごとのCDP接続を作るよう修正した。再測定は各4ページとし、要求した4並列を実行できる構成にした。失敗を成功扱いに変更せず、失敗結果と修正後の結果を別々に保存している。接続の独立性・終了処理を含む18件の単体テストと、既存のDocker CIも成功した。
+
+### 結果の保存
+
+全48条件の集約・環境・初回失敗の詳細・生データのSHA-256は [結果JSON](../experiments/browser-benchmark-20261003/results.json)、仮説・判断・戻し方は [実験台帳](../experiments/records/browser-benchmark-20261003.json) に保存した。これはベンチマークの統合で、共通クローラへのLightPanda採用判断ではない。
+
+生データ `results.json` / `summary.csv` / `logs/` は上記Actions実行のArtifactに保存。初回Artifact IDは11242814442、修正後は11243567089で、2026-10-16 UTCに保存期限を迎える。ZIP取得後に結果JSON記載の `artifact_sha256`、展開した `results.json` の `results_sha256` を照合できる。Git内の集約・失敗記録はArtifactの期限後も残る。
+
+現在のCloud作業環境は外部ダウンロードが制限されているため、LightPanda本体の導入・3エンジン実測はGitHub Actions上で行った。ローカルでは配備済みPlaywright 1.62.0 / Chromium 151.0.7922.173の16条件64ページと、単体・既存回帰テストを確認した。

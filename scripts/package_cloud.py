@@ -7,6 +7,8 @@ from pathlib import Path
 
 STATIC_FILES = (
     "package.json", "docs/browser-benchmark.md",
+    "experiments/browser-benchmark-20261003/results.json",
+    "experiments/records/browser-benchmark-20261003.json",
     "AGENTS.md", "README.md", "PLAN.md", "Dockerfile", "compose.yaml",
     "compose.bot-diagnostics-cloud.yaml", ".dockerignore", ".gitignore", ".gitattributes",
     ".github/workflows/lab.yml", ".codex/config.toml", ".codex/agents/luna.toml",

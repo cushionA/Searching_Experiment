@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "browser-benchmark-20261003",
+  "title": "LightPanda・Playwright・Patchrightのローカルfixture比較",
+  "owner": "maintainers",
+  "status": "exploring",
+  "hypothesis": "同じDOM抽出を行うときLightPandaの処理時間・メモリ・HTTP通信量がChromium系と異なる。",
+  "success_criteria": "static/dom/fetch/assets、warm/cold、並列数1/4で抽出結果を照合し、失敗・環境・計測範囲を保存する。CIの成功だけで実サイトの適性や本番採用を判断しない。",
+  "configs": [],
+  "evidence": [
+    "docs/browser-benchmark.md",
+    "experiments/browser-benchmark-20261003/results.json"
+  ],
+  "result": "LightPanda 1.0.0 / Playwright 1.63.0 / Patchright 1.63.0で48条件・96試行・384ページの抽出照合に成功。初回はLightPandaのwarm並列で1接続1 context制限による16ページ失敗を確認し、同一プロセスへcontextごとのCDP接続を作る修正で解消した。小規模headlessローカルfixtureの結果であり、実サイト適性・headful・本番crawler採用は未評価。",
+  "integration": {
+    "decision": "ready",
+    "targets": [
+      "scripts/browser_benchmark.py",
+      "scripts/setup_browser_benchmark.sh",
+      ".github/workflows/browser-benchmark.yml",
+      "docs/browser-benchmark.md"
+    ],
+    "replaces": [],
+    "rollback": "ベンチマーク専用入口とworkflowを無効化して戻す。取得本体jse.labは変更しない。台帳・測定結果・失敗記録は保持する。"
+  }
+}
