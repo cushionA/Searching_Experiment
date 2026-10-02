@@ -25,7 +25,7 @@ const repo=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const directory=path.resolve(process.argv[2]||path.join(repo,'.lab-output/framework-fixture-smoke'));
 try{
   const manifest=prepare({schema:1,tools:['wreq-js','impit','patchright','rebrowser-lightpanda','playwright-baseline'],
-    limits:{requests_per_tool_site:25,body_bytes_per_tool_site:8388608},operations_status:'waiting_for_user_selector_section',
+    limits:{requests_per_tool_site:25,body_bytes_per_tool_site:8388608},
     sites:[{id:'fixture',origins:[origin],links:{home:origin+'/',targets:[origin+'/redirect',origin+'/inside2']},params:{},selectors:{primary:'#fixture-link'}}]}, {fixture:true});
   const result=await execute({manifest,directory,fixture:true});
   fs.writeFileSync(path.join(directory,'fixture-server-requests.json'),JSON.stringify(requests,null,2)+'\n');

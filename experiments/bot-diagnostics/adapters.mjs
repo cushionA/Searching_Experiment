@@ -1,13 +1,13 @@
-import { httpClient, httpSite, openBrowser, browserSite } from './runner.mjs';
+import {httpClient, httpSite, openBrowser, browserSite} from './runner.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
-import { decodeBody, classify } from './runner.mjs';
+import {decodeBody, classify} from './observations.mjs';
+import {TOOL_NAMES, HTTP_USER_AGENT} from './runtime.mjs';
 import { providerHints } from './providers.mjs';
 import {performSteps, postcondition} from './operations.mjs';
 
-export const TOOL_NAMES = ['wreq-js', 'impit', 'patchright', 'rebrowser-lightpanda', 'playwright-baseline'];
+export {TOOL_NAMES, HTTP_USER_AGENT};
 const httpTools = new Set(['wreq-js', 'impit']);
-export const HTTP_USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 DiscoveryLab/0.1';
 
 /** Each adapter owns one session; all roles share its cookies and the site's budget. */
 export class ToolAdapter {

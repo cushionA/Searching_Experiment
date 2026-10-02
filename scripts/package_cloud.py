@@ -5,31 +5,74 @@ import zipfile
 from pathlib import Path
 
 
+STATIC_FILES = (
+    "AGENTS.md", "README.md", "PLAN.md", "Dockerfile", "compose.yaml",
+    "compose.bot-diagnostics-cloud.yaml", ".dockerignore", ".gitignore", ".gitattributes",
+    ".github/workflows/lab.yml", ".codex/config.toml", ".codex/agents/luna.toml",
+    "jse/__init__.py", "experiments/pilot.example.json", "experiments/search-candidates-20261002.json",
+    "docs/cloud-lab.md", "docs/cloud-validation.md", "docs/topic-discovery.md", "docs/free-search-engines.md",
+    "docs/bot-diagnostics-2026-10-01.md", "docs/bot-diagnostics-evidence.md",
+    "docs/bot-diagnostics-framework-validation-2026-10-01.md",
+    "docs/oxibrowser-experiment.md", "docs/oxibrowser-selectors-20261001.json",
+    ".agents/skills/bot-blocking-scenarios/SKILL.md",
+    ".agents/skills/kaggle-ops/SKILL.md", ".agents/skills/kaggle-ops/requirements.txt",
+    ".agents/skills/kaggle-ops/agents/openai.yaml", ".agents/skills/kaggle-ops/references/notebooks.md",
+    ".agents/skills/kaggle-ops/scripts/kaggle_ops.py",
+)
+
+# Enumerate only these public code directories, each at one level.
+PATTERNS = {
+    "jse/lab": ("*.py",),
+    "tests": ("test*.py", "__init__.py"),
+    "scripts": ("check_*.py", "cloud_setup.sh", "setup_kaggle.sh", "package_cloud.py"),
+    "requirements": ("crawl-tools.txt", "browser-tools.txt", "adaptive-tools.txt"),
+    "experiments/bot-diagnostics": ("*.mjs", "*.json", "*.py", "*.sh", "Dockerfile", "README.md"),
+    "experiments/bot-diagnostics/extensions/observation-probe": ("*.json", "*.js"),
+}
+
+
+def distribution_files(root):
+    """Return sorted public code, excluding runtime, credentials and saved runs."""
+    root = root.resolve()
+    files = {root / name for name in STATIC_FILES}
+    for directory, patterns in PATTERNS.items():
+        for pattern in patterns:
+            files.update((root / directory).glob(pattern))
+    if (root / "LICENSE").is_file():
+        files.add(root / "LICENSE")
+    for file in files:
+        if not file.is_file() or file.is_symlink() or not file.resolve().is_relative_to(root):
+            raise RuntimeError(f"Unsafe or missing distribution file: {file.relative_to(root)}")
+    return sorted(files)
+
+
+def package(root, output):
+    root = root.resolve()
+    files = distribution_files(root)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    manifest = {}
+    with zipfile.ZipFile(output, "x", compression=zipfile.ZIP_DEFLATED) as archive:
+        for file in files:
+            name = file.relative_to(root).as_posix()
+            content = file.read_bytes()
+            archive.writestr(name, content)
+            manifest[name] = hashlib.sha256(content).hexdigest()
+        archive.writestr("MANIFEST.json", json.dumps(manifest, indent=2) + "\n")
+    with zipfile.ZipFile(output) as archive:
+        if archive.testzip() is not None:
+            raise RuntimeError("Distribution ZIP CRC verification failed")
+        for name, digest in manifest.items():
+            if hashlib.sha256(archive.read(name)).hexdigest() != digest:
+                raise RuntimeError("Distribution SHA256 mismatch: " + name)
+    return {"output": str(output), "files": len(files), "bytes": output.stat().st_size,
+            "sha256": hashlib.sha256(output.read_bytes()).hexdigest()}
+
+
 def main():
     parser = argparse.ArgumentParser(description="秘密情報・既存コーパスを含まないクラウド配布用ZIPを作る")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    root = Path(__file__).resolve().parents[1]
-    files = ["AGENTS.md", "README.md", "PLAN.md", "Dockerfile", ".dockerignore", ".gitignore", ".gitattributes", ".github/workflows/lab.yml", "compose.yaml", "jse/__init__.py", "docs/cloud-lab.md", "docs/cloud-validation.md", "scripts/cloud_setup.sh", "scripts/package_cloud.py", "experiments/pilot.example.json", "tests/test_lab.py", "tests/test_kaggle_ops.py"]
-    files.extend(".agents/skills/kaggle-ops/" + name for name in ("SKILL.md", "requirements.txt", "agents/openai.yaml", "references/notebooks.md", "scripts/kaggle_ops.py"))
-    files.extend(["requirements/crawl-tools.txt", "requirements/browser-tools.txt", "requirements/adaptive-tools.txt", "scripts/check_crawl_tools.py", "tests/test_adaptive.py", "tests/test_impit.py"])
-    files.extend([".codex/config.toml", ".codex/agents/luna.toml", "scripts/check_cloud_environment.py",
-                  "scripts/setup_kaggle.sh", "tests/test_cloud_environment.py", "tests/test_cloud_setup.py", "tests/test_lab_network.py",
-                  "tests/test_lab_retry.py", "tests/test_lab_agent.py", "tests/__init__.py"])
-    files.extend(["tests/test_lab_discovery.py", "docs/topic-discovery.md", "docs/free-search-engines.md",
-                  "experiments/search-candidates-20261002.json"])
-    files.extend(str(path.relative_to(root)).replace("\\", "/") for path in sorted((root / "jse/lab").glob("*.py")))
-    if (root / "LICENSE").is_file():
-        files.append("LICENSE")
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    manifest = {}
-    with zipfile.ZipFile(args.output, "x", compression=zipfile.ZIP_DEFLATED) as archive:
-        for name in files:
-            content = (root / name).read_bytes()
-            archive.writestr(name, content)
-            manifest[name] = hashlib.sha256(content).hexdigest()
-        archive.writestr("MANIFEST.json", json.dumps(manifest, indent=2))
-    print(json.dumps({"output": str(args.output), "files": len(files), "bytes": args.output.stat().st_size}))
+    print(json.dumps(package(Path(__file__).resolve().parents[1], args.output)))
 
 
 if __name__ == "__main__":

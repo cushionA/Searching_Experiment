@@ -9,7 +9,7 @@ description: 共通フレームワークへURL・セレクタを注入するサ�
 
 ## 共通実装を再利用する
 
-`experiments/bot-diagnostics/framework.mjs` がメインループ、`adapters.mjs` が各ツールのセッションとnative fetch/goto、`runner.mjs` がrobots・回数・bytes・証拠の実行境界である。サイト別にこれらを書き直さない。
+`framework.mjs`がセッション・再開のメインループ、`manifest.mjs`がURL・オプションの検査、`scenario.mjs`が役割と段階の実行、`adapters.mjs`が各ツールのnative fetch/gotoである。`runner.mjs`の通信は`evidence.mjs`の回数・bytes台帳を通し、`runtime.mjs`の共通設定を使う。サイト別にこれらを書き直さない。
 
 1. `sites.json`を基に、当該run専用の設定を作る。home、targets、origins、params、selectorsを注入する。URLテンプレートの値はpercent encodeされる。
 2. サイト固有の分岐が必要なときだけ、小さい`.mjs`に`export const roles = { homepage, target, returnHome, selectorProbe, recoverSimpleChallenge, extensionProbe }`の必要な役割だけ実装する。メソッドは`({ adapter, site, links, selectors, params, url })`を受け取り、共通adapterの役割メソッドを使う。未指定の役割は標準実装になる。
@@ -19,7 +19,7 @@ description: 共通フレームワークへURL・セレクタを注入するサ�
 
 ## 操作オプション
 
-ユーザーの「リベースして確認してオプションまで完全実装」の指示により、selectorProbe、recoverSimpleChallenge、拡張機能・操作速度の比較も実装済み。個別フラグまたは`--all-options`で選択する。Skillは毎回この共通実装を呼ぶ。
+selectorProbe、recoverSimpleChallenge、拡張機能・操作速度の比較は個別フラグまたは`--all-options`で選択する。Skillは毎回この共通実装を呼ぶ。
 
 `site.operations`へ最大3つのfill/click/hoverを注入する。fillは入力後の値、click/hoverは必須の`expect`（text/attribute/present/url/value）で実際の変化を確認する。一意のセレクタ、入力要素のtag/type、現在のURLを照合する。元から真の成功条件やAPI成功フラグだけでは効果を認定しない。
 

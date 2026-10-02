@@ -80,7 +80,7 @@ AdaptivePlaywrightCrawlerを実験へ接続する場合は `bash scripts/cloud_s
 python3 -B scripts/package_cloud.py --output .lab-output/discovery-lab-cloud.zip
 ```
 
-ZIPはコードの配布用。実験途中の保存には `jse.lab export` を使う。
+ZIPは標準Python基盤とBot診断のコード・テスト・Docker・Skillを含む配布用。公開ソースの許可リストから作り、CRCとSHA256を照合する。実験途中の保存には `jse.lab export`、Bot診断には `experiments/bot-diagnostics/export.py` を使う。
 
 ## GPUが必要な場合
 
