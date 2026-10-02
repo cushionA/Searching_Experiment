@@ -1,0 +1,114 @@
+# LightPanda・Playwright・Patchright比較
+
+既存の実験・取得経路とは独立したローカルHTTP fixtureによる比較。速度、プロセス群のメモリ使用量、HTTP通信量を同時に測る。Python 3.12以上・Linux・Node.js/npmが必要。npmは入口のみで、JavaScript依存の導入は不要。
+
+## 導入と実行
+
+ネットワークを許可した環境で:
+
+```bash
+npm run benchmark:setup
+# 画面のないLinuxではOSのxvfbパッケージも導入する
+# 例: sudo apt-get install xvfb
+npm run benchmark:quick
+npm run benchmark:browsers
+```
+
+導入スクリプトは専用venv・ブラウザを`.deps/`に配置する。Chromiumの共有ライブラリが足りない環境では、OS依存を`PLAYWRIGHT_BROWSERS_PATH="$PWD/.deps/benchmark-browsers" .deps/browser-benchmark-venv/bin/python -m playwright install --with-deps chromium`で導入する。既存のLightPandaは`LIGHTPANDA_BIN=/absolute/path/to/lightpanda`で指定できる。未導入時は公式1.0.0を取得し、公式リリースのSHA-256と一致したバイナリだけを配置する。別リリースを使う場合は`LIGHTPANDA_DOWNLOAD_URL`と`LIGHTPANDA_SHA256`の両方を指定する。実測結果にはPythonパッケージのバージョン、ブラウザのバージョン、LightPandaバイナリのSHA-256を保存する。
+
+Playwrightが配備済みでLightPanda本体だけ追加する場合は `bash scripts/setup_browser_benchmark.sh lightpanda` を使う。外部通信を制限している環境では、取得先の `github.com` とリリース配信先への通信許可が必要。ベンチマーク実行時はlocalhostのHTTP/CDP通信だけを使う。
+
+```bash
+# 3エンジンを同時に走らせる。ヘッドフルではChromiumの2エンジンを並走
+npm run benchmark:parallel
+
+# 条件・試行数を絞る
+npm run benchmark:browsers -- --scenarios static,fetch --modes warm --concurrency 1,4 --pages 10 --iterations 3
+
+# ヘッドレスのみ / ヘッドフルのみ
+npm run benchmark:quick -- --display-modes headless
+npm run benchmark:quick -- --engines playwright,patchright --display-modes headful
+
+# 配備済みChromiumで動作確認。両ラッパーへ同じ実行ファイルを指定することも可能
+npm run benchmark:quick -- --engines playwright --chromium /usr/bin/chromium --display-modes headless
+
+# fixture・計測・エラー処理の検証（ブラウザ依存不要）
+npm run test:benchmark
+```
+
+`BROWSER_BENCHMARK_PYTHON`で使用するPythonの実行ファイルを指定できる。既定は専用venvがあればそれを、なければ`python3`を使う。依存・実行環境が足りなければ理由を表示して終了する。欠けたエンジンを成功扱いで省略しない。
+
+## 比較条件
+
+| 条件 | 既定値・内容 |
+| --- | --- |
+| エンジン | LightPanda（Playwright経由のCDP）、Playwright Chromium、Patchright Chromium |
+| 画面モード | headless / headful。LightPandaはheadless専用で、headfulは未対応としてメタデータに記録 |
+| static | HTMLに500件の項目を埋め込む |
+| dom | JavaScriptで同じ500件を生成する |
+| fetch | 40msの応答遅延があるJSON APIを取得して500件を生成する |
+| assets | 同じHTMLに外部JS、約32KiBのCSS、約64KiBのSVG画像を追加する |
+| warm | 1ブラウザプロセスを再利用し、ページごとに新しいcontextを作る。LightPandaはcontextごとに独立したCDP接続を使う |
+| cold | ページごとにブラウザを起動・終了する。起動・終了も処理時間に含む |
+| 並列数 | 1 / 4。coldでは同時に起動するブラウザ数、warmでは同時に処理するcontext数 |
+| 試行 | 各条件6ページ × 3回、各回の計測前に1ページをウォームアップ |
+| 実行順 | 既定はエンジン間を順次実行。seedによる順序変更と試行ごとの順序巡回。`--schedule parallel`でエンジン間も同時実行 |
+
+どのエンジンも同じURL群と抽出処理を実行し、タイトル、完了マーカー、件数、数値合計、先頭・末尾の文字列を照合する。タイムアウトや抽出不一致は失敗として残し、終了コード1を返す。全ページ成功した試行だけを遅延・処理時間・スループットの集約へ含める。
+
+LightPanda 1.0.0は1つのCDP接続に同時に1 contextまでという制限があるため、ページごとに接続を作成・終了する。warmでもサーバープロセスは1つのままで、並列数を1に落とさない。この接続処理の時間もページ遅延へ含める。LightPandaの使用状況テレメトリは実行時に無効化する。
+
+LightPandaには画像やCSSの描画機能がない。assetsは**同じDOM抽出要求を満たすまで**の比較で、描画品質が同じことを意味しない。リソース種別ごとのHTTP要求数も保存するため、省略による通信量の違いを確認できる。実サイトのブロック回避やサイト品質は測らない。
+
+headfulは`DISPLAY`があれば利用し、なければワーカーごとにXvfbを起動する。Xvfbは仮想画面上のヘッドフル動作であり、実モニターの描画性能の検証ではない。Chromiumは隔離された実験環境向けにsandboxを無効にして起動する。
+
+## 出力と計測範囲
+
+既定の保存先は`.lab-output/browser-benchmark-<UTC日時>-<乱数>/`。`--output`で新しいディレクトリを指定できる。既存ディレクトリは上書きしない。
+
+- `results.json`: 条件、環境、未対応条件、全ページの検証結果・遅延、試行ごとのメモリ・通信量、集約値。
+- `summary.csv`: 条件ごとの遅延中央値・p95、処理時間、ページ/秒、起動時間、ピークRSS、送受信バイト、HTTP要求数。
+- `logs/*.log`: 各試行のブラウザ・CDP・起動失敗のログ。
+
+**速度:** driver起動とブラウザ起動を個別に記録。ページ遅延はcontext作成から抽出確認・context終了まで。coldはブラウザ起動・終了も含む。待ち行列の待機はページ遅延から除き、全体の処理時間へ含める。ウォームアップは速度・本計測の通信量から除外する。並走モードではCPU・RAM・fixtureサーバーを共有するため、順次モードの結果と区別する。
+
+**メモリ:** 既定25ms間隔で、独立したワーカーと子孫プロセスのLinux RSSを合算する。別プロセスグループへ分離したChromiumも親子関係で追跡し、一度観測した子孫は親が変わっても追跡する。PIDと起動時刻を照合してPID再利用を区別する。Python、Playwright/Patchrightのdriver、ブラウザと子プロセス、独自起動したXvfbを含み、制御プロセスとHTTPサーバーを除外する。既存の共用`DISPLAY`は合算しない。計測フェーズのピークと、起動・ウォームアップ・終了を含む全体ピークを別に保存する。共有ページが重複計上されることと、サンプル間の短いピークを逃すことがある。計測フェーズがサンプル間隔より短く未観測の場合はnullで表す。OS全体の使用量・PSSではない。
+
+**通信量:** fixtureサーバーで受けたHTTP要求と送ったHTTP応答のバイト数。HTTPヘッダーを含み、本文バイトも別に記録する。圧縮なし・キャッシュなし・HTTP/1.1・各要求後に接続を終了する。同じサーバー上でworker tokenごとに分離し、API・JS・CSS・画像を合算する。CDP通信、ブラウザのバックグラウンド通信、TCP/IP・TLSのオーバーヘッドは含まない。OSのネットワークインターフェース総通信量ではない。
+
+## 実測結果（2026-10-03 JST）
+
+GitHub ActionsのUbuntu・4 CPU環境へ公式LightPanda **1.0.0**、Playwright **1.63.0**、Patchright **1.63.0**を導入した。4シナリオ × warm/cold × 並列数1/4 × 3エンジンの**48条件**を2回ずつ、各4ページで実行し、**96試行・384ページすべてで抽出照合に成功**した。各エンジン128ページ。ヘッドレスのみの測定で、ヘッドフルは未測定。
+
+[成功した実測と生ログ](https://github.com/cushionA/Searching_Experiment/actions/runs/37044116207)。再実行コマンド:
+
+```bash
+bash scripts/setup_browser_benchmark.sh
+PLAYWRIGHT_BROWSERS_PATH="$PWD/.deps/benchmark-browsers" .deps/browser-benchmark-venv/bin/python -m playwright install --with-deps chromium
+bash scripts/run_browser_benchmark.sh --display-modes headless --iterations 2 --pages 4
+```
+
+warm・並列数1のページ遅延中央値と、試行ごとのピークRSSの中央値:
+
+| シナリオ | LightPanda ms | Playwright ms | Patchright ms | LightPanda MiB | Playwright MiB | Patchright MiB |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| static | 21.827 | 64.783 | 69.144 | 208.913 | 606.748 | 602.299 |
+| dom | 23.223 | 70.790 | 65.962 | 212.228 | 611.173 | 605.706 |
+| fetch | 63.915 | 101.390 | 102.840 | 209.165 | 604.697 | 606.543 |
+| assets | 21.025 | 82.052 | 81.613 | 209.166 | 609.160 | 626.434 |
+
+この4条件ではLightPandaの遅延・RSSが低かった。短いローカルfixtureを共有runner上で2回測った観測であり、実サイトや長時間運転の性能保証ではない。assetsのHTTP通信量は1ページ平均でLightPanda 18,552 B、Chromium系119,016 B。LightPandaがCSS・画像を取得しない既定動作による違いを含み、描画機能が同じ比較ではない。
+
+### 実測で見つかった修正
+
+[初回実測](https://github.com/cushionA/Searching_Experiment/actions/runs/37042765190)では、LightPandaのwarm・並列数4だけが失敗し、全体288ページ中16ページが `Cannot have more than one browser context at a time` となった。初回は各試行3ページなので、指定並列数4に対して実際の上限は3だった。
+
+[公式1.0.0のCDP実装](https://github.com/lightpanda-io/browser/blob/1.0.0/src/server/cdp/CDP.zig)で1接続1 contextの制限を確認し、同じサーバープロセスへcontextごとのCDP接続を作るよう修正した。再測定は各4ページとし、要求した4並列を実行できる構成にした。失敗を成功扱いに変更せず、失敗結果と修正後の結果を別々に保存している。接続の独立性・終了処理を含む18件の単体テストと、既存のDocker CIも成功した。
+
+### 結果の保存
+
+全48条件の集約・環境・初回失敗の詳細・生データのSHA-256は [結果JSON](../experiments/browser-benchmark-20261003/results.json)、仮説・判断・戻し方は [実験台帳](../experiments/records/browser-benchmark-20261003.json) に保存した。これはベンチマークの統合で、共通クローラへのLightPanda採用判断ではない。
+
+生データ `results.json` / `summary.csv` / `logs/` は上記Actions実行のArtifactに保存。初回Artifact IDは11242814442、修正後は11243567089で、2026-10-16 UTCに保存期限を迎える。ZIP取得後に結果JSON記載の `artifact_sha256`、展開した `results.json` の `results_sha256` を照合できる。Git内の集約・失敗記録はArtifactの期限後も残る。
+
+現在のCloud作業環境は外部ダウンロードが制限されているため、LightPanda本体の導入・3エンジン実測はGitHub Actions上で行った。ローカルでは配備済みPlaywright 1.62.0 / Chromium 151.0.7922.173の16条件64ページと、単体・既存回帰テストを確認した。

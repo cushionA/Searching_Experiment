@@ -1,0 +1,75 @@
+name: browser-benchmark
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/browser-benchmark.yml'
+      - 'scripts/*browser_benchmark*'
+      - 'tests/test_browser_benchmark.py'
+      - 'requirements/browser-benchmark.txt'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/browser-benchmark.yml'
+      - 'scripts/*browser_benchmark*'
+      - 'tests/test_browser_benchmark.py'
+      - 'requirements/browser-benchmark.txt'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: browser-benchmark-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  headless:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.deps/benchmark-browsers
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Test measurement and extraction contracts
+        run: python -B -m unittest discover -s tests -p 'test_browser_benchmark.py'
+      - name: Install browsers and verified LightPanda release
+        run: bash scripts/setup_browser_benchmark.sh
+      - name: Install Chromium system libraries
+        run: .deps/browser-benchmark-venv/bin/python -m playwright install --with-deps chromium
+      - name: Compare identical local fixtures with all three engines
+        run: >-
+          bash scripts/run_browser_benchmark.sh --display-modes headless
+          --iterations 2 --pages 4 --output .lab-output/browser-benchmark-ci
+      - name: Summarize measured outcomes
+        if: always()
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          report = Path('.lab-output/browser-benchmark-ci/results.json')
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              if not report.exists():
+                  summary.write('Benchmark did not start. See dependency/setup logs.\n')
+              else:
+                  data = json.loads(report.read_text())
+                  summary.write('Local fixtures, headless, serial engine schedule. RSS is sampled process-tree RSS.\n\n')
+                  summary.write('| Engine | Scenario | Mode | Concurrency | Status | Pages | Median ms | Median peak RSS MiB | HTTP bytes |\n')
+                  summary.write('|---|---|---|---|---|---|---|---|---|\n')
+                  for row in data['summary']:
+                      values = [row.get(key) for key in ('engine', 'scenario', 'mode', 'concurrency', 'status', 'successful_pages', 'median_latency_ms', 'median_peak_rss_mib')]
+                      values.append(row['http_upload_bytes'] + row['http_download_bytes'])
+                      summary.write('| ' + ' | '.join(str(v) for v in values) + ' |\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-benchmark-${{ github.sha }}
+          path: .lab-output/browser-benchmark-ci/
+          if-no-files-found: warn
+          retention-days: 14

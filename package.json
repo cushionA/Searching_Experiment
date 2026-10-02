@@ -1,0 +1,11 @@
+{
+  "name": "searching-experiment-browser-benchmark",
+  "private": true,
+  "scripts": {
+    "benchmark:setup": "bash scripts/setup_browser_benchmark.sh",
+    "benchmark:browsers": "bash scripts/run_browser_benchmark.sh",
+    "benchmark:quick": "bash scripts/run_browser_benchmark.sh --iterations 1 --pages 3 --modes warm",
+    "benchmark:parallel": "bash scripts/run_browser_benchmark.sh --schedule parallel",
+    "test:benchmark": "python3 -B -m unittest discover -s tests -p 'test_browser_benchmark.py'"
+  }
+}
