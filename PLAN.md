@@ -168,3 +168,12 @@ ImpitのHTTPを既存取得器へ接続し、HTTP単独はtransport=impit、ブ�
 - [x] 実サイトは36 HTTP・1,534,196 bytesを計上。全件Impit / HTTP/2 / direct_public_ip_tunnel。両runのverify・exportに成功し、結果判断待ちで保存。
 - [x] 青空文庫は両方式で326リンク・同一本文。気象庁はHTTP HTML取得に成功したがリンク0件。Adaptiveは許可外リソース要求で停止したため、描画完了とは扱わない。必要originの特定と追加許可は次の判断点。
 - [x] Linux CIでcore22・Kaggle15・Impit7・Adaptive8の計52テストに成功。[CI run](https://github.com/cushionA/Searching_Experiment/actions/runs/36603329604)
+
+# 2026年10月2日: テーマ探索と検索入口の保存
+
+- [x] テーマから検索入口を作り、外部資料の発見、出典付き回答、引用照合、保存・復元まで接続した。実地取得の記録は5runに分けて保持する。
+- [x] 無料・APIキー不要を優先する全15候補群を `experiments/search-candidates-20261002.json` へ保存する。取得できた候補も、失敗した候補も、契約・新規受付の条件が合わない候補も残す。
+- [x] ユーザー指示「4getはブロッキング対策で抜ける可能性もある」「これはかなり有力な候補として残す」を次回へ引き継ぐ。4getはかなり有力な候補として優先保持する。
+- [ ] 4getの取得可能性を検証する。4get.caのIQテストと4get.chの環境proxy失敗を区別し、Google選択画面の確認から実際の検索結果取得へ進める。ブロック対策の有効性とGoogle由来の結果は未確認。
+
+保存作業では追加取得を行わず、5runの要求・回答・取得本文・失敗と予算の台帳、発見リンク、コードを全保存ZIPへまとめ、全5runの復元検証を通した。ユーザーのmainへのマージ依頼に伴い、同じZIPを `experiments/snapshots/` に保存する。継続時は候補台帳とスナップショットの復元方法を入口にする。

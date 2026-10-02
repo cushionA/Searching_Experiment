@@ -17,17 +17,25 @@ def object_schema(properties):
     return {"type": "object", "properties": properties, "required": list(properties), "additionalProperties": False}
 
 
-def answer_schema(kind):
+def answer_schema(kind, discovery=False):
     text = {"type": "string"}
     properties = {"request_id": text}
     if kind == "plan":
         properties.update({key: text for key in ("hypothesis", "method", "success_criterion", "risks")})
     elif kind == "review":
-        properties.update({key: text for key in ("findings", "limitations", "next_experiment")})
+        if discovery:
+            evidence = object_schema({"url": text, "quote": text})
+            properties.update(answer={"type": "array", "maxItems": 10,
+                                     "items": object_schema({"statement": text, "evidence": {"type": "array", "minItems": 1, "maxItems": 3, "items": evidence}})})
+            properties.update({key: text for key in ("unanswered", "limitations", "next_experiment")})
+        else:
+            properties.update({key: text for key in ("findings", "limitations", "next_experiment")})
     elif kind == "explore":
         properties.update(next_urls={"type": "array", "items": text, "maxItems": 4},
                           stop={"type": "boolean"}, reason=text,
                           claims={"type": "array", "maxItems": 10, "items": object_schema({key: text for key in ("url", "label", "quote")})})
+        if discovery:
+            properties["search_queries"] = {"type": "array", "maxItems": 2, "items": text}
     else:
         raise LabError("未知のagent要求種別です")
     return object_schema(properties)
@@ -54,7 +62,7 @@ def responses_answer(request, model, timeout, max_output_tokens):
     payload = {"model": model, "store": False, "max_output_tokens": max_output_tokens,
                "reasoning": {"effort": "high"}, "instructions": request["instructions"] + "\nresponse_formatの説明に従い、回答JSONだけを返してください。",
                "input": encoded(request).decode("utf-8"),
-               "text": {"format": {"type": "json_schema", "name": "lab_answer", "strict": True, "schema": answer_schema(request["kind"])}}}
+               "text": {"format": {"type": "json_schema", "name": "lab_answer", "strict": True, "schema": answer_schema(request["kind"], "search_queries" in request["response_format"] or "answer" in request["response_format"])}}}
     http_request = urllib.request.Request(API_URL, data=encoded(payload), method="POST",
                                          headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"})
     opener = urllib.request.build_opener(NoRedirect())

@@ -74,7 +74,7 @@ def export_checkpoint(store, output):
             files.add("blobs/" + page["text_sha256"])
         for rendering in arm.get("renderings", []):
             files.add("blobs/" + rendering["dom_sha256"])
-    for name in ("decision.json", "DECISION.md", "report.json"):
+    for name in ("decision.json", "DECISION.md", "report.json", "answer.json", "ANSWER.md"):
         if (store.directory / name).exists():
             files.add(name)
     if Path(output).exists():
@@ -109,15 +109,24 @@ def main(argv=None):
     sys.stderr.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description="発見型クロールの実験・承認・検証。Codex Cloudのエージェントが回答する。")
     commands = parser.add_subparsers(dest="command", required=True)
-    for name in ("init", "run", "status", "answer", "decide", "retry", "diagnose", "agent", "pause", "resume", "verify", "export", "grade", "demo"):
+    for name in ("topic", "init", "run", "status", "answer", "review-tail", "decide", "retry", "diagnose", "agent", "pause", "resume", "verify", "export", "grade", "demo"):
         command = commands.add_parser(name)
         command.add_argument("--run", required=True, type=Path)
-        if name == "init":
+        if name == "topic":
+            from .discovery import PROVIDERS
+            command.add_argument("--topic", required=True)
+            command.add_argument("--provider", action="append", choices=tuple(PROVIDERS))
+            command.add_argument("--query", action="append")
+            command.add_argument("--max-origins", type=int, default=8)
+        elif name == "init":
             command.add_argument("--config", required=True, type=Path)
         elif name == "answer":
             command.add_argument("--file", required=True, type=Path)
+        elif name == "review-tail":
+            command.add_argument("--note", required=True)
         elif name == "retry":
             command.add_argument("--note", required=True)
+            command.add_argument("--all-seeds", action="store_true")
         elif name == "diagnose":
             command.add_argument("--arm", required=True, choices=("bfs", "luna"))
             command.add_argument("--client", required=True, choices=("impit", "urllib"))
@@ -147,7 +156,10 @@ def main(argv=None):
             result = {"pause_requested": True, "note": "実行中の取得後、次の取得前に停止します"}
         else:
             with locked(args.run):
-                if args.command == "init":
+                if args.command == "topic":
+                    from .discovery import topic_config
+                    store = Store.create(args.run, topic_config(args.topic, args.provider or ["duckduckgo", "crossref"], args.query, args.max_origins))
+                elif args.command == "init":
                     store = Store.create(args.run, read_json(args.config))
                 else:
                     store = Store(args.run)
@@ -157,10 +169,12 @@ def main(argv=None):
                     engine.advance()
                 elif args.command == "answer":
                     engine.answer(read_json(args.file))
+                elif args.command == "review-tail":
+                    engine.review_tail(args.note)
                 elif args.command == "decide":
                     engine.decide(args.id, args.decision, args.note)
                 elif args.command == "retry":
-                    engine.retry_failed(args.note)
+                    engine.retry_failed(args.note, args.all_seeds)
                 elif args.command == "diagnose":
                     result = engine.diagnose_proxy(args.arm, args.client)
                 elif args.command == "agent":

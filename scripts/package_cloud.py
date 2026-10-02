@@ -16,6 +16,8 @@ def main():
     files.extend([".codex/config.toml", ".codex/agents/luna.toml", "scripts/check_cloud_environment.py",
                   "scripts/setup_kaggle.sh", "tests/test_cloud_environment.py", "tests/test_cloud_setup.py", "tests/test_lab_network.py",
                   "tests/test_lab_retry.py", "tests/test_lab_agent.py", "tests/__init__.py"])
+    files.extend(["tests/test_lab_discovery.py", "docs/topic-discovery.md", "docs/free-search-engines.md",
+                  "experiments/search-candidates-20261002.json"])
     files.extend(str(path.relative_to(root)).replace("\\", "/") for path in sorted((root / "jse/lab").glob("*.py")))
     if (root / "LICENSE").is_file():
         files.append("LICENSE")

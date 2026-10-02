@@ -71,7 +71,7 @@ LIMITS = {
 
 def validate_config(config):
     expected = {"objective", "seeds", "allowed_origins", "transport", "user_agent", "delay_seconds", "timeout_seconds", "limits"}
-    if not isinstance(config, dict) or set(config) != expected:
+    if not isinstance(config, dict) or set(config) not in (expected, expected | {"discovery"}):
         raise LabError("設定のキーが実験設定の形式と一致しません")
     if not isinstance(config["objective"], str) or not 1 <= len(config["objective"]) <= 4000:
         raise LabError("objectiveは1〜4000文字にしてください")
@@ -105,6 +105,9 @@ def validate_config(config):
             raise LabError(f"{key}は整数{low}〜{high}です")
     if config["limits"]["bytes_per_response"] > config["limits"]["bytes_per_arm"]:
         raise LabError("応答サイズ上限がarm全体の転送上限を超えています")
+    if "discovery" in config:
+        from .discovery import validate_discovery
+        validate_discovery(config)
     return config
 
 
@@ -153,6 +156,8 @@ class Store:
         arms = {}
         for name in ("bfs", "luna"):
             arms[name] = {"frontier": [{"url": url, "parent": None, "anchor": "seed", "depth": 0} for url in config["seeds"]], "seen": list(config["seeds"]), "pages": [], "attempts": [], "http": [], "bytes_charged": 0, "robots": {}, "pending_urls": [], "done": False, "stop_reason": None, "dropped_links": 0}
+            if "discovery" in config:
+                arms[name]["search_queries"] = list(config["discovery"]["queries"])
         value = {"version": VERSION, "model_requested": MODEL, "model_runtime_verified": False, "created_at": time.time(), "config": config, "config_hash": digest(config), "status": "ready", "phase": "plan", "agent_requests": [], "active_request": None, "gate": None, "decisions": [], "arms": arms, "claims": [], "inflight": None, "last_request_at": {}, "events": []}
         atomic(directory / "state.json", encoded(value))
         return cls(directory)
@@ -161,7 +166,7 @@ class Store:
         atomic(self.path, encoded(self.state))
 
     def artifact(self, name):
-        if not isinstance(name, str) or not re.fullmatch(r"(?:state\.json|decision\.json|DECISION\.md|report\.json|requests/\d{3}\.json|answers/\d{3}\.json|model-calls/\d{3}\.json|blobs/[0-9a-f]{64})", name):
+        if not isinstance(name, str) or not re.fullmatch(r"(?:state\.json|decision\.json|DECISION\.md|report\.json|answer\.json|ANSWER\.md|requests/\d{3}\.json|answers/\d{3}\.json|model-calls/\d{3}\.json|blobs/[0-9a-f]{64})", name):
             raise LabError("不正な成果物パスです")
         path = self.directory / name
         if not path.resolve().is_relative_to(self.directory.resolve()):

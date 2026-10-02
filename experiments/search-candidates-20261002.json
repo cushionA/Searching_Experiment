@@ -1,0 +1,1159 @@
+{
+  "schema_version": 1,
+  "saved_at_utc": "2026-10-02T13:11:00Z",
+  "investigation_date_jst": "2026-10-02",
+  "purpose": "テーマ起点の未知情報源探索と、無料で取得できるGoogleに近い日本語検索入口の発見を保存する。",
+  "preferences": {
+    "free_scraping": true,
+    "no_paid_api_contract": true,
+    "japanese_relevance_and_coverage_expected_from_large_search_backend": true,
+    "precise_google_comparison_required": false
+  },
+  "current_user_decision": "一旦すべて保存。4getをかなり有力な候補として優先保持。ブロック対策による取得可能性は検証待ち。",
+  "scope_of_this_save": "追加通信・ブロック対策・予算変更を行わず、候補と既存5runの証跡、出典、実装を保存。",
+  "all_save_archive": "experiments/snapshots/search-discovery-all-20261002.zip",
+  "runs": [
+    {
+      "id": "topic-discovery-20261002",
+      "path": ".lab-output/topic-discovery-20261002",
+      "status": "awaiting_human",
+      "http_requests": 49,
+      "budget_charged_bytes": 10106396,
+      "acquired_documents_including_duplicates_and_challenges": 12,
+      "verification": "passed"
+    },
+    {
+      "id": "google-search-options-20261002",
+      "path": ".lab-output/google-search-options-20261002",
+      "status": "awaiting_human",
+      "http_requests": 16,
+      "budget_charged_bytes": 1645044,
+      "acquired_documents_including_duplicates_and_challenges": 6,
+      "verification": "passed"
+    },
+    {
+      "id": "free-search-engines-20261002",
+      "path": ".lab-output/free-search-engines-20261002",
+      "status": "awaiting_human",
+      "http_requests": 28,
+      "budget_charged_bytes": 310868,
+      "acquired_documents_including_duplicates_and_challenges": 8,
+      "verification": "passed"
+    },
+    {
+      "id": "free-searxng-followup-20261002",
+      "path": ".lab-output/free-searxng-followup-20261002",
+      "status": "awaiting_human",
+      "http_requests": 12,
+      "budget_charged_bytes": 1019150,
+      "acquired_documents_including_duplicates_and_challenges": 2,
+      "verification": "passed"
+    },
+    {
+      "id": "japanese-search-eligibility-20261002",
+      "path": ".lab-output/japanese-search-eligibility-20261002",
+      "status": "awaiting_human",
+      "http_requests": 18,
+      "budget_charged_bytes": 1590960,
+      "acquired_documents_including_duplicates_and_challenges": 6,
+      "verification": "passed"
+    }
+  ],
+  "free_search_subset_budget": {
+    "run_ids": [
+      "free-search-engines-20261002",
+      "free-searxng-followup-20261002",
+      "japanese-search-eligibility-20261002"
+    ],
+    "overall_cap_http_requests": 60,
+    "overall_cap_bytes": 24000000,
+    "http_requests_charged": 58,
+    "bytes_charged": 2920978,
+    "note": "5run全体ではなく、無料検索入口確認の3runに対する引継ぎ上限。"
+  },
+  "interpretation_limits": [
+    "取得成功ページ数には重複、確認画面、書誌JSONを含む。検索結果数・品質・網羅率とは異なる。",
+    "各失敗は実行時の実行器と接続経路での観測。世界中での取得不能を意味しない。",
+    "Google選択画面だけではGoogle由来の実検索結果を取得したことにならない。",
+    "モデル実ID・native token数・費用・意味的正確性・日本語Web全体の網羅率は未測定。"
+  ],
+  "candidates": [
+    {
+      "id": "4get",
+      "name": "4get",
+      "priority": "very_promising",
+      "status": "blocking_mitigation_pending",
+      "findings": "Googleを選べる画面、日本語の検索語、日本・日本語の選択肢を確認。検索結果本文は未取得。今回のブロックだけで候補から落とさない。",
+      "user_instruction": "4getはブロッキング対策で抜ける可能性もある。一旦見つけたの全部保存。これはかなり有力な候補として残す。",
+      "hypothesis": "ブロック対策で結果を取得できる可能性がある。検証待ちであり、成功を確認したものではない。",
+      "actual_google_results_verified": false,
+      "blocking_mitigation_verified": false,
+      "integrated_provider": false,
+      "query_template": "https://4get.ca/web?s={urlencoded_query}&scraper=google",
+      "instances": [
+        {
+          "origin": "https://4get.ca",
+          "status": "application_iq_challenge",
+          "search_results_acquired": false,
+          "observation": "HTTP 200でIQテストの案内。Google選択画面の取得。"
+        },
+        {
+          "origin": "https://4get.ch",
+          "status": "environment_proxy_connect_403",
+          "search_results_acquired": false,
+          "observation": "robots取得時に環境proxyがCONNECTを拒否。対象サイト自身のHTTP 403とは区別。"
+        }
+      ],
+      "evidence": [
+        {
+          "run": "japanese-search-eligibility-20261002",
+          "arm": "bfs",
+          "attempt": 1,
+          "url": "https://4get.ca/web?s=%E5%9B%BD%E7%AB%8B%E5%9B%BD%E4%BC%9A%E5%9B%B3%E6%9B%B8%E9%A4%A8&scraper=google",
+          "status": "ok"
+        },
+        {
+          "run": "japanese-search-eligibility-20261002",
+          "arm": "bfs",
+          "attempt": 2,
+          "url": "https://4get.ch/web?s=%E5%9B%BD%E7%AB%8B%E5%9B%BD%E4%BC%9A%E5%9B%B3%E6%9B%B8%E9%A4%A8&scraper=google",
+          "status": "failed",
+          "error": "ProxyError",
+          "error_detail": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+        },
+        {
+          "run": "japanese-search-eligibility-20261002",
+          "arm": "bfs",
+          "url": "https://4get.ca/web?s=%E5%9B%BD%E7%AB%8B%E5%9B%BD%E4%BC%9A%E5%9B%B3%E6%9B%B8%E9%A4%A8&scraper=google",
+          "title": "国立国会図書館 (web)",
+          "acquired_at": 1790897605.0914514,
+          "body_sha256": "478704f387ee3da34ef46d5e43a1b52364d8da3a9d103a34a95b17e8907d402c",
+          "text_sha256": "33a0dd4e0a8478f99fc133db975c34af42e9516dfdcdc00e61e95033911392f0"
+        },
+        {
+          "run": "japanese-search-eligibility-20261002",
+          "arm": "luna",
+          "attempt": 1,
+          "url": "https://4get.ca/web?s=%E5%9B%BD%E7%AB%8B%E5%9B%BD%E4%BC%9A%E5%9B%B3%E6%9B%B8%E9%A4%A8&scraper=google",
+          "status": "ok"
+        },
+        {
+          "run": "japanese-search-eligibility-20261002",
+          "arm": "luna",
+          "attempt": 2,
+          "url": "https://4get.ch/web?s=%E5%9B%BD%E7%AB%8B%E5%9B%BD%E4%BC%9A%E5%9B%B3%E6%9B%B8%E9%A4%A8&scraper=google",
+          "status": "failed",
+          "error": "ProxyError",
+          "error_detail": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+        },
+        {
+          "run": "japanese-search-eligibility-20261002",
+          "arm": "luna",
+          "url": "https://4get.ca/web?s=%E5%9B%BD%E7%AB%8B%E5%9B%BD%E4%BC%9A%E5%9B%B3%E6%9B%B8%E9%A4%A8&scraper=google",
+          "title": "国立国会図書館 (web)",
+          "acquired_at": 1790897614.3381333,
+          "body_sha256": "7e30566c52ee735704a2061e00f71c3be0d3fd1ded3058188f001e926e2c356c",
+          "text_sha256": "33a0dd4e0a8478f99fc133db975c34af42e9516dfdcdc00e61e95033911392f0"
+        }
+      ]
+    },
+    {
+      "id": "duckduckgo",
+      "name": "DuckDuckGo HTML",
+      "priority": "available_baseline",
+      "status": "search_results_acquired",
+      "findings": "HTML検索結果から外部資料へ到達。公式説明で通常のリンク・画像を主にBingから供給すると確認。日本語の品質・網羅性がGoogleと同一とは未検証。",
+      "integrated_provider": true,
+      "query_template": "https://html.duckduckgo.com/html/?q={urlencoded_query}",
+      "upstream_source": "https://duckduckgo.com/duckduckgo-help-pages/results/sources",
+      "upstream_quote": "traditional links and images in our search results too, which we largely source from Bing.",
+      "evidence": [
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "bfs",
+          "attempt": 1,
+          "url": "https://html.duckduckgo.com/html/?q=focused+crawling+information+foraging",
+          "status": "failed",
+          "error": "ProxyError",
+          "error_detail": "<urlopen error [Errno 1] Operation not permitted>"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "bfs",
+          "attempt": 4,
+          "url": "https://html.duckduckgo.com/html/?q=citation+chasing+snowballing+literature+search",
+          "status": "failed",
+          "error": "ProxyError",
+          "error_detail": "<urlopen error [Errno 1] Operation not permitted>"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "bfs",
+          "attempt": 7,
+          "url": "https://html.duckduckgo.com/html/?q=focused+crawling+information+foraging",
+          "status": "ok"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "bfs",
+          "attempt": 10,
+          "url": "https://html.duckduckgo.com/html/?q=citation+chasing+snowballing+literature+search",
+          "status": "ok"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "bfs",
+          "attempt": 13,
+          "url": "https://html.duckduckgo.com/html/",
+          "status": "ok"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "bfs",
+          "attempt": 24,
+          "url": "https://duckduckgo.com/feedback.html",
+          "status": "failed",
+          "error": "origin_budget"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "bfs",
+          "url": "https://html.duckduckgo.com/html/?q=focused+crawling+information+foraging",
+          "title": "focused crawling information foraging at DuckDuckGo",
+          "acquired_at": 1790874179.8525212,
+          "body_sha256": "bd00756ab9215042edf1b5ad36ac2bc66472dcde617cd410ec456a134c22c725",
+          "text_sha256": "719699840e4951e9c7d235926a6d8c6155e0993f4d9fa257f6933eddc4bff605"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "bfs",
+          "url": "https://html.duckduckgo.com/html/?q=citation+chasing+snowballing+literature+search",
+          "title": "citation chasing snowballing literature search at DuckDuckGo",
+          "acquired_at": 1790874184.3765743,
+          "body_sha256": "62a769372e9eacd70d87eef6700c2d3d060e2e91dba4c3d9abf71b6344048bbb",
+          "text_sha256": "4d0df5701392a1faf170a738f18582cc8aa6f800e90f4c29dac839dc80f88eaa"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "bfs",
+          "url": "https://html.duckduckgo.com/html/",
+          "title": "DuckDuckGo HTML: Private Search Without JavaScript",
+          "acquired_at": 1790874187.272013,
+          "body_sha256": "e5edcb25f572841bc161baf6bc1fc50952321a084c2d29fb9c267d0b03cf7b6b",
+          "text_sha256": "82196818616d9906bef1f3b517f51a6d6f5561e526e57822ab0014b81e6999e3"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "attempt": 1,
+          "url": "https://html.duckduckgo.com/html/?q=focused+crawling+information+foraging",
+          "status": "failed",
+          "error": "ProxyError",
+          "error_detail": "<urlopen error [Errno 1] Operation not permitted>"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "attempt": 4,
+          "url": "https://html.duckduckgo.com/html/?q=citation+chasing+snowballing+literature+search",
+          "status": "failed",
+          "error": "ProxyError",
+          "error_detail": "<urlopen error [Errno 1] Operation not permitted>"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "attempt": 7,
+          "url": "https://html.duckduckgo.com/html/?q=focused+crawling+information+foraging",
+          "status": "ok"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "attempt": 10,
+          "url": "https://html.duckduckgo.com/html/?q=citation+chasing+snowballing+literature+search",
+          "status": "ok"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "attempt": 21,
+          "url": "https://html.duckduckgo.com/html/?q=TARCiS+statement+citation+searching+guidance",
+          "status": "ok"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "url": "https://html.duckduckgo.com/html/?q=focused+crawling+information+foraging",
+          "title": "focused crawling information foraging at DuckDuckGo",
+          "acquired_at": 1790874236.2915773,
+          "body_sha256": "6c1c825d06b39731ce92e3b26e4d91a5eba59c4224e143d5739ae86c8ccf9104",
+          "text_sha256": "9a79f5479bfbb4e0fef13d013774b1317cbfb305154a3faa0d481c77ee4ea4d4"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "url": "https://html.duckduckgo.com/html/?q=citation+chasing+snowballing+literature+search",
+          "title": "citation chasing snowballing literature search at DuckDuckGo",
+          "acquired_at": 1790874240.6459353,
+          "body_sha256": "f4b1e777055aca93135d38db3dae8eae8a6f8a60fe0869ece14cb436653a5406",
+          "text_sha256": "a793c497d1fcfd4834258857a3cf5ffad9e160a58b3631ef17ef6338a5d96cb0"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "url": "https://html.duckduckgo.com/html/?q=TARCiS+statement+citation+searching+guidance",
+          "title": "TARCiS statement citation searching guidance at DuckDuckGo",
+          "acquired_at": 1790875813.2663774,
+          "body_sha256": "2332af99d8b84a1fee69a2405f855378d1232ed02408b6ea6de9d4546520d9de",
+          "text_sha256": "ecbc97687dd563398c07652152e0c4599aade586524aee652c1f6e858b94a014"
+        },
+        {
+          "run": "japanese-search-eligibility-20261002",
+          "arm": "bfs",
+          "attempt": 4,
+          "url": "https://duckduckgo.com/duckduckgo-help-pages/results/sources",
+          "status": "ok"
+        },
+        {
+          "run": "japanese-search-eligibility-20261002",
+          "arm": "bfs",
+          "url": "https://duckduckgo.com/duckduckgo-help-pages/results/sources",
+          "title": "Where do DuckDuckGo search results come from? - DuckDuckGo Help Pages",
+          "acquired_at": 1790897610.5802536,
+          "body_sha256": "e32c6577d17819b7329fdbad1c684eb836aefe61c6ef79db96713e3959b413d9",
+          "text_sha256": "106d7992db11b9e0d781fc25defea85f21829dd717ea9c17078e9dc0e7f3307e"
+        },
+        {
+          "run": "japanese-search-eligibility-20261002",
+          "arm": "luna",
+          "attempt": 4,
+          "url": "https://duckduckgo.com/duckduckgo-help-pages/results/sources",
+          "status": "ok"
+        },
+        {
+          "run": "japanese-search-eligibility-20261002",
+          "arm": "luna",
+          "url": "https://duckduckgo.com/duckduckgo-help-pages/results/sources",
+          "title": "Where do DuckDuckGo search results come from? - DuckDuckGo Help Pages",
+          "acquired_at": 1790897619.2918847,
+          "body_sha256": "e32c6577d17819b7329fdbad1c684eb836aefe61c6ef79db96713e3959b413d9",
+          "text_sha256": "106d7992db11b9e0d781fc25defea85f21829dd717ea9c17078e9dc0e7f3307e"
+        }
+      ]
+    },
+    {
+      "id": "google",
+      "name": "Google直接検索",
+      "priority": "retained",
+      "status": "robots_denied",
+      "findings": "今回の実行器ではrobotsで拒否。検索ページへのHTTPは未送信。他の環境を含む取得不能の断定はしない。",
+      "query_template": "https://www.google.com/search?q={urlencoded_query}",
+      "search_results_acquired": false,
+      "evidence": [
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "bfs",
+          "attempt": 1,
+          "url": "https://www.google.com/search?q=library",
+          "status": "failed",
+          "error": "robots_denied"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "luna",
+          "attempt": 1,
+          "url": "https://www.google.com/search?q=library",
+          "status": "failed",
+          "error": "robots_denied"
+        }
+      ]
+    },
+    {
+      "id": "bing",
+      "name": "Bing直接検索",
+      "priority": "retained",
+      "status": "robots_denied",
+      "findings": "今回の実行器ではrobotsで拒否。検索ページへのHTTPは未送信。他の環境を含む取得不能の断定はしない。",
+      "query_template": "https://www.bing.com/search?q={urlencoded_query}",
+      "search_results_acquired": false,
+      "evidence": [
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "bfs",
+          "attempt": 2,
+          "url": "https://www.bing.com/search?q=library",
+          "status": "failed",
+          "error": "robots_denied"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "luna",
+          "attempt": 2,
+          "url": "https://www.bing.com/search?q=library",
+          "status": "failed",
+          "error": "robots_denied"
+        }
+      ]
+    },
+    {
+      "id": "yahoo_japan",
+      "name": "Yahoo! JAPAN",
+      "priority": "retained",
+      "status": "robots_denied",
+      "findings": "今回の実行器ではrobotsで拒否。検索ページへのHTTPは未送信。他の環境を含む取得不能の断定はしない。",
+      "query_template": "https://search.yahoo.co.jp/search?p={urlencoded_query}",
+      "search_results_acquired": false,
+      "evidence": [
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "bfs",
+          "attempt": 3,
+          "url": "https://search.yahoo.co.jp/search?p=library",
+          "status": "failed",
+          "error": "robots_denied"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "luna",
+          "attempt": 3,
+          "url": "https://search.yahoo.co.jp/search?p=library",
+          "status": "failed",
+          "error": "robots_denied"
+        }
+      ]
+    },
+    {
+      "id": "brave",
+      "name": "Brave Search",
+      "priority": "retained",
+      "status": "robots_denied",
+      "findings": "今回の実行器ではrobotsで拒否。検索ページへのHTTPは未送信。他の環境を含む取得不能の断定はしない。",
+      "query_template": "https://search.brave.com/search?q={urlencoded_query}",
+      "search_results_acquired": false,
+      "evidence": [
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "bfs",
+          "attempt": 5,
+          "url": "https://search.brave.com/search?q=library",
+          "status": "failed",
+          "error": "robots_denied"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "luna",
+          "attempt": 5,
+          "url": "https://search.brave.com/search?q=library",
+          "status": "failed",
+          "error": "robots_denied"
+        }
+      ]
+    },
+    {
+      "id": "startpage",
+      "name": "Startpage",
+      "priority": "retained",
+      "status": "search_robots_denied_docs_acquired",
+      "findings": "検索入口はrobotsで拒否。how-startpage-worksとabout-usは取得したが、今回の保存本文では供給元の名称を確認できなかった。",
+      "query_template": "https://www.startpage.com/sp/search?query={urlencoded_query}",
+      "upstream_verified": false,
+      "search_results_acquired": false,
+      "evidence": [
+        {
+          "run": "google-search-options-20261002",
+          "arm": "bfs",
+          "attempt": 3,
+          "url": "https://www.startpage.com/en/how-startpage-works/",
+          "status": "ok"
+        },
+        {
+          "run": "google-search-options-20261002",
+          "arm": "bfs",
+          "url": "https://www.startpage.com/en/how-startpage-works/",
+          "title": "How Startpage Works",
+          "acquired_at": 1790895966.8765945,
+          "body_sha256": "ecd89ab48a4ebb77ffe95df2cf51c7ad08f84ee4639e702a4511865cd20ccdb1",
+          "text_sha256": "637cbbc267ece6761281816de33abbc038f400e37f32968817a8e3a1c3fd052a"
+        },
+        {
+          "run": "google-search-options-20261002",
+          "arm": "luna",
+          "attempt": 3,
+          "url": "https://www.startpage.com/en/how-startpage-works/",
+          "status": "ok"
+        },
+        {
+          "run": "google-search-options-20261002",
+          "arm": "luna",
+          "url": "https://www.startpage.com/en/how-startpage-works/",
+          "title": "How Startpage Works",
+          "acquired_at": 1790895971.2024195,
+          "body_sha256": "ecd89ab48a4ebb77ffe95df2cf51c7ad08f84ee4639e702a4511865cd20ccdb1",
+          "text_sha256": "637cbbc267ece6761281816de33abbc038f400e37f32968817a8e3a1c3fd052a"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "bfs",
+          "attempt": 4,
+          "url": "https://www.startpage.com/sp/search?query=library",
+          "status": "failed",
+          "error": "robots_denied"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "luna",
+          "attempt": 4,
+          "url": "https://www.startpage.com/sp/search?query=library",
+          "status": "failed",
+          "error": "robots_denied"
+        },
+        {
+          "run": "japanese-search-eligibility-20261002",
+          "arm": "bfs",
+          "attempt": 5,
+          "url": "https://www.startpage.com/en/about-us/",
+          "status": "ok"
+        },
+        {
+          "run": "japanese-search-eligibility-20261002",
+          "arm": "bfs",
+          "url": "https://www.startpage.com/en/about-us/",
+          "title": "About Us",
+          "acquired_at": 1790897612.4844117,
+          "body_sha256": "75dd5951ffc29a7ad9a94d9fd637abe53ed38125f51e68d941e05ce78e76463d",
+          "text_sha256": "1b7508a0050f5c5a806c110b15620664bb923be38ad23e0a31319860339dd0ae"
+        },
+        {
+          "run": "japanese-search-eligibility-20261002",
+          "arm": "luna",
+          "attempt": 5,
+          "url": "https://www.startpage.com/en/about-us/",
+          "status": "ok"
+        },
+        {
+          "run": "japanese-search-eligibility-20261002",
+          "arm": "luna",
+          "url": "https://www.startpage.com/en/about-us/",
+          "title": "About Us",
+          "acquired_at": 1790897620.8446414,
+          "body_sha256": "75dd5951ffc29a7ad9a94d9fd637abe53ed38125f51e68d941e05ce78e76463d",
+          "text_sha256": "1b7508a0050f5c5a806c110b15620664bb923be38ad23e0a31319860339dd0ae"
+        }
+      ]
+    },
+    {
+      "id": "mwmbl",
+      "name": "Mwmbl",
+      "priority": "auxiliary",
+      "status": "search_results_acquired",
+      "findings": "libraryでHTML本文とHTTPSリンクを取得。日本語の品質・網羅性は未評価。ルートの空白入り語は不正Locationで拒否したためproviderは/searchを使用。空白入り語の直接/searchのライブ取得は未検証。",
+      "query_template": "https://mwmbl.org/search?q={urlencoded_query}",
+      "integrated_provider": true,
+      "evidence": [
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "bfs",
+          "attempt": 7,
+          "url": "https://mwmbl.org/?q=library",
+          "status": "ok"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "bfs",
+          "attempt": 10,
+          "url": "https://mwmbl.org/?q=citation+chasing",
+          "status": "failed",
+          "error": "URLは空白を含まない2048文字以内の文字列が必要です"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "bfs",
+          "url": "https://mwmbl.org/search?q=library",
+          "title": "library - MWMBL",
+          "acquired_at": 1790896570.5134873,
+          "body_sha256": "f6b5115f00162ec4f8425b817e461795964e50af9ce0ec4e2044e284af21a41f",
+          "text_sha256": "db698a057e1ae78da058514f24690287b764727d54c611c17d281b2ed40d7d70"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "luna",
+          "attempt": 7,
+          "url": "https://mwmbl.org/?q=library",
+          "status": "ok"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "luna",
+          "attempt": 10,
+          "url": "https://mwmbl.org/?q=citation+chasing",
+          "status": "failed",
+          "error": "URLは空白を含まない2048文字以内の文字列が必要です"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "luna",
+          "url": "https://mwmbl.org/search?q=library",
+          "title": "library - MWMBL",
+          "acquired_at": 1790896580.7816002,
+          "body_sha256": "f6b5115f00162ec4f8425b817e461795964e50af9ce0ec4e2044e284af21a41f",
+          "text_sha256": "db698a057e1ae78da058514f24690287b764727d54c611c17d281b2ed40d7d70"
+        }
+      ]
+    },
+    {
+      "id": "wiby",
+      "name": "Wiby",
+      "priority": "auxiliary",
+      "status": "search_results_acquired",
+      "findings": "libraryとcitation chasingでHTML本文とHTTPSリンクを取得。HTTPのリンクはHTTPS限定の実行器では追わない。citation chasingには関係の薄い結果あり。日本語の品質・網羅性は未評価。",
+      "query_template": "https://wiby.me/?q={urlencoded_query}",
+      "integrated_provider": true,
+      "evidence": [
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "bfs",
+          "attempt": 6,
+          "url": "https://wiby.me/?q=library",
+          "status": "ok"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "bfs",
+          "attempt": 9,
+          "url": "https://wiby.me/?q=citation+chasing",
+          "status": "ok"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "bfs",
+          "url": "https://wiby.me/?q=library",
+          "title": "library",
+          "acquired_at": 1790896566.0316842,
+          "body_sha256": "e0b232d52269050cf0cd0922e3118817c330898949441824dae208510476b9f4",
+          "text_sha256": "50dae57fe67a1744798a6602d15f3fe1fc062b23dd24b0d036440a6a45a4490f"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "bfs",
+          "url": "https://wiby.me/?q=citation+chasing",
+          "title": "citation chasing",
+          "acquired_at": 1790896574.096154,
+          "body_sha256": "6524977cce9606c8c84815aa513fd3246c9c2dd87538ea79cfa20fce0cfc5468",
+          "text_sha256": "c97169bde5be911ca3a1eb904118ddf6f9c2ac6ffab95043bfc4e2e647506cad"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "luna",
+          "attempt": 6,
+          "url": "https://wiby.me/?q=library",
+          "status": "ok"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "luna",
+          "attempt": 9,
+          "url": "https://wiby.me/?q=citation+chasing",
+          "status": "ok"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "luna",
+          "url": "https://wiby.me/?q=library",
+          "title": "library",
+          "acquired_at": 1790896578.026993,
+          "body_sha256": "e0b232d52269050cf0cd0922e3118817c330898949441824dae208510476b9f4",
+          "text_sha256": "50dae57fe67a1744798a6602d15f3fe1fc062b23dd24b0d036440a6a45a4490f"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "luna",
+          "url": "https://wiby.me/?q=citation+chasing",
+          "title": "citation chasing",
+          "acquired_at": 1790896584.0806444,
+          "body_sha256": "6524977cce9606c8c84815aa513fd3246c9c2dd87538ea79cfa20fce0cfc5468",
+          "text_sha256": "c97169bde5be911ca3a1eb904118ddf6f9c2ac6ffab95043bfc4e2e647506cad"
+        }
+      ]
+    },
+    {
+      "id": "searxng",
+      "name": "公開SearXNG",
+      "priority": "retained",
+      "status": "tested_instances_no_results",
+      "findings": "調べた6サイトでは検索結果を取得できなかった。各サイトの確認画面、レート制限、環境proxy、robots失敗を別々に保存。他のSearXNG全体への一般化はしない。",
+      "instances": [
+        {
+          "origin": "https://searx.be",
+          "status": "browser_challenge_http_200",
+          "observation": "Verifying your browser…画面。検索結果なし。"
+        },
+        {
+          "origin": "https://search.inetol.net",
+          "status": "javascript_challenge_http_200",
+          "observation": "Security check - Substation画面。検索結果なし。"
+        },
+        {
+          "origin": "https://searx.tiekoetter.com",
+          "status": "http_429",
+          "observation": "検索ページがHTTP 429。"
+        },
+        {
+          "origin": "https://search.ononoki.org",
+          "status": "environment_proxy_connect_403",
+          "observation": "robots取得時の環境proxy CONNECT 403。"
+        },
+        {
+          "origin": "https://search.sapti.me",
+          "status": "robots_unavailable",
+          "observation": "robots取得不能。検索ページは未取得。"
+        },
+        {
+          "origin": "https://search.disroot.org",
+          "status": "http_429",
+          "observation": "日本語検索ページがHTTP 429。"
+        }
+      ],
+      "search_results_acquired": false,
+      "evidence": [
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "bfs",
+          "attempt": 8,
+          "url": "https://searx.be/search?q=library",
+          "status": "ok"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "bfs",
+          "url": "https://searx.be/search?q=library",
+          "title": "Verifying your browser…",
+          "acquired_at": 1790896573.4568858,
+          "body_sha256": "95f1bac5ec5d956697cf8e241408ddd11a69da46e6fb1a55ee06649efc67b70b",
+          "text_sha256": "84284879f6ca9a4219d3ec68ac3b0a259f1c0cdf01808dbe4ade3e21b1ac054b"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "luna",
+          "attempt": 8,
+          "url": "https://searx.be/search?q=library",
+          "status": "ok"
+        },
+        {
+          "run": "free-search-engines-20261002",
+          "arm": "luna",
+          "url": "https://searx.be/search?q=library",
+          "title": "Verifying your browser…",
+          "acquired_at": 1790896583.841485,
+          "body_sha256": "95f1bac5ec5d956697cf8e241408ddd11a69da46e6fb1a55ee06649efc67b70b",
+          "text_sha256": "84284879f6ca9a4219d3ec68ac3b0a259f1c0cdf01808dbe4ade3e21b1ac054b"
+        },
+        {
+          "run": "free-searxng-followup-20261002",
+          "arm": "bfs",
+          "attempt": 1,
+          "url": "https://search.inetol.net/search?q=library",
+          "status": "ok"
+        },
+        {
+          "run": "free-searxng-followup-20261002",
+          "arm": "bfs",
+          "attempt": 2,
+          "url": "https://searx.tiekoetter.com/search?q=library",
+          "status": "failed",
+          "error": "http_429"
+        },
+        {
+          "run": "free-searxng-followup-20261002",
+          "arm": "bfs",
+          "attempt": 3,
+          "url": "https://search.ononoki.org/search?q=library",
+          "status": "failed",
+          "error": "ProxyError",
+          "error_detail": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+        },
+        {
+          "run": "free-searxng-followup-20261002",
+          "arm": "bfs",
+          "attempt": 4,
+          "url": "https://search.sapti.me/search?q=library",
+          "status": "failed",
+          "error": "robots_unavailable"
+        },
+        {
+          "run": "free-searxng-followup-20261002",
+          "arm": "bfs",
+          "url": "https://search.inetol.net/search?q=library",
+          "title": "Security check - Substation",
+          "acquired_at": 1790897032.8767672,
+          "body_sha256": "2d820d3f6f53ca5adca32f537336ba2385ccfea35f6831c9f81b4013dc854902",
+          "text_sha256": "8896ce113169ca31b31ed21aada2ce1cac60c153f2047093011598b1b6541e90"
+        },
+        {
+          "run": "free-searxng-followup-20261002",
+          "arm": "luna",
+          "attempt": 1,
+          "url": "https://search.inetol.net/search?q=library",
+          "status": "ok"
+        },
+        {
+          "run": "free-searxng-followup-20261002",
+          "arm": "luna",
+          "attempt": 2,
+          "url": "https://searx.tiekoetter.com/search?q=library",
+          "status": "failed",
+          "error": "http_429"
+        },
+        {
+          "run": "free-searxng-followup-20261002",
+          "arm": "luna",
+          "attempt": 3,
+          "url": "https://search.ononoki.org/search?q=library",
+          "status": "failed",
+          "error": "ProxyError",
+          "error_detail": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+        },
+        {
+          "run": "free-searxng-followup-20261002",
+          "arm": "luna",
+          "attempt": 4,
+          "url": "https://search.sapti.me/search?q=library",
+          "status": "failed",
+          "error": "robots_unavailable"
+        },
+        {
+          "run": "free-searxng-followup-20261002",
+          "arm": "luna",
+          "url": "https://search.inetol.net/search?q=library",
+          "title": "Security check - Substation",
+          "acquired_at": 1790897039.8447297,
+          "body_sha256": "dd832c4fa7f9bfd340f4103e3040f20a04acf6ea1cbcec72d92a6b045e28b5ae",
+          "text_sha256": "8896ce113169ca31b31ed21aada2ce1cac60c153f2047093011598b1b6541e90"
+        },
+        {
+          "run": "japanese-search-eligibility-20261002",
+          "arm": "bfs",
+          "attempt": 3,
+          "url": "https://search.disroot.org/search?q=%E5%9B%BD%E7%AB%8B%E5%9B%BD%E4%BC%9A%E5%9B%B3%E6%9B%B8%E9%A4%A8",
+          "status": "failed",
+          "error": "http_429"
+        },
+        {
+          "run": "japanese-search-eligibility-20261002",
+          "arm": "luna",
+          "attempt": 3,
+          "url": "https://search.disroot.org/search?q=%E5%9B%BD%E7%AB%8B%E5%9B%BD%E4%BC%9A%E5%9B%B3%E6%9B%B8%E9%A4%A8",
+          "status": "failed",
+          "error": "http_429"
+        }
+      ]
+    },
+    {
+      "id": "mojeek",
+      "name": "Mojeek",
+      "priority": "retained",
+      "status": "robots_denied",
+      "findings": "テーマ探索の初期検索・追加検索でrobotsにより拒否。検索結果は未取得。providerは実装済み。",
+      "query_template": "https://www.mojeek.com/search?q={urlencoded_query}",
+      "integrated_provider": true,
+      "evidence": [
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "bfs",
+          "attempt": 3,
+          "url": "https://www.mojeek.com/search?q=focused+crawling+information+foraging",
+          "status": "failed",
+          "error": "ProxyError",
+          "error_detail": "<urlopen error [Errno 1] Operation not permitted>"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "bfs",
+          "attempt": 6,
+          "url": "https://www.mojeek.com/search?q=citation+chasing+snowballing+literature+search",
+          "status": "failed",
+          "error": "ProxyError",
+          "error_detail": "<urlopen error [Errno 1] Operation not permitted>"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "bfs",
+          "attempt": 9,
+          "url": "https://www.mojeek.com/search?q=focused+crawling+information+foraging",
+          "status": "failed",
+          "error": "robots_denied"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "bfs",
+          "attempt": 12,
+          "url": "https://www.mojeek.com/search?q=citation+chasing+snowballing+literature+search",
+          "status": "failed",
+          "error": "robots_denied"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "attempt": 3,
+          "url": "https://www.mojeek.com/search?q=focused+crawling+information+foraging",
+          "status": "failed",
+          "error": "ProxyError",
+          "error_detail": "<urlopen error [Errno 1] Operation not permitted>"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "attempt": 6,
+          "url": "https://www.mojeek.com/search?q=citation+chasing+snowballing+literature+search",
+          "status": "failed",
+          "error": "ProxyError",
+          "error_detail": "<urlopen error [Errno 1] Operation not permitted>"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "attempt": 9,
+          "url": "https://www.mojeek.com/search?q=focused+crawling+information+foraging",
+          "status": "failed",
+          "error": "robots_denied"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "attempt": 12,
+          "url": "https://www.mojeek.com/search?q=citation+chasing+snowballing+literature+search",
+          "status": "failed",
+          "error": "robots_denied"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "attempt": 23,
+          "url": "https://www.mojeek.com/search?q=TARCiS+statement+citation+searching+guidance",
+          "status": "failed",
+          "error": "robots_denied"
+        }
+      ]
+    },
+    {
+      "id": "crossref",
+      "name": "Crossref",
+      "priority": "literature_auxiliary",
+      "status": "bibliographic_metadata_acquired",
+      "findings": "TARCiSに関する書誌メタデータを取得。論文本文ではなく、一般Web検索の代替でもない。初期406失敗も保持し、Accept修正後の取得を区別。",
+      "query_template": "https://api.crossref.org/works?query={urlencoded_query}&rows=5",
+      "integrated_provider": true,
+      "discovered_dois": [
+        "10.1136/bmj-2023-078384",
+        "10.1136/bmj.q2458",
+        "10.1101/2023.10.25.23297543"
+      ],
+      "paper_full_text_acquired": false,
+      "evidence": [
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "bfs",
+          "attempt": 2,
+          "url": "https://api.crossref.org/works?query=focused+crawling+information+foraging&rows=5",
+          "status": "failed",
+          "error": "ProxyError",
+          "error_detail": "<urlopen error [Errno 1] Operation not permitted>"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "bfs",
+          "attempt": 5,
+          "url": "https://api.crossref.org/works?query=citation+chasing+snowballing+literature+search&rows=5",
+          "status": "failed",
+          "error": "ProxyError",
+          "error_detail": "<urlopen error [Errno 1] Operation not permitted>"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "bfs",
+          "attempt": 8,
+          "url": "https://api.crossref.org/works?query=focused+crawling+information+foraging&rows=5",
+          "status": "failed",
+          "error": "http_406"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "bfs",
+          "attempt": 11,
+          "url": "https://api.crossref.org/works?query=citation+chasing+snowballing+literature+search&rows=5",
+          "status": "failed",
+          "error": "http_406"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "attempt": 2,
+          "url": "https://api.crossref.org/works?query=focused+crawling+information+foraging&rows=5",
+          "status": "failed",
+          "error": "ProxyError",
+          "error_detail": "<urlopen error [Errno 1] Operation not permitted>"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "attempt": 5,
+          "url": "https://api.crossref.org/works?query=citation+chasing+snowballing+literature+search&rows=5",
+          "status": "failed",
+          "error": "ProxyError",
+          "error_detail": "<urlopen error [Errno 1] Operation not permitted>"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "attempt": 8,
+          "url": "https://api.crossref.org/works?query=focused+crawling+information+foraging&rows=5",
+          "status": "failed",
+          "error": "http_406"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "attempt": 11,
+          "url": "https://api.crossref.org/works?query=citation+chasing+snowballing+literature+search&rows=5",
+          "status": "failed",
+          "error": "http_406"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "attempt": 22,
+          "url": "https://api.crossref.org/works?query=TARCiS+statement+citation+searching+guidance&rows=5",
+          "status": "ok"
+        },
+        {
+          "run": "topic-discovery-20261002",
+          "arm": "luna",
+          "url": "https://api.crossref.org/works?query=TARCiS+statement+citation+searching+guidance&rows=5",
+          "title": "Crossref search",
+          "acquired_at": 1790875814.3374796,
+          "body_sha256": "6d9decdb49dc87cc42b0557dfde837356c23d2097a04c13a239165ba6aa7ee35",
+          "text_sha256": "8337ec0b62d03113f596638e15dc0b7653193701113f389ea443a132dd536f0e"
+        }
+      ]
+    },
+    {
+      "id": "serper",
+      "name": "Serper",
+      "priority": "outside_current_free_scraping_goal",
+      "status": "homepage_truncated_unverified",
+      "findings": "公式トップが500,000 bytes上限で切れ、成功本文として受理していない。契約API候補として情報を保存するが、今回の無料スクレイピング入口として未確認。",
+      "url": "https://serper.dev/",
+      "service_claims_verified": false,
+      "evidence": [
+        {
+          "run": "google-search-options-20261002",
+          "arm": "bfs",
+          "attempt": 1,
+          "url": "https://serper.dev/",
+          "status": "failed",
+          "error": "truncated"
+        },
+        {
+          "run": "google-search-options-20261002",
+          "arm": "luna",
+          "attempt": 1,
+          "url": "https://serper.dev/",
+          "status": "failed",
+          "error": "truncated"
+        }
+      ]
+    },
+    {
+      "id": "serpapi",
+      "name": "SerpApi",
+      "priority": "outside_current_free_scraping_goal",
+      "status": "official_api_description_acquired",
+      "findings": "公式ページでGoogle Search API、JSON、location設定、有料Starterプランを確認。無料・契約不要のスクレイピング入口としては採用していない。",
+      "url": "https://serpapi.com/",
+      "paid_plan_observed": {
+        "name": "Starter",
+        "price_usd_per_month": 25,
+        "searches_per_month": 1000
+      },
+      "evidence": [
+        {
+          "run": "google-search-options-20261002",
+          "arm": "bfs",
+          "attempt": 2,
+          "url": "https://serpapi.com/",
+          "status": "ok"
+        },
+        {
+          "run": "google-search-options-20261002",
+          "arm": "bfs",
+          "url": "https://serpapi.com/",
+          "title": "SerpApi: Google Search API",
+          "acquired_at": 1790895965.8726447,
+          "body_sha256": "5de6387f5b6254c00598dbade7c1abfeaba7aebf9bd8fa19250c3aeb607fa02d",
+          "text_sha256": "9d03d314cfb63f95395eaa0d67360abf62a393b0a0c107776b113af7427c70dd"
+        },
+        {
+          "run": "google-search-options-20261002",
+          "arm": "luna",
+          "attempt": 2,
+          "url": "https://serpapi.com/",
+          "status": "ok"
+        },
+        {
+          "run": "google-search-options-20261002",
+          "arm": "luna",
+          "url": "https://serpapi.com/",
+          "title": "SerpApi: Google Search API",
+          "acquired_at": 1790895970.2129552,
+          "body_sha256": "5de6387f5b6254c00598dbade7c1abfeaba7aebf9bd8fa19250c3aeb607fa02d",
+          "text_sha256": "9d03d314cfb63f95395eaa0d67360abf62a393b0a0c107776b113af7427c70dd"
+        }
+      ]
+    },
+    {
+      "id": "google_custom_search_json_api",
+      "name": "Google Custom Search JSON API",
+      "priority": "unavailable_to_new_users",
+      "status": "new_customer_closed_existing_service_sunset",
+      "findings": "公式文書で新規受付終了、既存利用者の終了日2027-01-01、APIキーと検索エンジンIDの必要性を確認。既存利用者の無料100回/日は新規導入の無料入口として扱わない。",
+      "url": "https://developers.google.com/custom-search/v1/overview",
+      "end_date": "2027-01-01",
+      "evidence": [
+        {
+          "run": "google-search-options-20261002",
+          "arm": "bfs",
+          "attempt": 4,
+          "url": "https://developers.google.com/custom-search/v1/overview",
+          "status": "ok"
+        },
+        {
+          "run": "google-search-options-20261002",
+          "arm": "bfs",
+          "url": "https://developers.google.com/custom-search/v1/overview",
+          "title": "Custom Search JSON API  |  Google for Developers",
+          "acquired_at": 1790895968.111007,
+          "body_sha256": "5b957b982b69af6cccad2479008e793b16d760e964b88996ad00fa904c24db0a",
+          "text_sha256": "ff315f8ff7038690d98fd9b78104809cf99ad2615ac9c2392ffe99fac60c1d2d"
+        },
+        {
+          "run": "google-search-options-20261002",
+          "arm": "luna",
+          "attempt": 4,
+          "url": "https://developers.google.com/custom-search/v1/overview",
+          "status": "ok"
+        },
+        {
+          "run": "google-search-options-20261002",
+          "arm": "luna",
+          "url": "https://developers.google.com/custom-search/v1/overview",
+          "title": "Custom Search JSON API  |  Google for Developers",
+          "acquired_at": 1790895972.4682772,
+          "body_sha256": "76197e4e85c9780c2d0084b2d84650814993be863dedc9655565ea818ccece35",
+          "text_sha256": "ff315f8ff7038690d98fd9b78104809cf99ad2615ac9c2392ffe99fac60c1d2d"
+        }
+      ]
+    }
+  ],
+  "original_workspace_archive": ".lab-output/search-discovery-all-20261002.zip",
+  "all_save_archive_sha256": "4749f29bf681ce80fb30682c610eb6d62fa897e98c6ebadc8689c7f521617242"
+}
