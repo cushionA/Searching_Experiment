@@ -1,0 +1,25 @@
+{
+  "source_kind": "user_relayed_external_test",
+  "source_description": "同じチャットでユーザーが伝えた別検証の集計。元ログ・結果URL・CAPTCHAの操作手順は未提供。",
+  "source_quote": "別検証だとこの二サイトは簡単にキャプチャ突破できたらしいよ\n1. Brave：HTTP 200、10件取得。9件が早稲田公式。\n2. Yandex：HTTP 200、10件取得。大学概要・卒業生なども混在。",
+  "query_context": "元依頼の検索語は「早稲田大学 教員」。別検証の実際の送信クエリは明示されていない。",
+  "reproduced_in_this_run": false,
+  "observations": [
+    {
+      "id": "brave",
+      "http_status": 200,
+      "result_count": 10,
+      "waseda_official_count": 9,
+      "result_mix": "10件中9件が早稲田公式との報告。教員情報への関連性は未評価。",
+      "captcha_assessment": "容易に突破できたとの別検証報告（課題形式・操作・所要時間は不明）"
+    },
+    {
+      "id": "yandex",
+      "http_status": 200,
+      "result_count": 10,
+      "waseda_official_count": null,
+      "result_mix": "大学概要・卒業生などが混在との報告。",
+      "captcha_assessment": "容易に突破できたとの別検証報告（課題形式・操作・所要時間は不明）"
+    }
+  ]
+}

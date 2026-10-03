@@ -1,0 +1,357 @@
+{
+  "schema": 1,
+  "tools": [
+    "patchright"
+  ],
+  "limits": {
+    "requests_per_tool_site": 25,
+    "body_bytes_per_tool_site": 8388608
+  },
+  "profiles": [
+    {
+      "id": "baseline",
+      "humanlike": false,
+      "extensions": []
+    }
+  ],
+  "recovery_plan": {
+    "max_attempts": 0,
+    "return_home_after_success": false,
+    "wait_seconds": 0,
+    "retry_original_target": false
+  },
+  "sites": [
+    {
+      "id": "kagi",
+      "name": "Kagi",
+      "group": "privacy",
+      "service_kind": "search",
+      "origins": [
+        "https://kagi.com"
+      ],
+      "links": {
+        "home": "https://kagi.com/",
+        "targets": [
+          "https://kagi.com/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "perplexity",
+      "name": "Perplexity",
+      "group": "ai",
+      "service_kind": "answer_engine",
+      "origins": [
+        "https://www.perplexity.ai"
+      ],
+      "links": {
+        "home": "https://www.perplexity.ai/",
+        "targets": [
+          "https://www.perplexity.ai/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "felo",
+      "name": "Felo",
+      "group": "ai",
+      "service_kind": "answer_engine",
+      "origins": [
+        "https://felo.ai"
+      ],
+      "links": {
+        "home": "https://felo.ai/",
+        "targets": [
+          "https://felo.ai/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "genspark",
+      "name": "Genspark",
+      "group": "ai",
+      "service_kind": "answer_engine",
+      "origins": [
+        "https://www.genspark.ai"
+      ],
+      "links": {
+        "home": "https://www.genspark.ai/",
+        "targets": [
+          "https://www.genspark.ai/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "you",
+      "name": "You.com",
+      "group": "ai",
+      "service_kind": "answer_engine",
+      "origins": [
+        "https://you.com"
+      ],
+      "links": {
+        "home": "https://you.com/",
+        "targets": [
+          "https://you.com/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "phind",
+      "name": "Phind",
+      "group": "ai",
+      "service_kind": "answer_engine",
+      "origins": [
+        "https://www.phind.com"
+      ],
+      "links": {
+        "home": "https://www.phind.com/",
+        "targets": [
+          "https://www.phind.com/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "bagoodex",
+      "name": "Bagoodex",
+      "group": "ai",
+      "service_kind": "answer_engine",
+      "origins": [
+        "https://bagoodex.io"
+      ],
+      "links": {
+        "home": "https://bagoodex.io/",
+        "targets": [
+          "https://bagoodex.io/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "brave-api",
+      "name": "Brave Search API",
+      "group": "api",
+      "service_kind": "api",
+      "origins": [
+        "https://brave.com"
+      ],
+      "links": {
+        "home": "https://brave.com/search/api/",
+        "targets": []
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "No query URL supplied; requires investigation.",
+      "query_status": "query_status_requires",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "serpapi",
+      "name": "SerpApi",
+      "group": "api",
+      "service_kind": "api",
+      "origins": [
+        "https://serpapi.com"
+      ],
+      "links": {
+        "home": "https://serpapi.com/",
+        "targets": []
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "No query URL supplied; requires investigation.",
+      "query_status": "query_status_requires",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "dataforseo",
+      "name": "DataForSEO",
+      "group": "api",
+      "service_kind": "api",
+      "origins": [
+        "https://dataforseo.com"
+      ],
+      "links": {
+        "home": "https://dataforseo.com/",
+        "targets": []
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "No query URL supplied; requires investigation.",
+      "query_status": "query_status_requires",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "firecrawl",
+      "name": "Firecrawl",
+      "group": "api",
+      "service_kind": "api",
+      "origins": [
+        "https://firecrawl.dev"
+      ],
+      "links": {
+        "home": "https://firecrawl.dev/",
+        "targets": []
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "No query URL supplied; requires investigation.",
+      "query_status": "query_status_requires",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "exa",
+      "name": "Exa",
+      "group": "api",
+      "service_kind": "api",
+      "origins": [
+        "https://exa.ai"
+      ],
+      "links": {
+        "home": "https://exa.ai/",
+        "targets": []
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "No query URL supplied; requires investigation.",
+      "query_status": "query_status_requires",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "tavily",
+      "name": "Tavily",
+      "group": "api",
+      "service_kind": "api",
+      "origins": [
+        "https://tavily.com"
+      ],
+      "links": {
+        "home": "https://tavily.com/",
+        "targets": []
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "No query URL supplied; requires investigation.",
+      "query_status": "query_status_requires",
+      "recovery": null,
+      "operations": []
+    }
+  ],
+  "options": {
+    "selectors": false,
+    "recoverSimple": false,
+    "seed": 1,
+    "headful": true
+  }
+}

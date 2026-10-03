@@ -12,13 +12,15 @@ const httpTools = new Set(['wreq-js', 'impit']);
 
 /** Each adapter owns one session; all roles share its cookies and the site's budget. */
 export class ToolAdapter {
-  constructor({ tool, site, evidence, fixture = false, profile = {id:'baseline'}, options = {} }) {
+  constructor({ tool, site, evidence, fixture = false, profile = {id:'baseline'}, options = {}, browserOpener = openBrowser, clientOpener = httpClient }) {
     if (!TOOL_NAMES.includes(tool)) throw new Error('Unknown tool');
     this.tool = tool; this.site = site; this.evidence = evidence; this.fixture = fixture;
     this.profile = profile; this.options = options;
+    this.browserOpener = browserOpener; this.clientOpener = clientOpener;
     this.currentURL = null; this.sequence = 0;
     this.capabilities = { fetch: httpTools.has(tool), goto: !httpTools.has(tool),
       session: true, selectorOperations: !httpTools.has(tool), challengeActions: !httpTools.has(tool),
+      headful: ['patchright','playwright-baseline'].includes(tool),
       extensions: ['patchright','playwright-baseline'].includes(tool) };
     if(profile.session_pool) {
       if(httpTools.has(tool) || profile.extensions?.length) throw new Error('session_pool_requires_browser_without_extensions');
@@ -26,19 +28,23 @@ export class ToolAdapter {
     }
   }
   async open() {
-    if (this.capabilities.fetch) this.client = await httpClient(this.tool, HTTP_USER_AGENT, this.fixture);
+    if (this.capabilities.fetch) this.client = await this.clientOpener(this.tool, HTTP_USER_AGENT, this.fixture);
     else {
-      this.browser = await openBrowser(this.tool, {extensions:this.profile.extensions || [],lightpanda:this.profile.lightpanda || null,fixture:this.fixture});
-      if(this.browser.runtime?.budgeted_navigation === false) {
+      this.browser = await this.browserOpener(this.tool, {extensions:this.profile.extensions || [],
+        lightpanda:this.profile.lightpanda || null,fixture:this.fixture,
+        headful:this.evidence.policy === 'browser_observation' ? true : !!this.options.headful,
+        profile:this.evidence.policy || 'diagnostic'});
+      if(this.evidence.policy !== 'browser_observation' && this.browser.runtime?.budgeted_navigation === false) {
         throw new Error('unsupported_capability:budgeted_navigation; redirect interception unavailable');
       }
       if(this.sessions && !this.browser.replaceContext) throw new Error('unsupported_capability:session_context_replacement');
-      this.robots = await httpClient(this.tool, this.browser.ua, this.fixture);
+      this.robots = await this.clientOpener(this.tool, this.browser.ua, this.fixture);
       this.sessions?.select();
     }
     this.evidence.result({client:this.tool,target:this.site.id,profile:this.profile.id,role:'adapter_setup',
       outcome:'adapter_ready',capabilities:this.capabilities,
-      ...(this.browser ? {runtime:this.browser.runtime,user_agent:this.browser.ua} : {user_agent:HTTP_USER_AGENT})});
+      ...(this.browser ? {runtime:this.browser.runtime,user_agent:this.browser.ua,headless:this.browser.runtime?.headless??true,
+        display:this.browser.runtime?.display??null,viewport:this.browser.runtime?.viewport??null} : {user_agent:HTTP_USER_AGENT})});
     return this;
   }
   assertScope(url) {
@@ -110,6 +116,8 @@ export class ToolAdapter {
       capture_screenshot:this.options.captureScreenshots !== false,
       primary_selector:this.site.selectors?.primary,
       ...(this.fixture ? {observe_ms:100} : {}),
+      robots_redirect_origins:this.options.robotsRedirectOrigins ?? this.site.robots_redirect_origins ?? [],
+      robots_unavailable_probe:!!(this.options.robotsUnavailableProbe ?? this.site.robots_unavailable_probe),
       ...(operation ? {operation, previousObservation:this.lastObservation} : {}),
       ...(preserveReferrer && this.currentURL ? {referer: this.currentURL} : {}) };
     try {

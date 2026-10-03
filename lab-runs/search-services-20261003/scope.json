@@ -1,0 +1,78 @@
+{
+  "query": "早稲田大学 教員",
+  "service_count": 50,
+  "queries_per_service_limit": 1,
+  "tools": [
+    "patchright"
+  ],
+  "headful": true,
+  "display": ":91",
+  "display_backend": "existing Xorg dummy driver",
+  "authorization": "確認はさまず進めて。以下のリストとOneSearch、Peekier、kids.yahoo.co.jp。とりあえず検索一件とおすところまででいい。基本ヘッドフル。",
+  "network": "inherited environment proxy; TLS checks enabled",
+  "ca_note": "Existing platform-provided NSS trust requires writable NSS DB for Chromium read initialization; fs permission granted narrowly to /home/agent/.pki. Session CA already present as OpenAI-nebula-dns, no new nickname added. No private NSS data exported.",
+  "manifest_sha256": "9fac3a751b1e4a0b7cdec1facad387324df806c90a66344dd7e7da9a2aa60888",
+  "continuations": [
+    {
+      "authorization": "取得失敗はやって",
+      "sites": [
+        "goo",
+        "phind",
+        "firecrawl",
+        "tavily",
+        "onesearch",
+        "peekier"
+      ],
+      "plan": "robots-retry-plan.json",
+      "same_original_budgets": true,
+      "known_redirect_origins": [
+        "https://www.firecrawl.dev",
+        "https://www.tavily.com",
+        "https://search.yahoo.com",
+        "https://kagi.com"
+      ],
+      "robots_unavailable_observation": true,
+      "explicit_robots_denial_remains_enforced": true
+    },
+    {
+      "authorization": "今は関係ないから全部無視でいいぞグラウンディングサーチの時だけ使う",
+      "plan": "browser-observation-plan.json",
+      "policy": "browser_observation",
+      "legacy_limits_enforced": false,
+      "legacy_robots_enforced": false,
+      "same_original_ledger": true,
+      "finished_services": 38,
+      "route_repair_plan": "route-repair-plan.json",
+      "simple_challenge_attempts": [
+        "brave",
+        "yandex"
+      ],
+      "visual_challenge_attempts": {
+        "yandex": 1
+      }
+    }
+  ],
+  "historical_initial_policy": {
+    "requests_per_service_limit": 25,
+    "charged_body_bytes_per_service_limit": 8388608,
+    "aggregate_request_limit": 1250,
+    "aggregate_charged_body_byte_limit": 419430400,
+    "scope_note": "Only listed services and their same-origin GET dependencies. No result destination pages visited. No API credentials or paid calls. All TLS preflight failures retained in same ledger.",
+    "limitations": [
+      "same-origin GET only",
+      "images/media/fonts blocked",
+      "service workers blocked",
+      "no CAPTCHA solution trial",
+      "CDN assets requested on other origins blocked by executor and distinct from site-side blocking"
+    ]
+  },
+  "execution_policy": "browser_observation",
+  "legacy_constraints_apply_to": "grounding only",
+  "scope_note": "Listed services, one query phrase each; native browser HTTP/S dependencies, CDN, images, iframe, POST, service worker and redirects allowed. No result destination pages intentionally opened, no API accounts or paid calls.",
+  "limitations": [
+    "Finite page observation time (usually six seconds after navigation)",
+    "WebSocket handshake/frames not recorded",
+    "Login/API credentials not configured",
+    "Keyword-matched candidate counts are not comparable organic rankings except specifically marked Brave/Baidu cards"
+  ]
+}

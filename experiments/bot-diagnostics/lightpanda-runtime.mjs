@@ -20,7 +20,7 @@ export function validateLightpanda(options) {
 }
 
 /** Opt-in release/profile. The old nightly path remains the default for existing runs. */
-export async function openLightpanda(options = null) {
+export async function openLightpanda(options = null, {identification = true} = {}) {
   if (options !== null) validateLightpanda(options);
   const stable = options !== null;
   const executable = stable ? path.join(repo,'.deps/lightpanda') : path.join(deps,'lightpanda');
@@ -41,7 +41,7 @@ export async function openLightpanda(options = null) {
   const port = server.address().port;
   await new Promise(resolve=>server.close(resolve));
   const args = ['serve','--host','127.0.0.1','--port',String(port),
-    ...(proxy ? ['--http-proxy',proxy] : []),'--user-agent-suffix',config.identification,
+    ...(proxy ? ['--http-proxy',proxy] : []),...(identification ? ['--user-agent-suffix',config.identification] : []),
     '--http-max-response-size',String(limits.bytes_per_response),'--http-timeout',String(limits.navigation_timeout_ms),
     '--http-max-concurrent','1','--log-level','warn','--ca-cert',process.env.SSL_CERT_FILE || '/etc/ssl/certs/ca-certificates.crt'];
   const child = spawn(executable,args,{env:{...process.env,XDG_DATA_HOME:data,

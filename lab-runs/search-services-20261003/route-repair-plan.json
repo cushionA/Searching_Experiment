@@ -1,0 +1,54 @@
+{
+  "authorization": "今は関係ないから全部無視でいいぞグラウンディングサーチの時だけ使う（ユーザー明示）。今回検索サービス検証には旧budget/robots/origin/GET/resource/delay制限を適用しない。",
+  "policy": "browser_observation",
+  "headful": true,
+  "query": "早稲田大学 教員",
+  "legacy_limits_enforced": false,
+  "legacy_robots_enforced": false,
+  "browser_network": "normal HTTP/S dependencies, redirects, third-party assets, images and query POST; existing environment proxy and TLS validation",
+  "scope": "Original listed services only; one query for each unfinished configured service. API accounts/keys are not configured. Wiby completed zero results and YouCare closure already observed.",
+  "purpose": "Repair proposed search routes using saved form/metadata evidence; keep the same logical query",
+  "result_filename": "route-repair-results.json",
+  "sites": [
+    {
+      "id": "qwant",
+      "group": "meta",
+      "url": "https://www.qwant.com/?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6%20%E6%95%99%E5%93%A1&t=web",
+      "route_evidence": "404 response og:url explicitly points to ?q=...&t=web",
+      "evidence_dom": "27fc0cee3d949421cb50dc6066464d38091de2bb9b769d8de7f64d4438538269",
+      "role": "target"
+    },
+    {
+      "id": "oceanhero",
+      "group": "meta",
+      "url": "https://oceanhero.today/web?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6%20%E6%95%99%E5%93%A1",
+      "route_evidence": "Homepage JSON-LD SearchAction target /web?q={search_term_string}",
+      "evidence_dom": "2898e0abfa0684000270d99d61b975298804ffc90786cd65b90474c92937830d",
+      "role": "target"
+    },
+    {
+      "id": "refseek",
+      "group": "niche",
+      "url": "https://www.refseek.com/search?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6%20%E6%95%99%E5%93%A1",
+      "route_evidence": "Homepage form action=search method=get input name=q",
+      "evidence_dom": "7034573992ed61082c35e31f4869ae5f898b4b1b08e2a54e4cc155d3786cfb49",
+      "role": "target"
+    },
+    {
+      "id": "wacky-safe",
+      "group": "niche",
+      "url": "https://wackysafe.com/kidswebsearch.html?safe=high&safe=active#gsc.tab=0&gsc.q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6%20%E6%95%99%E5%93%A1&gsc.page=1",
+      "route_evidence": "Current All-tab iframe URL read from saved DOM; direct frame observation to capture actual search body",
+      "evidence_dom": "704a8bb660b924a45f099209d63047b62751ef3b5ce475050958c6cb80e14f19",
+      "role": "target"
+    },
+    {
+      "id": "unsplash",
+      "group": "niche",
+      "url": "https://unsplash.com/s/photos/%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6%20%E6%95%99%E5%93%A1",
+      "route_evidence": "Path template must percent-encode spaces; prior quote_plus produced literal + in path",
+      "evidence_dom": "input_url_encoding_correction",
+      "role": "target"
+    }
+  ]
+}

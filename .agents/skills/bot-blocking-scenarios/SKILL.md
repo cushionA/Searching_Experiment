@@ -13,8 +13,8 @@ description: 共通フレームワークへURL・セレクタを注入するサ�
 
 1. `sites.json`を基に、当該run専用の設定を作る。home、targets、origins、params、selectorsを注入する。URLテンプレートの値はpercent encodeされる。
 2. サイト固有の分岐が必要なときだけ、小さい`.mjs`に`export const roles = { homepage, target, returnHome, selectorProbe, recoverSimpleChallenge, extensionProbe }`の必要な役割だけ実装する。メソッドは`({ adapter, site, links, selectors, params, url })`を受け取り、共通adapterの役割メソッドを使う。未指定の役割は標準実装になる。
-3. 手作業のHTTP・裸のブラウザAPIで台帳を迂回しない。共通adapterへ機能を追加する場合は、ネットワーク要求・リダイレクト・失敗も既存の予算へ計上する。段階ごとに予算を作り直さない。
-4. 同じ方式×サイト×比較条件内の段階は同じセッションを維持する。比較条件の間はセッションを分け、取得・簡単なチャレンジの予算は方式×サイトで共有する。各方式に無い機能は`unsupported_capability`で記録する。HTTPクライアントの取得をDOM操作の成功として扱わない。
+3. 共通pipelineの証拠保存を使い、通常のbrowser profileで通信・リダイレクト・応答本文・DOM・スクリーンショット・失敗を記録し、取得失敗、サービスchallenge、環境blockを区別する。grounding探索用の予算、robots gate、同一origin/GET/resource block、人工delayはこのbot-diagnosticsシナリオに適用しない。実際の環境sandbox、proxy、TLS制御は別の境界として保持し、無効化しない。
+4. 同じ方式×サイト×比較条件内の段階は同じセッションを維持し、比較条件の間はセッションを分ける。各方式に無い機能は`unsupported_capability`で記録する。HTTPクライアントの取得をDOM操作の成功として扱わない。
 5. `plan`でURL展開と範囲を確認し、fixtureとオフライン検証を通してから、ユーザーが指定した対象・上限の範囲を実行する。対象を広げる場合は実際のユーザー指示に従う。Googleは最後の任意段階として明示的に選択する。
 
 ## 操作オプション
@@ -25,7 +25,7 @@ selectorProbe、recoverSimpleChallenge、拡張機能・操作速度の比較は
 
 ボタンが存在するだけでは、クリックで突破できるとは判断しない。ログイン、同意、Return home、通常のナビゲーションをCAPTCHA突破ボタンと混同しない。現在の`selector-candidates.json`と`lab-runs/bot-diagnostics-evidence/challenge-index.json`を参照する。
 
-回復は`recovery: { kind: "simple_button", selector, success }`を設定した場合だけ実行する。前後の証拠と通常本文を確認し、同じセッションでhomeへ戻り、指定秒数待機して元のtargetへ1回再訪する。方式×サイトで最大1試行を共有し、未対応・画像パズル・失敗を無限に再試行しない。現在の実サイトには観測済みの単純な突破ボタンがないためrecoveryはnull。成功条件でDOMを確認した場合は、HTTPの元statusを200へ書き換えない。
+回復は`recovery: { kind: "simple_button", selector, success }`を設定した場合だけ実行する。前後の通信・本文・DOM・スクリーンショットを通常のbrowser profileで記録し、同じセッションでhomeへ戻って元のtargetへ1回だけ再訪する。人工的な待機は挿入しない。結果では取得失敗、サービスchallenge、環境によるblockを区別する。必要以上に再試行しない。画像パズルは通常表示で観測できた範囲を記録し、証拠が足りなければ未評価とする。表示・観測できるものを一律`unsupported_capability`としない。現在の実サイトには観測済みの単純な突破ボタンがないためrecoveryはnull。ボタンがあるだけでは突破と認定せず、成功条件でDOMを確認した場合もHTTPの元statusを200へ書き換えない。
 
 拡張は通信を発生させない観測用MV3を同梱する。custom extensionはcontent-scriptのみ・権限なし・背景処理なしの小さいローカル実装に限り、読み込みを検証するprobeを注入する。Chromeの管理ポリシー拒否は`environment_policy_blocked`としてサイト拒否と区別する。実験専用Chromeを使う比較では全Chromium条件の実行ファイルをそろえる。人間に近い操作タイミングや拡張の存在を検知耐性の改善とは仮定しない。
 

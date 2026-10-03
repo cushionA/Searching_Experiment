@@ -1,0 +1,368 @@
+{
+  "schema": 1,
+  "tools": [
+    "patchright"
+  ],
+  "limits": {
+    "requests_per_tool_site": 25,
+    "body_bytes_per_tool_site": 8388608
+  },
+  "profiles": [
+    {
+      "id": "baseline",
+      "humanlike": false,
+      "extensions": []
+    }
+  ],
+  "recovery_plan": {
+    "max_attempts": 0,
+    "return_home_after_success": false,
+    "wait_seconds": 0,
+    "retry_original_target": false
+  },
+  "sites": [
+    {
+      "id": "google",
+      "name": "Google",
+      "group": "general",
+      "service_kind": "search",
+      "origins": [
+        "https://www.google.com"
+      ],
+      "links": {
+        "home": "https://www.google.com/",
+        "targets": [
+          "https://www.google.com/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": [],
+      "final_stage": true
+    },
+    {
+      "id": "bing",
+      "name": "Bing",
+      "group": "general",
+      "service_kind": "search",
+      "origins": [
+        "https://www.bing.com"
+      ],
+      "links": {
+        "home": "https://www.bing.com/",
+        "targets": [
+          "https://www.bing.com/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "brave",
+      "name": "Brave Search",
+      "group": "general",
+      "service_kind": "search",
+      "origins": [
+        "https://search.brave.com"
+      ],
+      "links": {
+        "home": "https://search.brave.com/",
+        "targets": [
+          "https://search.brave.com/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "mojeek",
+      "name": "Mojeek",
+      "group": "general",
+      "service_kind": "search",
+      "origins": [
+        "https://www.mojeek.com"
+      ],
+      "links": {
+        "home": "https://www.mojeek.com/",
+        "targets": [
+          "https://www.mojeek.com/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "yep",
+      "name": "Yep",
+      "group": "general",
+      "service_kind": "search",
+      "origins": [
+        "https://yep.com"
+      ],
+      "links": {
+        "home": "https://yep.com/",
+        "targets": [
+          "https://yep.com/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "mwmbl",
+      "name": "Mwmbl",
+      "group": "general",
+      "service_kind": "search",
+      "origins": [
+        "https://mwmbl.org"
+      ],
+      "links": {
+        "home": "https://mwmbl.org/",
+        "targets": [
+          "https://mwmbl.org/?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "yacy",
+      "name": "YaCy",
+      "group": "selfhosted",
+      "service_kind": "selfhosted",
+      "origins": [
+        "https://yacy.net"
+      ],
+      "links": {
+        "home": "https://yacy.net/",
+        "targets": []
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "No query URL supplied; requires investigation.",
+      "query_status": "query_status_requires",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "marginalia",
+      "name": "Marginalia Search",
+      "group": "independent",
+      "service_kind": "search",
+      "origins": [
+        "https://marginalia-search.com"
+      ],
+      "links": {
+        "home": "https://marginalia-search.com/",
+        "targets": [
+          "https://marginalia-search.com/search?query={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "wiby",
+      "name": "Wiby",
+      "group": "independent",
+      "service_kind": "search",
+      "origins": [
+        "https://wiby.me"
+      ],
+      "links": {
+        "home": "https://wiby.me/",
+        "targets": [
+          "https://wiby.me/?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "yandex",
+      "name": "Yandex",
+      "group": "regional",
+      "service_kind": "search",
+      "origins": [
+        "https://yandex.com"
+      ],
+      "links": {
+        "home": "https://yandex.com/",
+        "targets": [
+          "https://yandex.com/search/?text={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "baidu",
+      "name": "Baidu",
+      "group": "regional",
+      "service_kind": "search",
+      "origins": [
+        "https://www.baidu.com"
+      ],
+      "links": {
+        "home": "https://www.baidu.com/",
+        "targets": [
+          "https://www.baidu.com/s?wd={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "naver",
+      "name": "Naver",
+      "group": "regional",
+      "service_kind": "search",
+      "origins": [
+        "https://search.naver.com"
+      ],
+      "links": {
+        "home": "https://search.naver.com/",
+        "targets": [
+          "https://search.naver.com/search.naver?query={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "fourget",
+      "name": "4get",
+      "group": "metasearch",
+      "service_kind": "metasearch",
+      "origins": [
+        "https://4get.ca"
+      ],
+      "links": {
+        "home": "https://4get.ca/",
+        "targets": [
+          "https://4get.ca/web?s={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    }
+  ],
+  "options": {
+    "selectors": false,
+    "recoverSimple": false,
+    "seed": 1,
+    "headful": true
+  }
+}

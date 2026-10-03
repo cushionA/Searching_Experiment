@@ -1,0 +1,570 @@
+[
+  {
+    "id": "kagi",
+    "group": "ai-api",
+    "policy": "browser_observation",
+    "started_at": "2026-10-02T20:35:49.055Z",
+    "events": [
+      {
+        "client": "patchright",
+        "target": "kagi",
+        "url": "https://kagi.com/search?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6+%E6%95%99%E5%93%A1",
+        "blocked_requests": [],
+        "page_errors": [],
+        "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "robots_outcome": "not_enforced_browser_observation",
+        "robots_record": null,
+        "robots_redirect_trace": [],
+        "robots_probe_policy": {
+          "enabled": false,
+          "applied": false,
+          "reason": null,
+          "scope": "normal browser network; legacy grounding restrictions not enforced"
+        },
+        "observation_limits": [
+          "websocket_handshake_or_frames_not_recorded"
+        ],
+        "final_url": "https://kagi.com/turnstile?r=/search%3Fq%3D%25E6%2597%25A9%25E7%25A8%25B2%25E7%2594%25B0%25E5%25A4%25A7%25E5%25AD%25A6%2B%25E6%2595%2599%25E5%2593%25A1",
+        "dom_sha256": "39fab1c1a11b7e3b13faf3b1f9bb7b0ba8b10fdc878a2aa5ec55ffdc5896f02a",
+        "dom_truncated": false,
+        "screenshot": "patchright-kagi-browser-observation-target-1-58.png",
+        "outcome": "challenge_observed",
+        "title": "",
+        "visible_text_prefix": "kagi.com Verifying you’re human. This may take a few seconds.",
+        "signals": [
+          {
+            "name": "human_verification",
+            "evidence": "kagi.com Verifying you’re human. This may take a few seconds."
+          }
+        ],
+        "site_block_reason": null,
+        "reason_certainty": "response evidence only; site policy/logs unavailable",
+        "http_status": 200,
+        "main_record": 124,
+        "resource_policy": "normal browser network; legacy grounding restrictions not enforced",
+        "role": "target",
+        "navigation_method": "goto",
+        "session_sequence": 1,
+        "profile": "browser-observation",
+        "provider_observation": {
+          "hints": [
+            {
+              "provider": "turnstile",
+              "kind": "widget_or_library",
+              "evidence": "Turnstile marker",
+              "confidence": "medium"
+            }
+          ],
+          "proprietary_score": null,
+          "scoring_weights": null,
+          "scoring_threshold": null,
+          "limitation": "Visible technology/widget markers do not prove a block or its cause."
+        }
+      }
+    ],
+    "accounting_before": {
+      "requests": 12,
+      "bytes_charged": 2285435
+    },
+    "finished_at": "2026-10-02T20:36:04.746Z",
+    "accounting_after": {
+      "requests": 28,
+      "bytes_charged": 3654492
+    }
+  },
+  {
+    "id": "perplexity",
+    "group": "ai-api",
+    "policy": "browser_observation",
+    "started_at": "2026-10-02T20:36:04.746Z",
+    "events": [
+      {
+        "client": "patchright",
+        "target": "perplexity",
+        "url": "https://www.perplexity.ai/search?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6+%E6%95%99%E5%93%A1",
+        "blocked_requests": [],
+        "page_errors": [],
+        "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "robots_outcome": "not_enforced_browser_observation",
+        "robots_record": null,
+        "robots_redirect_trace": [],
+        "robots_probe_policy": {
+          "enabled": false,
+          "applied": false,
+          "reason": null,
+          "scope": "normal browser network; legacy grounding restrictions not enforced"
+        },
+        "observation_limits": [
+          "websocket_handshake_or_frames_not_recorded"
+        ],
+        "final_url": "https://www.perplexity.ai/search/new?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6+%E6%95%99%E5%93%A1",
+        "dom_sha256": "770d5dbdb149dddbda2680a0e9d7a6fbf80de9c4ed8f356c7d5fe260a5541c2f",
+        "dom_truncated": false,
+        "screenshot": "patchright-perplexity-browser-observation-target-1-60.png",
+        "outcome": "challenge_observed",
+        "title": "Just a moment...",
+        "visible_text_prefix": "Just a moment... www.perplexity.ai Performing security verification This website uses a security service to protect against malicious bots. This page is displayed while the website verifies you are not a bot. Verification successful. Waiting for www.perplexity.ai to respond Enable JavaScript and cookies to continue Ray ID: a4467f55bf289913 Performance and Security by Cloudflare Privacy",
+        "signals": [
+          {
+            "name": "human_verification",
+            "evidence": "Just a moment... www.perplexity.ai Performing security verification This website uses a security service to protect against malicious bots. This page is displayed while the website"
+          },
+          {
+            "name": "cf_mitigated",
+            "evidence": "challenge"
+          }
+        ],
+        "site_block_reason": null,
+        "reason_certainty": "response evidence only; site policy/logs unavailable",
+        "http_status": 403,
+        "main_record": 142,
+        "resource_policy": "normal browser network; legacy grounding restrictions not enforced",
+        "role": "target",
+        "navigation_method": "goto",
+        "session_sequence": 1,
+        "profile": "browser-observation",
+        "provider_observation": {
+          "hints": [
+            {
+              "provider": "cloudflare",
+              "kind": "technology",
+              "evidence": "cf-ray or Cloudflare server header",
+              "confidence": "high"
+            },
+            {
+              "provider": "cloudflare",
+              "kind": "challenge",
+              "evidence": "cf-mitigated: challenge",
+              "confidence": "high"
+            },
+            {
+              "provider": "turnstile",
+              "kind": "widget_or_library",
+              "evidence": "Turnstile marker",
+              "confidence": "medium"
+            }
+          ],
+          "proprietary_score": null,
+          "scoring_weights": null,
+          "scoring_threshold": null,
+          "limitation": "Visible technology/widget markers do not prove a block or its cause."
+        }
+      }
+    ],
+    "accounting_before": {
+      "requests": 8,
+      "bytes_charged": 4447438
+    },
+    "finished_at": "2026-10-02T20:36:13.462Z",
+    "accounting_after": {
+      "requests": 21,
+      "bytes_charged": 6055229
+    }
+  },
+  {
+    "id": "felo",
+    "group": "ai-api",
+    "policy": "browser_observation",
+    "started_at": "2026-10-02T20:36:13.463Z",
+    "events": [
+      {
+        "client": "patchright",
+        "target": "felo",
+        "url": "https://felo.ai/search?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6+%E6%95%99%E5%93%A1",
+        "blocked_requests": [
+          {
+            "url": "https://www.google.com/pagead/1p-conversion/11479206531/?random=1366768826&cv=11&fst=1790973384561&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45je69u2v9188026696za208zd9188026696xecxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938469~117776796~118897920~118897930~119404697~120213116~120385422~120469145~120469153~121280971&u_w=1280&u_h=720&url=https%3A%2F%2Ffelo.ai%2Fsearch%2F04jm6elnSULy2iEQ9-dyd%3Fq%3D%25E6%2597%25A9%25E7%25A8%25B2%25E7%2594%25B0%25E5%25A4%25A7%25E5%25AD%25A6%2B%25E6%2595%2599%25E5%2593%25A1&rcb=1&capi=1&gtm_ee=1&frm=0&tiba=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6%20%E6%95%99%E5%93%A1&npa=0&pscdl=noapi&auid=338331329.1790973384&label=djJiCNn53ccZEIOV2-Eq&hn=www.googleadservices.com&ec_mode=a&oidsrc=3&ecsid2=1013388414.1790973385&_tu=ABA&gcl_ctr=1~0~0~0&data=event%3Dgtag.config&category=acrcp_v1_512&em=tv.1&emd=tvd.1&ept=5&ct_cookie_present=false&eoid=CkcKEAjwrP3VBhC6g76lkcPj8FsSMwDruf7ODBibEej8FMvg6KjHpFJqCuBmXLIYUxD2ncmbAVWwVbO5yqHpEjQVU3JEi50CGfD_BwE&crd=CLTesQII8t-xAgit4bECCK_hsQIIobixAgixwbECCLDBsQIIscOxAgiKxbECCMLJsQII1-ixAgi0xrECCIfbsQII08WxAgjrzLECCO3OsQII1c-xAgj02rECCOjusQIIkuuxAgjJ47ECCJfUsQIIyduxAgjN5rECCKbdsQIIsN6xAgiA27ECCM3hsQJKJnRyaWdnZXI9ZXZlbnQtc291cmNlO25hdmlnYXRpb24tc291cmNlWgMKAQFiAwoBAw&cerd=ChCCsL4tleS-Lbnrvi2d6bc4&fsk=ChAI8Kz91QYQkfKYtZzHobA5EiwAcO5V_3y8G1CohXtyZrUahk2zjclRAu8iHXctHnOc424FE36IDl6DjVsZBhoCQ2s&pscrd=IhMIg4it45eclwMVwAZECB3GiQdFOhBodHRwczovL2ZlbG8uYWkvQlhDaEVJOEt6OTFRWVEyb0syclo3YXg3RFNBUkl0QU1Hb3dOSV93NEZZMm5rZjJFdkxsMWw5RDV3NzhSOTNYckw5WHVXazQ3SG8tMWNUVW1DVnVIc2p0dm5fegwICWIICAAQABgAIAA&gcp=3",
+            "reason": "observation_end"
+          },
+          {
+            "url": "https://t.co/1/i/adsct?bci=4&dv=UTC%26en-US%2Cen%26Google%20Inc.%26Linux%20x86_64%26255%261280%26720%265%2624%261280%26720%260%26na&eci=3&event=%7B%7D&event_id=3005c976-009d-4e31-901d-bc9debef6a34&integration=advertiser&p_id=Twitter&p_user_id=0&pl_id=5d6b8760-cbab-4234-b483-04a83c5d2f3e&tw_ch_fvl=Chromium%2F151.0.7922.173%2CNot%3DA%3FBrand%2F99.0.0.0&tw_document_href=https%3A%2F%2Ffelo.ai%2Fsearch%2F04jm6elnSULy2iEQ9-dyd%3Fq%3D%25E6%2597%25A9%25E7%25A8%25B2%25E7%2594%25B0%25E5%25A4%25A7%25E5%25AD%25A6%2B%25E6%2595%2599%25E5%2593%25A1&tw_engaged_ms=13&tw_iframe_status=0&tw_pid_src=1&tw_session_count=1&tw_session_id=1790973387421-605546679&tw_session_start=1&twpid=tw.1790973387421.286399824158516591&txn_id=q1qoc&type=javascript&version=2.4.11",
+            "reason": "observation_end"
+          },
+          {
+            "url": "https://analytics.twitter.com/1/i/adsct?bci=4&dv=UTC%26en-US%2Cen%26Google%20Inc.%26Linux%20x86_64%26255%261280%26720%265%2624%261280%26720%260%26na&eci=3&event=%7B%7D&event_id=3005c976-009d-4e31-901d-bc9debef6a34&integration=advertiser&p_id=Twitter&p_user_id=0&pl_id=5d6b8760-cbab-4234-b483-04a83c5d2f3e&tw_ch_fvl=Chromium%2F151.0.7922.173%2CNot%3DA%3FBrand%2F99.0.0.0&tw_document_href=https%3A%2F%2Ffelo.ai%2Fsearch%2F04jm6elnSULy2iEQ9-dyd%3Fq%3D%25E6%2597%25A9%25E7%25A8%25B2%25E7%2594%25B0%25E5%25A4%25A7%25E5%25AD%25A6%2B%25E6%2595%2599%25E5%2593%25A1&tw_engaged_ms=13&tw_iframe_status=0&tw_pid_src=1&tw_session_count=1&tw_session_id=1790973387421-605546679&tw_session_start=1&twpid=tw.1790973387421.286399824158516591&txn_id=q1qoc&type=javascript&version=2.4.11",
+            "reason": "observation_end"
+          }
+        ],
+        "page_errors": [],
+        "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "robots_outcome": "not_enforced_browser_observation",
+        "robots_record": null,
+        "robots_redirect_trace": [],
+        "robots_probe_policy": {
+          "enabled": false,
+          "applied": false,
+          "reason": null,
+          "scope": "normal browser network; legacy grounding restrictions not enforced"
+        },
+        "observation_limits": [
+          "websocket_handshake_or_frames_not_recorded"
+        ],
+        "final_url": "https://felo.ai/search/04jm6elnSULy2iEQ9-dyd?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6+%E6%95%99%E5%93%A1",
+        "dom_sha256": "3b87ffc2fcf2f067601cb14ea454168d48f0e4153a6982a5bf90e25b0dc8b21d",
+        "dom_truncated": false,
+        "screenshot": "patchright-felo-browser-observation-target-1-62.png",
+        "outcome": "content_observed",
+        "title": "早稲田大学 教員",
+        "visible_text_prefix": "早稲田大学 教員 Felo New Thread Ctrl I LiveDoc More Felo Agent Topic Collections Felo Library Voice Note History 早稲田大学 教員 Login 早稲田大学 教員 早稲田大学 教員 Answer Image Video 0 Source &amp; Thinking → Understanding question Web \"早稲田大学 教員\" image Ask follow-up Pro Checking security This usually takes only a few seconds. Cancel Close",
+        "signals": [],
+        "site_block_reason": null,
+        "reason_certainty": "response evidence only; site policy/logs unavailable",
+        "http_status": 200,
+        "main_record": 153,
+        "resource_policy": "normal browser network; legacy grounding restrictions not enforced",
+        "role": "target",
+        "navigation_method": "goto",
+        "session_sequence": 1,
+        "profile": "browser-observation",
+        "provider_observation": {
+          "hints": [
+            {
+              "provider": "cloudflare",
+              "kind": "technology",
+              "evidence": "cf-ray or Cloudflare server header",
+              "confidence": "high"
+            },
+            {
+              "provider": "turnstile",
+              "kind": "widget_or_library",
+              "evidence": "Turnstile marker",
+              "confidence": "medium"
+            }
+          ],
+          "proprietary_score": null,
+          "scoring_weights": null,
+          "scoring_threshold": null,
+          "limitation": "Visible technology/widget markers do not prove a block or its cause."
+        }
+      }
+    ],
+    "accounting_before": {
+      "requests": 10,
+      "bytes_charged": 3163933
+    },
+    "finished_at": "2026-10-02T20:36:27.931Z",
+    "accounting_after": {
+      "requests": 143,
+      "bytes_charged": 14056721
+    }
+  },
+  {
+    "id": "genspark",
+    "group": "ai-api",
+    "policy": "browser_observation",
+    "started_at": "2026-10-02T20:36:27.931Z",
+    "events": [
+      {
+        "client": "patchright",
+        "target": "genspark",
+        "url": "https://www.genspark.ai/search?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6+%E6%95%99%E5%93%A1",
+        "blocked_requests": [],
+        "page_errors": [],
+        "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "robots_outcome": "not_enforced_browser_observation",
+        "robots_record": null,
+        "robots_redirect_trace": [],
+        "robots_probe_policy": {
+          "enabled": false,
+          "applied": false,
+          "reason": null,
+          "scope": "normal browser network; legacy grounding restrictions not enforced"
+        },
+        "observation_limits": [
+          "websocket_handshake_or_frames_not_recorded"
+        ],
+        "final_url": "https://www.genspark.ai/search?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6+%E6%95%99%E5%93%A1",
+        "dom_sha256": "858afed6558a6be5cbac9aad365a9e4e496927666072139714cd4285680ce131",
+        "dom_truncated": false,
+        "screenshot": "patchright-genspark-browser-observation-target-1-64.png",
+        "outcome": "challenge_observed",
+        "title": "Just a moment...",
+        "visible_text_prefix": "Just a moment... www.genspark.ai Performing security verification This website uses a security service to protect against malicious bots. This page is displayed while the website verifies you are not a bot. Verification successful. Waiting for www.genspark.ai to respond Enable JavaScript and cookies to continue Ray ID: a4467febcc834c71 Performance and Security by Cloudflare Privacy",
+        "signals": [
+          {
+            "name": "human_verification",
+            "evidence": "Just a moment... www.genspark.ai Performing security verification This website uses a security service to protect against malicious bots. This page is displayed while the website v"
+          },
+          {
+            "name": "cf_mitigated",
+            "evidence": "challenge"
+          }
+        ],
+        "site_block_reason": null,
+        "reason_certainty": "response evidence only; site policy/logs unavailable",
+        "http_status": 403,
+        "main_record": 286,
+        "resource_policy": "normal browser network; legacy grounding restrictions not enforced",
+        "role": "target",
+        "navigation_method": "goto",
+        "session_sequence": 1,
+        "profile": "browser-observation",
+        "provider_observation": {
+          "hints": [
+            {
+              "provider": "cloudflare",
+              "kind": "technology",
+              "evidence": "cf-ray or Cloudflare server header",
+              "confidence": "high"
+            },
+            {
+              "provider": "cloudflare",
+              "kind": "challenge",
+              "evidence": "cf-mitigated: challenge",
+              "confidence": "high"
+            },
+            {
+              "provider": "turnstile",
+              "kind": "widget_or_library",
+              "evidence": "Turnstile marker",
+              "confidence": "medium"
+            }
+          ],
+          "proprietary_score": null,
+          "scoring_weights": null,
+          "scoring_threshold": null,
+          "limitation": "Visible technology/widget markers do not prove a block or its cause."
+        }
+      }
+    ],
+    "accounting_before": {
+      "requests": 8,
+      "bytes_charged": 4444751
+    },
+    "finished_at": "2026-10-02T20:36:37.445Z",
+    "accounting_after": {
+      "requests": 19,
+      "bytes_charged": 6031651
+    }
+  },
+  {
+    "id": "you",
+    "group": "ai-api",
+    "policy": "browser_observation",
+    "started_at": "2026-10-02T20:36:37.449Z",
+    "events": [
+      {
+        "client": "patchright",
+        "target": "you",
+        "url": "https://you.com/search?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6+%E6%95%99%E5%93%A1",
+        "blocked_requests": [
+          {
+            "url": "https://www.google.com/pagead/1p-conversion/10844473783/?random=1083463666&fst=1790973404120&cv=10&fmt=8&bg=ffffff&guid=ON&u_w=1280&u_h=720&gtm=45h91e6a10h2v9238598613z89165803299z99165011954za20kzb9165803299zd9165803299xf3xg4&auid=1898875938.1790973402&rcb=15&us_privacy=1YN-&dma=0&npa=0&gcd=13l3l3l3l1l1&uaa=x86&uab=64&uafvl=Chromium%3B151.0.7922.173%7CNot%253DA%253FBrand%3B99.0.0.0&uamb=0&uam=&uap=Linux&uapv=&uaw=0&pscdl=noapi&url=https%3A%2F%2Fyou.com%2Fsignin%3FredirectUrl%3D%252Fsearch%253Fq%253D%2525E6%252597%2525A9%2525E7%2525A8%2525B2%2525E7%252594%2525B0%2525E5%2525A4%2525A7%2525E5%2525AD%2525A6%252B%2525E6%252595%252599%2525E5%252593%2525A1&tiba=You.com%20%7C%20The%20Leading%20Web%20Search%20APIs%20for%20AI&data=event%3Dpage_view%3Bclient_referrer%3D&ec_mode=c&emd=tvd.1&eme=tv.1~&_es=12&mt=1&value=0&uip=90.96.188.0&tag_exp=115616986~115938465~115938469~118897920~118897930~120213116~120385423~120469145~120469153~121280971&_tu=BA&gap.sstd=2&gap.gtb=2&gtb=2&s3p=1&_is_sw=f15s0t11&ct_cookie_present=false&crd=CLTesQII8t-xAgit4bECCK_hsQIIobixAgixwbECCLDBsQIIscOxAgiKxbECCMLJsQII1-ixAgi0xrECCIfbsQII08WxAgjrzLECCO3OsQII1c-xAgj02rECCOjusQIIkuuxAgjJ47ECCJfUsQIIyduxAgjN5rECCKbdsQIIsN6xAgiA27ECCM3hsQJKK3RyaWdnZXI7bmF2aWdhdGlvbi1zb3VyY2UsIG5vdC1ldmVudC1zb3VyY2VaAwoBAWIDCgED&cerd=CgyU5L4tueu-LZ3ptzg&eitems=ChAI8Kz91QYQpqjuh6jmg815Eh0A387fhvDqvxOSuMwE72aWhtVgZQ2zf6fmepazng&fsk=ChAI8Kz91QYQkfKYtZzHobA5EiwAcO5V_5OLzoflabty6Hh86xjYc8WS_klYxTGnfVKfQxiQqaK8cI47BYjS1BoCaNk&pscrd=IhMItvnh7JeclwMVQhy8AR0JWgbIOhBodHRwczovL3lvdS5jb20vQlhDaEVJOEt6OTFRWVEyb0syclo3YXg3RFNBUkl0QU1Hb3dOS19udjY2TVVNRFdGQ1BWMGNfMXM0U2hHQzUyd0s1SjhDUW1IWWJIVXQtZ1VfUDdiMlF3Q1NfegwICWIICAAQABgAIAA&gcp=3",
+            "reason": "observation_end"
+          }
+        ],
+        "page_errors": [],
+        "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "robots_outcome": "not_enforced_browser_observation",
+        "robots_record": null,
+        "robots_redirect_trace": [],
+        "robots_probe_policy": {
+          "enabled": false,
+          "applied": false,
+          "reason": null,
+          "scope": "normal browser network; legacy grounding restrictions not enforced"
+        },
+        "observation_limits": [
+          "websocket_handshake_or_frames_not_recorded"
+        ],
+        "final_url": "https://you.com/signin?redirectUrl=%2Fsearch%3Fq%3D%25E6%2597%25A9%25E7%25A8%25B2%25E7%2594%25B0%25E5%25A4%25A7%25E5%25AD%25A6%2B%25E6%2595%2599%25E5%2593%25A1",
+        "dom_sha256": "96f79c7f56911367d90ef79e5c6126ae53e24249016fa9084b0f508bb110e80d",
+        "dom_truncated": false,
+        "screenshot": "patchright-you-browser-observation-target-1-66.png",
+        "outcome": "content_observed",
+        "title": "You.com | The Leading Web Search APIs for AI",
+        "visible_text_prefix": "You.com | The Leading Web Search APIs for AI You.com | The Leading Web Search APIs for AI Opens in a new window Opens an external website Opens an external website in a new window Close this consent banner This website utilizes technologies such as cookies to enable essential site functionality, as well as for analytics and personalization. To learn more, view the following link: Privacy Policy Terms and Conditions Storage Preferences Logo for YOU.com When you create a new account Start with $10 . Get $90 more when you verify. Every new organization includes $10 in API credits to get started. Verify with GitHub or a work email to get an additional $90 . $100 covers 20,000 Web Search API calls. Sign up or login By using you.com, you agree to our Terms &amp; Privacy Policy",
+        "signals": [],
+        "site_block_reason": null,
+        "reason_certainty": "response evidence only; site policy/logs unavailable",
+        "http_status": 200,
+        "main_record": 297,
+        "resource_policy": "normal browser network; legacy grounding restrictions not enforced",
+        "role": "target",
+        "navigation_method": "goto",
+        "session_sequence": 1,
+        "profile": "browser-observation",
+        "provider_observation": {
+          "hints": [
+            {
+              "provider": "cloudflare",
+              "kind": "technology",
+              "evidence": "cf-ray or Cloudflare server header",
+              "confidence": "high"
+            }
+          ],
+          "proprietary_score": null,
+          "scoring_weights": null,
+          "scoring_threshold": null,
+          "limitation": "Visible technology/widget markers do not prove a block or its cause."
+        }
+      }
+    ],
+    "accounting_before": {
+      "requests": 11,
+      "bytes_charged": 8388608
+    },
+    "finished_at": "2026-10-02T20:36:48.094Z",
+    "accounting_after": {
+      "requests": 155,
+      "bytes_charged": 13786503
+    }
+  },
+  {
+    "id": "phind",
+    "group": "ai-api",
+    "policy": "browser_observation",
+    "started_at": "2026-10-02T20:36:48.094Z",
+    "events": [
+      {
+        "client": "patchright",
+        "target": "phind",
+        "url": "https://www.phind.com/search?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6+%E6%95%99%E5%93%A1",
+        "blocked_requests": [],
+        "page_errors": [],
+        "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "robots_outcome": "not_enforced_browser_observation",
+        "robots_record": null,
+        "robots_redirect_trace": [],
+        "robots_probe_policy": {
+          "enabled": false,
+          "applied": false,
+          "reason": null,
+          "scope": "normal browser network; legacy grounding restrictions not enforced"
+        },
+        "observation_limits": [
+          "websocket_handshake_or_frames_not_recorded"
+        ],
+        "final_url": "https://www.phind.com/search?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6+%E6%95%99%E5%93%A1",
+        "dom_sha256": "69b1add05da7a7416aea1ab8a5e36ec92aef3ce74cc942e764ae65d00f0cb931",
+        "dom_truncated": false,
+        "screenshot": "patchright-phind-browser-observation-target-1-68.png",
+        "outcome": "challenge_observed",
+        "title": "Just a moment...",
+        "visible_text_prefix": "Just a moment... www.phind.com Performing security verification This website uses a security service to protect against malicious bots. This page is displayed while the website verifies you are not a bot. Verification successful. Waiting for www.phind.com to respond Enable JavaScript and cookies to continue Ray ID: a44680646df58462 Performance and Security by Cloudflare Privacy",
+        "signals": [
+          {
+            "name": "human_verification",
+            "evidence": "Just a moment... www.phind.com Performing security verification This website uses a security service to protect against malicious bots. This page is displayed while the website ver"
+          },
+          {
+            "name": "cf_mitigated",
+            "evidence": "challenge"
+          }
+        ],
+        "site_block_reason": null,
+        "reason_certainty": "response evidence only; site policy/logs unavailable",
+        "http_status": 403,
+        "main_record": 441,
+        "resource_policy": "normal browser network; legacy grounding restrictions not enforced",
+        "role": "target",
+        "navigation_method": "goto",
+        "session_sequence": 1,
+        "profile": "browser-observation",
+        "provider_observation": {
+          "hints": [
+            {
+              "provider": "cloudflare",
+              "kind": "technology",
+              "evidence": "cf-ray or Cloudflare server header",
+              "confidence": "high"
+            },
+            {
+              "provider": "cloudflare",
+              "kind": "challenge",
+              "evidence": "cf-mitigated: challenge",
+              "confidence": "high"
+            },
+            {
+              "provider": "turnstile",
+              "kind": "widget_or_library",
+              "evidence": "Turnstile marker",
+              "confidence": "medium"
+            }
+          ],
+          "proprietary_score": null,
+          "scoring_weights": null,
+          "scoring_threshold": null,
+          "limitation": "Visible technology/widget markers do not prove a block or its cause."
+        }
+      }
+    ],
+    "accounting_before": {
+      "requests": 10,
+      "bytes_charged": 2619431
+    },
+    "finished_at": "2026-10-02T20:36:56.398Z",
+    "accounting_after": {
+      "requests": 21,
+      "bytes_charged": 4239909
+    }
+  },
+  {
+    "id": "bagoodex",
+    "group": "ai-api",
+    "policy": "browser_observation",
+    "started_at": "2026-10-02T20:36:56.398Z",
+    "events": [
+      {
+        "client": "patchright",
+        "target": "bagoodex",
+        "url": "https://bagoodex.io/search?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6+%E6%95%99%E5%93%A1",
+        "blocked_requests": [],
+        "page_errors": [],
+        "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "robots_outcome": "not_enforced_browser_observation",
+        "robots_record": null,
+        "robots_redirect_trace": [],
+        "robots_probe_policy": {
+          "enabled": false,
+          "applied": false,
+          "reason": null,
+          "scope": "normal browser network; legacy grounding restrictions not enforced"
+        },
+        "observation_limits": [
+          "websocket_handshake_or_frames_not_recorded"
+        ],
+        "final_url": "https://bagoodex.io/search?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6+%E6%95%99%E5%93%A1",
+        "dom_sha256": "0880267cfdeedc9ccffa19c6b08e97028f6992b3e06dc0bd13eb08c06f054ae9",
+        "dom_truncated": false,
+        "screenshot": "patchright-bagoodex-browser-observation-target-1-70.png",
+        "outcome": "content_observed",
+        "title": "",
+        "visible_text_prefix": "We’ve Leveled Up! A new domain, a refreshed website, and more features. Visit us today to see what’s new. Move to Sigma AI",
+        "signals": [],
+        "site_block_reason": null,
+        "reason_certainty": "response evidence only; site policy/logs unavailable",
+        "http_status": 200,
+        "main_record": 451,
+        "resource_policy": "normal browser network; legacy grounding restrictions not enforced",
+        "role": "target",
+        "navigation_method": "goto",
+        "session_sequence": 1,
+        "profile": "browser-observation",
+        "provider_observation": {
+          "hints": [
+            {
+              "provider": "cloudflare",
+              "kind": "technology",
+              "evidence": "cf-ray or Cloudflare server header",
+              "confidence": "high"
+            }
+          ],
+          "proprietary_score": null,
+          "scoring_weights": null,
+          "scoring_threshold": null,
+          "limitation": "Visible technology/widget markers do not prove a block or its cause."
+        }
+      }
+    ],
+    "accounting_before": {
+      "requests": 11,
+      "bytes_charged": 2727984
+    },
+    "finished_at": "2026-10-02T20:37:04.842Z",
+    "accounting_after": {
+      "requests": 40,
+      "bytes_charged": 4085990
+    }
+  }
+]

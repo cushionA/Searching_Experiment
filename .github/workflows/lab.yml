@@ -23,6 +23,7 @@ jobs:
           python -B scripts/package_cloud.py --output "$RUNNER_TEMP/lab-source.zip"
           python -m zipfile -e "$RUNNER_TEMP/lab-source.zip" "$RUNNER_TEMP/lab-source"
           cd "$RUNNER_TEMP/lab-source"
+          npm install --prefix .deps/bot-diagnostics --ignore-scripts --no-audit --no-fund robots-parser@3.0.1
           python -B -m unittest discover -s tests -p 'test_lab*.py'
           node experiments/bot-diagnostics/framework.mjs plan --all-options
       - run: docker compose config --quiet

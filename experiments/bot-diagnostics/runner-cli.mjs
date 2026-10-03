@@ -34,10 +34,11 @@ export async function main() {
   const lock = fs.openSync(lockPath, 'wx');
   fs.writeSync(lock, JSON.stringify({ pid: process.pid, started_at: new Date().toISOString() }));
   try {
-  const evidence = new Evidence(directory, mode === 'resume-sites');
+  const evidence = new Evidence(directory, mode === 'resume-sites', {policy:'browser_observation',
+    authorization:'Bot diagnostics CLI uses normal browser observation; grounding constraints are scoped to grounding workflows.'});
   const invocation = { started_at: new Date().toISOString(), mode, clients: selectedClients(), targets: selectedTargets().map(x => x.name),
     runner_sha256: evidence.blob(fs.readFileSync(path.join(here, 'runner.mjs'))),
-    sources: snapshotSources(evidence) };
+    sources: snapshotSources(evidence), execution_policy:evidence.policy };
   const historyPath = path.join(directory, 'invocations.json');
   const history = fs.existsSync(historyPath) ? JSON.parse(fs.readFileSync(historyPath)) : [];
   evidence.save('invocations.json', [...history, invocation]);
@@ -49,7 +50,7 @@ export async function main() {
     package_lock_sha256: sha(fs.readFileSync(path.join(deps, 'package-lock.json'))),
     proxy: { protocol: new URL(proxy).protocol, host: new URL(proxy).hostname, port: new URL(proxy).port },
     runs_per_cell: 1, tls_fingerprint_at_origin: 'not measured',
-    limits_note: 'All HTTP requests admitted by the runner are counted, including robots and errors. Local browser fixtures are offline tests. Byte caps cover retained/charged bodies; Chromium can receive more before the response is truncated for storage.' });
+    limits_note: 'Browser observation records requests and stored response bodies without legacy request/byte caps or robots gates. Local browser fixtures are offline tests.' });
   let fixture;
   try {
     if (!['sites', 'resume-sites'].includes(mode)) {

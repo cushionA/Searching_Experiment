@@ -1,7 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {injectURL,prepare,classifyGate,runScenario,parseCLI,latestOutcomes} from './framework.mjs';
+import os from 'node:os';
+import path from 'node:path';
+import {injectURL,prepare,classifyGate,runScenario,parseCLI,latestOutcomes,execute} from './framework.mjs';
+import {openBrowser} from './runner.mjs';
 import {validateSteps,performSteps} from './operations.mjs';
 import {ToolAdapter} from './adapters.mjs';
 import {providerHints} from './providers.mjs';
@@ -52,6 +55,52 @@ test('plan flags do not disappear into a positional directory and invalid option
   assert.equal(parseCLI(['run','--selectors','output']).directory,'output');
   assert.throws(()=>parseCLI(['run']),/directory_required/);
   assert.throws(()=>parseCLI(['plan','--unknown']),/Usage/);
+});
+test('bot diagnostics defaults to normal observation and grounding limits require an explicit mode',()=>{
+  const manifest=JSON.parse(fs.readFileSync(new URL('./sites.json',import.meta.url)));
+  assert.equal(prepare(manifest).options.executionPolicy,'browser_observation');
+  assert.equal(prepare(manifest).options.headful,true);
+  assert.equal(prepare(manifest,{executionPolicy:'grounding'}).options.headful,false);
+  manifest.limits.requests_per_tool_site=1;
+  assert.equal(prepare(manifest).options.executionPolicy,'browser_observation');
+  assert.throws(()=>prepare(manifest,{executionPolicy:'grounding'}),/limits_must_match_executor/);
+  assert.ok(parseCLI(['plan','--grounding']).flags.includes('--grounding'));
+});
+test('headful flag reaches the browser adapter and requires a display without launching a browser',async()=>{
+  const manifest=JSON.parse(fs.readFileSync(new URL('./sites.json',import.meta.url)));
+  const planned=prepare(manifest,{headful:true});
+  assert.equal(planned.options.headful,true);
+  assert.ok(parseCLI(['run','output','--headful']).flags.includes('--headful'));
+  const originalDisplay=process.env.DISPLAY,originalWayland=process.env.WAYLAND_DISPLAY;
+  delete process.env.DISPLAY;delete process.env.WAYLAND_DISPLAY;
+  try {await assert.rejects(openBrowser('patchright',{headful:true}),/headful_requires_display/);}
+  finally {
+    if(originalDisplay!==undefined)process.env.DISPLAY=originalDisplay;
+    if(originalWayland!==undefined)process.env.WAYLAND_DISPLAY=originalWayland;
+  }
+  let browserOptions,setup;
+  const adapter=new ToolAdapter({tool:'patchright',site:fixtureSite,evidence:{result:value=>setup=value},options:{headful:true},
+    browserOpener:async(_tool,options)=>{browserOptions=options;return {ua:'fixture',runtime:{headless:false,display:':fixture',viewport:{width:1280,height:720}},close:async()=>{}};},
+    clientOpener:async()=>({close:async()=>{}})});
+  await adapter.open();
+  assert.equal(browserOptions.headful,true);
+  assert.equal(setup.headless,false);assert.equal(setup.display,':fixture');
+  assert.deepEqual(setup.viewport,{width:1280,height:720});
+  await adapter.close();
+});
+test('headful-unsupported browser arms are recorded without a runtime failure or launch',async()=>{
+  const root=fs.mkdtempSync(path.join(os.tmpdir(),'headful-unsupported-'));
+  try {
+    const manifest=prepare({schema:1,tools:['rebrowser-lightpanda'],sites:[
+      {id:'fixture',origins:['http://localhost'],links:{home:'http://localhost/',targets:[]}}]}, {fixture:true});
+    const result=await execute({manifest,directory:path.join(root,'run'),fixture:true});
+    assert.equal(result.verification.ok,true);
+    assert.equal(result.verification.records,0);
+    assert.equal(result.has_runtime_failures,false);
+    assert.equal(result.outcomes[0].state,'unsupported_capability');
+    const rows=JSON.parse(fs.readFileSync(path.join(root,'run','pipeline-results.json')));
+    assert.equal(rows[0].capability,'headful');
+  } finally {fs.rmSync(root,{recursive:true,force:true});}
 });
 test('Lightpanda profiles keep one tool budget and the selected release for humanlike input',()=>{
   const manifest=JSON.parse(fs.readFileSync(new URL('./lightpanda-sites.json',import.meta.url)));

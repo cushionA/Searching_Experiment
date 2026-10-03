@@ -1,0 +1,77 @@
+{
+  "authorization": "ユーザー「取得失敗はやって」。直前の説明のrobots.txt取得失敗・リダイレクト6対象を再確認する追加指示。",
+  "query": "早稲田大学 教員",
+  "headful": true,
+  "budget_policy": "Existing 25 requests / 8MiB per site key, retain all prior requests; no reset.",
+  "robots_policy": "Follow only known redirect origins. Explicit Disallow remains a stop. On unavailable/invalid HTML robots only, enable recorded bounded observation probe.",
+  "sites": [
+    {
+      "id": "goo",
+      "group": "meta",
+      "redirect_origins": [],
+      "home": "https://search.goo.ne.jp/",
+      "query_url": "https://search.goo.ne.jp/web.jsp?MT=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6+%E6%95%99%E5%93%A1",
+      "source_site_sha256": "0f069a33b40907a58d5f3aef69930ead2b8384cb542a7202e04fe1d6ca547bd6",
+      "query_route_basis": "Original proposed/unverified route; one query."
+    },
+    {
+      "id": "onesearch",
+      "group": "meta",
+      "redirect_origins": [
+        "https://search.yahoo.com"
+      ],
+      "canonical_home": "https://search.yahoo.com/?fr2=p:onesearch,mkt:us",
+      "home": "https://www.onesearch.com/",
+      "query_url": "https://search.yahoo.com/search?p=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6+%E6%95%99%E5%93%A1&fr2=p%3Aonesearch%2Cmkt%3Aus",
+      "source_site_sha256": "f09fc925cf509407afaa270666ea73d32346b7aa9b34e9863f61b34bd119f242",
+      "scope_basis": "Destination origin and home observed in original robots Location; retry follows that service redirect using the same source site budget.",
+      "query_route_basis": "Destination service search route (Yahoo p / Kagi q), one proposed query; source redirect does not prove query forwarding."
+    },
+    {
+      "id": "peekier",
+      "group": "meta",
+      "redirect_origins": [
+        "https://kagi.com"
+      ],
+      "canonical_home": "https://kagi.com/",
+      "home": "https://peekier.com/",
+      "query_url": "https://kagi.com/search?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6+%E6%95%99%E5%93%A1",
+      "source_site_sha256": "2af78c7c5eea6cf7e4ef9cf718cdb7cdd020eb63eba830a1f7ec575b0531ef24",
+      "scope_basis": "Destination origin and home observed in original robots Location; retry follows that service redirect using the same source site budget.",
+      "query_route_basis": "Destination service search route (Yahoo p / Kagi q), one proposed query; source redirect does not prove query forwarding."
+    },
+    {
+      "id": "phind",
+      "group": "ai-api",
+      "redirect_origins": [],
+      "home": "https://www.phind.com/",
+      "query_url": "https://www.phind.com/search?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6+%E6%95%99%E5%93%A1",
+      "source_site_sha256": "ec386914ef19a5729558d8348525cdba6a0f6bcfe020339b5e4667a87514943c",
+      "query_route_basis": "Original proposed/unverified route; one query."
+    },
+    {
+      "id": "firecrawl",
+      "group": "ai-api",
+      "redirect_origins": [
+        "https://www.firecrawl.dev"
+      ],
+      "home": "https://www.firecrawl.dev/",
+      "query_url": "",
+      "source_site_sha256": "0175e0075709a04b8216a242facabf350601cec6c77d43347e18ce33b0032a52",
+      "scope_basis": "Destination origin and home observed in original robots Location; retry follows that service redirect using the same source site budget.",
+      "query_route_basis": "API service with no configured public search route; no authenticated or paid API call."
+    },
+    {
+      "id": "tavily",
+      "group": "ai-api",
+      "redirect_origins": [
+        "https://www.tavily.com"
+      ],
+      "home": "https://www.tavily.com/",
+      "query_url": "",
+      "source_site_sha256": "5019355d727582ff3e896a7f60cacd5817921bae762f93d77153b1517008b9e8",
+      "scope_basis": "Destination origin and home observed in original robots Location; retry follows that service redirect using the same source site budget.",
+      "query_route_basis": "API service with no configured public search route; no authenticated or paid API call."
+    }
+  ]
+}
