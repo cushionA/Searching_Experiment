@@ -1,0 +1,1164 @@
+{
+  "schema": "local-search-snapshot-v1",
+  "query": "東京都大田区 池上本門寺 松濤園 公開日",
+  "saved_at_utc": "2026-10-03T18:23:01.330991+00:00",
+  "tools": [
+    "wreq-js",
+    "impit",
+    "patchright",
+    "rebrowser-lightpanda",
+    "playwright-baseline",
+    "obscura",
+    "obscura-stealth",
+    "obscura-no-render",
+    "obscura-patched",
+    "camoufox"
+  ],
+  "execution_conditions": {
+    "query": "東京都大田区 池上本門寺 松濤園 公開日",
+    "tools": [
+      "wreq-js",
+      "impit",
+      "patchright",
+      "rebrowser-lightpanda",
+      "playwright-baseline",
+      "obscura",
+      "obscura-stealth",
+      "obscura-no-render",
+      "obscura-patched",
+      "camoufox"
+    ],
+    "headful": "patchright, playwright-baseline, camoufox; other engines use their supported headless mode",
+    "execution_policy": "browser_observation",
+    "network": "GCP Tinyproxy through localhost SSH forwarding",
+    "observation_wait_ms": 6000,
+    "legacy_limits_enforced": false,
+    "robots_gate_enforced": false,
+    "challenge_actions": {},
+    "retries": {
+      "policy": "one fresh per-cell retry for execution failures without recorded blocking",
+      "exclude": [
+        "HTTP 403",
+        "HTTP 429",
+        "Challenge",
+        "other HTTP 4xx route errors"
+      ],
+      "user_instruction": "実行エラーは再実行しない？ ブロッキングじゃないなら",
+      "retained_completed_cells_from_previous_ip": false,
+      "cell_wallclock_seconds": 360,
+      "criteria_source": "provenance/retry_search_errors.py",
+      "planned_cells": 90,
+      "excluded_cells": 410,
+      "criteria": {
+        "baseline_required": "同じquery・期待出口IPで全10方式×固定50対象のbaselineとegressが完了し、verification.okがtrue。",
+        "eligible": "最新attemptがcommunication_failed／adapter_setup_error、実close_errorあり、または明確なChallengeのないHTTP 5xx。",
+        "exclude": "最新attemptのhome/targetにChallenge／access_denied／rate_limited、対応main documentの実応答403／429、保存UIの200Challengeがあれば除外。404等の4xx routeエラーも除外。古いblockだけで最新非block errorを除外しない。",
+        "execution": "既存tool/siteのmanifest・query・profile・待機・policyをコピーし、fresh browser/cookie/stateでhome→targetを1回。共通framework、with_proxy、search_rolesを使用。最大3 process並行。",
+        "preservation": "baselineを更新せずretries/{tool}/{site}/runへ新規保存。セルが既に存在すれば再実行しない。失敗も最新overlayへ採用し、元と再試行双方の証拠を残す。",
+        "wallclock": "1-cell全体は360秒上限。with_proxy launcherへSIGINTを送り、既存cleanupと当該launcherのNode/browser子孫だけを停止。変更前証拠を保存し、inflightを中断エラーへ確定して共通frameworkでオフラインverify。再取得はしない。"
+      }
+    },
+    "adopted_historical_observations": {},
+    "execution_host": "Local Windows WSL Ubuntu 26.04 x86_64",
+    "query_routes": 40,
+    "homepage_only_services": [
+      "yacy",
+      "searxng",
+      "brave-api",
+      "serpapi",
+      "dataforseo",
+      "firecrawl",
+      "exa",
+      "tavily",
+      "base",
+      "lenso"
+    ],
+    "maximum_parallel_tool_processes": 3,
+    "include_google": true,
+    "source_commit": "c14623256d83db8044ae706728afaf491f60b0d1",
+    "source_manifest_sha256": "9fac3a751b1e4a0b7cdec1facad387324df806c90a66344dd7e7da9a2aa60888",
+    "catalog_sha256": "fc3108c235898b8feb005895699655d0ccf4f3f8d9e04e00b9aa246609e04af3",
+    "official_result_count": null,
+    "notes": "HTTP 200 alone is not search success. Search route-less services receive homepage-only observations. Natural UA and engine modes differ; the shared query, scenario, proxy, and result interpretation are controlled.",
+    "expected_egress_ip": "136.67.75.1",
+    "observation_wallclock_timeout_ms": 120000,
+    "timeout_cleanup_grace_ms": 10000,
+    "timeout_cleanup": "Memoized adapter.close; force-stop descendants of this dedicated framework Node only if cleanup exceeds the grace period.",
+    "evidence_storage": "Persistent ext4 application data in WSL; hash-verified Windows delivery and export before shutdown.",
+    "previous_phase": {
+      "path": "/mnt/c/Users/tatuk/Documents/Codex/2026-10-03/new-chat-2/outputs/gcp-search-20261003-local",
+      "egress_ip": "35.185.240.29",
+      "observations_adopted_in_current_phase": false
+    },
+    "evidence_loss": {
+      "root": "/tmp/gcp-search-20261003-local",
+      "cause": "/tmp was tmpfs and was cleared when WSL stopped after the SSH session ended.",
+      "retained_evidence": "/mnt/c/Users/tatuk/Documents/Codex/2026-10-03/new-chat-2/outputs/gcp-search-20261003-local"
+    },
+    "wallclock_guard": "120-second observation timer, one bounded adapter cleanup, 10-second grace before stopping owned browser children.",
+    "delivery_path": "C:/Users/tatuk/Documents/Codex/2026-10-03/new-chat-2/outputs/gcp-search-20261004-local-retry-complete",
+    "source_path_mapping": {
+      "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip": "C:/Users/tatuk/Documents/Codex/2026-10-03/new-chat-2/outputs/gcp-search-20261004-local-retry-complete"
+    },
+    "deadline_history": "All observations in this fresh phase use the 120-second observation timer and 10-second bounded cleanup grace.",
+    "final_summary": "summary-final",
+    "report_repair": {
+      "reason": "Failed screenshot capture recorded an intended PNG path, but no file was saved. Only saved local evidence is linked in the final report.",
+      "old_summary": "summary",
+      "final_summary": "summary-final",
+      "classification_and_candidates_unchanged": true,
+      "raw_evidence_unchanged": true,
+      "network_rerun": false,
+      "fixture": {
+        "existing_cases": 26,
+        "resume_checks": 10,
+        "screenshot_checks": 4,
+        "passed": true
+      }
+    }
+  },
+  "catalog": {
+    "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/targets.json",
+    "sha256": "fc3108c235898b8feb005895699655d0ccf4f3f8d9e04e00b9aa246609e04af3",
+    "bytes": 35470
+  },
+  "manifest": {
+    "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/manifest.json",
+    "sha256": "08f693926f5467b721ebfca4e94fca44799b0b2e73548dfe7a737810f74f9aa2",
+    "bytes": 34833
+  },
+  "run_sources": {
+    "results.json": {
+      "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/runs/obscura-stealth/results.json",
+      "sha256": "3cdf8d77ee9f1fe5f3400aa7b5140f557330abf5f42db7d68dfeeaf8e574639b",
+      "bytes": 255045
+    },
+    "pipeline-results.json": {
+      "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/runs/obscura-stealth/pipeline-results.json",
+      "sha256": "ba2694e24a6b505a2e8e464607092d82d9c3304db4970ebc9318349b74d9b0a4",
+      "bytes": 231275
+    },
+    "ledger.json": {
+      "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/runs/obscura-stealth/ledger.json",
+      "sha256": "e56dc3c5921f341619addb19041c1592b8c1ea8d53546b14a1a396d4f8a92bfc",
+      "bytes": 5867561
+    }
+  },
+  "retry_root": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries",
+  "retry_sources": {
+    "mwmbl": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/mwmbl/run/results.json",
+        "sha256": "081ab260b9054ea8f2880f9f3ae7b1279271a94792dcc0da514eecfbd3cacc26",
+        "bytes": 5578
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/mwmbl/run/pipeline-results.json",
+        "sha256": "6525f3901cb8f9e5a4031e57754560903949113a6100996dd47e584fc354842f",
+        "bytes": 5273
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/mwmbl/run/ledger.json",
+        "sha256": "8a3739a228dcd8622d7f85b8cb16c3486d330a8d2d00e2acdd1979f17236b23e",
+        "bytes": 8022
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/mwmbl/retry-plan.json",
+        "sha256": "ab5c6fe53be05f7d018242ed9131238a3a3a6c878094b52f0d67c361e03e88b2",
+        "bytes": 8560
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/mwmbl/retry-manifest.json",
+        "sha256": "cee0cf561e4046804e703caf7ae44503a4a1cefea239003a8f1321cea500fd4d",
+        "bytes": 1741
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/mwmbl/retry-status.json",
+        "sha256": "a88a0d9959e4e81595aa8daa39061b78f33026af903b919ac66cc60a2a9880f0",
+        "bytes": 1228
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/mwmbl/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/mwmbl/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "baidu": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/baidu/run/results.json",
+        "sha256": "f4376f9c6fee27f317bfe7b4379810be3ec8cd36b15b4756f2a6954fd0eac95f",
+        "bytes": 7649
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/baidu/run/pipeline-results.json",
+        "sha256": "010dc4a148ff5b585d2bd788bdbef9a5bf1e7f564119c21bec98061ea7d18d56",
+        "bytes": 7302
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/baidu/run/ledger.json",
+        "sha256": "2f08cb4d2e16da00c63e88daf00f9fc8c76c31772806ab1056237d175f0783a1",
+        "bytes": 117287
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/baidu/retry-plan.json",
+        "sha256": "c2e7b9550cc59aad169bdfe138e22b443086be111770a01b6b8ca87ef8ca4b7a",
+        "bytes": 9246
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/baidu/retry-manifest.json",
+        "sha256": "7ad1420d4e1f85dc1712261897c3b92fb19e5b690936451c362be8601ea15f4c",
+        "bytes": 1756
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/baidu/retry-status.json",
+        "sha256": "abdd767d2330e9691ece5c869cbc8205a684461989ea878fa249e8dc2677f844",
+        "bytes": 1230
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/baidu/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/baidu/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "naver": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/naver/run/results.json",
+        "sha256": "4714be49465c2aefe34a9dba8530485bf5b12b11ab320b0d9f24ad93af1e4359",
+        "bytes": 2747
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/naver/run/pipeline-results.json",
+        "sha256": "1972d3933f0e8be1210fc5a6d61de6baee0501dca85e2ed9d25bd8a881a7b110",
+        "bytes": 2048
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/naver/run/ledger.json",
+        "sha256": "97ff3977dbb970fdfd81613596c18a87d50eec5d20921ce357a17cdabd937ac4",
+        "bytes": 84359
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/naver/retry-plan.json",
+        "sha256": "2c0307ecdbcaf61f7a3ce8f77ca128f0af911ad8376a3c03299bd512c2a38f2b",
+        "bytes": 10126
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/naver/retry-manifest.json",
+        "sha256": "3f63db83ad6959b463cf5e9832d14b65abc440ba3493ae97751c833fa35d8a96",
+        "bytes": 1779
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/naver/retry-status.json",
+        "sha256": "5f60faccd8e35238c08eeb47ed4533447389f8c23522e8de8c711123cd948a7b",
+        "bytes": 1230
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/naver/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/naver/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "duckduckgo": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/duckduckgo/run/results.json",
+        "sha256": "17d25cf36bc0c657f12f586e5f9d6dd3bd7f647d0be40e6e0de4ae43ae29770e",
+        "bytes": 5353
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/duckduckgo/run/pipeline-results.json",
+        "sha256": "55530e334547247e82fa1b7a1ff5b7ad2682c69fc82a291171de5e2cf66ca240",
+        "bytes": 4958
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/duckduckgo/run/ledger.json",
+        "sha256": "c49432d289adbd923336fd75722900d03cafd6928850eb86d821078851693a17",
+        "bytes": 1110379
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/duckduckgo/retry-plan.json",
+        "sha256": "65b63e658525b1662d7526f737c59b3c3a73b6d0726893b148914dad46091844",
+        "bytes": 8567
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/duckduckgo/retry-manifest.json",
+        "sha256": "331a926b428c7ec28972dfac0d9ede33fcbdf33b6101b1f55bf4544354254cdf",
+        "bytes": 1766
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/duckduckgo/retry-status.json",
+        "sha256": "2aa46c04b3cc963ae60a6a3650ec668b945602d5e11518dd7545578a9c667de2",
+        "bytes": 1245
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/duckduckgo/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/duckduckgo/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "swisscows": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/swisscows/run/results.json",
+        "sha256": "71e4a5793bff12eeaf6739171bf13c9f7593bd467d297c66156f896b8aeb67e9",
+        "bytes": 2758
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/swisscows/run/pipeline-results.json",
+        "sha256": "f0caa9b635de23000d96740a13f80ca00bf8358675eab1b92734274b3c353aaa",
+        "bytes": 2059
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/swisscows/run/ledger.json",
+        "sha256": "d92e5a2da173f1ab1fa95fcf23da598e32935c04646aa156f0f9d856fa45fd13",
+        "bytes": 80573
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/swisscows/retry-plan.json",
+        "sha256": "cadf5e562f0e8602e9b6ba01e4656fc89d7415541c474e003ca23d39c2ea3fb2",
+        "bytes": 9340
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/swisscows/retry-manifest.json",
+        "sha256": "256d65d6a243ce62a62f10aca3a842abe6b3da1d12a47cd0cda13547ca34f997",
+        "bytes": 1768
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/swisscows/retry-status.json",
+        "sha256": "65760aa96beb130ce3f87bea4fb5aedc8c28fd4c32630b4ae836ea5fe24abb05",
+        "bytes": 1242
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/swisscows/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/swisscows/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "metager": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/metager/run/results.json",
+        "sha256": "fabb83d74780d7461fa6aea5c6fbf9304d2e42188736b62c7bc60e28980ba1bf",
+        "bytes": 6439
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/metager/run/pipeline-results.json",
+        "sha256": "d1b47204908669017bd1a696d21ee6f0cc8b07a1d6f174746b8e04a827391cf9",
+        "bytes": 6092
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/metager/run/ledger.json",
+        "sha256": "924e9b35dbfe88a723e339b0743cbd07bdb0ea319ff5213a79f9ddba9ebe5a88",
+        "bytes": 210489
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/metager/retry-plan.json",
+        "sha256": "979292237109aa2173ae13774a8f78fe6cbbe3e2108baba18909617b762fc3e9",
+        "bytes": 9480
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/metager/retry-manifest.json",
+        "sha256": "b2345057427d55c1788d55d75504d344addf6ed8204d8d19262ab2621615f572",
+        "bytes": 1778
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/metager/retry-status.json",
+        "sha256": "1ce30b73fe5f03c624f6a039e7dbd6fb6ade8e6149262742d2457eff05864972",
+        "bytes": 1236
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/metager/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/metager/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "youcare": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/youcare/run/results.json",
+        "sha256": "5ce2cef9b569493036143c5ef5325751ef34321ed1c8460c70d805af1319d2ce",
+        "bytes": 2752
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/youcare/run/pipeline-results.json",
+        "sha256": "b8c6296ea51360dbb3316550c0bf3a9222d565f5727d63b3d58f7e5a11c0748e",
+        "bytes": 2053
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/youcare/run/ledger.json",
+        "sha256": "134af7bae007bac3577102edcf0a58efe3ac40eae74841b6dba74c317b9746e7",
+        "bytes": 34151
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/youcare/retry-plan.json",
+        "sha256": "c8625b9fb0fcd816b172d5d2441ecc89389165ba1021a840a7afbb16c9a273c3",
+        "bytes": 9079
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/youcare/retry-manifest.json",
+        "sha256": "87a6f9a2807e8232df8d48007fe28175a3d24a5cdc86f8a00a87363ee36ccfd8",
+        "bytes": 1763
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/youcare/retry-status.json",
+        "sha256": "41dce470db10a0caf979087ae1a638281e21b6273f0769ba2400b2ac627d961e",
+        "bytes": 1236
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/youcare/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/youcare/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "goo": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/goo/run/results.json",
+        "sha256": "849b34bdf924bd6399c59b32c14acacd9c366e7a7fb73ea38e9b6fb5d5d23ad6",
+        "bytes": 3222
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/goo/run/pipeline-results.json",
+        "sha256": "91e2ec2003a42594d529a5a11b032ce63442147e0d7346b47a72be04e2c90c2b",
+        "bytes": 2547
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/goo/run/ledger.json",
+        "sha256": "49a181a0ff9195c60e77f0e408e4f77e48eddd9c040901340ce85d9d58b59ec7",
+        "bytes": 37
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/goo/retry-plan.json",
+        "sha256": "7f6a742895f21e3ee184fd9981b213331f285cc9fa34a372bd260c86b143f11a",
+        "bytes": 8696
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/goo/retry-manifest.json",
+        "sha256": "0e4c985f1c9bcb6779f31e89b0a3b1b3f46d3364c0116379418e75ac93033f74",
+        "bytes": 1767
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/goo/retry-status.json",
+        "sha256": "1d82866b0dc47b5372a965317116c360a5abd0dcdac837bcdb3429b15558f28e",
+        "bytes": 1224
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/goo/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/goo/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "perplexity": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/perplexity/run/results.json",
+        "sha256": "dccc8656eb9fe5f274bbe4371480d6228ae39f0c92fdcb5dab7bf22eb15fcbb5",
+        "bytes": 6898
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/perplexity/run/pipeline-results.json",
+        "sha256": "cc9ecac7119909f7458855c91468694b48535de60ba42ff0c003d9156b5ab640",
+        "bytes": 6653
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/perplexity/run/ledger.json",
+        "sha256": "4c9bc52d88418999c4a509148be81537b79efe3bd7775ca1e944f7cd4acad2d9",
+        "bytes": 35392
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/perplexity/retry-plan.json",
+        "sha256": "f40bb3a8ca0b5eb72845641c551dd8d6e5ad6d52d8ecbb13f8e907b2fdef7e5b",
+        "bytes": 8954
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/perplexity/retry-manifest.json",
+        "sha256": "0bfe7afa664cadd37d8ea7dcabcbfa91c77306a84fb86990780636ef5d1e12f5",
+        "bytes": 1783
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/perplexity/retry-status.json",
+        "sha256": "baed95d92c8e4151d36bb091266ae63ff839030f0a682765b59d701f164915d5",
+        "bytes": 1245
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/perplexity/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/perplexity/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "felo": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/felo/run/results.json",
+        "sha256": "312c9366aeaca15f3a36fa3d2968c817c6110502531d0a112ad6eaff427d9630",
+        "bytes": 2735
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/felo/run/pipeline-results.json",
+        "sha256": "78e5629439209f25f385afb35a5fe73bbcb883febe6771acbf990e800ebb24cd",
+        "bytes": 2036
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/felo/run/ledger.json",
+        "sha256": "a8a7eef27d3ccd6579913d722c507283be188ddafc490f163d0e9dbb21e447ed",
+        "bytes": 271797
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/felo/retry-plan.json",
+        "sha256": "c169e141e30cb5f9f8af734b6c22a278207e38f8e5a178877380edbcf86a543b",
+        "bytes": 8517
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/felo/retry-manifest.json",
+        "sha256": "d51be806a8508b6f3d63f5f1ed6b97f1f877fdfb2a0ec0e65f7ddbe4aedff207",
+        "bytes": 1741
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/felo/retry-status.json",
+        "sha256": "f85cc63692630d15024c244ead753c3096d0b17cbcb88c69c978691420456e54",
+        "bytes": 1227
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/felo/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/felo/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "genspark": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/genspark/run/results.json",
+        "sha256": "93265b9294fed82b028b5516129927dadb6cab391d644327a7e8cf6327047ac8",
+        "bytes": 2757
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/genspark/run/pipeline-results.json",
+        "sha256": "30adfee9256207299d4491e486501803ac9c8631b1100784f2528ae246d09182",
+        "bytes": 2058
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/genspark/run/ledger.json",
+        "sha256": "7b5799c0c48f0d23d524428b1182c292d45849dbba1ae2dcb7a92f19e21bf095",
+        "bytes": 150272
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/genspark/retry-plan.json",
+        "sha256": "f6ba1ce3484630c6ef5e0c36bb8424ce2e7b4ddf18a17b46167a015b1497fc9b",
+        "bytes": 9112
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/genspark/retry-manifest.json",
+        "sha256": "4836fae54d0e09f12e333f935c4ca3de3634b22d15bf09cbbba1ba7cf95f0497",
+        "bytes": 1773
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/genspark/retry-status.json",
+        "sha256": "d8bac2a286e44105d8913268220ff3f4068ccb7e5f400d7c3b3b9ac9e5af0322",
+        "bytes": 1239
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/genspark/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/genspark/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "you": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/you/run/results.json",
+        "sha256": "9cc81a765fa0dead89b1d3707b3f8cc529e69cf2b6e1d497632c1173dc997517",
+        "bytes": 6702
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/you/run/pipeline-results.json",
+        "sha256": "ad34342494b876d7121df8605e217d494bb4118726a538d03e805a1cc2088cd2",
+        "bytes": 6397
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/you/run/ledger.json",
+        "sha256": "4c569f79f44f34ac5debb84042dc2ce98451176b00ff22cd0621f1a5abbcaf8a",
+        "bytes": 186751
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/you/retry-plan.json",
+        "sha256": "8731f174b7573c02599b19a0709c5529692a6c03aac5e72cffbd0ec15c8316a4",
+        "bytes": 9041
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/you/retry-manifest.json",
+        "sha256": "5c8737eec377fb9d18c5e872ee3afbbfd1d481bace32ff6965a8513f756d577f",
+        "bytes": 1743
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/you/retry-status.json",
+        "sha256": "950910c4cd2567c023572c4993658ad5c7bee0bd08b6755309e183cfadf13b58",
+        "bytes": 1224
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/you/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/you/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "bagoodex": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/bagoodex/run/results.json",
+        "sha256": "cbd058dc94c22c4082713a311ada08fd0f60b7331e8b25c45322146f9b4136e5",
+        "bytes": 5858
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/bagoodex/run/pipeline-results.json",
+        "sha256": "252ec58fc8ef27e70b697819cc52a0acae48e328abb2ff12eec4fc5b29024c43",
+        "bytes": 5625
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/bagoodex/run/ledger.json",
+        "sha256": "1d8c9edef4399a3d6a189d7fa202c6958cdfc3a520d5ed025084a0278abdccad",
+        "bytes": 10436
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/bagoodex/retry-plan.json",
+        "sha256": "7e1a1185dde6596104425a42183c267b505205b0aef84b56ea46037f86180498",
+        "bytes": 8459
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/bagoodex/retry-manifest.json",
+        "sha256": "481979f66e00e403eeaf3688a063fcf51e1ed8cf6796e90bb5c12f450e36e070",
+        "bytes": 1761
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/bagoodex/retry-status.json",
+        "sha256": "aa7613df6adc66ae4bc50f4ff82b3a93abbf4aa6546a02b6c03c0e3d10f457b3",
+        "bytes": 1239
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/bagoodex/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/bagoodex/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "brave-api": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/brave-api/run/results.json",
+        "sha256": "110dcf91c4923e88da215743c4fba651329bb66832c045ee2cccb676ef5f729f",
+        "bytes": 2895
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/brave-api/run/pipeline-results.json",
+        "sha256": "c87bae8687323bab2f301bf0d4d3988b4344e717a39ab9cee8f11b639e01aecd",
+        "bytes": 2226
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/brave-api/run/ledger.json",
+        "sha256": "65980e217dbb876fe7cfa7b6ba0c2c2eaa8278d0620765a41bcff77e2c678bcc",
+        "bytes": 463293
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/brave-api/retry-plan.json",
+        "sha256": "b7534247a415f9011f8144579c7b5a5cd4fa64fde9a4faa6a4fe1622cfdb52c8",
+        "bytes": 9257
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/brave-api/retry-manifest.json",
+        "sha256": "b929fb5ca721e89071a86550ff93ea99e113d9543a63cb0a0013cef0a30f9338",
+        "bytes": 1545
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/brave-api/retry-status.json",
+        "sha256": "62867aa2e6b7514482530385e6808f542b040782a78e1f08a7cfc38c6c925274",
+        "bytes": 1242
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/brave-api/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/brave-api/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "dataforseo": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/dataforseo/run/results.json",
+        "sha256": "07ecc8753e415a3981b72e2cb60a19c54625adf21d79e5b19b6ee6190a60684b",
+        "bytes": 2761
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/dataforseo/run/pipeline-results.json",
+        "sha256": "931f99f92836f9b401f3ca800eb06db9886f9457b08df71f84d4b3c074739f90",
+        "bytes": 2062
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/dataforseo/run/ledger.json",
+        "sha256": "26ef1dd818a078bcc91eeee50b1ec2b996d5e8b4650be7b5a351e624e054c7fd",
+        "bytes": 362467
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/dataforseo/retry-plan.json",
+        "sha256": "438dfbbc4b1dc7e0a44eeba15514e7bca7a19f5b6da7454eef664781581ff812",
+        "bytes": 9273
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/dataforseo/retry-manifest.json",
+        "sha256": "bf87c4c9483c86c4f52376efb71e06fb85922f046c5eef449a96b02e3c04cc17",
+        "bytes": 1539
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/dataforseo/retry-status.json",
+        "sha256": "e3e6ffaa265fcdf676e8fe7f066ff21ba93a8dd650c764aa4b5f876e8a732d7c",
+        "bytes": 1245
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/dataforseo/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/dataforseo/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "firecrawl": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/firecrawl/run/results.json",
+        "sha256": "0a8c9275fe0f608ae15846e961caf9c9414087778c52204776f5a844c3a4c2bc",
+        "bytes": 2709
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/firecrawl/run/pipeline-results.json",
+        "sha256": "d525209af2b0925051005bf9bab60d845963d8d26030dcedb5b719c097ba8caa",
+        "bytes": 1992
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/firecrawl/run/ledger.json",
+        "sha256": "ee2a55a947196648fa1bb0583573badf6816de1d58d632b364660f71074f36be",
+        "bytes": 113905
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/firecrawl/retry-plan.json",
+        "sha256": "7f2737780301f639ba719fe87d014c0bc558b3cefe6eaabc3997bf503179b685",
+        "bytes": 9121
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/firecrawl/retry-manifest.json",
+        "sha256": "538271ee4dbfa2e0d8f3c0d6f8a4519dc31787225c50c4956c06ba0e0d39b3a3",
+        "bytes": 1535
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/firecrawl/retry-status.json",
+        "sha256": "aef9a206b4adc9c31e86bbcba79e6013d1c422717df15877954f51a56735907a",
+        "bytes": 1242
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/firecrawl/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/firecrawl/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "tavily": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/tavily/run/results.json",
+        "sha256": "e8856b774cae626dade9f5fc15c5509a88fa63c655f498f56f29f76ab630251d",
+        "bytes": 3000
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/tavily/run/pipeline-results.json",
+        "sha256": "6573aacf7fa08d86f1dc28dde21cd791589dcf3c4a7d2c50518e9e2796c751d6",
+        "bytes": 2355
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/tavily/run/ledger.json",
+        "sha256": "f17af4256a6457ec437591bebcf41de338536aedb73aac30db570f0cf7e638c4",
+        "bytes": 108674
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/tavily/retry-plan.json",
+        "sha256": "00df34dd6bec7a87c78464db0533540f40379f6588f6a47727b187d40512eb20",
+        "bytes": 9017
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/tavily/retry-manifest.json",
+        "sha256": "af820db3d09d323659368d82f652b51ac088831c8eec8d6eb35ab7ea3e90ae96",
+        "bytes": 1523
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/tavily/retry-status.json",
+        "sha256": "1f9ff354cad4a9f9107d091666c2b44e45851769b9aafebd3f00f47ee25c6623",
+        "bytes": 1233
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/tavily/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/tavily/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "base": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/base/run/results.json",
+        "sha256": "1c0bfb1487ece23abe76d75049cc6610731a7ba3e13bd09752afa5ee6c57128f",
+        "bytes": 2211
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/base/run/pipeline-results.json",
+        "sha256": "d2c26c90366164e553064ef1f360d9b0608dede3dd3233d2034bbec7383e6e4f",
+        "bytes": 1434
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/base/run/ledger.json",
+        "sha256": "c69d5a853fab8c17421f699929caee380a810becc6762c22cb58de5c42cb21aa",
+        "bytes": 5016
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/base/retry-plan.json",
+        "sha256": "3fe0a8ef823cdc6fd8e23cee5dfef96fafb85c449502b57c9ae013e8250595d5",
+        "bytes": 7839
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/base/retry-manifest.json",
+        "sha256": "829a5715d0a37f1099cefb63009282ac4e48b18239eccef8d995cd80de1addbb",
+        "bytes": 1557
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/base/retry-status.json",
+        "sha256": "64037ecfa1d528d205713872004741158338a4f7dd19b422320b04e1aea88fc0",
+        "bytes": 1227
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/base/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/base/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "lenso": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/lenso/run/results.json",
+        "sha256": "284a1825c0bd46417bb8e754134ddeba98aa852b7f00fec5450adfbd9714d32d",
+        "bytes": 2736
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/lenso/run/pipeline-results.json",
+        "sha256": "6a0d8259d6f9fc00b4c0661dd2438b0214c80e905df8218c20fc17e548f9c7ae",
+        "bytes": 2037
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/lenso/run/ledger.json",
+        "sha256": "365dda4c8652a3bc9e8a3ee2506182442d1ceeef9b259a8c0b47beb25e0d5c90",
+        "bytes": 155387
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/lenso/retry-plan.json",
+        "sha256": "4ca789b425951a468cfdd9b26a8bcf590dda612789ce10430783c33d48119be2",
+        "bytes": 9155
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/lenso/retry-manifest.json",
+        "sha256": "1324c544f067e03b6aba6914e47c8dd199d5f8bf9384c6029654255f0fe86b55",
+        "bytes": 1533
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/lenso/retry-status.json",
+        "sha256": "7f166bd81f36c6a1bc8b5d7e22609e1277ad279e6b163c8d6d76d731039ae2c1",
+        "bytes": 1230
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/lenso/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/lenso/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "unsplash": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/unsplash/run/results.json",
+        "sha256": "bff54682a3034b795bf96dacfe78b2e86e577d54fb7723349c4f608467c1d1b7",
+        "bytes": 2751
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/unsplash/run/pipeline-results.json",
+        "sha256": "a0b355d0496d581006acb7cf6412e77a95fb963e787aee89ebd637c68592a337",
+        "bytes": 2052
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/unsplash/run/ledger.json",
+        "sha256": "a10e2b57c2c03713e1ce6c6ccce2020f344db6cb2c0b9d36a384666b0359cc5f",
+        "bytes": 80472
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/unsplash/retry-plan.json",
+        "sha256": "bb2eac5ff0b1b13d693ed3bab25e5145defe4d182ddecfa8eb2a40102cfa63d4",
+        "bytes": 7913
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/unsplash/retry-manifest.json",
+        "sha256": "a32a1861f31867098f00123c31a2fd5a66c9f3adba8658ccb7a847f3f046ce54",
+        "bytes": 1769
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/unsplash/retry-status.json",
+        "sha256": "14215429406b8571f2ad4e8cfecf0b47707024983c889593801d6e43c38f314e",
+        "bytes": 1239
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/unsplash/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/unsplash/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "onesearch": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/onesearch/run/results.json",
+        "sha256": "81ab162a6ce7e32abc09fc4cae834e16513ae1cd214770df722cdab3b032c445",
+        "bytes": 2786
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/onesearch/run/pipeline-results.json",
+        "sha256": "a7cc589238bc9a84ce86805e9388fd44e0ea1b47e14e93fe7a05b078cb1db90c",
+        "bytes": 2087
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/onesearch/run/ledger.json",
+        "sha256": "badb3ecdb18a4d385975b4fe4966c5da7e2d5d7f24bd91828c335073a59c4259",
+        "bytes": 61659
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/onesearch/retry-plan.json",
+        "sha256": "6f37d491267fa87b2ba696a49a57766cb8a6c75c23729fd9a9199bfbaf85aa79",
+        "bytes": 9164
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/onesearch/retry-manifest.json",
+        "sha256": "8f75a94c3ba4d5225627a7885ba837ce70609c8239b601d09f1311830b9ce107",
+        "bytes": 1814
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/onesearch/retry-status.json",
+        "sha256": "0c07bf3250225280a667d0f443eca90767b9f868302bd3a92692ce43784d1df3",
+        "bytes": 1242
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/onesearch/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/onesearch/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "peekier": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/peekier/run/results.json",
+        "sha256": "1f10b3529d0943449051e5e1ce8027e30060a3277beb6e3a840335386bef532a",
+        "bytes": 2919
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/peekier/run/pipeline-results.json",
+        "sha256": "8ddba5c87d63e0e68c741c53ab2bbad095ac87692965b046970b0ccad4e6ebcf",
+        "bytes": 2262
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/peekier/run/ledger.json",
+        "sha256": "3f3fea775814c8f1f4335ae463277e50a2dbec9874a3249ad9ed67b764b07139",
+        "bytes": 44373
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/peekier/retry-plan.json",
+        "sha256": "34557ebf26c3f4f96dddf4075812ffa666ee1d2dda988800d83e4902fe8467ab",
+        "bytes": 9298
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/peekier/retry-manifest.json",
+        "sha256": "192b8f850c5dbe7f0fcbbbc8d90a3abf455d6f9522ad3e036efa8c1348d92fbf",
+        "bytes": 1757
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/peekier/retry-status.json",
+        "sha256": "630e55107153e2e133d3261b9124d5cd434c86c2567a343542b56a84faf1134e",
+        "bytes": 1236
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/peekier/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/peekier/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "yahoo-kids": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/yahoo-kids/run/results.json",
+        "sha256": "29188d29a13e24bb10ecba640c50b4f58d405d10bf2c3c4b3c042956a84819c7",
+        "bytes": 2765
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/yahoo-kids/run/pipeline-results.json",
+        "sha256": "24fd924b8aed2bd55cbe8dc556d44dc020cd2fb63b1dfc12f2786b52517a8c37",
+        "bytes": 2066
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/yahoo-kids/run/ledger.json",
+        "sha256": "6d22cad3c6b01e7ac1c3392f9968b7165145b34c8c63bfdc6d5d13ed677af9de",
+        "bytes": 152991
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/yahoo-kids/retry-plan.json",
+        "sha256": "666ade1bc7310bf0e2df77073b225c03d0c87ad404cfab5d4f161bc2ad2a20a8",
+        "bytes": 10328
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/yahoo-kids/retry-manifest.json",
+        "sha256": "de04f292195b01ec10531679c69f24451c502f77f6b413f4d8b51292da7796ce",
+        "bytes": 1780
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/yahoo-kids/retry-status.json",
+        "sha256": "1d62f687786dc87c36f2abe61cfe364886271d735d5fe68b7863c9566b2fa826",
+        "bytes": 1245
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/yahoo-kids/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/obscura-stealth/yahoo-kids/interruption-finalization.json",
+        "missing": true
+      }
+    }
+  },
+  "extractor": {
+    "path": "/mnt/c/Users/tatuk/Documents/Codex/2026-10-03/new-chat-2/work/summarize_search_run.py",
+    "sha256": "829e990a71432ea3385bea12a4f823ed25eb7d603076743120ae5d366b115cf6",
+    "bytes": 52914
+  },
+  "target_count": 50,
+  "max_result_candidates": 10,
+  "related_terms": [
+    "池上本門寺",
+    "松濤園",
+    "松涛園"
+  ],
+  "official_domain_definition": null,
+  "decision_criteria": {
+    "search_confirmed": "検索段階の証拠あり・同サービスの最終ホスト・HTTP 2xx・通信エラー／Challengeなし・関連する外部結果候補またはqueryに対応した明示0件。",
+    "candidate_relevance": "a要素のタイトルまたは狭いタイトル／スニペット文脈に池上本門寺／松濤園／松涛園のいずれか。本文全体のqueryエコーと裸の本門寺は不可。",
+    "query_scope": "検索ルートあり40件とhomeのみ10件の統計を分離。50件の証拠行列を各方式で保存。",
+    "pre_query_failure": "homeでのChallenge・拒否・通信失敗、adapter準備失敗と検索段階の失敗を区別。",
+    "attempt_selection": "直接resultsの最新adapter_setup以降を採用。pipeline履歴はattempt順で照合し、古いquery成功をresume後の失敗へ再採用しない。選択位置とmain_recordを記録。",
+    "timeout_exclusion": "navigation_error、main documentのtimeout／interrupted、ledgerにだけある未完了queryはHTTP 200でも検索成功から除外。単なる本文保存エラーと有効な保存DOMによる結果確認は区別。",
+    "retry_overlay": "指定retry-rootの各1-cell再試行を成否によらず最新として採用し、original_observationとretry_observationに双方の判定・エラー・候補・証拠を保存。baseline証拠は更新しない。",
+    "charset": "saved_domはUTF-8。response_bodyはContent-Typeまたは先頭metaのcharset、既定UTF-8。Shift_JIS系はcp932。",
+    "local_evidence_links": "保存HTMLと画面は実在するローカルファイルだけリンク化。要求された画面パスと欠損状態は別メタデータへ保存。",
+    "evidence_integrity": "使用した保存HTMLのSHA256をファイル内容と照合し、不一致は集約を拒否。"
+  },
+  "limitations": [
+    "1種類の検索語・有限待機時間・保存時点のみ。",
+    "HTTP 200だけでは検索成功と判定しない。",
+    "関連する外部リンク候補は関連本文・順位・網羅率を保証しない。",
+    "サービスによってsitelink・ニュース・動画枠が混在する。",
+    "redirectの復元はローカルdecodeだけ。結果リンクへ追加アクセスしない。",
+    "同一サービスのUI・広告・nav/header/footerリンクを除外する。",
+    "定義済み公式ドメインがないため公式数はnull。",
+    "保存証拠がない結果は確認できない。"
+  ],
+  "tool": "obscura-stealth",
+  "snapshot_sources": {
+    "results.md": {
+      "path": "C:\\Users\\tatuk\\Documents\\Codex\\2026-10-03\\new-chat-2\\outputs\\gcp-search-20261004-local-retry-complete\\summary-final\\obscura-stealth\\results.md",
+      "sha256": "1cfe531f4139d7ade9970614eee7638fa270a903f786e4b3309bb18331c3fb37"
+    },
+    "results.csv": {
+      "path": "C:\\Users\\tatuk\\Documents\\Codex\\2026-10-03\\new-chat-2\\outputs\\gcp-search-20261004-local-retry-complete\\summary-final\\obscura-stealth\\results.csv",
+      "sha256": "8dfc5753d057ded4dde9322711f9087760d167420caddc408c59c784d45cf0bd"
+    },
+    "results.json": {
+      "path": "C:\\Users\\tatuk\\Documents\\Codex\\2026-10-03\\new-chat-2\\outputs\\gcp-search-20261004-local-retry-complete\\summary-final\\obscura-stealth\\results.json",
+      "sha256": "cfa489984e119b740048c063be15de703de4ce0203ca5ca999f6f45ad1690075"
+    },
+    "conditions.json": {
+      "path": "C:\\Users\\tatuk\\Documents\\Codex\\2026-10-03\\new-chat-2\\outputs\\gcp-search-20261004-local-retry-complete\\summary-final\\obscura-stealth\\conditions.json",
+      "sha256": "cd642b303593382c3bf43b90a8eb6d554b12d8183ee21de287ea7d195f458ea2"
+    },
+    "targets.json": {
+      "path": "C:\\Users\\tatuk\\Documents\\Codex\\2026-10-03\\new-chat-2\\outputs\\gcp-search-20261004-local-retry-complete\\summary-final\\obscura-stealth\\targets.json",
+      "sha256": "fc3108c235898b8feb005895699655d0ccf4f3f8d9e04e00b9aa246609e04af3"
+    },
+    "SHA256.json": {
+      "path": "C:\\Users\\tatuk\\Documents\\Codex\\2026-10-03\\new-chat-2\\outputs\\gcp-search-20261004-local-retry-complete\\summary-final\\obscura-stealth\\SHA256.json",
+      "sha256": "051350dd722d30895743902a55a2a6f2266fa86ca0ccba5b2ce36368ee563c64"
+    }
+  },
+  "publication": {
+    "archive": {
+      "filename": "gcp-search-20261004-local-retry-final-checkpoint.zip",
+      "sha256": "01915bc6847f48a0d23daa609d1567fbf7090e9d0885b24a0f3555962a1f4063",
+      "prefix": "external-runs/gcp-search-20261004-local-retry-new-ip-af8a1717"
+    },
+    "raw_files_tracked_in_git": false,
+    "provenance": "results.json keeps original execution paths for provenance."
+  }
+}
