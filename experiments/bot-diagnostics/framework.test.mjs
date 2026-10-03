@@ -53,6 +53,17 @@ test('plan flags do not disappear into a positional directory and invalid option
   assert.throws(()=>parseCLI(['run']),/directory_required/);
   assert.throws(()=>parseCLI(['plan','--unknown']),/Usage/);
 });
+test('Lightpanda profiles keep one tool budget and the selected release for humanlike input',()=>{
+  const manifest=JSON.parse(fs.readFileSync(new URL('./lightpanda-sites.json',import.meta.url)));
+  const plan=prepare(manifest,{humanlike:true});
+  assert.deepEqual(plan.tools,['rebrowser-lightpanda']);
+  assert.deepEqual(plan.profiles.at(-1).lightpanda,{release:'1.0.0',profile:'compat'});
+  manifest.profiles[0].lightpanda.profile='invented';
+  assert.throws(()=>prepare(manifest),/invalid_lightpanda_profile/);
+  manifest.profiles[0].lightpanda.profile='baseline';
+  manifest.tools.push('patchright');
+  assert.throws(()=>prepare(manifest),/lightpanda_profile_requires_lightpanda/);
+});
 test('operations require bounded steps and a positive postcondition for clicks',()=>{
   assert.throws(()=>validateSteps([{op:'click',selector:'#button'}]),/postcondition_required/);
   assert.throws(()=>validateSteps(Array(4).fill({op:'fill',selector:'#query',value:'x'})),/three_operations/);

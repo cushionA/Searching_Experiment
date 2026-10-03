@@ -50,3 +50,23 @@ class BotDiagnosticsTests(unittest.TestCase):
             cwd=repo, text=True, capture_output=True, timeout=30,
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    @unittest.skipUnless(shutil.which("node"), "Node.js is an optional diagnostics dependency")
+    def test_session_pool_policy_and_accounting(self):
+        repo = Path(__file__).resolve().parents[1]
+        result = subprocess.run(
+            ["node", "--test", "experiments/bot-diagnostics/session-pool.test.mjs",
+             "experiments/bot-diagnostics/session-policy.test.mjs",
+             "experiments/bot-diagnostics/session-manager.test.mjs"],
+            cwd=repo, text=True, capture_output=True, timeout=30,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    @unittest.skipUnless(shutil.which("node"), "Node.js is an optional diagnostics dependency")
+    def test_chromium_trust_preflight(self):
+        repo = Path(__file__).resolve().parents[1]
+        result = subprocess.run(
+            ["node", "--test", "experiments/bot-diagnostics/chromium-trust.test.mjs"],
+            cwd=repo, text=True, capture_output=True, timeout=30,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)

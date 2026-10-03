@@ -14,6 +14,7 @@ export const DEFAULT_RECOVERY_PLAN = Object.freeze({
 });
 
 export function classifyGate(result) {
+  if(result.outcome==='session_cooldown_deferred') return 'session_cooldown_deferred';
   if(result.outcome==='content_observed') return 'continue';
   if(result.outcome==='challenge_observed') return 'capture_challenge';
   if(['access_denied_observed','rate_limited_observed'].includes(result.outcome)) return 'site_rejected';
