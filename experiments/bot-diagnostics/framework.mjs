@@ -33,14 +33,14 @@ export async function execute({manifest,directory,roles=defaultRoles,fixture=fal
       viewport:manifest.options?.headful?{width:1280,height:720}:null,
       sources:snapshotSources(evidence,roleSource),extension_sources:{},
       execution_policy:evidence.policy,
-      session_policy:resume?'fresh browser/client session; retained request ledger and budgets':'one session per tool/site/profile',
+      session_policy:resume?'fresh browser/client cookies; retained request/retry/rotation budgets and origin cooldowns':'one browser per tool/site/profile; optional bounded session/context replacement',
       tls_fingerprint_at_origin:'not measured; use inherited proxy and verified CA trust'};
     for(const profile of manifest.profiles) for(const dir of profile.extensions||[]) {
       invocation.extension_sources[dir]=Object.fromEntries(extensionFiles(dir).map(file=>[path.relative(dir,file),evidence.blob(fs.readFileSync(file))]));
     }
     const historyPath=path.join(directory,'framework-invocations.json');
     evidence.save('framework-invocations.json',[...(fs.existsSync(historyPath)?JSON.parse(fs.readFileSync(historyPath)):[]),invocation]);
-    const completed=new Set(latestOutcomes(outcomes).filter(o=>!['adapter_error','environment_policy_blocked','preflight_or_measurement_failure'].includes(o.state))
+    const completed=new Set(latestOutcomes(outcomes).filter(o=>!['adapter_error','environment_policy_blocked','preflight_or_measurement_failure','session_cooldown_deferred'].includes(o.state))
       .map(o=>`${o.tool}/${o.site}/${o.profile}`));
     for(const site of manifest.sites) for(const tool of manifest.tools) for(const profile of manifest.profiles) {
       const cell=`${tool}/${site.id}/${profile.id}`;

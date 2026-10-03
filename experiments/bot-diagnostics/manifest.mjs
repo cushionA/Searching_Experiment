@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {here, TOOL_NAMES, limits} from './runtime.mjs';
+import {validateLightpanda} from './lightpanda-runtime.mjs';
+import {normalizeSessionPolicy} from './session-policy.mjs';
 import {DEFAULT_RECOVERY_PLAN} from './scenario.mjs';
 import {validateSteps, validateExpectation} from './operations.mjs';
 
@@ -54,7 +56,11 @@ export function prepare(manifest,{includeGoogle=false,fixture=false,selectors=fa
     recoveryMaxAttempts:recoveryPlan.max_attempts};
   if(!Number.isInteger(options.seed)) throw new Error('integer_seed_required');
   const profiles=structuredClone(manifest.profiles||[{id:'baseline',humanlike:false,extensions:[]}]);
-  if(humanlike) profiles.push({id:'humanlike',humanlike:true,extensions:[]});
+  const lightpandaDefault=profiles.find(profile=>profile.lightpanda?.profile==='compat')?.lightpanda
+    || profiles.find(profile=>profile.lightpanda)?.lightpanda;
+  if(humanlike) profiles.push({id:'humanlike',humanlike:true,extensions:[],
+    ...(lightpandaDefault?{lightpanda:{...lightpandaDefault}}:{}),
+    ...(profiles.find(p=>p.session_pool)?.session_pool?{session_pool:structuredClone(profiles.find(p=>p.session_pool).session_pool)}:{})});
   if(extensions) profiles.push({id:'extension',humanlike:false,extensions:[path.join(here,'extensions/observation-probe')],
     extension_probe:{kind:'attribute',selector:'html',name:'data-bot-diagnostics-extension',value:'loaded'}});
   if(extensionPaths.length) profiles.push({id:'custom-extension',humanlike:false,extensions:extensionPaths});
@@ -62,6 +68,14 @@ export function prepare(manifest,{includeGoogle=false,fixture=false,selectors=fa
   for(const profile of profiles) {
     if(!/^[a-z][a-z0-9-]*$/.test(profile.id) || profileIDs.has(profile.id)) throw new Error('invalid_or_duplicate_profile_id');
     profileIDs.add(profile.id);
+    if(profile.session_pool!==undefined) {
+      profile.session_pool=normalizeSessionPolicy(profile.session_pool);
+      if(profile.session_pool && (manifest.tools.some(tool=>['wreq-js','impit'].includes(tool)) || profile.extensions?.length)) throw new Error('session_pool_requires_browser_without_extensions');
+    }
+    if(profile.lightpanda) {
+      validateLightpanda(profile.lightpanda);
+      if(manifest.tools.some(tool=>tool!=='rebrowser-lightpanda')) throw new Error('lightpanda_profile_requires_lightpanda');
+    }
     profile.extensions=(profile.extensions||[]).map(dir=>checkExtension(path.resolve(baseDirectory,dir)));
     if(profile.extension_probe) validateExpectation(profile.extension_probe);
   }

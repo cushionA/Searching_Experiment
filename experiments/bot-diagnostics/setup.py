@@ -29,6 +29,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--with-browser", action="store_true", help="Install the pinned Playwright Chrome for Testing in the workspace")
     parser.add_argument("--lightpanda-file", type=Path, help="Use an existing public Lightpanda binary after checking the pinned SHA256")
+    parser.add_argument("--lightpanda-release", choices=["legacy", "1.0.0"], default="legacy",
+                        help="Opt into the separately pinned Linux x86_64 enhancement experiment")
     args = parser.parse_args()
     DEPS.mkdir(parents=True, exist_ok=True)
     for name in ("package.json", "package-lock.json"):
@@ -78,18 +80,22 @@ def main():
     (DEPS / "detector-source.json").write_text(json.dumps({
         "repo": "https://github.com/rebrowser/rebrowser-bot-detector", "commit": commit,
     }, indent=2) + "\n")
-    binary = DEPS / "lightpanda"
+    stable = args.lightpanda_release == "1.0.0"
+    binary = REPO / ".deps/lightpanda" if stable else DEPS / "lightpanda"
+    expected = "aa5a4b8ed53d1e38b3c73f5b2647d0a84a82e6744557f45f9a9c85858aa031c3" if stable else VERSIONS["lightpanda_sha256"]
+    url = "https://github.com/lightpanda-io/browser/releases/download/1.0.0/lightpanda-x86_64-linux" if stable else VERSIONS["lightpanda_url"]
+    binary.parent.mkdir(parents=True, exist_ok=True)
     if args.lightpanda_file:
         body = args.lightpanda_file.read_bytes()
-        if hashlib.sha256(body).hexdigest() != VERSIONS["lightpanda_sha256"]:
+        if hashlib.sha256(body).hexdigest() != expected:
             raise RuntimeError("Supplied Lightpanda hash mismatch")
         binary.write_bytes(body)
     if not binary.exists():
-        body = download(VERSIONS["lightpanda_url"], 256_000_000)
-        if hashlib.sha256(body).hexdigest() != VERSIONS["lightpanda_sha256"]:
+        body = download(url, 256_000_000)
+        if hashlib.sha256(body).hexdigest() != expected:
             raise RuntimeError("Nightly changed. Supply the tested build; do not silently compare a different version.")
         binary.write_bytes(body)
-    if hashlib.sha256(binary.read_bytes()).hexdigest() != VERSIONS["lightpanda_sha256"]:
+    if hashlib.sha256(binary.read_bytes()).hexdigest() != expected:
         raise RuntimeError("Lightpanda hash mismatch")
     binary.chmod(0o755)
     subprocess.run([str(binary), "version"], check=True)
