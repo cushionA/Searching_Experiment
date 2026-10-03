@@ -1,0 +1,303 @@
+{
+  "schema": "local-search-snapshot-v1",
+  "query": "東京都大田区 池上本門寺 松濤園 公開日",
+  "saved_at_utc": "2026-10-03T18:23:01.330991+00:00",
+  "tools": [
+    "wreq-js",
+    "impit",
+    "patchright",
+    "rebrowser-lightpanda",
+    "playwright-baseline",
+    "obscura",
+    "obscura-stealth",
+    "obscura-no-render",
+    "obscura-patched",
+    "camoufox"
+  ],
+  "execution_conditions": {
+    "query": "東京都大田区 池上本門寺 松濤園 公開日",
+    "tools": [
+      "wreq-js",
+      "impit",
+      "patchright",
+      "rebrowser-lightpanda",
+      "playwright-baseline",
+      "obscura",
+      "obscura-stealth",
+      "obscura-no-render",
+      "obscura-patched",
+      "camoufox"
+    ],
+    "headful": "patchright, playwright-baseline, camoufox; other engines use their supported headless mode",
+    "execution_policy": "browser_observation",
+    "network": "GCP Tinyproxy through localhost SSH forwarding",
+    "observation_wait_ms": 6000,
+    "legacy_limits_enforced": false,
+    "robots_gate_enforced": false,
+    "challenge_actions": {},
+    "retries": {
+      "policy": "one fresh per-cell retry for execution failures without recorded blocking",
+      "exclude": [
+        "HTTP 403",
+        "HTTP 429",
+        "Challenge",
+        "other HTTP 4xx route errors"
+      ],
+      "user_instruction": "実行エラーは再実行しない？ ブロッキングじゃないなら",
+      "retained_completed_cells_from_previous_ip": false,
+      "cell_wallclock_seconds": 360,
+      "criteria_source": "provenance/retry_search_errors.py",
+      "planned_cells": 90,
+      "excluded_cells": 410,
+      "criteria": {
+        "baseline_required": "同じquery・期待出口IPで全10方式×固定50対象のbaselineとegressが完了し、verification.okがtrue。",
+        "eligible": "最新attemptがcommunication_failed／adapter_setup_error、実close_errorあり、または明確なChallengeのないHTTP 5xx。",
+        "exclude": "最新attemptのhome/targetにChallenge／access_denied／rate_limited、対応main documentの実応答403／429、保存UIの200Challengeがあれば除外。404等の4xx routeエラーも除外。古いblockだけで最新非block errorを除外しない。",
+        "execution": "既存tool/siteのmanifest・query・profile・待機・policyをコピーし、fresh browser/cookie/stateでhome→targetを1回。共通framework、with_proxy、search_rolesを使用。最大3 process並行。",
+        "preservation": "baselineを更新せずretries/{tool}/{site}/runへ新規保存。セルが既に存在すれば再実行しない。失敗も最新overlayへ採用し、元と再試行双方の証拠を残す。",
+        "wallclock": "1-cell全体は360秒上限。with_proxy launcherへSIGINTを送り、既存cleanupと当該launcherのNode/browser子孫だけを停止。変更前証拠を保存し、inflightを中断エラーへ確定して共通frameworkでオフラインverify。再取得はしない。"
+      }
+    },
+    "adopted_historical_observations": {},
+    "execution_host": "Local Windows WSL Ubuntu 26.04 x86_64",
+    "query_routes": 40,
+    "homepage_only_services": [
+      "yacy",
+      "searxng",
+      "brave-api",
+      "serpapi",
+      "dataforseo",
+      "firecrawl",
+      "exa",
+      "tavily",
+      "base",
+      "lenso"
+    ],
+    "maximum_parallel_tool_processes": 3,
+    "include_google": true,
+    "source_commit": "c14623256d83db8044ae706728afaf491f60b0d1",
+    "source_manifest_sha256": "9fac3a751b1e4a0b7cdec1facad387324df806c90a66344dd7e7da9a2aa60888",
+    "catalog_sha256": "fc3108c235898b8feb005895699655d0ccf4f3f8d9e04e00b9aa246609e04af3",
+    "official_result_count": null,
+    "notes": "HTTP 200 alone is not search success. Search route-less services receive homepage-only observations. Natural UA and engine modes differ; the shared query, scenario, proxy, and result interpretation are controlled.",
+    "expected_egress_ip": "136.67.75.1",
+    "observation_wallclock_timeout_ms": 120000,
+    "timeout_cleanup_grace_ms": 10000,
+    "timeout_cleanup": "Memoized adapter.close; force-stop descendants of this dedicated framework Node only if cleanup exceeds the grace period.",
+    "evidence_storage": "Persistent ext4 application data in WSL; hash-verified Windows delivery and export before shutdown.",
+    "previous_phase": {
+      "path": "/mnt/c/Users/tatuk/Documents/Codex/2026-10-03/new-chat-2/outputs/gcp-search-20261003-local",
+      "egress_ip": "35.185.240.29",
+      "observations_adopted_in_current_phase": false
+    },
+    "evidence_loss": {
+      "root": "/tmp/gcp-search-20261003-local",
+      "cause": "/tmp was tmpfs and was cleared when WSL stopped after the SSH session ended.",
+      "retained_evidence": "/mnt/c/Users/tatuk/Documents/Codex/2026-10-03/new-chat-2/outputs/gcp-search-20261003-local"
+    },
+    "wallclock_guard": "120-second observation timer, one bounded adapter cleanup, 10-second grace before stopping owned browser children.",
+    "delivery_path": "C:/Users/tatuk/Documents/Codex/2026-10-03/new-chat-2/outputs/gcp-search-20261004-local-retry-complete",
+    "source_path_mapping": {
+      "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip": "C:/Users/tatuk/Documents/Codex/2026-10-03/new-chat-2/outputs/gcp-search-20261004-local-retry-complete"
+    },
+    "deadline_history": "All observations in this fresh phase use the 120-second observation timer and 10-second bounded cleanup grace.",
+    "final_summary": "summary-final",
+    "report_repair": {
+      "reason": "Failed screenshot capture recorded an intended PNG path, but no file was saved. Only saved local evidence is linked in the final report.",
+      "old_summary": "summary",
+      "final_summary": "summary-final",
+      "classification_and_candidates_unchanged": true,
+      "raw_evidence_unchanged": true,
+      "network_rerun": false,
+      "fixture": {
+        "existing_cases": 26,
+        "resume_checks": 10,
+        "screenshot_checks": 4,
+        "passed": true
+      }
+    }
+  },
+  "catalog": {
+    "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/targets.json",
+    "sha256": "fc3108c235898b8feb005895699655d0ccf4f3f8d9e04e00b9aa246609e04af3",
+    "bytes": 35470
+  },
+  "manifest": {
+    "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/manifest.json",
+    "sha256": "08f693926f5467b721ebfca4e94fca44799b0b2e73548dfe7a737810f74f9aa2",
+    "bytes": 34833
+  },
+  "run_sources": {
+    "results.json": {
+      "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/runs/impit/results.json",
+      "sha256": "0c045453bce154b7a7c95070e1b972d59a84adbb3f3dfaf947e5e69e06c38bd7",
+      "bytes": 208557
+    },
+    "pipeline-results.json": {
+      "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/runs/impit/pipeline-results.json",
+      "sha256": "0f39ab5fa411c710a11cb19e4609fb859f0a57884b8e993b8446ca888398df76",
+      "bytes": 211439
+    },
+    "ledger.json": {
+      "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/runs/impit/ledger.json",
+      "sha256": "7536be034a8e7c32ffcc55db726241956690c3aee5662ccd9f2302133bc36dc8",
+      "bytes": 124740
+    }
+  },
+  "retry_root": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries",
+  "retry_sources": {
+    "mwmbl": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/impit/mwmbl/run/results.json",
+        "sha256": "ecba8dcc3dbc191fddc9f7b92c68a60f9007a86cf4068042fe27dda8b8cb28cd",
+        "bytes": 3393
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/impit/mwmbl/run/pipeline-results.json",
+        "sha256": "2ed3b12f4fcffa1ec96669f20c80fe6f26d75f9eb68c711aced5c9f1cdc45e4c",
+        "bytes": 3513
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/impit/mwmbl/run/ledger.json",
+        "sha256": "4989cdf432941d4af8b3de727c463f3e94afbcea562bd57f95d384d65f20ce92",
+        "bytes": 1759
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/impit/mwmbl/retry-plan.json",
+        "sha256": "1c81560bd5c05de3f1198b07ea681bda803ebe9cd2da9d9bfdabf6b1aae7342a",
+        "bytes": 7609
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/impit/mwmbl/retry-manifest.json",
+        "sha256": "5741df8027e8a319536c693f315cb06bb4084458530e1a268ff74ebdcaea9e9d",
+        "bytes": 1731
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/impit/mwmbl/retry-status.json",
+        "sha256": "217b0893d0cfb695a859c11c0f36e78fd2d44ce75296b01bae0f9c55f283ba43",
+        "bytes": 1198
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/impit/mwmbl/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/impit/mwmbl/interruption-finalization.json",
+        "missing": true
+      }
+    },
+    "goo": {
+      "results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/impit/goo/run/results.json",
+        "sha256": "0f6e9269c43472d4407dc0a8cd65a66f6a89a72d0fd0f955fe94d592da844696",
+        "bytes": 864
+      },
+      "pipeline-results.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/impit/goo/run/pipeline-results.json",
+        "sha256": "5105630c51d0f35350cd216afaafea3d08e222f983ca8b9d4423509a90dc620e",
+        "bytes": 656
+      },
+      "ledger.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/impit/goo/run/ledger.json",
+        "sha256": "2a662497ad851093cbfa222f2731f51014409a32f6dda016a60efcb4e2fbdce7",
+        "bytes": 755
+      },
+      "retry-plan.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/impit/goo/retry-plan.json",
+        "sha256": "440421c14cd0559b50e18a6679177b617a1b4e5e7c09b36ceb1bf566226eefb2",
+        "bytes": 7119
+      },
+      "retry-manifest.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/impit/goo/retry-manifest.json",
+        "sha256": "0ae9bfc117df0830e6b1fd30308c56769ac7778ac3da345e2f9b749cf379190f",
+        "bytes": 1757
+      },
+      "retry-status.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/impit/goo/retry-status.json",
+        "sha256": "fc763190359e4359db5eca6584e2a47584f814c143d55c8845e33bdb9a562d61",
+        "bytes": 1194
+      },
+      "retry-sources.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/impit/goo/retry-sources.json",
+        "sha256": "e7177ee23c1a18a850d37cad3b8050c197e5e2ce1ac85aef56cadbcef7958b7c",
+        "bytes": 2636
+      },
+      "interruption-finalization.json": {
+        "path": "/home/zabuton/.local/share/searchengine-bot-diagnostics/search-runs/gcp-search-20261004-local-retry-new-ip/retries/impit/goo/interruption-finalization.json",
+        "missing": true
+      }
+    }
+  },
+  "extractor": {
+    "path": "/mnt/c/Users/tatuk/Documents/Codex/2026-10-03/new-chat-2/work/summarize_search_run.py",
+    "sha256": "829e990a71432ea3385bea12a4f823ed25eb7d603076743120ae5d366b115cf6",
+    "bytes": 52914
+  },
+  "target_count": 50,
+  "max_result_candidates": 10,
+  "related_terms": [
+    "池上本門寺",
+    "松濤園",
+    "松涛園"
+  ],
+  "official_domain_definition": null,
+  "decision_criteria": {
+    "search_confirmed": "検索段階の証拠あり・同サービスの最終ホスト・HTTP 2xx・通信エラー／Challengeなし・関連する外部結果候補またはqueryに対応した明示0件。",
+    "candidate_relevance": "a要素のタイトルまたは狭いタイトル／スニペット文脈に池上本門寺／松濤園／松涛園のいずれか。本文全体のqueryエコーと裸の本門寺は不可。",
+    "query_scope": "検索ルートあり40件とhomeのみ10件の統計を分離。50件の証拠行列を各方式で保存。",
+    "pre_query_failure": "homeでのChallenge・拒否・通信失敗、adapter準備失敗と検索段階の失敗を区別。",
+    "attempt_selection": "直接resultsの最新adapter_setup以降を採用。pipeline履歴はattempt順で照合し、古いquery成功をresume後の失敗へ再採用しない。選択位置とmain_recordを記録。",
+    "timeout_exclusion": "navigation_error、main documentのtimeout／interrupted、ledgerにだけある未完了queryはHTTP 200でも検索成功から除外。単なる本文保存エラーと有効な保存DOMによる結果確認は区別。",
+    "retry_overlay": "指定retry-rootの各1-cell再試行を成否によらず最新として採用し、original_observationとretry_observationに双方の判定・エラー・候補・証拠を保存。baseline証拠は更新しない。",
+    "charset": "saved_domはUTF-8。response_bodyはContent-Typeまたは先頭metaのcharset、既定UTF-8。Shift_JIS系はcp932。",
+    "local_evidence_links": "保存HTMLと画面は実在するローカルファイルだけリンク化。要求された画面パスと欠損状態は別メタデータへ保存。",
+    "evidence_integrity": "使用した保存HTMLのSHA256をファイル内容と照合し、不一致は集約を拒否。"
+  },
+  "limitations": [
+    "1種類の検索語・有限待機時間・保存時点のみ。",
+    "HTTP 200だけでは検索成功と判定しない。",
+    "関連する外部リンク候補は関連本文・順位・網羅率を保証しない。",
+    "サービスによってsitelink・ニュース・動画枠が混在する。",
+    "redirectの復元はローカルdecodeだけ。結果リンクへ追加アクセスしない。",
+    "同一サービスのUI・広告・nav/header/footerリンクを除外する。",
+    "定義済み公式ドメインがないため公式数はnull。",
+    "保存証拠がない結果は確認できない。"
+  ],
+  "tool": "impit",
+  "snapshot_sources": {
+    "results.md": {
+      "path": "C:\\Users\\tatuk\\Documents\\Codex\\2026-10-03\\new-chat-2\\outputs\\gcp-search-20261004-local-retry-complete\\summary-final\\impit\\results.md",
+      "sha256": "c1bf954c2fb494b13aed6dd332509beabbce1d9f3d047432f38a47f8619fa3ba"
+    },
+    "results.csv": {
+      "path": "C:\\Users\\tatuk\\Documents\\Codex\\2026-10-03\\new-chat-2\\outputs\\gcp-search-20261004-local-retry-complete\\summary-final\\impit\\results.csv",
+      "sha256": "141ceba24c0825e1bb1bfa6694c3878273128064ceab51f7ec06963509d14fb9"
+    },
+    "results.json": {
+      "path": "C:\\Users\\tatuk\\Documents\\Codex\\2026-10-03\\new-chat-2\\outputs\\gcp-search-20261004-local-retry-complete\\summary-final\\impit\\results.json",
+      "sha256": "8fd70378c3403860c88e155bb4bbdaea9b4bcc2735ac7fc8caf6fec655922d43"
+    },
+    "conditions.json": {
+      "path": "C:\\Users\\tatuk\\Documents\\Codex\\2026-10-03\\new-chat-2\\outputs\\gcp-search-20261004-local-retry-complete\\summary-final\\impit\\conditions.json",
+      "sha256": "6487faca5ea89bea9a16913bc4ab3bf7184c9e9024b0d75fea8f80801b13ae36"
+    },
+    "targets.json": {
+      "path": "C:\\Users\\tatuk\\Documents\\Codex\\2026-10-03\\new-chat-2\\outputs\\gcp-search-20261004-local-retry-complete\\summary-final\\impit\\targets.json",
+      "sha256": "fc3108c235898b8feb005895699655d0ccf4f3f8d9e04e00b9aa246609e04af3"
+    },
+    "SHA256.json": {
+      "path": "C:\\Users\\tatuk\\Documents\\Codex\\2026-10-03\\new-chat-2\\outputs\\gcp-search-20261004-local-retry-complete\\summary-final\\impit\\SHA256.json",
+      "sha256": "07a3fd73a400403ebd7a88da7bb9a21e8c3a9582531534dca3b1a3834fcac5b6"
+    }
+  },
+  "publication": {
+    "archive": {
+      "filename": "gcp-search-20261004-local-retry-final-checkpoint.zip",
+      "sha256": "01915bc6847f48a0d23daa609d1567fbf7090e9d0885b24a0f3555962a1f4063",
+      "prefix": "external-runs/gcp-search-20261004-local-retry-new-ip-af8a1717"
+    },
+    "raw_files_tracked_in_git": false,
+    "provenance": "results.json keeps original execution paths for provenance."
+  }
+}

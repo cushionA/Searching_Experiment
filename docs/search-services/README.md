@@ -2,9 +2,30 @@
 
 [調査対象表](targets.md)は固定の50サイト。編集・処理用に[CSV](targets.csv)と[対象マスターJSON](../../experiments/bot-diagnostics/search-targets.json)を保存した。検索語・ブラウザ条件・取得結果はマスターに入れず、検証ごとに保存する。元のsearch-services.jsonは今回の実行証拠として保持している。
 
-[今回の検証結果表](results/20261003-headful-patchright/results.md)は従来と同じ9列・50行で、表だけのファイル。同じフォルダーにCSV、詳細JSON、conditions.json、対象マスターのコピー、SHA256.jsonがある。検証条件と表内の履歴の扱いはconditions.jsonで確認できる。
+[2026-10-03の検証結果表](results/20261003-headful-patchright/results.md)は従来と同じ9列・50行で、表だけのファイル。同じフォルダーにCSV、詳細JSON、conditions.json、対象マスターのコピー、SHA256.jsonがある。検証条件と表内の履歴の扱いはconditions.jsonで確認できる。
 
-表のquery・品質・画面は最新観測。robots/home/CDNの欄には旧段階の履歴を含む。今回は通常ブラウザで38サービスを再検証し、Wiby/YouCareのquery観測とAPI等10対象の公開トップ観測は前段階から採用した。OneSearchはYahoo Search、PeekierはKagiの別段階観測で、元サービス本体のSERPやクエリ引継ぎを実証したものではない。外部報告は詳細JSONのexternal_*で分離している。
+表のquery・品質・画面は最新観測。robots/home/CDNの欄には旧段階の履歴を含む。10月3日は通常ブラウザで38サービスを再検証し、Wiby/YouCareのquery観測とAPI等10対象の公開トップ観測は前段階から採用した。OneSearchはYahoo Search、PeekierはKagiの別段階観測で、元サービス本体のSERPやクエリ引継ぎを実証したものではない。外部報告は詳細JSONのexternal_*で分離している。
+
+## 2026-10-04 JST: GCP local retry
+
+検索語は「東京都大田区 池上本門寺 松濤園 公開日」。10方式×固定50サイトを同じGCP出口IP `136.67.75.1` で確認し、検索ルートあり40件とhomepage-only 10件を分けて記録した。初回の500セルに対して、403・429・Challenge・その他4xxを除き、通信・実行エラーと一時的な5xxの90セルだけを各1回再試行した。通信失敗とadapter準備失敗は初回80件から最終66件になった。
+
+下表は各方式の詳細JSONにある最終集計。関連結果・明示0件は検索ルート40件の値で、通信・準備失敗は全50件、再試行数は選定したセル数。過去の10月3日観測は上記の別runに保存し、この新しい条件の集計と混ぜていない。
+
+|方式|関連結果|明示0件|通信・準備失敗（全50件）|再試行セル|
+|---|---:|---:|---:|---:|
+|[Camoufox](results/20261004-gcp-local-retry-camoufox/results.md)|10|2|2|3|
+|[Impit](results/20261004-gcp-local-retry-impit/results.md)|4|1|1|2|
+|[Obscura](results/20261004-gcp-local-retry-obscura/results.md)|5|2|18|22|
+|[Obscura no-render](results/20261004-gcp-local-retry-obscura-no-render/results.md)|4|2|14|18|
+|[Obscura patched](results/20261004-gcp-local-retry-obscura-patched/results.md)|5|2|3|4|
+|[Obscura stealth](results/20261004-gcp-local-retry-obscura-stealth/results.md)|2|2|21|23|
+|[Patchright](results/20261004-gcp-local-retry-patchright/results.md)|11|2|1|4|
+|[Playwright baseline](results/20261004-gcp-local-retry-playwright-baseline/results.md)|10|2|1|4|
+|[Rebrowser Lightpanda](results/20261004-gcp-local-retry-rebrowser-lightpanda/results.md)|3|2|4|8|
+|[wreq-js](results/20261004-gcp-local-retry-wreq-js/results.md)|4|1|1|2|
+
+証拠ZIP `gcp-search-20261004-local-retry-final-checkpoint.zip`のSHA256は `01915bc6847f48a0d23daa609d1567fbf7090e9d0885b24a0f3555962a1f4063`。ZIP内のrun相対パスは `external-runs/gcp-search-20261004-local-retry-new-ip-af8a1717/` から始まる。raw証拠ファイルはGitで追跡せず、`results.json`の元の実行パスは出所確認のため保持する。
 
 ## 次の検証を保存する
 
