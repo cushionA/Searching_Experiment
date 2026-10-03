@@ -10,6 +10,17 @@ import {ToolAdapter} from './adapters.mjs';
 import {providerHints} from './providers.mjs';
 
 const fixtureSite = {id:'fixture',links:{home:'https://example.com/',targets:['https://example.com/a','https://example.com/b']},selectors:{primary:'#search'}};
+test('Camoufox joins the same observation scenario and rejects grounding before browser startup',()=>{
+  const original=JSON.parse(fs.readFileSync(new URL('./sites.json',import.meta.url)));
+  const manifest={...original,tools:['playwright-baseline','camoufox']};
+  const planned=prepare(manifest);
+  assert.deepEqual(planned.sites,prepare({...manifest,tools:['playwright-baseline']}).sites);
+  assert.deepEqual(planned.profiles,prepare({...manifest,tools:['playwright-baseline']}).profiles);
+  assert.equal(new ToolAdapter({tool:'camoufox',site:fixtureSite,evidence:{}}).capabilities.headful,true);
+  assert.equal(new ToolAdapter({tool:'camoufox',site:fixtureSite,evidence:{}}).capabilities.extensions,false);
+  assert.throws(()=>prepare(manifest,{executionPolicy:'grounding'}),/unsupported_capability:camoufox_grounding/);
+  assert.deepEqual(JSON.parse(fs.readFileSync(new URL('./sites.json',import.meta.url))).tools,original.tools);
+});
 test('URL parameters cannot insert a new host or query separator',()=>{
   assert.equal(injectURL('https://example.com/search?q={query}',{query:'x&next=https://outside.example/'}),
     'https://example.com/search?q=x%26next%3Dhttps%3A%2F%2Foutside.example%2F');

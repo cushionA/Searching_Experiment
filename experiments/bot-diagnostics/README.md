@@ -60,6 +60,28 @@ node experiments/bot-diagnostics/chromium-trust-smoke.mjs .lab-output/new-chromi
 
 上記は本番と同じ事前チェックを通した後、ローカルの未信頼証明書を拒否することを確認する。試験用CAは登録しない。修復後のサイト観測は[比較記録](COMPARISON.md#bounded-site-observations)を参照。
 
+### Camoufoxを同じ診断シナリオへ追加する
+
+任意の方式 `camoufox` は既存の `ToolAdapter`、home→内部URL、Cookie継続、操作、通信・DOM・画面の証拠保存を使う。既定の方式一覧には追加しない。CamoufoxはFirefox系で、Chromiumの拡張機能とgroundingのCDP通信制御は非対応。`--grounding`との組み合わせは計画時に拒否し、`jse.lab`の取得経路には追加しない。SessionPoolのコンテキスト交換も今回の対象外。
+
+Linux x86_64、Python 3.12以上、Node 22以上とFirefoxの実行ライブラリが必要。Camoufoxブラウザ **152.0.4-beta.30** は公式配布ZIPのSHA256を照合する。NodeラッパーはApifyの実験的な `camoufox-js@0.12.0`。同ラッパーの対応条件に合わせて `playwright-core@1.60.0` を `.deps/camoufox` に隔離し、既存のPlaywright/Patchright 1.63を維持する。npm依存は専用のlockを使う。ネイティブ依存のビルドにはC++コンパイラとmakeも必要。
+
+```bash
+python3 -B experiments/bot-diagnostics/setup-camoufox.py
+node experiments/bot-diagnostics/camoufox-smoke.mjs .lab-output/new-camoufox-fixture
+BOT_DIAGNOSTICS_CAMOUFOX_NATIVE_TESTS=1 python3 -B -m unittest tests.test_lab_camoufox -v
+```
+
+smokeは既存の診断用PlaywrightとChromiumも導入済みであることが前提。同じローカルページを、同じ表示モードのPlaywright対照とCamoufoxで取得し、JS、Cookie、リダイレクトと証拠保存を確認する。既定は両方headless、`--headful`を付けると両方headfulになりDISPLAYが必要。実サイトのブロック通過率はこの試験から判断しない。検証済みZIPを再利用する場合はsetupへ `--browser-archive PATH` を渡す。
+
+通常のサイト観測は、比較に使う既存のサイトJSONの `tools` に `camoufox` を追加して、同じ `framework.mjs plan|run --sites=FILE` で実行する。既存runへ方式を追記せず、新しいrunを使う。通常観測のCamoufoxはheadfulで、表示先が必要。
+
+環境のプロキシをPlaywrightのFirefox起動へ明示して渡し、TLS検証を維持する。配布CAは `BOT_DIAGNOSTICS_CA` または `CODEX_PROXY_CERT` から読み、一時Firefoxプロファイルへ `certutil` で登録する。CAを指定した場合はcertutilが必要で、既存のChromium NSS DBやシステムのCAは変更しない。GeoIPの追加通信、人間らしい入力、既定のuBlock拡張は無効で、別のブロック対策を自動適用しない。ブラウザが生成したUA・画面寸法と依存版はruntimeに記録する。
+
+共通化されるのは対象、クエリ、シナリオ、オプションと証拠の判定経路。HTTP方式にはJSがなく、Lightpanda/Obscuraはheadlessなので、全方式のランタイム条件は同一ではない。ブラウザ同士の比較では表示モード、依存版、セッション条件をそろえて記録する。逐次実行の時刻差とCamoufox固有のfingerprint生成も比較条件に含める。
+
+2026-10-03のこのCloudでは導入とオフラインの接続・保護条件のテストは成功したが、実ブラウザは起動待ちでタイムアウトした。152.0.4-beta.30、直前のbeta.29、135.0.1-beta.24の別配備でも起動できず、headfulでも再現した。glxtest未配置、namespaceの書込拒否、SWGL描画エラーを観測したが原因は確定していない。Camoufoxのページ取得、TLS信頼・拒否、プロキシ実測とサイト通過率は未確認。既存ランナーへの追加コードを利用可能性の証明と扱わない。[検証状態](camoufox-validation.json)。通常のオフラインテストでは実ブラウザ試験2件をskipし、上の明示フラグで実行する。
+
 ### Obscura・Patchrightとの比較
 
 [公式Obscura](https://github.com/h4ckf0r0day/obscura) v0.2.3の通常版・stealth版・no-render版を固定SHA256で導入し、Lightpanda補完版およびPatchrightと比較できる。

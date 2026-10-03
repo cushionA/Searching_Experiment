@@ -46,6 +46,7 @@ export function prepare(manifest,{includeGoogle=false,fixture=false,selectors=fa
   if(manifest.tools.some(tool=>!TOOL_NAMES.includes(tool)) || new Set(manifest.tools).size!==manifest.tools.length) throw new Error('unknown_or_duplicate_tool');
   const policy=executionPolicy??manifest.options?.executionPolicy??manifest.execution_policy??'browser_observation';
   if(!['browser_observation','grounding'].includes(policy)) throw new Error('unknown_execution_policy');
+  if(policy==='grounding' && manifest.tools.includes('camoufox')) throw new Error('unsupported_capability:camoufox_grounding');
   if(policy==='grounding'&&(manifest.limits?.requests_per_tool_site!==limits.requests_per_client_target || manifest.limits?.body_bytes_per_tool_site!==limits.bytes_per_client_target)) throw new Error('limits_must_match_executor');
   const recoveryPlan={...DEFAULT_RECOVERY_PLAN,...manifest.recovery_plan};
   if(![0,1].includes(recoveryPlan.max_attempts) || !Number.isFinite(recoveryPlan.wait_seconds)

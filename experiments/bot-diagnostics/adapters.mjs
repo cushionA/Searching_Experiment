@@ -20,7 +20,7 @@ export class ToolAdapter {
     this.currentURL = null; this.sequence = 0;
     this.capabilities = { fetch: httpTools.has(tool), goto: !httpTools.has(tool),
       session: true, selectorOperations: !httpTools.has(tool), challengeActions: !httpTools.has(tool),
-      headful: ['patchright','playwright-baseline'].includes(tool),
+      headful: ['patchright','playwright-baseline','camoufox'].includes(tool),
       extensions: ['patchright','playwright-baseline'].includes(tool) };
     if(profile.session_pool) {
       if(httpTools.has(tool) || profile.extensions?.length) throw new Error('session_pool_requires_browser_without_extensions');

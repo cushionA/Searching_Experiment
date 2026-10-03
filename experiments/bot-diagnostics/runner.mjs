@@ -8,6 +8,7 @@ import {classify, decodeBody} from './observations.mjs';
 import {openLightpanda} from './lightpanda-runtime.mjs';
 import {openObscura} from './obscura-runtime.mjs';
 import {assertChromiumTrustWritable} from './chromium-trust.mjs';
+import {openCamoufox} from './camoufox-runtime.mjs';
 
 // Preserve the existing runner API for scenarios and historical verification commands.
 export {Evidence, verify, safeError, classify, decodeBody};
@@ -157,6 +158,7 @@ export async function openBrowser(name, {extensions = [], lightpanda = null, fix
   fs.mkdirSync(state, {recursive:true});
   if (headful && !(process.env.DISPLAY || process.env.WAYLAND_DISPLAY)) throw new Error('headful_requires_display: set DISPLAY or WAYLAND_DISPLAY');
   if (headful && (name === 'rebrowser-lightpanda' || name.startsWith('obscura'))) throw new Error('unsupported_capability:headful');
+  if (name === 'camoufox') return openCamoufox({extensions,fixture,headful,profile});
   if (name.startsWith('obscura')) {
     if(extensions.length) throw new Error('unsupported_capability:extensions');
     return openObscura(name,{fixture});
@@ -508,8 +510,11 @@ export async function browserSite(evidence, name, target, sharedSession = null) 
       if (b.kind === 'playwright') {
         let stopSession;
         try {
-          stopSession = await b.context.newCDPSession(b.page);
-          await stopSession.send('Page.stopLoading');
+          if (b.runtime?.engine === 'firefox') await b.page.evaluate(() => window.stop());
+          else {
+            stopSession = await b.context.newCDPSession(b.page);
+            await stopSession.send('Page.stopLoading');
+          }
         } catch (error) { result.tracking_errors ||= []; result.tracking_errors.push(safeError(error)); }
         finally { await stopSession?.detach().catch(() => {}); }
       }
