@@ -56,7 +56,7 @@ Patchrightの`ERR_CERT_AUTHORITY_INVALID`は、今回のCloudではNSS DBが読�
 node experiments/bot-diagnostics/chromium-trust-smoke.mjs .lab-output/new-chromium-trust-check
 ```
 
-上記は本番と同じ事前チェックを通した後、ローカルの未信頼証明書を拒否することを確認する。試験用CAは登録しない。[原因・検証・修復後の実サイト結果](../../lab-runs/bot-diagnostics-011-patchright-tls-fix/README.md)。
+上記は本番と同じ事前チェックを通した後、ローカルの未信頼証明書を拒否することを確認する。試験用CAは登録しない。修復後のサイト観測は[比較記録](COMPARISON.md#bounded-site-observations)を参照。
 
 ### Obscura・Patchrightとの比較
 
@@ -84,9 +84,9 @@ node experiments/bot-diagnostics/obscura-redirect-smoke.mjs .lab-output/new-obsc
 node experiments/bot-diagnostics/engine-comparison.mjs .lab-output/new-patched-pool --iterations=5 --pages=8 --tools=rebrowser-lightpanda,patchright,obscura-patched
 ```
 
-Fetchで通信を止めている間に、CDPの`awaitPromise`でその通信の完了を待つとタイムアウトする制限が残る。遅延fetchの確認はNode側で待機し、同期の`evaluate`で状態を読む。CDPがリダイレクト履歴を返さないため、修正版Obscuraでは1観測につき文書要求を初回＋3件までに制限する。これはframeやJSによる文書移動も合算する保守的な上限。保存/計上bodyの8MiB予算は実転送量のハード上限ではない。CDP request headersは送信時に追加されるCookie等をすべて含まず、redirect bodyも記録対象外。[修復の検証・比較結果](../../lab-runs/bot-diagnostics-012-obscura-native-fix/README.md)。
+Fetchで通信を止めている間に、CDPの`awaitPromise`でその通信の完了を待つとタイムアウトする制限が残る。遅延fetchの確認はNode側で待機し、同期の`evaluate`で状態を読む。CDPがリダイレクト履歴を返さないため、修正版Obscuraでは1観測につき文書要求を初回＋3件までに制限する。これはframeやJSによる文書移動も合算する保守的な上限。保存/計上bodyの8MiB予算は実転送量のハード上限ではない。CDP request headersは送信時に追加されるCookie等をすべて含まず、redirect bodyも記録対象外。[検証・比較結果](COMPARISON.md#validation-and-limits)。
 
-[実測結果・互換性・検出器・実サイトの証拠](../../lab-runs/bot-diagnostics-010-engine-comparison/README.md)。全方式の直接比較ではLightpandaが最小PSS、Obscuraが最短の取得時間だった。ローカル検出器の結果からWAF通過率は判断しない。
+[集計した性能とサイト観測](COMPARISON.md#local-fixture-performance)。全方式の直接比較ではLightpandaが最小PSS、Obscuraが最短の取得時間だった。ローカル検出器の結果からWAF通過率は判断しない。
 
 ### 軽量SessionPoolとブロック時の再試行
 
@@ -117,7 +117,7 @@ node experiments/bot-diagnostics/lightpanda-benchmark.mjs .lab-output/new-sessio
 
 セッションは既定で15分または20回の利用で期限切れになる。`base_delay_ms`は1秒、指数バックオフ上限は30秒（サーバーの長い`Retry-After`は別に尊重）。設定の全項目と検証範囲は`session-policy.mjs`に記載した。
 
-[実測・ローカル検証の証拠](../../lab-runs/bot-diagnostics-009-lightpanda-sessions/README.md)。同じパイプラインで7回×10ページずつ比較し、Pool追加後の合計RSSは175.35→176.11 MiB（+0.43%）、取得・観測・抽出は121.28→122.05 ms（+0.64%）。100msの観測待ちと証拠保存を含むため、前の直接Puppeteer測定とは条件が異なる。実サイトのWAF通過率改善はこのfixture試験からは判断できない。
+[実測結果と測定条件](COMPARISON.md#local-fixture-performance)。同じパイプラインで7回×10ページずつ比較し、Pool追加後の合計RSSは175.35→176.11 MiB（+0.43%）、取得・観測・抽出は121.28→122.05 ms（+0.64%）。100msの観測待ちと証拠保存を含むため、前の直接Puppeteer測定とは条件が異なる。実サイトのWAF通過率改善はこのfixture試験からは判断できない。
 
 ### 軽量Lightpanda補完版（2026-10-03）
 
@@ -144,7 +144,7 @@ node experiments/bot-diagnostics/framework.mjs plan --sites=experiments/bot-diag
 
 実測ではRebrowser検知器の実行エラーを解消したが、検査で意図的に呼ぶ`exposeFunction`の漏れと未評価項目は残る。BotDの`bot:false`にも未取得項目があり、検知回避やWAF通過の証明ではない。UAやWebGLは偽装していない。Chrome拡張は`Extensions.loadUnpacked`自体が未実装。`probe`はHTML属性を追加するスクリプトで、実拡張ではなく、検知改善も観測できなかったため推奨構成に含めない。
 
-[測定結果・限界・証拠](../../lab-runs/bot-diagnostics-008-lightpanda-enhancement/README.md)。同一バイナリ・独立Nodeプロセス・7回×15ページで、補完版の取得＋抽出は18.1 ms、Node込みのサンプル最大RSSの中央値は115.1 MiB（通常版18.3 ms / 116.0 MiB）。この短いローカルfixtureでの測定であり、実サイトや長時間運用の性能は未検証。
+[測定結果と限界](COMPARISON.md#validation-and-limits)。同一バイナリ・独立Nodeプロセス・7回×15ページで、補完版の取得＋抽出は18.1 ms、Node込みのサンプル最大RSSの中央値は115.1 MiB（通常版18.3 ms / 116.0 MiB）。この短いローカルfixtureでの測定であり、実サイトや長時間運用の性能は未検証。
 
 Node.js 22以上、Python 3.12以上、Chromium、環境のHTTPS_PROXYとCA信頼が必要。
 
