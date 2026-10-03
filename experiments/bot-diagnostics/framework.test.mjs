@@ -60,7 +60,12 @@ test('bot diagnostics defaults to normal observation and grounding limits requir
   const manifest=JSON.parse(fs.readFileSync(new URL('./sites.json',import.meta.url)));
   assert.equal(prepare(manifest).options.executionPolicy,'browser_observation');
   assert.equal(prepare(manifest).options.headful,true);
+  assert.equal(prepare(manifest).options.headfulExplicit,false);
+  assert.equal(prepare(prepare(manifest)).options.headfulExplicit,false);
+  assert.equal(prepare(prepare(manifest),{headful:true}).options.headfulExplicit,true);
   assert.equal(prepare(manifest,{executionPolicy:'grounding'}).options.headful,false);
+  assert.equal(prepare({...manifest,options:{executionPolicy:'grounding'}}).options.executionPolicy,'grounding');
+  assert.equal(prepare(manifest,{executionPolicy:'grounding',headful:true}).options.headfulExplicit,true);
   manifest.limits.requests_per_tool_site=1;
   assert.equal(prepare(manifest).options.executionPolicy,'browser_observation');
   assert.throws(()=>prepare(manifest,{executionPolicy:'grounding'}),/limits_must_match_executor/);
@@ -70,6 +75,7 @@ test('headful flag reaches the browser adapter and requires a display without la
   const manifest=JSON.parse(fs.readFileSync(new URL('./sites.json',import.meta.url)));
   const planned=prepare(manifest,{headful:true});
   assert.equal(planned.options.headful,true);
+  assert.equal(planned.options.headfulExplicit,true);
   assert.ok(parseCLI(['run','output','--headful']).flags.includes('--headful'));
   const originalDisplay=process.env.DISPLAY,originalWayland=process.env.WAYLAND_DISPLAY;
   delete process.env.DISPLAY;delete process.env.WAYLAND_DISPLAY;
@@ -91,8 +97,9 @@ test('headful flag reaches the browser adapter and requires a display without la
 test('headful-unsupported browser arms are recorded without a runtime failure or launch',async()=>{
   const root=fs.mkdtempSync(path.join(os.tmpdir(),'headful-unsupported-'));
   try {
-    const manifest=prepare({schema:1,tools:['rebrowser-lightpanda'],sites:[
+    const manifest=prepare({schema:1,tools:['rebrowser-lightpanda'],options:{headful:true},sites:[
       {id:'fixture',origins:['http://localhost'],links:{home:'http://localhost/',targets:[]}}]}, {fixture:true});
+    assert.equal(manifest.options.headfulExplicit,true);
     const result=await execute({manifest,directory:path.join(root,'run'),fixture:true});
     assert.equal(result.verification.ok,true);
     assert.equal(result.verification.records,0);

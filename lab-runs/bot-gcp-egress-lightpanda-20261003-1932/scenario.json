@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "tools": [
+    "rebrowser-lightpanda"
+  ],
+  "limits": {
+    "requests_per_tool_site": 25,
+    "body_bytes_per_tool_site": 8388608
+  },
+  "operations_status": "implemented; optional flags select execution",
+  "recovery_plan": {
+    "max_attempts": 1,
+    "return_home_after_success": true,
+    "wait_seconds": 4,
+    "retry_original_target": true
+  },
+  "sites": [
+    {
+      "id": "proxy-egress",
+      "origins": [
+        "https://api.ipify.org"
+      ],
+      "links": {
+        "home": "https://api.ipify.org/",
+        "targets": []
+      },
+      "params": {},
+      "selectors": {},
+      "operations": [],
+      "recovery": null,
+      "enabled": true
+    }
+  ],
+  "options": {
+    "selectors": false,
+    "recoverSimple": false,
+    "seed": 1,
+    "headful": true,
+    "executionPolicy": "browser_observation",
+    "headfulExplicit": false,
+    "recoveryMaxAttempts": 1
+  },
+  "execution_policy": "browser_observation",
+  "policy_authorization": "Verify that each requested browser uses the approved GCP proxy before the four-site blocking scenario. One tiny IP-echo request per tool.",
+  "profiles": [
+    {
+      "id": "baseline",
+      "lightpanda": {
+        "release": "1.0.0",
+        "profile": "compat"
+      },
+      "extensions": []
+    }
+  ]
+}

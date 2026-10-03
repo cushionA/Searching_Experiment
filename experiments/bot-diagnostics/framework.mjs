@@ -46,7 +46,7 @@ export async function execute({manifest,directory,roles=defaultRoles,fixture=fal
       const cell=`${tool}/${site.id}/${profile.id}`;
       if(resume&&completed.has(cell)) continue;
       const adapter=new ToolAdapter({tool,site,evidence,fixture,profile,options:manifest.options});
-      if(manifest.options?.headful && adapter.capabilities.goto && !adapter.capabilities.headful) {
+      if(manifest.options?.headfulExplicit && adapter.capabilities.goto && !adapter.capabilities.headful) {
         outcomes.push({site:site.id,tool,profile:profile.id,state:'unsupported_capability',capability:'headful'});
         evidence.save('pipeline-results.json',outcomes);continue;
       }

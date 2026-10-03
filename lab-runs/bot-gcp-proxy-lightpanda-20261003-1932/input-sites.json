@@ -1,0 +1,187 @@
+{
+  "schema": 1,
+  "tools": [
+    "rebrowser-lightpanda"
+  ],
+  "limits": {
+    "requests_per_tool_site": 25,
+    "body_bytes_per_tool_site": 8388608
+  },
+  "operations_status": "implemented; optional flags select execution",
+  "recovery_plan": {
+    "max_attempts": 1,
+    "return_home_after_success": true,
+    "wait_seconds": 4,
+    "retry_original_target": true
+  },
+  "sites": [
+    {
+      "id": "amazon",
+      "origins": [
+        "https://www.amazon.co.jp"
+      ],
+      "links": {
+        "home": "https://www.amazon.co.jp/",
+        "targets": [
+          "https://www.amazon.co.jp/haul/store",
+          "https://www.amazon.co.jp/s?k={query}"
+        ]
+      },
+      "params": {
+        "query": "USBケーブル"
+      },
+      "selectors": {
+        "primary": "#twotabsearchtextbox",
+        "challenge": null
+      },
+      "selector_evidence": "selector-candidates.json",
+      "url_evidence": "haul/store observed on homepage; search template is a proposed path, not tested",
+      "recovery": null,
+      "operations": [
+        {
+          "op": "fill",
+          "selector": "#twotabsearchtextbox",
+          "value": "{query}"
+        }
+      ],
+      "operation_evidence": "Merged main PR #6 CSS selector; offline replay only. Match/type and value are rechecked live before success."
+    },
+    {
+      "id": "joshin",
+      "origins": [
+        "https://joshinweb.jp"
+      ],
+      "links": {
+        "home": "https://joshinweb.jp/",
+        "targets": [
+          "https://joshinweb.jp/tobuy.html",
+          "https://joshinweb.jp/javacookie.html"
+        ]
+      },
+      "params": {
+        "query": "USB-C"
+      },
+      "selectors": {
+        "primary": "#suggest_input",
+        "challenge": null
+      },
+      "selector_evidence": "selector-candidates.json",
+      "url_evidence": "both links observed on homepage; fetch behavior is untested",
+      "recovery": null,
+      "operations": [
+        {
+          "op": "fill",
+          "selector": "#suggest_input",
+          "value": "{query}"
+        }
+      ],
+      "operation_evidence": "Merged main PR #6 CSS selector; offline replay only. Match/type and value are rechecked live before success."
+    },
+    {
+      "id": "homes",
+      "origins": [
+        "https://www.homes.co.jp"
+      ],
+      "links": {
+        "home": "https://www.homes.co.jp/",
+        "targets": [
+          "https://www.homes.co.jp/chintai/",
+          "https://www.homes.co.jp/mansion/shinchiku/"
+        ]
+      },
+      "params": {},
+      "selectors": {
+        "primary": "button[data-open-menu][aria-controls=\"Menu\"]",
+        "challenge": null
+      },
+      "selector_evidence": "selector-candidates.json",
+      "url_evidence": "both links observed on homepage; fetch behavior is untested",
+      "recovery": null,
+      "operations": [
+        {
+          "op": "click",
+          "selector": "button[data-open-menu][aria-controls=\"Menu\"]",
+          "expect": {
+            "kind": "attribute",
+            "selector": "button[data-open-menu][aria-controls=\"Menu\"]",
+            "name": "aria-expanded",
+            "value": "true"
+          }
+        }
+      ],
+      "operation_evidence": "Menu selector matched stored live DOM. Its click effect is not yet live validated; aria-expanded change required."
+    },
+    {
+      "id": "indeed",
+      "origins": [
+        "https://jp.indeed.com"
+      ],
+      "links": {
+        "home": "https://jp.indeed.com/",
+        "targets": [
+          "https://jp.indeed.com/jobs?q={query}&l={location}"
+        ]
+      },
+      "params": {
+        "query": "エンジニア",
+        "location": "東京"
+      },
+      "selectors": {
+        "primary": "#returnHome",
+        "challenge": null
+      },
+      "selector_evidence": "selector-candidates.json",
+      "url_evidence": "search template proposed; returnHome was observed on a blocked page and points outside the JP origin",
+      "recovery": null,
+      "operations": [],
+      "operation_evidence": "Only Return home observed on denied page; no normal-page action or simple recovery configured."
+    },
+    {
+      "id": "google",
+      "final_stage": true,
+      "enabled": false,
+      "origins": [
+        "https://www.google.com"
+      ],
+      "links": {
+        "home": "https://www.google.com/",
+        "targets": [
+          "https://www.google.com/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "東京 天気"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "proposed final stage; not measured, robots applies",
+      "recovery": null,
+      "operations": [
+        {
+          "op": "fill",
+          "selector": "textarea[name=\"q\"]",
+          "value": "{query}"
+        }
+      ],
+      "operation_evidence": "Proposed search-box selector, not observed. A unique live match is required; no submit and robots still applies."
+    }
+  ],
+  "options": {
+    "selectors": false,
+    "recoverSimple": false,
+    "seed": 1
+  },
+  "execution_policy": "browser_observation",
+  "policy_authorization": "User authorized all registered browsers with the existing blocking scenario through the approved GCP proxy; 2026-10-03. Four default sites, baseline only, Google excluded. VM auto-stops after two hours.",
+  "profiles": [
+    {
+      "id": "baseline",
+      "lightpanda": {
+        "release": "1.0.0",
+        "profile": "compat"
+      }
+    }
+  ]
+}

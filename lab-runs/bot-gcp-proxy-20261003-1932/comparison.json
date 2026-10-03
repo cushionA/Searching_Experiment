@@ -1,0 +1,1378 @@
+{
+  "schemaVersion": 1,
+  "complete": true,
+  "completionBasis": "Coverage only: every expected method/site cell has a pipeline record; navigation success is represented separately by pipelineState and phase outcomes.",
+  "expectedCellCount": 36,
+  "observedCellCount": 36,
+  "missingCells": [],
+  "dimensions": {
+    "sites": [
+      "amazon",
+      "joshin",
+      "homes",
+      "indeed"
+    ],
+    "methods": [
+      "wreq-js",
+      "impit",
+      "patchright",
+      "playwright-baseline",
+      "obscura",
+      "obscura-stealth",
+      "obscura-no-render",
+      "rebrowser-lightpanda",
+      "obscura-patched"
+    ],
+    "browsers": [
+      "patchright",
+      "playwright-baseline",
+      "obscura",
+      "obscura-stealth",
+      "obscura-no-render",
+      "rebrowser-lightpanda",
+      "obscura-patched"
+    ],
+    "httpClients": [
+      "wreq-js",
+      "impit"
+    ],
+    "browserCount": 7,
+    "httpClientCount": 2
+  },
+  "pipelineRuns": [
+    {
+      "run": "bot-gcp-proxy-20261003-1932",
+      "methodSet": "standard",
+      "pipelineCellCount": 28,
+      "pipelineStateCounts": {
+        "capture_challenge": 8,
+        "navigation_completed": 7,
+        "preflight_or_measurement_failure": 6,
+        "site_rejected": 7
+      }
+    },
+    {
+      "run": "bot-gcp-proxy-lightpanda-20261003-1932",
+      "methodSet": "lightpanda",
+      "pipelineCellCount": 4,
+      "pipelineStateCounts": {
+        "capture_challenge": 1,
+        "navigation_completed": 1,
+        "site_rejected": 2
+      }
+    },
+    {
+      "run": "bot-gcp-proxy-patched-20261003-1932",
+      "methodSet": "obscura-patched",
+      "pipelineCellCount": 4,
+      "pipelineStateCounts": {
+        "capture_challenge": 1,
+        "preflight_or_measurement_failure": 2,
+        "site_rejected": 1
+      }
+    }
+  ],
+  "assessments": {
+    "amazon": "Phases whose visible_text_prefix contains ショッピングを続け are labeled interstitial; HTTP 200/content_observed is not treated as normal acquisition.",
+    "homes": "Obscura-stealth screenshots show LIFULL HOME'S homepage content despite HTTP 202 and rental-search/map content at T1. T1 navigation remains unverified with unknown HTTP status; the escaped noscript JavaScript notice alone does not establish blocking or disabled JavaScript. Normal end-to-end acquisition remains unverified."
+  },
+  "cells": [
+    {
+      "site": "amazon",
+      "method": "wreq-js",
+      "profile": "baseline",
+      "pipelineState": "navigation_completed",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.amazon.co.jp/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon.co.jp",
+          "visible_text_prefix": "Amazon.co.jp 下のボタンをクリックしてショッピングを続けてください ショッピングを続ける 利用規約 プライバシー規約 &copy; 1996-2025, Amazon.com, Inc. or its affiliates",
+          "error": null,
+          "main_record": 1,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": {
+            "classification": "interstitial",
+            "normalContentAcquisition": false,
+            "basis": "visible_text_prefix contains ショッピングを続け",
+            "note": "HTTP 200/content_observed is not treated as normal page acquisition."
+          }
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/haul/store",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon Haul: Find new faves for way less",
+          "visible_text_prefix": "Amazon Haul: Find new faves for way less Skip to Main content Keyboard shortcuts Search alt + / Cart shift + alt + C Home shift + alt + H Orders shift + alt + O Show/Hide shortcuts shift + alt + Z To move between items, use your keyboard&#x27;s up or down arrows. .co.jp Deliver to United States Amazon Haul Select the department you want to search in Amazon Haul All Departments Search Amazon.co.jp EN Hello, Sign in Account & Lists Returns & Orders 0 All Amazon Points Best Sellers Today's Deals Amazon Basics AmazonGlobal New Releases Japanese Books Customer Service Gift Cards Coupons Gift Ideas Computers & Peripherals Sell Health and Personal Care Home & Kitchen Crazy Low 🔥 Women Men Kids Home Bags Storage Accessories Office Previous page Next page Free Shipping on Orders over 1,000 JPY✈️ | 5% OFF Orders Over 2,000 JPY ⭐️ | 10% OFF Orders Over 3,000 JPY 🔥 | Free Shipping on Orders over 1,000 JPY✈️ | 5% OFF Orders Over 2,000 JPY ⭐️ | 10% OFF Orders Over 3,000 JPY 🔥 | Free Shipping on Orders over 1,000 JPY✈️ | 5% OFF Orders Over 2,000 JPY ⭐️ | 10% OFF Orders Over 3,000 JPY 🔥 | Free Shipping on Orders over 1,000 JPY✈️ | 5% OFF Orders Over 2,000 JPY ⭐️ | 10% OFF Orders Over 3,000 JPY 🔥 | Free Shipping on Orders over 1,000 JPY✈️ | 5% OFF Orders Over 2,000 JPY ⭐️ | 10% OFF Orders Over 3,000 JPY 🔥 | Free Shipping on Orders over 1,000 JPY✈️ | 5% OFF Orders Over 2,000 JPY ⭐️ | 10% OFF Orders Over 3,000 JPY 🔥 | Free Shipping on Orders over 1,000 JPY✈️ | 5% OFF Orders Over 2,000 JP",
+          "error": null,
+          "main_record": 2,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/s?k=USB%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon.co.jp : USBケーブル",
+          "visible_text_prefix": "Amazon.co.jp : USBケーブル Skip to Main content Results Filters Filters Keyboard shortcuts Search alt + / Cart shift + alt + C Home shift + alt + H Orders shift + alt + O Show/Hide shortcuts shift + alt + Z To move between items, use your keyboard&#x27;s up or down arrows. .co.jp Deliver to United States All Select the department you want to search in All Departments Prime Appreciation Sale Audible Audiobooks Amazon Devices Kindle Store Prime Video Alexa Skills Subscribe & Save Digital Music Apps & Games Japanese Books English Books Music Classical Movies & TV Computer & Video Games Software Computers & Accessories Electronics & Cameras Stationery and Office Products Kitchen & Housewares Pet Supplies Health & Personal Care Beauty Food & Beverage Baby & Maternity Fashion Women's Clothing, Shoes & Jewelry Men's Clothing, Shoes & Jewelry Baby Clothing, Shoes & Jewelry Toys Hobby Musical Instruments Sports Car & Bike Products DIY, Tools & Garden Large Appliances Credit Cards Gift Cards Industrial & Scientific Amazon Resale Amazon Haul Amazon International Direct Search Amazon.co.jp EN Hello, Sign in Account & Lists Returns & Orders 0 Cart All Amazon Points Best Sellers Today's Deals Amazon Basics AmazonGlobal New Releases Japanese Books Customer Service Gift Cards Coupons Gift Ideas Computers & Peripherals Sell Health and Personal Care Home & Kitchen 1-48 of over 30,000 results for &quot;USBケーブル&quot; Sort by: Featured Price: Low to High Price: High to Low Avg. Customer Review Newest",
+          "error": null,
+          "main_record": 3,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "amazon",
+      "method": "impit",
+      "profile": "baseline",
+      "pipelineState": "navigation_completed",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.amazon.co.jp/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon.co.jp",
+          "visible_text_prefix": "Amazon.co.jp 下のボタンをクリックしてショッピングを続けてください ショッピングを続ける 利用規約 プライバシー規約 &copy; 1996-2025, Amazon.com, Inc. or its affiliates",
+          "error": null,
+          "main_record": 4,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": {
+            "classification": "interstitial",
+            "normalContentAcquisition": false,
+            "basis": "visible_text_prefix contains ショッピングを続け",
+            "note": "HTTP 200/content_observed is not treated as normal page acquisition."
+          }
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/haul/store",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon Haul: Find new faves for way less",
+          "visible_text_prefix": "Amazon Haul: Find new faves for way less Skip to Main content Keyboard shortcuts Search alt + / Cart shift + alt + C Home shift + alt + H Orders shift + alt + O Show/Hide shortcuts shift + alt + Z To move between items, use your keyboard&#x27;s up or down arrows. .co.jp Deliver to United States Amazon Haul Select the department you want to search in Amazon Haul All Departments Search Amazon.co.jp EN Hello, Sign in Account & Lists Returns & Orders 0 All Amazon Points Best Sellers Today's Deals Amazon Basics AmazonGlobal New Releases Japanese Books Customer Service Gift Cards Coupons Gift Ideas Computers & Peripherals Sell Health and Personal Care Home & Kitchen Crazy Low 🔥 Women Men Kids Home Bags Storage Accessories Office Previous page Next page Free Shipping on Orders over 1,000 JPY✈️ | 5% OFF Orders Over 2,000 JPY ⭐️ | 10% OFF Orders Over 3,000 JPY 🔥 | Free Shipping on Orders over 1,000 JPY✈️ | 5% OFF Orders Over 2,000 JPY ⭐️ | 10% OFF Orders Over 3,000 JPY 🔥 | Free Shipping on Orders over 1,000 JPY✈️ | 5% OFF Orders Over 2,000 JPY ⭐️ | 10% OFF Orders Over 3,000 JPY 🔥 | Free Shipping on Orders over 1,000 JPY✈️ | 5% OFF Orders Over 2,000 JPY ⭐️ | 10% OFF Orders Over 3,000 JPY 🔥 | Free Shipping on Orders over 1,000 JPY✈️ | 5% OFF Orders Over 2,000 JPY ⭐️ | 10% OFF Orders Over 3,000 JPY 🔥 | Free Shipping on Orders over 1,000 JPY✈️ | 5% OFF Orders Over 2,000 JPY ⭐️ | 10% OFF Orders Over 3,000 JPY 🔥 | Free Shipping on Orders over 1,000 JPY✈️ | 5% OFF Orders Over 2,000 JP",
+          "error": null,
+          "main_record": 5,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/s?k=USB%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon.co.jp : USBケーブル",
+          "visible_text_prefix": "Amazon.co.jp : USBケーブル Skip to Main content Results Filters Filters Keyboard shortcuts Search alt + / Cart shift + alt + C Home shift + alt + H Orders shift + alt + O Show/Hide shortcuts shift + alt + Z To move between items, use your keyboard&#x27;s up or down arrows. .co.jp Deliver to United States All Select the department you want to search in All Departments Prime Appreciation Sale Audible Audiobooks Amazon Devices Kindle Store Prime Video Alexa Skills Subscribe & Save Digital Music Apps & Games Japanese Books English Books Music Classical Movies & TV Computer & Video Games Software Computers & Accessories Electronics & Cameras Stationery and Office Products Kitchen & Housewares Pet Supplies Health & Personal Care Beauty Food & Beverage Baby & Maternity Fashion Women's Clothing, Shoes & Jewelry Men's Clothing, Shoes & Jewelry Baby Clothing, Shoes & Jewelry Toys Hobby Musical Instruments Sports Car & Bike Products DIY, Tools & Garden Large Appliances Credit Cards Gift Cards Industrial & Scientific Amazon Resale Amazon Haul Amazon International Direct Search Amazon.co.jp EN Hello, Sign in Account & Lists Returns & Orders 0 Cart All Amazon Points Best Sellers Today's Deals Amazon Basics AmazonGlobal New Releases Japanese Books Customer Service Gift Cards Coupons Gift Ideas Computers & Peripherals Sell Health and Personal Care Home & Kitchen 1-48 of over 30,000 results for &quot;USBケーブル&quot; Sort by: Featured Price: Low to High Price: High to Low Avg. Customer Review Newest",
+          "error": null,
+          "main_record": 6,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "amazon",
+      "method": "patchright",
+      "profile": "baseline",
+      "pipelineState": "navigation_completed",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.amazon.co.jp/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon.co.jp",
+          "visible_text_prefix": "Amazon.co.jp 下のボタンをクリックしてショッピングを続けてください ショッピングを続ける 利用規約 プライバシー規約 © 1996-2025, Amazon.com, Inc. or its affiliates",
+          "error": null,
+          "main_record": 7,
+          "dom_sha256": "0e3883d2d170153aca1901c2372720ef1f7d0ebe9b136b2b9421fda9298d380f",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": {
+            "classification": "interstitial",
+            "normalContentAcquisition": false,
+            "basis": "visible_text_prefix contains ショッピングを続け",
+            "note": "HTTP 200/content_observed is not treated as normal page acquisition."
+          }
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/haul/store",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon Haul: Find new faves for way less",
+          "visible_text_prefix": "Amazon Haul: Find new faves for way less Skip to Main content Keyboard shortcuts Search alt + / Cart shift + alt + C Home shift + alt + H Orders shift + alt + O Show/Hide shortcuts shift + alt + Z To move between items, use your keyboard's up or down arrows. .co.jp Deliver to United States Amazon Haul Select the department you want to search in Amazon Haul All Departments Search Amazon.co.jp EN Hello, Sign in Account &amp; Lists Returns &amp; Orders 0 International Shopping Transition Alert We're showing you items that ship to United States . To see items that ship to a different country, change your delivery address. Dismiss Change Address All Amazon Points : Check your balance Best Sellers Today's Deals Amazon Basics AmazonGlobal New Releases Japanese Books Customer Service Gift Cards Coupons Gift Ideas Computers &amp; Peripherals Sell Health and Personal Care Home &amp; Kitchen Add USD&nbsp;6.33 for FREE shipping FREE SHIPPING USD&nbsp;6.33 Crazy Low 🔥 Women Men Kids Home Bags Storage Accessories Office Sign in New customer? Start here. Your Lists Create a Wish List Find a Gift Raku-raku Baby Explore Showroom Charity Lists Your Account Your Account Your Orders Your Wish List Your Recommendations Memberships &amp; Subscriptions Register for a Business Account Your Content and Devices Your Music Your Amazon Photos Your Watchlist Your Kindle Unlimited Your Manga Library Your Games &amp; Software Library Your Android Apps &amp; Devices Previous page Next page Free Shipping on",
+          "error": null,
+          "main_record": 10,
+          "dom_sha256": "f335b92652d3c6ee3aeaca7857dc7a75c6addee569687f94dbbee1bbb1b7609d",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/s?k=USB%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon.co.jp : USBケーブル",
+          "visible_text_prefix": "Amazon.co.jp : USBケーブル Skip to Main content Results Filters Filters Keyboard shortcuts Search alt + / Cart shift + alt + C Home shift + alt + H Orders shift + alt + O Show/Hide shortcuts shift + alt + Z To move between items, use your keyboard's up or down arrows. .co.jp Deliver to United States All Select the department you want to search in All Departments Prime Appreciation Sale Audible Audiobooks Amazon Devices Kindle Store Prime Video Alexa Skills Subscribe &amp; Save Digital Music Apps &amp; Games Japanese Books English Books Music Classical Movies &amp; TV Computer &amp; Video Games Software Computers &amp; Accessories Electronics &amp; Cameras Stationery and Office Products Kitchen &amp; Housewares Pet Supplies Health &amp; Personal Care Beauty Food &amp; Beverage Baby &amp; Maternity Fashion Women's Clothing, Shoes &amp; Jewelry Men's Clothing, Shoes &amp; Jewelry Baby Clothing, Shoes &amp; Jewelry Toys Hobby Musical Instruments Sports Car &amp; Bike Products DIY, Tools &amp; Garden Large Appliances Credit Cards Gift Cards Industrial &amp; Scientific Amazon Resale Amazon Haul Amazon International Direct Search Amazon.co.jp EN Hello, Sign in Account &amp; Lists Returns &amp; Orders 0 Cart International Shopping Transition Alert We're showing you items that ship to United States . To see items that ship to a different country, change your delivery address. Dismiss Change Address Sign in New customer? Start here. Your Lists Create a Wish List Find a Gift Raku-raku Baby ",
+          "error": null,
+          "main_record": 223,
+          "dom_sha256": "c1ee0b91febb8f965d3e2c28a924cac780c712c87c2fcd6a7b49597d16bc36e6",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "amazon",
+      "method": "playwright-baseline",
+      "profile": "baseline",
+      "pipelineState": "navigation_completed",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.amazon.co.jp/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon.co.jp",
+          "visible_text_prefix": "Amazon.co.jp 下のボタンをクリックしてショッピングを続けてください ショッピングを続ける 利用規約 プライバシー規約 © 1996-2025, Amazon.com, Inc. or its affiliates",
+          "error": null,
+          "main_record": 337,
+          "dom_sha256": "a50ca54fadacf2b837d19a17e38b4d206a8ec957d2985dfc7670a33c9d8f4c9f",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": {
+            "classification": "interstitial",
+            "normalContentAcquisition": false,
+            "basis": "visible_text_prefix contains ショッピングを続け",
+            "note": "HTTP 200/content_observed is not treated as normal page acquisition."
+          }
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/haul/store",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon Haul: Find new faves for way less",
+          "visible_text_prefix": "Amazon Haul: Find new faves for way less Skip to Main content Keyboard shortcuts Search alt + / Cart shift + alt + C Home shift + alt + H Orders shift + alt + O Show/Hide shortcuts shift + alt + Z To move between items, use your keyboard's up or down arrows. .co.jp Deliver to United States Amazon Haul Select the department you want to search in Amazon Haul All Departments Search Amazon.co.jp EN Hello, Sign in Account &amp; Lists Returns &amp; Orders 0 International Shopping Transition Alert We're showing you items that ship to United States . To see items that ship to a different country, change your delivery address. Dismiss Change Address All Amazon Points : Check your balance Best Sellers Today's Deals Amazon Basics AmazonGlobal New Releases Japanese Books Customer Service Gift Cards Coupons Gift Ideas Computers &amp; Peripherals Sell Health and Personal Care Home &amp; Kitchen Add USD&nbsp;6.33 for FREE shipping FREE SHIPPING USD&nbsp;6.33 Crazy Low 🔥 Women Men Kids Home Bags Storage Accessories Office Sign in New customer? Start here. Your Lists Create a Wish List Find a Gift Raku-raku Baby Explore Showroom Charity Lists Your Account Your Account Your Orders Your Wish List Your Recommendations Memberships &amp; Subscriptions Register for a Business Account Your Content and Devices Your Music Your Amazon Photos Your Watchlist Your Kindle Unlimited Your Manga Library Your Games &amp; Software Library Your Android Apps &amp; Devices Change language 日本語 - JA English - EN 中文",
+          "error": null,
+          "main_record": 340,
+          "dom_sha256": "e96805106af2efa765eb4dbf1e75ba0f4c74e80c9c25dd4cf4a750fabf7efcb4",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/s?k=USB%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon.co.jp : USBケーブル",
+          "visible_text_prefix": "Amazon.co.jp : USBケーブル Skip to Main content Results Filters Filters Keyboard shortcuts Search alt + / Cart shift + alt + C Home shift + alt + H Orders shift + alt + O Show/Hide shortcuts shift + alt + Z To move between items, use your keyboard's up or down arrows. .co.jp Deliver to United States All Select the department you want to search in All Departments Prime Appreciation Sale Audible Audiobooks Amazon Devices Kindle Store Prime Video Alexa Skills Subscribe &amp; Save Digital Music Apps &amp; Games Japanese Books English Books Music Classical Movies &amp; TV Computer &amp; Video Games Software Computers &amp; Accessories Electronics &amp; Cameras Stationery and Office Products Kitchen &amp; Housewares Pet Supplies Health &amp; Personal Care Beauty Food &amp; Beverage Baby &amp; Maternity Fashion Women's Clothing, Shoes &amp; Jewelry Men's Clothing, Shoes &amp; Jewelry Baby Clothing, Shoes &amp; Jewelry Toys Hobby Musical Instruments Sports Car &amp; Bike Products DIY, Tools &amp; Garden Large Appliances Credit Cards Gift Cards Industrial &amp; Scientific Amazon Resale Amazon Haul Amazon International Direct Search Amazon.co.jp EN Hello, Sign in Account &amp; Lists Returns &amp; Orders 0 Cart International Shopping Transition Alert We're showing you items that ship to United States . To see items that ship to a different country, change your delivery address. Dismiss Change Address Sign in New customer? Start here. Your Lists Create a Wish List Find a Gift Raku-raku Baby ",
+          "error": null,
+          "main_record": 554,
+          "dom_sha256": "7dca0d56705f2dfcef8869656c405e87a15e83812313133e95d5259802fe46b6",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "amazon",
+      "method": "obscura",
+      "profile": "baseline",
+      "pipelineState": "preflight_or_measurement_failure",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.amazon.co.jp/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon.co.jp",
+          "visible_text_prefix": "Amazon.co.jp 下のボタンをクリックしてショッピングを続けてください ショッピングを続ける 利用規約 プライバシー規約 © 1996-2025, Amazon.com, Inc. or its affiliates",
+          "error": null,
+          "main_record": 670,
+          "dom_sha256": "73d31c7393c2733570bc185492a8b1615cd9a8162a4b5f22a82332f944cd7a57",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": {
+            "classification": "interstitial",
+            "normalContentAcquisition": false,
+            "basis": "visible_text_prefix contains ショッピングを続け",
+            "note": "HTTP 200/content_observed is not treated as normal page acquisition."
+          }
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/haul/store",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon Haul: Find new faves for way less",
+          "visible_text_prefix": "Amazon Haul: Find new faves for way less &lt;style type=\"text/css\"&gt;&lt;!-- #navbar #nav-shop .nav-a:hover { color: #ff9900; text-decoration: underline; } #navbar #nav-search .nav-search-facade, #navbar #nav-tools .nav-icon, #navbar #nav-shop .nav-icon, #navbar #nav-subnav .nav-hasArrow .nav-arrow { display: none; } #navbar #nav-search .nav-search-submit, #navbar #nav-search .nav-search-scope { display: block; } #nav-search .nav-search-scope { padding: 0 5px; } #navbar #nav-search .nav-search-dropdown { position: relative; top: 5px; height: 23px; font-size: 14px; opacity: 1; filter: alpha(opacity = 100); } --&gt;&lt;/style&gt; Skip to Main content Keyboard shortcuts Search alt + / Cart shift + alt + C Home shift + alt + H Orders shift + alt + O Show/Hide shortcuts shift + alt + Z To move between items, use your keyboard's up or down arrows. .co.jp Deliver to United States Amazon Haul Select the department you want to search in Amazon Haul All Departments Search Amazon.co.jp EN Hello, Sign in Account &amp; Lists Returns &amp; Orders 0 All Amazon Points : Check your balance Help Center Furusato Amazon Haul Best Sellers Amazon Basics Prime Video New Releases Today's Deals Music Prime Home &amp; Kitchen Gift Cards Kindle Books Food &amp; Beverage Computers &amp; Peripherals Amazon Fashion Toys &amp; Games Health and Personal Care Audible Automotive Home Improvement Beauty &amp; Personal Care Sports &amp; Outdoors Affordable International Brand Pet Supplies &amp; Pet Foods Amazo",
+          "error": null,
+          "main_record": 674,
+          "dom_sha256": "a29ba9e8e2a9065e6301cc596c4a9b1fbf8529553c1e23b0748b6c2418fa103f",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/s?k=USB%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB",
+          "http_status": 503,
+          "outcome": "server_error_observed",
+          "title": "ご迷惑をおかけしています！",
+          "visible_text_prefix": "ご迷惑をおかけしています！ ご迷惑をおかけしています！ お客様のリクエストの処理中にエラーが発生しました。できるだけ早くこの問題を解決いたします。 注文手続きの途中でこのエラーが表示された場合は、注文は確定されていませんので、ご注意ください。 ご不便をおかけして申し訳ございません。 Amazon.co.jpホームへ",
+          "error": null,
+          "main_record": 819,
+          "dom_sha256": "71abd1d96f46482ea28fd83a4028ceced42bda104b40cac99ccfece6f8239540",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "amazon",
+      "method": "obscura-stealth",
+      "profile": "baseline",
+      "pipelineState": "preflight_or_measurement_failure",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.amazon.co.jp/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon.co.jp",
+          "visible_text_prefix": "Amazon.co.jp 下のボタンをクリックしてショッピングを続けてください ショッピングを続ける 利用規約 プライバシー規約 © 1996-2025, Amazon.com, Inc. or its affiliates",
+          "error": null,
+          "main_record": 822,
+          "dom_sha256": "05f1d8f167504699fcf0c3d6842c3aa69c1b022673711432e3193f48cbf90ae3",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": {
+            "classification": "interstitial",
+            "normalContentAcquisition": false,
+            "basis": "visible_text_prefix contains ショッピングを続け",
+            "note": "HTTP 200/content_observed is not treated as normal page acquisition."
+          }
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/haul/store",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon Haul: Find new faves for way less",
+          "visible_text_prefix": "Amazon Haul: Find new faves for way less &lt;style type=\"text/css\"&gt;&lt;!-- #navbar #nav-shop .nav-a:hover { color: #ff9900; text-decoration: underline; } #navbar #nav-search .nav-search-facade, #navbar #nav-tools .nav-icon, #navbar #nav-shop .nav-icon, #navbar #nav-subnav .nav-hasArrow .nav-arrow { display: none; } #navbar #nav-search .nav-search-submit, #navbar #nav-search .nav-search-scope { display: block; } #nav-search .nav-search-scope { padding: 0 5px; } #navbar #nav-search .nav-search-dropdown { position: relative; top: 5px; height: 23px; font-size: 14px; opacity: 1; filter: alpha(opacity = 100); } --&gt;&lt;/style&gt; Skip to Main content Keyboard shortcuts Search alt + / Cart shift + alt + C Home shift + alt + H Orders shift + alt + O Show/Hide shortcuts shift + alt + Z To move between items, use your keyboard's up or down arrows. .co.jp Deliver to United States Amazon Haul Select the department you want to search in Amazon Haul All Departments Search Amazon.co.jp EN Hello, Sign in Account &amp; Lists Returns &amp; Orders 0 International Shopping Transition Alert We're showing you items that ship to United States . To see items that ship to a different country, change your delivery address. Dismiss Change Address All Amazon Points : Check your balance Help Center Furusato Amazon Haul Prime Video Music Subscribe &amp; Save Today's Deals Coupons Japanese Books Kindle Books Audible Prime Best Sellers Pet Supplies &amp; Pet Foods Baby &amp; Maternity Toys &amp; Games ",
+          "error": "@{name=TimeoutError; message=page.goto: Timeout 25000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://www.amazon.co.jp/haul/store\", waiting until \"domcontentloaded\"\u001b[22m\n}",
+          "main_record": 826,
+          "dom_sha256": "30feaed6ba041ba16a8d6cf56ac2199d9f4f32896ebae865bb94fde77aed0461",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/s?k=USB%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB",
+          "http_status": null,
+          "outcome": "execution_error",
+          "title": null,
+          "visible_text_prefix": null,
+          "error": "page.content: Unable to retrieve content because the page is navigating and changing the content.",
+          "main_record": null,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "amazon",
+      "method": "obscura-no-render",
+      "profile": "baseline",
+      "pipelineState": "preflight_or_measurement_failure",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.amazon.co.jp/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon.co.jp",
+          "visible_text_prefix": "Amazon.co.jp 下のボタンをクリックしてショッピングを続けてください ショッピングを続ける 利用規約 プライバシー規約 © 1996-2025, Amazon.com, Inc. or its affiliates",
+          "error": null,
+          "main_record": 948,
+          "dom_sha256": "98b932a24a10096c88b04a8e7ad937b8977efc9ff062a12220740f666e4a26f0",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": {
+            "classification": "interstitial",
+            "normalContentAcquisition": false,
+            "basis": "visible_text_prefix contains ショッピングを続け",
+            "note": "HTTP 200/content_observed is not treated as normal page acquisition."
+          }
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/haul/store",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon Haul: Find new faves for way less",
+          "visible_text_prefix": "Amazon Haul: Find new faves for way less &lt;style type=\"text/css\"&gt;&lt;!-- #navbar #nav-shop .nav-a:hover { color: #ff9900; text-decoration: underline; } #navbar #nav-search .nav-search-facade, #navbar #nav-tools .nav-icon, #navbar #nav-shop .nav-icon, #navbar #nav-subnav .nav-hasArrow .nav-arrow { display: none; } #navbar #nav-search .nav-search-submit, #navbar #nav-search .nav-search-scope { display: block; } #nav-search .nav-search-scope { padding: 0 5px; } #navbar #nav-search .nav-search-dropdown { position: relative; top: 5px; height: 23px; font-size: 14px; opacity: 1; filter: alpha(opacity = 100); } --&gt;&lt;/style&gt; Skip to Main content Keyboard shortcuts Search alt + / Cart shift + alt + C Home shift + alt + H Orders shift + alt + O Show/Hide shortcuts shift + alt + Z To move between items, use your keyboard's up or down arrows. .co.jp Deliver to United States Amazon Haul Select the department you want to search in Amazon Haul All Departments Search Amazon.co.jp EN Hello, Sign in Account &amp; Lists Returns &amp; Orders 0 All Amazon Points : Check your balance Help Center Furusato Amazon Haul Best Sellers Amazon Basics Prime Video New Releases Today's Deals Music Prime Home &amp; Kitchen Gift Cards Kindle Books Food &amp; Beverage Computers &amp; Peripherals Amazon Fashion Toys &amp; Games Health and Personal Care Audible Automotive Home Improvement Beauty &amp; Personal Care Sports &amp; Outdoors Affordable International Brand Pet Supplies &amp; Pet Foods Amazo",
+          "error": null,
+          "main_record": 950,
+          "dom_sha256": "60419181b0700c4601f0f587d22d37cbcc0cb0ade1c17b19dfd936df2bb9a574",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/s?k=USB%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB",
+          "http_status": 503,
+          "outcome": "server_error_observed",
+          "title": "ご迷惑をおかけしています！",
+          "visible_text_prefix": "ご迷惑をおかけしています！ ご迷惑をおかけしています！ お客様のリクエストの処理中にエラーが発生しました。できるだけ早くこの問題を解決いたします。 注文手続きの途中でこのエラーが表示された場合は、注文は確定されていませんので、ご注意ください。 ご不便をおかけして申し訳ございません。 Amazon.co.jpホームへ",
+          "error": null,
+          "main_record": 1027,
+          "dom_sha256": "71abd1d96f46482ea28fd83a4028ceced42bda104b40cac99ccfece6f8239540",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "joshin",
+      "method": "wreq-js",
+      "profile": "baseline",
+      "pipelineState": "site_rejected",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://joshinweb.jp/",
+          "http_status": 403,
+          "outcome": "access_denied_observed",
+          "title": "Access Denied",
+          "visible_text_prefix": "Access Denied Access Denied You don't have permission to access \"http&#58;&#47;&#47;joshinweb&#46;jp&#47;\" on this server. Reference&#32;&#35;18&#46;716c3817&#46;1791024884&#46;5ed452f8 https&#58;&#47;&#47;errors&#46;edgesuite&#46;net&#47;18&#46;716c3817&#46;1791024884&#46;5ed452f8",
+          "error": null,
+          "main_record": 1028,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "joshin",
+      "method": "impit",
+      "profile": "baseline",
+      "pipelineState": "site_rejected",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://joshinweb.jp/",
+          "http_status": 403,
+          "outcome": "access_denied_observed",
+          "title": "Access Denied",
+          "visible_text_prefix": "Access Denied Access Denied You don't have permission to access \"http&#58;&#47;&#47;joshinweb&#46;jp&#47;\" on this server. Reference&#32;&#35;18&#46;716c3817&#46;1791024885&#46;5ed45f24 https&#58;&#47;&#47;errors&#46;edgesuite&#46;net&#47;18&#46;716c3817&#46;1791024885&#46;5ed45f24",
+          "error": null,
+          "main_record": 1029,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "joshin",
+      "method": "patchright",
+      "profile": "baseline",
+      "pipelineState": "site_rejected",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://joshinweb.jp/",
+          "http_status": 403,
+          "outcome": "access_denied_observed",
+          "title": "Access Denied",
+          "visible_text_prefix": "Access Denied Access Denied You don't have permission to access \"http://joshinweb.jp/\" on this server. Reference #18.716c3817.1791024886.5ed473c1 https://errors.edgesuite.net/18.716c3817.1791024886.5ed473c1",
+          "error": null,
+          "main_record": 1030,
+          "dom_sha256": "2ae742620a50754450300b4b114d1485e363f99359f5cd9b69fa5b9a1ee8a4a6",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "joshin",
+      "method": "playwright-baseline",
+      "profile": "baseline",
+      "pipelineState": "site_rejected",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://joshinweb.jp/",
+          "http_status": 403,
+          "outcome": "access_denied_observed",
+          "title": "Access Denied",
+          "visible_text_prefix": "Access Denied Access Denied You don't have permission to access \"http://joshinweb.jp/\" on this server. Reference #18.716c3817.1791024894.5ed4de68 https://errors.edgesuite.net/18.716c3817.1791024894.5ed4de68",
+          "error": null,
+          "main_record": 1031,
+          "dom_sha256": "3700a95b7c534b0255fec44c05a8efd1a88fc29e21c8c4e06ef7b426bc6d4855",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "joshin",
+      "method": "obscura",
+      "profile": "baseline",
+      "pipelineState": "site_rejected",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://joshinweb.jp/",
+          "http_status": 403,
+          "outcome": "access_denied_observed",
+          "title": "Access Denied",
+          "visible_text_prefix": "Access Denied Access Denied You don't have permission to access \"http://joshinweb.jp/\" on this server. Reference #18.716c3817.1791024903.5ed563c1 https://errors.edgesuite.net/18.716c3817.1791024903.5ed563c1",
+          "error": null,
+          "main_record": 1032,
+          "dom_sha256": "f025b8e5d6236666afbbdabd487d144a7e74d9190e85e2857350e785bda1de85",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "joshin",
+      "method": "obscura-stealth",
+      "profile": "baseline",
+      "pipelineState": "site_rejected",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://joshinweb.jp/",
+          "http_status": 403,
+          "outcome": "access_denied_observed",
+          "title": "Access Denied",
+          "visible_text_prefix": "Access Denied Access Denied You don't have permission to access \"http://joshinweb.jp/\" on this server. Reference #18.716c3817.1791024911.5ed5ec09 https://errors.edgesuite.net/18.716c3817.1791024911.5ed5ec09",
+          "error": null,
+          "main_record": 1033,
+          "dom_sha256": "bc6b2e53eba48560f230dbb1c0de45d2d6884f63b5629c0df3a3dd8ff0cb192c",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "joshin",
+      "method": "obscura-no-render",
+      "profile": "baseline",
+      "pipelineState": "site_rejected",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://joshinweb.jp/",
+          "http_status": 403,
+          "outcome": "access_denied_observed",
+          "title": "Access Denied",
+          "visible_text_prefix": "Access Denied Access Denied You don't have permission to access \"http://joshinweb.jp/\" on this server. Reference #18.716c3817.1791024920.5ed67498 https://errors.edgesuite.net/18.716c3817.1791024920.5ed67498",
+          "error": null,
+          "main_record": 1034,
+          "dom_sha256": "636cbe9c14c8a6805128951ea4ab880d26e5ccb6b26c18bcd5f70ebdffec34c4",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "homes",
+      "method": "wreq-js",
+      "profile": "baseline",
+      "pipelineState": "navigation_completed",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.homes.co.jp/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "【ホームズ】不動産売買・賃貸物件・住宅情報サイト",
+          "visible_text_prefix": "【ホームズ】不動産売買・賃貸物件・住宅情報サイト ご利用の環境ではJavaScriptの設定が無効になっています。このサイトをご利用の際には、JavaScriptを有効にしてください。 メインコンテンツにスキップ 不動産売買・賃貸物件 住宅情報サービス 借りる 賃貸 買う マンション マンション 新築マンション・分譲マンション 中古マンション 一戸建て・土地 一戸建て・土地 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 その他 投資 メニュー 日本最大級の不動産・住宅情報サイト ライフルホームズ 閉じる メニュー ゲスト さん マイページ 最近見た物件 0 件 お気に入り 0 件 保存した条件 0 件 お問合せ履歴 やることリスト 借りる 賃貸物件 (アパート・賃貸マンション・賃貸一戸建て) 買う 新築マンション・分譲マンション 中古マンション 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 関連サービス 不動産投資 引越し 家づくり・住宅購入の無料相談 条件や希望にあった最適な会社を、中立な立場のアドバイザーがご紹介します。 営業時間 10時〜19時（火・水定休日） tealium#send\" data-tealium-udata-value=\"{&quot;tealium_event&quot;:&quot;click_content&quot;,&quot;market_type&quot;:&quot;general&quot;,&quot;content_type&quot;:&quot;button&quot;,&quot;content_id&quot;:&quot;v5:cross:top:counter_transition_button&quot;}\"> 住まいの窓口で相談する LIFULL HOME'Sアプリ LIFULL HOME'Sサイトで探した情報も見られるアプリ。 アプリのインストールはこちら 住まいを探す 総掲載物件数 6,858,108 件 本日の新着物件 264,962 件 住所から 駅・路線から 通勤・通学時間から 路線図から 車の移動時間から 地図から 不動産会社から タグから 住宅購入の無料相談 詳細を見る を 住所 から探す 物件種別をお選びください。 借りる 賃貸 （アパート・マンション・一戸建て） 買う 新築マンション 分譲マンション 中古マンション 新築一戸建て 分譲一戸建て 建築条件付き土地 中古一戸建て 土地 都道府県をお選びください。 北海道 青森 岩手 宮城 秋田 山形 福島 東京 神奈川 埼玉 千葉 茨城 栃木 群馬 新潟 富山 石川 福井 山梨 長野 愛知 岐阜 静岡 三重 大阪 滋賀 京都 兵庫 奈良 和歌山 鳥取 島根 岡山 広島 山口 徳島 香川 愛媛 高知 福岡 佐賀 長崎 熊本 大分 宮崎 鹿児島 沖縄 を 駅・路線 から探す 物件種別をお選びください。 借りる 賃貸 （アパート・マンション・一戸建て） 買う 新築マンション 分譲マンション 中古マンション 新築一戸建て 分譲一戸建て 建築条件付き土地 中古一戸建て 土地 都道府県をお選びください。 北海道 青森 岩手 宮城 秋田 山形 福島 東京 神奈川 埼玉 千葉 茨城 栃木 群馬 新潟 富山 石川 福井 山梨 長野 愛知 岐阜 静岡 三重 大阪 滋賀 京都 兵庫 奈良 和歌山 鳥取 島根 岡山 広島 山口 徳島 ",
+          "error": null,
+          "main_record": 1035,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "target",
+          "url": "https://www.homes.co.jp/chintai/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "【ホームズ】賃貸[賃貸マンション・アパート]のお部屋探し・賃貸住宅情報",
+          "visible_text_prefix": "【ホームズ】賃貸[賃貸マンション・アパート]のお部屋探し・賃貸住宅情報 ご利用の環境ではJavaScriptの設定が無効になっています。このサイトをご利用の際には、JavaScriptを有効にしてください。 メインコンテンツにスキップ 借りる 賃貸 買う マンション マンション 新築マンション・分譲マンション 中古マンション 一戸建て・土地 一戸建て・土地 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 その他 投資 最近見た物件 0 お気に入り 0 メニュー 日本最大級の不動産・住宅情報サイト ライフルホームズ 最近見た お気に入り 保存した条件 お問合せ履歴 マイページ 閉じる メニュー ゲスト さん マイページ 最近見た物件 0 件 お気に入り 0 件 保存した条件 0 件 お問合せ履歴 やることリスト 借りる 賃貸物件 (アパート・賃貸マンション・賃貸一戸建て) 買う 新築マンション・分譲マンション 中古マンション 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 関連サービス 不動産投資 引越し LIFULL HOME'Sアプリ LIFULL HOME'Sサイトで探した情報も見られるアプリ。 アプリのインストールはこちら 賃貸[賃貸マンション・アパート]・賃貸住宅の情報・部屋探しなら【LIFULL HOME&#039;S/ライフルホームズ】掲載中の賃貸マンション・アパート・賃貸一戸建て[貸家]などの賃貸住宅を、住みたい沿線・駅・地域から探して、ワンルームや1LDKなどの間取り・予算に合わせた家賃・最寄り駅からの徒歩時間などの希望条件で絞込み！テーマ検索でこだわりや条件から探したり、家賃相場で家賃の安い駅や地域を探すなど、日本最大級の物件数から様々な方法でご希望の部屋を簡単に探せる賃貸情報サイトです。気になる賃貸を見つけたら、メールか電話でお問合せが可能です（無料）。賃貸の検索・部屋探しなら、賃貸情報が満載の不動産・住宅情報サイト【LIFULL HOME&#039;S/ライフルホームズ】 物件情報管理責任者：山田 貴士（株式会社LIFULL 執行役員） LIFULL HOME'Sは物件鮮度No.1！ ※評価について 不動産・住宅情報サイトLIFULL HOME&#039;S &gt; 賃貸 掲載賃貸物件数 6,423,131 件 全国 の 賃貸(賃貸マンション・アパート) を探す tabs#next keydown.up->tabs#prev keydown.home->tabs#first keydown.end->tabs#last \" aria-selected=\"true\" > 駅・路線から探す tabs#next keydown.up->tabs#prev keydown.home->tabs#first keydown.end->tabs#last \" aria-selected=\"false\" tabindex=\"-1\" > 地域から探す tabs#next keydown.up->tabs#prev keydown.home->tabs#first keydown.end->tabs#last \" aria-selected=\"false\" tabindex=\"-1\" > 通勤・通学時間から探す tabs#next keydown.up->tabs#prev keydown.home->tabs#first keydo",
+          "error": null,
+          "main_record": 1036,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "target",
+          "url": "https://www.homes.co.jp/mansion/shinchiku/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "【ホームズ】新築マンション・分譲マンションの購入・物件情報の検索",
+          "visible_text_prefix": "【ホームズ】新築マンション・分譲マンションの購入・物件情報の検索 ご利用の環境ではJavaScriptの設定が無効になっています。このサイトをご利用の際には、JavaScriptを有効にしてください。 メインコンテンツにスキップ 借りる 賃貸 買う マンション マンション 新築マンション・分譲マンション 中古マンション 一戸建て・土地 一戸建て・土地 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 その他 投資 最近見た物件 0 お気に入り 0 メニュー 日本最大級の不動産・住宅情報サイト ライフルホームズ 最近見た お気に入り 保存した条件 お問合せ履歴 マイページ 閉じる メニュー ゲスト さん マイページ 最近見た物件 0 件 お気に入り 0 件 保存した条件 0 件 お問合せ履歴 やることリスト 借りる 賃貸物件 (アパート・賃貸マンション・賃貸一戸建て) 買う 新築マンション・分譲マンション 中古マンション 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 関連サービス 不動産投資 引越し 家づくり・住宅購入の無料相談 条件や希望にあった最適な会社を、中立な立場のアドバイザーがご紹介します。 営業時間 10時〜19時（火・水定休日） tealium#send\" data-tealium-udata-value=\"{&quot;tealium_event&quot;:&quot;click_content&quot;,&quot;market_type&quot;:&quot;general&quot;,&quot;content_type&quot;:&quot;button&quot;,&quot;content_id&quot;:&quot;v5:cross:top:counter_transition_button&quot;}\"> 住まいの窓口で相談する LIFULL HOME'Sアプリ LIFULL HOME'Sサイトで探した情報も見られるアプリ。 アプリのインストールはこちら 新築マンション・分譲マンションの情報を検索・物件の購入なら【LIFULL HOME&#039;S/ライフルホームズ】掲載中の新築マンションを、住みたい沿線・駅・地域から探して、間取り・価格・徒歩時間などの希望条件で絞込み！人気のテーマやランキング・フリーワード・マンションデベロッパー・マンションブランドなど、様々な方法でご希望の新築マンション・分譲マンションを探せるマンション情報サイトです。販売予定の分譲マンション・高級マンション、DINKS・ファミリー向けの物件なども探せます。気になる分譲マンションを見つけたら、所在地・周辺環境・販売価格・広さ・特徴・設備・構造・管理費・修繕積立金・施設費用などで比較して、簡単にカタログなどの資料請求・モデルルーム見学予約が可能です（無料）。新築マンション探しなら、新築分譲マンション情報が満載の不動産・住宅情報サイト【LIFULL HOME&#039;S/ライフルホームズ】 物件情報管理責任者：山田 貴士（株式会社LIFULL 執行役員） 不動産・住宅情報サイトLIFULL HOME&#039;S &gt; マンション &gt; 新築マンション・分譲マンション 掲載新築マンション物件数 2,014 件 全国 の 新築マンション・分譲マンション を探す pages--flow--sbmansion--mansion",
+          "error": null,
+          "main_record": 1037,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "homes",
+      "method": "impit",
+      "profile": "baseline",
+      "pipelineState": "navigation_completed",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.homes.co.jp/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "【ホームズ】不動産売買・賃貸物件・住宅情報サイト",
+          "visible_text_prefix": "【ホームズ】不動産売買・賃貸物件・住宅情報サイト ご利用の環境ではJavaScriptの設定が無効になっています。このサイトをご利用の際には、JavaScriptを有効にしてください。 メインコンテンツにスキップ 不動産売買・賃貸物件 住宅情報サービス 借りる 賃貸 買う マンション マンション 新築マンション・分譲マンション 中古マンション 一戸建て・土地 一戸建て・土地 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 その他 投資 メニュー 日本最大級の不動産・住宅情報サイト ライフルホームズ 閉じる メニュー ゲスト さん マイページ 最近見た物件 0 件 お気に入り 0 件 保存した条件 0 件 お問合せ履歴 やることリスト 借りる 賃貸物件 (アパート・賃貸マンション・賃貸一戸建て) 買う 新築マンション・分譲マンション 中古マンション 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 関連サービス 不動産投資 引越し 家づくり・住宅購入の無料相談 条件や希望にあった最適な会社を、中立な立場のアドバイザーがご紹介します。 営業時間 10時〜19時（火・水定休日） tealium#send\" data-tealium-udata-value=\"{&quot;tealium_event&quot;:&quot;click_content&quot;,&quot;market_type&quot;:&quot;general&quot;,&quot;content_type&quot;:&quot;button&quot;,&quot;content_id&quot;:&quot;v5:cross:top:counter_transition_button&quot;}\"> 住まいの窓口で相談する LIFULL HOME'Sアプリ LIFULL HOME'Sサイトで探した情報も見られるアプリ。 アプリのインストールはこちら 住まいを探す 総掲載物件数 6,858,108 件 本日の新着物件 264,962 件 住所から 駅・路線から 通勤・通学時間から 路線図から 車の移動時間から 地図から 不動産会社から タグから 住宅購入の無料相談 詳細を見る を 住所 から探す 物件種別をお選びください。 借りる 賃貸 （アパート・マンション・一戸建て） 買う 新築マンション 分譲マンション 中古マンション 新築一戸建て 分譲一戸建て 建築条件付き土地 中古一戸建て 土地 都道府県をお選びください。 北海道 青森 岩手 宮城 秋田 山形 福島 東京 神奈川 埼玉 千葉 茨城 栃木 群馬 新潟 富山 石川 福井 山梨 長野 愛知 岐阜 静岡 三重 大阪 滋賀 京都 兵庫 奈良 和歌山 鳥取 島根 岡山 広島 山口 徳島 香川 愛媛 高知 福岡 佐賀 長崎 熊本 大分 宮崎 鹿児島 沖縄 を 駅・路線 から探す 物件種別をお選びください。 借りる 賃貸 （アパート・マンション・一戸建て） 買う 新築マンション 分譲マンション 中古マンション 新築一戸建て 分譲一戸建て 建築条件付き土地 中古一戸建て 土地 都道府県をお選びください。 北海道 青森 岩手 宮城 秋田 山形 福島 東京 神奈川 埼玉 千葉 茨城 栃木 群馬 新潟 富山 石川 福井 山梨 長野 愛知 岐阜 静岡 三重 大阪 滋賀 京都 兵庫 奈良 和歌山 鳥取 島根 岡山 広島 山口 徳島 ",
+          "error": null,
+          "main_record": 1038,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "target",
+          "url": "https://www.homes.co.jp/chintai/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "【ホームズ】賃貸[賃貸マンション・アパート]のお部屋探し・賃貸住宅情報",
+          "visible_text_prefix": "【ホームズ】賃貸[賃貸マンション・アパート]のお部屋探し・賃貸住宅情報 ご利用の環境ではJavaScriptの設定が無効になっています。このサイトをご利用の際には、JavaScriptを有効にしてください。 メインコンテンツにスキップ 借りる 賃貸 買う マンション マンション 新築マンション・分譲マンション 中古マンション 一戸建て・土地 一戸建て・土地 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 その他 投資 最近見た物件 0 お気に入り 0 メニュー 日本最大級の不動産・住宅情報サイト ライフルホームズ 最近見た お気に入り 保存した条件 お問合せ履歴 マイページ 閉じる メニュー ゲスト さん マイページ 最近見た物件 0 件 お気に入り 0 件 保存した条件 0 件 お問合せ履歴 やることリスト 借りる 賃貸物件 (アパート・賃貸マンション・賃貸一戸建て) 買う 新築マンション・分譲マンション 中古マンション 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 関連サービス 不動産投資 引越し LIFULL HOME'Sアプリ LIFULL HOME'Sサイトで探した情報も見られるアプリ。 アプリのインストールはこちら 賃貸[賃貸マンション・アパート]・賃貸住宅の情報・部屋探しなら【LIFULL HOME&#039;S/ライフルホームズ】掲載中の賃貸マンション・アパート・賃貸一戸建て[貸家]などの賃貸住宅を、住みたい沿線・駅・地域から探して、ワンルームや1LDKなどの間取り・予算に合わせた家賃・最寄り駅からの徒歩時間などの希望条件で絞込み！テーマ検索でこだわりや条件から探したり、家賃相場で家賃の安い駅や地域を探すなど、日本最大級の物件数から様々な方法でご希望の部屋を簡単に探せる賃貸情報サイトです。気になる賃貸を見つけたら、メールか電話でお問合せが可能です（無料）。賃貸の検索・部屋探しなら、賃貸情報が満載の不動産・住宅情報サイト【LIFULL HOME&#039;S/ライフルホームズ】 物件情報管理責任者：山田 貴士（株式会社LIFULL 執行役員） LIFULL HOME'Sは物件鮮度No.1！ ※評価について 不動産・住宅情報サイトLIFULL HOME&#039;S &gt; 賃貸 掲載賃貸物件数 6,423,131 件 全国 の 賃貸(賃貸マンション・アパート) を探す tabs#next keydown.up->tabs#prev keydown.home->tabs#first keydown.end->tabs#last \" aria-selected=\"true\" > 駅・路線から探す tabs#next keydown.up->tabs#prev keydown.home->tabs#first keydown.end->tabs#last \" aria-selected=\"false\" tabindex=\"-1\" > 地域から探す tabs#next keydown.up->tabs#prev keydown.home->tabs#first keydown.end->tabs#last \" aria-selected=\"false\" tabindex=\"-1\" > 通勤・通学時間から探す tabs#next keydown.up->tabs#prev keydown.home->tabs#first keydo",
+          "error": null,
+          "main_record": 1039,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "target",
+          "url": "https://www.homes.co.jp/mansion/shinchiku/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "【ホームズ】新築マンション・分譲マンションの購入・物件情報の検索",
+          "visible_text_prefix": "【ホームズ】新築マンション・分譲マンションの購入・物件情報の検索 ご利用の環境ではJavaScriptの設定が無効になっています。このサイトをご利用の際には、JavaScriptを有効にしてください。 メインコンテンツにスキップ 借りる 賃貸 買う マンション マンション 新築マンション・分譲マンション 中古マンション 一戸建て・土地 一戸建て・土地 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 その他 投資 最近見た物件 0 お気に入り 0 メニュー 日本最大級の不動産・住宅情報サイト ライフルホームズ 最近見た お気に入り 保存した条件 お問合せ履歴 マイページ 閉じる メニュー ゲスト さん マイページ 最近見た物件 0 件 お気に入り 0 件 保存した条件 0 件 お問合せ履歴 やることリスト 借りる 賃貸物件 (アパート・賃貸マンション・賃貸一戸建て) 買う 新築マンション・分譲マンション 中古マンション 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 関連サービス 不動産投資 引越し 家づくり・住宅購入の無料相談 条件や希望にあった最適な会社を、中立な立場のアドバイザーがご紹介します。 営業時間 10時〜19時（火・水定休日） tealium#send\" data-tealium-udata-value=\"{&quot;tealium_event&quot;:&quot;click_content&quot;,&quot;market_type&quot;:&quot;general&quot;,&quot;content_type&quot;:&quot;button&quot;,&quot;content_id&quot;:&quot;v5:cross:top:counter_transition_button&quot;}\"> 住まいの窓口で相談する LIFULL HOME'Sアプリ LIFULL HOME'Sサイトで探した情報も見られるアプリ。 アプリのインストールはこちら 新築マンション・分譲マンションの情報を検索・物件の購入なら【LIFULL HOME&#039;S/ライフルホームズ】掲載中の新築マンションを、住みたい沿線・駅・地域から探して、間取り・価格・徒歩時間などの希望条件で絞込み！人気のテーマやランキング・フリーワード・マンションデベロッパー・マンションブランドなど、様々な方法でご希望の新築マンション・分譲マンションを探せるマンション情報サイトです。販売予定の分譲マンション・高級マンション、DINKS・ファミリー向けの物件なども探せます。気になる分譲マンションを見つけたら、所在地・周辺環境・販売価格・広さ・特徴・設備・構造・管理費・修繕積立金・施設費用などで比較して、簡単にカタログなどの資料請求・モデルルーム見学予約が可能です（無料）。新築マンション探しなら、新築分譲マンション情報が満載の不動産・住宅情報サイト【LIFULL HOME&#039;S/ライフルホームズ】 物件情報管理責任者：山田 貴士（株式会社LIFULL 執行役員） 不動産・住宅情報サイトLIFULL HOME&#039;S &gt; マンション &gt; 新築マンション・分譲マンション 掲載新築マンション物件数 2,014 件 全国 の 新築マンション・分譲マンション を探す pages--flow--sbmansion--mansion",
+          "error": null,
+          "main_record": 1040,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "homes",
+      "method": "patchright",
+      "profile": "baseline",
+      "pipelineState": "navigation_completed",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.homes.co.jp/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "【ホームズ】不動産売買・賃貸物件・住宅情報サイト",
+          "visible_text_prefix": "【ホームズ】不動産売買・賃貸物件・住宅情報サイト ご利用の環境ではJavaScriptの設定が無効になっています。このサイトをご利用の際には、JavaScriptを有効にしてください。 メインコンテンツにスキップ 不動産売買・賃貸物件 住宅情報サービス 借りる 賃貸 買う マンション マンション 新築マンション・分譲マンション 中古マンション 一戸建て・土地 一戸建て・土地 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 その他 投資 メニュー 日本最大級の不動産・住宅情報サイト ライフルホームズ 閉じる メニュー ゲスト さん マイページ 最近見た物件 0 件 お気に入り 0 件 保存した条件 0 件 お問合せ履歴 やることリスト 借りる 賃貸物件 (アパート・賃貸マンション・賃貸一戸建て) 買う 新築マンション・分譲マンション 中古マンション 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 関連サービス 不動産投資 引越し 家づくり・住宅購入の無料相談 条件や希望にあった最適な会社を、中立な立場のアドバイザーがご紹介します。 営業時間 10時〜19時（火・水定休日） 住まいの窓口で相談する LIFULL HOME'Sアプリ LIFULL HOME'Sサイトで探した情報も見られるアプリ。 アプリのインストールはこちら 住まいを探す 総掲載物件数 6,858,108 件 本日の新着物件 264,962 件 住所から 駅・路線から 通勤・通学時間から 路線図から 車の移動時間から 地図から 不動産会社から タグから 住宅購入の無料相談 詳細を見る を 住所 から探す 物件種別をお選びください。 借りる 賃貸 （アパート・マンション・一戸建て） 買う 新築マンション 分譲マンション 中古マンション 新築一戸建て 分譲一戸建て 建築条件付き土地 中古一戸建て 土地 都道府県をお選びください。 北海道 青森 岩手 宮城 秋田 山形 福島 東京 神奈川 埼玉 千葉 茨城 栃木 群馬 新潟 富山 石川 福井 山梨 長野 愛知 岐阜 静岡 三重 大阪 滋賀 京都 兵庫 奈良 和歌山 鳥取 島根 岡山 広島 山口 徳島 香川 愛媛 高知 福岡 佐賀 長崎 熊本 大分 宮崎 鹿児島 沖縄 を 駅・路線 から探す 物件種別をお選びください。 借りる 賃貸 （アパート・マンション・一戸建て） 買う 新築マンション 分譲マンション 中古マンション 新築一戸建て 分譲一戸建て 建築条件付き土地 中古一戸建て 土地 都道府県をお選びください。 北海道 青森 岩手 宮城 秋田 山形 福島 東京 神奈川 埼玉 千葉 茨城 栃木 群馬 新潟 富山 石川 福井 山梨 長野 愛知 岐阜 静岡 三重 大阪 滋賀 京都 兵庫 奈良 和歌山 鳥取 島根 岡山 広島 山口 徳島 香川 愛媛 高知 福岡 佐賀 長崎 熊本 大分 宮崎 鹿児島 沖縄 を 通勤・通学時間 から探す 物件種別をお選びください。 借りる 賃貸 （アパート・マンション・一戸建て） 買う 新築マンション 分譲マンション 中古マンション 新築一戸建て 分譲一戸建て 建築条件付き土地 中古一戸建て 土地 を 地図 から探す 物件種別をお選びください。 借りる 賃貸 （アパート・マンション・一戸建て） 買う 新築マンション 分譲マンション 中古マンション 新築一戸建て 分譲一戸建て 建築条件付き土地 中古一戸建て 土地 都",
+          "error": null,
+          "main_record": 1045,
+          "dom_sha256": "4a2d1e1d34f863b6cf542275924c7f549266d96e4e4a794758764b6c928280c7",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "target",
+          "url": "https://www.homes.co.jp/chintai/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "【ホームズ】賃貸[賃貸マンション・アパート]のお部屋探し・賃貸住宅情報",
+          "visible_text_prefix": "【ホームズ】賃貸[賃貸マンション・アパート]のお部屋探し・賃貸住宅情報 ご利用の環境ではJavaScriptの設定が無効になっています。このサイトをご利用の際には、JavaScriptを有効にしてください。 メインコンテンツにスキップ 借りる 賃貸 買う マンション マンション 新築マンション・分譲マンション 中古マンション 一戸建て・土地 一戸建て・土地 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 その他 投資 最近見た物件 0 お気に入り 0 メニュー 日本最大級の不動産・住宅情報サイト ライフルホームズ 最近見た お気に入り 保存した条件 お問合せ履歴 マイページ 閉じる メニュー ゲスト さん マイページ 最近見た物件 0 件 お気に入り 0 件 保存した条件 0 件 お問合せ履歴 やることリスト 借りる 賃貸物件 (アパート・賃貸マンション・賃貸一戸建て) 買う 新築マンション・分譲マンション 中古マンション 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 関連サービス 不動産投資 引越し LIFULL HOME'Sアプリ LIFULL HOME'Sサイトで探した情報も見られるアプリ。 アプリのインストールはこちら 賃貸[賃貸マンション・アパート]・賃貸住宅の情報・部屋探しなら【LIFULL HOME'S/ライフルホームズ】掲載中の賃貸マンション・アパート・賃貸一戸建て[貸家]などの賃貸住宅を、住みたい沿線・駅・地域から探して、ワンルームや1LDKなどの間取り・予算に合わせた家賃・最寄り駅からの徒歩時間などの希望条件で絞込み！テーマ検索でこだわりや条件から探したり、家賃相場で家賃の安い駅や地域を探すなど、日本最大級の物件数から様々な方法でご希望の部屋を簡単に探せる賃貸情報サイトです。気になる賃貸を見つけたら、メールか電話でお問合せが可能です（無料）。賃貸の検索・部屋探しなら、賃貸情報が満載の不動産・住宅情報サイト【LIFULL HOME'S/ライフルホームズ】 物件情報管理責任者：山田 貴士（株式会社LIFULL 執行役員） LIFULL HOME'Sは物件鮮度No.1！ ※評価について 不動産・住宅情報サイトLIFULL HOME'S &gt; 賃貸 掲載賃貸物件数 6,423,131 件 全国 の 賃貸(賃貸マンション・アパート) を探す 駅・路線から探す 地域から探す 通勤・通学時間から探す 地図から探す 路線図から探す 路線から探す 都道府県を選択してください 北海道 青森 岩手 宮城 秋田 山形 福島 東京 神奈川 千葉 埼玉 茨城 栃木 群馬 山梨 長野 新潟 富山 石川 福井 愛知 静岡 岐阜 三重 大阪 兵庫 京都 滋賀 奈良 和歌山 岡山 広島 島根 鳥取 山口 愛媛 香川 高知 徳島 福岡 佐賀 長崎 熊本 大分 宮崎 鹿児島 沖縄 地域から探す 都道府県を選択してください 北海道 青森 岩手 宮城 秋田 山形 福島 東京 神奈川 千葉 埼玉 茨城 栃木 群馬 山梨 長野 新潟 富山 石川 福井 愛知 静岡 岐阜 三重 大阪 兵庫 京都 滋賀 奈良 和歌山 岡山 広島 島根 鳥取 山口 愛媛 香川 高知 徳島 福岡 佐賀 長崎 熊本 大分 宮崎 鹿児島 沖縄 3駅まで指定できます。 ※所要時間には物件までのバス・徒歩分が含まれます ※乗換時間は日中平常時／平均時間です 1 目的駅 所要時間 10分 20分 ",
+          "error": null,
+          "main_record": 1287,
+          "dom_sha256": "9bbdff2be8768ce1fa60cfe9a3f382f1b1e1fbe24860a301c4d58d3d2c18c5cf",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "target",
+          "url": "https://www.homes.co.jp/mansion/shinchiku/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "【ホームズ】新築マンション・分譲マンションの購入・物件情報の検索",
+          "visible_text_prefix": "【ホームズ】新築マンション・分譲マンションの購入・物件情報の検索 ご利用の環境ではJavaScriptの設定が無効になっています。このサイトをご利用の際には、JavaScriptを有効にしてください。 メインコンテンツにスキップ 借りる 賃貸 買う マンション マンション 新築マンション・分譲マンション 中古マンション 一戸建て・土地 一戸建て・土地 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 その他 投資 最近見た物件 0 お気に入り 0 メニュー 日本最大級の不動産・住宅情報サイト ライフルホームズ 最近見た お気に入り 保存した条件 お問合せ履歴 マイページ 閉じる メニュー ゲスト さん マイページ 最近見た物件 0 件 お気に入り 0 件 保存した条件 0 件 お問合せ履歴 やることリスト 借りる 賃貸物件 (アパート・賃貸マンション・賃貸一戸建て) 買う 新築マンション・分譲マンション 中古マンション 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 関連サービス 不動産投資 引越し 家づくり・住宅購入の無料相談 条件や希望にあった最適な会社を、中立な立場のアドバイザーがご紹介します。 営業時間 10時〜19時（火・水定休日） 住まいの窓口で相談する LIFULL HOME'Sアプリ LIFULL HOME'Sサイトで探した情報も見られるアプリ。 アプリのインストールはこちら 新築マンション・分譲マンションの情報を検索・物件の購入なら【LIFULL HOME'S/ライフルホームズ】掲載中の新築マンションを、住みたい沿線・駅・地域から探して、間取り・価格・徒歩時間などの希望条件で絞込み！人気のテーマやランキング・フリーワード・マンションデベロッパー・マンションブランドなど、様々な方法でご希望の新築マンション・分譲マンションを探せるマンション情報サイトです。販売予定の分譲マンション・高級マンション、DINKS・ファミリー向けの物件なども探せます。気になる分譲マンションを見つけたら、所在地・周辺環境・販売価格・広さ・特徴・設備・構造・管理費・修繕積立金・施設費用などで比較して、簡単にカタログなどの資料請求・モデルルーム見学予約が可能です（無料）。新築マンション探しなら、新築分譲マンション情報が満載の不動産・住宅情報サイト【LIFULL HOME'S/ライフルホームズ】 物件情報管理責任者：山田 貴士（株式会社LIFULL 執行役員） 不動産・住宅情報サイトLIFULL HOME'S &gt; マンション &gt; 新築マンション・分譲マンション 掲載新築マンション物件数 2,014 件 全国 の 新築マンション・分譲マンション を探す ※評価について 地域から探す 駅・路線から探す 通勤・通学時間から探す 地図から探す 路線図から探す 地域から探す 都道府県を選択してください 北海道 青森 岩手 宮城 秋田 山形 福島 東京 神奈川 千葉 埼玉 茨城 栃木 群馬 山梨 長野 新潟 富山 石川 福井 愛知 静岡 岐阜 三重 大阪 兵庫 京都 滋賀 奈良 和歌山 岡山 広島 島根 鳥取 山口 愛媛 香川 高知 徳島 福岡 佐賀 長崎 熊本 大分 宮崎 鹿児島 沖縄 路線から探す 都道府県を選択してください 北海道 青森 岩手 宮城 秋田 山形 福島 東京 神奈川 千葉 埼玉 茨城 栃木 群馬 山梨 長野 新潟 富山 石川 福井 愛知 静",
+          "error": null,
+          "main_record": 1558,
+          "dom_sha256": "1f3f8e77f3e28697ffc100debf7fd8b307deaf82884efb5e3f81e2014cb6f0b0",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "homes",
+      "method": "playwright-baseline",
+      "profile": "baseline",
+      "pipelineState": "capture_challenge",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.homes.co.jp/",
+          "http_status": 405,
+          "outcome": "challenge_observed",
+          "title": "Human Verification",
+          "visible_text_prefix": "Human Verification Temporary error. Please try again. Before proceeding to your request, you need to solve a puzzle, and the puzzle requires Google Translate to be disabled. Please disable Google Translate and retry. Let's confirm you are human Complete the security check before continuing. This step verifies that you are not a bot, which helps to protect your account and prevent spam. Begin العربية Čeština Dansk Deutsch English Español Français Bahasa Indonesia Italiano 日本語 한국어 Nederlands Polski Português Svenska ไทย Türkçe 中文 JavaScript is disabled In order to continue, you need to verify that you're not a robot by solving a CAPTCHA puzzle. The CAPTCHA puzzle requires JavaScript. Enable JavaScript and then reload the page.",
+          "error": null,
+          "main_record": 1928,
+          "dom_sha256": "4343ab94e253ec8e5a6981161a57b8e11191914f0c5842515ef0bc2d94da2f7f",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "recoverSimpleChallenge",
+          "url": null,
+          "http_status": null,
+          "outcome": "option_disabled",
+          "title": null,
+          "visible_text_prefix": null,
+          "error": null,
+          "main_record": null,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "homes",
+      "method": "obscura",
+      "profile": "baseline",
+      "pipelineState": "preflight_or_measurement_failure",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.homes.co.jp/",
+          "http_status": null,
+          "outcome": "execution_error",
+          "title": null,
+          "visible_text_prefix": null,
+          "error": "page.content: Unable to retrieve content because the page is navigating and changing the content.",
+          "main_record": null,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "homes",
+      "method": "obscura-stealth",
+      "profile": "baseline",
+      "pipelineState": "preflight_or_measurement_failure",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.homes.co.jp/",
+          "http_status": 202,
+          "outcome": "content_observed",
+          "title": "【ホームズ】不動産売買・賃貸物件・住宅情報サイト",
+          "visible_text_prefix": "【ホームズ】不動産売買・賃貸物件・住宅情報サイト &lt;div class=\"mod-alertMsgBox\"&gt; &lt;p&gt;ご利用の環境ではJavaScriptの設定が無効になっています。このサイトをご利用の際には、JavaScriptを有効にしてください。&lt;/p&gt; &lt;/div&gt; メインコンテンツにスキップ 不動産売買・賃貸物件 住宅情報サービス 借りる 賃貸 買う マンション マンション 新築マンション・分譲マンション 中古マンション 一戸建て・土地 一戸建て・土地 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 その他 投資 メニュー 日本最大級の不動産・住宅情報サイト ライフルホームズ 閉じる メニュー ゲスト さん マイページ 最近見た物件 0 件 お気に入り 0 件 保存した条件 0 件 お問合せ履歴 やることリスト 借りる 賃貸物件 (アパート・賃貸マンション・賃貸一戸建て) 買う 新築マンション・分譲マンション 中古マンション 新築一戸建て・分譲一戸建て・建築条件付き土地 中古一戸建て 土地 建てる 注文住宅 売る 不動産査定 関連サービス 不動産投資 引越し 家づくり・住宅購入の無料相談 条件や希望にあった最適な会社を、中立な立場のアドバイザーがご紹介します。 営業時間 10時〜19時（火・水定休日） tealium#send\" data-tealium-udata-value=\"{&quot;tealium_event&quot;:&quot;click_content&quot;,&quot;market_type&quot;:&quot;general&quot;,&quot;content_type&quot;:&quot;button&quot;,&quot;content_id&quot;:&quot;v5:cross:top:counter_transition_button&quot;}\"> 住まいの窓口で相談する LIFULL HOME'Sアプリ LIFULL HOME'Sサイトで探した情報も見られるアプリ。 アプリのインストールはこちら 住まいを探す 総掲載物件数 6,858,108 件 本日の新着物件 264,962 件 住所から 駅・路線から 通勤・通学時間から 路線図から 車の移動時間から 地図から 不動産会社から タグから 住宅購入の無料相談 詳細を見る を 住所 から探す 物件種別をお選びください。 借りる 賃貸 （アパート・マンション・一戸建て） 買う 新築マンション 分譲マンション 中古マンション 新築一戸建て 分譲一戸建て 建築条件付き土地 中古一戸建て 土地 都道府県をお選びください。 北海道 青森 岩手 宮城 秋田 山形 福島 東京 神奈川 埼玉 千葉 茨城 栃木 群馬 新潟 富山 石川 福井 山梨 長野 愛知 岐阜 静岡 三重 大阪 滋賀 京都 兵庫 奈良 和歌山 鳥取 島根 岡山 広島 山口 徳島 香川 愛媛 高知 福岡 佐賀 長崎 熊本 大分 宮崎 鹿児島 沖縄 を 駅・路線 から探す 物件種別をお選びください。 借りる 賃貸 （アパート・マンション・一戸建て） 買う 新築マンション 分譲マンション 中古マンション 新築一戸建て 分譲一戸建て 建築条件付き土地 中古一戸建て 土地 都道府県をお選びください。 北海道 青森 岩手 宮城 秋田 山形 福島 東京 神奈川 埼玉 千葉 茨城 栃木 群馬",
+          "error": null,
+          "main_record": 1940,
+          "dom_sha256": "3b7954deb56ae4c44d02d0d4e8214e444fca75203981674ca1ea9cf882a4ada2",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": {
+            "classification": "rendered_site_content_with_unverified_navigation",
+            "normalContentAcquisition": null,
+            "basis": "HTTP 202; DOM and screenshot show the LIFULL HOME'S UI and 6,858,108 listed properties. The escaped noscript JavaScript notice alone does not establish blocking or disabled JavaScript.",
+            "screenshot": "obscura-stealth-homes-baseline-homepage-1-59.png"
+          }
+        },
+        {
+          "role": "target",
+          "url": "https://www.homes.co.jp/chintai/",
+          "http_status": null,
+          "outcome": "navigation_unverified",
+          "title": null,
+          "visible_text_prefix": null,
+          "error": null,
+          "main_record": null,
+          "dom_sha256": "a857e72c712fab23dc193413fc52f2b812c00484c53ecbaf7e1ba1581648d974",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": {
+            "classification": "rendered_site_content_with_unverified_navigation",
+            "normalContentAcquisition": null,
+            "basis": "The screenshot shows rendered rental-search content and a map, while navigation outcome is unverified and HTTP status is unknown.",
+            "screenshot": "obscura-stealth-homes-baseline-target-2-60.png"
+          }
+        }
+      ]
+    },
+    {
+      "site": "homes",
+      "method": "obscura-no-render",
+      "profile": "baseline",
+      "pipelineState": "preflight_or_measurement_failure",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.homes.co.jp/",
+          "http_status": null,
+          "outcome": "execution_error",
+          "title": null,
+          "visible_text_prefix": null,
+          "error": "page.content: Target page, context or browser has been closed",
+          "main_record": null,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "indeed",
+      "method": "wreq-js",
+      "profile": "baseline",
+      "pipelineState": "capture_challenge",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://jp.indeed.com/",
+          "http_status": 403,
+          "outcome": "challenge_observed",
+          "title": "Security Check - Indeed.com",
+          "visible_text_prefix": "Security Check - Indeed.com Additional Verification Required Please enable JavaScript to complete the security check. Return home Enable JavaScript and cookies to continue",
+          "error": null,
+          "main_record": 2292,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "recoverSimpleChallenge",
+          "url": null,
+          "http_status": null,
+          "outcome": "option_disabled",
+          "title": null,
+          "visible_text_prefix": null,
+          "error": null,
+          "main_record": null,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "indeed",
+      "method": "impit",
+      "profile": "baseline",
+      "pipelineState": "capture_challenge",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://jp.indeed.com/",
+          "http_status": 403,
+          "outcome": "challenge_observed",
+          "title": "Security Check - Indeed.com",
+          "visible_text_prefix": "Security Check - Indeed.com Additional Verification Required Please enable JavaScript to complete the security check. Return home Enable JavaScript and cookies to continue",
+          "error": null,
+          "main_record": 2293,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "recoverSimpleChallenge",
+          "url": null,
+          "http_status": null,
+          "outcome": "option_disabled",
+          "title": null,
+          "visible_text_prefix": null,
+          "error": null,
+          "main_record": null,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "indeed",
+      "method": "patchright",
+      "profile": "baseline",
+      "pipelineState": "capture_challenge",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://jp.indeed.com/",
+          "http_status": 403,
+          "outcome": "challenge_observed",
+          "title": "Just a moment...",
+          "visible_text_prefix": "Just a moment... Additional Verification Required Please enable JavaScript to complete the security check. Return home Find jobs Company Reviews Find salaries Sign in Upload your resume Sign in Employers / Post Job Find jobs Company Reviews Find salaries Additional Verification Required Your Ray ID for this request is a44b825a7d78d801 Verification successful. Waiting for jp.indeed.com to respond Enable JavaScript and cookies to continue Return home &nbsp; → Troubleshooting Cloudflare Errors Need more help? Contact us",
+          "error": null,
+          "main_record": 2295,
+          "dom_sha256": "86fce16db949187a63160e7eefd51e8b275f6d600136f0378a326a1ed343bcc7",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "recoverSimpleChallenge",
+          "url": null,
+          "http_status": null,
+          "outcome": "option_disabled",
+          "title": null,
+          "visible_text_prefix": null,
+          "error": null,
+          "main_record": null,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "indeed",
+      "method": "playwright-baseline",
+      "profile": "baseline",
+      "pipelineState": "capture_challenge",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://jp.indeed.com/",
+          "http_status": 403,
+          "outcome": "challenge_observed",
+          "title": "Just a moment...",
+          "visible_text_prefix": "Just a moment... Additional Verification Required Please enable JavaScript to complete the security check. Return home Find jobs Company Reviews Find salaries Sign in Upload your resume Sign in Employers / Post Job Find jobs Company Reviews Find salaries Additional Verification Required Your Ray ID for this request is a44b828a0f1b76b8 Verification successful. Waiting for jp.indeed.com to respond Enable JavaScript and cookies to continue Return home &nbsp; → Troubleshooting Cloudflare Errors Need more help? Contact us",
+          "error": null,
+          "main_record": 2307,
+          "dom_sha256": "bee1805c187a7366ef17c26e06cd0d00f77b65068045ca8b9ebffc1bef09cc6f",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "recoverSimpleChallenge",
+          "url": null,
+          "http_status": null,
+          "outcome": "option_disabled",
+          "title": null,
+          "visible_text_prefix": null,
+          "error": null,
+          "main_record": null,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "indeed",
+      "method": "obscura",
+      "profile": "baseline",
+      "pipelineState": "capture_challenge",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://jp.indeed.com/",
+          "http_status": 403,
+          "outcome": "challenge_observed",
+          "title": "Just a moment...",
+          "visible_text_prefix": "Just a moment... &lt;h1&gt;Additional Verification Required&lt;/h1&gt; &lt;p&gt;Please enable JavaScript to complete the security check.&lt;/p&gt; &lt;p&gt;&lt;a href=\"https://www.indeed.com/\"&gt;Return home&lt;/a&gt;&lt;/p&gt; Find jobs Company Reviews Find salaries Sign in Upload your resume Sign in Employers / Post Job Find jobs Company Reviews Find salaries Additional Verification Required Your Ray ID for this request is a44b82c3fbd477a3 Verification successful. Waiting for www.indeed.com to respond &lt;div class=\"h2\"&gt;&lt;span id=\"challenge-error-text\"&gt;Enable JavaScript and cookies to continue&lt;/span&gt;&lt;/div&gt; Return home → Troubleshooting Cloudflare Errors Need more help? Contact us",
+          "error": null,
+          "main_record": 2320,
+          "dom_sha256": "ca582a6f132ee227e986e554e017b84e3f4a3a4dbbcb6b4adc9cf3682b19dfc5",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "recoverSimpleChallenge",
+          "url": null,
+          "http_status": null,
+          "outcome": "option_disabled",
+          "title": null,
+          "visible_text_prefix": null,
+          "error": null,
+          "main_record": null,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "indeed",
+      "method": "obscura-stealth",
+      "profile": "baseline",
+      "pipelineState": "capture_challenge",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://jp.indeed.com/",
+          "http_status": 403,
+          "outcome": "challenge_observed",
+          "title": "Just a moment...",
+          "visible_text_prefix": "Just a moment... &lt;h1&gt;Additional Verification Required&lt;/h1&gt; &lt;p&gt;Please enable JavaScript to complete the security check.&lt;/p&gt; &lt;p&gt;&lt;a href=\"https://www.indeed.com/\"&gt;Return home&lt;/a&gt;&lt;/p&gt; Find jobs Company Reviews Find salaries Sign in Upload your resume Sign in Employers / Post Job Find jobs Company Reviews Find salaries Additional Verification Required Your Ray ID for this request is a44b82f4f9d32ee0 Verification successful. Waiting for jp.indeed.com to respond &lt;div class=\"h2\"&gt;&lt;span id=\"challenge-error-text\"&gt;Enable JavaScript and cookies to continue&lt;/span&gt;&lt;/div&gt; Return home → Troubleshooting Cloudflare Errors Need more help? Contact us",
+          "error": null,
+          "main_record": 2325,
+          "dom_sha256": "162284eed63d93846ada5687a8ebc31d3f5a8efbbc7559d90703a35f01f1769b",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "recoverSimpleChallenge",
+          "url": null,
+          "http_status": null,
+          "outcome": "option_disabled",
+          "title": null,
+          "visible_text_prefix": null,
+          "error": null,
+          "main_record": null,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "indeed",
+      "method": "obscura-no-render",
+      "profile": "baseline",
+      "pipelineState": "capture_challenge",
+      "sourceRun": "bot-gcp-proxy-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://jp.indeed.com/",
+          "http_status": 403,
+          "outcome": "challenge_observed",
+          "title": "Just a moment...",
+          "visible_text_prefix": "Just a moment... &lt;h1&gt;Additional Verification Required&lt;/h1&gt; &lt;p&gt;Please enable JavaScript to complete the security check.&lt;/p&gt; &lt;p&gt;&lt;a href=\"https://www.indeed.com/\"&gt;Return home&lt;/a&gt;&lt;/p&gt; Find jobs Company Reviews Find salaries Sign in Upload your resume Sign in Employers / Post Job Find jobs Company Reviews Find salaries Additional Verification Required Your Ray ID for this request is a44b832bdd728399 Verification successful. Waiting for www.indeed.com to respond &lt;div class=\"h2\"&gt;&lt;span id=\"challenge-error-text\"&gt;Enable JavaScript and cookies to continue&lt;/span&gt;&lt;/div&gt; Return home → Troubleshooting Cloudflare Errors Need more help? Contact us",
+          "error": null,
+          "main_record": 2328,
+          "dom_sha256": "1e037b5f370d101d7cdca1a64df30c3c624e7032dfa61b1bd026ee3990e3e50f",
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "recoverSimpleChallenge",
+          "url": null,
+          "http_status": null,
+          "outcome": "option_disabled",
+          "title": null,
+          "visible_text_prefix": null,
+          "error": null,
+          "main_record": null,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "amazon",
+      "method": "rebrowser-lightpanda",
+      "profile": "baseline",
+      "pipelineState": "navigation_completed",
+      "sourceRun": "bot-gcp-proxy-lightpanda-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.amazon.co.jp/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon.co.jp | Books, Apparel, Electronics, Groceries &amp; more",
+          "visible_text_prefix": "Amazon.co.jp | Books, Apparel, Electronics, Groceries &amp; more Skip to Main content Keyboard shortcuts Search alt + / Cart shift + alt + C Home shift + alt + H Orders shift + alt + O Show/Hide shortcuts shift + alt + Z To move between items, use your keyboard's up or down arrows. .co.jp Deliver to United States All Departments Select the department you want to search in All Departments Prime Appreciation Sale Audible Audiobooks Amazon Devices Kindle Store Prime Video Alexa Skills Subscribe &amp; Save Digital Music Apps &amp; Games Japanese Books English Books Music Classical Movies &amp; TV Computer &amp; Video Games Software Computers &amp; Accessories Electronics &amp; Cameras Stationery and Office Products Kitchen &amp; Housewares Pet Supplies Health &amp; Personal Care Beauty Food &amp; Beverage Baby &amp; Maternity Fashion Women's Clothing, Shoes &amp; Jewelry Men's Clothing, Shoes &amp; Jewelry Baby Clothing, Shoes &amp; Jewelry Toys Hobby Musical Instruments Sports Car &amp; Bike Products DIY, Tools &amp; Garden Large Appliances Credit Cards Gift Cards Industrial &amp; Scientific Amazon Resale Amazon Haul Amazon International Direct Search Amazon.co.jp EN Hello, Sign in Account &amp; Lists Returns &amp; Orders 0 Cart International Shopping Transition Alert We're showing you items that ship to United States . To see items that ship to a different country, change your delivery address. Dismiss Change Address Sign in New customer? Start here. Your Lists Create a Wish Li",
+          "error": null,
+          "main_record": 1,
+          "dom_sha256": "f05780e4fc38ee5db51cad2bc85ddf9f0e26755db03b54ccee5353d47d95298d",
+          "sourceRun": "bot-gcp-proxy-lightpanda-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/haul/store",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon Haul: Find new faves for way less",
+          "visible_text_prefix": "Amazon Haul: Find new faves for way less Skip to Main content Keyboard shortcuts Search alt + / Cart shift + alt + C Home shift + alt + H Orders shift + alt + O Show/Hide shortcuts shift + alt + Z To move between items, use your keyboard's up or down arrows. .co.jp Deliver to United States Amazon Haul Select the department you want to search in Amazon Haul All Departments Search Amazon.co.jp EN Hello, Sign in Account &amp; Lists Returns &amp; Orders 0 International Shopping Transition Alert We're showing you items that ship to United States . To see items that ship to a different country, change your delivery address. Dismiss Change Address All Amazon Points : Check your balance Best Sellers Today's Deals Amazon Basics AmazonGlobal New Releases Japanese Books Customer Service Gift Cards Coupons Gift Ideas Computers &amp; Peripherals Sell Health and Personal Care Home &amp; Kitchen Add ¥1,000 for FREE shipping FREE SHIPPING ¥1,000 Crazy Low 🔥 Women Men Kids Home Bags Storage Accessories Office Sign in New customer? Start here. Your Lists Create a Wish List Find a Gift Raku-raku Baby Explore Showroom Charity Lists Your Account Your Account Your Orders Your Wish List Your Recommendations Memberships &amp; Subscriptions Register for a Business Account Your Content and Devices Your Music Your Amazon Photos Your Watchlist Your Kindle Unlimited Your Manga Library Your Games &amp; Software Library Your Android Apps &amp; Devices Sign in New customer? Start here. Change language 日本語 ",
+          "error": null,
+          "main_record": 27,
+          "dom_sha256": "5d09ab00f4ed5eb246cdfcc36cb8e3a2be59b71f7b82d97a3b5eadbc7e4f3496",
+          "sourceRun": "bot-gcp-proxy-lightpanda-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/s?k=USB%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon.co.jp : USBケーブル",
+          "visible_text_prefix": "Amazon.co.jp : USBケーブル Skip to Main content Results Filters Filters Keyboard shortcuts Search alt + / Cart shift + alt + C Home shift + alt + H Orders shift + alt + O Show/Hide shortcuts shift + alt + Z To move between items, use your keyboard's up or down arrows. .co.jp Deliver to United States All Departments Select the department you want to search in All Departments Prime Appreciation Sale Audible Audiobooks Amazon Devices Kindle Store Prime Video Alexa Skills Subscribe &amp; Save Digital Music Apps &amp; Games Japanese Books English Books Music Classical Movies &amp; TV Computer &amp; Video Games Software Computers &amp; Accessories Electronics &amp; Cameras Stationery and Office Products Kitchen &amp; Housewares Pet Supplies Health &amp; Personal Care Beauty Food &amp; Beverage Baby &amp; Maternity Fashion Women's Clothing, Shoes &amp; Jewelry Men's Clothing, Shoes &amp; Jewelry Baby Clothing, Shoes &amp; Jewelry Toys Hobby Musical Instruments Sports Car &amp; Bike Products DIY, Tools &amp; Garden Large Appliances Credit Cards Gift Cards Industrial &amp; Scientific Amazon Resale Amazon Haul Amazon International Direct Search Amazon.co.jp EN Hello, Sign in Account &amp; Lists Returns &amp; Orders 0 Cart International Shopping Transition Alert We're showing you items that ship to United States . To see items that ship to a different country, change your delivery address. Dismiss Change Address Sign in New customer? Start here. Your Lists Create a Wish List Find a Gift Rak",
+          "error": null,
+          "main_record": 68,
+          "dom_sha256": "e87463658d7f3179f6a21d7607925a75e46a709221c26c46300171d7eb059fa4",
+          "sourceRun": "bot-gcp-proxy-lightpanda-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "joshin",
+      "method": "rebrowser-lightpanda",
+      "profile": "baseline",
+      "pipelineState": "site_rejected",
+      "sourceRun": "bot-gcp-proxy-lightpanda-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://joshinweb.jp/",
+          "http_status": 403,
+          "outcome": "access_denied_observed",
+          "title": "Access Denied",
+          "visible_text_prefix": "Access Denied Access Denied You don't have permission to access \"http://joshinweb.jp/\" on this server. Reference #18.716c3817.1791024661.5ec6b13d https://errors.edgesuite.net/18.716c3817.1791024661.5ec6b13d",
+          "error": null,
+          "main_record": 97,
+          "dom_sha256": "b2c0b32a23116a57e530805dde73426356fffc9495279dbe073d5f2c2758591c",
+          "sourceRun": "bot-gcp-proxy-lightpanda-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "homes",
+      "method": "rebrowser-lightpanda",
+      "profile": "baseline",
+      "pipelineState": "site_rejected",
+      "sourceRun": "bot-gcp-proxy-lightpanda-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.homes.co.jp/",
+          "http_status": 403,
+          "outcome": "access_denied_observed",
+          "title": "ERROR: The request could not be satisfied",
+          "visible_text_prefix": "ERROR: The request could not be satisfied 403 ERROR The request could not be satisfied. Request blocked. We can't connect to the server for this app or website at this time. There might be too much traffic or a configuration error. Try again later, or contact the app or website owner. If you provide content to customers through CloudFront, you can find steps to troubleshoot and help prevent this error by reviewing the CloudFront documentation. Generated by cloudfront (CloudFront) Request ID: vTMVpokYkdQLK1TBM8FPCamvuKPCSAhTzVOcdjjdjkKZPkG85F3vhw==",
+          "error": null,
+          "main_record": 98,
+          "dom_sha256": "ce216acf11d901600c2b15d6f6f8f6937200295f6365a8b3896a69cda7e3c5fe",
+          "sourceRun": "bot-gcp-proxy-lightpanda-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "indeed",
+      "method": "rebrowser-lightpanda",
+      "profile": "baseline",
+      "pipelineState": "capture_challenge",
+      "sourceRun": "bot-gcp-proxy-lightpanda-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://jp.indeed.com/",
+          "http_status": 403,
+          "outcome": "challenge_observed",
+          "title": "Just a moment...",
+          "visible_text_prefix": "Just a moment... Additional Verification Required Please enable JavaScript to complete the security check. Return home Find jobs Company Reviews Find salaries Sign in Upload your resume Sign in Employers / Post Job Find jobs Company Reviews Find salaries Additional Verification Required Your Ray ID for this request is a44b641aed6d7648 Verification successful. Waiting for jp.indeed.com to respond Enable JavaScript and cookies to continue Return home &nbsp; → Troubleshooting Cloudflare Errors Need more help? Contact us",
+          "error": null,
+          "main_record": 99,
+          "dom_sha256": "e9e4a92ecb828f5db244b9c819366fc71dd40f35644be060a1620fd007de043b",
+          "sourceRun": "bot-gcp-proxy-lightpanda-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "recoverSimpleChallenge",
+          "url": null,
+          "http_status": null,
+          "outcome": "option_disabled",
+          "title": null,
+          "visible_text_prefix": null,
+          "error": null,
+          "main_record": null,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-lightpanda-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "amazon",
+      "method": "obscura-patched",
+      "profile": "baseline",
+      "pipelineState": "preflight_or_measurement_failure",
+      "sourceRun": "bot-gcp-proxy-patched-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.amazon.co.jp/",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon.co.jp",
+          "visible_text_prefix": "Amazon.co.jp 下のボタンをクリックしてショッピングを続けてください ショッピングを続ける 利用規約 プライバシー規約 © 1996-2025, Amazon.com, Inc. or its affiliates",
+          "error": null,
+          "main_record": 1,
+          "dom_sha256": "dc600ff496bdc76312696393968a831e25bd5b6402ce8531a2b63218dbf5ba2f",
+          "sourceRun": "bot-gcp-proxy-patched-20261003-1932",
+          "assessment": {
+            "classification": "interstitial",
+            "normalContentAcquisition": false,
+            "basis": "visible_text_prefix contains ショッピングを続け",
+            "note": "HTTP 200/content_observed is not treated as normal page acquisition."
+          }
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/haul/store",
+          "http_status": 200,
+          "outcome": "content_observed",
+          "title": "Amazon Haul: Find new faves for way less",
+          "visible_text_prefix": "Amazon Haul: Find new faves for way less &lt;style type=\"text/css\"&gt;&lt;!-- #navbar #nav-shop .nav-a:hover { color: #ff9900; text-decoration: underline; } #navbar #nav-search .nav-search-facade, #navbar #nav-tools .nav-icon, #navbar #nav-shop .nav-icon, #navbar #nav-subnav .nav-hasArrow .nav-arrow { display: none; } #navbar #nav-search .nav-search-submit, #navbar #nav-search .nav-search-scope { display: block; } #nav-search .nav-search-scope { padding: 0 5px; } #navbar #nav-search .nav-search-dropdown { position: relative; top: 5px; height: 23px; font-size: 14px; opacity: 1; filter: alpha(opacity = 100); } --&gt;&lt;/style&gt; Skip to Main content Keyboard shortcuts Search alt + / Cart shift + alt + C Home shift + alt + H Orders shift + alt + O Show/Hide shortcuts shift + alt + Z To move between items, use your keyboard's up or down arrows. .co.jp Deliver to United States Amazon Haul Select the department you want to search in Amazon Haul All Departments Search Amazon.co.jp EN Hello, Sign in Account &amp; Lists Returns &amp; Orders 0 All Amazon Points : Check your balance Help Center Furusato Amazon Haul Best Sellers Amazon Basics Prime Video New Releases Today's Deals Music Prime Home &amp; Kitchen Gift Cards Kindle Books Food &amp; Beverage Computers &amp; Peripherals Amazon Fashion Toys &amp; Games Health and Personal Care Audible Automotive Home Improvement Beauty &amp; Personal Care Sports &amp; Outdoors Affordable International Brand Pet Supplies &amp; Pet Foods Amazo",
+          "error": null,
+          "main_record": 3,
+          "dom_sha256": "eb2bbce0f9fdee0e2350c55c4007cdeafa5184b24b1e6cba138e470747f2b3c5",
+          "sourceRun": "bot-gcp-proxy-patched-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "target",
+          "url": "https://www.amazon.co.jp/s?k=USB%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB",
+          "http_status": null,
+          "outcome": "execution_error",
+          "title": null,
+          "visible_text_prefix": null,
+          "error": "Protocol error (Runtime.callFunctionOn): Cannot find context with specified id: 7",
+          "main_record": null,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-patched-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "joshin",
+      "method": "obscura-patched",
+      "profile": "baseline",
+      "pipelineState": "site_rejected",
+      "sourceRun": "bot-gcp-proxy-patched-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://joshinweb.jp/",
+          "http_status": 403,
+          "outcome": "access_denied_observed",
+          "title": "Access Denied",
+          "visible_text_prefix": "Access Denied Access Denied You don't have permission to access \"http://joshinweb.jp/\" on this server. Reference #18.716c3817.1791025470.5efa4b66 https://errors.edgesuite.net/18.716c3817.1791025470.5efa4b66",
+          "error": null,
+          "main_record": 71,
+          "dom_sha256": "5e3eaddc98fc112d86ad124e7ef5ae2a24ac293810a758a3f3da34567d185f75",
+          "sourceRun": "bot-gcp-proxy-patched-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "homes",
+      "method": "obscura-patched",
+      "profile": "baseline",
+      "pipelineState": "preflight_or_measurement_failure",
+      "sourceRun": "bot-gcp-proxy-patched-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://www.homes.co.jp/",
+          "http_status": null,
+          "outcome": "execution_error",
+          "title": null,
+          "visible_text_prefix": null,
+          "error": "Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.",
+          "main_record": null,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-patched-20261003-1932",
+          "assessment": null
+        }
+      ]
+    },
+    {
+      "site": "indeed",
+      "method": "obscura-patched",
+      "profile": "baseline",
+      "pipelineState": "capture_challenge",
+      "sourceRun": "bot-gcp-proxy-patched-20261003-1932",
+      "phases": [
+        {
+          "role": "homepage",
+          "url": "https://jp.indeed.com/",
+          "http_status": 403,
+          "outcome": "challenge_observed",
+          "title": "Just a moment...",
+          "visible_text_prefix": "Just a moment... &lt;h1&gt;Additional Verification Required&lt;/h1&gt; &lt;p&gt;Please enable JavaScript to complete the security check.&lt;/p&gt; &lt;p&gt;&lt;a href=\"https://www.indeed.com/\"&gt;Return home&lt;/a&gt;&lt;/p&gt; Find jobs Company Reviews Find salaries Sign in Upload your resume Sign in Employers / Post Job Find jobs Company Reviews Find salaries Additional Verification Required Your Ray ID for this request is a44b7a4dd8dfebaf Verification successful. Waiting for www.indeed.com to respond &lt;div class=\"h2\"&gt;&lt;span id=\"challenge-error-text\"&gt;Enable JavaScript and cookies to continue&lt;/span&gt;&lt;/div&gt; Return home → Troubleshooting Cloudflare Errors Need more help? Contact us",
+          "error": null,
+          "main_record": 163,
+          "dom_sha256": "0c20048a44ecaef92db1ae690b5aa309774eca1e6381b4140b6e642ff57bf457",
+          "sourceRun": "bot-gcp-proxy-patched-20261003-1932",
+          "assessment": null
+        },
+        {
+          "role": "recoverSimpleChallenge",
+          "url": null,
+          "http_status": null,
+          "outcome": "option_disabled",
+          "title": null,
+          "visible_text_prefix": null,
+          "error": null,
+          "main_record": null,
+          "dom_sha256": null,
+          "sourceRun": "bot-gcp-proxy-patched-20261003-1932",
+          "assessment": null
+        }
+      ]
+    }
+  ]
+}

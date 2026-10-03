@@ -109,7 +109,7 @@ test('open propagates fixture, Lightpanda and headful settings, initializes the 
   const observed=policyEvidence(t,'browser_observation');
   let browserArgs,clientArgs;
   const adapter=new ToolAdapter({tool:'rebrowser-lightpanda',site:{id:'fixture'},evidence:observed.evidence,
-    fixture:true,profile,options:{headful:false},
+    fixture:true,profile,options:{headful:true,headfulExplicit:false},
     browserOpener:async(tool,options)=>{
       browserArgs={tool,options};
       return {ua:'fixture-agent',runtime:{budgeted_navigation:false,headless:false,display:':fixture',viewport:{width:1280,height:720}},
@@ -120,7 +120,7 @@ test('open propagates fixture, Lightpanda and headful settings, initializes the 
   assert.equal(browserArgs.tool,'rebrowser-lightpanda');
   assert.deepEqual(browserArgs.options.lightpanda,profile.lightpanda);
   assert.equal(browserArgs.options.fixture,true);
-  assert.equal(browserArgs.options.headful,true);
+  assert.equal(browserArgs.options.headful,false);
   assert.deepEqual(clientArgs,['rebrowser-lightpanda','fixture-agent',true]);
   assert.equal(adapter.sessions.pool.state().length,1);
   assert.ok(adapter.sessions.pool.session);

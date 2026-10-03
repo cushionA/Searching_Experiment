@@ -114,6 +114,8 @@ def build(root: Path, *, replace: bool, source_dir: Path | None = None) -> Path:
     if patch_path.is_symlink() or not patch_path.is_file():
         raise BuildError(f"required source patch is missing: {patch_path}")
     patch_sha256 = sha256_file(patch_path)
+    normalized_patch = patch_path.read_bytes().replace(b"\r\n", b"\n")
+    normalized_patch_sha256 = hashlib.sha256(normalized_patch).hexdigest()
 
     deps = root / ".deps"
     deps.mkdir(mode=0o700, exist_ok=True)
@@ -178,6 +180,8 @@ def build(root: Path, *, replace: bool, source_dir: Path | None = None) -> Path:
     package_stage: Path | None = None
     backup: Path | None = None
     try:
+        normalized_patch_path = stage / patch_path.name
+        normalized_patch_path.write_bytes(normalized_patch)
         if source_dir is None:
             source = stage / "source"
             run_checked(
@@ -201,18 +205,33 @@ def build(root: Path, *, replace: bool, source_dir: Path | None = None) -> Path:
             raise BuildError("source checkout origin is not the official Obscura repository")
         if source_dir is None:
             run_checked(
-                [git, "-C", str(source), "apply", "--check", "--whitespace=error", str(patch_path)],
+                [
+                    git,
+                    "-C",
+                    str(source),
+                    "apply",
+                    "--check",
+                    "--whitespace=error",
+                    str(normalized_patch_path),
+                ],
                 env=build_env,
             )
             run_checked(
-                [git, "-C", str(source), "apply", "--whitespace=error", str(patch_path)],
+                [
+                    git,
+                    "-C",
+                    str(source),
+                    "apply",
+                    "--whitespace=error",
+                    str(normalized_patch_path),
+                ],
                 env=build_env,
             )
         else:
             source_diff = run_checked(
                 [git, "-C", str(source), "diff", "--binary", COMMIT], env=build_env
             ).stdout
-            if hashlib.sha256(source_diff.encode("utf-8")).hexdigest() != patch_sha256:
+            if source_diff.encode("utf-8").replace(b"\r\n", b"\n") != normalized_patch:
                 raise BuildError("existing source diff does not exactly match the pinned patch file")
             status = run_checked(
                 [git, "-C", str(source), "status", "--porcelain", "--untracked-files=all"],
@@ -274,6 +293,7 @@ def build(root: Path, *, replace: bool, source_dir: Path | None = None) -> Path:
         manifest: dict[str, object] = {
             "upstream_commit": COMMIT,
             "patch_sha256": patch_sha256,
+            "normalized_patch_sha256": normalized_patch_sha256,
             "features": "no-default-features",
             "reported_version": cli_reported_version.removeprefix("obscura "),
             "binaries": {name: outputs[name]["sha256"] for name in BINARIES},

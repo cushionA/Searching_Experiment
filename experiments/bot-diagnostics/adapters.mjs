@@ -32,7 +32,7 @@ export class ToolAdapter {
     else {
       this.browser = await this.browserOpener(this.tool, {extensions:this.profile.extensions || [],
         lightpanda:this.profile.lightpanda || null,fixture:this.fixture,
-        headful:this.evidence.policy === 'browser_observation' ? true : !!this.options.headful,
+        headful:this.evidence.policy === 'browser_observation' ? this.capabilities.headful : !!this.options.headful,
         profile:this.evidence.policy || 'diagnostic'});
       if(this.evidence.policy !== 'browser_observation' && this.browser.runtime?.budgeted_navigation === false) {
         throw new Error('unsupported_capability:budgeted_navigation; redirect interception unavailable');

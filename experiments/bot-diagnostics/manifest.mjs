@@ -53,6 +53,7 @@ export function prepare(manifest,{includeGoogle=false,fixture=false,selectors=fa
   const options={selectors:!!(selectors||humanlike||manifest.options?.selectors),
     recoverSimple:!!(recoverSimple||manifest.options?.recoverSimple),seed:manifest.options?.seed??1,
     headful:policy==='browser_observation'||!!(headful||manifest.options?.headful),executionPolicy:policy,
+    headfulExplicit:!!(headful||(manifest.options?.headfulExplicit??manifest.options?.headful)),
     recoveryMaxAttempts:recoveryPlan.max_attempts};
   if(!Number.isInteger(options.seed)) throw new Error('integer_seed_required');
   const profiles=structuredClone(manifest.profiles||[{id:'baseline',humanlike:false,extensions:[]}]);

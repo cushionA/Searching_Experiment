@@ -242,7 +242,7 @@ Rebrowser/BotDの項目別診断を新しく取得する場合は、先に`runne
 
 通常の検索サービス検証ではサイトが読み込むCDN・画像・フォント・iframe・POST・Service Worker・WebSocketを通常どおり許可する。WebSocketのframeは記録器の計測対象外で、結果にその限界を記録する。グラウンディングモードだけ同一originのGET・資源制限を適用する。拡張はpermitted content-scriptのみ、32ファイル・各256KiB以内。観測用拡張や操作速度の変更が検知耐性を改善するとは仮定しない。
 
-headful非対応のLightpandaはunsupported_capabilityとして記録し、GUIを起動しない。Chromiumのheadful armにはDISPLAYまたはWAYLAND_DISPLAYが必要。HTTP armの通常観測でもgroundingのrobots・予算制限を適用しない。
+通常観測ではPatchright / Playwrightをheadful、Lightpanda / Obscuraをheadlessで実行する。`--headful`またはmanifestの`options.headful: true`を明示した場合、headful非対応エンジンは`unsupported_capability`として記録する。Chromiumのheadful armにはDISPLAYまたはWAYLAND_DISPLAYが必要。HTTP armの通常観測でもgroundingのrobots・予算制限を適用しない。
 
 グラウンディングモードではrobots.txtの転送を台帳へ計上し、許可originの本文rulesを元の対象へ適用する。通常の検索サービス観測ではrobotsをゲートとして取得せず、not_enforced_browser_observationと記録する。
 

@@ -27,7 +27,7 @@ const enhanced=process.argv[3]==='--lightpanda-enhanced';
 try{
   if(process.argv.length>4 || (process.argv[3]&&!enhanced)) throw new Error('Usage: smoke.mjs NEW_OUTPUT_DIRECTORY [--lightpanda-enhanced]');
   const manifest=prepare({schema:1,tools:enhanced?['rebrowser-lightpanda']:['wreq-js','impit','patchright','rebrowser-lightpanda','playwright-baseline'],
-    ...(enhanced?{profiles:['baseline','compat','probe'].map(profile=>({id:profile,lightpanda:{release:'1.0.0',profile}}))}:{}),
+    ...(enhanced?{options:{executionPolicy:'grounding'},profiles:['baseline','compat','probe'].map(profile=>({id:profile,lightpanda:{release:'1.0.0',profile}}))}:{}),
     limits:{requests_per_tool_site:25,body_bytes_per_tool_site:8388608},
     sites:[{id:'fixture',origins:[origin],links:{home:origin+'/',targets:[origin+'/redirect',origin+'/inside2']},params:{},selectors:{primary:'#fixture-link'}}]}, {fixture:true});
   const result=await execute({manifest,directory,fixture:true});
