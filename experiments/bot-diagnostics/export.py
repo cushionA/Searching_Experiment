@@ -71,7 +71,7 @@ def main():
         zipped.writestr("CHECKPOINT.json", json.dumps({"commit": commit, "verification": verification,
             "run_paths": {str(run): prefix for run, prefix in prefixes.items()},
             "source_files_are_authoritative": True, "runtime_binaries_included": False,
-            "resume": "Use saved scenario and remaining ledger budget; browser/client cookies restart."}, indent=2) + "\n")
+            "resume": "Use saved scenario, recorded execution policy and existing ledger; grounding alone enforces remaining budget. Browser/client cookies restart."}, indent=2) + "\n")
     with zipfile.ZipFile(temporary) as zipped:
         if zipped.testzip() is not None:
             raise RuntimeError("ZIP CRC verification failed")

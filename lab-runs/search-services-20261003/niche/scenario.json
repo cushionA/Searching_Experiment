@@ -1,0 +1,217 @@
+{
+  "schema": 1,
+  "tools": [
+    "patchright"
+  ],
+  "limits": {
+    "requests_per_tool_site": 25,
+    "body_bytes_per_tool_site": 8388608
+  },
+  "profiles": [
+    {
+      "id": "baseline",
+      "humanlike": false,
+      "extensions": []
+    }
+  ],
+  "recovery_plan": {
+    "max_attempts": 0,
+    "return_home_after_success": false,
+    "wait_seconds": 0,
+    "retry_original_target": false
+  },
+  "sites": [
+    {
+      "id": "wolframalpha",
+      "name": "WolframAlpha",
+      "group": "vertical",
+      "service_kind": "computational_answer",
+      "origins": [
+        "https://www.wolframalpha.com"
+      ],
+      "links": {
+        "home": "https://www.wolframalpha.com/",
+        "targets": [
+          "https://www.wolframalpha.com/input?i=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6%20%E6%95%99%E5%93%A1"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": [],
+      "enabled": true
+    },
+    {
+      "id": "base",
+      "name": "BASE",
+      "group": "academic",
+      "service_kind": "academic_directory",
+      "origins": [
+        "https://www.base-search.net"
+      ],
+      "links": {
+        "home": "https://www.base-search.net/",
+        "targets": []
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "No query URL supplied; requires investigation.",
+      "query_status": "query_status_requires",
+      "recovery": null,
+      "operations": [],
+      "enabled": true
+    },
+    {
+      "id": "refseek",
+      "name": "RefSeek",
+      "group": "academic",
+      "service_kind": "academic_search",
+      "origins": [
+        "https://www.refseek.com"
+      ],
+      "links": {
+        "home": "https://www.refseek.com/",
+        "targets": [
+          "https://www.refseek.com/?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6%20%E6%95%99%E5%93%A1"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": [],
+      "enabled": true
+    },
+    {
+      "id": "lenso",
+      "name": "Lenso.ai",
+      "group": "visual",
+      "service_kind": "visual_search",
+      "origins": [
+        "https://lenso.ai"
+      ],
+      "links": {
+        "home": "https://lenso.ai/",
+        "targets": []
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "No query URL supplied; requires investigation.",
+      "query_status": "query_status_requires",
+      "recovery": null,
+      "operations": [],
+      "enabled": true
+    },
+    {
+      "id": "unsplash",
+      "name": "Unsplash",
+      "group": "vertical",
+      "service_kind": "image_search",
+      "origins": [
+        "https://unsplash.com"
+      ],
+      "links": {
+        "home": "https://unsplash.com/",
+        "targets": [
+          "https://unsplash.com/s/photos/%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6%20%E6%95%99%E5%93%A1"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": [],
+      "enabled": true
+    },
+    {
+      "id": "kiddle",
+      "name": "Kiddle",
+      "group": "kids",
+      "service_kind": "search",
+      "origins": [
+        "https://www.kiddle.co"
+      ],
+      "links": {
+        "home": "https://www.kiddle.co/",
+        "targets": [
+          "https://www.kiddle.co/s.php?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6%20%E6%95%99%E5%93%A1"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": [],
+      "enabled": true
+    },
+    {
+      "id": "wacky-safe",
+      "name": "Wacky Safe",
+      "group": "kids",
+      "service_kind": "search",
+      "origins": [
+        "https://wackysafe.com"
+      ],
+      "links": {
+        "home": "https://wackysafe.com/",
+        "targets": [
+          "https://wackysafe.com/search?q=%E6%97%A9%E7%A8%B2%E7%94%B0%E5%A4%A7%E5%AD%A6%20%E6%95%99%E5%93%A1"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": [],
+      "enabled": true
+    }
+  ],
+  "options": {
+    "selectors": false,
+    "recoverSimple": false,
+    "seed": 1,
+    "headful": true,
+    "recoveryMaxAttempts": 0
+  }
+}

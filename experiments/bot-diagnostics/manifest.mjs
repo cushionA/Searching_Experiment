@@ -39,15 +39,18 @@ function checkExtension(directory) {
   extensionFiles(directory);return directory;
 }
 export function prepare(manifest,{includeGoogle=false,fixture=false,selectors=false,recoverSimple=false,
-  humanlike=false,extensions=false,extensionPaths=[],baseDirectory=here}={}) {
+  humanlike=false,extensions=false,extensionPaths=[],headful=false,executionPolicy,baseDirectory=here}={}) {
   if(manifest.schema!==1 || !Array.isArray(manifest.sites) || !Array.isArray(manifest.tools)) throw new Error('invalid_manifest');
   if(manifest.tools.some(tool=>!TOOL_NAMES.includes(tool)) || new Set(manifest.tools).size!==manifest.tools.length) throw new Error('unknown_or_duplicate_tool');
-  if(manifest.limits?.requests_per_tool_site!==limits.requests_per_client_target || manifest.limits?.body_bytes_per_tool_site!==limits.bytes_per_client_target) throw new Error('limits_must_match_executor');
+  const policy=executionPolicy??manifest.options?.executionPolicy??manifest.execution_policy??'browser_observation';
+  if(!['browser_observation','grounding'].includes(policy)) throw new Error('unknown_execution_policy');
+  if(policy==='grounding'&&(manifest.limits?.requests_per_tool_site!==limits.requests_per_client_target || manifest.limits?.body_bytes_per_tool_site!==limits.bytes_per_client_target)) throw new Error('limits_must_match_executor');
   const recoveryPlan={...DEFAULT_RECOVERY_PLAN,...manifest.recovery_plan};
   if(![0,1].includes(recoveryPlan.max_attempts) || !Number.isFinite(recoveryPlan.wait_seconds)
     || recoveryPlan.wait_seconds<0 || recoveryPlan.wait_seconds>60) throw new Error('invalid_recovery_budget_or_wait');
   const options={selectors:!!(selectors||humanlike||manifest.options?.selectors),
     recoverSimple:!!(recoverSimple||manifest.options?.recoverSimple),seed:manifest.options?.seed??1,
+    headful:policy==='browser_observation'||!!(headful||manifest.options?.headful),executionPolicy:policy,
     recoveryMaxAttempts:recoveryPlan.max_attempts};
   if(!Number.isInteger(options.seed)) throw new Error('integer_seed_required');
   const profiles=structuredClone(manifest.profiles||[{id:'baseline',humanlike:false,extensions:[]}]);

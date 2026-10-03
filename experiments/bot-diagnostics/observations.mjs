@@ -4,7 +4,8 @@ export function classify(status, html, headers = {}) {
     .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
   const title = (html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || '').trim();
   const patterns = [
-    ['human_verification', /verify (?:that )?you (?:are|['’]re) human|verify that you(?:'re| are) not a robot|ロボットではないことを確認|私はロボットではありません|robot check|enter the characters you see|人間であること|just a moment|checking your browser|additional verification required/i],
+    ['human_verification', /verif(?:y|ying) (?:that )?you(?: are|['’]re) human|verify that you(?:'re| are) not a robot|ロボットではないことを確認|私はロボットではありません|robot check|enter the characters you see|人間であること|just a moment|checking your browser|additional verification required/i],
+    ['iq_test_challenge', /iq test has been enabled due to bot abuse on the network[\s\S]*?solving this iq test will let you make \d+ searches today/i],
     ['access_denied_message', /access denied|request (?:was )?blocked|automated access|sorry[^.]{0,80}robot|unusual traffic|不正なアクセス|アクセスが制限|アクセスを拒否|アクセスが集中/i],
   ];
   const signals = [];
@@ -17,7 +18,7 @@ export function classify(status, html, headers = {}) {
   }
   if (headers['cf-mitigated'] === 'challenge') signals.push({ name: 'cf_mitigated', evidence: 'challenge' });
   let outcome = 'response_observed';
-  if (signals.some(x => ['human_verification', 'cf_mitigated', 'aws_waf_challenge'].includes(x.name))) outcome = 'challenge_observed';
+  if (signals.some(x => ['human_verification', 'iq_test_challenge', 'cf_mitigated', 'aws_waf_challenge'].includes(x.name))) outcome = 'challenge_observed';
   else if (status === 403 || signals.some(x => x.name === 'access_denied_message')) outcome = 'access_denied_observed';
   else if (status === 429) outcome = 'rate_limited_observed';
   else if (status >= 500) outcome = 'server_error_observed';

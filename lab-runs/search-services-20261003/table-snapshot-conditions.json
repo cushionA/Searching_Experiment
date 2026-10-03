@@ -1,0 +1,81 @@
+{
+  "query": "早稲田大学 教員",
+  "tools": [
+    "patchright"
+  ],
+  "headful": true,
+  "execution_policy": "browser_observation",
+  "locale": null,
+  "region": null,
+  "locale_region_note": "明示指定せず。ブラウザ・回線の既定値で観測。",
+  "browser_runtimes_observed": [
+    {
+      "executable": "/usr/bin/chromium",
+      "version": "151.0.7922.173",
+      "headless": false,
+      "display": ":91",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      }
+    }
+  ],
+  "network": "inherited environment proxy; TLS validation enabled",
+  "legacy_limits_enforced": false,
+  "robots_gate_enforced": false,
+  "cross_origin_assets_allowed": true,
+  "post_allowed": true,
+  "service_workers_allowed": true,
+  "websocket_recording": false,
+  "observation_wait_ms": 6000,
+  "result_candidates_limit": 10,
+  "challenge_actions": {
+    "brave": "Verifyボタン1回、最終HTTP200/DOMで検索結果確認",
+    "yandex": "チェックボックス後に画像課題1回答送信。POST503のため正誤不明"
+  },
+  "route_repair_sites": [
+    "qwant",
+    "oceanhero",
+    "refseek",
+    "wacky-safe",
+    "unsplash"
+  ],
+  "main_recheck_service_count": 38,
+  "adopted_historical_observations": {
+    "query": [
+      "wiby",
+      "youcare"
+    ],
+    "homepage_only": [
+      "yacy",
+      "searxng",
+      "brave-api",
+      "serpapi",
+      "dataforseo",
+      "firecrawl",
+      "exa",
+      "tavily",
+      "base",
+      "lenso"
+    ]
+  },
+  "history_in_table": "robots/home/CDN列には旧段階の履歴を含む。query・品質・画面・DOMは最新の保存イベント。",
+  "special_route_attribution": {
+    "onesearch": "Yahoo Searchの別段階観測。OneSearch本体のSERPではない。",
+    "peekier": "robots転送先Kagiの別段階観測。本体からのクエリ引継ぎは未確認。"
+  },
+  "external_reports": "ユーザー提供Brave/Yandex報告をexternal_*として分離。自己実測への加算なし。",
+  "evidence_run_root": "/workspace/Searching_Experiment/lab-runs/search-services-20261003",
+  "observed_window_utc": {
+    "started_at": "2026-10-02T19:23:46.227Z",
+    "finished_at": "2026-10-02T20:48:00.608Z"
+  },
+  "evidence_checkpoint": {
+    "path": ".lab-output/search-services-20261003-browser-observation.zip",
+    "sha256": "d2e8f1a74f304d99afed97ba982c15f4f36b2a24752e846a1d437aeb4ef8788d"
+  },
+  "summary_extractor": {
+    "path": "experiments/bot-diagnostics/search-summary.py",
+    "sha256": "90d0571855d014a3a08acf00cd4d9a24e7c77837c9259236f27035f400855cb0"
+  }
+}

@@ -2,6 +2,8 @@
 
 Rebrowser Bot DetectorとFingerprintJS BotD 2.0.0の項目別診断、指定4サイトの初回応答、サイト内リンク、セレクタ操作、簡単なチャレンジ、操作速度・拡張機能の比較を共通インターフェイスで実行する任意のNode.js実験。Googleは最後の任意段階。既存の発見型クロールとは独立している。
 
+検索サービスのブロッキング検証はbrowser_observationが既定。通常のheadfulブラウザとしてrobots、通信回数・保存bytesの枠、人工的な取得間隔、同一origin/GET/画像・CDN制限を適用しない。通信・本文・DOM・スクリーンショットは引き続き記録する。旧制限はグラウンディング探索専用のgroundingに限定し、必要な場合だけ--groundingまたはexecution_policy: "grounding"を明示する。環境プロキシとTLS検証は維持する。
+
 ## 共通インターフェイス
 
 `sites.json`にhome、targets、params、selectors、操作手順と成功条件を注入する。サイトごとにクロールの実行器を書き直す必要はない。
@@ -12,8 +14,8 @@ Rebrowser Bot DetectorとFingerprintJS BotD 2.0.0の項目別診断、指定4サ
 | `manifest.mjs` | URL展開、対象範囲、操作・拡張・比較条件の検査 |
 | `scenario.mjs` | 注入された役割、トップ→内部URL、回復と再訪の段階 |
 | `adapters.mjs` | 各ツールのnative fetch/goto/入力とCookie継続 |
-| `runner.mjs` | robotsと同一originを検査して実際の通信を実行 |
-| `evidence.mjs` | 共有予算、失敗の計上、原body・DOM・台帳の保存とverify |
+| `runner.mjs` | 通常ブラウザの通信観測、grounding時だけrobotsと同一originの検査 |
+| `evidence.mjs` | 通信・本文の計上、grounding用の共有予算、原body・DOM・台帳の保存とverify |
 | `observations.mjs` | 文字コードと観測した応答の分類 |
 | `runtime.mjs` | 共通の上限・UA・依存と一時データの配置・ソース証拠 |
 | `runner-cli.mjs` | 初回応答・検知器の旧CLIの実装 |
@@ -25,12 +27,12 @@ flowchart LR
   S[SkillでURL・セレクタ・役割を作成] --> M[共通メインループ]
   M --> R[トップ → 任意操作 → 内部URL]
   R --> A[ツール別アダプタ]
-  A --> E[robots・共有予算・証拠台帳]
+  A --> E[通信観測・証拠台帳 / grounding時だけ制限]
   R --> C[チャレンジ観測・設定済み簡単ボタン]
   C --> H[成功確認 → トップ → 待機 → 元URLを1回再訪]
 ```
 
-各方式×サイト×比較条件内でCookieとブラウザセッションを維持する。比較条件ごとにセッションを新しくするが、方式×サイトの取得予算とチャレンジ試行上限は全条件で共有する。
+各方式×サイト×比較条件内でCookieとブラウザセッションを維持する。比較条件ごとにセッションを新しくし、チャレンジ試行上限は全条件で共有する。取得予算の制限はgroundingモードに限る。
 
 | 機能 | wreq-js / impit | Patchright / Playwright対照 | rebrowser-patches + Lightpanda |
 |---|---|---|---|
@@ -108,6 +110,12 @@ node experiments/bot-diagnostics/framework.mjs run lab-runs/your-new-run --all-o
 node experiments/bot-diagnostics/framework.mjs verify lab-runs/your-new-run
 ```
 
+GUI環境でPatchright/Playwrightを画面表示して実行する場合は、同じシナリオへ`--headful`を付ける。DISPLAYまたはWAYLAND_DISPLAYから表示先へ接続でき、既存のプラットフォームCA信頼が利用可能な環境で実行する。
+
+```bash
+DISPLAY=:0 node experiments/bot-diagnostics/framework.mjs run lab-runs/your-new-run --headful
+```
+
 `plan`は通信を発生させず設定を展開する。オプションなしでは4サイトのトップ→内部URL。`--all-options`は以下をすべて選択する。
 
 Rebrowser/BotDの項目別診断を新しく取得する場合は、先に`runner.mjs detectors lab-runs/your-detector-run`を実行する。検知器はローカルの独立した対照実験で、実サイトのWAF原因と直接対応づけない。
@@ -119,17 +127,27 @@ Rebrowser/BotDの項目別診断を新しく取得する場合は、先に`runne
 | `--humanlike` | 標準条件に加え、seed固定の待機・ネイティブポインタ移動・1文字ごとの入力条件を比較 |
 | `--extensions` | 標準条件に加え、同梱の通信なし観測用MV3拡張を読み込み、DOMマーカーで読み込みを確認 |
 | `--extension=DIR` | 小さいcontent-scriptのみのローカルMV3拡張を追加した条件。成功確認用probeは設定へ注入 |
-| `--include-google` | Googleトップ・検索URLを最後に評価。robots拒否は停止として記録 |
+| `--include-google` | Googleトップ・検索URLを最後に評価 |
+| `--grounding` | grounding専用の予算・robots・同一origin/GET/resource制限を適用 |
+| `--headful` | Patchright / Playwrightを画面表示で実行。DISPLAYまたはWAYLAND_DISPLAYが必要 |
 | `--sites=FILE` / `--roles=FILE` | サイト設定 / 小さい役割モジュールを差し替える |
-| `--resume` | 同じ設定・台帳・残予算で再開。完了済み条件は再取得しない |
+| `--resume` | 同じ設定・台帳で再開。groundingでは残予算を維持。完了済み条件は再取得しない |
 
-各方式×サイトで25リクエスト・保存/計上body8MiBを共有する。robots・リダイレクト・失敗・操作に伴うGETも計上する。全条件を選択すると予算内で後の条件が停止する場合がある。条件を増やして予算をリセットする動作はない。Chromiumの実転送量のハード上限ではない。
+グラウンディングモードに限り、各方式×サイトで25リクエスト・保存/計上body8MiBを共有する。通常の検索サービス検証ではこの上限を適用せず、失敗時の2MiB予約も追加しない。台帳のbudgetsは旧形式のフィールド名として残り、通常モードでは通信・保存量の集計として使う。各recordのpolicyとハッシュ付きpolicy-history.jsonから適用方式を区別する。
 
-サイト本文・リソースは同一originのGETに限定し、画像・favicon・メディア・フォント・WebSocketを止める。外部iframe型CAPTCHA・画像パズル・バックグラウンド通信を要する拡張はこの実行境界で未対応。拡張はpermitted content-scriptのみ、32ファイル・各256KiB以内。観測用拡張や操作速度の変更が検知耐性を改善するとは仮定しない。
+通常の検索サービス検証ではサイトが読み込むCDN・画像・フォント・iframe・POST・Service Worker・WebSocketを通常どおり許可する。WebSocketのframeは記録器の計測対象外で、結果にその限界を記録する。グラウンディングモードだけ同一originのGET・資源制限を適用する。拡張はpermitted content-scriptのみ、32ファイル・各256KiB以内。観測用拡張や操作速度の変更が検知耐性を改善するとは仮定しない。
 
-実サイトで簡単なボタン突破はまだ確認できていないため、各サイトの`recovery`はnull。IndeedのReturn homeを突破ボタンとして使わない。Google検索はrobotsで拒否され得る。主な候補と未検証箇所は`sites.json`、保存HTML・画面は[証拠一覧](../../docs/bot-diagnostics-evidence.md)を参照。
+headful非対応のLightpandaはunsupported_capabilityとして記録し、GUIを起動しない。Chromiumのheadful armにはDISPLAYまたはWAYLAND_DISPLAYが必要。HTTP armの通常観測でもgroundingのrobots・予算制限を適用しない。
 
-途中終了からの再開は同じフラグ・設定で行う。未確定要求の予約bytesを保持し、Cookieを含むセッションは新しく開始する。実装の修復前後のソースハッシュをinvocationsへ追記する。
+グラウンディングモードではrobots.txtの転送を台帳へ計上し、許可originの本文rulesを元の対象へ適用する。通常の検索サービス観測ではrobotsをゲートとして取得せず、not_enforced_browser_observationと記録する。
+
+旧制限で行った6対象の継続例はlab-runs/search-services-20261003/retry-robots.mjs。適用範囲変更後の継続は同じフォルダのobserve-browser.mjsで、元の台帳と失敗記録を保ったままbrowser_observationのrecordを追記する。
+
+検索サービス50件の固定対象表と検証ごとの結果表は[対象・結果の保存先](../../docs/search-services/README.md)。対象マスターはsearch-targets.jsonで、条件を変えた検証結果はsave-search-tables.py snapshotにより新しいフォルダーへ保存する。results.mdは現在と同じ9列の表だけ、条件・対象版・出典は別JSON。既存の検証フォルダーを上書きしない。
+
+標準の4サイト設定では`recovery`はnull。IndeedのReturn homeを突破ボタンとして使わない。検索サービス50件の別シナリオでは、BraveのVerifyクリック後にHTTP200の検索結果を確認した。主な候補と未検証箇所は`sites.json`、検索サービスの結果は[検索実験の報告](../../docs/search-services-20261003.md)、その他の保存HTML・画面は[証拠一覧](../../docs/bot-diagnostics-evidence.md)を参照。
+
+途中終了からの再開は同じフラグ・設定で行う。groundingの未確定要求の予約bytesを保持し、通常観測の失敗は保存本文0bytesとして計上する。Cookieを含むセッションは新しく開始する。実装の修復前後のソースハッシュをinvocationsへ追記する。
 
 ```bash
 node experiments/bot-diagnostics/framework.mjs run lab-runs/your-new-run --all-options --resume
@@ -189,7 +207,7 @@ BOT_DIAGNOSTICS_CLIENTS=patchright BOT_DIAGNOSTICS_TARGETS=joshin \
 
 runの横に.lockを作り、同じrunの二重実行を止める。実行中のプロセスを強制終了した場合、PIDを確認してからロックを処理する。未確定リクエストは上限いっぱいのbytesを計上したまま扱い、予算を返却しない。
 
-ブラウザは各HTTPリクエストとリダイレクトを捕捉し、robots、同一origin、GET、回数・保存body上限を検査する。ChromiumはCDP、LightpandaはPuppeteerのrequest interceptionを使う。公開デモには接続せず、外部originの検知器依存も実行しない。
+通常モードはブラウザのHTTP通信・リダイレクト・応答本文をpassiveに記録し、通信を制限しない。グラウンディングモードだけrobots、同一origin、GET、回数・保存body上限を検査する。検知器はローカルfixtureで検証し、公開デモには接続しない。
 
 ## 今回の結果の再集計
 

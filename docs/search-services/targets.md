@@ -1,0 +1,52 @@
+|ID|分類|サービス|調査対象URL|検索方式|検索ルート|備考|
+|---|---|---|---|---|---|---|
+|google|A 独自インデックス型|Google|[https://www.google.com/](https://www.google.com/)|Web検索|`https://www.google.com/search?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|bing|A 独自インデックス型|Bing|[https://www.bing.com/](https://www.bing.com/)|Web検索|`https://www.bing.com/search?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|brave|A 独自インデックス型|Brave Search|[https://search.brave.com/](https://search.brave.com/)|Web検索|`https://search.brave.com/search?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|mojeek|A 独自インデックス型|Mojeek|[https://www.mojeek.com/](https://www.mojeek.com/)|Web検索|`https://www.mojeek.com/search?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|yep|A 独自インデックス型|Yep|[https://yep.com/](https://yep.com/)|Web検索|`https://yep.com/search?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|mwmbl|A 独自インデックス型|Mwmbl|[https://mwmbl.org/](https://mwmbl.org/)|Web検索|`https://mwmbl.org/?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|yacy|A 独自インデックス型|YaCy|[https://yacy.net/](https://yacy.net/)|自ノード|未設定|公開テキスト検索ルート未設定。API認証・ノード・画像等の条件設定が必要。|
+|marginalia|A 独自インデックス型|Marginalia Search|[https://marginalia-search.com/](https://marginalia-search.com/)|Web検索|`https://marginalia-search.com/search?query={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|wiby|A 独自インデックス型|Wiby|[https://wiby.me/](https://wiby.me/)|Web検索|`https://wiby.me/?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|yandex|A 独自インデックス型|Yandex|[https://yandex.com/](https://yandex.com/)|Web検索|`https://yandex.com/search/?text={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|baidu|A 独自インデックス型|Baidu|[https://www.baidu.com/](https://www.baidu.com/)|Web検索|`https://www.baidu.com/s?wd={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|naver|A 独自インデックス型|Naver|[https://search.naver.com/](https://search.naver.com/)|Web検索|`https://search.naver.com/search.naver?query={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|duckduckgo|B プロキシ・メタ検索型|DuckDuckGo|[https://duckduckgo.com/](https://duckduckgo.com/)|Web検索|`https://duckduckgo.com/?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|startpage|B プロキシ・メタ検索型|Startpage|[https://www.startpage.com/](https://www.startpage.com/)|Web検索|`https://www.startpage.com/sp/search?query={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|qwant|B プロキシ・メタ検索型|Qwant|[https://www.qwant.com/](https://www.qwant.com/)|Web検索|`https://www.qwant.com/?q={query}&t=web`|保存済みフォーム・iframe・metadataに基づく修正ルート。404 response og:url explicitly points to ?q=...&t=web|
+|ecosia|B プロキシ・メタ検索型|Ecosia|[https://www.ecosia.org/](https://www.ecosia.org/)|Web検索|`https://www.ecosia.org/search?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|swisscows|B プロキシ・メタ検索型|Swisscows|[https://swisscows.com/](https://swisscows.com/)|Web検索|`https://swisscows.com/web?query={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|metager|B プロキシ・メタ検索型|MetaGer|[https://metager.org/](https://metager.org/)|メタ検索|`https://metager.org/meta/meta.ger3?eingabe={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|searxng|B プロキシ・メタ検索型|SearXNG|[https://searx.space/](https://searx.space/)|公開インスタンス一覧|未設定|公開テキスト検索ルート未設定。API認証・ノード・画像等の条件設定が必要。|
+|fourget|B プロキシ・メタ検索型|4get|[https://4get.ca/](https://4get.ca/)|メタ検索|`https://4get.ca/web?s={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|disconnect|B プロキシ・メタ検索型|Disconnect Search|[https://search.disconnect.me/](https://search.disconnect.me/)|Web検索|`https://search.disconnect.me/searchTerms/{query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|gibiru|B プロキシ・メタ検索型|Gibiru|[https://gibiru.com/](https://gibiru.com/)|Web検索|`https://gibiru.com/results.html?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|lukol|B プロキシ・メタ検索型|Lukol|[https://lukol.com/](https://lukol.com/)|Web検索|`https://lukol.com/s.php?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|oceanhero|B プロキシ・メタ検索型|OceanHero|[https://oceanhero.today/](https://oceanhero.today/)|Web検索|`https://oceanhero.today/web?q={query}`|保存済みフォーム・iframe・metadataに基づく修正ルート。Homepage JSON-LD SearchAction target /web?q={search_term_string}|
+|youcare|B プロキシ・メタ検索型|YouCare|[https://youcare.world/](https://youcare.world/)|Web検索|`https://youcare.world/search?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|yahoo-japan|B プロキシ・メタ検索型|Yahoo! JAPAN|[https://search.yahoo.co.jp/](https://search.yahoo.co.jp/)|Web検索|`https://search.yahoo.co.jp/search?p={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|goo|B プロキシ・メタ検索型|goo|[https://search.goo.ne.jp/](https://search.goo.ne.jp/)|Web検索|`https://search.goo.ne.jp/web.jsp?MT={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|kagi|C サブスクリプション型|Kagi|[https://kagi.com/](https://kagi.com/)|Web検索|`https://kagi.com/search?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|perplexity|D AI回答エンジン|Perplexity|[https://www.perplexity.ai/](https://www.perplexity.ai/)|AI回答|`https://www.perplexity.ai/search?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|felo|D AI回答エンジン|Felo|[https://felo.ai/](https://felo.ai/)|AI回答|`https://felo.ai/search?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|genspark|D AI回答エンジン|Genspark|[https://www.genspark.ai/](https://www.genspark.ai/)|AI回答|`https://www.genspark.ai/search?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|you|D AI回答エンジン|You.com|[https://you.com/](https://you.com/)|AI回答|`https://you.com/search?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|phind|D AI回答エンジン|Phind|[https://www.phind.com/](https://www.phind.com/)|AI回答|`https://www.phind.com/search?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|bagoodex|D AI回答エンジン|Bagoodex|[https://bagoodex.io/](https://bagoodex.io/)|AI回答|`https://bagoodex.io/search?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|brave-api|E 検索API|Brave Search API|[https://brave.com/search/api/](https://brave.com/search/api/)|検索API|未設定|公開テキスト検索ルート未設定。API認証・ノード・画像等の条件設定が必要。|
+|serpapi|E 検索API|SerpApi|[https://serpapi.com/](https://serpapi.com/)|検索API|未設定|公開テキスト検索ルート未設定。API認証・ノード・画像等の条件設定が必要。|
+|dataforseo|E 検索API|DataForSEO|[https://dataforseo.com/](https://dataforseo.com/)|検索API|未設定|公開テキスト検索ルート未設定。API認証・ノード・画像等の条件設定が必要。|
+|firecrawl|E 検索API|Firecrawl|[https://firecrawl.dev/](https://firecrawl.dev/)|検索API|未設定|公開テキスト検索ルート未設定。API認証・ノード・画像等の条件設定が必要。|
+|exa|E 検索API|Exa|[https://exa.ai/](https://exa.ai/)|検索API|未設定|公開テキスト検索ルート未設定。API認証・ノード・画像等の条件設定が必要。|
+|tavily|E 検索API|Tavily|[https://tavily.com/](https://tavily.com/)|検索API|未設定|公開テキスト検索ルート未設定。API認証・ノード・画像等の条件設定が必要。|
+|wolframalpha|F 専門・ニッチ|WolframAlpha|[https://www.wolframalpha.com/](https://www.wolframalpha.com/)|計算回答|`https://www.wolframalpha.com/input?i={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|base|F 専門・ニッチ|BASE|[https://www.base-search.net/](https://www.base-search.net/)|学術検索（ルート未設定）|未設定|公開テキスト検索ルート未設定。API認証・ノード・画像等の条件設定が必要。|
+|refseek|F 専門・ニッチ|RefSeek|[https://www.refseek.com/](https://www.refseek.com/)|学術検索|`https://www.refseek.com/search?q={query}`|保存済みフォーム・iframe・metadataに基づく修正ルート。Homepage form action=search method=get input name=q|
+|lenso|F 専門・ニッチ|Lenso.ai|[https://lenso.ai/](https://lenso.ai/)|画像による検索|未設定|公開テキスト検索ルート未設定。API認証・ノード・画像等の条件設定が必要。|
+|unsplash|F 専門・ニッチ|Unsplash|[https://unsplash.com/](https://unsplash.com/)|写真検索|`https://unsplash.com/s/photos/{query}`|保存済みフォーム・iframe・metadataに基づく修正ルート。Path template must percent-encode spaces; prior quote_plus produced literal + in path|
+|kiddle|F 専門・ニッチ|Kiddle|[https://www.kiddle.co/](https://www.kiddle.co/)|Web検索|`https://www.kiddle.co/s.php?q={query}`|候補ルート。単発検証の可否は検証結果表を参照。|
+|wacky-safe|F 専門・ニッチ|Wacky Safe|[https://wackysafe.com/](https://wackysafe.com/)|Web検索|`https://wackysafe.com/kidswebsearch.html?safe=high&safe=active#gsc.tab=0&gsc.q={query}&gsc.page=1`|保存済みフォーム・iframe・metadataに基づく修正ルート。Current All-tab iframe URL read from saved DOM; direct frame observation to capture actual search body|
+|onesearch|追加検索サービス|OneSearch|[https://www.onesearch.com/](https://www.onesearch.com/)|Web検索|`https://www.onesearch.com/yhs/search?hspart=OneSearch&hsimp=yhs-001&p={query}`|元サービスURLを保持。Yahoo Searchの別段階観測ルートはalternate_routes。 別段階観測: https://search.yahoo.com/search?p={query}&fr2=p%3Aonesearch%2Cmkt%3Aus（Yahoo Searchを別段階で観測。OneSearch終了案内を保存。検索語の自動引継ぎは未確認。）|
+|peekier|追加検索サービス|Peekier|[https://peekier.com/](https://peekier.com/)|Web検索|`https://peekier.com/search?q={query}`|元サービスURLを保持。Kagi側はalternate_routesの別段階観測。 別段階観測: https://kagi.com/search?q={query}（robots転送先Kagiを別段階で観測。本体から検索語を転送する証拠はない。）|
+|yahoo-kids|追加検索サービス|Yahoo!きっず|[https://kids.yahoo.co.jp/](https://kids.yahoo.co.jp/)|Web検索|`https://kids.yahoo.co.jp/search?p={query}`|候補ルート。単発検証の可否は検証結果表を参照。|

@@ -21,14 +21,18 @@ export async function execute({manifest,directory,roles=defaultRoles,fixture=fal
   fs.writeSync(lock,JSON.stringify({pid:process.pid,started_at:new Date().toISOString()}));
   const outcomes=[];
   try {
-    const evidence=new Evidence(directory,resume);
+    const evidence=new Evidence(directory,resume,{policy:manifest.options?.executionPolicy??'browser_observation',
+      authorization:manifest.policy_authorization??'Bot diagnostics uses browser observation; legacy limits apply only to explicit grounding workflows.'});
     if(resume) {
       if(JSON.stringify(JSON.parse(fs.readFileSync(path.join(directory,'scenario.json'))))!==JSON.stringify(manifest)) throw new Error('cannot_change_resumed_scenario');
       outcomes.push(...JSON.parse(fs.readFileSync(path.join(directory,'pipeline-results.json'))));
       for(const record of evidence.records) if(record.status==='interrupted') evidence.fail(record,new Error('previous_process_interrupted; full reserved body cap retained'));
     } else {evidence.save('scenario.json',manifest);evidence.flush();evidence.save('pipeline-results.json',outcomes);}
     const invocation={started_at:new Date().toISOString(),node:process.version,fixture,resume,
+      headless:!manifest.options?.headful,display:manifest.options?.headful?(process.env.DISPLAY||process.env.WAYLAND_DISPLAY||null):null,
+      viewport:manifest.options?.headful?{width:1280,height:720}:null,
       sources:snapshotSources(evidence,roleSource),extension_sources:{},
+      execution_policy:evidence.policy,
       session_policy:resume?'fresh browser/client session; retained request ledger and budgets':'one session per tool/site/profile',
       tls_fingerprint_at_origin:'not measured; use inherited proxy and verified CA trust'};
     for(const profile of manifest.profiles) for(const dir of profile.extensions||[]) {
@@ -42,6 +46,10 @@ export async function execute({manifest,directory,roles=defaultRoles,fixture=fal
       const cell=`${tool}/${site.id}/${profile.id}`;
       if(resume&&completed.has(cell)) continue;
       const adapter=new ToolAdapter({tool,site,evidence,fixture,profile,options:manifest.options});
+      if(manifest.options?.headful && adapter.capabilities.goto && !adapter.capabilities.headful) {
+        outcomes.push({site:site.id,tool,profile:profile.id,state:'unsupported_capability',capability:'headful'});
+        evidence.save('pipeline-results.json',outcomes);continue;
+      }
       if((profile.extensions?.length&&!adapter.capabilities.extensions) || (profile.humanlike&&!adapter.capabilities.selectorOperations)) {
         outcomes.push({site:site.id,tool,profile:profile.id,state:'unsupported_capability',
           capability:profile.extensions?.length?'extensions':'native_humanlike_input'});
@@ -63,7 +71,7 @@ export async function execute({manifest,directory,roles=defaultRoles,fixture=fal
 }
 export function parseCLI(args) {
   const mode=args.shift()||'plan',flags=args.filter(x=>x.startsWith('--')),positional=args.filter(x=>!x.startsWith('--'));
-  if(!['plan','run','verify'].includes(mode) || positional.length>1 || flags.some(x=>!['--include-google','--selectors','--recover-simple','--humanlike','--extensions','--all-options','--resume'].includes(x)
+  if(!['plan','run','verify'].includes(mode) || positional.length>1 || flags.some(x=>!['--include-google','--selectors','--recover-simple','--humanlike','--extensions','--all-options','--resume','--headful','--grounding'].includes(x)
     && !/^--(?:sites|roles|extension)=.+/.test(x))) throw new Error('Usage: framework.mjs plan|run|verify [RUN_DIRECTORY] [--sites=FILE] [--roles=FILE] [--all-options] [--resume]');
   if(mode!=='plan'&&!positional[0]) throw new Error('run_directory_required');
   return {mode,directory:positional[0],flags};
@@ -76,7 +84,8 @@ async function main() {
   }
   const manifestPath=path.resolve(flags.find(x=>x.startsWith('--sites='))?.slice(8)||path.join(here,'sites.json'));
   const all=flags.includes('--all-options');
-  const manifest=prepare(JSON.parse(fs.readFileSync(manifestPath)),{baseDirectory:path.dirname(manifestPath),
+  const manifest=prepare(JSON.parse(fs.readFileSync(manifestPath)),{baseDirectory:path.dirname(manifestPath),headful:flags.includes('--headful'),
+    ...(flags.includes('--grounding')?{executionPolicy:'grounding'}:{}),
     includeGoogle:all||flags.includes('--include-google'),selectors:all||flags.includes('--selectors'),
     recoverSimple:all||flags.includes('--recover-simple'),humanlike:all||flags.includes('--humanlike'),
     extensions:all||flags.includes('--extensions'),extensionPaths:flags.filter(x=>x.startsWith('--extension=')).map(x=>path.resolve(x.slice(12)))});
