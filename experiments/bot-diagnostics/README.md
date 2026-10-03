@@ -150,6 +150,9 @@ node experiments/bot-diagnostics/framework.mjs plan --sites=experiments/bot-diag
 
 Node.js 22以上、Python 3.12以上、Chromium、環境のHTTPS_PROXYとCA信頼が必要。
 
+任意のプロキシを使える通常のPC・GCP VMでは、リポジトリ直下から `python3 -B scripts/with_proxy.py --proxy http://HOST:PORT -- node experiments/bot-diagnostics/framework.mjs plan` のように指定する。runにも同じ接頭辞を使い、全ブラウザ・fetchへ同じ設定を渡す。[共通設定と管理Cloudの制約](../../docs/proxy.md)。
+
+
 ```bash
 python3 -B experiments/bot-diagnostics/setup.py
 python3 -B -m unittest discover -s tests -p 'test_lab*.py'

@@ -5,6 +5,8 @@ FROM scratch AS lightpanda-input
 FROM python:3.12-slim-bookworm AS scenario-source
 WORKDIR /app
 COPY experiments/bot-diagnostics /app/experiments/bot-diagnostics
+COPY scripts/with_proxy.py /app/scripts/with_proxy.py
+COPY docs/proxy.md /app/docs/proxy.md
 COPY --chmod=0555 experiments/bot-diagnostics/docker-entrypoint.sh /app/experiments/bot-diagnostics/docker-entrypoint.sh
 COPY README.md AGENTS.md Dockerfile compose.yaml compose.bot-diagnostics-cloud.yaml .dockerignore /app/
 COPY .agents/skills/bot-blocking-scenarios/SKILL.md /app/.agents/skills/bot-blocking-scenarios/SKILL.md
