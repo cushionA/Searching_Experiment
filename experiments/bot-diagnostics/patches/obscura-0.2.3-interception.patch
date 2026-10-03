@@ -1,0 +1,952 @@
+diff --git a/crates/obscura-browser/src/page.rs b/crates/obscura-browser/src/page.rs
+index 0fadfee..35445e7 100644
+--- a/crates/obscura-browser/src/page.rs
++++ b/crates/obscura-browser/src/page.rs
+@@ -1263,7 +1263,14 @@ impl Page {
+             let source = if self.should_block_url(&url) {
+                 None
+             } else if let Ok(parsed) = Url::parse(&url) {
+-                match self.do_fetch(&parsed).await {
++                let response = if self.callbacks.route_enabled() {
++                    let initiator = self.url.as_ref().unwrap_or(&parsed);
++                    self.http_client.fetch_resource_with_callbacks(&parsed,
++                        ResourceRequest::subresource(ResourceType::Script, initiator), Some(&self.callbacks)).await
++                } else {
++                    self.do_fetch(&parsed).await
++                };
++                match response {
+                     Ok(response) => Some(String::from_utf8_lossy(&response.body).into_owned()),
+                     Err(error) => {
+                         tracing::warn!("frame script {} failed: {}", url, error);
+@@ -4090,11 +4097,24 @@ impl Page {
+     /// is drained, so calling this repeatedly does not duplicate events. The
+     /// fetch-{N} request id is preserved so Network.getResponseBody resolves.
+     pub fn sync_js_network_events(&mut self) {
++        for routed in self.callbacks.take_routed_responses() {
++            let response = routed.response;
++            self.store_response_body(routed.request_id.clone(), &response.body, true);
++            self.network_events.push(NetworkEvent {
++                request_id: routed.request_id, url: response.url.to_string(),
++                method: routed.request.method, resource_type: format!("{:?}", routed.request.resource_type),
++                status: response.status, headers: routed.request.headers,
++                response_headers: Arc::new(response.headers), body_size: response.body.len(),
++                timestamp: std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH)
++                    .unwrap_or_default().as_secs_f64(),
++            });
++        }
+         let events = match self.js.as_ref() {
+             Some(js) => js.take_js_network_events(),
+             None => return,
+         };
+         for ev in events {
++            if self.callbacks.route_enabled() { continue; }
+             self.network_events.push(NetworkEvent {
+                 request_id: ev.request_id,
+                 url: ev.url,
+@@ -4385,6 +4405,7 @@ impl Page {
+         response_headers: &std::collections::HashMap<String, String>,
+         body_size: usize,
+     ) -> String {
++        if self.callbacks.route_enabled() { return String::new(); }
+         self.network_event_counter += 1;
+         let request_id = format!("{}.{}", self.id, self.network_event_counter);
+         let timestamp = std::time::SystemTime::now()
+@@ -4406,6 +4427,7 @@ impl Page {
+     }
+ 
+     fn store_response_body(&mut self, request_id: String, body: &[u8], base64_encoded: bool) {
++        if request_id.is_empty() { return; }
+         let max_entries = response_body_entry_limit();
+         let max_bytes = response_body_byte_limit();
+         if max_entries == 0 || max_bytes == 0 || body.len() > max_bytes {
+@@ -4702,10 +4724,20 @@ impl Page {
+         }
+     }
+ 
++    pub fn intercept_session(&self) -> Option<String> {
++        self.callbacks.route_session()
++    }
++
++    pub fn set_intercept_session(&self, session_id: Option<String>) {
++        self.callbacks.set_route_context(self.frame_id.clone(), session_id);
++    }
++
+     pub fn set_intercept_tx(
+         &mut self,
+         tx: tokio::sync::mpsc::UnboundedSender<obscura_js::ops::InterceptedRequest>,
+     ) {
++        self.callbacks.set_route_tx(tx.clone());
++        self.callbacks.enable_route(self.intercept_enabled && self.callbacks.route_configured());
+         self.intercept_tx = Some(tx.clone());
+         if let Some(js) = &self.js {
+             js.set_intercept_tx(tx);
+@@ -4714,10 +4746,11 @@ impl Page {
+ 
+     pub fn enable_intercept(&mut self, enabled: bool) {
+         self.intercept_enabled = enabled;
++        self.callbacks.enable_route(enabled && self.intercept_tx.is_some() && self.callbacks.route_configured());
+         if let Some(js) = &self.js {
+             js.set_intercept_enabled(enabled);
+-            // `Fetch.enable` assigns the patterns right before this call;
+-            // the renderer's loads follow the same interception policy.
++            // Page-level block patterns remain distinct from CDP Fetch
++            // match patterns, which are handled by the live route hook.
+             #[cfg(feature = "render")]
+             js.set_intercept_block_patterns(self.intercept_block_patterns.clone());
+         }
+diff --git a/crates/obscura-cdp/src/domains/fetch.rs b/crates/obscura-cdp/src/domains/fetch.rs
+index 7b09890..6f23980 100644
+--- a/crates/obscura-cdp/src/domains/fetch.rs
++++ b/crates/obscura-cdp/src/domains/fetch.rs
+@@ -61,25 +61,39 @@ pub async fn handle(
+ ) -> Result<Value, String> {
+     match method {
+         "enable" => {
+-            let patterns = params
+-                .get("patterns")
+-                .and_then(|v| v.as_array())
+-                .map(|arr| {
+-                    arr.iter()
+-                        .filter_map(|p| {
+-                            p.get("urlPattern")
+-                                .and_then(|v| v.as_str())
+-                                .map(|s| s.to_string())
+-                        })
+-                        .collect::<Vec<_>>()
+-                })
+-                .unwrap_or_else(|| vec!["*".to_string()]);
++            // This backend currently supports request-stage interception for
++            // all URLs. Do not silently treat CDP match patterns as a block
++            // list: Page's renderer uses a separate block-URL mechanism.
++            // Reject narrower/response-stage rules until the shared network
++            // hook can implement those semantics faithfully.
++            if let Some(patterns) = params.get("patterns") {
++                let patterns = patterns
++                    .as_array()
++                    .ok_or("Fetch.enable patterns must be an array")?;
++                if patterns.len() > 1
++                    || patterns.iter().any(|pattern| {
++                        !pattern.is_object()
++                            || pattern
++                                .get("urlPattern")
++                                .is_some_and(|value| value.as_str() != Some("*"))
++                            || pattern
++                                .get("requestStage")
++                                .is_some_and(|stage| stage.as_str() != Some("Request"))
++                            || pattern.get("resourceType").is_some()
++                    })
++                {
++                    return Err(
++                        "Fetch.enable currently supports only all-URL request-stage patterns"
++                            .into(),
++                    );
++                }
++            }
+ 
+             ctx.fetch_intercept.enabled = true;
+-            ctx.fetch_intercept.patterns = patterns.clone();
++            ctx.fetch_intercept.patterns = vec!["*".to_string()];
+             let tx_clone = ctx.intercept_tx.clone();
+             if let Some(page) = ctx.get_session_page_mut(session_id) {
+-                page.intercept_block_patterns = patterns.clone();
++                page.set_intercept_session(session_id.clone());
+                 if let Some(tx) = tx_clone {
+                     page.set_intercept_tx(tx);
+                 }
+@@ -93,7 +107,6 @@ pub async fn handle(
+             ctx.fetch_intercept.enabled = false;
+             ctx.fetch_intercept.patterns.clear();
+             if let Some(page) = ctx.get_session_page_mut(session_id) {
+-                page.intercept_block_patterns.clear();
+                 page.enable_intercept(false);
+             }
+             let paused: Vec<_> = ctx.fetch_intercept.paused.drain().collect();
+diff --git a/crates/obscura-cdp/src/domains/page.rs b/crates/obscura-cdp/src/domains/page.rs
+index e6d8ff1..89a571d 100644
+--- a/crates/obscura-cdp/src/domains/page.rs
++++ b/crates/obscura-cdp/src/domains/page.rs
+@@ -864,7 +864,11 @@ pub fn emit_navigation_events(
+             .map(|ev| {
+                 if !nav_seen && ev.resource_type == "Document" && ev.url == page_url {
+                     nav_seen = true;
+-                    loader_id.to_string()
++                    if ev.request_id.starts_with("route-") {
++                        ev.request_id.clone()
++                    } else {
++                        loader_id.to_string()
++                    }
+                 } else {
+                     ev.request_id.clone()
+                 }
+@@ -900,11 +904,13 @@ pub fn emit_navigation_events(
+     if let Some(idx) = nav_idx {
+         let net_event = &network_events[idx];
+         let rid = &nav_request_ids[idx];
+-        ctx.pending_events.push(CdpEvent {
+-            method: "Network.requestWillBeSent".into(),
+-            params: json!({"requestId": rid, "loaderId": loader_id, "documentURL": page_url, "request": {"url": net_event.url, "method": net_event.method, "headers": net_event.headers}, "timestamp": net_event.timestamp, "wallTime": net_event.timestamp, "initiator": {"type": "other"}, "type": net_event.resource_type, "frameId": frame_id}),
+-            session_id: es.clone(),
+-        });
++        if !rid.starts_with("route-") {
++            ctx.pending_events.push(CdpEvent {
++                method: "Network.requestWillBeSent".into(),
++                params: json!({"requestId": rid, "loaderId": loader_id, "documentURL": page_url, "request": {"url": net_event.url, "method": net_event.method, "headers": net_event.headers}, "timestamp": net_event.timestamp, "wallTime": net_event.timestamp, "initiator": {"type": "other"}, "type": net_event.resource_type, "frameId": frame_id}),
++                session_id: es.clone(),
++            });
++        }
+     }
+ 
+     let contexts = ctx.commit_default_context(page_id, frame_id, page_url);
+@@ -940,6 +946,9 @@ pub fn emit_navigation_events(
+     if ctx.fetch_intercept.enabled {
+         for (i, net_event) in network_events.iter().enumerate() {
+             let rid = &nav_request_ids[i];
++            if rid.starts_with("route-") {
++                continue;
++            }
+             ctx.pending_events.push(CdpEvent {
+                 method: "Fetch.requestPaused".into(),
+                 params: json!({
+@@ -960,7 +969,7 @@ pub fn emit_navigation_events(
+ 
+     for (i, net_event) in network_events.iter().enumerate() {
+         let rid = &nav_request_ids[i];
+-        if Some(i) != nav_idx {
++        if Some(i) != nav_idx && !rid.starts_with("route-") {
+             ctx.pending_events.push(CdpEvent {
+                 method: "Network.requestWillBeSent".into(),
+                 params: json!({"requestId": rid, "loaderId": loader_id, "documentURL": page_url, "request": {"url": net_event.url, "method": net_event.method, "headers": net_event.headers}, "timestamp": net_event.timestamp, "wallTime": net_event.timestamp, "initiator": {"type": "other"}, "type": net_event.resource_type, "frameId": frame_id}),
+@@ -1058,25 +1067,27 @@ pub(crate) fn emit_runtime_network_events(
+         .unwrap_or_else(|| format!("loader-blank-{page_id}"));
+     for network_event in network_events {
+         let request_id = &network_event.request_id;
+-        ctx.pending_events.push(CdpEvent {
+-            method: "Network.requestWillBeSent".into(),
+-            params: json!({
+-                "requestId": request_id,
+-                "loaderId": loader_id,
+-                "documentURL": page_url,
+-                "request": {
+-                    "url": network_event.url,
+-                    "method": network_event.method,
+-                    "headers": network_event.headers,
+-                },
+-                "timestamp": network_event.timestamp,
+-                "wallTime": network_event.timestamp,
+-                "initiator": {"type": "script"},
+-                "type": network_event.resource_type,
+-                "frameId": frame_id,
+-            }),
+-            session_id: session_id.clone(),
+-        });
++        if !request_id.starts_with("route-") {
++            ctx.pending_events.push(CdpEvent {
++                method: "Network.requestWillBeSent".into(),
++                params: json!({
++                    "requestId": request_id,
++                    "loaderId": loader_id,
++                    "documentURL": page_url,
++                    "request": {
++                        "url": network_event.url,
++                        "method": network_event.method,
++                        "headers": network_event.headers,
++                    },
++                    "timestamp": network_event.timestamp,
++                    "wallTime": network_event.timestamp,
++                    "initiator": {"type": "script"},
++                    "type": network_event.resource_type,
++                    "frameId": frame_id,
++                }),
++                session_id: session_id.clone(),
++            });
++        }
+         ctx.pending_events.push(CdpEvent {
+             method: "Network.responseReceived".into(),
+             params: json!({
+diff --git a/crates/obscura-cdp/src/server.rs b/crates/obscura-cdp/src/server.rs
+index a427695..75e0563 100644
+--- a/crates/obscura-cdp/src/server.rs
++++ b/crates/obscura-cdp/src/server.rs
+@@ -1289,6 +1289,8 @@ fn emit_intercepted_request(
+         .duration_since(std::time::UNIX_EPOCH)
+         .unwrap_or_default()
+         .as_secs_f64();
++    let frame_id = intercepted.frame_id.as_deref().unwrap_or(frame_id);
++    let session_id = intercepted.session_id.clone().or(session_id);
+     let request = json!({
+         "url": intercepted.url,
+         "method": intercepted.method,
+@@ -1300,7 +1302,11 @@ fn emit_intercepted_request(
+         "method": "Network.requestWillBeSent",
+         "params": {
+             "requestId": intercepted.request_id,
+-            "loaderId": "",
++            "loaderId": if intercepted.resource_type == "Document" {
++                intercepted.request_id.clone()
++            } else {
++                String::new()
++            },
+             "documentURL": "",
+             "request": request,
+             "timestamp": now,
+@@ -1331,6 +1337,30 @@ fn emit_intercepted_request(
+     intercepted_paused.insert(intercepted.request_id, intercepted.resolver);
+ }
+ 
++fn emit_route_loading_failed(
++    request_id: &str,
++    error_text: &str,
++    session_id: Option<String>,
++    reply_tx: &mpsc::UnboundedSender<String>,
++) {
++    let now = std::time::SystemTime::now()
++        .duration_since(std::time::UNIX_EPOCH)
++        .unwrap_or_default()
++        .as_secs_f64();
++    let event = json!({
++        "method": "Network.loadingFailed",
++        "params": {
++            "requestId": request_id,
++            "timestamp": now,
++            "type": "Other",
++            "errorText": error_text,
++            "canceled": error_text == "Aborted",
++        },
++        "sessionId": session_id,
++    });
++    let _ = reply_tx.send(event.to_string());
++}
++
+ async fn pump_live_page_event_loop(ctx: &mut CdpContext) -> Result<bool, String> {
+     // Several pages on one connection can be live at once (#872), each with its
+     // own event loop, so pump a turn on *every* live page rather than only the
+@@ -1374,11 +1404,10 @@ fn sync_live_page_network_events(ctx: &mut CdpContext) {
+         .map(|page| page.id.clone())
+         .collect();
+     for page_id in live_ids {
+-        let Some(session_id) = ctx
+-            .sessions
+-            .iter()
+-            .find(|(_, pid)| *pid == &page_id)
+-            .map(|(session_id, _)| Some(session_id.clone()))
++        let Some(session_id) = ctx.get_page(&page_id).and_then(|page| page.intercept_session())
++            .or_else(|| ctx.sessions.iter().find(|(_, pid)| *pid == &page_id)
++                .map(|(session_id, _)| session_id.clone()))
++            .map(Some)
+         else {
+             continue;
+         };
+@@ -1507,6 +1536,37 @@ fn handle_fetch_resolution(
+         let request_id = req.params.get("requestId").and_then(|v| v.as_str()).unwrap_or("");
+         tracing::info!("INTERCEPTION resolution: {} for {}, paused_count={}", method, request_id, intercepted_paused.len());
+ 
++        let unsupported_native_resolution = request_id.starts_with("route-")
++            && (method == "Fetch.fulfillRequest"
++                || (method == "Fetch.continueRequest"
++                    && ["url", "method", "headers", "postData"]
++                        .iter()
++                        .any(|key| req.params.get(*key).is_some())));
++        if unsupported_native_resolution
++        {
++            if let Some(resolver) = intercepted_paused.remove(request_id) {
++                let _ = resolver.send(obscura_js::ops::InterceptResolution::Fail {
++                    reason: "Unsupported native Fetch route action".into(),
++                });
++                emit_route_loading_failed(
++                    request_id,
++                    "BlockedByClient",
++                    req.session_id.clone(),
++                    reply_tx,
++                );
++            }
++            let response = crate::types::CdpResponse::error(
++                req.id,
++                -32602,
++                "Native Fetch interception currently supports only unmodified GET continueRequest or failRequest".into(),
++                req.session_id,
++            );
++            if let Ok(json) = serde_json::to_string(&response) {
++                let _ = reply_tx.send(json);
++            }
++            return true;
++        }
++
+         if let Some(resolver) = intercepted_paused.remove(request_id) {
+             tracing::info!("INTERCEPTION resolved: {}", request_id);
+             let resolution = match method {
+@@ -1538,6 +1598,14 @@ fn handle_fetch_resolution(
+                 }
+                 "Fetch.failRequest" => {
+                     let reason = req.params.get("errorReason").and_then(|v| v.as_str()).unwrap_or("Failed").to_string();
++                    if request_id.starts_with("route-") {
++                        emit_route_loading_failed(
++                            request_id,
++                            &reason,
++                            req.session_id.clone(),
++                            reply_tx,
++                        );
++                    }
+                     obscura_js::ops::InterceptResolution::Fail { reason }
+                 }
+                 _ => return false,
+@@ -1619,7 +1687,7 @@ async fn process_with_interception(
+ 
+     let session_for_events = req.session_id.clone();
+     let frame_id = page.frame_id.clone();
+-    let loader_id = format!("loader-{}", uuid::Uuid::new_v4());
++    let mut loader_id = format!("loader-{}", uuid::Uuid::new_v4());
+ 
+     let (nav_done_tx, mut nav_done_rx) = mpsc::channel::<(obscura_browser::Page, Result<(), String>)>(1);
+     let url_owned = url.to_string();
+@@ -1692,7 +1760,9 @@ async fn process_with_interception(
+                     reply_tx,
+                     intercepted_paused,
+                 );
+-                tokio::time::sleep(tokio::time::Duration::from_millis(50)).await;
++                // Let the WebSocket writer flush the pause event without
++                // imposing a fixed delay before processing the client's reply.
++                tokio::task::yield_now().await;
+             }
+             Some(msg) = rx.recv() => {
+                 tracing::info!("INTERCEPTION select: received CDP message during navigation");
+@@ -1756,6 +1826,16 @@ async fn process_with_interception(
+     page.sync_js_network_events();
+     let network_events: Vec<_> = page.network_events.drain(..).collect();
+     let page_url = page.url_string();
++    // A native Fetch route has already emitted Network.requestWillBeSent with
++    // its real request ID. Reuse the final Document hop as loaderId so CDP
++    // clients can correlate Page.navigate's result and document response.
++    if let Some(final_document_request) = network_events.iter().rev().find(|event| {
++        event.resource_type == "Document"
++            && event.url == page_url
++            && event.request_id.starts_with("route-")
++    }) {
++        loader_id = final_document_request.request_id.clone();
++    }
+     let page_id_for_events = page.id.clone();
+     let reached_network_idle = page.lifecycle.is_network_idle();
+ 
+diff --git a/crates/obscura-js/src/ops.rs b/crates/obscura-js/src/ops.rs
+index 18564d2..ba4bc25 100644
+--- a/crates/obscura-js/src/ops.rs
++++ b/crates/obscura-js/src/ops.rs
+@@ -33,39 +33,7 @@ pub type InterceptCallback = Arc<
+     >,
+ >;
+ 
+-#[derive(Debug)]
+-pub enum InterceptResolution {
+-    Continue {
+-        url: Option<String>,
+-        method: Option<String>,
+-        headers: Option<HashMap<String, String>>,
+-        body: Option<String>,
+-    },
+-    Fulfill {
+-        status: u16,
+-        headers: HashMap<String, String>,
+-        /// Lossy UTF-8 view of the fulfilled body, for text consumers.
+-        body: String,
+-        /// The exact fulfilled body as standard base64. CDP delivers the
+-        /// fulfillRequest body base64-encoded; carrying it through unchanged
+-        /// lets the bootstrap fetch layer reconstruct the exact bytes
+-        /// (`_base64ToUint8Array`) instead of a `from_utf8_lossy` corruption
+-        /// of any non-UTF-8 payload (image, font, protobuf). See #912.
+-        body_base64: String,
+-    },
+-    Fail {
+-        reason: String,
+-    },
+-}
+-
+-pub struct InterceptedRequest {
+-    pub request_id: String,
+-    pub url: String,
+-    pub method: String,
+-    pub headers: HashMap<String, String>,
+-    pub resource_type: String,
+-    pub resolver: tokio::sync::oneshot::Sender<InterceptResolution>,
+-}
++pub use obscura_net::interceptor::{InterceptResolution, InterceptedRequest};
+ 
+ #[derive(Debug, Clone)]
+ pub struct StoredNetworkResponseBody {
+@@ -2993,7 +2961,7 @@ async fn op_fetch_url(
+             gs.intercept_enabled,
+             gs.intercept_tx.is_some()
+         );
+-        let itx = if gs.intercept_enabled {
++        let itx = if gs.intercept_enabled && !gs.callbacks.as_ref().is_some_and(|cbs| cbs.route_enabled()) {
+             gs.intercept_counter += 1;
+             gs.intercept_tx
+                 .clone()
+@@ -3053,6 +3021,7 @@ async fn op_fetch_url(
+             serde_json::from_str(&headers_json).unwrap_or_default();
+         let (resolve_tx, resolve_rx) = tokio::sync::oneshot::channel();
+         let intercepted = InterceptedRequest {
++            frame_id: None, session_id: None,
+             request_id: request_id.clone(),
+             url: url.clone(),
+             method: method.clone(),
+@@ -3187,7 +3156,18 @@ async fn op_fetch_url(
+         && mode == "cors"
+         && (!is_cors_safelisted_method(&req_method) || !unsafe_header_names.is_empty());
+ 
++    if needs_preflight && callbacks.as_ref().is_some_and(|cbs| cbs.route_enabled()) {
++        // This native interception mode deliberately supports read-only GETs.
++        // Never open an unobserved OPTIONS transport while routing is active.
++        return Err(deno_error::JsErrorBox::generic("native interception does not support CORS preflight"));
++    }
++
+     if needs_preflight {
++        if let Some(context_client) = &http_client {
++            let destination = url::Url::parse(&url).map_err(|e| deno_error::JsErrorBox::generic(e.to_string()))?;
++            context_client.validate_request_destination(&destination).await
++                .map_err(|e| deno_error::JsErrorBox::generic(e.to_string()))?;
++        }
+         let mut preflight_request = client
+             .request(reqwest::Method::OPTIONS, &url)
+             .timeout(fetch_timeout())
+@@ -3274,6 +3254,9 @@ async fn op_fetch_url(
+             client
+         };
+         if let Some(stealth) = stealth {
++            if callbacks.as_ref().is_some_and(|cbs| cbs.route_enabled()) {
++                return Err(deno_error::JsErrorBox::generic("native interception does not support stealth transport"));
++            }
+             return stealth_fetch_all(
+                 stealth,
+                 url.clone(),
+@@ -3305,7 +3288,20 @@ async fn op_fetch_url(
+     let mut redirected_from = Vec::new();
+     let mut crossed_origin = is_cross_origin;
+     let cookie_initiator = url::Url::parse(&page_origin).ok();
++    let mut route_id = None;
+     let response = loop {
++        if let Some(context_client) = &http_client {
++            let destination = url::Url::parse(&current_url).map_err(|e| deno_error::JsErrorBox::generic(e.to_string()))?;
++            context_client.validate_request_destination(&destination).await
++                .map_err(|e| deno_error::JsErrorBox::generic(e.to_string()))?;
++        }
++        if let Some(cbs) = &callbacks {
++            let info = RequestInfo {
++                url: url::Url::parse(&current_url).map_err(|e| deno_error::JsErrorBox::generic(e.to_string()))?,
++                method: current_method.to_string(), headers: current_headers.clone(), resource_type: ResourceType::Fetch,
++            };
++            route_id = cbs.route(&info).await.map_err(|e| deno_error::JsErrorBox::generic(e.to_string()))?;
++        }
+         let mut req = client
+             .request(current_method.clone(), &current_url)
+             .timeout(fetch_timeout());
+@@ -3476,6 +3472,15 @@ async fn op_fetch_url(
+         let crosses_origin = base.origin() != next_url.origin();
+         sanitize_redirect_headers(&mut current_headers, crosses_origin, downgraded_to_get);
+ 
++        if let Some(cbs) = &callbacks {
++            let info = RequestInfo { url: base.clone(), method: method.clone(),
++                headers: custom_headers.clone(), resource_type: ResourceType::Fetch };
++            cbs.record_routed_response(&route_id, &info, &Response {
++                url: base.clone(), status: resp.status().as_u16(),
++                headers: resp.headers().iter().map(|(k,v)| (k.to_string(), v.to_str().unwrap_or("").to_string())).collect(),
++                body: Vec::new(), redirected_from: redirected_from.clone(),
++            });
++        }
+         redirected_from.push(base);
+         current_url = next_url.to_string();
+     };
+@@ -3525,6 +3530,15 @@ async fn op_fetch_url(
+     let resp_bytes = read_body_capped(response, fetch_max_body_bytes()).await?;
+     let resp_body = String::from_utf8_lossy(&resp_bytes).to_string();
+     let resp_body_base64 = BASE64.encode(&resp_bytes);
++    if let Some(cbs) = &callbacks {
++        let parsed = url::Url::parse(&current_url).map_err(|e| deno_error::JsErrorBox::generic(e.to_string()))?;
++        let info = RequestInfo { url: parsed.clone(), method: current_method.to_string(),
++            headers: current_headers.clone(), resource_type: ResourceType::Fetch };
++        cbs.record_routed_response(&route_id, &info, &Response {
++            url: parsed, status, headers: resp_headers.clone(), body: resp_bytes.to_vec(),
++            redirected_from: redirected_from.clone(),
++        });
++    }
+     if let Some(ref cbs) = callbacks {
+         if cbs.has_response_callbacks().await {
+             let resp = fetch_response(
+@@ -3543,7 +3557,9 @@ async fn op_fetch_url(
+             cbs.fire_response(&info, &resp).await;
+         }
+     }
+-    let response_request_id = {
++    let response_request_id = if let Some(request_id) = route_id {
++        request_id
++    } else {
+         let state_borrow = state.borrow();
+         let gs = state_borrow.borrow::<SharedState>().clone();
+         let mut gs = gs.borrow_mut();
+diff --git a/crates/obscura-net/src/client.rs b/crates/obscura-net/src/client.rs
+index acf9249..3579af7 100644
+--- a/crates/obscura-net/src/client.rs
++++ b/crates/obscura-net/src/client.rs
+@@ -15,6 +15,17 @@ use url::Url;
+ use crate::cookies::{same_site, CookieJar, SameSiteContext};
+ use crate::interceptor::{InterceptAction, RequestInterceptor};
+ 
++fn network_error_chain(error: &reqwest::Error) -> String {
++    let mut message = error.to_string();
++    let mut source = std::error::Error::source(error);
++    while let Some(cause) = source {
++        message.push_str(": ");
++        message.push_str(&cause.to_string());
++        source = cause.source();
++    }
++    message
++}
++
+ fn configured_root_paths() -> Vec<std::path::PathBuf> {
+     let mut paths = Vec::new();
+     if let Some(path) = std::env::var_os("SSL_CERT_FILE").filter(|path| !path.is_empty()) {
+@@ -496,7 +507,17 @@ pub type ResponseCallback = Arc<dyn Fn(&RequestInfo, &Response) + Send + Sync>;
+ /// requests and dies with its page. The HTTP client itself stays
+ /// callback-free; page-driven fetches pass the page's registry in. Ids keep
+ /// the `u64` shape #416 established on `Page::on_request`/`on_response`.
++pub struct RoutedResponse {
++    pub request_id: String,
++    pub request: RequestInfo,
++    pub response: Response,
++}
++
+ pub struct CallbackRegistry {
++    route_context: std::sync::Mutex<Option<(String, Option<String>)>>,
++    route_tx: std::sync::Mutex<Option<tokio::sync::mpsc::UnboundedSender<crate::interceptor::InterceptedRequest>>>,
++    route_enabled: std::sync::atomic::AtomicBool,
++    routed_responses: std::sync::Mutex<Vec<RoutedResponse>>,
+     on_request: RwLock<Vec<(u64, RequestCallback)>>,
+     on_response: RwLock<Vec<(u64, ResponseCallback)>>,
+     id_counter: std::sync::atomic::AtomicU64,
+@@ -505,12 +526,82 @@ pub struct CallbackRegistry {
+ impl CallbackRegistry {
+     pub fn new() -> Self {
+         CallbackRegistry {
++            route_context: std::sync::Mutex::new(None),
++            route_tx: std::sync::Mutex::new(None),
++            route_enabled: std::sync::atomic::AtomicBool::new(false),
++            routed_responses: std::sync::Mutex::new(Vec::new()),
+             on_request: RwLock::new(Vec::new()),
+             on_response: RwLock::new(Vec::new()),
+             id_counter: std::sync::atomic::AtomicU64::new(1),
+         }
+     }
+ 
++    pub fn set_route_context(&self, frame_id: String, session_id: Option<String>) {
++        *self.route_context.lock().unwrap_or_else(|e| e.into_inner()) = Some((frame_id, session_id));
++    }
++
++    pub fn route_configured(&self) -> bool {
++        self.route_context.lock().unwrap_or_else(|e| e.into_inner()).is_some()
++    }
++
++    pub fn route_session(&self) -> Option<String> {
++        self.route_context.lock().unwrap_or_else(|e| e.into_inner()).as_ref()
++            .and_then(|(_, session)| session.clone())
++    }
++
++    pub fn set_route_tx(&self, tx: tokio::sync::mpsc::UnboundedSender<crate::interceptor::InterceptedRequest>) {
++        *self.route_tx.lock().unwrap_or_else(|e| e.into_inner()) = Some(tx);
++    }
++
++    pub fn enable_route(&self, enabled: bool) {
++        self.route_enabled.store(enabled, std::sync::atomic::Ordering::Relaxed);
++    }
++
++    pub fn route_enabled(&self) -> bool {
++        self.route_enabled.load(std::sync::atomic::Ordering::Relaxed)
++    }
++
++    /// Every network hop waits here before the transport can send bytes.
++    /// The channel is page-owned; a closed channel or timeout fails closed.
++    pub async fn route(&self, request: &RequestInfo) -> Result<Option<String>, ObscuraNetError> {
++        use crate::interceptor::{InterceptedRequest, InterceptResolution};
++        if !self.route_enabled() { return Ok(None); }
++        let tx = self.route_tx.lock().unwrap_or_else(|e| e.into_inner()).clone()
++            .ok_or_else(|| ObscuraNetError::Blocked("interception channel missing".into()))?;
++        if self.routed_responses.lock().unwrap_or_else(|e| e.into_inner()).len() >= 256 {
++            return Err(ObscuraNetError::Blocked("interception event limit".into()));
++        }
++        static NEXT_ROUTE: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(1);
++        let request_id = format!("route-{}", NEXT_ROUTE.fetch_add(1, std::sync::atomic::Ordering::Relaxed));
++        let (resolver, resolved) = tokio::sync::oneshot::channel();
++        let (frame_id, session_id) = self.route_context.lock().unwrap_or_else(|e| e.into_inner()).clone()
++            .map(|(frame, session)| (Some(frame), session)).unwrap_or((None, None));
++        tx.send(InterceptedRequest {
++            frame_id, session_id,
++            request_id: request_id.clone(), url: request.url.to_string(),
++            method: request.method.clone(), headers: request.headers.clone(),
++            resource_type: format!("{:?}", request.resource_type), resolver,
++        }).map_err(|_| ObscuraNetError::Blocked("interception channel closed".into()))?;
++        match tokio::time::timeout(Duration::from_secs(30), resolved).await {
++            Ok(Ok(InterceptResolution::Continue { url: None, method: None, headers: None, body: None }))
++                if request.method == "GET" => Ok(Some(request_id)),
++            Ok(Ok(InterceptResolution::Fail { reason })) => Err(ObscuraNetError::Blocked(reason)),
++            _ => Err(ObscuraNetError::Blocked("GET interception requires unmodified continue or fail".into())),
++        }
++    }
++
++    pub fn record_routed_response(&self, request_id: &Option<String>, request: &RequestInfo, response: &Response) {
++        if let Some(request_id) = request_id {
++            self.routed_responses.lock().unwrap_or_else(|e| e.into_inner()).push(RoutedResponse {
++                request_id: request_id.clone(), request: request.clone(), response: response.clone(),
++            });
++        }
++    }
++
++    pub fn take_routed_responses(&self) -> Vec<RoutedResponse> {
++        std::mem::take(&mut *self.routed_responses.lock().unwrap_or_else(|e| e.into_inner()))
++    }
++
+     fn next_id(&self) -> u64 {
+         self.id_counter
+             .fetch_add(1, std::sync::atomic::Ordering::Relaxed)
+@@ -715,18 +806,30 @@ pub fn is_forbidden_ip(ip: IpAddr) -> bool {
+ /// guard away for a better TLS fingerprint.
+ pub struct SsrfGuardResolver {
+     pub(crate) allow_private: bool,
++    // An explicitly configured proxy is an infrastructure endpoint, not an
++    // origin. Only that hostname may bypass the transport DNS private-IP gate.
++    trusted_proxy_host: Option<String>,
+ }
+ 
+ impl SsrfGuardResolver {
+     pub fn new(allow_private: bool) -> Self {
+-        Self { allow_private }
++        Self { allow_private, trusted_proxy_host: None }
++    }
++
++    fn with_proxy(allow_private: bool, proxy_url: Option<&str>) -> Self {
++        Self {
++            allow_private,
++            trusted_proxy_host: proxy_url.and_then(|value| Url::parse(value).ok())
++                .and_then(|url| url.host_str().map(str::to_ascii_lowercase)),
++        }
+     }
+ }
+ 
+ impl Resolve for SsrfGuardResolver {
+     fn resolve(&self, name: Name) -> Resolving {
+-        let allow = self.allow_private || env_allows_private_network();
+         let host = name.as_str().to_string();
++        let allow = self.allow_private || env_allows_private_network()
++            || self.trusted_proxy_host.as_deref().is_some_and(|proxy| proxy.eq_ignore_ascii_case(&host));
+         Box::pin(async move {
+             let addrs: Vec<SocketAddr> = tokio::net::lookup_host((host.as_str(), 0))
+                 .await
+@@ -1174,7 +1277,8 @@ impl ObscuraHttpClient {
+                 .timeout(self.timeout)
+                 .danger_accept_invalid_certs(false)
+                 // SSRF guard: reject hostnames that resolve to a private/loopback IP.
+-                .dns_resolver(Arc::new(SsrfGuardResolver::new(self.allow_private_network)))
++                .dns_resolver(Arc::new(SsrfGuardResolver::with_proxy(
++                    self.allow_private_network, self.proxy_url.as_deref())))
+ ;
+ 
+             if std::env::var_os("SSL_CERT_FILE").is_some()
+@@ -1195,6 +1299,24 @@ impl ObscuraHttpClient {
+         }).await
+     }
+ 
++    /// A proxy resolves origins itself, so its transport DNS exception must
++    /// never become an exception for the requested destination. Check origin
++    /// addresses separately on every proxied hop, including JS fetch/XHR.
++    pub async fn validate_request_destination(&self, url: &Url) -> Result<(), ObscuraNetError> {
++        validate_url(url, self.allow_private_network)?;
++        if self.proxy_url.is_none() || self.allow_private_network || env_allows_private_network()
++            || !matches!(url.scheme(), "http" | "https") {
++            return Ok(());
++        }
++        if let Some(url::Host::Domain(host)) = url.host() {
++            let name = host.parse::<Name>()
++                .map_err(|e| ObscuraNetError::Network(format!("Invalid destination hostname: {e}")))?;
++            let _ = SsrfGuardResolver::new(false).resolve(name).await
++                .map_err(|e| ObscuraNetError::Network(e.to_string()))?;
++        }
++        Ok(())
++    }
++
+     /// Clone the request client owned by this browser context.
+     ///
+     /// Scripted fetch/XHR uses the same pool as navigation instead of a
+@@ -1334,6 +1456,9 @@ impl ObscuraHttpClient {
+         callbacks: Option<&CallbackRegistry>,
+         request: ResourceRequest,
+     ) -> Result<Response, ObscuraNetError> {
++        if callbacks.is_some_and(CallbackRegistry::route_enabled) {
++            return self.fetch_with_profile_uncached(initial_method, url, initial_body, callbacks, request).await;
++        }
+         let Some(cache_key) = self
+             .resource_cache_key(&initial_method, url, &initial_body, &request)
+             .await
+@@ -1482,6 +1607,9 @@ impl ObscuraHttpClient {
+         validate_request_mode(&request, url)?;
+ 
+         if url.scheme() == "file" {
++            if callbacks.is_some_and(CallbackRegistry::route_enabled) {
++                return Err(ObscuraNetError::Blocked("native CDP interception permits HTTP(S) only".into()));
++            }
+             return fetch_file_url(url, request.max_response_bytes).await;
+         }
+ 
+@@ -1514,6 +1642,7 @@ impl ObscuraHttpClient {
+         let mut request_callback_fired = false;
+ 
+         for _redirect_count in 0..=max_redirects {
++            self.validate_request_destination(&current_url).await?;
+             validate_request_mode(&request, &current_url)?;
+             let request_info = RequestInfo {
+                 url: current_url.clone(),
+@@ -1522,6 +1651,11 @@ impl ObscuraHttpClient {
+                 resource_type: request.resource_type.clone(),
+             };
+ 
++            let route_id = match callbacks {
++                Some(cbs) => cbs.route(&request_info).await?,
++                None => None,
++            };
++
+             if let Some(interceptor) = self.interceptor.read().await.as_ref() {
+                 match interceptor.intercept(&request_info).await {
+                     InterceptAction::Continue => {}
+@@ -1675,7 +1809,7 @@ impl ObscuraHttpClient {
+ 
+             let in_flight = InFlightGuard::new(&self.in_flight);
+             let resp = req_builder.send().await.map_err(|e| {
+-                ObscuraNetError::Network(format!("{}: {}", current_url, e))
++                ObscuraNetError::Network(format!("{}: {}", current_url, network_error_chain(&e)))
+             })?;
+ 
+             let status = resp.status();
+@@ -1715,6 +1849,12 @@ impl ObscuraHttpClient {
+                     validate_request_mode(&request, &next_url)?;
+                     redirect_tainted |=
+                         redirect_taints_origin(&request, &current_url, &next_url);
++                    if let Some(cbs) = callbacks {
++                        cbs.record_routed_response(&route_id, &request_info, &Response {
++                            url: current_url.clone(), status: status.as_u16(), headers: response_headers,
++                            body: Vec::new(), redirected_from: redirects.clone(),
++                        });
++                    }
+                     redirects.push(current_url.clone());
+                     current_url = next_url;
+                     if status == reqwest::StatusCode::MOVED_PERMANENTLY
+@@ -1745,6 +1885,7 @@ impl ObscuraHttpClient {
+             };
+ 
+             if let Some(cbs) = callbacks {
++                cbs.record_routed_response(&route_id, &request_info, &response);
+                 cbs.fire_response(&request_info, &response).await;
+             }
+ 
+@@ -2767,6 +2908,48 @@ mod ssrf_tests {
+         }
+     }
+ 
++    #[tokio::test]
++    async fn configured_private_proxy_does_not_allow_private_origins() {
++        use tokio::io::{AsyncReadExt, AsyncWriteExt};
++        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
++        let port = listener.local_addr().unwrap().port();
++        let receipts = Arc::new(std::sync::atomic::AtomicUsize::new(0));
++        let count = receipts.clone();
++        let server = tokio::spawn(async move {
++            loop {
++                let (mut socket, _) = listener.accept().await.unwrap();
++                let mut buf = [0u8; 8192];
++                let length = socket.read(&mut buf).await.unwrap();
++                let request = String::from_utf8_lossy(&buf[..length]);
++                count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
++                // This is a controlled proxy stub: it never forwards a request.
++                assert!(request.starts_with("GET http://8.8.8.8/"), "{request}");
++                let response = if request.starts_with("GET http://8.8.8.8/redirect ") {
++                    "HTTP/1.1 302 Found\r\nLocation: http://127.0.0.1:9/private\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
++                } else {
++                    "HTTP/1.1 200 OK\r\nContent-Length: 7\r\nConnection: close\r\n\r\nproxied"
++                };
++                socket.write_all(response.as_bytes()).await.unwrap();
++            }
++        });
++        let client = ObscuraHttpClient::with_options(Arc::new(crate::CookieJar::new()),
++            Some(&format!("http://localhost:{port}")));
++        let response = client.fetch(&Url::parse("http://8.8.8.8/ok").unwrap()).await.unwrap();
++        assert_eq!(response.body, b"proxied");
++        assert_eq!(receipts.load(std::sync::atomic::Ordering::Relaxed), 1);
++        for target in [format!("http://127.0.0.1:{port}/private"), format!("http://localhost:{port}/private")] {
++            assert!(client.fetch(&Url::parse(&target).unwrap()).await.is_err());
++        }
++        assert_eq!(receipts.load(std::sync::atomic::Ordering::Relaxed), 1,
++            "private origins must be rejected before the configured proxy receives them");
++        assert!(client.fetch(&Url::parse("http://8.8.8.8/redirect").unwrap()).await.is_err());
++        assert_eq!(receipts.load(std::sync::atomic::Ordering::Relaxed), 2,
++            "the redirect source is allowed, but its private target must not reach the proxy");
++        // The transport exception is client-local, not an unguarded resolver.
++        assert!(SsrfGuardResolver::new(false).resolve("localhost".parse().unwrap()).await.is_err());
++        server.abort();
++    }
++
+     #[tokio::test]
+     async fn resolver_blocks_hostname_that_resolves_to_loopback() {
+         // localtest.me is a public DNS name that resolves to 127.0.0.1 — the
+diff --git a/crates/obscura-net/src/interceptor.rs b/crates/obscura-net/src/interceptor.rs
+index c517ac2..e58aba3 100644
+--- a/crates/obscura-net/src/interceptor.rs
++++ b/crates/obscura-net/src/interceptor.rs
+@@ -13,3 +13,40 @@ pub enum InterceptAction {
+ pub trait RequestInterceptor {
+     async fn intercept(&self, request: &RequestInfo) -> InterceptAction;
+ }
++
++#[derive(Debug)]
++pub enum InterceptResolution {
++    Continue {
++        url: Option<String>,
++        method: Option<String>,
++        headers: Option<HashMap<String, String>>,
++        body: Option<String>,
++    },
++    Fulfill {
++        status: u16,
++        headers: HashMap<String, String>,
++        /// Lossy UTF-8 view of the fulfilled body, for text consumers.
++        body: String,
++        /// The exact fulfilled body as standard base64. CDP delivers the
++        /// fulfillRequest body base64-encoded; carrying it through unchanged
++        /// lets the bootstrap fetch layer reconstruct the exact bytes
++        /// (`_base64ToUint8Array`) instead of a `from_utf8_lossy` corruption
++        /// of any non-UTF-8 payload (image, font, protobuf). See #912.
++        body_base64: String,
++    },
++    Fail {
++        reason: String,
++    },
++}
++
++pub struct InterceptedRequest {
++    /// CDP ownership is captured at Fetch.enable, not inferred from another live page.
++    pub frame_id: Option<String>,
++    pub session_id: Option<String>,
++    pub request_id: String,
++    pub url: String,
++    pub method: String,
++    pub headers: HashMap<String, String>,
++    pub resource_type: String,
++    pub resolver: tokio::sync::oneshot::Sender<InterceptResolution>,
++}
+diff --git a/crates/obscura-net/src/wreq_client.rs b/crates/obscura-net/src/wreq_client.rs
+index 550dd18..16456bc 100644
+--- a/crates/obscura-net/src/wreq_client.rs
++++ b/crates/obscura-net/src/wreq_client.rs
+@@ -307,6 +307,9 @@ impl StealthHttpClient {
+             return fetch_file_url(url, request.max_response_bytes).await;
+         }
+ 
++        if callbacks.is_some_and(CallbackRegistry::route_enabled) {
++            return Err(ObscuraNetError::Blocked("native interception does not support stealth transport".into()));
++        }
+         let mut current_url = url.clone();
+ 
+         if is_tracker_blocked(&current_url, self.block_trackers) {

@@ -1,11 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import http from 'node:http';
-import {spawn, execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {deps, state, require, config, limits as L, proxy, sleep, HTTP_USER_AGENT} from './runtime.mjs';
 import {Evidence, verify, safeError, keptHeaders} from './evidence.mjs';
 import {classify, decodeBody} from './observations.mjs';
+import {openLightpanda} from './lightpanda-runtime.mjs';
+import {openObscura} from './obscura-runtime.mjs';
+import {assertChromiumTrustWritable} from './chromium-trust.mjs';
 
 // Preserve the existing runner API for scenarios and historical verification commands.
 export {Evidence, verify, safeError, classify, decodeBody};
@@ -102,15 +104,24 @@ export async function startFixture() {
   return { origin: `http://127.0.0.1:${server.address().port}`, close: () => new Promise(resolve => server.close(resolve)) };
 }
 
-export async function openBrowser(name, {extensions = []} = {}) {
+export async function openBrowser(name, {extensions = [], lightpanda = null, fixture = false} = {}) {
+  if(lightpanda && name !== 'rebrowser-lightpanda') throw new Error('lightpanda_profile_requires_lightpanda');
   fs.mkdirSync(state, {recursive:true});
+  if (name.startsWith('obscura')) {
+    if(extensions.length) throw new Error('unsupported_capability:extensions');
+    return openObscura(name,{fixture});
+  }
   if (name === 'rebrowser-lightpanda' && extensions.length) throw new Error('unsupported_capability:extensions');
   if (name !== 'rebrowser-lightpanda') {
+    const dataDirectory=path.join(state,'chromium-data');
+    const trust=process.platform==='linux' && proxy && !fixture
+      ? await assertChromiumTrustWritable({dataDirectory}) : null;
     const { chromium } = require(name === 'patchright' ? 'patchright' : 'playwright');
-    const launch = { executablePath: process.env.BOT_DIAGNOSTICS_CHROMIUM || '/usr/bin/chromium',
+    const installed=path.join(deps,'chromium');
+    const launch = { executablePath: process.env.BOT_DIAGNOSTICS_CHROMIUM || (fs.existsSync(installed)?installed:'/usr/bin/chromium'),
       headless: true, chromiumSandbox: false,
       ...(proxy ? {proxy:{server:proxy,bypass:'127.0.0.1,localhost'}} : {}),
-      env: { ...process.env, XDG_DATA_HOME: path.join(state, 'chromium-data') } };
+      env: { ...process.env, XDG_DATA_HOME: dataDirectory } };
     const browser = await chromium.launch(launch);
     const probe = await browser.newContext();
     const page = await probe.newPage();
@@ -131,44 +142,25 @@ export async function openBrowser(name, {extensions = []} = {}) {
         finally {await extensionSession.detach();}
         return {browser:context.browser(), context, page:context.pages()[0] || await context.newPage(), ua,
           kind:'playwright', extensions, loaded_extensions:loaded,
-          runtime:{executable:launch.executablePath,version:context.browser().version()},
+          runtime:{executable:launch.executablePath,version:context.browser().version(),...(trust?{nss_trust:trust}:{})},
           close:async()=>{try{await context.close();}finally{fs.rmSync(profile,{recursive:true,force:true});}}};
       } catch(error) {await context?.close();fs.rmSync(profile,{recursive:true,force:true});throw error;}
     }
     const context = await browser.newContext({ userAgent: ua, serviceWorkers: 'block', ignoreHTTPSErrors: false });
-    return { browser, context, page: await context.newPage(), ua, kind: 'playwright',
-      runtime:{executable:launch.executablePath,version:browser.version()},close: () => browser.close() };
+    const handle={ browser, context, page: await context.newPage(), ua, kind: 'playwright',
+      runtime:{executable:launch.executablePath,version:browser.version(),...(trust?{nss_trust:trust}:{})},close: () => browser.close() };
+    handle.replaceContext=async(cookies=[])=>{
+      await handle.context.close();
+      handle.context=await browser.newContext({userAgent:ua,serviceWorkers:'block',ignoreHTTPSErrors:false});
+      if(cookies.length) await handle.context.addCookies(cookies);
+      handle.page=await handle.context.newPage();
+    };
+    return handle;
   }
-  const log = [];
-  const server = http.createServer();
-  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-  const port = server.address().port;
-  await new Promise(resolve => server.close(resolve));
-  const args = ['serve', '--host', '127.0.0.1', '--port', String(port), ...(proxy ? ['--http-proxy',proxy] : []),
-    '--user-agent-suffix', config.identification, '--http-max-response-size', String(L.bytes_per_response),
-    '--http-timeout', String(L.navigation_timeout_ms), '--http-max-concurrent', '1', '--log-level', 'warn'];
-  const cert = process.env.SSL_CERT_FILE || '/etc/ssl/certs/ca-certificates.crt';
-  args.push('--ca-cert', cert);
-  const child = spawn(path.join(deps, 'lightpanda'), args, { env: { ...process.env, XDG_DATA_HOME: path.join(state, 'lightpanda-data'), LIGHTPANDA_DISABLE_TELEMETRY: 'true', LIGHTPANDA_DISABLE_CORE_DUMP: 'true' } });
-  child.stderr.on('data', chunk => log.push(chunk.toString()));
-  let browser;
-  try {
-    const puppeteer = require('rebrowser-puppeteer-core');
-    for (let i = 0; i < 30; i++) {
-      if (child.exitCode !== null) throw new Error('Lightpanda exited: ' + log.join('').slice(-1200));
-      try { browser = await puppeteer.connect({ browserWSEndpoint: `ws://127.0.0.1:${port}`, defaultViewport: null, protocolTimeout: 12000 }); break; }
-      catch (error) { if (i === 29) throw error; await sleep(100); }
-    }
-    const context = await browser.createBrowserContext();
-    const page = await context.newPage();
-    const ua = await page.evaluate(() => navigator.userAgent);
-    return { browser, context, page, ua, kind: 'puppeteer', log,
-      runtime:{executable:path.join(deps,'lightpanda'),version:execFileSync(path.join(deps,'lightpanda'),['version'],{encoding:'utf8'}).trim()},
-      close: async () => { await browser.disconnect(); child.kill('SIGTERM'); } };
-  } catch (error) { browser?.disconnect(); child.kill('SIGTERM'); throw error; }
+  return openLightpanda(lightpanda);
 }
 
-export async function detectorRun(evidence, name, origin) {
+export async function detectorRun(evidence, name, origin, browserOptions = {}) {
   const key = `${name}/detectors`;
   if (['wreq-js', 'impit'].includes(name)) {
     const client = await httpClient(name, config.identification, true);
@@ -183,9 +175,9 @@ export async function detectorRun(evidence, name, origin) {
   }
   let b;
   try {
-    b = await openBrowser(name);
+    b = await openBrowser(name, {...browserOptions,fixture:true});
     for (const detector of ['rebrowser', 'botd']) {
-      const result = { client: name, detector, user_agent: b.ua, trigger_errors: [], page_errors: [] };
+      const result = { client: name, detector, user_agent: b.ua, runtime:b.runtime, trigger_errors: [], page_errors: [] };
       const page = b.page;
       const onerror = error => result.page_errors.push(safeError(error));
       page.on('pageerror', onerror);
@@ -243,7 +235,10 @@ export async function detectorRun(evidence, name, origin) {
       try { result.dom_sha256 = evidence.blob(Buffer.from(await page.content())); }
       catch (error) { result.dom_error = safeError(error); }
       if (b.kind === 'playwright') {
-        await page.screenshot({ path: path.join(evidence.directory, `${name}-${detector}.png`), fullPage: true });
+        if(b.runtime?.screenshots !== false) {
+          try {await page.screenshot({ path: path.join(evidence.directory, `${name}-${detector}.png`), fullPage: true });}
+          catch(error) {result.screenshot_error=safeError(error);}
+        }
         await b.context.unroute('**/*');
       }
       page.off('pageerror', onerror);
@@ -294,13 +289,16 @@ export async function browserSite(evidence, name, target, sharedSession = null) 
   const result = { client: name, target: target.name, url: target.url, blocked_requests: [], page_errors: [] };
   try {
     b = sharedSession?.browser || await openBrowser(name);
+    if(b.runtime?.budgeted_navigation === false) {
+      throw new Error('unsupported_capability:budgeted_navigation; redirect interception unavailable');
+    }
     result.user_agent = b.ua;
     robotsClient = sharedSession?.robots || await httpClient(name, b.ua);
     const rules = await robots(evidence, key, robotsClient, target, b.ua);
     if (!rules.allowed) { evidence.result({ ...result, ...rules }); return; }
     const origin = new URL(target.url).origin;
     const records = new Map(), tasks = [], documentResponses = [], intercepted = [];
-    let redirects = 0, stopped = false;
+    let redirects = 0, documentAttempts = 0, stopped = false;
     const watch = (event, listener) => { b.page.on(event, listener); listeners.push([event, listener]); };
     watch('pageerror', error => result.page_errors.push(safeError(error)));
     const admit = async request => {
@@ -310,6 +308,14 @@ export async function browserSite(evidence, name, target, sharedSession = null) 
         : rules.parser.isAllowed(url, b.ua) === false ? 'robots_denied'
         : request.isNavigationRequest() && request.redirectChain?.().length > L.max_redirects ? 'redirect_limit' : null;
       if (reason) { result.blocked_requests.push({ url, reason }); return null; }
+      // Obscura emits a new CDP request ID without redirectResponse for every
+      // hop, so Puppeteer's redirectChain() is empty. Conservatively share the
+      // initial + redirect allowance across all documents in this observation,
+      // including script navigations and frames, until native chains exist.
+      if (b.runtime?.redirect_chain_reporting === false && request.isNavigationRequest()
+        && documentAttempts++ > L.max_redirects) {
+        result.blocked_requests.push({ url, reason: 'redirect_limit' }); return null;
+      }
       if (request.isNavigationRequest() && request.redirectedFrom?.() && ++redirects > L.max_redirects) {
         result.blocked_requests.push({ url, reason: 'redirect_limit' }); return null;
       }
@@ -405,7 +411,7 @@ export async function browserSite(evidence, name, target, sharedSession = null) 
           actions_executed:false };
       } catch (error) { result.selector_observation = {selector:target.primary_selector, error:safeError(error), actions_executed:false}; }
     }
-    if (b.kind === 'playwright') {
+    if (b.kind === 'playwright' && target.capture_screenshot !== false && b.runtime?.screenshots !== false) {
       result.screenshot = `${name}-${target.artifact_tag || target.name}.png`;
       await b.page.screenshot({ path: path.join(evidence.directory, result.screenshot), fullPage: false });
     }
