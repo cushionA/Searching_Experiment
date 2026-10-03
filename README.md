@@ -38,6 +38,8 @@ docker run --rm --network none --mount type=volume,src=discovery-lab-data,dst=/d
 
 ## 必要時に使う取得ツール
 
+ブラウザとfetchのプロキシは `python3 -B scripts/with_proxy.py --proxy http://HOST:PORT -- COMMAND ...` で共通指定できる。未指定なら既存設定を継承する。[設定例・対応ツール・GCPの設定手順](docs/proxy.md)。管理Cloudの既存プロキシを別の宛先へ変更する操作は拒否する。
+
 LightPanda・Playwright・Patchrightの速度、メモリ、HTTP通信量をローカルfixtureで比較する場合は、`npm run benchmark:setup`の後に`npm run benchmark:quick`を実行する。Chromiumはヘッドレス・ヘッドフル両方、並列数1/4、ブラウザの再利用/毎回起動で比較する。`npm run benchmark:parallel`はエンジン間も同時実行する。[比較条件・導入・出力の詳細](docs/browser-benchmark.md)
 
 OxiBrowser 0.25.0を使った[Google・Amazon・ジョーシン・Homes・Indeedの比較結果と使用セレクタ](docs/oxibrowser-experiment.md)を記録した。実サイトのHTTP取得と、保存HTML上のAI操作を分けて検証している。

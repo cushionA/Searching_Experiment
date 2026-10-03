@@ -4,6 +4,7 @@ WORKDIR /app
 RUN groupadd --gid 10001 lab && useradd --uid 10001 --gid lab --no-create-home lab && mkdir /data && chown lab:lab /data
 COPY jse/__init__.py /app/jse/__init__.py
 COPY jse/lab /app/jse/lab
+COPY scripts/with_proxy.py /app/scripts/with_proxy.py
 COPY experiments /app/experiments
 RUN chmod -R a+rX /app
 

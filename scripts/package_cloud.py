@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 STATIC_FILES = (
-    "package.json", "docs/browser-benchmark.md",
+    "package.json", "docs/browser-benchmark.md", "docs/proxy.md",
     "experiments/browser-benchmark-20261003/results.json",
     "experiments/records/browser-benchmark-20261003.json",
     "AGENTS.md", "README.md", "PLAN.md", "Dockerfile", "compose.yaml",
@@ -28,7 +28,7 @@ PATTERNS = {
     "jse/lab": ("*.py",),
     "tests": ("test*.py", "__init__.py"),
     "scripts": ("check_*.py", "cloud_setup.sh", "setup_kaggle.sh", "package_cloud.py",
-                "browser_benchmark.py", "run_browser_benchmark.sh", "setup_browser_benchmark.sh"),
+                "browser_benchmark.py", "run_browser_benchmark.sh", "setup_browser_benchmark.sh", "with_proxy.py"),
     "requirements": ("crawl-tools.txt", "browser-tools.txt", "adaptive-tools.txt", "browser-benchmark.txt"),
     "experiments/bot-diagnostics": ("*.mjs", "*.json", "*.py", "*.sh", "Dockerfile", "README.md"),
     "experiments/bot-diagnostics/extensions/observation-probe": ("*.json", "*.js"),
