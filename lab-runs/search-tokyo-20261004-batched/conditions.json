@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "purpose": "東京のGCP出口IPで検索10サイトの反復アクセス挙動を観測",
+  "user_authorization": "VMの設定から依頼。プロモーションクレジットで賄えるなら許可。サイトあたり最大1000検索、最大1QPS、VM最大2時間、転送最大1GiB、目標1米ドル以内の提示に対する条件付き許可。",
+  "credit_evidence": {
+    "source": "user screenshot",
+    "available_jpy": 45952.36,
+    "expiry": "2026-11-23",
+    "application_to_actual_charges": "not_yet_observed"
+  },
+  "project": "groundingsearch",
+  "instance": "crawl-proxy-tokyo-20261004",
+  "zone": "asia-northeast1-a",
+  "machine": "e2-micro",
+  "disk": "10GB pd-standard",
+  "vm_started_utc": "2026-10-04T01:20:37.267Z",
+  "vm_stop_deadline_utc": "2026-10-04T03:20:37.267Z",
+  "external_ip": "35.189.135.33",
+  "timezone": "Asia/Tokyo",
+  "topology": "Local WSL browser -> loopback SSH tunnel -> Tokyo GCP Squid -> HTTPS destination",
+  "baseline": {
+    "at_utc": "2026-10-04T01:40:16Z",
+    "ens4_tx_bytes": 280988,
+    "ens4_rx_bytes": 15177633,
+    "egress_quota_used_bytes": 179581,
+    "egress_quota_limit_bytes": 1073741824,
+    "quota_dropped_packets": 0
+  },
+  "trial_limits": {
+    "searches_per_site": 100,
+    "stage_max_searches": [
+      10,
+      20,
+      70
+    ],
+    "stage_max_qps": [
+      0.2,
+      0.5,
+      1
+    ],
+    "duration_ms": 1800000
+  },
+  "observation": "負荷観測ではdomcontentloaded後の固定待機0ms。HTTPとその時点のDOMを保存する。遅延表示されるSERPやChallengeは見逃しうる。候補hrefやHTTP200は検索成功・精度を証明しない。",
+  "browser_selection": "過去の20261004-gcp-local-retry-*の単発観測に基づきPatchrightを各サイトの初期条件に採用。同点・結果未確認を含む。東京IPでの新規反復試験とは分離。",
+  "network_guard": "SquidはVMの127.0.0.1:3128でのみ待受。nftablesはlo以外のVM送信に1GiB上限。VMは開始から2時間で自動STOP。",
+  "flush_interval_ms": 1000,
+  "budget_lineage": {
+    "prior_run": "lab-runs/search-tokyo-20261004-load",
+    "reason": "Evidence全件保存のI/O負荷で停止。次trialは明示した記録batch条件で別runとする。",
+    "prior_search_attempts_by_site": {
+      "google": 66,
+      "yahoo-japan": 32,
+      "bing": 11,
+      "kagi": 1,
+      "startpage": 2,
+      "duckduckgo": 15,
+      "brave": 2,
+      "ecosia": 1,
+      "qwant": 2,
+      "yandex": 2
+    },
+    "authorized_search_attempts_per_site": 1000,
+    "network_quota_continues_on_same_vm": true,
+    "vm_stop_deadline_utc": "2026-10-04T03:20:37.267Z",
+    "at_utc": "2026-10-04T02:23:28Z",
+    "ens4_tx_bytes": 62834443,
+    "ens4_rx_bytes": 78971054,
+    "egress_quota_used_bytes": 62200434,
+    "quota_dropped_packets": 0,
+    "recorder_sample": {
+      "controller_cpu_percent": 39.7,
+      "rss_kib": 1073728,
+      "results_bytes": 1966976,
+      "wchar": 164271039495,
+      "ledger_bytes": 12985115
+    },
+    "prior_recorded_body_bytes": 640156953,
+    "prior_saved_evidence_bytes": 236811374
+  }
+}

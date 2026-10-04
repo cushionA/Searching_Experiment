@@ -1,0 +1,133 @@
+{
+  "ok": true,
+  "errors": [],
+  "warnings": [
+    {
+      "site": "bing",
+      "sequence": 46,
+      "kind": "measurement_pointer_missing_ledger_matched",
+      "ledger_records": [
+        11466
+      ],
+      "note": "中断時のmeasurement直接参照は欠ける。site keyとsession_sequenceで台帳を照合。measurementのHTTP値は補完しない。"
+    }
+  ],
+  "sites": [
+    {
+      "site": "google",
+      "current_attempts": 100,
+      "prior_attempts": 66,
+      "combined_attempts": 166,
+      "stages": {
+        "qps-0.2": 10,
+        "qps-0.5": 20,
+        "qps-1": 70
+      }
+    },
+    {
+      "site": "yahoo-japan",
+      "current_attempts": 62,
+      "prior_attempts": 32,
+      "combined_attempts": 94,
+      "stages": {
+        "qps-0.2": 10,
+        "qps-0.5": 20,
+        "qps-1": 32
+      }
+    },
+    {
+      "site": "bing",
+      "current_attempts": 46,
+      "prior_attempts": 11,
+      "combined_attempts": 57,
+      "stages": {
+        "qps-0.2": 10,
+        "qps-0.5": 20,
+        "qps-1": 16
+      }
+    },
+    {
+      "site": "kagi",
+      "current_attempts": 1,
+      "prior_attempts": 1,
+      "combined_attempts": 2,
+      "stages": {
+        "qps-0.2": 1,
+        "qps-0.5": 0,
+        "qps-1": 0
+      }
+    },
+    {
+      "site": "startpage",
+      "current_attempts": 1,
+      "prior_attempts": 2,
+      "combined_attempts": 3,
+      "stages": {
+        "qps-0.2": 1,
+        "qps-0.5": 0,
+        "qps-1": 0
+      }
+    },
+    {
+      "site": "duckduckgo",
+      "current_attempts": 47,
+      "prior_attempts": 15,
+      "combined_attempts": 62,
+      "stages": {
+        "qps-0.2": 10,
+        "qps-0.5": 20,
+        "qps-1": 17
+      }
+    },
+    {
+      "site": "brave",
+      "current_attempts": 15,
+      "prior_attempts": 2,
+      "combined_attempts": 17,
+      "stages": {
+        "qps-0.2": 10,
+        "qps-0.5": 5,
+        "qps-1": 0
+      }
+    },
+    {
+      "site": "ecosia",
+      "current_attempts": 1,
+      "prior_attempts": 1,
+      "combined_attempts": 2,
+      "stages": {
+        "qps-0.2": 1,
+        "qps-0.5": 0,
+        "qps-1": 0
+      }
+    },
+    {
+      "site": "qwant",
+      "current_attempts": 1,
+      "prior_attempts": 2,
+      "combined_attempts": 3,
+      "stages": {
+        "qps-0.2": 1,
+        "qps-0.5": 0,
+        "qps-1": 0
+      }
+    },
+    {
+      "site": "yandex",
+      "current_attempts": 5,
+      "prior_attempts": 2,
+      "combined_attempts": 7,
+      "stages": {
+        "qps-0.2": 5,
+        "qps-0.5": 0,
+        "qps-1": 0
+      }
+    }
+  ],
+  "counts_are_reserved_attempts": true,
+  "preliminary_audits": [
+    "state-audit.json",
+    "final-state-audit.json"
+  ],
+  "audit_corrections": "browser observationは正規redirectを許す。ledgerのmain_documentにはsubframe navigationも含まれ、最初の記録のoriginは主画面originを保証しない。main_recordのindex、site key、session_sequenceを照合し、参照欠落は警告として保持。生記録は不変。"
+}

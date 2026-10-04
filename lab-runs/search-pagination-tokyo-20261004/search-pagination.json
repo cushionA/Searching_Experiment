@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "queries": [
+    "東京都大田区 池上本門寺 松濤園 公開日",
+    "早稲田大学 教員",
+    "気象庁 台風情報",
+    "国立国会図書館 デジタルコレクション",
+    "Python 公式ドキュメント"
+  ],
+  "sites": [
+    {
+      "id": "yahoo-japan",
+      "origin": "https://search.yahoo.co.jp",
+      "search_url": "https://search.yahoo.co.jp/search?p={query}",
+      "result_selectors": [
+        "a.sw-Card__titleInner"
+      ],
+      "next_selectors": [
+        "a[aria-label=\"次のページ\"][data-cl-params*=\"_cl_link:next\"]"
+      ],
+      "tool": "patchright",
+      "timezoneId": "Asia/Tokyo",
+      "max_results_params": {},
+      "next_text": null
+    },
+    {
+      "id": "bing",
+      "origin": "https://www.bing.com",
+      "search_url": "https://www.bing.com/search?q={query}",
+      "result_selectors": [
+        "li.b_algo h2 > a"
+      ],
+      "next_selectors": [
+        "a.sb_pagN[aria-label=\"Next page\"]"
+      ],
+      "tool": "patchright",
+      "timezoneId": "Asia/Tokyo",
+      "max_results_params": {},
+      "next_text": null
+    },
+    {
+      "id": "duckduckgo",
+      "origin": "https://duckduckgo.com",
+      "search_url": "https://duckduckgo.com/?q={query}",
+      "result_selectors": [
+        "a[data-testid=\"result-title-a\"]"
+      ],
+      "next_selectors": [
+        "button#more-results",
+        "button[data-testid=\"more-results\"]",
+        "a.result--more__btn"
+      ],
+      "tool": "patchright",
+      "timezoneId": "Asia/Tokyo",
+      "max_results_params": {},
+      "next_text": null
+    },
+    {
+      "id": "brave",
+      "origin": "https://search.brave.com",
+      "search_url": "https://search.brave.com/search?q={query}",
+      "result_selectors": [
+        "a.l1[target=\"_self\"]"
+      ],
+      "next_selectors": [
+        "a.button[rel=\"noopener\"][href*=\"offset=\"]"
+      ],
+      "next_text": "Next",
+      "tool": "patchright",
+      "timezoneId": "Asia/Tokyo",
+      "max_results_params": {}
+    },
+    {
+      "id": "yandex",
+      "origin": "https://yandex.com",
+      "search_url": "https://yandex.com/search/?text={query}",
+      "result_selectors": [
+        "a.OrganicTitle-Link"
+      ],
+      "next_selectors": [
+        "a.Pager-Item_type_next[aria-label=\"Next page\"]"
+      ],
+      "tool": "patchright",
+      "timezoneId": "Asia/Tokyo",
+      "max_results_params": {},
+      "next_text": null
+    },
+    {
+      "id": "kagi",
+      "origin": "https://kagi.com",
+      "search_url": "https://kagi.com/search?q={query}",
+      "result_selectors": [],
+      "next_selectors": [],
+      "tool": "patchright",
+      "timezoneId": "Asia/Tokyo",
+      "max_results_params": {},
+      "next_text": null
+    },
+    {
+      "id": "startpage",
+      "origin": "https://www.startpage.com",
+      "search_url": "https://www.startpage.com/sp/search?query={query}",
+      "result_selectors": [],
+      "next_selectors": [],
+      "tool": "patchright",
+      "timezoneId": "Asia/Tokyo",
+      "max_results_params": {},
+      "next_text": null
+    },
+    {
+      "id": "ecosia",
+      "origin": "https://www.ecosia.org",
+      "search_url": "https://www.ecosia.org/search?q={query}",
+      "result_selectors": [],
+      "next_selectors": [],
+      "tool": "patchright",
+      "timezoneId": "Asia/Tokyo",
+      "max_results_params": {},
+      "next_text": null
+    },
+    {
+      "id": "qwant",
+      "origin": "https://www.qwant.com",
+      "search_url": "https://www.qwant.com/?q={query}&t=web",
+      "result_selectors": [],
+      "next_selectors": [],
+      "tool": "patchright",
+      "timezoneId": "Asia/Tokyo",
+      "max_results_params": {},
+      "next_text": null
+    },
+    {
+      "id": "google",
+      "origin": "https://www.google.com",
+      "search_url": "https://www.google.com/search?q={query}",
+      "result_selectors": [
+        "a[jsname=\"UWckNb\"]:has(h3)"
+      ],
+      "next_selectors": [
+        "a#pnnext"
+      ],
+      "tool": "patchright",
+      "timezoneId": "Asia/Tokyo",
+      "max_results_params": {},
+      "next_text": null
+    }
+  ],
+  "results_per_site": 100,
+  "max_pages_per_site": 100,
+  "max_total_pages": 500,
+  "max_unique_urls": 500,
+  "max_evidence_bytes": 536870912,
+  "max_duration_ms": 1800000,
+  "target_interval_ms": 1000,
+  "requested_max_results": "maximum_available; no configurable count observed in prior DOM",
+  "note": "requested display count and observed items are stored separately; observed maximum is not inferred from requested parameters"
+}

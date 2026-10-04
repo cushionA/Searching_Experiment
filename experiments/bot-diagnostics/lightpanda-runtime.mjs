@@ -20,7 +20,7 @@ export function validateLightpanda(options) {
 }
 
 /** Opt-in release/profile. The old nightly path remains the default for existing runs. */
-export async function openLightpanda(options = null, {identification = true} = {}) {
+export async function openLightpanda(options = null, {identification = true,timezoneId} = {}) {
   if (options !== null) validateLightpanda(options);
   const stable = options !== null;
   const executable = stable ? path.join(repo,'.deps/lightpanda') : path.join(deps,'lightpanda');
@@ -76,6 +76,7 @@ export async function openLightpanda(options = null, {identification = true} = {
       const context=await browser.createBrowserContext();
       try {
         const page=await context.newPage();
+        if(timezoneId) try {await page.emulateTimezone(timezoneId);} catch {}
         if(profile!=='baseline') await page.evaluateOnNewDocument(installTableCompatibility);
         if(profile==='probe') await page.evaluateOnNewDocument(installObservationProbe);
         return {context,page};

@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "policy": "parent_time_allocation",
+  "repeat_window_ms": 180000,
+  "window_start": "second search attempt start for each site",
+  "maximum_attempts_per_site": 100,
+  "reason": "全10サイトの反復観測を30分の試験時間内で比較するため",
+  "action": "期間を超えた場合、そのrun専用ブラウザだけを停止してmanual-observations.jsonへ記録",
+  "interpretation": "親側の時間配分停止と後続execution_errorはサイト側の拒否ではない",
+  "prior_run": "lab-runs/search-tokyo-20261004-load",
+  "authorized_cumulative_attempts_per_site": 1000,
+  "shared_vm_stop_deadline_utc": "2026-10-04T03:20:37.267Z"
+}

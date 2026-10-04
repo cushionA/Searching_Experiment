@@ -38,6 +38,11 @@ export class Evidence {
     this.policy = options.policy || legacyPolicy;
     if (![legacyPolicy, BROWSER_POLICY].includes(this.policy)) throw new Error(`Unknown evidence policy: ${this.policy}`);
     this.browserObservation = this.policy === BROWSER_POLICY;
+    this.flushIntervalMs = options.flush_interval_ms ?? 0;
+    if (!Number.isSafeInteger(this.flushIntervalMs) || this.flushIntervalMs < 0) throw new Error('invalid_flush_interval_ms');
+    this.dirty = false;
+    this.flushTimer = null;
+    this.flushError = null;
     if (resume) {
       this.directory = directory;
       const ledger = JSON.parse(fs.readFileSync(path.join(directory, 'ledger.json')));
@@ -87,9 +92,26 @@ export class Evidence {
     this.flush();
     return record;
   }
-  flush() {
+  flush(force = false) {
+    this.dirty = true;
+    if (!force && this.flushIntervalMs > 0) {
+      if (this.flushTimer === null) {
+        this.flushTimer = setTimeout(() => {
+          this.flushTimer = null;
+          try { this.flush(true); } catch (error) { this.flushError = error; }
+        }, this.flushIntervalMs);
+        this.flushTimer.unref?.();
+      }
+      return;
+    }
+    if (force && this.flushTimer !== null) {
+      clearTimeout(this.flushTimer);
+      this.flushTimer = null;
+    }
     this.save('ledger.json', { budgets: this.budgets, records: this.records });
     this.save('results.json', this.results);
+    this.dirty = false;
+    this.flushError = null;
   }
   async wait(url, extraDelay = 0) {
     const run = this.delayChain.then(async () => {

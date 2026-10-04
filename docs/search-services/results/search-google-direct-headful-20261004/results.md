@@ -1,0 +1,52 @@
+|サービス|分類|robots / home（履歴）|最新query|CAPTCHA/拒否|CDN・widget手掛かり（履歴含む）|結果品質|備考|最新証拠|
+|---|---|---|---|---|---|---|---|---|
+|Google (`google`)|search|今回robots/home非測定|200 content_observed|gate/CAPTCHA未観測|CDN未測定|検索精度未評価 / 検索結果カード19件|2ページ目HTTP 200・10 cards。headful Chromium、headlessと同じ出口IP boolean。比較間隔約80分。|[1ページ目](https://www.google.com/search?q=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%A4%A7%E7%94%B0%E5%8C%BA%20%E6%B1%A0%E4%B8%8A%E6%9C%AC%E9%96%80%E5%AF%BA%20%E6%9D%BE%E6%BF%A4%E5%9C%92%20%E5%85%AC%E9%96%8B%E6%97%A5&sei=qPbBapfIJ8Dg2roP54242Qw) / [2ページ目](https://www.google.com/search?q=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%A4%A7%E7%94%B0%E5%8C%BA+%E6%B1%A0%E4%B8%8A%E6%9C%AC%E9%96%80%E5%AF%BA+%E6%9D%BE%E6%BF%A4%E5%9C%92+%E5%85%AC%E9%96%8B%E6%97%A5&sca_esv=7a80360a426ed37a&sxsrf=APpeQns0K22zV0MBnPxS5ufFkL03weTJ8Q:1791096488843&ei=qPbBavPpMbqn2roPg7naiQ8&start=10&sa=N&sstk=AS6-VmLQ6WPk_E8ZDhhpqCgDY-osHo16zlkaUZvZ8TySfiH91gobbNrcR74g4LBiM_yDI646u5Fxr9m1icKNKBC3obDoZIIJBgripA&ved=2ahUKEwjz3eWv4p-XAxW6k1YBHYOcNvEQ8NMDegQITRAO) / DOM `1f1761a27c4a…`|
+|Bing (`bing`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Brave Search (`brave`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Mojeek (`mojeek`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Yep (`yep`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Mwmbl (`mwmbl`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|YaCy (`yacy`)|selfhosted|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Marginalia Search (`marginalia`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Wiby (`wiby`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Yandex (`yandex`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Baidu (`baidu`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Naver (`naver`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|DuckDuckGo (`duckduckgo`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Startpage (`startpage`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Qwant (`qwant`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Ecosia (`ecosia`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Swisscows (`swisscows`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|MetaGer (`metager`)|metasearch|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|SearXNG (`searxng`)|instance_directory|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|4get (`fourget`)|metasearch|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Disconnect Search (`disconnect`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Gibiru (`gibiru`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Lukol (`lukol`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|OceanHero (`oceanhero`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|YouCare (`youcare`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Yahoo! JAPAN (`yahoo-japan`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|goo (`goo`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Kagi (`kagi`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Perplexity (`perplexity`)|answer_engine|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Felo (`felo`)|answer_engine|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Genspark (`genspark`)|answer_engine|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|You.com (`you`)|answer_engine|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Phind (`phind`)|answer_engine|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Bagoodex (`bagoodex`)|answer_engine|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Brave Search API (`brave-api`)|api|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|SerpApi (`serpapi`)|api|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|DataForSEO (`dataforseo`)|api|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Firecrawl (`firecrawl`)|api|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Exa (`exa`)|api|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Tavily (`tavily`)|api|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|WolframAlpha (`wolframalpha`)|computational_answer|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|BASE (`base`)|academic_directory|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|RefSeek (`refseek`)|academic_search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Lenso.ai (`lenso`)|visual_search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Unsplash (`unsplash`)|image_search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Kiddle (`kiddle`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Wacky Safe (`wacky-safe`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|OneSearch (`onesearch`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Peekier (`peekier`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|
+|Yahoo!きっず (`yahoo-kids`)|search|未測定|未測定|未測定|未測定|未測定|今回未測定|未測定|

@@ -91,6 +91,7 @@ function actualViewport(page) {
 /** Open an isolated Camoufox Firefox session for passive browser diagnostics. */
 export async function openCamoufox({
   extensions = [], fixture = false, headful = false, profile = 'diagnostic',
+  timezoneId,
   loadDependencies = loadCamoufoxDependencies, runCommand = execFileSync,
 } = {}) {
   if (extensions.length) throw new Error('unsupported_capability:extensions');
@@ -138,6 +139,7 @@ export async function openCamoufox({
       timeout:15000,
       viewport:null,
       screen:{width:1280,height:720},
+      ...(timezoneId?{timezoneId}:{}),
       ...(proxy ? {proxy:{server:proxy, bypass:'127.0.0.1,localhost'}} : {}),
     });
     const page = context.pages()[0] || await context.newPage();

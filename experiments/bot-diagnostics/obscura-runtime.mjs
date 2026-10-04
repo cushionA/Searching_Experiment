@@ -21,7 +21,7 @@ const variants = {
     'e2b9fe6bfd6557de73f46083806730be2d4dfeffa6ae97a088aeb3c10feb2f47'],
 };
 
-export async function openObscura(name, {fixture = false} = {}) {
+export async function openObscura(name, {fixture = false, timezoneId} = {}) {
   const patched = name === 'obscura-patched';
   if (!patched && !Object.hasOwn(variants,name)) throw new Error('invalid_obscura_variant');
   const directory = patched ? path.join(repo,'.deps/obscura-patched')
@@ -91,13 +91,15 @@ export async function openObscura(name, {fixture = false} = {}) {
     await probe.close();
     const newContext=async(cookies=[])=>{
       const context=patched ? await browser.createBrowserContext()
-        : await browser.newContext({userAgent:ua,serviceWorkers:'block',ignoreHTTPSErrors:false});
+        : await browser.newContext({userAgent:ua,serviceWorkers:'block',ignoreHTTPSErrors:false,
+          ...(timezoneId?{timezoneId}:{})});
       try {
         if(cookies.length) {
           if(patched) await context.setCookie(...cookies);
           else await context.addCookies(cookies);
         }
         const page=await context.newPage();
+        if(timezoneId&&patched) try {await page.emulateTimezone(timezoneId);} catch {}
         return {context,page};
       } catch(error) {await context.close();throw error;}
     };

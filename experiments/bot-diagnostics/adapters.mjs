@@ -10,10 +10,21 @@ import {SessionManager,waitForSessionCooldown} from './session-manager.mjs';
 export {TOOL_NAMES, HTTP_USER_AGENT};
 const httpTools = new Set(['wreq-js', 'impit']);
 
+function canonicalTimezone(timezoneId) {
+  if (typeof timezoneId !== 'string' || !timezoneId.trim()) throw new Error('invalid_timezone_id');
+  try { return new Intl.DateTimeFormat('en', {timeZone:timezoneId}).resolvedOptions().timeZone; }
+  catch { throw new Error('invalid_timezone_id'); }
+}
+
 /** Each adapter owns one session; all roles share its cookies and the site's budget. */
 export class ToolAdapter {
-  constructor({ tool, site, evidence, fixture = false, profile = {id:'baseline'}, options = {}, browserOpener = openBrowser, clientOpener = httpClient }) {
+  constructor({ tool, site, evidence, fixture = false, profile = {id:'baseline'}, options = {}, timezoneId, browserOpener = openBrowser, clientOpener = httpClient }) {
     if (!TOOL_NAMES.includes(tool)) throw new Error('Unknown tool');
+    if (options.observeMs !== undefined && (!Number.isInteger(options.observeMs) || options.observeMs < 0 || options.observeMs > 6000))
+      throw new Error('invalid_observe_ms');
+    this.timezoneId = timezoneId;
+    this.timezoneRequested = timezoneId !== undefined && timezoneId !== null;
+    this.canonicalTimezoneId = this.timezoneRequested ? canonicalTimezone(timezoneId) : null;
     this.tool = tool; this.site = site; this.evidence = evidence; this.fixture = fixture;
     this.profile = profile; this.options = options;
     this.browserOpener = browserOpener; this.clientOpener = clientOpener;
@@ -28,12 +39,21 @@ export class ToolAdapter {
     }
   }
   async open() {
+    let observedTimezone = null;
+    let timezoneSupported = false;
     if (this.capabilities.fetch) this.client = await this.clientOpener(this.tool, HTTP_USER_AGENT, this.fixture);
     else {
       this.browser = await this.browserOpener(this.tool, {extensions:this.profile.extensions || [],
         lightpanda:this.profile.lightpanda || null,fixture:this.fixture,
+        ...(this.timezoneRequested ? {timezoneId:this.timezoneId} : {}),
         headful:this.evidence.policy === 'browser_observation' ? this.capabilities.headful : !!this.options.headful,
         profile:this.evidence.policy || 'diagnostic'});
+      if(this.timezoneRequested) {
+        try { observedTimezone = await this.browser.page.evaluate(() => Intl.DateTimeFormat().resolvedOptions().timeZone); }
+        catch {}
+        timezoneSupported = observedTimezone === this.canonicalTimezoneId;
+        this.capabilities.timezoneId = timezoneSupported;
+      }
       if(this.evidence.policy !== 'browser_observation' && this.browser.runtime?.budgeted_navigation === false) {
         throw new Error('unsupported_capability:budgeted_navigation; redirect interception unavailable');
       }
@@ -42,8 +62,10 @@ export class ToolAdapter {
       this.sessions?.select();
     }
     this.evidence.result({client:this.tool,target:this.site.id,profile:this.profile.id,role:'adapter_setup',
-      outcome:'adapter_ready',capabilities:this.capabilities,
-      ...(this.browser ? {runtime:this.browser.runtime,user_agent:this.browser.ua,headless:this.browser.runtime?.headless??true,
+      outcome:this.browser && this.timezoneRequested && !this.capabilities.timezoneId ? 'unsupported_capability' : 'adapter_ready',
+      capabilities:this.capabilities,
+      ...(this.browser ? {runtime:{...this.browser.runtime,...(this.timezoneRequested?{timezone:{requested:this.timezoneId,observed:observedTimezone,
+        outcome:timezoneSupported?'supported':'unsupported_capability'}}:{})},user_agent:this.browser.ua,headless:this.browser.runtime?.headless??true,
         display:this.browser.runtime?.display??null,viewport:this.browser.runtime?.viewport??null} : {user_agent:HTTP_USER_AGENT})});
     return this;
   }
@@ -115,7 +137,7 @@ export class ToolAdapter {
     const target = { name: this.site.id, url, artifact_tag: `${this.site.id}-${this.profile.id}-${role}-${index}-${this.evidence.results.length}`,
       capture_screenshot:this.options.captureScreenshots !== false,
       primary_selector:this.site.selectors?.primary,
-      ...(this.fixture ? {observe_ms:100} : {}),
+      ...(this.options.observeMs !== undefined ? {observe_ms:this.options.observeMs} : this.fixture ? {observe_ms:100} : {}),
       robots_redirect_origins:this.options.robotsRedirectOrigins ?? this.site.robots_redirect_origins ?? [],
       robots_unavailable_probe:!!(this.options.robotsUnavailableProbe ?? this.site.robots_unavailable_probe),
       ...(operation ? {operation, previousObservation:this.lastObservation} : {}),

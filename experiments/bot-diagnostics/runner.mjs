@@ -152,16 +152,16 @@ export async function startFixture() {
   return { origin: `http://127.0.0.1:${server.address().port}`, close: () => new Promise(resolve => server.close(resolve)) };
 }
 
-export async function openBrowser(name, {extensions = [], lightpanda = null, fixture = false, headful = false, profile = 'diagnostic'} = {}) {
+export async function openBrowser(name, {extensions = [], lightpanda = null, fixture = false, headful = false, profile = 'diagnostic', timezoneId} = {}) {
   const naturalUA = profile === 'browser_observation';
   if(lightpanda && name !== 'rebrowser-lightpanda') throw new Error('lightpanda_profile_requires_lightpanda');
   fs.mkdirSync(state, {recursive:true});
   if (headful && !(process.env.DISPLAY || process.env.WAYLAND_DISPLAY)) throw new Error('headful_requires_display: set DISPLAY or WAYLAND_DISPLAY');
   if (headful && (name === 'rebrowser-lightpanda' || name.startsWith('obscura'))) throw new Error('unsupported_capability:headful');
-  if (name === 'camoufox') return openCamoufox({extensions,fixture,headful,profile});
+  if (name === 'camoufox') return openCamoufox({extensions,fixture,headful,profile,timezoneId});
   if (name.startsWith('obscura')) {
     if(extensions.length) throw new Error('unsupported_capability:extensions');
-    return openObscura(name,{fixture});
+    return openObscura(name,{fixture,timezoneId});
   }
   if (name === 'rebrowser-lightpanda' && extensions.length) throw new Error('unsupported_capability:extensions');
   if (name !== 'rebrowser-lightpanda') {
@@ -186,6 +186,7 @@ export async function openBrowser(name, {extensions = [], lightpanda = null, fix
       let context;
       try {
         context = await chromium.launchPersistentContext(profile, {...launch, userAgent:ua,
+          ...(timezoneId?{timezoneId}:{}),
           serviceWorkers:naturalUA?'allow':'block', ignoreHTTPSErrors:false, ignoreDefaultArgs:['--disable-extensions'],
           args:['--enable-unsafe-extension-debugging']});
         // Modern Chromium removed --load-extension; use its native extension-loading CDP API.
@@ -200,19 +201,21 @@ export async function openBrowser(name, {extensions = [], lightpanda = null, fix
           close:async()=>{try{await context.close();}finally{fs.rmSync(profile,{recursive:true,force:true});}}};
       } catch(error) {await context?.close();fs.rmSync(profile,{recursive:true,force:true});throw error;}
     }
-    const context = await browser.newContext({ userAgent: ua, serviceWorkers: naturalUA ? 'allow' : 'block', ignoreHTTPSErrors: false });
+    const context = await browser.newContext({ userAgent: ua, serviceWorkers: naturalUA ? 'allow' : 'block', ignoreHTTPSErrors: false,
+      ...(timezoneId?{timezoneId}:{}) });
     const handle={ browser, context, page: await context.newPage(), ua, kind: 'playwright',
       runtime:{executable:launch.executablePath,version:browser.version(),headless:!headful,
             display:headful?(process.env.DISPLAY||process.env.WAYLAND_DISPLAY):null,viewport:{width:1280,height:720},...(trust?{nss_trust:trust}:{})},close: () => browser.close() };
     handle.replaceContext=async(cookies=[])=>{
       await handle.context.close();
-      handle.context=await browser.newContext({userAgent:ua,serviceWorkers:naturalUA?'allow':'block',ignoreHTTPSErrors:false});
+      handle.context=await browser.newContext({userAgent:ua,serviceWorkers:naturalUA?'allow':'block',ignoreHTTPSErrors:false,
+        ...(timezoneId?{timezoneId}:{})});
       if(cookies.length) await handle.context.addCookies(cookies);
       handle.page=await handle.context.newPage();
     };
     return handle;
   }
-  return openLightpanda(lightpanda, {identification:!naturalUA});
+  return openLightpanda(lightpanda, {identification:!naturalUA,timezoneId});
 }
 
 export async function detectorRun(evidence, name, origin, browserOptions = {}) {

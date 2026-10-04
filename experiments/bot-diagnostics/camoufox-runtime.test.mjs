@@ -75,6 +75,7 @@ test('uses isolated Firefox launch options, inherited proxy and natural browser 
   assert.equal(generated.env.HTTPS_PROXY, proxyBefore);
   assert.match(generated.env.FONTCONFIG_PATH, /browser\/fontconfig\/linux$/);
   const launched = deps.calls.launch[0].options;
+  assert.equal(Object.hasOwn(launched, 'timezoneId'), false);
   assert.equal(launched.executablePath, browserExecutable);
   assert.equal(launched.ignoreHTTPSErrors, false);
   assert.equal(launched.viewport, null);
@@ -102,10 +103,11 @@ test('imports an explicit fixture CA into the disposable Firefox profile', async
   const deps = fakeDependencies();
   const certutilCalls = [];
   const browser = await openCamoufox({fixture:true,loadDependencies:deps.loadDependencies,
-    runCommand:(command,args)=>certutilCalls.push({command,args})});
+    runCommand:(command,args)=>certutilCalls.push({command,args}),timezoneId:'Asia/Tokyo'});
   const profile = deps.calls.launch[0].profile;
   t.after(()=>browser.close());
   assert.equal(browser.runtime.proxy_ca_trusted, true);
+  assert.equal(deps.calls.launch[0].options.timezoneId, 'Asia/Tokyo');
   assert.deepEqual(certutilCalls.map(call=>call.args.slice(0,2)), [['-N','--empty-password'],['-A','-n']]);
   assert.equal(certutilCalls[0].args[2], '-d');
   assert.equal(certutilCalls[0].args[3], `sql:${profile}`);
