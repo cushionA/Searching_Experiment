@@ -50,10 +50,11 @@ class KaggleTests(unittest.TestCase):
             self.assertEqual(ops.configure(), str(directory))
         self.assertTrue(directory.is_dir())
         self.assertEqual(list(directory.iterdir()), [])
-        with patch.dict(os.environ, {}, clear=True):
+        with patch.dict(os.environ, {}, clear=True), patch.object(ops.tempfile, "gettempdir", return_value=str(self.root)), patch.object(ops, "__file__", "/kaggle_ops.py"):
             configured = Path(ops.configure())
-            self.assertEqual(configured, ROOT / ".deps/kaggle-config")
+            self.assertEqual(configured, self.root / "kaggle-ops-config")
             self.assertEqual(os.environ["KAGGLE_CONFIG_DIR"], str(configured))
+        self.assertEqual(list(configured.iterdir()), [])
 
     def test_new_own_notebook_403_checks_all_listing_pages(self):
         self.latest.stop()
@@ -77,6 +78,140 @@ class KaggleTests(unittest.TestCase):
             with self.assertRaises(requests.HTTPError):
                 ops.latest_version(client, "another/notebook")
         client.kernels_list.assert_not_called()
+
+    def test_token_authentication_owner_is_used_without_username_environment(self):
+        client = SimpleNamespace(config_values={"username": "owner"}, kernels_list=Mock(return_value=[]))
+        with patch.dict(os.environ, {}, clear=True):
+            self.assertTrue(ops.owned_kernel_absent(client, "owner/notebook"))
+
+    def test_missing_authenticated_owner_is_not_assumed_to_be_a_new_notebook(self):
+        client = SimpleNamespace(config_values={}, kernels_list=Mock())
+        with self.assertRaisesRegex(ValueError, "authenticated Kaggle username"):
+            ops.owned_kernel_absent(client, "owner/notebook")
+        client.kernels_list.assert_not_called()
+
+    def test_notebook_payload_matches_sdk_unicode_and_output_normalization(self):
+        notebook = {"cells": [{"cell_type": "code", "source": ["日本語", "\n"], "outputs": [{"text": "large output" * 10000}]},
+                              {"cell_type": "markdown", "source": ["本文", "\n"]}]}
+        path = self.folder / "run.ipynb"
+        path.write_text(json.dumps(notebook, ensure_ascii=False), encoding="utf-8")
+        normalized = {"cells": [{"cell_type": "code", "source": "日本語\n", "outputs": []},
+                                {"cell_type": "markdown", "source": "本文\n"}]}
+        self.assertEqual(ops.push_payload_bytes(path, "notebook"), len(json.dumps(normalized).encode("utf-8")))
+        self.assertLess(ops.push_payload_bytes(path, "notebook"), path.stat().st_size)
+
+    def test_serialized_notebook_over_guard_blocks_before_api_or_job_creation(self):
+        notebook = {"cells": [{"cell_type": "code", "source": "あ" * (ops.CODE_LIMIT // 6), "outputs": []}]}
+        path = self.folder / "run.ipynb"
+        path.write_text(json.dumps(notebook, ensure_ascii=False), encoding="utf-8")
+        self.assertLess(path.stat().st_size, ops.CODE_LIMIT)
+        self.metadata.update(code_file="run.ipynb", kernel_type="notebook")
+        self.write_metadata()
+        client = Mock()
+        with patch.object(ops, "quota") as quota, self.assertRaisesRegex(ValueError, "code payload"):
+            ops.submit(client, self.folder, self.output)
+        quota.assert_not_called()
+        client.kernels_push.assert_not_called()
+        self.assertFalse((self.output / "job.json").exists())
+
+    def test_script_at_code_guard_blocks_submission(self):
+        (self.folder / "run.py").write_bytes(b"x" * ops.CODE_LIMIT)
+        client = Mock()
+        with self.assertRaisesRegex(ValueError, "code payload"):
+            ops.submit(client, self.folder, self.output)
+        client.kernels_push.assert_not_called()
+        self.assertFalse((self.output / "job.json").exists())
+
+    def test_invalid_title_blocks_before_api_and_keeps_previous_rejected_job(self):
+        rejected = {"ref": "owner/notebook", "state": "not_submitted"}
+        ops.save(self.output / "job.json", rejected)
+        for title in ("short"[:4], "", 0):
+            with self.subTest(title=title):
+                self.metadata["title"] = title
+                self.write_metadata()
+                client = Mock()
+                with patch.object(ops, "quota") as quota, self.assertRaisesRegex(ValueError, "title"):
+                    ops.submit(client, self.folder, self.output)
+                quota.assert_not_called()
+                client.kernels_push.assert_not_called()
+                self.assertEqual(ops.load(self.output / "job.json"), rejected)
+
+    def push_http_error(self, status=400, method="POST", url="https://www.kaggle.com/api/v1/kernels/push"):
+        response = requests.Response()
+        response.status_code = status
+        response.request = requests.Request(method, url).prepare()
+        return requests.HTTPError(response=response)
+
+    def test_explicit_push_rejection_allows_manual_retry_and_preserves_previous_job(self):
+        error = self.push_http_error()
+        client = SimpleNamespace(kernels_push=Mock(side_effect=[error, SimpleNamespace(ref="owner/notebook", version_number=7, error="")]))
+        with patch.object(ops, "quota", return_value={"gpu": {"remaining_seconds": 1000}}):
+            with self.assertRaises(requests.HTTPError):
+                ops.submit(client, self.folder, self.output)
+            self.assertEqual(client.kernels_push.call_count, 1)
+            rejected = ops.load(self.output / "job.json")
+            self.assertEqual(rejected["state"], "not_submitted")
+            result = ops.submit(client, self.folder, self.output)
+        self.assertEqual(result["state"], "submitted")
+        self.assertEqual(client.kernels_push.call_count, 2)
+        backups = list(self.output.glob("job.not_submitted.*.json"))
+        self.assertEqual(len(backups), 1)
+        self.assertEqual(ops.load(backups[0]), rejected)
+
+    def test_ambiguous_http_errors_and_rejections_of_other_requests_stay_unknown(self):
+        errors = [self.push_http_error(status=code) for code in (408, 409, 429, 500)]
+        errors += [self.push_http_error(method="GET"), self.push_http_error(url="https://api.kaggle.com/v1/GetKernel"),
+                   self.push_http_error(url="https://example.org/api/v1/kernels/push"),
+                   self.push_http_error(url="https://api.kaggle.com/other/kernels/push"),
+                   self.push_http_error(url="http://api.kaggle.com/api/v1/kernels/push"), requests.HTTPError()]
+        for index, error in enumerate(errors):
+            with self.subTest(index=index):
+                output = self.root / f"ambiguous-{index}"
+                client = SimpleNamespace(kernels_push=Mock(side_effect=error))
+                with patch.object(ops, "quota", return_value={"gpu": {"remaining_seconds": 1000}}):
+                    with self.assertRaises(requests.HTTPError):
+                        ops.submit(client, self.folder, output)
+                    self.assertEqual(ops.load(output / "job.json")["state"], "submission_unknown")
+                    with self.assertRaisesRegex(ValueError, "already exists"):
+                        ops.submit(client, self.folder, output)
+                client.kernels_push.assert_called_once()
+
+    def test_rejection_with_unchecked_or_newer_remote_version_stays_unknown(self):
+        for index, latest in enumerate((7, requests.Timeout())):
+            with self.subTest(index=index):
+                output = self.root / f"remote-{index}"
+                client = SimpleNamespace(kernels_push=Mock(side_effect=self.push_http_error()))
+                with patch.object(ops, "quota", return_value={"gpu": {"remaining_seconds": 1000}}), patch.object(ops, "latest_version", side_effect=[0, latest]):
+                    with self.assertRaises(requests.HTTPError):
+                        ops.submit(client, self.folder, output)
+                job = ops.load(output / "job.json")
+                self.assertEqual(job["state"], "submission_unknown")
+                self.assertEqual(job["push_rejection"]["http_status"], 400)
+                client.kernels_push.assert_called_once()
+
+    def test_not_accepted_requires_saved_push_rejection_and_unchanged_version(self):
+        unknown = {"ref": "owner/notebook", "state": "submission_unknown", "previous_version": 0}
+        path = self.output / "job.json"
+        ops.save(path, unknown)
+        with self.assertRaisesRegex(ValueError, "unchanged version alone"):
+            ops.mark_not_accepted(Mock(), path)
+        unknown["push_rejection"] = {"action": "SaveKernel", "http_status": 400}
+        ops.save(path, unknown)
+        with patch.object(ops, "latest_version", return_value=7), self.assertRaisesRegex(ValueError, "newer version"):
+            ops.mark_not_accepted(Mock(), path)
+        self.assertEqual(ops.load(path)["state"], "submission_unknown")
+        self.assertEqual(ops.mark_not_accepted(Mock(), path)["state"], "not_submitted")
+
+    def test_retry_preflight_failure_keeps_rejected_job_at_original_path(self):
+        rejected = {"ref": "owner/notebook", "state": "not_submitted"}
+        ops.save(self.output / "job.json", rejected)
+        client = Mock()
+        with patch.object(ops, "quota", return_value={"gpu": {"remaining_seconds": 1000}}), patch.object(ops, "latest_version", side_effect=requests.Timeout()):
+            with self.assertRaises(requests.Timeout):
+                ops.submit(client, self.folder, self.output)
+        self.assertEqual(ops.load(self.output / "job.json"), rejected)
+        self.assertEqual(list(self.output.glob("job.not_submitted.*.json")), [])
+        client.kernels_push.assert_not_called()
 
     def test_missing_submission_version_recovers_matching_source_without_resubmission(self):
         client = SimpleNamespace(kernels_push=Mock(return_value=SimpleNamespace(ref="owner/notebook", version_number=0, error="")))
@@ -206,6 +341,46 @@ class KaggleTests(unittest.TestCase):
             ops.log_slice(self.job, self.output)
         self.assertEqual(get.call_args.kwargs["params"], {"versionLabel": "v7"})
         self.assertNotIn("fake-secret", (self.output / "session.log").read_text())
+
+    def log_response(self, chunks):
+        response = Mock(headers={"content-type": "text/event-stream"})
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=False)
+        response.iter_content.return_value = chunks
+        return response
+
+    def test_log_reconnections_append_and_keep_redacted_partial_data_after_disconnect(self):
+        def disconnected():
+            yield b"data: first fake-secret\n"
+            raise requests.ConnectionError("disconnected")
+        responses = [self.log_response(disconnected()), self.log_response([b"data: second\ndata: END_OF_LOG\n"])]
+        with patch.dict(os.environ, {"KAGGLE_API_TOKEN": "fake-secret"}), patch("requests.get", side_effect=responses):
+            with self.assertRaises(requests.ConnectionError):
+                ops.log_slice(self.job, self.output)
+            ops.log_slice(self.job, self.output)
+        text = (self.output / "session.log").read_text(encoding="utf-8")
+        self.assertIn("first [REDACTED]", text)
+        self.assertIn("second", text)
+        self.assertNotIn("fake-secret", text)
+        self.assertEqual(text.count("v7 ---"), 2)
+
+    def test_log_total_cap_preserves_existing_data_and_valid_utf8(self):
+        self.output.mkdir()
+        path = self.output / "session.log"
+        path.write_bytes(b"existing\n" + b"x" * 81)
+        response = self.log_response([("日本語" * 100).encode("utf-8")])
+        with patch.dict(os.environ, {"KAGGLE_API_TOKEN": "fake-secret"}), patch.object(ops, "LOG_FILE_LIMIT", 200), patch("requests.get", return_value=response):
+            ops.log_slice(self.job, self.output)
+            first = path.read_bytes()
+            ops.log_slice(self.job, self.output)
+            second = path.read_bytes()
+            ops.log_slice(self.job, self.output)
+        self.assertTrue(first.startswith(b"existing\n"))
+        self.assertLessEqual(len(first), 200)
+        self.assertTrue(second.startswith(first))
+        self.assertEqual(len(second), 200)
+        self.assertEqual(path.read_bytes(), second)
+        path.read_text(encoding="utf-8")
 
     def test_complete_recovers_outputs_before_continuation(self):
         ops.save(self.output / "job.json", self.job)

@@ -8,17 +8,20 @@ import json
 import os
 import re
 import sys
+import tempfile
 import time
 from pathlib import Path
 
 _original_open = builtins.open
+CODE_LIMIT = 1048576
+LOG_FILE_LIMIT = 16 * 1048576
 
 
 def configure():
-    """Use an ignored writable directory, without persisting authentication."""
+    """Use a portable writable directory, without persisting authentication."""
     directory = os.environ.get("KAGGLE_CONFIG_DIR")
     if not directory:
-        directory = str(Path(__file__).resolve().parents[4] / ".deps/kaggle-config")
+        directory = str(Path(tempfile.gettempdir()) / "kaggle-ops-config")
         os.environ["KAGGLE_CONFIG_DIR"] = directory
     Path(directory).expanduser().mkdir(parents=True, exist_ok=True)
     return directory
@@ -166,6 +169,8 @@ def get_kernel(client, ref):
 def owned_kernel_absent(client, ref):
     """A 403 alone cannot distinguish a new notebook from a permission failure."""
     owner = getattr(client, "config_values", {}).get("username")
+    if not owner:
+        raise ValueError("authenticated Kaggle username is unavailable; check token authentication")
     if ref.split("/")[0] != owner:
         return False
     for page in range(1, 101):
@@ -196,6 +201,38 @@ def source_signature(source, kernel_type):
                  for cell in notebook["cells"]]
         source = json.dumps(cells, ensure_ascii=False, separators=(",", ":"))
     return hashlib.sha256(source.encode("utf-8")).hexdigest()
+
+
+def push_payload_bytes(code, kernel_type):
+    """Match the source serialization used by pinned Kaggle 2.0.0."""
+    text = code.read_text(encoding="utf-8")
+    if kernel_type == "notebook":
+        notebook = json.loads(text)
+        for cell in notebook.get("cells", []):
+            if cell.get("cell_type") == "code" and "outputs" in cell:
+                cell["outputs"] = []
+            if isinstance(cell.get("source"), list):
+                cell["source"] = "".join(cell["source"])
+        text = json.dumps(notebook)
+    return len(text.encode("utf-8"))
+
+
+def push_rejection(error):
+    """Accept only explicit rejection of the actual SaveKernel POST."""
+    import requests
+    from urllib.parse import urlsplit
+    response = getattr(error, "response", None)
+    request = getattr(response, "request", None)
+    status = getattr(response, "status_code", None)
+    if not isinstance(error, requests.HTTPError) or status not in (400, 401, 403, 404, 413, 422) or request is None:
+        return None
+    url = urlsplit(request.url)
+    path = url.path.lower()
+    if url.scheme != "https" or request.method != "POST" or url.hostname not in ("api.kaggle.com", "www.kaggle.com"):
+        return None
+    if path not in ("/api/v1/kernels/push", "/v1/kernels/push"):
+        return None
+    return {"action": "SaveKernel", "http_status": status}
 
 
 def verify_saved_version(client, job, version=None):
@@ -247,6 +284,12 @@ def submit(client, folder, output):
     code = (folder / metadata["code_file"]).resolve()
     if not code.is_relative_to(folder) or not code.is_file():
         raise ValueError("code_file must be inside the upload folder")
+    title = metadata.get("title")
+    if title is not None and (not isinstance(title, str) or len(title) < 5):
+        raise ValueError("title must be at least five characters")
+    payload = push_payload_bytes(code, metadata["kernel_type"])
+    if payload >= CODE_LIMIT:
+        raise ValueError(f"code payload is {payload} bytes (guard: under {CODE_LIMIT}); move large inputs to a dataset")
     params = load(folder / "training-params.json") if (folder / "training-params.json").exists() else {}
     seconds = params.get("timeout_seconds", 21600)
     if type(seconds) is not int or not 60 <= seconds <= 21600:
@@ -259,19 +302,37 @@ def submit(client, folder, output):
     output = Path(output)
     job_path = output / "job.json"
     if job_path.exists():
-        raise ValueError("job.json already exists; resume instead of submitting again")
+        if load(job_path).get("state") != "not_submitted":
+            raise ValueError("job.json already exists; resume instead of submitting again")
     previous_version = latest_version(client, ref)
     if previous_version and status(client, ref, previous_version)["status"] not in ("complete", "error", "cancel_acknowledged"):
         raise ValueError("an existing kernel version is active; resume it instead of submitting")
-    job = {"ref": ref, "state": "submission_unknown", "previous_version": previous_version, "timeout_seconds": seconds, "quota_before": budget, "code_sha256": hashlib.sha256(code.read_bytes()).hexdigest(), "created_at": time.time(),
+    job = {"ref": ref, "state": "submission_unknown", "previous_version": previous_version, "timeout_seconds": seconds, "quota_before": budget, "code_sha256": hashlib.sha256(code.read_bytes()).hexdigest(), "payload_bytes": payload, "created_at": time.time(),
            "kernel_type": metadata["kernel_type"], "source_signature": source_signature(code.read_text(encoding="utf-8"), metadata["kernel_type"]),
            "enable_gpu": bool(metadata.get("enable_gpu")), "enable_internet": metadata.get("enable_internet", True)}
+    if job_path.exists():
+        backup = output / f"job.not_submitted.{time.time_ns()}.json"
+        job_path.replace(backup)
     output.mkdir(parents=True, exist_ok=True)
     with job_path.open("x", encoding="utf-8") as handle:
         json.dump(job, handle, ensure_ascii=False, indent=2)
         handle.flush()
         os.fsync(handle.fileno())
-    response = client.kernels_push(str(folder), timeout=str(seconds))
+    try:
+        response = client.kernels_push(str(folder), timeout=str(seconds))
+    except Exception as error:
+        rejection = push_rejection(error)
+        if rejection:
+            job["push_rejection"] = rejection
+            save(job_path, job)
+            try:
+                unchanged = latest_version(client, ref) == previous_version
+            except Exception:
+                unchanged = False
+            if unchanged:
+                job["state"] = "not_submitted"
+                save(job_path, job)
+        raise
     job["submission_response"] = {"ref": response.ref, "version": response.version_number,
                                   "error": redact(getattr(response, "error", ""))}
     save(job_path, job)
@@ -300,6 +361,20 @@ def reconcile(client, job_path, version):
     return job
 
 
+def mark_not_accepted(client, job_path):
+    job = load(job_path)
+    if job.get("state") != "submission_unknown":
+        raise ValueError("only an unknown submission can be marked as not accepted")
+    rejection = job.get("push_rejection", {})
+    if rejection.get("action") != "SaveKernel" or rejection.get("http_status") not in (400, 401, 403, 404, 413, 422):
+        raise ValueError("no explicit push rejection recorded; unchanged version alone cannot prove non-acceptance")
+    if latest_version(client, kernel_ref(job["ref"])) != job.get("previous_version", 0):
+        raise ValueError("a newer version exists; reconcile it with --version instead")
+    job.update(state="not_submitted", not_accepted_checked_at=time.time())
+    save(job_path, job)
+    return job
+
+
 def log_slice(job, output, seconds=20):
     import requests
     validate_job(job)
@@ -318,7 +393,13 @@ def log_slice(job, output, seconds=20):
     finally:
         if text:
             Path(output).mkdir(parents=True, exist_ok=True)
-            (Path(output) / "session.log").write_text(redact(text.decode("utf-8", errors="replace")), encoding="utf-8")
+            path = Path(output) / "session.log"
+            remaining = LOG_FILE_LIMIT - (path.stat().st_size if path.exists() else 0)
+            header = f"--- {datetime.now(timezone.utc).isoformat(timespec='seconds')} v{job['version']} ---\n"
+            data = (header + redact(text.decode("utf-8", errors="replace")) + "\n").encode("utf-8")
+            if remaining > 0:
+                with path.open("ab") as handle:
+                    handle.write(data[:remaining].decode("utf-8", errors="ignore").encode("utf-8"))
     return result
 
 
@@ -454,7 +535,9 @@ def main():
         if name in ("wait", "reconcile"):
             sub.add_argument("--job", required=True, type=Path)
         if name in ("kernel-status", "reconcile"):
-            sub.add_argument("--version", required=name == "reconcile", type=int)
+            sub.add_argument("--version", type=int)
+        if name == "reconcile":
+            sub.add_argument("--not-accepted", action="store_true")
         if name == "wait":
             sub.add_argument("--wait-seconds", type=int, default=21600)
     args = parser.parse_args()
@@ -480,7 +563,9 @@ def main():
             elif args.command == "wait":
                 result = wait(client, args.job, args.output, args.wait_seconds)
             elif args.command == "reconcile":
-                result = reconcile(client, args.job, args.version)
+                if args.not_accepted == (args.version is not None):
+                    raise ValueError("reconcile needs exactly one of --version or --not-accepted")
+                result = mark_not_accepted(client, args.job) if args.not_accepted else reconcile(client, args.job, args.version)
             elif args.command == "dataset-create":
                 client.dataset_create_new(str(clean_upload(args.folder)), public=False, quiet=True, convert_to_csv=False, dir_mode="zip")
                 result = {"created": True, "public": False}
