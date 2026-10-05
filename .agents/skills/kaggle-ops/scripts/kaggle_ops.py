@@ -1,6 +1,7 @@
 import argparse
 import builtins
 import contextlib
+from datetime import datetime, timezone
 import hashlib
 import importlib.metadata
 import json
@@ -47,6 +48,29 @@ def save(path, value):
 
 def load(path):
     return json.loads(Path(path).read_text(encoding="utf-8-sig"))
+
+
+def append_monitor_event(output, job, event, monitor_started, status=None, error_type=None):
+    """Best-effort local audit trail; never changes wait's API or return behavior."""
+    record = {
+        "observed_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "ref": job.get("ref"),
+        "version": job.get("version"),
+        "source_signature": job.get("source_signature"),
+        "monitor_elapsed_seconds": round(max(0.0, time.monotonic() - monitor_started), 3),
+        "event": event,
+    }
+    if status is not None:
+        record["status"] = status
+    if error_type is not None:
+        record["error_type"] = error_type
+    try:
+        path = Path(output) / "monitor-events.jsonl"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("a", encoding="utf-8") as handle:
+            handle.write(redact(json.dumps(record, ensure_ascii=False, separators=(",", ":"))) + "\n")
+    except Exception:
+        pass
 
 
 def kernel_ref(value):
@@ -360,37 +384,51 @@ def wait(client, job_path, output, wait_seconds=21600, interval=30):
     if job.get("state") not in ("submitted", "waiting", "complete") or not job.get("version"):
         raise ValueError("job submission needs reconciliation before waiting")
     result = {"ref": job["ref"], "version": job["version"], "ready_for_verification": False, "next_phase": "waiting_kaggle"}
-    deadline = time.monotonic() + wait_seconds
+    monitor_started = time.monotonic()
+    deadline = monitor_started + wait_seconds
+    append_monitor_event(output, job, "wait_started", monitor_started)
     while True:
-        current = status(client, job["ref"], job["version"])
+        try:
+            current = status(client, job["ref"], job["version"])
+        except Exception as error:
+            append_monitor_event(output, job, "status_retrieval_error", monitor_started, error_type=type(error).__name__)
+            raise
         result.update(current)
+        append_monitor_event(output, job, "status_observed", monitor_started, status=current.get("status"))
         try:
             result["log"] = read_retry(lambda: log_slice(job, output, seconds=min(20, max(1, int(deadline - time.monotonic())))))
         except Exception as error:
             result["log_error"] = type(error).__name__
+            append_monitor_event(output, job, "log_retrieval_error", monitor_started, status=current.get("status"), error_type=type(error).__name__)
         if current["status"] == "complete":
+            append_monitor_event(output, job, "terminal", monitor_started, status=current["status"])
             result["next_phase"] = "recovering_outputs"
             save(Path(output) / "continuation.json", result)
             try:
                 result["files"] = outputs(client, job, Path(output))
             except Exception as error:
                 result["output_error"] = type(error).__name__
+                append_monitor_event(output, job, "output_recovery_error", monitor_started, status=current["status"], error_type=type(error).__name__)
                 save(Path(output) / "continuation.json", result)
                 raise
             result["ready_for_verification"] = True
             result["next_phase"] = "verification"
             save(Path(output) / "continuation.json", result)
+            append_monitor_event(output, job, "verification_ready", monitor_started, status=current["status"])
             return result
         if current["status"] in ("error", "cancel_acknowledged", "cancel_requested"):
+            append_monitor_event(output, job, "terminal", monitor_started, status=current["status"])
             result["next_phase"] = "failure_review"
             try:
                 outputs(client, job, Path(output), download=False)
             except Exception as error:
                 result["output_error"] = type(error).__name__
+                append_monitor_event(output, job, "output_recovery_error", monitor_started, status=current["status"], error_type=type(error).__name__)
             save(Path(output) / "continuation.json", result)
             return result
         if time.monotonic() >= deadline:
             result["status"] = "waiting_timeout"
+            append_monitor_event(output, job, "wait_deadline", monitor_started, status=current["status"])
             save(Path(output) / "continuation.json", result)
             return result
         save(Path(output) / "continuation.json", result)

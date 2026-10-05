@@ -4,6 +4,8 @@ SisterGameのchar_design_batch型を引き継ぐ場合は0始まりのcell-3だ�
 
 新しいNotebookは目的に合う構造でよい。生成・学習に必要な入力はdataset_sourcesで指定し、認証情報をNotebookへ書かない。計算結果には設定、seed、入力データversion、実行時GPU名とライブラリ版を含める。
 
+大きなmanifestや画像はNotebookへ埋め込まずDatasetから読む。gzip＋base64を使う場合も最終コードのbytesを測り、1 MiB未満の事前ガードを守る。入力Datasetの容量とは別に管理する。詳細は [入力サイズと転送](input-size.md)。
+
 ```json
 {
   "id": "bigbigzabuton/kernel-slug",

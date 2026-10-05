@@ -222,11 +222,66 @@ class KaggleTests(unittest.TestCase):
             result = ops.wait(client, self.output / "job.json", self.output, 1)
         self.assertEqual(result["next_phase"], "failure_review")
         self.assertFalse(outputs.call_args.kwargs["download"])
-        with patch.object(ops, "status", return_value={"status": "running"}), patch.object(ops, "log_slice", return_value={}), patch.object(ops.time, "monotonic", side_effect=[0, 2, 2]):
+        clock = [0]
+        with patch.object(ops, "status", return_value={"status": "running"}), patch.object(ops, "log_slice", return_value={}), patch.object(ops.time, "monotonic", side_effect=lambda: clock[0]), patch.object(ops.time, "sleep", side_effect=lambda seconds: clock.__setitem__(0, clock[0] + seconds)):
             result = ops.wait(client, self.output / "job.json", self.output, 1)
         self.assertEqual(result["status"], "waiting_timeout")
         self.assertEqual(ops.load(self.output / "job.json"), self.job)
         client.kernels_push.assert_not_called()
+
+    def test_monitor_events_keep_status_when_log_fails_and_timeout_is_local_elapsed(self):
+        job = {**self.job, "source_signature": "fake-secret"}
+        ops.save(self.output / "job.json", job)
+        clock = [0]
+        with patch.dict(os.environ, {"KAGGLE_API_TOKEN": "fake-secret"}), \
+             patch.object(ops, "status", return_value={"status": "running"}), \
+             patch.object(ops, "log_slice", side_effect=requests.Timeout("fake-secret")), \
+             patch.object(ops.time, "monotonic", side_effect=lambda: clock[0]), \
+             patch.object(ops.time, "sleep", side_effect=lambda seconds: clock.__setitem__(0, clock[0] + seconds)):
+            result = ops.wait(Mock(), self.output / "job.json", self.output, 1)
+        events = [json.loads(line) for line in (self.output / "monitor-events.jsonl").read_text().splitlines()]
+        self.assertEqual(result["status"], "waiting_timeout")
+        self.assertEqual(events[0]["event"], "wait_started")
+        self.assertTrue(any(event["event"] == "status_observed" and event["status"] == "running" for event in events))
+        self.assertTrue(any(event["event"] == "log_retrieval_error" and event["error_type"] == "Timeout" for event in events))
+        self.assertEqual(events[-1]["event"], "wait_deadline")
+        self.assertEqual(events[-1]["status"], "running")
+        self.assertTrue(all(event["monitor_elapsed_seconds"] >= 0 for event in events))
+        serialized = (self.output / "monitor-events.jsonl").read_text()
+        self.assertNotIn("fake-secret", serialized)
+
+    def test_monitor_events_append_on_same_version_rewait_and_preserve_return(self):
+        ops.save(self.output / "job.json", self.job)
+        with patch.object(ops, "status", return_value={"status": "complete"}), patch.object(ops, "log_slice", return_value={}), patch.object(ops, "outputs", return_value=[]):
+            first = ops.wait(Mock(), self.output / "job.json", self.output, 1)
+            first_count = len((self.output / "monitor-events.jsonl").read_text().splitlines())
+            second = ops.wait(Mock(), self.output / "job.json", self.output, 1)
+        events = [json.loads(line) for line in (self.output / "monitor-events.jsonl").read_text().splitlines()]
+        self.assertEqual(first, second)
+        self.assertTrue(first["ready_for_verification"])
+        self.assertEqual(sum(event["event"] == "wait_started" for event in events), 2)
+        self.assertGreater(len(events), first_count)
+        self.assertEqual(events[-1]["event"], "verification_ready")
+
+    def test_status_observation_failure_is_recorded_without_guessing_remote_state(self):
+        ops.save(self.output / "job.json", self.job)
+        failure = requests.Timeout("unavailable")
+        with patch.object(ops, "status", side_effect=failure), self.assertRaises(requests.Timeout) as caught:
+            ops.wait(Mock(), self.output / "job.json", self.output, 1)
+        self.assertIs(caught.exception, failure)
+        events = [json.loads(line) for line in (self.output / "monitor-events.jsonl").read_text().splitlines()]
+        self.assertEqual(events[-1]["event"], "status_retrieval_error")
+        self.assertEqual(events[-1]["error_type"], "Timeout")
+        self.assertNotIn("status", events[-1])
+        self.assertEqual(ops.load(self.output / "job.json"), self.job)
+
+    def test_monitor_history_write_failure_does_not_abort_wait(self):
+        ops.save(self.output / "job.json", self.job)
+        (self.output / "monitor-events.jsonl").mkdir()
+        with patch.object(ops, "status", return_value={"status": "complete"}), patch.object(ops, "log_slice", return_value={}), patch.object(ops, "outputs", return_value=[]):
+            result = ops.wait(Mock(), self.output / "job.json", self.output, 1)
+        self.assertTrue(result["ready_for_verification"])
+        self.assertEqual(ops.load(self.output / "continuation.json")["next_phase"], "verification")
 
     def test_read_retry_is_bounded_and_does_not_retry_auth(self):
         read = Mock(side_effect=requests.Timeout())

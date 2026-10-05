@@ -19,8 +19,8 @@ API操作は同梱の `scripts/kaggle_ops.py` を使う。通常のクロール�
 ## 運転
 
 1. `doctor` で設定の有無だけを確認し、`quota` で実際のGPU残量・予約済み時間・リセット日時を読む。30時間/週・週末リセットは固定保証にしない。取得不能なら不明としてGPU開始を保留する。
-2. 入出力、必要なGPU、実行時間上限を決める。ユーザーの既存許可に含まれる試行なら進め、予算や目的の拡大だけ判断を求める。提供された目安は学習2〜4時間、生成20〜40分/20枚であり、実測ではない。
-3. アップロード専用ディレクトリを使う。100MB超のデータはdatasetへ。datasetはprivateで作成し、更新では過去versionを削除しない。
+2. 入出力、必要なGPU、実行時間上限を決める。期待する成果物名、schema、件数、GPU確認方法も提出前に決める。ユーザーの既存許可に含まれる試行なら進め、予算や目的の拡大だけ判断を求める。提供された目安は学習2〜4時間、生成20〜40分/20枚であり、実測ではない。
+3. アップロード専用ディレクトリを使う。100 MB超の入力はprivate datasetへ分離し、更新では過去versionを削除しない。大きなmanifest・ラベル・画像・重みもNotebook本体へ埋め込まない。提出する最終コードのUTF-8 bytesを計測し、このリポジトリの1 MiB未満のコードサイズガードを守る。gzip＋base64後も容量を測る。100 MBはデータ分離の運用目安、1 MiBはコード側の事前ガードであり、Dataset入力の上限ではない。詳細と今回の事例は [入力サイズと転送](references/input-size.md)。
 4. 既存SisterGame型の7セルNotebookを更新するときはcell-3の設定だけを編集し、他セルと出力の差分がないことを確認する。この規約を無関係な新規Notebookに強制しない。詳細は [Notebook規約](references/notebooks.md)。
 5. `submit` は1回だけ送信し、返ったref・version・ソース署名を `job.json` へ保存する。新規Notebook名の照会が403でも、認証済みの自分のNotebook一覧を全ページ確認し、対象が存在しない場合だけ新規作成として扱う。他人や既存Notebookの403は権限エラーとして止める。応答が曖昧な場合は再送せず、新しいversion・元コード・非公開設定・GPU/Internet設定を照合してから同じversionの待機へ進む。GPU上限は既定6時間、`training-params.json` の `timeout_seconds` で短縮できる。これは運用の上限であってKaggleの保証値ではない。
 6. `wait` はログAPIへ接続しつつ、versionを固定したstatusを確認する。ログの終端だけで成功としない。completeになったら出力を取得・SHA256を記録し、`continuation.json` の `ready_for_verification: true` を確認して次の検証へ進む。
@@ -54,6 +54,12 @@ python HELPER kernel-output --ref bigbigzabuton/kernel-slug --output results/man
 `kernel-list` は自分のNotebook一覧。稼働中一覧と同義ではない。ジョブの稼働状態はstatusで確認する。単発kernel-outputは呼び出し時の最新版番号を確定して取得する。通常の継続にはjob.jsonのversionでwaitする。出力は100ページ・合計1GBまでの回収上限があり、超過時は分割などを検討する。
 
 ログstreamは接続ごとに最大1MiBを `session.log` へ保存するため、稼働中ログの完全な蓄積ではない。途中で通信が切れた場合も受信分を残す。完了時はAPIが返す保存ログを `persisted.log` へ回収する。出力転送中の失敗は全ファイルを自動再ダウンロードせず停止する。再度のwaitは明示的な回収再試行であり、累積通信量が1GB以内という保証ではない。
+
+`wait` は既存の監視に加えて、同じoutputの `monitor-events.jsonl` へ状態観測と取得エラーを追記する。UTC時刻、ref/version、ソース署名、そのwaitの経過時間を記録する。待機期限のイベントには最後に観測したリモートstatusを残し、status取得失敗時は状態を推測しない。履歴の書き込み失敗だけで監視を中断しない。`continuation.json` は最新の再開先、JSONLは過去の観測として扱う。`ready_for_verification` は回収後の検証開始を示すもので、実験の合格判定は成果物の検査で行う。
+
+ログのReadTimeoutや成果物0件だけで、入力サイズ超過・OOM・処理停止と断定しない。送信したコードのbytes、datasetのversionとready状態、ref/versionのstatus、取得エラーを別々に保存して判定する。大容量入力の準備では開始・ファイル数・bytes・進捗・終了をflushして記録する。ただしAPIから稼働中ログが取得できることは保証されない。
+
+CLIを併用する場合は終了コード0だけで書き込み成功とせず、API応答・実際のref/version・設定を照合する。参考実装から採用した知見と適用範囲は [外部実装からの知見](references/external-workflows.md)。
 
 CloudのSetupは依存導入とオフライン検証だけで、Notebookを送信しない。Kaggle操作はCloudのagent phaseから直接行う。長時間ジョブを中断する場合は実際のref・version・job.jsonを保存し、同じjobの待機を再開する。`continuation.json` だけで終了済みCloudタスクが自動起動するとは扱わない。
 
