@@ -32,3 +32,5 @@ Notebookのコード、入力Dataset、回収する出力は別々に容量を�
 根拠はrun内の `gpu-eval/notebook-verification.json`、`gpu-eval/dataset-upload/evaluation_bundle.verification.json`、`gpu-eval/dataset-create.json`、`gpu-eval/dataset-version.json`、`gpu-eval/submission.json` にある。
 
 その後の稼働中ログにはReadTimeoutがあり、成果物を取得できていない。入力容量との因果関係は未確認。statusやGPU枠の消費だけでは、処理段階・停止・モデルの成功を証明できない。次回は入力探索、コピー、SHA検証、モデル取得、推論の各段階で開始と終了をflushし、ファイル数・bytes・経過時間を小さいローカル記録にも残す。
+
+追記: 2026-10-06 JST、ユーザー報告とversion固定status APIで `ERRORED_MOUNTING_DATASET` を確認した。Notebook version 1はerrorとなり、入力Dataset version 1のreadyとは別にマウント失敗が判明した。GPUの使用済み時間は提出前と同じだった。入力容量上限や画像ファイル数との因果関係は確定していない。詳細は [Datasetマウント失敗](dataset-mount.md)。

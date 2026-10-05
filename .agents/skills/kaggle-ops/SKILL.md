@@ -59,6 +59,8 @@ python HELPER kernel-output --ref bigbigzabuton/kernel-slug --output results/man
 
 ログのReadTimeoutや成果物0件だけで、入力サイズ超過・OOM・処理停止と断定しない。送信したコードのbytes、datasetのversionとready状態、ref/versionのstatus、取得エラーを別々に保存して判定する。大容量入力の準備では開始・ファイル数・bytes・進捗・終了をflushして記録する。ただしAPIから稼働中ログが取得できることは保証されない。
 
+`ERRORED_MOUNTING_DATASET` は入力マウント段階の失敗として扱う。DatasetのreadyはNotebookへのマウント成功を保証しない。failure_messageと対象versionを保存してから修復し、稼働中・観測不能のジョブを新規提出へ置き換えない。大量の自動展開ファイルを避ける配置変更と確認手順は [Datasetマウント失敗](references/dataset-mount.md)。
+
 CLIを併用する場合は終了コード0だけで書き込み成功とせず、API応答・実際のref/version・設定を照合する。参考実装から採用した知見と適用範囲は [外部実装からの知見](references/external-workflows.md)。
 
 CloudのSetupは依存導入とオフライン検証だけで、Notebookを送信しない。Kaggle操作はCloudのagent phaseから直接行う。長時間ジョブを中断する場合は実際のref・version・job.jsonを保存し、同じjobの待機を再開する。`continuation.json` だけで終了済みCloudタスクが自動起動するとは扱わない。
