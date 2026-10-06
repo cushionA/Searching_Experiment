@@ -9,6 +9,7 @@ import {openLightpanda} from './lightpanda-runtime.mjs';
 import {openObscura} from './obscura-runtime.mjs';
 import {assertChromiumTrustWritable} from './chromium-trust.mjs';
 import {openCamoufox} from './camoufox-runtime.mjs';
+import {waitForDOMStability} from './dom-stability.mjs';
 import {openFourplay} from './fourplay-runtime.mjs';
 import {openCamoufoxFourplay} from './camoufox-fourplay-runtime.mjs';
 
@@ -578,6 +579,7 @@ export async function browserSite(evidence, name, target, sharedSession = null) 
       catch (error) { result.operation = {outcome:'operation_error',error:safeError(error)}; }
     }
     await sleep(target.observe_ms ?? L.observe_ms);
+    if(target.dom_wait) result.dom_wait=await waitForDOMStability(b.page,target.dom_wait);
     // Legacy mode stops traffic before saving artifacts; normal observation snapshots first.
     if (!observation) stopped = true;
     if (!observation && b.kind === 'playwright') await b.context.setOffline(true);
