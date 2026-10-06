@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/tmp/public-eval-scripts/fit_image_head.py", line 489, in <module>
+    main()
+    ~~~~^^
+  File "/tmp/public-eval-scripts/fit_image_head.py", line 485, in main
+    train(args)
+    ~~~~~^^^^^^
+  File "/tmp/public-eval-scripts/fit_image_head.py", line 360, in train
+    metrics = {fold: fold_metrics(logits, built[fold][0],
+                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+                                  [built[fold][1][0], built[fold][1][1], built[fold][2]], classes, splits[fold],
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                  classification_labels)
+                                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/public-eval-scripts/fit_image_head.py", line 241, in fold_metrics
+    label: {'samples': 0, 'correct': 0, 'accuracy': None} for label in allowed
+                                                                       ^^^^^^^
+UnboundLocalError: cannot access local variable 'allowed' where it is not associated with a value

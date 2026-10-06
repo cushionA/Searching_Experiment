@@ -16,11 +16,15 @@ EXPERIMENT = ROOT / "experiments/captcha-small-model"
 SCRIPT_NAMES = (
     "benchmark_public_samples.py",
     "benchmark_embeddings.py",
+    "benchmark_pe_core.py",
     "benchmark_moe_vie.py",
+    "fit_image_head.py",
     "download_model.py",
     "subprocess_runner.py",
 )
 MODEL_NAMES = ("TinyCLIP-ViT-40M-32-Text-19M", "MobileCLIP2-S0", "MobileCLIP2-S2", "MoE-ViE-B16")
+SUPPORTED_MODEL_NAMES = MODEL_NAMES + ("MobileCLIP2-S3", "MobileCLIP2-S4", "MobileCLIP2-B", "PE-Core-S16-384")
+SPLIT_NAMES = ("grouped-train.json", "grouped-validation.json", "grouped-test.json", "grouped-splits.json")
 
 
 def sha256(data: bytes) -> str:
@@ -55,7 +59,26 @@ def image_references(manifest: dict) -> set[str]:
     return refs
 
 
-def validate_bundle(bundle: Path, manifest_bytes: bytes, refs: set[str]) -> str:
+def split_assets(manifest_path: Path, manifest_bytes: bytes) -> dict[str, bytes]:
+    """Pin fixed sibling fold files and check their parent/index identities."""
+    assets = {name: (manifest_path.parent / name).read_bytes() for name in SPLIT_NAMES}
+    parent_sha = sha256(manifest_bytes)
+    index = json.loads(assets["grouped-splits.json"])
+    if not isinstance(index, dict) or index.get("parent_manifest_sha256") != parent_sha:
+        raise ValueError("Grouped split index was created from a different input manifest")
+    for fold in ("train", "validation", "test"):
+        name = f"grouped-{fold}.json"
+        marker = json.loads(assets[name]).get("split", {})
+        if marker.get("fold") != fold or marker.get("parent_manifest_sha256") != parent_sha:
+            raise ValueError(f"Grouped fold identity differs from the supplied manifest: {name}")
+        declared = index.get("split_manifests", {}).get(fold, {})
+        if declared.get("path") != name or declared.get("sha256") != sha256(assets[name]):
+            raise ValueError(f"Grouped split index hash/path differs from fold bytes: {name}")
+    return assets
+
+
+def validate_bundle(bundle: Path, manifest_bytes: bytes, refs: set[str],
+                    extra_files: dict[str, bytes] | None = None) -> str:
     if not bundle.is_file():
         raise FileNotFoundError(bundle)
     hasher = hashlib.sha256()
@@ -75,6 +98,8 @@ def validate_bundle(bundle: Path, manifest_bytes: bytes, refs: set[str]) -> str:
             mode = info.external_attr >> 16
             if stat.S_ISLNK(mode):
                 raise ValueError(f"ZIP symlink is forbidden: {info.filename}")
+            if stat.S_IFMT(mode) not in (0, stat.S_IFREG, stat.S_IFDIR):
+                raise ValueError(f"ZIP special member is forbidden: {info.filename}")
             if not info.is_dir():
                 if name in files:
                     raise ValueError(f"Duplicate ZIP member path: {name}")
@@ -86,6 +111,10 @@ def validate_bundle(bundle: Path, manifest_bytes: bytes, refs: set[str]) -> str:
         missing = refs - files
         if missing:
             raise ValueError(f"Bundle lacks referenced image members: {sorted(missing)[:5]}")
+        for name, expected in (extra_files or {}).items():
+            safe_relative(name)
+            if name not in files or archive.read(name) != expected:
+                raise ValueError(f"Bundle fold bytes differ from pinned local split: {name}")
     return digest
 
 
@@ -96,9 +125,11 @@ def main() -> None:
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--bundle", type=Path, help="Optional local evaluation_bundle.zip to prevalidate and pin")
     parser.add_argument("--models", default=",".join(MODEL_NAMES), help="Comma-separated subset for a bounded repair trial")
+    parser.add_argument("--save-features", action="store_true",
+                        help="Save frozen features and fit bounded CPU heads; requires fixed grouped split JSON files beside --manifest")
     args = parser.parse_args()
     selected_models = args.models.split(",")
-    if not selected_models or len(set(selected_models)) != len(selected_models) or any(name not in MODEL_NAMES for name in selected_models):
+    if not selected_models or len(set(selected_models)) != len(selected_models) or any(name not in SUPPORTED_MODEL_NAMES for name in selected_models):
         raise ValueError("--models must be a unique subset of supported models")
     if args.output.exists():
         raise FileExistsError(f"Refusing to overwrite {args.output}")
@@ -109,7 +140,8 @@ def main() -> None:
     if not isinstance(manifest, dict):
         raise ValueError("Manifest root must be an object")
     refs = image_references(manifest)
-    bundle_sha = validate_bundle(args.bundle, manifest_bytes, refs) if args.bundle else None
+    folds = split_assets(args.manifest, manifest_bytes) if args.save_features else {}
+    bundle_sha = validate_bundle(args.bundle, manifest_bytes, refs, folds) if args.bundle else None
 
     payload = {
         "scripts": {name: (EXPERIMENT / name).read_text(encoding="utf-8") for name in SCRIPT_NAMES},
@@ -117,6 +149,8 @@ def main() -> None:
         "manifest_sha256": sha256(manifest_bytes),
         "bundle_sha256": bundle_sha,
         "dataset_ref": args.dataset_ref,
+        "split_manifests_sha256": {name: sha256(raw) for name, raw in folds.items()},
+        "save_features_and_fit_heads": args.save_features,
     }
     payload_raw = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode()
     packed = base64.b64encode(gzip.compress(payload_raw, compresslevel=9, mtime=0)).decode("ascii")
@@ -134,9 +168,11 @@ Manifest SHA-256: `{payload['manifest_sha256']}`
 Source bundle SHA-256: `{bundle_sha or 'not locally pinned'}`. Kaggle may auto-extract the archive; then the manifest SHA and every image SHA are checked, while the original archive SHA is recorded but cannot be rechecked.
 
 The notebook uses the Kaggle-provided PyTorch, CUDA, and Triton. It installs only pinned Python packages with `--no-deps`. Each model runs in its own subprocess with an explicit timeout and per-model log. Any failed or timed-out process remains visible in the final status and causes the notebook to fail after writing its summary.
+
+Frozen features and supervised heads: `{args.save_features}`. When enabled, the four fixed split files are pinned individually and verified before extraction. A separate CPU linear head is fitted after each successful encoder run, for at most 100 epochs with patience 10 and a 180-second process budget. The encoder remains frozen; existing zero-shot prompts and scores are unchanged. These grouped holdouts come from previously evaluated images and are exploratory, rather than fresh final tests.
 """
     install = """# Keep Kaggle's preinstalled torch, CUDA, and Triton unchanged.
-%pip install --no-deps open_clip_torch==3.3.0 ftfy==6.3.1 einops==0.8.1 timm==1.0.30
+%pip install --no-deps open_clip_torch==3.3.0 ftfy==6.3.1 einops==0.8.1 timm==1.0.30 wcwidth==0.6.0 safetensors==0.8.0
 """
     setup = f'''import base64, gzip, hashlib, json, os, pathlib, platform, shutil, stat, subprocess, sys, time, zipfile
 
@@ -146,10 +182,12 @@ input_root = pathlib.Path("/tmp/public-eval-input")
 source_root = pathlib.Path("/tmp/public-eval-scripts")
 saved_scripts = work / "public-eval-scripts"
 output_names = ["public-eval-summary.json", "environment.json", "public-eval-scripts"]
-model_keys = ["tinyclip_vit_40m_32_text_19m", "mobileclip2_s0", "mobileclip2_s2", "moe_vie_b16"]
+model_keys = {[name.lower().replace('-', '_') for name in selected_models]!r}
 output_names += ["public-eval-tinyclip-download.log.txt", "public-eval-tinyclip-provenance.json"]
 for key in model_keys:
     output_names += [f"public-eval-result-{{key}}", f"public-eval-{{key}}.log.txt"]
+    if payload["save_features_and_fit_heads"]:
+        output_names += [f"public-eval-head-{{key}}", f"public-eval-head-{{key}}.log.txt"]
 if not work.is_dir():
     raise FileNotFoundError("Expected /kaggle/working")
 for name in output_names:
@@ -222,6 +260,7 @@ if archive_path is not None:
             safe_rel(name)
             mode = info.external_attr >> 16
             if stat.S_ISLNK(mode): raise ValueError(f"ZIP symlink is forbidden: {{info.filename}}")
+            if stat.S_IFMT(mode) not in (0, stat.S_IFREG, stat.S_IFDIR): raise ValueError(f"ZIP special member is forbidden: {{info.filename}}")
             if not info.is_dir():
                 if name in names: raise ValueError(f"Duplicate ZIP member path: {{name}}")
                 names.add(name)
@@ -298,11 +337,38 @@ else:
                               "elapsed_seconds": round(time.monotonic() - input_load_started, 1)}}), flush=True)
     input_mode = "kaggle_auto_extracted_zip"
 
+# Split bytes are separate from the model-selection manifest and are never
+# embedded in source. Verify each declared asset before exposing it to fitting.
+for name, expected_sha in payload["split_manifests_sha256"].items():
+    safe_rel(name)
+    if archive_path is not None:
+        with zipfile.ZipFile(archive_path) as zf:
+            raw = zf.read(name)
+    else:
+        source = bundle_root / name
+        resolved = source.resolve(strict=True)
+        if not resolved.is_relative_to(bundle_root.resolve()):
+            raise ValueError(f"Split path escapes extracted bundle: {{name}}")
+        cursor = bundle_root
+        for part in pathlib.PurePosixPath(name).parts:
+            cursor = cursor / part
+            if cursor.is_symlink(): raise ValueError(f"Symlink in extracted split path: {{name}}")
+        if not resolved.is_file(): raise FileNotFoundError(source)
+        raw = resolved.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != expected_sha:
+        raise ValueError(f"Mounted split SHA-256 differs from pinned bytes: {{name}}")
+    destination = input_root / name
+    with destination.open("xb") as stream:
+        stream.write(raw)
+print(json.dumps({{"split_assets_verified": payload["split_manifests_sha256"]}}), flush=True)
+
 # Capture runtime details before the isolated model processes start.
 env = {{"python": sys.version, "platform": platform.platform(), "dataset_ref": payload["dataset_ref"],
        "input_mode": input_mode, "original_bundle_sha256": payload["bundle_sha256"], "mounted_bundle_sha256": actual_bundle_sha,
        "mounted_archive_path": str(archive_path) if archive_path else None,
        "manifest_sha256": payload["manifest_sha256"], "input_image_count": len(refs),
+       "split_manifests_sha256": payload["split_manifests_sha256"],
+       "frozen_features_and_heads_enabled": payload["save_features_and_fit_heads"],
        "input_manifest_bytes": len(manifest_bytes), "input_image_bytes_copied": input_image_bytes_copied,
        "input_load_elapsed_seconds": round(time.monotonic() - input_load_started, 3)}}
 try:
@@ -336,7 +402,9 @@ model_dir = pathlib.Path("/tmp/public-eval-model-cache")
 baseline_dir = pathlib.Path("/tmp/public-eval-tinyclip")
 model_dir.mkdir(); baseline_dir.mkdir()
 models = {selected_models!r}
-summary = {{"status": "running", "models": {{}}, "input_manifest_sha256": {payload['manifest_sha256']!r}, "logs": {{}}}}
+summary = {{"status": "running", "models": {{}}, "heads": {{}},
+            "input_manifest_sha256": {payload['manifest_sha256']!r},
+            "split_manifests_sha256": {payload['split_manifests_sha256']!r}, "logs": {{}}}}
 summary_path = work / "public-eval-summary.json"
 
 def save_summary():
@@ -371,7 +439,9 @@ for name in models:
            "--output-dir", str(out_dir), "--models", name, "--device", "cuda", "--precision", "fp16",
            "--memory-format", "contiguous", "--batch-size", "32", "--model-dir", str(model_dir),
            "--baseline-dir", str(baseline_dir)]
-    timeout = 1800 if name == "MoE-ViE-B16" else 400
+    timeout = 1800 if name in ("MoE-ViE-B16", "MobileCLIP2-S3", "MobileCLIP2-S4", "MobileCLIP2-B", "PE-Core-S16-384") else 400
+    if {args.save_features!r}:
+        cmd += ["--save-features"]
     if name == "MoE-ViE-B16":
         cmd += ["--source-dir", "/tmp/public-eval-moe-source"]
     if name == "TinyCLIP-ViT-40M-32-Text-19M" and summary["tinyclip_download"].get("returncode") != 0:
@@ -381,12 +451,35 @@ for name in models:
     summary["models"][name] = status
     summary["logs"][name] = status.get("log")
     save_summary()
+    if {args.save_features!r}:
+        head_key = "head-" + key
+        if status.get("returncode") == 0 and not status.get("timed_out"):
+            head_cmd = [sys.executable, str(scripts / "fit_image_head.py"),
+                "--manifest", str(manifest),
+                "--features", str(out_dir / (name + ".features.safetensors")),
+                "--feature-index", str(out_dir / (name + ".features.index.json")),
+                "--train-split", str(root / "grouped-train.json"),
+                "--validation-split", str(root / "grouped-validation.json"),
+                "--test-split", str(root / "grouped-test.json"),
+                "--baseline-jsonl", str(out_dir / (name + ".jsonl")),
+                "--output", str(work / ("public-eval-head-" + key)),
+                "--epochs", "100", "--patience", "10", "--threads", "2"]
+            head_status = run_one(head_key, head_cmd, 180)
+        else:
+            head_status = {{"returncode": None, "timed_out": False, "skipped": True,
+                           "reason": "Encoder benchmark failed; no verified feature cache"}}
+        summary["heads"][name] = head_status
+        summary["logs"][head_key] = head_status.get("log")
+        save_summary()
 
 summary["moe"] = summary["models"].get("MoE-ViE-B16", {{}})
 
 failures = {{name: status for name, status in summary["models"].items()
              if status.get("returncode") != 0 or status.get("timed_out") or status.get("skipped")}}
 if "tinyclip_download" in summary and summary["tinyclip_download"].get("returncode") != 0: failures["tinyclip_download"] = summary["tinyclip_download"]
+for name, status in summary["heads"].items():
+    if status.get("returncode") != 0 or status.get("timed_out") or status.get("skipped"):
+        failures["head-" + name] = status
 summary["status"] = "error" if failures else "success"
 summary["failures"] = failures
 summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
@@ -400,7 +493,7 @@ work = pathlib.Path("/kaggle/working")
 summary = json.loads((work / "public-eval-summary.json").read_text(encoding="utf-8"))
 collected = [str(p) for p in sorted(work.rglob("*")) if p.is_file()]
 print(json.dumps({"status": summary["status"], "collected_files": collected,
-                  "models": summary["models"]}, ensure_ascii=False, indent=2))
+                  "models": summary["models"], "heads": summary["heads"]}, ensure_ascii=False, indent=2))
 '''
     notebook = {
         "cells": [cell("markdown", intro), cell("code", install), cell("code", setup), cell("code", run), cell("code", collect)],

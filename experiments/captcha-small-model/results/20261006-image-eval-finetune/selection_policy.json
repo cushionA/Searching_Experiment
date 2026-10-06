@@ -1,0 +1,27 @@
+{
+  "purpose": "Honor user steering: tune only empirically strong image candidates. Choose before reading any supervised head test scores.",
+  "candidates": [
+    "MobileCLIP2-S2",
+    "MobileCLIP2-S3",
+    "PE-Core-S16-384",
+    "MobileCLIP2-B",
+    "MobileCLIP2-S4"
+  ],
+  "fold": "validation",
+  "validation_expected_classification_samples": 406,
+  "validation_expected_boards": 97,
+  "classification_ranking": [
+    "exact correct count descending",
+    "pinned original checkpoint bytes ascending for ties",
+    "stable candidate order"
+  ],
+  "board_ranking": [
+    "whole-board exact count descending",
+    "pinned original checkpoint bytes ascending for ties",
+    "stable candidate order"
+  ],
+  "head_candidates": "Union of classification winner and board winner: at most two models. No heads for remaining models.",
+  "head_budget": "CPU100epochs patience10 same16maskedBCE frozenencoder; learningrate1e-3 fixed threshold0.5; validation selectscheckpoint.",
+  "constraints": "Holdout internal, no bridgeboards in test and no bridge/taxi/tractorboards in validation; original historical image identity unavailable. No classification of 4ImageNet backbones will be claimed without a head; that notebook remains unlaunched.",
+  "existing_image_job": "Already submitted before steering. Raw encoders continue. Broken head snapshot expected errors; recover immutable features and rerun corrected fitter for winners only."
+}

@@ -1,0 +1,14 @@
+{
+  "timing": "Committed before any corrected real-feature head has been fitted or head test results inspected. Rawmodelcandidate ranking stillfrozenonvalidationonly.",
+  "head_candidates": "Only union of validation classificationwinner andboardwinner, at mosttwo; noothermodelsfit.",
+  "max_epochs": 1000,
+  "patience": 10,
+  "learning_rate": 0.001,
+  "max_cpu_process_seconds": 180,
+  "reason": "Linear probe fixed100epochs risks stopping duringconvergence; allowvalidationBCE earlystoppingwhilekeeping180s CPUprocessbudget andfrozenencoder. No new GPUtraining ortest-informedparameters.",
+  "seed": 20261006,
+  "class_weight": 1.0,
+  "board_weight": 1.0,
+  "threshold": 0.5,
+  "selection": "Withinheadonly minimumvalidationBCE; report exactsameheldout815/203 once. Retainzero-shot baseline ifheadworsensvalidationorheldout; do not tune thresholds ontest."
+}

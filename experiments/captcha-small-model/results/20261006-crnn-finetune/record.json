@@ -1,0 +1,458 @@
+{
+  "schema_version": 1,
+  "created_on": "2026-10-06",
+  "data": {
+    "samples": 3070,
+    "train": 2149,
+    "validation": 307,
+    "test": 614,
+    "unique_sha256": 3070,
+    "by_source_test": {
+      "kaggle_fournierp_captcha_version_2": 214,
+      "project_sloth_captcha_images_test": 400
+    },
+    "captcha_type_by_source": {
+      "kaggle_fournierp_captcha_version_2": "alphanumeric",
+      "project_sloth_captcha_images_test": "digits"
+    },
+    "by_source_folds": {
+      "kaggle_fournierp_captcha_version_2": {
+        "train": 749,
+        "validation": 107,
+        "test": 214
+      },
+      "project_sloth_captcha_images_test": {
+        "train": 1400,
+        "validation": 200,
+        "test": 400
+      }
+    }
+  },
+  "selection": {
+    "rule": "Compare pilot selected epoch 19 and extended-run checkpoints on validation exact count descending, then CER ascending; test scores are excluded.",
+    "pilot": {
+      "epoch": 19,
+      "validation": {
+        "samples": 307,
+        "exact_count": 286,
+        "exact_match": 0.9315960912052117,
+        "reference_characters": 1735,
+        "edit_distance": 25,
+        "character_error_rate": 0.01440922190201729,
+        "case_insensitive_exact_count": 286,
+        "by_source": {
+          "kaggle_fournierp_captcha_version_2": {
+            "samples": 107,
+            "exact_count": 101,
+            "exact_match": 0.9439252336448598,
+            "reference_characters": 535,
+            "edit_distance": 6,
+            "character_error_rate": 0.011214953271028037,
+            "case_insensitive_exact_count": 101
+          },
+          "project_sloth_captcha_images_test": {
+            "samples": 200,
+            "exact_count": 185,
+            "exact_match": 0.925,
+            "reference_characters": 1200,
+            "edit_distance": 19,
+            "character_error_rate": 0.015833333333333335,
+            "case_insensitive_exact_count": 185
+          }
+        },
+        "seconds": 0.245861471000012,
+        "device": "cuda",
+        "evaluation_batch_size": 32,
+        "decoder": "greedy CTC; no normalization or label-derived length"
+      },
+      "test": {
+        "samples": 614,
+        "exact_count": 556,
+        "exact_match": 0.9055374592833876,
+        "reference_characters": 3470,
+        "edit_distance": 70,
+        "character_error_rate": 0.020172910662824207,
+        "case_insensitive_exact_count": 558,
+        "by_source": {
+          "kaggle_fournierp_captcha_version_2": {
+            "samples": 214,
+            "exact_count": 193,
+            "exact_match": 0.9018691588785047,
+            "reference_characters": 1070,
+            "edit_distance": 21,
+            "character_error_rate": 0.019626168224299065,
+            "case_insensitive_exact_count": 195
+          },
+          "project_sloth_captcha_images_test": {
+            "samples": 400,
+            "exact_count": 363,
+            "exact_match": 0.9075,
+            "reference_characters": 2400,
+            "edit_distance": 49,
+            "character_error_rate": 0.020416666666666666,
+            "case_insensitive_exact_count": 363
+          }
+        },
+        "seconds": 0.4831150219999927,
+        "device": "cuda",
+        "evaluation_batch_size": 32,
+        "decoder": "greedy CTC; no normalization or label-derived length"
+      }
+    },
+    "extended": {
+      "epoch": 37,
+      "validation": {
+        "samples": 307,
+        "exact_count": 294,
+        "exact_match": 0.9576547231270358,
+        "reference_characters": 1735,
+        "edit_distance": 16,
+        "character_error_rate": 0.009221902017291067,
+        "case_insensitive_exact_count": 294,
+        "by_source": {
+          "kaggle_fournierp_captcha_version_2": {
+            "samples": 107,
+            "exact_count": 105,
+            "exact_match": 0.9813084112149533,
+            "reference_characters": 535,
+            "edit_distance": 2,
+            "character_error_rate": 0.003738317757009346,
+            "case_insensitive_exact_count": 105
+          },
+          "project_sloth_captcha_images_test": {
+            "samples": 200,
+            "exact_count": 189,
+            "exact_match": 0.945,
+            "reference_characters": 1200,
+            "edit_distance": 14,
+            "character_error_rate": 0.011666666666666667,
+            "case_insensitive_exact_count": 189
+          }
+        },
+        "seconds": 0.24452602099995602,
+        "device": "cuda",
+        "evaluation_batch_size": 32,
+        "decoder": "greedy CTC; no normalization or label-derived length"
+      },
+      "test": {
+        "samples": 614,
+        "exact_count": 567,
+        "exact_match": 0.9234527687296417,
+        "reference_characters": 3470,
+        "edit_distance": 55,
+        "character_error_rate": 0.01585014409221902,
+        "case_insensitive_exact_count": 568,
+        "by_source": {
+          "kaggle_fournierp_captcha_version_2": {
+            "samples": 214,
+            "exact_count": 201,
+            "exact_match": 0.9392523364485982,
+            "reference_characters": 1070,
+            "edit_distance": 13,
+            "character_error_rate": 0.012149532710280374,
+            "case_insensitive_exact_count": 202
+          },
+          "project_sloth_captcha_images_test": {
+            "samples": 400,
+            "exact_count": 366,
+            "exact_match": 0.915,
+            "reference_characters": 2400,
+            "edit_distance": 42,
+            "character_error_rate": 0.0175,
+            "case_insensitive_exact_count": 366
+          }
+        },
+        "seconds": 0.4880489490000173,
+        "device": "cuda",
+        "evaluation_batch_size": 32,
+        "decoder": "greedy CTC; no normalization or label-derived length"
+      }
+    },
+    "winner": "extended epoch 37",
+    "best_sha256": "cce95d7cd320d332fecb606b39ccdcf269eb9794093bea7e2c0a4e4b30c11691",
+    "durable_artifact": {
+      "kaggle_version_url": "https://www.kaggle.com/code/superbigzabuton/captcha-ocr-ft-extended-20261006/versions/2",
+      "artifact_path": "crnn-finetune-result/best.safetensors",
+      "downloaded_copy": "/workspace/work/captcha-tuning-20261006/ocr-job-003/artifacts/crnn-finetune-result/best.safetensors",
+      "weights_intentionally_not_in_git": true
+    }
+  },
+  "trials": [
+    {
+      "id": "job-001",
+      "ref": "superbigzabuton/captcha-ocr-ft-pilot-20261006",
+      "version": 1,
+      "status": "complete",
+      "quota_before": {
+        "refresh_at": "2026-10-10T00:00:00",
+        "gpu": {
+          "time_used": 2831.831,
+          "time_reserved": 0.0,
+          "total_time_allowed": 108000.0,
+          "remaining_seconds": 105168.169
+        },
+        "tpu": {
+          "time_used": 0.0,
+          "time_reserved": 0.0,
+          "total_time_allowed": 72000.0,
+          "remaining_seconds": 72000.0
+        }
+      },
+      "timeout_seconds": 3600,
+      "trainer_source_sha256": "14323b0e13b9e25700818344dcc2a2685981d79fc83a926857346bb9677a2650",
+      "notebook_sha256": "a15eabaddc8b8e6ebbc0852a7d8ccaac2882e16bd798c6d56892459c8b50054a",
+      "selected_epoch": 19,
+      "best_sha256": "d9638a912065013084431b4660b921bcdc69f4964af9f69f50f5dcc5178f3f1a",
+      "notebook_code_sha256": "a15eabaddc8b8e6ebbc0852a7d8ccaac2882e16bd798c6d56892459c8b50054a",
+      "source_signature": "9992d01853f8791db3704340e1951ec38f0dd0277e8c3ba0651c5adece7d20a4",
+      "pretrained": {
+        "repository": "Graf-J/captcha-crnn-finetuned",
+        "revision": "8ca7bfadc2608b007b5cafe20a7d0c29888a5cbb",
+        "weight_sha256": "df4c6fc59d1a6c0e3c7b7ef4ae9466a55285df18877f104b58a9c05eaffb26e5"
+      },
+      "runtime_versions": {
+        "torch": "2.11.0+cu128",
+        "torchvision": "0.26.0+cu128",
+        "safetensors": "0.8.0",
+        "numpy": "2.1.3",
+        "Pillow": "12.3.0"
+      },
+      "gpu": "Tesla T4",
+      "max_epochs": 20,
+      "max_training_seconds": 1200.0,
+      "epochs_completed": 20,
+      "elapsed_training_seconds": 58.975698420000015
+    },
+    {
+      "id": "job-002",
+      "ref": "superbigzabuton/captcha-ocr-ft-extended-20261006",
+      "version": 1,
+      "status": "error_before_inference",
+      "cause": "Trainer guard still limited the request to 20 epochs; stopped before any model inference/training output.",
+      "notebook_sha256": "3e21e4b9933690b25962a322a11f71099e457a000b864db78fc943463dfcfeb6",
+      "failure_artifact": "trials/job-002/kaggle/persisted.log.gz",
+      "quota_before": {
+        "refresh_at": "2026-10-10T00:00:00",
+        "gpu": {
+          "time_used": 2978.248589,
+          "time_reserved": 0.0,
+          "total_time_allowed": 108000.0,
+          "remaining_seconds": 105021.751411
+        },
+        "tpu": {
+          "time_used": 0.0,
+          "time_reserved": 0.0,
+          "total_time_allowed": 72000.0,
+          "remaining_seconds": 72000.0
+        }
+      },
+      "timeout_seconds": 3600,
+      "notebook_code_sha256": "3e21e4b9933690b25962a322a11f71099e457a000b864db78fc943463dfcfeb6",
+      "source_signature": "f4f81f57d24484cf6bdd591a0118db73bf17db0c1c0893d5b990294f1c1c4e36"
+    },
+    {
+      "id": "job-003",
+      "ref": "superbigzabuton/captcha-ocr-ft-extended-20261006",
+      "version": 2,
+      "status": "complete",
+      "quota_before": {
+        "refresh_at": "2026-10-10T00:00:00",
+        "gpu": {
+          "time_used": 3274.237342,
+          "time_reserved": 0.0,
+          "total_time_allowed": 108000.0,
+          "remaining_seconds": 104725.762658
+        },
+        "tpu": {
+          "time_used": 0.0,
+          "time_reserved": 0.0,
+          "total_time_allowed": 72000.0,
+          "remaining_seconds": 72000.0
+        }
+      },
+      "timeout_seconds": 3600,
+      "trainer_source_sha256": "110ff4244b21a9bef6a408a71ba82f118f7f8af98d854f23603c4edbb25cf3ba",
+      "notebook_sha256": "f8a65d2111a64b61adea4ed56f0d9a2e5d5f4f45b29edb43dca157f5c6a990ab",
+      "selected_epoch": 37,
+      "best_sha256": "cce95d7cd320d332fecb606b39ccdcf269eb9794093bea7e2c0a4e4b30c11691",
+      "notebook_code_sha256": "f8a65d2111a64b61adea4ed56f0d9a2e5d5f4f45b29edb43dca157f5c6a990ab",
+      "source_signature": "4209051273052682c487be3cb7983ff9060d86cf6f84b6f9bdc5eca99063af50",
+      "pretrained": {
+        "repository": "Graf-J/captcha-crnn-finetuned",
+        "revision": "8ca7bfadc2608b007b5cafe20a7d0c29888a5cbb",
+        "weight_sha256": "df4c6fc59d1a6c0e3c7b7ef4ae9466a55285df18877f104b58a9c05eaffb26e5"
+      },
+      "runtime_versions": {
+        "torch": "2.11.0+cu128",
+        "torchvision": "0.26.0+cu128",
+        "safetensors": "0.8.0",
+        "numpy": "2.1.3",
+        "Pillow": "12.3.0"
+      },
+      "gpu": "Tesla T4",
+      "max_epochs": 100,
+      "max_training_seconds": 1200.0,
+      "epochs_completed": 42,
+      "elapsed_training_seconds": 122.40880124899996
+    }
+  ],
+  "failed_guard_fix": {
+    "original_trainer_sha256": "14323b0e13b9e25700818344dcc2a2685981d79fc83a926857346bb9677a2650",
+    "fixed_trainer_sha256": "110ff4244b21a9bef6a408a71ba82f118f7f8af98d854f23603c4edbb25cf3ba",
+    "exact_change": [
+      "if not 1 <= args.max_epochs <= 20 or not 0 < args.max_seconds <= 1200: -> if not 1 <= args.max_epochs <= 100 or not 0 < args.max_seconds <= 1200:",
+      "raise ValueError(\"pilot budget must be 1..20 epochs and at most 1200 training seconds\") -> raise ValueError(\"training budget must be 1..100 epochs and at most 1200 training seconds\")"
+    ]
+  },
+  "cpu_cross_runtime": {
+    "status": "PASS",
+    "rows": 614,
+    "all_answers_match_gpu": true,
+    "prediction_jsonl_sha256": "2ec47a8a0acd50f4281a7d2e2f39bbbbb6b0c14202306c7e2edd111ae3c1c122",
+    "checkpoint_sha256": "cce95d7cd320d332fecb606b39ccdcf269eb9794093bea7e2c0a4e4b30c11691",
+    "cpu_runtime": {
+      "torch": "2.14.1+cpu",
+      "torchvision": "0.29.1+cpu",
+      "safetensors": "0.8.0",
+      "numpy": "2.5.3",
+      "Pillow": "12.3.0"
+    },
+    "claim": "Accuracy compatibility only; GPU andCPU runtimes/environment differ, not directtimebenchmark"
+  },
+  "matched_existing_results": {
+    "common-old": {
+      "matched_rows": 614,
+      "exact_count": 481,
+      "exact_match": 0.7833876221498371,
+      "prediction_file": "predictions/matched-baselines/common-old-test.jsonl.gz",
+      "by_source": {
+        "kaggle_fournierp_captcha_version_2": {
+          "samples": 214,
+          "exact_count": 178,
+          "exact_match": 0.8317757009345794
+        },
+        "project_sloth_captcha_images_test": {
+          "samples": 400,
+          "exact_count": 303,
+          "exact_match": 0.7575
+        }
+      }
+    },
+    "ppocr-v6-small": {
+      "matched_rows": 614,
+      "exact_count": 479,
+      "exact_match": 0.7801302931596091,
+      "prediction_file": "predictions/matched-baselines/ppocr-v6-small-test.jsonl.gz",
+      "by_source": {
+        "kaggle_fournierp_captcha_version_2": {
+          "samples": 214,
+          "exact_count": 107,
+          "exact_match": 0.5
+        },
+        "project_sloth_captcha_images_test": {
+          "samples": 400,
+          "exact_count": 372,
+          "exact_match": 0.93
+        }
+      }
+    },
+    "common_old_autocontrast": {
+      "matched_rows": 614,
+      "exact_count": 463,
+      "exact_match": 0.754071661237785,
+      "by_source": {
+        "kaggle_fournierp_captcha_version_2": {
+          "exact_count": 177,
+          "samples": 214,
+          "exact_match": 0.8271028037383178
+        },
+        "project_sloth_captcha_images_test": {
+          "exact_count": 286,
+          "samples": 400,
+          "exact_match": 0.715
+        }
+      },
+      "prediction_file": "predictions/matched-baselines/common-old-autocontrast-test.jsonl.gz"
+    },
+    "ppocr_v6_medium": {
+      "matched_rows": 614,
+      "exact_count": 479,
+      "exact_match": 0.7801302931596091,
+      "by_source": {
+        "kaggle_fournierp_captcha_version_2": {
+          "exact_count": 99,
+          "samples": 214,
+          "exact_match": 0.46261682242990654
+        },
+        "project_sloth_captcha_images_test": {
+          "exact_count": 380,
+          "samples": 400,
+          "exact_match": 0.95
+        }
+      },
+      "prediction_file": "predictions/matched-baselines/ppocr-v6-medium-test.jsonl.gz"
+    }
+  },
+  "limitations": [
+    "Public CAPTCHAs from the same corpora were used in earlier model-selection benchmarks; this frozen test fold is not an independent external test set.",
+    "Pretrained model training-image overlap with the public corpora is unknown.",
+    "No live/dynamic CAPTCHA pass rate is measured.",
+    "Dataset license statements and source references are preserved from the input manifest; legal status has not been independently established."
+  ],
+  "model": {
+    "pretrained_repository": "Graf-J/captcha-crnn-finetuned",
+    "revision": "8ca7bfadc2608b007b5cafe20a7d0c29888a5cbb",
+    "pretrained_weight_sha256": "df4c6fc59d1a6c0e3c7b7ef4ae9466a55285df18877f104b58a9c05eaffb26e5",
+    "vocabulary": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+    "blank_index": 0,
+    "preprocessing": "official whole-image grayscale PIL bicubic resize150x40; float32 [0,1]",
+    "device": "cuda",
+    "gpu": "Tesla T4",
+    "runtime_versions": {
+      "torch": "2.11.0+cu128",
+      "torchvision": "0.26.0+cu128",
+      "safetensors": "0.8.0",
+      "numpy": "2.1.3",
+      "Pillow": "12.3.0"
+    },
+    "training": {
+      "max_epochs": 100,
+      "max_seconds": 1200.0,
+      "patience": 5,
+      "batch_size": 32,
+      "optimizer": "AdamW",
+      "learning_rate": 0.0001,
+      "weight_decay": 0.01,
+      "gradient_clip_norm": 5.0,
+      "dtype": "float32",
+      "mixed_precision": false,
+      "loss": "CTCLoss(blank=0,reduction=mean,zero_infinity=False)",
+      "train_contrast": 0.0,
+      "augmentation": "none",
+      "full_model_trainable": true,
+      "data_loader_workers": 0
+    },
+    "selection_rule": "validation exact_count descending, then CER ascending; includes unchanged epoch0; ties keep earlier epoch"
+  },
+  "onnx_runtime": {
+    "status": "PASS",
+    "graph_file": "captcha-crnn-finetuned.onnx",
+    "graph_bytes": 14287573,
+    "graph_sha256": "63f750d945030a32f43c088e869db436e0dda1c321651e3f849f9df0c6b6733d",
+    "opset": 17,
+    "ir_version": 8,
+    "dynamic_batch": true,
+    "external_data": false,
+    "checkpoint_sha256": "cce95d7cd320d332fecb606b39ccdcf269eb9794093bea7e2c0a4e4b30c11691",
+    "selected_epoch": 37,
+    "onnxruntime_cpu_batch1_and_batch32_answers_identical": true,
+    "prediction_sha256_batch1": "2ec47a8a0acd50f4281a7d2e2f39bbbbb6b0c14202306c7e2edd111ae3c1c122",
+    "prediction_sha256_batch32": "2ec47a8a0acd50f4281a7d2e2f39bbbbb6b0c14202306c7e2edd111ae3c1c122",
+    "argmax_token_differences_batch1": 0,
+    "argmax_token_differences_batch32": 0,
+    "max_absolute_logit_difference_batch32": 0.00145721435546875,
+    "mean_absolute_logit_difference_batch32": 1.0967039516206537e-05,
+    "claim": "Decoded answers match PyTorch for all 614 records; floating-point logits are not bitwise equal.",
+    "source_catalog": "onnx-runtime/source-catalog.json"
+  }
+}

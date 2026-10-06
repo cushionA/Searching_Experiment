@@ -1,0 +1,81 @@
+{
+  "observed_at": "2026-10-06T00:43:53.469787+00:00",
+  "phase": "complete; durable private mirror downloaded and SHA-verified",
+  "trained_candidates_only": [
+    "CRNN",
+    "MobileCLIP2-S3 linear head",
+    "MobileCLIP2-S4 linear head"
+  ],
+  "recommended": {
+    "alphanumeric_ocr": "CRNN epoch37",
+    "numeric_ocr": "PP-OCRv6; keep lighter Small prior choice",
+    "image_classification": "MobileCLIP2-S3",
+    "image_boards": "MobileCLIP2-S3 with selected linear head"
+  },
+  "selection": "validation; image exact-count tie uses original checkpoint size; test not used",
+  "tests": {
+    "total": 149,
+    "skipped": 2,
+    "passed": 147,
+    "log_sha256": "c88a40ec59960486f9594292f5dcb350150c17e24e5ee39dc9f251360a7776a7"
+  },
+  "image_audit": {
+    "errors": 0,
+    "all_requested_slots_complete": true,
+    "receipt_sha256": "775977d7b5e59b94cab084a53824e05461289d3ae193f594a13712fd847ff06d"
+  },
+  "ocr_cpu_gpu_onnx_all614_answers_identical": true,
+  "s3_head_only_cached_test3132_rows_identical": true,
+  "bundle": {
+    "dataset_ref": "superbigzabuton/captcha-tuned-results-20261006",
+    "private_requested": true,
+    "bundle": "captcha-tuned-results.bin",
+    "bundle_bytes": 116371209,
+    "bundle_sha256": "dcb5153663328b4bbe721a6e45d5633c880e5c5a7402ee148c302a94346d655d",
+    "files": 328,
+    "uncompressed_bytes": 150858442,
+    "sha256_manifest_sha256": "904aebad7a9b86292f82381d61a3e49b0b1d446edee11f8c57b01676c6b68c1d",
+    "all_archive_members_reverified": true,
+    "auth_value_scan_passed": true
+  },
+  "limitations": [
+    "reused public corpora; internal exploratory holdouts, not new external test",
+    "image head max1000 epochs reached",
+    "bridge boards unmeasured",
+    "offline saved annotations, not service pass rates"
+  ],
+  "completed_at": "2026-10-06T00:47:19.377623+00:00",
+  "durable_artifact_verification": {
+    "observed_at": "2026-10-06T00:46:09.385276+00:00",
+    "ref": "superbigzabuton/captcha-tuned-results-20261006",
+    "status": "ready",
+    "private": true,
+    "version": 1,
+    "files": [
+      {
+        "name": "captcha-tuned-results.bin",
+        "bytes": 116371209
+      }
+    ],
+    "quota_after": {
+      "refresh_at": "2026-10-10T00:00:00",
+      "gpu": {
+        "time_used": 4336.216,
+        "time_reserved": 0.0,
+        "total_time_allowed": 108000.0,
+        "remaining_seconds": 103663.784
+      },
+      "tpu": {
+        "time_used": 0.0,
+        "time_reserved": 0.0,
+        "total_time_allowed": 72000.0,
+        "remaining_seconds": 72000.0
+      }
+    },
+    "expected_remote_bundle_bytes_verified": true,
+    "downloaded_fixed_version": 1,
+    "downloaded_bundle_sha256": "dcb5153663328b4bbe721a6e45d5633c880e5c5a7402ee148c302a94346d655d",
+    "downloaded_bundle_bytes": 116371209,
+    "downloaded_bundle_sha256_verified": true
+  }
+}

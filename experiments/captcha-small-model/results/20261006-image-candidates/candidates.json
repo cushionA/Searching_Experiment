@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-06",
+  "report_timezone": "UTC+09:00",
+  "scope": "Primary-source verification of the first user-supplied additional image-model candidate list; no weight download, benchmark, GPU submission or fine-tuning performed.",
+  "benchmark_state": "not_started",
+  "suggested_zero_shot_comparison_order": [
+    "MobileCLIP2-S3",
+    "PE-Core-S16-384",
+    "MobileCLIP2-B",
+    "MobileCLIP2-S4"
+  ],
+  "candidates": {
+    "MobileCLIP2-S3": {
+      "role": "image-text aligned encoder; compare with the current fixed class prompts",
+      "repository": "apple/MobileCLIP2-S3",
+      "revision": "9c9879f7dd1bea5581caf086a22e53684f5522c3",
+      "filename": "mobileclip2_s3.pt",
+      "bytes": 996928503,
+      "sha256": "fc63612dcb8c74c43b57064038efe12b8ef45e5b0f87d9afa24e26f7f2ff82ec",
+      "input_resolution": 256,
+      "source_commit": "48faa0fea4b08d74188b3841771aca6ff2c92852",
+      "source_url": "https://github.com/apple-aiml-research/ml-mobileclip",
+      "model_url": "https://huggingface.co/apple/MobileCLIP2-S3",
+      "license": "apple-amlr",
+      "integration_note": "Verify the OpenCLIP/MobileCLIP2 integration and use official inference reparameterization; compatibility with the current pinned OpenCLIP 3.3.0 environment has not been tested.",
+      "status": "official_checkpoint_metadata_verified"
+    },
+    "MobileCLIP2-S4": {
+      "role": "image-text aligned encoder; compare with the current fixed class prompts",
+      "repository": "apple/MobileCLIP2-S4",
+      "revision": "6ded45853e73bf3d0d5ccd245c3493cdd694e015",
+      "filename": "mobileclip2_s4.pt",
+      "bytes": 1783395736,
+      "sha256": "129cb58989867e2e648a0e3ac2642e08e7d73cccaabe55564a4b2d775215e49e",
+      "input_resolution": 256,
+      "source_commit": "48faa0fea4b08d74188b3841771aca6ff2c92852",
+      "source_url": "https://github.com/apple-aiml-research/ml-mobileclip",
+      "model_url": "https://huggingface.co/apple/MobileCLIP2-S4",
+      "license": "apple-amlr",
+      "integration_note": "Verify the OpenCLIP/MobileCLIP2 integration and use official inference reparameterization; compatibility with the current pinned OpenCLIP 3.3.0 environment has not been tested.",
+      "status": "official_checkpoint_metadata_verified"
+    },
+    "MobileCLIP2-B": {
+      "role": "image-text aligned encoder; compare with the current fixed class prompts",
+      "repository": "apple/MobileCLIP2-B",
+      "revision": "c61288acd0f82f59f99bc4b8691ba1c2c100597a",
+      "filename": "mobileclip2_b.pt",
+      "bytes": 599216287,
+      "sha256": "144b1344f5f01f08af8be1077f0db5eec95bf0fd1e349c1e9ca6102724448486",
+      "input_resolution": 224,
+      "source_commit": "48faa0fea4b08d74188b3841771aca6ff2c92852",
+      "source_url": "https://github.com/apple-aiml-research/ml-mobileclip",
+      "model_url": "https://huggingface.co/apple/MobileCLIP2-B",
+      "license": "apple-amlr",
+      "status": "official_checkpoint_metadata_verified"
+    },
+    "PE-Core-S16-384": {
+      "role": "image-text aligned encoder; compare with the current fixed class prompts",
+      "repository": "facebook/PE-Core-S16-384",
+      "revision": "aabf3b990573d8114ae6e501b4697106beac8f19",
+      "filename": "PE-Core-S16-384.pt",
+      "bytes": 348852712,
+      "sha256": "ccc8340a14ea3ebf557a288ba4ed4a5bc026ab98bb4da42fc745d44b4c5c5ffb",
+      "input_resolution": 384,
+      "source_url": "https://github.com/facebookresearch/perception_models",
+      "model_url": "https://huggingface.co/facebook/PE-Core-S16-384",
+      "license": "Apache-2.0",
+      "status": "official_checkpoint_metadata_verified"
+    },
+    "DINOv3-S16": {
+      "role": "image feature encoder; requires a fitted classifier or labeled-reference retrieval for classification",
+      "repository": "facebook/dinov3-vits16-pretrain-lvd1689m",
+      "parameters_reported": 21600000,
+      "source_url": "https://github.com/facebookresearch/dinov3",
+      "model_url": "https://huggingface.co/facebook/dinov3-vits16-pretrain-lvd1689m",
+      "license": "DINOv3-specific license; Hub access gate applies",
+      "status": "candidate_for_separate_supervised_protocol",
+      "comparison_note": "The distilled small model has no text encoder for the current fixed class-prompt benchmark. Official dino.txt uses the large ViT-L/16 model, a different candidate."
+    },
+    "EUPE-ViT-S": {
+      "role": "released image feature backbone; paired text checkpoint and same-protocol prompt inference unverified",
+      "repository": "facebook/EUPE-ViT-S",
+      "parameters_reported_in_card": 20000000,
+      "source_url": "https://github.com/facebookresearch/eupe",
+      "model_url": "https://huggingface.co/facebook/EUPE-ViT-S",
+      "paper_url": "https://arxiv.org/html/2603.22387v2",
+      "license": "FAIR Noncommercial Research License",
+      "status": "prompt_inference_assets_require_verification",
+      "comparison_note": "Paper reports ImageNet zero-shot accuracy; released model card documents image class/patch features. The paired text tower and reproducible prompt inference path have not been verified."
+    }
+  },
+  "ocr_context": {
+    "common_old_raw_kaggle_exact_match": 0.8560747663551402,
+    "common_old_autocontrast_kaggle_exact_match": 0.8598130841121495,
+    "ppocr_v6_small_raw_kaggle_exact_match": 0.5588785046728972,
+    "ppocr_v6_small_raw_sloth_exact_match": 0.9455,
+    "ppocr_v6_training_assets": {
+      "training_code_and_configs": "Public PaddleOCR main has detection and recognition configurations for Tiny, Small and Medium.",
+      "non_onnx_weights": "Public Paddle inference weights and safetensors repositories exist, in addition to ONNX exports.",
+      "raw_resumable_training_checkpoint": "Not verified. The inspected native files are inference.pdiparams/inference.json/inference.yml; inspected training config pretrained_model/checkpoint fields are empty.",
+      "fine_tuning_prerequisite": "Verify loading or conversion of the supplied inference weights into the actual trainable recognition model; non-ONNX format alone does not establish direct trainability.",
+      "large_variant": "Paper states a future release plan; no Large model in the inspected official collection. This is not a global claim of nonexistence.",
+      "sources": [
+        "https://arxiv.org/pdf/2606.13108",
+        "https://huggingface.co/blog/PaddlePaddle/pp-ocrv6",
+        "https://github.com/PaddlePaddle/PaddleOCR"
+      ]
+    },
+    "note": "85.98 percent belongs to common_old plus contrast preprocessing, not PP-OCRv6. Fine-tuning PP-OCRv6 on alphanumeric images starts from its own measured baseline."
+  },
+  "limitations": [
+    "Model-file SHA-256 values come from official Hub LFS metadata; downloaded weight bytes have not been verified because no weights were downloaded.",
+    "Model checkpoints include image and text components where applicable; file sizes are not deployed image-encoder sizes or runtime memory measurements.",
+    "Larger models have not been shown to improve this task; all candidate accuracies and timings remain unmeasured.",
+    "Only previous image/board aggregate reports are present in this workspace; the exact earlier input manifest and image files must be recovered or explicitly reconstructed before a new comparison.",
+    "DINOv3 or EUPE with a fitted head must use a declared training/validation/test split and cannot be reported as the same untrained zero-shot comparison."
+  ]
+}

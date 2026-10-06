@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "started_at_utc": "2026-10-06T00:13:36.494130+00:00",
+  "completed_at_utc": "2026-10-06T00:13:42.011272+00:00",
+  "scope": "Frozen internal test fold only; training images excluded; entire input manifest verified.",
+  "validation_is_checkpoint_selection_data": false,
+  "limitation": "All source images have already been used in earlier model-selection benchmarks. These frozen internal folds prevent gradient/checkpoint-selection leakage within this pilot, but are not a fresh independently collected final test set. The pretrained model's training-image overlap with these public corpora is unknown.",
+  "fold": "test",
+  "full_manifest_samples": 3070,
+  "evaluated_samples": 614,
+  "manifest": {
+    "path": "/workspace/work/ocr/eval-data/manifest.json",
+    "sha256": "4af07d4e8125d3734ed8e9a9282fad2a8d0683383a6ab4ca9638ec3a87a6090d",
+    "dataset": "Public source-labeled text CAPTCHA image evaluation",
+    "provenance": {
+      "restoration": "New manifest reconstructed from the supplied local archives; the earlier per-image manifest is unavailable.",
+      "original_kaggle_split_assignment": "Unavailable; all 1070 Kaggle images are included without inventing split fields.",
+      "sources": [
+        {
+          "key": "project_sloth_captcha_images_test",
+          "dataset": "project-sloth/captcha-images",
+          "url": "https://huggingface.co/datasets/project-sloth/captcha-images",
+          "revision": "eeaf2b6ec9086645f270f7e2aaa9ea90730683de",
+          "archive": {
+            "path": "/workspace/work/ocr/datasets/sloth-test.tar.gz",
+            "bytes": 5773266,
+            "sha256": "730bf94a1b857caa1de00bc7b5d9840c25bcd9767718f91ba9f8a3d5fd2a1912",
+            "archive_name": "test.tar.gz"
+          },
+          "sample_count": 2000
+        },
+        {
+          "key": "kaggle_fournierp_captcha_version_2",
+          "dataset": "fournierp/captcha-version-2-images",
+          "url": "https://www.kaggle.com/datasets/fournierp/captcha-version-2-images",
+          "revision": null,
+          "archive": {
+            "path": "/workspace/work/ocr/datasets/kaggle-v2/captcha-version-2-images.zip",
+            "bytes": 18280840,
+            "sha256": "6d26195a1647581990b05e8d40039b8f9ddfee422758c5cdfb165a1ec3fe1e14",
+            "archive_name": "captcha-version-2-images.zip"
+          },
+          "sample_count": 1070
+        }
+      ]
+    },
+    "license": {
+      "project_sloth_captcha_images_test": "WTFPL v2 (reported in the previous evaluation; license file not included in the supplied test archive).",
+      "kaggle_fournierp_captcha_version_2": "Other (specified in dataset description); unavailable for verification from the supplied archive."
+    }
+  },
+  "split": {
+    "path": "/workspace/work/captcha-tuning-20261006/ocr-job-003/artifacts/crnn-finetune-result/split.json",
+    "sha256": "d910dd103f86e12b8aee421721568ac6d08f4577b22797d4430665ee7e7d468e",
+    "seed": 20261006,
+    "algorithm": "sha256-group-source-stratified-ranked-v1",
+    "by_source": {
+      "kaggle_fournierp_captcha_version_2": {
+        "train": 749,
+        "validation": 107,
+        "test": 214
+      },
+      "project_sloth_captcha_images_test": {
+        "train": 1400,
+        "validation": 200,
+        "test": 400
+      }
+    }
+  },
+  "checkpoint": {
+    "path": "/workspace/work/captcha-tuning-20261006/ocr-job-003/artifacts/crnn-finetune-result/best.safetensors",
+    "sha256": "cce95d7cd320d332fecb606b39ccdcf269eb9794093bea7e2c0a4e4b30c11691",
+    "bytes": 14291516,
+    "selected_epoch": 37,
+    "selected_using": "validation only",
+    "embedded_metadata": {
+      "vocabulary": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+      "selected_epoch": "37",
+      "split_sha256": "d910dd103f86e12b8aee421721568ac6d08f4577b22797d4430665ee7e7d468e",
+      "pretrained_repository": "Graf-J/captcha-crnn-finetuned",
+      "manifest_sha256": "4af07d4e8125d3734ed8e9a9282fad2a8d0683383a6ab4ca9638ec3a87a6090d",
+      "pretrained_revision": "8ca7bfadc2608b007b5cafe20a7d0c29888a5cbb",
+      "training_code_sha256": "110ff4244b21a9bef6a408a71ba82f118f7f8af98d854f23603c4edbb25cf3ba",
+      "pretrained_sha256": "df4c6fc59d1a6c0e3c7b7ef4ae9466a55285df18877f104b58a9c05eaffb26e5"
+    }
+  },
+  "pretrained": {
+    "repository": "Graf-J/captcha-crnn-finetuned",
+    "revision": "8ca7bfadc2608b007b5cafe20a7d0c29888a5cbb",
+    "files": {
+      "model.safetensors": {
+        "sha256": "df4c6fc59d1a6c0e3c7b7ef4ae9466a55285df18877f104b58a9c05eaffb26e5",
+        "bytes": 14290964
+      },
+      "modeling_captcha.py": {
+        "sha256": "d406cf7e9db440e221741e90dcb4018e817013cdc77e60397631aefbdb88917a",
+        "bytes": 1443
+      },
+      "processing_captcha.py": {
+        "sha256": "8f6e681a59ae16d08566e55ec0707ac8c692d78368a594081a38009dff92cd99",
+        "bytes": 1827
+      },
+      "config.json": {
+        "sha256": "ed4ae2ab276950989babfd514d5a2466ed3566fc1004f3baf3e440ee4423ba84",
+        "bytes": 501
+      },
+      "processor_config.json": {
+        "sha256": "ec6118dcdcca92dd25217cdbd7a2fca30b35b1326bd981f5bcad528e3b2f5701",
+        "bytes": 201
+      },
+      "configuration_captcha.py": {
+        "sha256": "447437e7fe7787ac283da0057e8414223c9744d98351d0c8832b17d341be949e",
+        "bytes": 232
+      },
+      "pipeline.py": {
+        "sha256": "1471be4ef06839054e381646b732a09d3299ba6ffcf1f6d75a8a770fa77efb9c",
+        "bytes": 561
+      },
+      "handler.py": {
+        "sha256": "2f6b1e19d076a3bf4306d187e2831410f6da15f668dc17c432291837fda82995",
+        "bytes": 1921
+      },
+      "README.md": {
+        "sha256": "ff7d3541e4a9701f3812afffcbe8f32582044fbcc98bd551e667d23bcfce7dc4",
+        "bytes": 12627
+      }
+    }
+  },
+  "training_config": {
+    "path": "/workspace/work/captcha-tuning-20261006/ocr-job-003/artifacts/crnn-finetune-result/config.json",
+    "sha256": "28923e3a23b7ffcf9c32b41ec8773fa3d6250105040fa30c303f88fef995add8",
+    "config": {
+      "schema_version": 1,
+      "started_at_utc": "2026-10-06T00:09:27.243268+00:00",
+      "manifest_sha256": "4af07d4e8125d3734ed8e9a9282fad2a8d0683383a6ab4ca9638ec3a87a6090d",
+      "split_sha256": "d910dd103f86e12b8aee421721568ac6d08f4577b22797d4430665ee7e7d468e",
+      "seed": 20261006,
+      "pretrained": {
+        "repository": "Graf-J/captcha-crnn-finetuned",
+        "revision": "8ca7bfadc2608b007b5cafe20a7d0c29888a5cbb",
+        "files": {
+          "model.safetensors": {
+            "sha256": "df4c6fc59d1a6c0e3c7b7ef4ae9466a55285df18877f104b58a9c05eaffb26e5",
+            "bytes": 14290964
+          },
+          "modeling_captcha.py": {
+            "sha256": "d406cf7e9db440e221741e90dcb4018e817013cdc77e60397631aefbdb88917a",
+            "bytes": 1443
+          },
+          "processing_captcha.py": {
+            "sha256": "8f6e681a59ae16d08566e55ec0707ac8c692d78368a594081a38009dff92cd99",
+            "bytes": 1827
+          },
+          "config.json": {
+            "sha256": "ed4ae2ab276950989babfd514d5a2466ed3566fc1004f3baf3e440ee4423ba84",
+            "bytes": 501
+          },
+          "processor_config.json": {
+            "sha256": "ec6118dcdcca92dd25217cdbd7a2fca30b35b1326bd981f5bcad528e3b2f5701",
+            "bytes": 201
+          },
+          "configuration_captcha.py": {
+            "sha256": "447437e7fe7787ac283da0057e8414223c9744d98351d0c8832b17d341be949e",
+            "bytes": 232
+          },
+          "pipeline.py": {
+            "sha256": "1471be4ef06839054e381646b732a09d3299ba6ffcf1f6d75a8a770fa77efb9c",
+            "bytes": 561
+          },
+          "handler.py": {
+            "sha256": "2f6b1e19d076a3bf4306d187e2831410f6da15f668dc17c432291837fda82995",
+            "bytes": 1921
+          },
+          "README.md": {
+            "sha256": "ff7d3541e4a9701f3812afffcbe8f32582044fbcc98bd551e667d23bcfce7dc4",
+            "bytes": 12627
+          }
+        }
+      },
+      "code_sha256": {
+        "finetune_crnn_text.py": "110ff4244b21a9bef6a408a71ba82f118f7f8af98d854f23603c4edbb25cf3ba",
+        "split_crnn_text.py": "4bda7d85b215379fc04d19f2e526fe1da380c5a127e67f8bd85b98622fd0ace6",
+        "evaluate_crnn_text.py": "79a0b6f1b4fcf432170f55d290decfb5b4494e83e24d693c685df2bed53f5616",
+        "evaluate_public_text.py": "a731eaf94a1025025d196511fe18dd6c67dc184b7ba864a4b6f84bfbb35d8034"
+      },
+      "runtime_versions": {
+        "torch": "2.11.0+cu128",
+        "torchvision": "0.26.0+cu128",
+        "safetensors": "0.8.0",
+        "numpy": "2.1.3",
+        "Pillow": "12.3.0"
+      },
+      "device": "cuda",
+      "gpu": "Tesla T4",
+      "torch_intra_op_threads": 2,
+      "torch_inter_op_threads": 1,
+      "deterministic_algorithms": "enabled with warn_only=True; CUDA CTC backward may be nondeterministic",
+      "training": {
+        "max_epochs": 100,
+        "max_seconds": 1200.0,
+        "patience": 5,
+        "batch_size": 32,
+        "optimizer": "AdamW",
+        "learning_rate": 0.0001,
+        "weight_decay": 0.01,
+        "gradient_clip_norm": 5.0,
+        "dtype": "float32",
+        "mixed_precision": false,
+        "loss": "CTCLoss(blank=0,reduction=mean,zero_infinity=False)",
+        "train_contrast": 0.0,
+        "augmentation": "none",
+        "full_model_trainable": true,
+        "data_loader_workers": 0
+      },
+      "preprocessing": "official whole-image grayscale PIL bicubic resize150x40; float32 [0,1]",
+      "vocabulary": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+      "blank_index": 0,
+      "output_timesteps": 37,
+      "checkpoint_selection": "validation exact_count descending, then CER ascending; includes unchanged epoch0; ties keep earlier epoch",
+      "test_use": "unchanged pretrained baseline once; final validation-selected checkpoint once; never gradients/early stopping",
+      "partition_counts": {
+        "kaggle_fournierp_captcha_version_2": {
+          "train": 749,
+          "validation": 107,
+          "test": 214
+        },
+        "project_sloth_captcha_images_test": {
+          "train": 1400,
+          "validation": 200,
+          "test": 400
+        }
+      },
+      "limitation": "All source images have already been used in earlier model-selection benchmarks. These frozen internal folds prevent gradient/checkpoint-selection leakage within this pilot, but are not a fresh independently collected final test set. The pretrained model's training-image overlap with these public corpora is unknown.",
+      "license": "pretrained MIT; public data licensing/provenance preserved in the frozen manifest"
+    }
+  },
+  "runtime_versions": {
+    "torch": "2.14.1+cpu",
+    "torchvision": "0.29.1+cpu",
+    "safetensors": "0.8.0",
+    "numpy": "2.5.3",
+    "Pillow": "12.3.0"
+  },
+  "device": "cpu",
+  "gpu": null,
+  "torch_intra_op_threads": 2,
+  "torch_inter_op_threads": 1,
+  "inference_options": {
+    "dtype": "float32",
+    "batch_size": 32,
+    "gradients": false,
+    "model_training_mode": false,
+    "whole_image_as_single_text_line": true,
+    "preprocessing": "official PIL grayscale bicubic150x40 and float32 [0,1]",
+    "decoder": "greedy CTC; fixed63 classes; no prediction normalization or label-derived length"
+  },
+  "code_sha256": {
+    "evaluate_finetuned_crnn_text.py": "a0cf0f8d0aa7922ca377ee2f5d0ad05af0cc5c29b59680b8c841e24a00a6dad8",
+    "evaluate_crnn_text.py": "79a0b6f1b4fcf432170f55d290decfb5b4494e83e24d693c685df2bed53f5616",
+    "evaluate_public_text.py": "a731eaf94a1025025d196511fe18dd6c67dc184b7ba864a4b6f84bfbb35d8034",
+    "split_crnn_text.py": "4bda7d85b215379fc04d19f2e526fe1da380c5a127e67f8bd85b98622fd0ace6"
+  },
+  "metrics": {
+    "samples": 614,
+    "exact_count": 567,
+    "exact_match": 0.9234527687296417,
+    "reference_characters": 3470,
+    "edit_distance": 55,
+    "character_error_rate": 0.01585014409221902,
+    "case_insensitive_exact_count": 568,
+    "by_source": {
+      "kaggle_fournierp_captcha_version_2": {
+        "samples": 214,
+        "exact_count": 201,
+        "exact_match": 0.9392523364485982,
+        "reference_characters": 1070,
+        "edit_distance": 13,
+        "character_error_rate": 0.012149532710280374,
+        "case_insensitive_exact_count": 202
+      },
+      "project_sloth_captcha_images_test": {
+        "samples": 400,
+        "exact_count": 366,
+        "exact_match": 0.915,
+        "reference_characters": 2400,
+        "edit_distance": 42,
+        "character_error_rate": 0.0175,
+        "case_insensitive_exact_count": 366
+      }
+    },
+    "seconds": 3.1130679749985575,
+    "device": "cpu",
+    "evaluation_batch_size": 32,
+    "decoder": "greedy CTC; no normalization or label-derived length"
+  },
+  "predictions_sha256": "2ec47a8a0acd50f4281a7d2e2f39bbbbb6b0c14202306c7e2edd111ae3c1c122"
+}

@@ -1,0 +1,13 @@
+OCR result audit: PASS
+Split: 2,149 train / 307 validation / 614 test; image SHA-256 unique across all 3,070 samples and no fold overlap.
+Test by source: kaggle_fournierp_captcha_version_2=214, project_sloth_captcha_images_test=400
+Warm-start test: 162/614 (26.38%), CER 0.3337.
+Pilot epoch 19 test: 556/614 (90.55%), CER 0.0202.
+Extended selected checkpoint (epoch 37) test: 567/614 (92.35%), CER 0.0159.
+Validation-only choice between pilot epoch 19 and extended selected checkpoint: extended_selected_epoch_37.
+Selected epoch recomputed from validation exact descending, CER ascending, earliest tie including epoch 0; best.safetensors SHA-256 verified.
+Matched held-out test comparison (same IDs, labels, image hashes; no timing):
+  common_old: 481/614 (78.34%), CER 0.0735
+  ppocr_v6_small: 479/614 (78.01%), CER 0.0496
+Pinned source hashes matched the delivered files; split/evaluator code also matches the immutable pilot checkout hashes.
+Interpretation limit: all these public corpus images were used in earlier model-selection benchmarks; this is an internal held-out fold, not an independent external test.

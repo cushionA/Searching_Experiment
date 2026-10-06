@@ -1,0 +1,1738 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-06",
+  "report_timezone": "UTC+09:00",
+  "scope": "Offline single-line OCR on public source-labeled text CAPTCHA images.",
+  "manifest_sha256": "4af07d4e8125d3734ed8e9a9282fad2a8d0683383a6ab4ca9638ec3a87a6090d",
+  "samples": 3070,
+  "sources": {
+    "restoration": "New manifest reconstructed from the supplied local archives; the earlier per-image manifest is unavailable.",
+    "original_kaggle_split_assignment": "Unavailable; all 1070 Kaggle images are included without inventing split fields.",
+    "sources": [
+      {
+        "key": "project_sloth_captcha_images_test",
+        "dataset": "project-sloth/captcha-images",
+        "url": "https://huggingface.co/datasets/project-sloth/captcha-images",
+        "revision": "eeaf2b6ec9086645f270f7e2aaa9ea90730683de",
+        "archive": {
+          "path": "/workspace/work/ocr/datasets/sloth-test.tar.gz",
+          "bytes": 5773266,
+          "sha256": "730bf94a1b857caa1de00bc7b5d9840c25bcd9767718f91ba9f8a3d5fd2a1912",
+          "archive_name": "test.tar.gz"
+        },
+        "sample_count": 2000
+      },
+      {
+        "key": "kaggle_fournierp_captcha_version_2",
+        "dataset": "fournierp/captcha-version-2-images",
+        "url": "https://www.kaggle.com/datasets/fournierp/captcha-version-2-images",
+        "revision": null,
+        "archive": {
+          "path": "/workspace/work/ocr/datasets/kaggle-v2/captcha-version-2-images.zip",
+          "bytes": 18280840,
+          "sha256": "6d26195a1647581990b05e8d40039b8f9ddfee422758c5cdfb165a1ec3fe1e14",
+          "archive_name": "captcha-version-2-images.zip"
+        },
+        "sample_count": 1070
+      }
+    ]
+  },
+  "licenses": {
+    "project_sloth_captcha_images_test": "WTFPL v2 (reported in the previous evaluation; license file not included in the supplied test archive).",
+    "kaggle_fournierp_captcha_version_2": "Other (specified in dataset description); unavailable for verification from the supplied archive."
+  },
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "packages": {
+      "rapidocr": "3.9.2",
+      "onnxruntime": "1.30.0",
+      "ddddocr": "1.5.6",
+      "numpy": "2.5.3",
+      "Pillow": "12.3.0",
+      "opencv-python-headless": "5.0.0.93"
+    },
+    "baseline_model": {
+      "name": "common_old.onnx",
+      "bytes": 13606051,
+      "sha256": "b8f2ad9cbc1f2e3922a6cb9459e30824e7e2467f3fb4fd61420640e34ea0bf68"
+    },
+    "threads": {
+      "intra": 2,
+      "inter": 1
+    },
+    "execution": "CPUExecutionProvider sequential, single-image recognition; no training/denoise/label normalization"
+  },
+  "baseline_previous_aggregate_reproduced": true,
+  "previous_per_image_identity_verified": false,
+  "models": {
+    "common-old": {
+      "display_name": "common_old (ddddocr 1.5.6)",
+      "overall": {
+        "samples": 3070,
+        "literal_exact_count": 2425,
+        "literal_exact_match": 0.7899022801302932,
+        "case_insensitive_exact_count": 2428,
+        "case_insensitive_exact_match": 0.7908794788273615,
+        "edit_distance_total": 1268,
+        "reference_characters": 17350,
+        "character_error_rate": 0.0730835734870317,
+        "latency": {
+          "samples": 3070,
+          "mean_ms": 19.68940492085882,
+          "p50_ms": 20.02145050028048,
+          "p95_ms": 20.98457219908596
+        },
+        "failed_samples": 0,
+        "empty_answers": 0
+      },
+      "by_source": {
+        "project_sloth_captcha_images_test": {
+          "samples": 2000,
+          "literal_exact_count": 1509,
+          "literal_exact_match": 0.7545,
+          "case_insensitive_exact_count": 1509,
+          "case_insensitive_exact_match": 0.7545,
+          "edit_distance_total": 1108,
+          "reference_characters": 12000,
+          "character_error_rate": 0.09233333333333334,
+          "latency": {
+            "samples": 2000,
+            "mean_ms": 20.17307310200158,
+            "p50_ms": 20.197625999571756,
+            "p95_ms": 21.1382487519586
+          },
+          "failed_samples": 0,
+          "empty_answers": 0
+        },
+        "kaggle_fournierp_captcha_version_2": {
+          "samples": 1070,
+          "literal_exact_count": 916,
+          "literal_exact_match": 0.8560747663551402,
+          "case_insensitive_exact_count": 919,
+          "case_insensitive_exact_match": 0.8588785046728972,
+          "edit_distance_total": 160,
+          "reference_characters": 5350,
+          "character_error_rate": 0.029906542056074768,
+          "latency": {
+            "samples": 1070,
+            "mean_ms": 18.785352245825624,
+            "p50_ms": 19.304307499623974,
+            "p95_ms": 20.111470800839015
+          },
+          "failed_samples": 0,
+          "empty_answers": 0
+        }
+      },
+      "paired_vs_common_old": null,
+      "prediction_sha256": "a36d1ecf8e97bef0dffc45e6f5ee58489f02e0d7655cb0f91751e0b29db37d16",
+      "summary_sha256": "fb906c8091617d738cb9a77c30be878bc4c12d207c8893603de34f684ec0101c",
+      "run_summary": {
+        "scope": "Source-labeled local text CAPTCHA images; OCR only, no model training, router evaluation, or live-site pass rate.",
+        "manifest": "/workspace/work/ocr/eval-data/manifest.json",
+        "dataset": "Public source-labeled text CAPTCHA image evaluation",
+        "provenance": {
+          "restoration": "New manifest reconstructed from the supplied local archives; the earlier per-image manifest is unavailable.",
+          "original_kaggle_split_assignment": "Unavailable; all 1070 Kaggle images are included without inventing split fields.",
+          "sources": [
+            {
+              "key": "project_sloth_captcha_images_test",
+              "dataset": "project-sloth/captcha-images",
+              "url": "https://huggingface.co/datasets/project-sloth/captcha-images",
+              "revision": "eeaf2b6ec9086645f270f7e2aaa9ea90730683de",
+              "archive": {
+                "path": "/workspace/work/ocr/datasets/sloth-test.tar.gz",
+                "bytes": 5773266,
+                "sha256": "730bf94a1b857caa1de00bc7b5d9840c25bcd9767718f91ba9f8a3d5fd2a1912",
+                "archive_name": "test.tar.gz"
+              },
+              "sample_count": 2000
+            },
+            {
+              "key": "kaggle_fournierp_captcha_version_2",
+              "dataset": "fournierp/captcha-version-2-images",
+              "url": "https://www.kaggle.com/datasets/fournierp/captcha-version-2-images",
+              "revision": null,
+              "archive": {
+                "path": "/workspace/work/ocr/datasets/kaggle-v2/captcha-version-2-images.zip",
+                "bytes": 18280840,
+                "sha256": "6d26195a1647581990b05e8d40039b8f9ddfee422758c5cdfb165a1ec3fe1e14",
+                "archive_name": "captcha-version-2-images.zip"
+              },
+              "sample_count": 1070
+            }
+          ]
+        },
+        "license": {
+          "project_sloth_captcha_images_test": "WTFPL v2 (reported in the previous evaluation; license file not included in the supplied test archive).",
+          "kaggle_fournierp_captcha_version_2": "Other (specified in dataset description); unavailable for verification from the supplied archive."
+        },
+        "samples": 3070,
+        "ocr_backend": "ddddocr",
+        "providers": [
+          "CPUExecutionProvider"
+        ],
+        "model_load_seconds": 0.15951113199844258,
+        "by_source": {
+          "kaggle_fournierp_captcha_version_2": {
+            "samples": 1070,
+            "literal_exact_match": 0.8560747663551402,
+            "case_insensitive_exact_match": 0.8588785046728972,
+            "character_error_rate": 0.029906542056074768,
+            "latency": {
+              "samples": 1070,
+              "mean_ms": 18.785352245825624,
+              "p50_ms": 19.304307499623974,
+              "p95_ms": 20.111470800839015
+            }
+          },
+          "project_sloth_captcha_images_test": {
+            "samples": 2000,
+            "literal_exact_match": 0.7545,
+            "case_insensitive_exact_match": 0.7545,
+            "character_error_rate": 0.09233333333333334,
+            "latency": {
+              "samples": 2000,
+              "mean_ms": 20.17307310200158,
+              "p50_ms": 20.197625999571756,
+              "p95_ms": 21.1382487519586
+            }
+          }
+        },
+        "checkpointed_samples": 3070,
+        "completed": 3070,
+        "character_error_rate": 0.0730835734870317
+      }
+    },
+    "ppocr-v6-tiny": {
+      "display_name": "PP-OCRv6 Tiny",
+      "overall": {
+        "samples": 3070,
+        "literal_exact_count": 1469,
+        "literal_exact_match": 0.47850162866449514,
+        "case_insensitive_exact_count": 1547,
+        "case_insensitive_exact_match": 0.5039087947882737,
+        "edit_distance_total": 2246,
+        "reference_characters": 17350,
+        "character_error_rate": 0.12945244956772334,
+        "latency": {
+          "samples": 3070,
+          "mean_ms": 6.4529222622094276,
+          "p50_ms": 6.562096499692416,
+          "p95_ms": 6.892839049396571
+        },
+        "failed_samples": 0,
+        "empty_answers": 0
+      },
+      "by_source": {
+        "project_sloth_captcha_images_test": {
+          "samples": 2000,
+          "literal_exact_count": 984,
+          "literal_exact_match": 0.492,
+          "case_insensitive_exact_count": 984,
+          "case_insensitive_exact_match": 0.492,
+          "edit_distance_total": 1439,
+          "reference_characters": 12000,
+          "character_error_rate": 0.11991666666666667,
+          "latency": {
+            "samples": 2000,
+            "mean_ms": 6.32940875546592,
+            "p50_ms": 6.522007999592461,
+            "p95_ms": 6.816238552528375
+          },
+          "failed_samples": 0,
+          "empty_answers": 0
+        },
+        "kaggle_fournierp_captcha_version_2": {
+          "samples": 1070,
+          "literal_exact_count": 485,
+          "literal_exact_match": 0.4532710280373832,
+          "case_insensitive_exact_count": 563,
+          "case_insensitive_exact_match": 0.5261682242990654,
+          "edit_distance_total": 807,
+          "reference_characters": 5350,
+          "character_error_rate": 0.1508411214953271,
+          "latency": {
+            "samples": 1070,
+            "mean_ms": 6.683788629954302,
+            "p50_ms": 6.631704000028549,
+            "p95_ms": 6.959860699498677
+          },
+          "failed_samples": 0,
+          "empty_answers": 0
+        }
+      },
+      "paired_vs_common_old": {
+        "project_sloth_captcha_images_test": {
+          "new_correct_baseline_wrong": 181,
+          "baseline_correct_new_wrong": 706
+        },
+        "kaggle_fournierp_captcha_version_2": {
+          "new_correct_baseline_wrong": 48,
+          "baseline_correct_new_wrong": 479
+        }
+      },
+      "prediction_sha256": "cbc8b119a98a7cdcc7c96e858d00ff932fbaa08b2e8bd5f77afd6a64c6acc128",
+      "summary_sha256": "b76652a3e9494d1ef926d6243a9700305e62db49777f34614abbd114f0b565da",
+      "run_summary": {
+        "scope": "Source-labeled local text CAPTCHA images; OCR only, no model training, router evaluation, or live-site pass rate.",
+        "manifest": "/workspace/work/ocr/eval-data/manifest.json",
+        "dataset": "Public source-labeled text CAPTCHA image evaluation",
+        "provenance": {
+          "restoration": "New manifest reconstructed from the supplied local archives; the earlier per-image manifest is unavailable.",
+          "original_kaggle_split_assignment": "Unavailable; all 1070 Kaggle images are included without inventing split fields.",
+          "sources": [
+            {
+              "key": "project_sloth_captcha_images_test",
+              "dataset": "project-sloth/captcha-images",
+              "url": "https://huggingface.co/datasets/project-sloth/captcha-images",
+              "revision": "eeaf2b6ec9086645f270f7e2aaa9ea90730683de",
+              "archive": {
+                "path": "/workspace/work/ocr/datasets/sloth-test.tar.gz",
+                "bytes": 5773266,
+                "sha256": "730bf94a1b857caa1de00bc7b5d9840c25bcd9767718f91ba9f8a3d5fd2a1912",
+                "archive_name": "test.tar.gz"
+              },
+              "sample_count": 2000
+            },
+            {
+              "key": "kaggle_fournierp_captcha_version_2",
+              "dataset": "fournierp/captcha-version-2-images",
+              "url": "https://www.kaggle.com/datasets/fournierp/captcha-version-2-images",
+              "revision": null,
+              "archive": {
+                "path": "/workspace/work/ocr/datasets/kaggle-v2/captcha-version-2-images.zip",
+                "bytes": 18280840,
+                "sha256": "6d26195a1647581990b05e8d40039b8f9ddfee422758c5cdfb165a1ec3fe1e14",
+                "archive_name": "captcha-version-2-images.zip"
+              },
+              "sample_count": 1070
+            }
+          ]
+        },
+        "license": {
+          "project_sloth_captcha_images_test": "WTFPL v2 (reported in the previous evaluation; license file not included in the supplied test archive).",
+          "kaggle_fournierp_captcha_version_2": "Other (specified in dataset description); unavailable for verification from the supplied archive."
+        },
+        "samples": 3070,
+        "ocr_backend": "RapidOCR.TextRecognizer/ONNXRuntime",
+        "providers": [
+          "CPUExecutionProvider"
+        ],
+        "model_load_seconds": 0.04041484900153591,
+        "by_source": {
+          "kaggle_fournierp_captcha_version_2": {
+            "samples": 1070,
+            "literal_exact_match": 0.4532710280373832,
+            "case_insensitive_exact_match": 0.5261682242990654,
+            "character_error_rate": 0.1508411214953271,
+            "latency": {
+              "samples": 1070,
+              "mean_ms": 6.683788629954302,
+              "p50_ms": 6.631704000028549,
+              "p95_ms": 6.959860699498677
+            },
+            "failed_samples": 0,
+            "empty_answers": 0
+          },
+          "project_sloth_captcha_images_test": {
+            "samples": 2000,
+            "literal_exact_match": 0.492,
+            "case_insensitive_exact_match": 0.492,
+            "character_error_rate": 0.11991666666666667,
+            "latency": {
+              "samples": 2000,
+              "mean_ms": 6.32940875546592,
+              "p50_ms": 6.522007999592461,
+              "p95_ms": 6.816238552528375
+            },
+            "failed_samples": 0,
+            "empty_answers": 0
+          }
+        },
+        "checkpointed_samples": 3070,
+        "schema_version": 1,
+        "evaluation_identity": {
+          "model": "ppocr-v6-tiny",
+          "model_path": "/workspace/work/ocr/models/PP-OCRv6_rec_tiny.onnx",
+          "model_sha256": "e16e242de5937ad92609223f19bc2aff3727ee40b095f996907c24749bad251b",
+          "manifest_path": "/workspace/work/ocr/eval-data/manifest.json",
+          "manifest_sha256": "4af07d4e8125d3734ed8e9a9282fad2a8d0683383a6ab4ca9638ec3a87a6090d",
+          "runtime_versions": {
+            "rapidocr": "3.9.2",
+            "onnxruntime": "1.30.0",
+            "numpy": "2.5.3",
+            "Pillow": "12.3.0",
+            "opencv-python": "5.0.0.93",
+            "omegaconf": "2.3.1"
+          },
+          "recognition_options": {
+            "use_det": false,
+            "use_cls": false,
+            "use_rec": true,
+            "whole_image_as_single_text_line": true,
+            "rec_batch_num": 1,
+            "rec_img_shape": [
+              3,
+              48,
+              320
+            ],
+            "rec_img_shape_source": "RapidOCR 3.9.2 config.yaml default; validated against ONNX input",
+            "resize": "RapidOCR resize_norm_img; aspect-preserving height 48, dynamic width padded to at least 320",
+            "input_conversion": "PIL convert(RGB), then NumPy RGB to OpenCV BGR; no EXIF transpose",
+            "confidence_filter": null,
+            "prediction_normalization": null,
+            "return_word_box": false,
+            "providers": [
+              "CPUExecutionProvider"
+            ],
+            "intra_op_num_threads": 2,
+            "inter_op_num_threads": 1,
+            "execution_mode": "ORT_SEQUENTIAL",
+            "graph_optimization_level": "ORT_ENABLE_ALL",
+            "enable_cpu_mem_arena": true,
+            "opencv_num_threads": 1,
+            "warmup": "first manifest image, once per process, excluded from sample timing",
+            "sample_timing": "PIL file open excluded; image decoding/RGB-to-BGR conversion, recognition preprocessing, inference and decoding included"
+          },
+          "evaluator_sha256": "d6acf931d02a021a464ad1f9cfc1a495a1d85174246cacd011b9e867310e908d",
+          "reference_evaluator_sha256": "a731eaf94a1025025d196511fe18dd6c67dc184b7ba864a4b6f84bfbb35d8034"
+        },
+        "model": {
+          "filename": "PP-OCRv6_rec_tiny.onnx",
+          "version": "PP-OCRv6",
+          "size": "tiny",
+          "language": "multi",
+          "sha256": "e16e242de5937ad92609223f19bc2aff3727ee40b095f996907c24749bad251b",
+          "inputs": [
+            {
+              "name": "x",
+              "shape": [
+                "DynamicDimension.0",
+                3,
+                48,
+                "DynamicDimension.1"
+              ],
+              "type": "tensor(float)"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "fetch_name_0",
+              "shape": [
+                "DynamicDimension.0",
+                "floor(floor(floor(DynamicDimension.1/2 - 1/2)/2)/2 - 1/2) + 1",
+                6906
+              ],
+              "type": "tensor(float)"
+            }
+          ],
+          "metadata_keys": [
+            "character"
+          ],
+          "character_dictionary_entries": 6904,
+          "character_dictionary_sha256": "34d139222b6e8d84830f57476e39f01e76be3baffde3e9df75a079e251140598",
+          "rapidocr_config_sha256": "06623941e188461a0bc263fe16175cb5e5f6f6b01f4387e546d3a741569fc021"
+        },
+        "manifest_sha256": "4af07d4e8125d3734ed8e9a9282fad2a8d0683383a6ab4ca9638ec3a87a6090d",
+        "model_sha256": "e16e242de5937ad92609223f19bc2aff3727ee40b095f996907c24749bad251b",
+        "runtime_versions": {
+          "rapidocr": "3.9.2",
+          "onnxruntime": "1.30.0",
+          "numpy": "2.5.3",
+          "Pillow": "12.3.0",
+          "opencv-python": "5.0.0.93",
+          "omegaconf": "2.3.1"
+        },
+        "recognition_options": {
+          "use_det": false,
+          "use_cls": false,
+          "use_rec": true,
+          "whole_image_as_single_text_line": true,
+          "rec_batch_num": 1,
+          "rec_img_shape": [
+            3,
+            48,
+            320
+          ],
+          "rec_img_shape_source": "RapidOCR 3.9.2 config.yaml default; validated against ONNX input",
+          "resize": "RapidOCR resize_norm_img; aspect-preserving height 48, dynamic width padded to at least 320",
+          "input_conversion": "PIL convert(RGB), then NumPy RGB to OpenCV BGR; no EXIF transpose",
+          "confidence_filter": null,
+          "prediction_normalization": null,
+          "return_word_box": false,
+          "providers": [
+            "CPUExecutionProvider"
+          ],
+          "intra_op_num_threads": 2,
+          "inter_op_num_threads": 1,
+          "execution_mode": "ORT_SEQUENTIAL",
+          "graph_optimization_level": "ORT_ENABLE_ALL",
+          "enable_cpu_mem_arena": true,
+          "opencv_num_threads": 1,
+          "warmup": "first manifest image, once per process, excluded from sample timing",
+          "sample_timing": "PIL file open excluded; image decoding/RGB-to-BGR conversion, recognition preprocessing, inference and decoding included"
+        },
+        "completed": 3070,
+        "total_samples": 3070,
+        "status": "complete",
+        "literal_exact_match": 0.47850162866449514,
+        "case_insensitive_exact_match": 0.5039087947882737,
+        "character_error_rate": 0.12945244956772334,
+        "latency": {
+          "samples": 3070,
+          "mean_ms": 6.4529222622094276,
+          "p50_ms": 6.562096499692416,
+          "p95_ms": 6.892839049396571
+        },
+        "failed_samples": 0,
+        "failure_counts": {},
+        "empty_answers": 0,
+        "sessions": [
+          {
+            "started_at_utc": "2026-10-05T22:44:05.676539+00:00",
+            "resumed_from": 0,
+            "model_load_seconds": 0.04041484900153591,
+            "providers": [
+              "CPUExecutionProvider"
+            ],
+            "warmup_seconds": 0.005623436001769733,
+            "warmup_error": null,
+            "processed_samples": 3070
+          }
+        ],
+        "predictions_sha256": "cbc8b119a98a7cdcc7c96e858d00ff932fbaa08b2e8bd5f77afd6a64c6acc128"
+      }
+    },
+    "ppocr-v6-small": {
+      "display_name": "PP-OCRv6 Small",
+      "overall": {
+        "samples": 3070,
+        "literal_exact_count": 2489,
+        "literal_exact_match": 0.8107491856677524,
+        "case_insensitive_exact_count": 2535,
+        "case_insensitive_exact_match": 0.8257328990228013,
+        "edit_distance_total": 747,
+        "reference_characters": 17350,
+        "character_error_rate": 0.043054755043227665,
+        "latency": {
+          "samples": 3070,
+          "mean_ms": 23.773135367434378,
+          "p50_ms": 23.68103450135095,
+          "p95_ms": 24.93054909791681
+        },
+        "failed_samples": 0,
+        "empty_answers": 0
+      },
+      "by_source": {
+        "project_sloth_captcha_images_test": {
+          "samples": 2000,
+          "literal_exact_count": 1891,
+          "literal_exact_match": 0.9455,
+          "case_insensitive_exact_count": 1891,
+          "case_insensitive_exact_match": 0.9455,
+          "edit_distance_total": 122,
+          "reference_characters": 12000,
+          "character_error_rate": 0.010166666666666666,
+          "latency": {
+            "samples": 2000,
+            "mean_ms": 23.68173594348991,
+            "p50_ms": 23.645265500817914,
+            "p95_ms": 24.75718360292376
+          },
+          "failed_samples": 0,
+          "empty_answers": 0
+        },
+        "kaggle_fournierp_captcha_version_2": {
+          "samples": 1070,
+          "literal_exact_count": 598,
+          "literal_exact_match": 0.5588785046728972,
+          "case_insensitive_exact_count": 644,
+          "case_insensitive_exact_match": 0.6018691588785047,
+          "edit_distance_total": 625,
+          "reference_characters": 5350,
+          "character_error_rate": 0.11682242990654206,
+          "latency": {
+            "samples": 1070,
+            "mean_ms": 23.943975412190394,
+            "p50_ms": 23.735234501145897,
+            "p95_ms": 25.46054525009822
+          },
+          "failed_samples": 0,
+          "empty_answers": 0
+        }
+      },
+      "paired_vs_common_old": {
+        "project_sloth_captcha_images_test": {
+          "new_correct_baseline_wrong": 409,
+          "baseline_correct_new_wrong": 27
+        },
+        "kaggle_fournierp_captcha_version_2": {
+          "new_correct_baseline_wrong": 63,
+          "baseline_correct_new_wrong": 381
+        }
+      },
+      "prediction_sha256": "6d6cd1c3207633961aab398b1025336efef2620f42ebe87aaabcecf011988cd5",
+      "summary_sha256": "44f334a202f7d4db5c8a635a4bf1042e472917c48acfbe42d6c9eb98fbc48785",
+      "run_summary": {
+        "scope": "Source-labeled local text CAPTCHA images; OCR only, no model training, router evaluation, or live-site pass rate.",
+        "manifest": "/workspace/work/ocr/eval-data/manifest.json",
+        "dataset": "Public source-labeled text CAPTCHA image evaluation",
+        "provenance": {
+          "restoration": "New manifest reconstructed from the supplied local archives; the earlier per-image manifest is unavailable.",
+          "original_kaggle_split_assignment": "Unavailable; all 1070 Kaggle images are included without inventing split fields.",
+          "sources": [
+            {
+              "key": "project_sloth_captcha_images_test",
+              "dataset": "project-sloth/captcha-images",
+              "url": "https://huggingface.co/datasets/project-sloth/captcha-images",
+              "revision": "eeaf2b6ec9086645f270f7e2aaa9ea90730683de",
+              "archive": {
+                "path": "/workspace/work/ocr/datasets/sloth-test.tar.gz",
+                "bytes": 5773266,
+                "sha256": "730bf94a1b857caa1de00bc7b5d9840c25bcd9767718f91ba9f8a3d5fd2a1912",
+                "archive_name": "test.tar.gz"
+              },
+              "sample_count": 2000
+            },
+            {
+              "key": "kaggle_fournierp_captcha_version_2",
+              "dataset": "fournierp/captcha-version-2-images",
+              "url": "https://www.kaggle.com/datasets/fournierp/captcha-version-2-images",
+              "revision": null,
+              "archive": {
+                "path": "/workspace/work/ocr/datasets/kaggle-v2/captcha-version-2-images.zip",
+                "bytes": 18280840,
+                "sha256": "6d26195a1647581990b05e8d40039b8f9ddfee422758c5cdfb165a1ec3fe1e14",
+                "archive_name": "captcha-version-2-images.zip"
+              },
+              "sample_count": 1070
+            }
+          ]
+        },
+        "license": {
+          "project_sloth_captcha_images_test": "WTFPL v2 (reported in the previous evaluation; license file not included in the supplied test archive).",
+          "kaggle_fournierp_captcha_version_2": "Other (specified in dataset description); unavailable for verification from the supplied archive."
+        },
+        "samples": 3070,
+        "ocr_backend": "RapidOCR.TextRecognizer/ONNXRuntime",
+        "providers": [
+          "CPUExecutionProvider"
+        ],
+        "model_load_seconds": 0.0879247890006809,
+        "by_source": {
+          "kaggle_fournierp_captcha_version_2": {
+            "samples": 1070,
+            "literal_exact_match": 0.5588785046728972,
+            "case_insensitive_exact_match": 0.6018691588785047,
+            "character_error_rate": 0.11682242990654206,
+            "latency": {
+              "samples": 1070,
+              "mean_ms": 23.943975412190394,
+              "p50_ms": 23.735234501145897,
+              "p95_ms": 25.46054525009822
+            },
+            "failed_samples": 0,
+            "empty_answers": 0
+          },
+          "project_sloth_captcha_images_test": {
+            "samples": 2000,
+            "literal_exact_match": 0.9455,
+            "case_insensitive_exact_match": 0.9455,
+            "character_error_rate": 0.010166666666666666,
+            "latency": {
+              "samples": 2000,
+              "mean_ms": 23.68173594348991,
+              "p50_ms": 23.645265500817914,
+              "p95_ms": 24.75718360292376
+            },
+            "failed_samples": 0,
+            "empty_answers": 0
+          }
+        },
+        "checkpointed_samples": 3070,
+        "schema_version": 1,
+        "evaluation_identity": {
+          "model": "ppocr-v6-small",
+          "model_path": "/workspace/work/ocr/models/PP-OCRv6_rec_small.onnx",
+          "model_sha256": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+          "manifest_path": "/workspace/work/ocr/eval-data/manifest.json",
+          "manifest_sha256": "4af07d4e8125d3734ed8e9a9282fad2a8d0683383a6ab4ca9638ec3a87a6090d",
+          "runtime_versions": {
+            "rapidocr": "3.9.2",
+            "onnxruntime": "1.30.0",
+            "numpy": "2.5.3",
+            "Pillow": "12.3.0",
+            "opencv-python": "5.0.0.93",
+            "omegaconf": "2.3.1"
+          },
+          "recognition_options": {
+            "use_det": false,
+            "use_cls": false,
+            "use_rec": true,
+            "whole_image_as_single_text_line": true,
+            "rec_batch_num": 1,
+            "rec_img_shape": [
+              3,
+              48,
+              320
+            ],
+            "rec_img_shape_source": "RapidOCR 3.9.2 config.yaml default; validated against ONNX input",
+            "resize": "RapidOCR resize_norm_img; aspect-preserving height 48, dynamic width padded to at least 320",
+            "input_conversion": "PIL convert(RGB), then NumPy RGB to OpenCV BGR; no EXIF transpose",
+            "confidence_filter": null,
+            "prediction_normalization": null,
+            "return_word_box": false,
+            "providers": [
+              "CPUExecutionProvider"
+            ],
+            "intra_op_num_threads": 2,
+            "inter_op_num_threads": 1,
+            "execution_mode": "ORT_SEQUENTIAL",
+            "graph_optimization_level": "ORT_ENABLE_ALL",
+            "enable_cpu_mem_arena": true,
+            "opencv_num_threads": 1,
+            "warmup": "first manifest image, once per process, excluded from sample timing",
+            "sample_timing": "PIL file open excluded; image decoding/RGB-to-BGR conversion, recognition preprocessing, inference and decoding included"
+          },
+          "evaluator_sha256": "d6acf931d02a021a464ad1f9cfc1a495a1d85174246cacd011b9e867310e908d",
+          "reference_evaluator_sha256": "a731eaf94a1025025d196511fe18dd6c67dc184b7ba864a4b6f84bfbb35d8034"
+        },
+        "model": {
+          "filename": "PP-OCRv6_rec_small.onnx",
+          "version": "PP-OCRv6",
+          "size": "small",
+          "language": "multi",
+          "sha256": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+          "inputs": [
+            {
+              "name": "x",
+              "shape": [
+                "DynamicDimension.0",
+                3,
+                48,
+                "DynamicDimension.1"
+              ],
+              "type": "tensor(float)"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "fetch_name_0",
+              "shape": [
+                "DynamicDimension.0",
+                "Reshape_470_o0__d2",
+                18710
+              ],
+              "type": "tensor(float)"
+            }
+          ],
+          "metadata_keys": [
+            "character"
+          ],
+          "character_dictionary_entries": 18708,
+          "character_dictionary_sha256": "f7aa897ca828a4c7c9e2739c30f9161a33306d532f020bcdb91dcfb664a5507e",
+          "rapidocr_config_sha256": "06623941e188461a0bc263fe16175cb5e5f6f6b01f4387e546d3a741569fc021"
+        },
+        "manifest_sha256": "4af07d4e8125d3734ed8e9a9282fad2a8d0683383a6ab4ca9638ec3a87a6090d",
+        "model_sha256": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+        "runtime_versions": {
+          "rapidocr": "3.9.2",
+          "onnxruntime": "1.30.0",
+          "numpy": "2.5.3",
+          "Pillow": "12.3.0",
+          "opencv-python": "5.0.0.93",
+          "omegaconf": "2.3.1"
+        },
+        "recognition_options": {
+          "use_det": false,
+          "use_cls": false,
+          "use_rec": true,
+          "whole_image_as_single_text_line": true,
+          "rec_batch_num": 1,
+          "rec_img_shape": [
+            3,
+            48,
+            320
+          ],
+          "rec_img_shape_source": "RapidOCR 3.9.2 config.yaml default; validated against ONNX input",
+          "resize": "RapidOCR resize_norm_img; aspect-preserving height 48, dynamic width padded to at least 320",
+          "input_conversion": "PIL convert(RGB), then NumPy RGB to OpenCV BGR; no EXIF transpose",
+          "confidence_filter": null,
+          "prediction_normalization": null,
+          "return_word_box": false,
+          "providers": [
+            "CPUExecutionProvider"
+          ],
+          "intra_op_num_threads": 2,
+          "inter_op_num_threads": 1,
+          "execution_mode": "ORT_SEQUENTIAL",
+          "graph_optimization_level": "ORT_ENABLE_ALL",
+          "enable_cpu_mem_arena": true,
+          "opencv_num_threads": 1,
+          "warmup": "first manifest image, once per process, excluded from sample timing",
+          "sample_timing": "PIL file open excluded; image decoding/RGB-to-BGR conversion, recognition preprocessing, inference and decoding included"
+        },
+        "completed": 3070,
+        "total_samples": 3070,
+        "status": "complete",
+        "literal_exact_match": 0.8107491856677524,
+        "case_insensitive_exact_match": 0.8257328990228013,
+        "character_error_rate": 0.043054755043227665,
+        "latency": {
+          "samples": 3070,
+          "mean_ms": 23.773135367434378,
+          "p50_ms": 23.68103450135095,
+          "p95_ms": 24.93054909791681
+        },
+        "failed_samples": 0,
+        "failure_counts": {},
+        "empty_answers": 0,
+        "sessions": [
+          {
+            "started_at_utc": "2026-10-05T22:44:26.897810+00:00",
+            "resumed_from": 0,
+            "model_load_seconds": 0.0879247890006809,
+            "providers": [
+              "CPUExecutionProvider"
+            ],
+            "warmup_seconds": 0.0255049549996329,
+            "warmup_error": null,
+            "processed_samples": 3070
+          }
+        ],
+        "predictions_sha256": "6d6cd1c3207633961aab398b1025336efef2620f42ebe87aaabcecf011988cd5"
+      }
+    },
+    "ppocr-v6-medium": {
+      "display_name": "PP-OCRv6 Medium",
+      "overall": {
+        "samples": 3070,
+        "literal_exact_count": 2441,
+        "literal_exact_match": 0.795114006514658,
+        "case_insensitive_exact_count": 2479,
+        "case_insensitive_exact_match": 0.8074918566775244,
+        "edit_distance_total": 843,
+        "reference_characters": 17350,
+        "character_error_rate": 0.048587896253602304,
+        "latency": {
+          "samples": 3070,
+          "mean_ms": 87.92900846218464,
+          "p50_ms": 87.65259249776136,
+          "p95_ms": 91.28204089975043
+        },
+        "failed_samples": 0,
+        "empty_answers": 0
+      },
+      "by_source": {
+        "project_sloth_captcha_images_test": {
+          "samples": 2000,
+          "literal_exact_count": 1891,
+          "literal_exact_match": 0.9455,
+          "case_insensitive_exact_count": 1891,
+          "case_insensitive_exact_match": 0.9455,
+          "edit_distance_total": 136,
+          "reference_characters": 12000,
+          "character_error_rate": 0.011333333333333334,
+          "latency": {
+            "samples": 2000,
+            "mean_ms": 87.82052524150458,
+            "p50_ms": 87.5101835008536,
+            "p95_ms": 89.91846410190192
+          },
+          "failed_samples": 0,
+          "empty_answers": 0
+        },
+        "kaggle_fournierp_captcha_version_2": {
+          "samples": 1070,
+          "literal_exact_count": 550,
+          "literal_exact_match": 0.514018691588785,
+          "case_insensitive_exact_count": 588,
+          "case_insensitive_exact_match": 0.5495327102803739,
+          "edit_distance_total": 707,
+          "reference_characters": 5350,
+          "character_error_rate": 0.13214953271028038,
+          "latency": {
+            "samples": 1070,
+            "mean_ms": 88.13178083728756,
+            "p50_ms": 88.04205749947869,
+            "p95_ms": 94.03261530023883
+          },
+          "failed_samples": 0,
+          "empty_answers": 0
+        }
+      },
+      "paired_vs_common_old": {
+        "project_sloth_captcha_images_test": {
+          "new_correct_baseline_wrong": 410,
+          "baseline_correct_new_wrong": 28
+        },
+        "kaggle_fournierp_captcha_version_2": {
+          "new_correct_baseline_wrong": 53,
+          "baseline_correct_new_wrong": 419
+        }
+      },
+      "prediction_sha256": "101e59287126448706f95ab3643e033efcdc1f7f85fab976ac5eb2fd2aa0664c",
+      "summary_sha256": "9bc984d493ffc94eeff622cc0619e4becd9ebbadc2616b586a975295afaa343a",
+      "run_summary": {
+        "scope": "Source-labeled local text CAPTCHA images; OCR only, no model training, router evaluation, or live-site pass rate.",
+        "manifest": "/workspace/work/ocr/eval-data/manifest.json",
+        "dataset": "Public source-labeled text CAPTCHA image evaluation",
+        "provenance": {
+          "restoration": "New manifest reconstructed from the supplied local archives; the earlier per-image manifest is unavailable.",
+          "original_kaggle_split_assignment": "Unavailable; all 1070 Kaggle images are included without inventing split fields.",
+          "sources": [
+            {
+              "key": "project_sloth_captcha_images_test",
+              "dataset": "project-sloth/captcha-images",
+              "url": "https://huggingface.co/datasets/project-sloth/captcha-images",
+              "revision": "eeaf2b6ec9086645f270f7e2aaa9ea90730683de",
+              "archive": {
+                "path": "/workspace/work/ocr/datasets/sloth-test.tar.gz",
+                "bytes": 5773266,
+                "sha256": "730bf94a1b857caa1de00bc7b5d9840c25bcd9767718f91ba9f8a3d5fd2a1912",
+                "archive_name": "test.tar.gz"
+              },
+              "sample_count": 2000
+            },
+            {
+              "key": "kaggle_fournierp_captcha_version_2",
+              "dataset": "fournierp/captcha-version-2-images",
+              "url": "https://www.kaggle.com/datasets/fournierp/captcha-version-2-images",
+              "revision": null,
+              "archive": {
+                "path": "/workspace/work/ocr/datasets/kaggle-v2/captcha-version-2-images.zip",
+                "bytes": 18280840,
+                "sha256": "6d26195a1647581990b05e8d40039b8f9ddfee422758c5cdfb165a1ec3fe1e14",
+                "archive_name": "captcha-version-2-images.zip"
+              },
+              "sample_count": 1070
+            }
+          ]
+        },
+        "license": {
+          "project_sloth_captcha_images_test": "WTFPL v2 (reported in the previous evaluation; license file not included in the supplied test archive).",
+          "kaggle_fournierp_captcha_version_2": "Other (specified in dataset description); unavailable for verification from the supplied archive."
+        },
+        "samples": 3070,
+        "ocr_backend": "RapidOCR.TextRecognizer/ONNXRuntime",
+        "providers": [
+          "CPUExecutionProvider"
+        ],
+        "model_load_seconds": 0.1702527449997433,
+        "by_source": {
+          "kaggle_fournierp_captcha_version_2": {
+            "samples": 1070,
+            "literal_exact_match": 0.514018691588785,
+            "case_insensitive_exact_match": 0.5495327102803739,
+            "character_error_rate": 0.13214953271028038,
+            "latency": {
+              "samples": 1070,
+              "mean_ms": 88.13178083728756,
+              "p50_ms": 88.04205749947869,
+              "p95_ms": 94.03261530023883
+            },
+            "failed_samples": 0,
+            "empty_answers": 0
+          },
+          "project_sloth_captcha_images_test": {
+            "samples": 2000,
+            "literal_exact_match": 0.9455,
+            "case_insensitive_exact_match": 0.9455,
+            "character_error_rate": 0.011333333333333334,
+            "latency": {
+              "samples": 2000,
+              "mean_ms": 87.82052524150458,
+              "p50_ms": 87.5101835008536,
+              "p95_ms": 89.91846410190192
+            },
+            "failed_samples": 0,
+            "empty_answers": 0
+          }
+        },
+        "checkpointed_samples": 3070,
+        "schema_version": 1,
+        "evaluation_identity": {
+          "model": "ppocr-v6-medium",
+          "model_path": "/workspace/work/ocr/models/PP-OCRv6_rec_medium.onnx",
+          "model_sha256": "eef444829dbbe18d7fea59a3f6eb75647518d2b3a9568d27c92e42940204894b",
+          "manifest_path": "/workspace/work/ocr/eval-data/manifest.json",
+          "manifest_sha256": "4af07d4e8125d3734ed8e9a9282fad2a8d0683383a6ab4ca9638ec3a87a6090d",
+          "runtime_versions": {
+            "rapidocr": "3.9.2",
+            "onnxruntime": "1.30.0",
+            "numpy": "2.5.3",
+            "Pillow": "12.3.0",
+            "opencv-python": "5.0.0.93",
+            "omegaconf": "2.3.1"
+          },
+          "recognition_options": {
+            "use_det": false,
+            "use_cls": false,
+            "use_rec": true,
+            "whole_image_as_single_text_line": true,
+            "rec_batch_num": 1,
+            "rec_img_shape": [
+              3,
+              48,
+              320
+            ],
+            "rec_img_shape_source": "RapidOCR 3.9.2 config.yaml default; validated against ONNX input",
+            "resize": "RapidOCR resize_norm_img; aspect-preserving height 48, dynamic width padded to at least 320",
+            "input_conversion": "PIL convert(RGB), then NumPy RGB to OpenCV BGR; no EXIF transpose",
+            "confidence_filter": null,
+            "prediction_normalization": null,
+            "return_word_box": false,
+            "providers": [
+              "CPUExecutionProvider"
+            ],
+            "intra_op_num_threads": 2,
+            "inter_op_num_threads": 1,
+            "execution_mode": "ORT_SEQUENTIAL",
+            "graph_optimization_level": "ORT_ENABLE_ALL",
+            "enable_cpu_mem_arena": true,
+            "opencv_num_threads": 1,
+            "warmup": "first manifest image, once per process, excluded from sample timing",
+            "sample_timing": "PIL file open excluded; image decoding/RGB-to-BGR conversion, recognition preprocessing, inference and decoding included"
+          },
+          "evaluator_sha256": "d6acf931d02a021a464ad1f9cfc1a495a1d85174246cacd011b9e867310e908d",
+          "reference_evaluator_sha256": "a731eaf94a1025025d196511fe18dd6c67dc184b7ba864a4b6f84bfbb35d8034"
+        },
+        "model": {
+          "filename": "PP-OCRv6_rec_medium.onnx",
+          "version": "PP-OCRv6",
+          "size": "medium",
+          "language": "multi",
+          "sha256": "eef444829dbbe18d7fea59a3f6eb75647518d2b3a9568d27c92e42940204894b",
+          "inputs": [
+            {
+              "name": "x",
+              "shape": [
+                "DynamicDimension.0",
+                3,
+                48,
+                "DynamicDimension.1"
+              ],
+              "type": "tensor(float)"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "fetch_name_0",
+              "shape": [
+                "DynamicDimension.0",
+                "Reshape_497_o0__d2",
+                18710
+              ],
+              "type": "tensor(float)"
+            }
+          ],
+          "metadata_keys": [
+            "character"
+          ],
+          "character_dictionary_entries": 18708,
+          "character_dictionary_sha256": "f7aa897ca828a4c7c9e2739c30f9161a33306d532f020bcdb91dcfb664a5507e",
+          "rapidocr_config_sha256": "06623941e188461a0bc263fe16175cb5e5f6f6b01f4387e546d3a741569fc021"
+        },
+        "manifest_sha256": "4af07d4e8125d3734ed8e9a9282fad2a8d0683383a6ab4ca9638ec3a87a6090d",
+        "model_sha256": "eef444829dbbe18d7fea59a3f6eb75647518d2b3a9568d27c92e42940204894b",
+        "runtime_versions": {
+          "rapidocr": "3.9.2",
+          "onnxruntime": "1.30.0",
+          "numpy": "2.5.3",
+          "Pillow": "12.3.0",
+          "opencv-python": "5.0.0.93",
+          "omegaconf": "2.3.1"
+        },
+        "recognition_options": {
+          "use_det": false,
+          "use_cls": false,
+          "use_rec": true,
+          "whole_image_as_single_text_line": true,
+          "rec_batch_num": 1,
+          "rec_img_shape": [
+            3,
+            48,
+            320
+          ],
+          "rec_img_shape_source": "RapidOCR 3.9.2 config.yaml default; validated against ONNX input",
+          "resize": "RapidOCR resize_norm_img; aspect-preserving height 48, dynamic width padded to at least 320",
+          "input_conversion": "PIL convert(RGB), then NumPy RGB to OpenCV BGR; no EXIF transpose",
+          "confidence_filter": null,
+          "prediction_normalization": null,
+          "return_word_box": false,
+          "providers": [
+            "CPUExecutionProvider"
+          ],
+          "intra_op_num_threads": 2,
+          "inter_op_num_threads": 1,
+          "execution_mode": "ORT_SEQUENTIAL",
+          "graph_optimization_level": "ORT_ENABLE_ALL",
+          "enable_cpu_mem_arena": true,
+          "opencv_num_threads": 1,
+          "warmup": "first manifest image, once per process, excluded from sample timing",
+          "sample_timing": "PIL file open excluded; image decoding/RGB-to-BGR conversion, recognition preprocessing, inference and decoding included"
+        },
+        "completed": 3070,
+        "total_samples": 3070,
+        "status": "complete",
+        "literal_exact_match": 0.795114006514658,
+        "case_insensitive_exact_match": 0.8074918566775244,
+        "character_error_rate": 0.048587896253602304,
+        "latency": {
+          "samples": 3070,
+          "mean_ms": 87.92900846218464,
+          "p50_ms": 87.65259249776136,
+          "p95_ms": 91.28204089975043
+        },
+        "failed_samples": 0,
+        "failure_counts": {},
+        "empty_answers": 0,
+        "sessions": [
+          {
+            "started_at_utc": "2026-10-05T22:45:41.582776+00:00",
+            "resumed_from": 0,
+            "model_load_seconds": 0.1702527449997433,
+            "providers": [
+              "CPUExecutionProvider"
+            ],
+            "warmup_seconds": 0.08893240800171043,
+            "warmup_error": null,
+            "processed_samples": 3070
+          }
+        ],
+        "predictions_sha256": "101e59287126448706f95ab3643e033efcdc1f7f85fab976ac5eb2fd2aa0664c"
+      }
+    },
+    "ppocr-v5-en-mobile": {
+      "display_name": "en_PP-OCRv5 Mobile",
+      "overall": {
+        "samples": 3070,
+        "literal_exact_count": 2209,
+        "literal_exact_match": 0.719543973941368,
+        "case_insensitive_exact_count": 2280,
+        "case_insensitive_exact_match": 0.742671009771987,
+        "edit_distance_total": 1232,
+        "reference_characters": 17350,
+        "character_error_rate": 0.07100864553314121,
+        "latency": {
+          "samples": 3070,
+          "mean_ms": 22.219310551768267,
+          "p50_ms": 22.483856499093235,
+          "p95_ms": 23.58152915039682
+        },
+        "failed_samples": 0,
+        "empty_answers": 0
+      },
+      "by_source": {
+        "project_sloth_captcha_images_test": {
+          "samples": 2000,
+          "literal_exact_count": 1834,
+          "literal_exact_match": 0.917,
+          "case_insensitive_exact_count": 1834,
+          "case_insensitive_exact_match": 0.917,
+          "edit_distance_total": 205,
+          "reference_characters": 12000,
+          "character_error_rate": 0.017083333333333332,
+          "latency": {
+            "samples": 2000,
+            "mean_ms": 22.100375568474192,
+            "p50_ms": 22.481603000414907,
+            "p95_ms": 23.57525580064248
+          },
+          "failed_samples": 0,
+          "empty_answers": 0
+        },
+        "kaggle_fournierp_captcha_version_2": {
+          "samples": 1070,
+          "literal_exact_count": 375,
+          "literal_exact_match": 0.35046728971962615,
+          "case_insensitive_exact_count": 446,
+          "case_insensitive_exact_match": 0.41682242990654206,
+          "edit_distance_total": 1027,
+          "reference_characters": 5350,
+          "character_error_rate": 0.1919626168224299,
+          "latency": {
+            "samples": 1070,
+            "mean_ms": 22.44161893175719,
+            "p50_ms": 22.486623001896078,
+            "p95_ms": 23.58152915039682
+          },
+          "failed_samples": 0,
+          "empty_answers": 0
+        }
+      },
+      "paired_vs_common_old": {
+        "project_sloth_captcha_images_test": {
+          "new_correct_baseline_wrong": 364,
+          "baseline_correct_new_wrong": 39
+        },
+        "kaggle_fournierp_captcha_version_2": {
+          "new_correct_baseline_wrong": 27,
+          "baseline_correct_new_wrong": 568
+        }
+      },
+      "prediction_sha256": "f15770153509b1ac8c16a620196ac8ce0c9c55dc3f8a93195eeaa3a358dc9ae2",
+      "summary_sha256": "ea8448897dee9558f3d6f479f7cbb66b49ea55cfb51258a608cdfe60a3edaf1b",
+      "run_summary": {
+        "scope": "Source-labeled local text CAPTCHA images; OCR only, no model training, router evaluation, or live-site pass rate.",
+        "manifest": "/workspace/work/ocr/eval-data/manifest.json",
+        "dataset": "Public source-labeled text CAPTCHA image evaluation",
+        "provenance": {
+          "restoration": "New manifest reconstructed from the supplied local archives; the earlier per-image manifest is unavailable.",
+          "original_kaggle_split_assignment": "Unavailable; all 1070 Kaggle images are included without inventing split fields.",
+          "sources": [
+            {
+              "key": "project_sloth_captcha_images_test",
+              "dataset": "project-sloth/captcha-images",
+              "url": "https://huggingface.co/datasets/project-sloth/captcha-images",
+              "revision": "eeaf2b6ec9086645f270f7e2aaa9ea90730683de",
+              "archive": {
+                "path": "/workspace/work/ocr/datasets/sloth-test.tar.gz",
+                "bytes": 5773266,
+                "sha256": "730bf94a1b857caa1de00bc7b5d9840c25bcd9767718f91ba9f8a3d5fd2a1912",
+                "archive_name": "test.tar.gz"
+              },
+              "sample_count": 2000
+            },
+            {
+              "key": "kaggle_fournierp_captcha_version_2",
+              "dataset": "fournierp/captcha-version-2-images",
+              "url": "https://www.kaggle.com/datasets/fournierp/captcha-version-2-images",
+              "revision": null,
+              "archive": {
+                "path": "/workspace/work/ocr/datasets/kaggle-v2/captcha-version-2-images.zip",
+                "bytes": 18280840,
+                "sha256": "6d26195a1647581990b05e8d40039b8f9ddfee422758c5cdfb165a1ec3fe1e14",
+                "archive_name": "captcha-version-2-images.zip"
+              },
+              "sample_count": 1070
+            }
+          ]
+        },
+        "license": {
+          "project_sloth_captcha_images_test": "WTFPL v2 (reported in the previous evaluation; license file not included in the supplied test archive).",
+          "kaggle_fournierp_captcha_version_2": "Other (specified in dataset description); unavailable for verification from the supplied archive."
+        },
+        "samples": 3070,
+        "ocr_backend": "RapidOCR.TextRecognizer/ONNXRuntime",
+        "providers": [
+          "CPUExecutionProvider"
+        ],
+        "model_load_seconds": 0.07836733900330728,
+        "by_source": {
+          "kaggle_fournierp_captcha_version_2": {
+            "samples": 1070,
+            "literal_exact_match": 0.35046728971962615,
+            "case_insensitive_exact_match": 0.41682242990654206,
+            "character_error_rate": 0.1919626168224299,
+            "latency": {
+              "samples": 1070,
+              "mean_ms": 22.44161893175719,
+              "p50_ms": 22.486623001896078,
+              "p95_ms": 23.58152915039682
+            },
+            "failed_samples": 0,
+            "empty_answers": 0
+          },
+          "project_sloth_captcha_images_test": {
+            "samples": 2000,
+            "literal_exact_match": 0.917,
+            "case_insensitive_exact_match": 0.917,
+            "character_error_rate": 0.017083333333333332,
+            "latency": {
+              "samples": 2000,
+              "mean_ms": 22.100375568474192,
+              "p50_ms": 22.481603000414907,
+              "p95_ms": 23.57525580064248
+            },
+            "failed_samples": 0,
+            "empty_answers": 0
+          }
+        },
+        "checkpointed_samples": 3070,
+        "schema_version": 1,
+        "evaluation_identity": {
+          "model": "ppocr-v5-en-mobile",
+          "model_path": "/workspace/work/ocr/models/en_PP-OCRv5_rec_mobile.onnx",
+          "model_sha256": "c3461add59bb4323ecba96a492ab75e06dda42467c9e3d0c18db5d1d21924be8",
+          "manifest_path": "/workspace/work/ocr/eval-data/manifest.json",
+          "manifest_sha256": "4af07d4e8125d3734ed8e9a9282fad2a8d0683383a6ab4ca9638ec3a87a6090d",
+          "runtime_versions": {
+            "rapidocr": "3.9.2",
+            "onnxruntime": "1.30.0",
+            "numpy": "2.5.3",
+            "Pillow": "12.3.0",
+            "opencv-python": "5.0.0.93",
+            "omegaconf": "2.3.1"
+          },
+          "recognition_options": {
+            "use_det": false,
+            "use_cls": false,
+            "use_rec": true,
+            "whole_image_as_single_text_line": true,
+            "rec_batch_num": 1,
+            "rec_img_shape": [
+              3,
+              48,
+              320
+            ],
+            "rec_img_shape_source": "RapidOCR 3.9.2 config.yaml default; validated against ONNX input",
+            "resize": "RapidOCR resize_norm_img; aspect-preserving height 48, dynamic width padded to at least 320",
+            "input_conversion": "PIL convert(RGB), then NumPy RGB to OpenCV BGR; no EXIF transpose",
+            "confidence_filter": null,
+            "prediction_normalization": null,
+            "return_word_box": false,
+            "providers": [
+              "CPUExecutionProvider"
+            ],
+            "intra_op_num_threads": 2,
+            "inter_op_num_threads": 1,
+            "execution_mode": "ORT_SEQUENTIAL",
+            "graph_optimization_level": "ORT_ENABLE_ALL",
+            "enable_cpu_mem_arena": true,
+            "opencv_num_threads": 1,
+            "warmup": "first manifest image, once per process, excluded from sample timing",
+            "sample_timing": "PIL file open excluded; image decoding/RGB-to-BGR conversion, recognition preprocessing, inference and decoding included"
+          },
+          "evaluator_sha256": "d6acf931d02a021a464ad1f9cfc1a495a1d85174246cacd011b9e867310e908d",
+          "reference_evaluator_sha256": "a731eaf94a1025025d196511fe18dd6c67dc184b7ba864a4b6f84bfbb35d8034"
+        },
+        "model": {
+          "filename": "en_PP-OCRv5_rec_mobile.onnx",
+          "version": "PP-OCRv5",
+          "size": "mobile",
+          "language": "en",
+          "sha256": "c3461add59bb4323ecba96a492ab75e06dda42467c9e3d0c18db5d1d21924be8",
+          "inputs": [
+            {
+              "name": "x",
+              "shape": [
+                "DynamicDimension.0",
+                3,
+                "?",
+                "DynamicDimension.1"
+              ],
+              "type": "tensor(float)"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "fetch_name_0",
+              "shape": [
+                "DynamicDimension.0",
+                "Reshape_524_o0__d2",
+                438
+              ],
+              "type": "tensor(float)"
+            }
+          ],
+          "metadata_keys": [
+            "character"
+          ],
+          "character_dictionary_entries": 436,
+          "character_dictionary_sha256": "e025a66d31f327ba0c232e03f407ae8d105e1e709e7ccb3f408aa778c24e70d6",
+          "rapidocr_config_sha256": "06623941e188461a0bc263fe16175cb5e5f6f6b01f4387e546d3a741569fc021"
+        },
+        "manifest_sha256": "4af07d4e8125d3734ed8e9a9282fad2a8d0683383a6ab4ca9638ec3a87a6090d",
+        "model_sha256": "c3461add59bb4323ecba96a492ab75e06dda42467c9e3d0c18db5d1d21924be8",
+        "runtime_versions": {
+          "rapidocr": "3.9.2",
+          "onnxruntime": "1.30.0",
+          "numpy": "2.5.3",
+          "Pillow": "12.3.0",
+          "opencv-python": "5.0.0.93",
+          "omegaconf": "2.3.1"
+        },
+        "recognition_options": {
+          "use_det": false,
+          "use_cls": false,
+          "use_rec": true,
+          "whole_image_as_single_text_line": true,
+          "rec_batch_num": 1,
+          "rec_img_shape": [
+            3,
+            48,
+            320
+          ],
+          "rec_img_shape_source": "RapidOCR 3.9.2 config.yaml default; validated against ONNX input",
+          "resize": "RapidOCR resize_norm_img; aspect-preserving height 48, dynamic width padded to at least 320",
+          "input_conversion": "PIL convert(RGB), then NumPy RGB to OpenCV BGR; no EXIF transpose",
+          "confidence_filter": null,
+          "prediction_normalization": null,
+          "return_word_box": false,
+          "providers": [
+            "CPUExecutionProvider"
+          ],
+          "intra_op_num_threads": 2,
+          "inter_op_num_threads": 1,
+          "execution_mode": "ORT_SEQUENTIAL",
+          "graph_optimization_level": "ORT_ENABLE_ALL",
+          "enable_cpu_mem_arena": true,
+          "opencv_num_threads": 1,
+          "warmup": "first manifest image, once per process, excluded from sample timing",
+          "sample_timing": "PIL file open excluded; image decoding/RGB-to-BGR conversion, recognition preprocessing, inference and decoding included"
+        },
+        "completed": 3070,
+        "total_samples": 3070,
+        "status": "complete",
+        "literal_exact_match": 0.719543973941368,
+        "case_insensitive_exact_match": 0.742671009771987,
+        "character_error_rate": 0.07100864553314121,
+        "latency": {
+          "samples": 3070,
+          "mean_ms": 22.219310551768267,
+          "p50_ms": 22.483856499093235,
+          "p95_ms": 23.58152915039682
+        },
+        "failed_samples": 0,
+        "failure_counts": {},
+        "empty_answers": 0,
+        "sessions": [
+          {
+            "started_at_utc": "2026-10-05T22:50:13.346171+00:00",
+            "resumed_from": 0,
+            "model_load_seconds": 0.07836733900330728,
+            "providers": [
+              "CPUExecutionProvider"
+            ],
+            "warmup_seconds": 0.01607026599958772,
+            "warmup_error": null,
+            "processed_samples": 3070
+          }
+        ],
+        "predictions_sha256": "f15770153509b1ac8c16a620196ac8ce0c9c55dc3f8a93195eeaa3a358dc9ae2"
+      }
+    },
+    "ppocr-v5-server": {
+      "display_name": "PP-OCRv5 Server",
+      "overall": {
+        "samples": 3070,
+        "literal_exact_count": 683,
+        "literal_exact_match": 0.2224755700325733,
+        "case_insensitive_exact_count": 751,
+        "case_insensitive_exact_match": 0.24462540716612377,
+        "edit_distance_total": 4878,
+        "reference_characters": 17350,
+        "character_error_rate": 0.2811527377521614,
+        "latency": {
+          "samples": 3070,
+          "mean_ms": 85.02112327132696,
+          "p50_ms": 84.77070799926878,
+          "p95_ms": 88.35610230125894
+        },
+        "failed_samples": 0,
+        "empty_answers": 0
+      },
+      "by_source": {
+        "project_sloth_captcha_images_test": {
+          "samples": 2000,
+          "literal_exact_count": 278,
+          "literal_exact_match": 0.139,
+          "case_insensitive_exact_count": 278,
+          "case_insensitive_exact_match": 0.139,
+          "edit_distance_total": 3913,
+          "reference_characters": 12000,
+          "character_error_rate": 0.32608333333333334,
+          "latency": {
+            "samples": 2000,
+            "mean_ms": 85.05116675396857,
+            "p50_ms": 84.82833600101003,
+            "p95_ms": 88.45104944903142
+          },
+          "failed_samples": 0,
+          "empty_answers": 0
+        },
+        "kaggle_fournierp_captcha_version_2": {
+          "samples": 1070,
+          "literal_exact_count": 405,
+          "literal_exact_match": 0.37850467289719625,
+          "case_insensitive_exact_count": 473,
+          "case_insensitive_exact_match": 0.44205607476635517,
+          "edit_distance_total": 965,
+          "reference_characters": 5350,
+          "character_error_rate": 0.18037383177570093,
+          "latency": {
+            "samples": 1070,
+            "mean_ms": 84.96496722900616,
+            "p50_ms": 84.6244000003935,
+            "p95_ms": 88.19073809954716
+          },
+          "failed_samples": 0,
+          "empty_answers": 0
+        }
+      },
+      "paired_vs_common_old": {
+        "project_sloth_captcha_images_test": {
+          "new_correct_baseline_wrong": 47,
+          "baseline_correct_new_wrong": 1278
+        },
+        "kaggle_fournierp_captcha_version_2": {
+          "new_correct_baseline_wrong": 44,
+          "baseline_correct_new_wrong": 555
+        }
+      },
+      "prediction_sha256": "4b9167becea35a224f680f4734cb8d47c31290762227e3fde388280b510111da",
+      "summary_sha256": "2bff11f0f2fdf0c02e91ebfeffd4fdf69008e833224e44fb94be7a538c554cff",
+      "run_summary": {
+        "scope": "Source-labeled local text CAPTCHA images; OCR only, no model training, router evaluation, or live-site pass rate.",
+        "manifest": "/workspace/work/ocr/eval-data/manifest.json",
+        "dataset": "Public source-labeled text CAPTCHA image evaluation",
+        "provenance": {
+          "restoration": "New manifest reconstructed from the supplied local archives; the earlier per-image manifest is unavailable.",
+          "original_kaggle_split_assignment": "Unavailable; all 1070 Kaggle images are included without inventing split fields.",
+          "sources": [
+            {
+              "key": "project_sloth_captcha_images_test",
+              "dataset": "project-sloth/captcha-images",
+              "url": "https://huggingface.co/datasets/project-sloth/captcha-images",
+              "revision": "eeaf2b6ec9086645f270f7e2aaa9ea90730683de",
+              "archive": {
+                "path": "/workspace/work/ocr/datasets/sloth-test.tar.gz",
+                "bytes": 5773266,
+                "sha256": "730bf94a1b857caa1de00bc7b5d9840c25bcd9767718f91ba9f8a3d5fd2a1912",
+                "archive_name": "test.tar.gz"
+              },
+              "sample_count": 2000
+            },
+            {
+              "key": "kaggle_fournierp_captcha_version_2",
+              "dataset": "fournierp/captcha-version-2-images",
+              "url": "https://www.kaggle.com/datasets/fournierp/captcha-version-2-images",
+              "revision": null,
+              "archive": {
+                "path": "/workspace/work/ocr/datasets/kaggle-v2/captcha-version-2-images.zip",
+                "bytes": 18280840,
+                "sha256": "6d26195a1647581990b05e8d40039b8f9ddfee422758c5cdfb165a1ec3fe1e14",
+                "archive_name": "captcha-version-2-images.zip"
+              },
+              "sample_count": 1070
+            }
+          ]
+        },
+        "license": {
+          "project_sloth_captcha_images_test": "WTFPL v2 (reported in the previous evaluation; license file not included in the supplied test archive).",
+          "kaggle_fournierp_captcha_version_2": "Other (specified in dataset description); unavailable for verification from the supplied archive."
+        },
+        "samples": 3070,
+        "ocr_backend": "RapidOCR.TextRecognizer/ONNXRuntime",
+        "providers": [
+          "CPUExecutionProvider"
+        ],
+        "model_load_seconds": 0.24150391300281626,
+        "by_source": {
+          "kaggle_fournierp_captcha_version_2": {
+            "samples": 1070,
+            "literal_exact_match": 0.37850467289719625,
+            "case_insensitive_exact_match": 0.44205607476635517,
+            "character_error_rate": 0.18037383177570093,
+            "latency": {
+              "samples": 1070,
+              "mean_ms": 84.96496722900616,
+              "p50_ms": 84.6244000003935,
+              "p95_ms": 88.19073809954716
+            },
+            "failed_samples": 0,
+            "empty_answers": 0
+          },
+          "project_sloth_captcha_images_test": {
+            "samples": 2000,
+            "literal_exact_match": 0.139,
+            "case_insensitive_exact_match": 0.139,
+            "character_error_rate": 0.32608333333333334,
+            "latency": {
+              "samples": 2000,
+              "mean_ms": 85.05116675396857,
+              "p50_ms": 84.82833600101003,
+              "p95_ms": 88.45104944903142
+            },
+            "failed_samples": 0,
+            "empty_answers": 0
+          }
+        },
+        "checkpointed_samples": 3070,
+        "schema_version": 1,
+        "evaluation_identity": {
+          "model": "ppocr-v5-server",
+          "model_path": "/workspace/work/ocr/models/ch_PP-OCRv5_rec_server.onnx",
+          "model_sha256": "e09385400eaaaef34ceff54aeb7c4f0f1fe014c27fa8b9905d4709b65746562a",
+          "manifest_path": "/workspace/work/ocr/eval-data/manifest.json",
+          "manifest_sha256": "4af07d4e8125d3734ed8e9a9282fad2a8d0683383a6ab4ca9638ec3a87a6090d",
+          "runtime_versions": {
+            "rapidocr": "3.9.2",
+            "onnxruntime": "1.30.0",
+            "numpy": "2.5.3",
+            "Pillow": "12.3.0",
+            "opencv-python": "5.0.0.93",
+            "omegaconf": "2.3.1"
+          },
+          "recognition_options": {
+            "use_det": false,
+            "use_cls": false,
+            "use_rec": true,
+            "whole_image_as_single_text_line": true,
+            "rec_batch_num": 1,
+            "rec_img_shape": [
+              3,
+              48,
+              320
+            ],
+            "rec_img_shape_source": "RapidOCR 3.9.2 config.yaml default; validated against ONNX input",
+            "resize": "RapidOCR resize_norm_img; aspect-preserving height 48, dynamic width padded to at least 320",
+            "input_conversion": "PIL convert(RGB), then NumPy RGB to OpenCV BGR; no EXIF transpose",
+            "confidence_filter": null,
+            "prediction_normalization": null,
+            "return_word_box": false,
+            "providers": [
+              "CPUExecutionProvider"
+            ],
+            "intra_op_num_threads": 2,
+            "inter_op_num_threads": 1,
+            "execution_mode": "ORT_SEQUENTIAL",
+            "graph_optimization_level": "ORT_ENABLE_ALL",
+            "enable_cpu_mem_arena": true,
+            "opencv_num_threads": 1,
+            "warmup": "first manifest image, once per process, excluded from sample timing",
+            "sample_timing": "PIL file open excluded; image decoding/RGB-to-BGR conversion, recognition preprocessing, inference and decoding included"
+          },
+          "evaluator_sha256": "d6acf931d02a021a464ad1f9cfc1a495a1d85174246cacd011b9e867310e908d",
+          "reference_evaluator_sha256": "a731eaf94a1025025d196511fe18dd6c67dc184b7ba864a4b6f84bfbb35d8034"
+        },
+        "model": {
+          "filename": "ch_PP-OCRv5_rec_server.onnx",
+          "version": "PP-OCRv5",
+          "size": "server",
+          "language": "ch",
+          "sha256": "e09385400eaaaef34ceff54aeb7c4f0f1fe014c27fa8b9905d4709b65746562a",
+          "inputs": [
+            {
+              "name": "x",
+              "shape": [
+                "DynamicDimension.0",
+                3,
+                48,
+                "DynamicDimension.1"
+              ],
+              "type": "tensor(float)"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "fetch_name_0",
+              "shape": [
+                "DynamicDimension.0",
+                "Reshape_486_o0__d2",
+                18385
+              ],
+              "type": "tensor(float)"
+            }
+          ],
+          "metadata_keys": [
+            "character"
+          ],
+          "character_dictionary_entries": 18383,
+          "character_dictionary_sha256": "17665d27ed39f0deb82007859992d626d3105d0ee4578c120b7c72138dc04d05",
+          "rapidocr_config_sha256": "06623941e188461a0bc263fe16175cb5e5f6f6b01f4387e546d3a741569fc021"
+        },
+        "manifest_sha256": "4af07d4e8125d3734ed8e9a9282fad2a8d0683383a6ab4ca9638ec3a87a6090d",
+        "model_sha256": "e09385400eaaaef34ceff54aeb7c4f0f1fe014c27fa8b9905d4709b65746562a",
+        "runtime_versions": {
+          "rapidocr": "3.9.2",
+          "onnxruntime": "1.30.0",
+          "numpy": "2.5.3",
+          "Pillow": "12.3.0",
+          "opencv-python": "5.0.0.93",
+          "omegaconf": "2.3.1"
+        },
+        "recognition_options": {
+          "use_det": false,
+          "use_cls": false,
+          "use_rec": true,
+          "whole_image_as_single_text_line": true,
+          "rec_batch_num": 1,
+          "rec_img_shape": [
+            3,
+            48,
+            320
+          ],
+          "rec_img_shape_source": "RapidOCR 3.9.2 config.yaml default; validated against ONNX input",
+          "resize": "RapidOCR resize_norm_img; aspect-preserving height 48, dynamic width padded to at least 320",
+          "input_conversion": "PIL convert(RGB), then NumPy RGB to OpenCV BGR; no EXIF transpose",
+          "confidence_filter": null,
+          "prediction_normalization": null,
+          "return_word_box": false,
+          "providers": [
+            "CPUExecutionProvider"
+          ],
+          "intra_op_num_threads": 2,
+          "inter_op_num_threads": 1,
+          "execution_mode": "ORT_SEQUENTIAL",
+          "graph_optimization_level": "ORT_ENABLE_ALL",
+          "enable_cpu_mem_arena": true,
+          "opencv_num_threads": 1,
+          "warmup": "first manifest image, once per process, excluded from sample timing",
+          "sample_timing": "PIL file open excluded; image decoding/RGB-to-BGR conversion, recognition preprocessing, inference and decoding included"
+        },
+        "completed": 3070,
+        "total_samples": 3070,
+        "status": "complete",
+        "literal_exact_match": 0.2224755700325733,
+        "case_insensitive_exact_match": 0.24462540716612377,
+        "character_error_rate": 0.2811527377521614,
+        "latency": {
+          "samples": 3070,
+          "mean_ms": 85.02112327132696,
+          "p50_ms": 84.77070799926878,
+          "p95_ms": 88.35610230125894
+        },
+        "failed_samples": 0,
+        "failure_counts": {},
+        "empty_answers": 0,
+        "sessions": [
+          {
+            "started_at_utc": "2026-10-05T22:51:23.315074+00:00",
+            "resumed_from": 0,
+            "model_load_seconds": 0.24150391300281626,
+            "providers": [
+              "CPUExecutionProvider"
+            ],
+            "warmup_seconds": 0.09381608799958485,
+            "warmup_error": null,
+            "processed_samples": 3070
+          }
+        ],
+        "predictions_sha256": "4b9167becea35a224f680f4734cb8d47c31290762227e3fde388280b510111da"
+      }
+    }
+  },
+  "audit_files": [
+    {
+      "file": "manifest.json.gz",
+      "bytes": 241098,
+      "sha256": "46b4a1cd1b8a166cecaa39e353153ba280aad1ae8243de16b894a84fe1c30a1d",
+      "uncompressed_sha256": "4af07d4e8125d3734ed8e9a9282fad2a8d0683383a6ab4ca9638ec3a87a6090d"
+    },
+    {
+      "file": "predictions.jsonl.gz",
+      "bytes": 597107,
+      "sha256": "90c1b3e08c37b9b45bc1bf9c27dbb03747aa7e52e99c7761455517896bbf34a7",
+      "uncompressed_sha256": "8edabb3a0e06447b891452582ef1565d2b3e34c8e264113aaf0add4398619e23"
+    }
+  ],
+  "recommended_by_source": {
+    "project_sloth_captcha_images_test": "ppocr-v6-small",
+    "kaggle_fournierp_captcha_version_2": "common-old"
+  },
+  "verification": {
+    "image_hashes_verified": 3070,
+    "prediction_rows_verified": 18420,
+    "aggregate_scores_recomputed": true
+  },
+  "limitations": [
+    "Earlier per-image manifest is unavailable; equal aggregate scores do not prove byte-for-byte equality to the previous evaluation.",
+    "Original Kaggle train/validation/test assignments are unavailable; only all 1070 unique images are compared.",
+    "CPU timings are single-pass reference values; baseline startup briefly overlapped smoke/unit checks, candidates ran sequentially.",
+    "No detector, orientation classifier, confidence filtering, denoising, alphabet restriction or prediction normalization.",
+    "Recognition models are pretrained RapidOCR 3.9.2 ONNX exports; pretraining overlap with evaluation sources is not verified."
+  ]
+}

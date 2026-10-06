@@ -1,0 +1,311 @@
+{
+  "status": "PASS",
+  "scope": "offline audit of supplied OCR training result; public-corpus internal folds, not independent external test",
+  "sample_counts": {
+    "all": 3070,
+    "train": 2149,
+    "validation": 307,
+    "test": 614
+  },
+  "by_source_test": {
+    "kaggle_fournierp_captcha_version_2": 214,
+    "project_sloth_captcha_images_test": 400
+  },
+  "unique_sha256": 3070,
+  "hashes_cross_folds": false,
+  "code_sha256_verified": {
+    "finetune_crnn_text.py": "14323b0e13b9e25700818344dcc2a2685981d79fc83a926857346bb9677a2650",
+    "split_crnn_text.py": "4bda7d85b215379fc04d19f2e526fe1da380c5a127e67f8bd85b98622fd0ace6",
+    "evaluate_crnn_text.py": "79a0b6f1b4fcf432170f55d290decfb5b4494e83e24d693c685df2bed53f5616",
+    "evaluate_public_text.py": "a731eaf94a1025025d196511fe18dd6c67dc184b7ba864a4b6f84bfbb35d8034"
+  },
+  "baseline_test": {
+    "samples": 614,
+    "exact_count": 162,
+    "accuracy": 0.26384364820846906,
+    "reference_characters": 3470,
+    "edit_distance": 1158,
+    "cer": 0.3337175792507205,
+    "by_source": {
+      "kaggle_fournierp_captcha_version_2": {
+        "samples": 214,
+        "exact_count": 148,
+        "accuracy": 0.6915887850467289,
+        "reference_characters": 1070,
+        "edit_distance": 70,
+        "cer": 0.06542056074766354
+      },
+      "project_sloth_captcha_images_test": {
+        "samples": 400,
+        "exact_count": 14,
+        "accuracy": 0.035,
+        "reference_characters": 2400,
+        "edit_distance": 1088,
+        "cer": 0.4533333333333333
+      }
+    }
+  },
+  "finetuned_test": {
+    "samples": 614,
+    "exact_count": 556,
+    "accuracy": 0.9055374592833876,
+    "reference_characters": 3470,
+    "edit_distance": 70,
+    "cer": 0.020172910662824207,
+    "by_source": {
+      "kaggle_fournierp_captcha_version_2": {
+        "samples": 214,
+        "exact_count": 193,
+        "accuracy": 0.9018691588785047,
+        "reference_characters": 1070,
+        "edit_distance": 21,
+        "cer": 0.019626168224299065
+      },
+      "project_sloth_captcha_images_test": {
+        "samples": 400,
+        "exact_count": 363,
+        "accuracy": 0.9075,
+        "reference_characters": 2400,
+        "edit_distance": 49,
+        "cer": 0.020416666666666666
+      }
+    }
+  },
+  "baseline_validation": {
+    "samples": 307,
+    "exact_count": 92,
+    "accuracy": 0.2996742671009772,
+    "reference_characters": 1735,
+    "edit_distance": 544,
+    "cer": 0.31354466858789626,
+    "by_source": {
+      "kaggle_fournierp_captcha_version_2": {
+        "samples": 107,
+        "exact_count": 77,
+        "accuracy": 0.719626168224299,
+        "reference_characters": 535,
+        "edit_distance": 32,
+        "cer": 0.059813084112149535
+      },
+      "project_sloth_captcha_images_test": {
+        "samples": 200,
+        "exact_count": 15,
+        "accuracy": 0.075,
+        "reference_characters": 1200,
+        "edit_distance": 512,
+        "cer": 0.4266666666666667
+      }
+    }
+  },
+  "finetuned_validation": {
+    "samples": 307,
+    "exact_count": 286,
+    "accuracy": 0.9315960912052117,
+    "reference_characters": 1735,
+    "edit_distance": 25,
+    "cer": 0.01440922190201729,
+    "by_source": {
+      "kaggle_fournierp_captcha_version_2": {
+        "samples": 107,
+        "exact_count": 101,
+        "accuracy": 0.9439252336448598,
+        "reference_characters": 535,
+        "edit_distance": 6,
+        "cer": 0.011214953271028037
+      },
+      "project_sloth_captcha_images_test": {
+        "samples": 200,
+        "exact_count": 185,
+        "accuracy": 0.925,
+        "reference_characters": 1200,
+        "edit_distance": 19,
+        "cer": 0.015833333333333335
+      }
+    }
+  },
+  "selected_epoch_recomputed": {
+    "epoch": 19,
+    "exact_count": 286,
+    "cer": 0.01440922190201729
+  },
+  "best_checkpoint_sha256": "d9638a912065013084431b4660b921bcdc69f4964af9f69f50f5dcc5178f3f1a",
+  "result_best_sha256": "d9638a912065013084431b4660b921bcdc69f4964af9f69f50f5dcc5178f3f1a",
+  "last_checkpoint_sha256": "e13120ef10e4dbee0b5ce6862523e6c83634c3f3e777715d0e762c681cf1871e",
+  "result_last_sha256": "e13120ef10e4dbee0b5ce6862523e6c83634c3f3e777715d0e762c681cf1871e",
+  "pilot_epoch_19_validation": {
+    "samples": 307,
+    "exact_count": 286,
+    "accuracy": 0.9315960912052117,
+    "reference_characters": 1735,
+    "edit_distance": 25,
+    "cer": 0.01440922190201729,
+    "by_source": {
+      "kaggle_fournierp_captcha_version_2": {
+        "samples": 107,
+        "exact_count": 101,
+        "accuracy": 0.9439252336448598,
+        "reference_characters": 535,
+        "edit_distance": 6,
+        "cer": 0.011214953271028037
+      },
+      "project_sloth_captcha_images_test": {
+        "samples": 200,
+        "exact_count": 185,
+        "accuracy": 0.925,
+        "reference_characters": 1200,
+        "edit_distance": 19,
+        "cer": 0.015833333333333335
+      }
+    }
+  },
+  "pilot_epoch_19_test": {
+    "samples": 614,
+    "exact_count": 556,
+    "accuracy": 0.9055374592833876,
+    "reference_characters": 3470,
+    "edit_distance": 70,
+    "cer": 0.020172910662824207,
+    "by_source": {
+      "kaggle_fournierp_captcha_version_2": {
+        "samples": 214,
+        "exact_count": 193,
+        "accuracy": 0.9018691588785047,
+        "reference_characters": 1070,
+        "edit_distance": 21,
+        "cer": 0.019626168224299065
+      },
+      "project_sloth_captcha_images_test": {
+        "samples": 400,
+        "exact_count": 363,
+        "accuracy": 0.9075,
+        "reference_characters": 2400,
+        "edit_distance": 49,
+        "cer": 0.020416666666666666
+      }
+    }
+  },
+  "extended_selected_validation": {
+    "samples": 307,
+    "exact_count": 286,
+    "accuracy": 0.9315960912052117,
+    "reference_characters": 1735,
+    "edit_distance": 25,
+    "cer": 0.01440922190201729,
+    "by_source": {
+      "kaggle_fournierp_captcha_version_2": {
+        "samples": 107,
+        "exact_count": 101,
+        "accuracy": 0.9439252336448598,
+        "reference_characters": 535,
+        "edit_distance": 6,
+        "cer": 0.011214953271028037
+      },
+      "project_sloth_captcha_images_test": {
+        "samples": 200,
+        "exact_count": 185,
+        "accuracy": 0.925,
+        "reference_characters": 1200,
+        "edit_distance": 19,
+        "cer": 0.015833333333333335
+      }
+    }
+  },
+  "extended_selected_test": {
+    "samples": 614,
+    "exact_count": 556,
+    "accuracy": 0.9055374592833876,
+    "reference_characters": 3470,
+    "edit_distance": 70,
+    "cer": 0.020172910662824207,
+    "by_source": {
+      "kaggle_fournierp_captcha_version_2": {
+        "samples": 214,
+        "exact_count": 193,
+        "accuracy": 0.9018691588785047,
+        "reference_characters": 1070,
+        "edit_distance": 21,
+        "cer": 0.019626168224299065
+      },
+      "project_sloth_captcha_images_test": {
+        "samples": 400,
+        "exact_count": 363,
+        "accuracy": 0.9075,
+        "reference_characters": 2400,
+        "edit_distance": 49,
+        "cer": 0.020416666666666666
+      }
+    }
+  },
+  "validation_only_candidate_selection": {
+    "winner": "extended_selected_epoch_19",
+    "candidates": [
+      {
+        "name": "pilot_epoch_19",
+        "validation_exact_count": 286,
+        "validation_cer": 0.01440922190201729
+      },
+      {
+        "name": "extended_selected_epoch_19",
+        "validation_exact_count": 286,
+        "validation_cer": 0.01440922190201729
+      }
+    ],
+    "rule": "validation exact count descending, then validation CER ascending; test not used"
+  },
+  "matched_existing_model_test": {
+    "common_old": {
+      "samples": 614,
+      "exact_count": 481,
+      "accuracy": 0.7833876221498371,
+      "reference_characters": 3470,
+      "edit_distance": 255,
+      "cer": 0.07348703170028818,
+      "by_source": {
+        "kaggle_fournierp_captcha_version_2": {
+          "samples": 214,
+          "exact_count": 178,
+          "accuracy": 0.8317757009345794,
+          "reference_characters": 1070,
+          "edit_distance": 36,
+          "cer": 0.03364485981308411
+        },
+        "project_sloth_captcha_images_test": {
+          "samples": 400,
+          "exact_count": 303,
+          "accuracy": 0.7575,
+          "reference_characters": 2400,
+          "edit_distance": 219,
+          "cer": 0.09125
+        }
+      }
+    },
+    "ppocr_v6_small": {
+      "samples": 614,
+      "exact_count": 479,
+      "accuracy": 0.7801302931596091,
+      "reference_characters": 3470,
+      "edit_distance": 172,
+      "cer": 0.04956772334293948,
+      "by_source": {
+        "kaggle_fournierp_captcha_version_2": {
+          "samples": 214,
+          "exact_count": 107,
+          "accuracy": 0.5,
+          "reference_characters": 1070,
+          "edit_distance": 136,
+          "cer": 0.12710280373831775
+        },
+        "project_sloth_captcha_images_test": {
+          "samples": 400,
+          "exact_count": 372,
+          "accuracy": 0.93,
+          "reference_characters": 2400,
+          "edit_distance": 36,
+          "cer": 0.015
+        }
+      }
+    }
+  },
+  "comparison_note": "Accuracy/CER only on same 614 IDs, verified labels and image SHA-256. Timing excluded because these are not CPU timings.",
+  "limitation": "All source images have already been used in earlier model-selection benchmarks. These frozen internal folds prevent gradient/checkpoint-selection leakage within this pilot, but are not a fresh independently collected final test set. The pretrained model's training-image overlap with these public corpora is unknown."
+}
