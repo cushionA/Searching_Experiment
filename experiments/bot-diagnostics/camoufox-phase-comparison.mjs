@@ -116,7 +116,7 @@ try {
     process.env.BOT_DIAGNOSTICS_FOURPLAY_PASSWORD=password;
     process.env.BOT_DIAGNOSTICS_FOURPLAY_URL='http://127.0.0.1:3000';
     const log=fs.openSync(path.join(output,'bridge-process.log'),'wx');
-    service=spawn(process.execPath,[path.join(repo,'experiments/fourget-selfhost/fourplay/server.cjs')],{detached:true,stdio:['ignore',log,log],env:{...process.env,NODE_PATH:path.join(repo,'.deps/fourplay/node_modules')}});fs.closeSync(log);
+    service=spawn(process.execPath,['--require',path.join(repo,'experiments/bot-diagnostics/fourplay-bridge-trace.cjs'),path.join(repo,'experiments/fourget-selfhost/fourplay/server.cjs')],{detached:true,stdio:['ignore',log,log],env:{...process.env,NODE_PATH:path.join(repo,'.deps/fourplay/node_modules'),PHASE_BRIDGE_TRACE:path.join(output,'bridge-trace.jsonl')}});fs.closeSync(log);
     const extension=prepareExtension(process.env.BOT_DIAGNOSTICS_CAMOUFOX_FOURPLAY_EXTENSION,path.join(profile,'extension'),3030,password);
     child=createCamoufoxLaunchHook({launchOptions:config})({profile,extension:extension.path});
     const started=performance.now();let healthy=false;
@@ -132,7 +132,7 @@ try {
       await adapter.open();
       for(const pathname of ['/probe?q=fixture','/error?q=fixture','/probe?q=fixture','/error?q=fixture']) {
         const started=performance.now();const result=await adapter.homepage(origin+pathname);
-        bridge.pages.push({url:origin+pathname,status:result.http_status,outcome:result.outcome,ms:performance.now()-started,errors:result.bridge_errors});
+        bridge.pages.push({url:origin+pathname,status:result.http_status,outcome:result.outcome,ms:performance.now()-started,dom_ready:result.dom_sha256?fs.readFileSync(path.join(evidence.directory,'blobs',result.dom_sha256),'utf8').includes('<p id="ready">loaded</p>'):false,errors:result.bridge_errors});
       }
     } finally {await adapter.close();browser=null;}
     bridge.verification=verify(evidence.directory);
