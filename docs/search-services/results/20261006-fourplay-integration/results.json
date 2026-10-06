@@ -1,0 +1,95 @@
+{
+  "brave": {
+    "run": "lab-runs/search-fourplay-brave-20261006-final",
+    "http_status": 200,
+    "browser_outcome": "content_observed",
+    "search_state": "official_docs_link_found",
+    "search_succeeded": true,
+    "candidate_link_count": 46,
+    "candidate_link_count_is_serp_result_count": false,
+    "bridge_response_records": 160,
+    "official_resolved_destinations": [
+      {
+        "resolved_url": "https://docs.python.org/3/",
+        "display_url": null,
+        "text": "",
+        "resolution": "direct"
+      },
+      {
+        "resolved_url": "https://docs.python.org/3/reference/index.html",
+        "display_url": null,
+        "text": "",
+        "resolution": "direct"
+      },
+      {
+        "resolved_url": "https://docs.python.org/3/tutorial/",
+        "display_url": null,
+        "text": "",
+        "resolution": "direct"
+      }
+    ],
+    "official_citations": [],
+    "dom_sha256": null
+  },
+  "google": {
+    "run": "lab-runs/search-fourplay-google-20261006-final",
+    "http_status": 200,
+    "browser_outcome": "content_observed",
+    "search_state": "official_docs_citation_found_destination_unresolved",
+    "search_succeeded": null,
+    "candidate_link_count": 7,
+    "candidate_link_count_is_serp_result_count": false,
+    "official_resolved_destinations": [],
+    "official_citations": [
+      {
+        "raw_or_redirect_url": "https://www.google.com/goto?url=CAESUwHrOzAVV2eKZIGiXXmpFU7E1kD-xEPRuyXFcuyZpkwHABWZYxf_fGg0UejJHrsc0P1XGmxhmS9tLAsyuuWDLtSZIx9NTxlQToh_FzM7NDjTr1E-",
+        "displayed_citation": "https://docs.python.org",
+        "text": "Python Docs Python documentation https://docs.python.org",
+        "resolution": "google_opaque_redirect"
+      }
+    ],
+    "dom_sha256": null,
+    "observation_gaps": [
+      "bridge response errors were reported; response coverage may be incomplete"
+    ]
+  },
+  "fixture": {
+    "run": "lab-runs/search-fourplay-fixture-20261006-final",
+    "adapter_ready": true,
+    "navigation_and_follow_link_verified": true,
+    "target_records": 2,
+    "bridge_response_records": 4,
+    "dom_sha256": "cc9d983e12c7636b5d023e6a34cdc4b2d201e470b9a9eae496ddb3655ff5a959",
+    "note": "Fixture returned HTTP 200 and JavaScript-executed content on both routes; favicon returned 401."
+  },
+  "fourget_google_follow_up": {
+    "run": "lab-runs/search-fourget-selfhost-20261006T140648Z-cea332",
+    "http_status": 200,
+    "api_status": "Page renderer returned an error: Upstream browser reached the configured failure page",
+    "results_observed": false,
+    "result_count": 0,
+    "search_succeeded": false
+  },
+  "prior_attempts": [
+    {
+      "run": "lab-runs/search-fourplay-brave-20261006-first",
+      "note": "Initial direct-proxy attempt; DNS/proxy route failed."
+    },
+    {
+      "run": "lab-runs/search-fourplay-brave-20261006-proxy-fixed",
+      "note": "Proxy configuration fixed; earlier-stage attempt."
+    },
+    {
+      "run": "lab-runs/search-fourplay-google-20261006-first",
+      "note": "Initial direct-proxy attempt; DNS/proxy route failed."
+    },
+    {
+      "run": "lab-runs/search-fourplay-google-20261006-proxy-fixed",
+      "note": "Browser returned content, but the earlier Google extraction did not resolve official destinations; final parser run is documented separately."
+    },
+    {
+      "run": "lab-runs/search-fourplay-fixture-20261006-first",
+      "note": "Initial fixture integration attempt, retained as evidence."
+    }
+  ]
+}

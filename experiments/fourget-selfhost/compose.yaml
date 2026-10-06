@@ -1,0 +1,50 @@
+name: search-fourget
+
+services:
+  fourget:
+    image: luuul/4get@sha256:fb762cd27c29c0e2bba89848fa4b858d719d40396dea25baa66b95a75cb8b3fc
+    restart: unless-stopped
+    environment:
+      FOURGET_PROTO: http
+      FOURGET_SERVER_NAME: "4get local"
+      FOURGET_BOT_PROTECTION: "0"
+      FOURGET_HEADER_REGEX: '/^$/'
+      SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+      CURL_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt
+      # The bundled NSS curl cannot load this environment's PEM CA bundle.
+      # Use Alpine's system libcurl, which validates the mounted trust store.
+      LD_PRELOAD: ""
+    env_file:
+      - .runtime/scrapers.env
+      - .runtime/renderer.env
+    depends_on:
+      - fourplay
+    ports:
+      - "127.0.0.1:8084:80"
+    volumes:
+      - ./.runtime/proxies/cloud.txt:/var/www/html/4get/data/proxies/cloud.txt:ro
+      - ./.runtime/ca-bundle.pem:/etc/ssl/certs/ca-certificates.crt:ro
+
+  fourplay:
+    image: search-fourplay:local
+    build:
+      context: ./fourplay
+      secrets:
+        - proxy_ca
+    restart: unless-stopped
+    init: true
+    shm_size: 256mb
+    env_file:
+      - .runtime/fourplay.env
+    volumes:
+      - ./.runtime/fourplay-password.txt:/run/fourplay-password.txt:ro
+      - ./.runtime/fourplay-1.10.xpi:/opt/4play/extension.xpi:ro
+      - ./.runtime/profile-seed:/run/profile-seed:ro
+      - ./.runtime/proxy-ca.pem:/run/proxy-ca.pem:ro
+      - ./.runtime/ca-bundle.pem:/etc/ssl/certs/ca-certificates.crt:ro
+    ports:
+      - "127.0.0.1:3004:3000"
+
+secrets:
+  proxy_ca:
+    file: ./.runtime/ca-bundle.pem
