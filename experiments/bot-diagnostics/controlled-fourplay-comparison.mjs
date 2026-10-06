@@ -46,7 +46,8 @@ try {
   for(let repeat=0;repeat<2;repeat++) for(const arm of repeat?[...arms].reverse():arms) {
     const directory=path.join(output,`${repeat+1}-${arm}`);
     const evidence=new Evidence(directory,false,{policy:'browser_observation',authorization:'User-authorized controlled local fixture comparison'});
-    const tool=arm==='firefox-fourplay'?'4play':arm==='camoufox-fourplay'?arm:'camoufox';
+    // Both native arms use the native adapter lane; public 4play is an HTTP bridge.
+    const tool=arm.includes('fourplay')?'camoufox-fourplay':'camoufox';
     const manifest=prepare({schema:1,tools:[tool],sites:[{id:'fixture',origins:[origin],links:{home:origin+'/ok?q=fixture',targets:[origin+'/error?q=fixture']}}]},{fixture:true});
     evidence.save('scenario.json',manifest); evidence.save('sources.json',snapshotSources(evidence));
     const started=performance.now();
