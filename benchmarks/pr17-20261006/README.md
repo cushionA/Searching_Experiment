@@ -1,0 +1,15 @@
+# Controlled browser evidence
+
+See [the Japanese report](../../reports/2026-10/pr17-ci-controlled-comparison.md).
+
+`run-02` is the definitive run. `run-01` is a retained pilot with a harness routing failure; do not pool them. Root JSON files are readable summaries. All cell-level evidence and source snapshots are inside the corresponding verified `*-checkpoint.zip`. Raw working directories remain locally and are ignored to avoid duplicating the ZIP contents in Git.
+
+Reproduction uses the code commit in `run-02/conditions.json`, pinned Camoufox setup, the saved fourplay package lock, and the verified upstream 4play 1.10 XPI (SHA256 `70937b52eada128b3966d0628d4aad7369abb9ed4357c03ab4576235de410fcb`). Install the lock in `.deps/fourplay`, extract the XPI into `.deps/fourplay/ext`, and set both `BOT_DIAGNOSTICS_FOURPLAY_EXTENSION` and `BOT_DIAGNOSTICS_CAMOUFOX_FOURPLAY_EXTENSION` to that directory. Use `environment/Browser.Dockerfile`; builds require the existing proxy and readable CA secret (`mode=0444`). No new credentials are needed.
+
+Run the container as the workspace user, bind this repository at the same path, use `--network none --shm-size=512m`, start Xvfb `:99 -screen 0 1280x720x24 -nolisten tcp -ac`, then run:
+
+```sh
+node experiments/bot-diagnostics/controlled-fourplay-comparison.mjs NEW_OUTPUT_DIRECTORY
+```
+
+The fixture chooses an ephemeral loopback port and generates one fingerprint per invocation, shared by all Camoufox arms and recorded for inspection. A new invocation is a new fingerprint; it does not automatically replay the saved fingerprint. The image used here was `sha256:fe1be5b83ee8c7ccb9a00c341ff665ad46815fd65d4218dfc790311143dec55e`. Its base digest and installed package versions are preserved in `environment/`. Rebuilding against a moving apt repository can change the Firefox package; compare versions before combining runs.
