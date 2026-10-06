@@ -26,6 +26,8 @@ class CloudPackageTests(unittest.TestCase):
                     "experiments/fourget-selfhost/start.py",
                     "experiments/fourget-selfhost/fourplay/server.cjs",
                     "experiments/bot-diagnostics/fourplay-runtime.mjs",
+                    "experiments/bot-diagnostics/fourplay-bridge-trace.cjs",
+                    "experiments/bot-diagnostics/dom-stability.mjs",
                     "docs/bot-diagnostics-fourplay.md",
                 }, names)
                 self.assertFalse(any(

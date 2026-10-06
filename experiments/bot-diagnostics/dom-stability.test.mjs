@@ -19,3 +19,7 @@ test('a stalled browser read is bounded by the deadline',async()=>{
  const start=performance.now();const result=await waitForDOMStability(null,{timeoutMs:20,stableMs:5,pollMs:5,minTextChars:0}, {read:()=>new Promise(()=>{})});
  assert.equal(result.outcome,'timeout');assert.ok(performance.now()-start<1000);
 });
+test('generic policy without query terms can accept stable meaningful text',async()=>{
+ const result=await waitForDOMStability(null,{timeoutMs:500,stableMs:200,pollMs:100,minTextChars:5},clock(async()=>snapshot('plain text')));
+ assert.equal(result.outcome,'ready');assert.equal(result.elapsed_ms,200);
+});

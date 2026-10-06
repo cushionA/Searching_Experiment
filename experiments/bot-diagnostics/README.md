@@ -361,3 +361,16 @@ node experiments/bot-diagnostics/summarize.mjs
 このコマンドは今回の固定runパスからsummaryとdocsのレポートを再生成し、原履歴は保持する。一般の新しいrunを自動選択するコマンドではない。
 
 raw HTML、DOM、スクリーンショット、BotDのgetComponents/getDetections、Rebrowserの原rating、設定、台帳、環境とソースハッシュを保持する。HTTPクライアントのHTML取得をJS検知器の合格に換算しない。検知器の判定から実サイトのWAF原因を断定しない。
+
+### 上限付きDOM安定性待機（任意）
+
+load完了後の遅延JSを観測する場合、プログラムから`ToolAdapter`の`options.domWait`に
+`{timeoutMs:5000, stableMs:750, pollMs:250, minTextChars:200, terms:['早稲田','教員']}`を渡せる。
+共通runnerは既存observe時間の後、DOM保存前に本文とリンクの安定性を読み取り専用で調べる。
+`result.dom_wait.outcome`は`ready`、`timeout`、またはchallenge/拒否の停止。HTTP200の
+`content_observed`とは別指標であり、検索品質やブロック回避を保証しない。termsを省略すると
+本文長と安定性のみを判定する。既定は無効で、一般framework CLIの新フラグは追加していない。
+
+`hybrid-wait-comparison.mjs NEW_DIR --fixture`が遅延JSの局所検証、`--public`が固定Bing/Braveの
+最大8ナビゲーション比較。公開試験は管理proxy/CAとheadful表示先が必要。既存出力は上書きしない。
+[切り分け・公開試験・未解明部分](../../reports/2026-10/pr18-phase-and-wait-followup.md)を参照。

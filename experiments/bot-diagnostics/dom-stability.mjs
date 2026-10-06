@@ -31,7 +31,7 @@ export async function waitForDOMStability(page,{timeoutMs=5000,stableMs=750,poll
     const summary=summarizeDOM(snapshot,terms);samples.push({elapsed_ms:now()-started,...summary});
     if(['challenge_observed','access_denied_observed'].includes(summary.outcome)) return finish('stopped_'+summary.outcome);
     if(summary.signature!==previous) stableSince=now();previous=summary.signature;
-    if(summary.text_chars>=minTextChars&&summary.terms_present&&summary.matching_links>0&&now()-stableSince>=stableMs) return finish('ready');
+    if(summary.text_chars>=minTextChars&&summary.terms_present&&(!terms.length||summary.matching_links>0)&&now()-stableSince>=stableMs) return finish('ready');
     await sleep(Math.min(pollMs,Math.max(0,timeoutMs-(now()-started))));
   }
   return finish('timeout');
