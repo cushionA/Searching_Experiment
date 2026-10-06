@@ -9,6 +9,7 @@ import {openLightpanda} from './lightpanda-runtime.mjs';
 import {openObscura} from './obscura-runtime.mjs';
 import {assertChromiumTrustWritable} from './chromium-trust.mjs';
 import {openCamoufox} from './camoufox-runtime.mjs';
+import {openFourplay} from './fourplay-runtime.mjs';
 
 // Preserve the existing runner API for scenarios and historical verification commands.
 export {Evidence, verify, safeError, classify, decodeBody};
@@ -153,6 +154,12 @@ export async function startFixture() {
 }
 
 export async function openBrowser(name, {extensions = [], lightpanda = null, fixture = false, headful = false, profile = 'diagnostic', timezoneId} = {}) {
+  if (name === '4play') {
+    if (profile === 'grounding') throw new Error('unsupported_capability:fourplay_grounding');
+    if (extensions.length || timezoneId) throw new Error('unsupported_capability:fourplay_extensions_or_timezone');
+    if (!headful) throw new Error('unsupported_capability:4play_requires_headful');
+    return openFourplay({fixture,profile,headful});
+  }
   const naturalUA = profile === 'browser_observation';
   if(lightpanda && name !== 'rebrowser-lightpanda') throw new Error('lightpanda_profile_requires_lightpanda');
   fs.mkdirSync(state, {recursive:true});
@@ -220,6 +227,12 @@ export async function openBrowser(name, {extensions = [], lightpanda = null, fix
 
 export async function detectorRun(evidence, name, origin, browserOptions = {}) {
   const key = `${name}/detectors`;
+  if(name==='4play') {
+    for(const detector of ['rebrowser','botd']) evidence.result({client:name,detector,
+      outcome:'unsupported_capability',capability:'detector_fixture_control',
+      note:'4play bridge navigation does not expose the runner detector fixture controls'});
+    return;
+  }
   if (['wreq-js', 'impit'].includes(name)) {
     const client = await httpClient(name, config.identification, true);
     try {
@@ -348,6 +361,71 @@ export async function httpSite(evidence, name, target, sharedClient = null) {
   finally { if (!sharedClient) await client.close(); }
 }
 
+async function fourplaySite(evidence, name, target, browser) {
+  const key=`${name}/${target.name}`;
+  const result={client:name,target:target.name,url:target.url,blocked_requests:[],page_errors:[],
+    instrumentation:'4play web_response events and returned DOM; Playwright events/CDP are unavailable',
+    observation_limits:['response_headers_not_exposed','request_and_failed_request_coverage_unavailable',
+      'Playwright_events_and_CDP_unavailable','referrer_not_preserved_between_tabs']};
+  try {
+    const observed=await browser.navigate(target.url,target.observe_ms);
+    if(!observed || typeof observed!=='object') throw new Error('fourplay_invalid_navigation_response');
+    const responseRecords=[];
+    for(const item of (Array.isArray(observed.responses)?observed.responses:[])) {
+      let responseURL;
+      try {responseURL=new URL(item.url).href;} catch {result.page_errors.push({name:'Error',message:'invalid_response_url'});continue;}
+      const parsedResponseURL=new URL(responseURL);
+      if(!['http:','https:'].includes(parsedResponseURL.protocol)||parsedResponseURL.username||parsedResponseURL.password) {
+        result.page_errors.push({name:'Error',message:'invalid_response_url'});continue;
+      }
+      if(!Number.isInteger(item.status)||item.status<100||item.status>599) {
+        result.page_errors.push({name:'Error',message:'invalid_response_status'});continue;
+      }
+      const isDocument=['document','main_document','main-frame','main_frame','navigation'].includes(String(item.type||'').toLowerCase());
+      const record=evidence.reserve(key,responseURL,isDocument?'main_document':(item.type||'browser_resource'));
+      record.capture_source='fourplay_bridge';
+      record.resource_type=item.type||null;
+      record.request_method=typeof item.method==='string'?item.method:'unknown';
+      record.response_headers_available=false;
+      if(typeof item.id==='string'||typeof item.id==='number') record.response_id=item.id;
+      if(typeof item.container==='string'||typeof item.container==='number') record.container=item.container;
+      let body;
+      if(typeof item.body_base64==='string' && /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(item.body_base64))
+        body=Buffer.from(item.body_base64,'base64');
+      if(!body) {evidence.fail(record,new Error('fourplay_response_body_unavailable'));continue;}
+      const headers=item.headers&&typeof item.headers==='object'?item.headers:{};
+      evidence.finish(record,item.status,headers,body,false);
+      responseRecords.push({item,record,body,headers,url:responseURL});
+    }
+    const finalURL=typeof observed.url==='string'?observed.url:target.url;
+    result.final_url=finalURL;
+    result.user_agent=browser.ua;
+    result.runtime=browser.runtime;
+    result.title=typeof observed.title==='string'?observed.title:null;
+    result.bridge_response_count=Array.isArray(observed.responses)?observed.responses.length:0;
+    result.bridge_errors=Array.isArray(observed.errors)?observed.errors:[];
+    result.bridge_response_bodies_complete=responseRecords.length===result.bridge_response_count;
+    if(typeof observed.dom==='string') result.dom_sha256=evidence.blob(Buffer.from(observed.dom,'utf8'));
+    else result.dom_capture='unavailable';
+    const main=responseRecords.filter(({item})=>['document','main_document','main-frame','main_frame','navigation'].includes(String(item.type||'').toLowerCase())).at(-1);
+    if(main) {
+      result.main_record=main.record.index;
+      result.http_status=main.record.status;
+      const classificationHTML=typeof observed.dom==='string'?observed.dom:decodeBody(main.body,main.headers);
+      result.classification_source=typeof observed.dom==='string'?'captured_dom':'main_response_body';
+      Object.assign(result,classify(main.record.status,classificationHTML,main.headers));
+    } else result.outcome='navigation_unverified';
+    if(result.bridge_errors.length) result.observation_gaps=['4play bridge reported errors; response coverage may be incomplete'];
+    if(!result.bridge_response_bodies_complete) {
+      result.observation_gaps||=[];
+      result.observation_gaps.push('one or more returned responses could not be stored with a valid URL and body');
+    }
+    evidence.result(result);
+  } catch(error) {
+    evidence.result({...result,outcome:'execution_error',error:safeError(error)});
+  }
+}
+
 export async function browserSite(evidence, name, target, sharedSession = null) {
   let b, robotsClient;
   let cdpSession;
@@ -357,6 +435,11 @@ export async function browserSite(evidence, name, target, sharedSession = null) 
   try {
     const observation = evidence.policy === 'browser_observation';
     b = sharedSession?.browser || await openBrowser(name, {profile:evidence.policy || 'diagnostic', headful:observation});
+    if(name==='4play') {
+      if(!observation) throw new Error('unsupported_capability:fourplay_grounding');
+      await fourplaySite(evidence,name,target,b);
+      return;
+    }
     if(!observation && b.runtime?.budgeted_navigation === false) {
       throw new Error('unsupported_capability:budgeted_navigation; redirect interception unavailable');
     }

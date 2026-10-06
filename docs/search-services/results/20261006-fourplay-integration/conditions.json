@@ -1,0 +1,112 @@
+{
+  "date_utc": "2026-10-06",
+  "service_id": "4play",
+  "deployment": "self-hosted @lawlers/4play bridge with Firefox extension and Firefox ESR in Xvfb; integrated as a browser ToolAdapter",
+  "query": "Python documentation",
+  "targets": [
+    "Brave Search",
+    "Google",
+    "loopback JavaScript fixture"
+  ],
+  "runtime": {
+    "npm_package": "@lawlers/4play 1.2.5",
+    "extension_version": "1.10",
+    "extension_sha256": "70937b52eada128b3966d0628d4aad7369abb9ed4357c03ab4576235de410fcb",
+    "browser": "Mozilla Firefox 153.4.0esr",
+    "image_id": "sha256:bd1f2c3f53f7fe7ffae1c0600e896be890870492e7a503e1ae971d024fcc93d2",
+    "headful": true,
+    "display": ":99",
+    "display_backend": "Xvfb",
+    "viewport": "1280x720",
+    "hardware_gpu_verified": false,
+    "firefox_version_pin": false
+  },
+  "integration": {
+    "adapter": "experiments/bot-diagnostics/fourplay-runtime.mjs",
+    "tool_name": "4play",
+    "framework_selection": "tools: [\"4play\"]",
+    "legacy_cli": "BOT_DIAGNOSTICS_CLIENTS=4play",
+    "supported": "goto/followLink, session, response bodies, captured DOM, Evidence storage",
+    "unsupported": [
+      "fetch",
+      "selector operations",
+      "challenge actions",
+      "extensions",
+      "timezone emulation",
+      "session context replacement",
+      "screenshots",
+      "budgeted navigation",
+      "response headers",
+      "complete request/failed-request coverage",
+      "Playwright event stream",
+      "CDP",
+      "cross-tab referrer preservation",
+      "grounding"
+    ]
+  },
+  "search_success_rule": "A resolved result destination with host docs.python.org is required; displayed citation text or an opaque redirect is recorded separately and does not establish success.",
+  "verification_scope": "One Python documentation query each for Brave and Google, plus a local fixture navigation and followLink check. Candidate link counts are parser observations, not SERP result counts. No result relevance or completeness grading.",
+  "latest_runs": {
+    "brave": "lab-runs/search-fourplay-brave-20261006-final",
+    "google": "lab-runs/search-fourplay-google-20261006-final",
+    "fixture": "lab-runs/search-fourplay-fixture-20261006-final"
+  },
+  "prior_attempts": [
+    {
+      "run": "lab-runs/search-fourplay-brave-20261006-first",
+      "note": "Initial direct-proxy attempt; DNS/proxy route failed."
+    },
+    {
+      "run": "lab-runs/search-fourplay-brave-20261006-proxy-fixed",
+      "note": "Proxy configuration fixed; earlier-stage attempt."
+    },
+    {
+      "run": "lab-runs/search-fourplay-google-20261006-first",
+      "note": "Initial direct-proxy attempt; DNS/proxy route failed."
+    },
+    {
+      "run": "lab-runs/search-fourplay-google-20261006-proxy-fixed",
+      "note": "Browser returned content, but the earlier Google extraction did not resolve official destinations; final parser run is documented separately."
+    },
+    {
+      "run": "lab-runs/search-fourplay-fixture-20261006-first",
+      "note": "Initial fixture integration attempt, retained as evidence."
+    }
+  ],
+  "related_fourget_google_failure": {
+    "run": "lab-runs/search-fourget-selfhost-20261006T140648Z-cea332",
+    "http_status": 200,
+    "api_status": "Page renderer returned an error: Upstream browser reached the configured failure page",
+    "results_observed": false
+  },
+  "source_hashes": {
+    "experiments/fourget-selfhost/start.py": "84274a7b3f76fde5971a918938fd85baea0571d182e7d62acbaf23c39acdfe0d",
+    "experiments/fourget-selfhost/compose.yaml": "5cf9f8d41ab65c019bf4463e0c422fc7700307d9cde3824c4b908b23b256d84f",
+    "experiments/fourget-selfhost/fourplay/server.cjs": "50bf01d5bd434c8f052fb3699ea988c8a9ccbca854cfe3809c8be5409e365f02",
+    "experiments/fourget-selfhost/fourplay/Dockerfile": "b2c0ecc78a9247c9f13f4af39b84215bbb9b573744016f332e7c998c5137a2c1",
+    "experiments/fourget-selfhost/fourplay/entrypoint.sh": "c52554d3c3f4d15d03da636eb501e6886651cb7ea276e449a9015143f46c2a05",
+    "experiments/bot-diagnostics/fourplay-runtime.mjs": "fce9dbc9c35b011e7b30c3da9c6b5d37bcec90ee3f9671feee7c2e3dfa047231",
+    "experiments/bot-diagnostics/adapters.mjs": "9251bd59b9de9178af5427472fd771a6429f41eebad633df360d7b9cd06645e8",
+    "experiments/bot-diagnostics/runner.mjs": "ed6378f38e68b825586154ca41e04436e60516840f750f1210a180f0f3e0e360",
+    "experiments/bot-diagnostics/runner-cli.mjs": "624075a054a27bc7059f288772a09a6b3db153ad959a9affc11a6e1719bb8a97",
+    "experiments/bot-diagnostics/fourplay-search-parser.mjs": "df58273d2de60b240709ec5d9c0b440defd4a50f46fb8c0b51b0d37426bb56a1",
+    "experiments/bot-diagnostics/fourplay-search-classification.mjs": "a799d636404947272b4139b1f1acf62b102d33ca09b5b862c8950917dff94b97",
+    "experiments/bot-diagnostics/fourplay-search-smoke.mjs": "c5702f787d768fdecc482112379be34356e49a9cfda724b113947ede753a9667"
+  },
+  "checks": {
+    "python_lab_tests": {
+      "run": 95,
+      "skipped": 4,
+      "status": "passed"
+    },
+    "node_test_files": 6,
+    "status": "passed",
+    "fixture_evidence_verified": true,
+    "live_search_evidence_verified": true
+  },
+  "evidence_storage": {
+    "tracked": "Run summaries, configuration, results and verification records; small 4get API JSON responses.",
+    "local_only": "Full 4play browser response/DOM blobs and ledgers retained at their original lab-runs paths.",
+    "verification_note": "Verification records document checks performed with full payloads present. A source checkout without those payloads cannot repeat the body-hash verification."
+  }
+}

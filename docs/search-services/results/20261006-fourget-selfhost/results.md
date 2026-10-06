@@ -1,0 +1,3 @@
+|サービス|区分|robots / home|検索応答|制限・Challenge|関連結果|品質・件数|抽出方法|証拠|
+|---|---|---|---|---|---|---|---|---|
+|4get 自前 (`fourget`)|B プロキシ・メタ検索型|robots非適用 / 自前home=200|DuckDuckGo・BraveともHTTP 200 / status=ok|自前BOT_PROTECTION=0。Googleは4play未設定のためエラー|DuckDuckGo・BraveともPython公式ドキュメントのリンクあり|DuckDuckGo 10件 / Brave 20件。単一英語クエリの結果取得を確認|自前 `/api/v1/web` JSONの `web` 配列。内容の正確性・網羅性の採点は未実施|[条件](conditions.json) / [集計](results.json) / [DuckDuckGo生応答](../../../../lab-runs/search-fourget-selfhost-20261006T123347Z-9e3079/response.json) / [Brave生応答](../../../../lab-runs/search-fourget-selfhost-20261006T123349Z-32d938/response.json)|

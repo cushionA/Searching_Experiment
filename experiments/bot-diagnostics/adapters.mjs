@@ -30,9 +30,12 @@ export class ToolAdapter {
     this.browserOpener = browserOpener; this.clientOpener = clientOpener;
     this.currentURL = null; this.sequence = 0;
     this.capabilities = { fetch: httpTools.has(tool), goto: !httpTools.has(tool),
-      session: true, selectorOperations: !httpTools.has(tool), challengeActions: !httpTools.has(tool),
-      headful: ['patchright','playwright-baseline','camoufox'].includes(tool),
+      session: true, selectorOperations: !httpTools.has(tool) && tool !== '4play', challengeActions: !httpTools.has(tool) && tool !== '4play',
+      headful: ['patchright','playwright-baseline','camoufox','4play'].includes(tool),
       extensions: ['patchright','playwright-baseline'].includes(tool) };
+    if(tool==='4play') { this.capabilities.timezoneEmulation=false; this.capabilities.extensions=false;
+      this.capabilities.sessionContextReplacement=false;
+      if(profile.session_pool) throw new Error('unsupported_capability:fourplay_session_pool'); }
     if(profile.session_pool) {
       if(httpTools.has(tool) || profile.extensions?.length) throw new Error('session_pool_requires_browser_without_extensions');
       this.sessions=new SessionManager({evidence,key:`${tool}/${site.id}`,policy:profile.session_pool});
@@ -45,10 +48,12 @@ export class ToolAdapter {
     else {
       this.browser = await this.browserOpener(this.tool, {extensions:this.profile.extensions || [],
         lightpanda:this.profile.lightpanda || null,fixture:this.fixture,
-        ...(this.timezoneRequested ? {timezoneId:this.timezoneId} : {}),
+        ...(this.timezoneRequested && this.tool!=='4play' ? {timezoneId:this.timezoneId} : {}),
         headful:this.evidence.policy === 'browser_observation' ? this.capabilities.headful : !!this.options.headful,
         profile:this.evidence.policy || 'diagnostic'});
-      if(this.timezoneRequested) {
+      if(this.timezoneRequested && this.tool==='4play') {
+        observedTimezone=null;timezoneSupported=false;this.capabilities.timezoneId=false;
+      } else if(this.timezoneRequested) {
         try { observedTimezone = await this.browser.page.evaluate(() => Intl.DateTimeFormat().resolvedOptions().timeZone); }
         catch {}
         timezoneSupported = observedTimezone === this.canonicalTimezoneId;
@@ -58,7 +63,7 @@ export class ToolAdapter {
         throw new Error('unsupported_capability:budgeted_navigation; redirect interception unavailable');
       }
       if(this.sessions && !this.browser.replaceContext) throw new Error('unsupported_capability:session_context_replacement');
-      this.robots = await this.clientOpener(this.tool, this.browser.ua, this.fixture);
+      if(this.tool!=='4play') this.robots = await this.clientOpener(this.tool, this.browser.ua, this.fixture);
       this.sessions?.select();
     }
     this.evidence.result({client:this.tool,target:this.site.id,profile:this.profile.id,role:'adapter_setup',

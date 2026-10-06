@@ -8,19 +8,23 @@ from pathlib import Path
 import tempfile
 import unittest
 
-import torch
-from safetensors.torch import load_file, save_file
+_missing = [name for name in ('torch', 'safetensors') if importlib.util.find_spec(name) is None]
 
 
-SCRIPT = (Path(__file__).resolve().parents[1] /
-          'experiments/captcha-small-model/fit_image_head.py')
-SPEC = importlib.util.spec_from_file_location('fit_image_head', SCRIPT)
-fit_image_head = importlib.util.module_from_spec(SPEC)
-assert SPEC.loader is not None
-SPEC.loader.exec_module(fit_image_head)
-
-
+@unittest.skipIf(_missing, f"requires optional dependencies: {', '.join(_missing)}")
 class ImageHeadTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        global torch, load_file, save_file, fit_image_head
+        import torch
+        from safetensors.torch import load_file, save_file
+        path = (Path(__file__).resolve().parents[1] /
+                'experiments/captcha-small-model/fit_image_head.py')
+        spec = importlib.util.spec_from_file_location('fit_image_head', path)
+        fit_image_head = importlib.util.module_from_spec(spec)
+        assert spec.loader is not None
+        spec.loader.exec_module(fit_image_head)
+
     def test_unknown_board_logits_do_not_affect_masked_loss_or_gradient(self):
         logits = torch.tensor([[0.0, -100.0, 100.0]], requires_grad=True)
         target = torch.tensor([[1.0, 0.0, 1.0]])

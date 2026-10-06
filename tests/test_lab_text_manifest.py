@@ -9,14 +9,10 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
-from PIL import Image
+_missing = [] if importlib.util.find_spec('PIL') is not None else ['Pillow']
 
 
 SCRIPT = Path(__file__).resolve().parents[1] / "experiments" / "captcha-small-model" / "prepare_text_manifest.py"
-SPEC = importlib.util.spec_from_file_location("prepare_text_manifest", SCRIPT)
-assert SPEC is not None and SPEC.loader is not None
-manifest_tool = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(manifest_tool)
 
 
 def png_bytes() -> bytes:
@@ -33,7 +29,16 @@ def jpeg_bytes() -> bytes:
     return output.getvalue()
 
 
+@unittest.skipIf(_missing, f"requires optional dependencies: {', '.join(_missing)}")
 class TextManifestArchiveTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        global Image, manifest_tool
+        from PIL import Image
+        spec = importlib.util.spec_from_file_location("prepare_text_manifest", SCRIPT)
+        assert spec is not None and spec.loader is not None
+        manifest_tool = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(manifest_tool)
     def setUp(self) -> None:
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)

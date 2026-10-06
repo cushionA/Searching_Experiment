@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { classify, decodeBody, Evidence, verify, robots, robotsProbeDecision, httpSite, browserRequestBlockReason, browserProfileUserAgent } from './runner.mjs';
+import { classify, decodeBody, Evidence, verify, robots, robotsProbeDecision, httpSite, browserSite, detectorRun, browserRequestBlockReason, browserProfileUserAgent } from './runner.mjs';
 
 test('HTTP 202 AWS challenge is not a successful content response', () => {
   const c = classify(202, '<script src="https://example.token.awswaf.com/challenge.js"></script><script>AwsWafIntegration.getToken()</script>');
@@ -116,6 +116,67 @@ test('HTTP sites remain fail-closed when robots is unavailable', async () => {
     assert.equal(e.results.at(-1).outcome,'robots_unavailable');
     assert.equal(e.budgets['impit/demo'].requests,1);
   } finally {fs.rmSync(root,{recursive:true,force:true});}
+});
+
+test('4play saves captured response bodies and DOM and classifies only an observed document response', async()=>{
+  const root=fs.mkdtempSync(path.join(os.tmpdir(),'bot-diagnostics-4play-'));
+  try {
+    const evidence=new Evidence(path.join(root,'run'),false,{policy:'browser_observation',authorization:'offline 4play bridge fixture'});
+    const html='<main>Search results</main>';
+    const browser={ua:'Firefox fixture',runtime:{engine:'firefox',headless:false},navigate:async()=>({
+      url:'https://site.example/results',title:'Results',dom:html,errors:[],
+      responses:[{id:'r1',url:'https://site.example/results',status:200,method:'GET',container:'tab-1',headers:{},type:'main_frame',body_base64:Buffer.from(html).toString('base64')}]
+    })};
+    await browserSite(evidence,'4play',{name:'fixture',url:'https://site.example/results',observe_ms:0},{browser});
+    const result=evidence.results.at(-1),record=evidence.records[0];
+    assert.equal(result.outcome,'content_observed');
+    assert.equal(result.http_status,200);
+    assert.equal(result.instrumentation.includes('CDP are unavailable'),true);
+    assert.ok(result.observation_limits.includes('response_headers_not_exposed'));
+    assert.ok(result.observation_limits.includes('request_and_failed_request_coverage_unavailable'));
+    assert.equal(record.request_method,'GET');
+    assert.equal(record.response_headers_available,false);
+    assert.equal(record.response_id,'r1');
+    assert.equal(fs.readFileSync(path.join(evidence.directory,'blobs',record.body_sha256),'utf8'),html);
+    assert.equal(fs.readFileSync(path.join(evidence.directory,'blobs',result.dom_sha256),'utf8'),html);
+    assert.equal(verify(evidence.directory).ok,true);
+  } finally {fs.rmSync(root,{recursive:true,force:true});}
+});
+
+test('4play DOM without a captured document response remains navigation_unverified',async()=>{
+  const root=fs.mkdtempSync(path.join(os.tmpdir(),'bot-diagnostics-4play-dom-'));
+  try {
+    const evidence=new Evidence(path.join(root,'run'),false,{policy:'browser_observation',authorization:'offline 4play bridge fixture'});
+    await browserSite(evidence,'4play',{name:'fixture',url:'https://site.example/'},{browser:{ua:'Firefox',runtime:{},navigate:async()=>({url:'https://site.example/',dom:'<main>Looks loaded</main>',responses:[],errors:[]})}});
+    assert.equal(evidence.results.at(-1).outcome,'navigation_unverified');
+    assert.equal(evidence.results.at(-1).http_status,undefined);
+    assert.equal(verify(evidence.directory).ok,true);
+  } finally {fs.rmSync(root,{recursive:true,force:true});}
+});
+
+test('4play preserves the captured HTTP status and classifies a challenge visible only in the rendered DOM',async()=>{
+  const root=fs.mkdtempSync(path.join(os.tmpdir(),'bot-diagnostics-4play-dom-classification-'));
+  try {
+    const evidence=new Evidence(path.join(root,'run'),false,{policy:'browser_observation',authorization:'offline 4play bridge fixture'});
+    const responseBody='<main>Ordinary initial response</main>';
+    const renderedDOM='<main>Verify that you are human</main>';
+    await browserSite(evidence,'4play',{name:'fixture',url:'https://site.example/'},{browser:{ua:'Firefox',runtime:{},navigate:async()=>({
+      url:'https://site.example/',dom:renderedDOM,responses:[{url:'https://site.example/',status:200,type:'main_frame',
+        body_base64:Buffer.from(responseBody).toString('base64')}],errors:[]})}});
+    const result=evidence.results.at(-1);
+    assert.equal(result.http_status,200);
+    assert.equal(result.classification_source,'captured_dom');
+    assert.equal(result.outcome,'challenge_observed');
+    assert.equal(result.signals[0].name,'human_verification');
+    assert.equal(verify(evidence.directory).ok,true);
+  } finally {fs.rmSync(root,{recursive:true,force:true});}
+});
+
+test('4play reports detector fixture controls as unsupported without opening a browser',async()=>{
+  const results=[];
+  await detectorRun({result:value=>results.push(value)},'4play','http://127.0.0.1:3000');
+  assert.deepEqual(results.map(result=>result.outcome),['unsupported_capability','unsupported_capability']);
+  assert.ok(results.every(result=>result.capability==='detector_fixture_control'));
 });
 
 test('browser observation HTTP path skips robots and records cross-origin redirect hops on the same key', async () => {

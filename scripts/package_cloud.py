@@ -17,6 +17,11 @@ STATIC_FILES = (
     "docs/bot-diagnostics-2026-10-01.md", "docs/bot-diagnostics-evidence.md",
     "docs/bot-diagnostics-framework-validation-2026-10-01.md",
     "docs/oxibrowser-experiment.md", "docs/oxibrowser-selectors-20261001.json",
+    "docs/bot-diagnostics-fourplay.md",
+    "experiments/captcha-small-model/challenge_classifier.py",
+    "experiments/captcha-small-model/subprocess_runner.py",
+    "lab-runs/bot-diagnostics-evidence/patchright-indeed-challenge.html",
+    "lab-runs/bot-diagnostics-evidence/impit-indeed-challenge.html",
     ".agents/skills/bot-blocking-scenarios/SKILL.md",
     ".agents/skills/kaggle-ops/SKILL.md", ".agents/skills/kaggle-ops/requirements.txt",
     ".agents/skills/kaggle-ops/agents/openai.yaml", ".agents/skills/kaggle-ops/references/notebooks.md",
@@ -32,6 +37,10 @@ PATTERNS = {
     "requirements": ("crawl-tools.txt", "browser-tools.txt", "adaptive-tools.txt", "browser-benchmark.txt"),
     "experiments/bot-diagnostics": ("*.mjs", "*.json", "*.py", "*.sh", "Dockerfile", "README.md"),
     "experiments/bot-diagnostics/extensions/observation-probe": ("*.json", "*.js"),
+    "experiments/captcha-small-model": ("*.py",),
+    "experiments/fourget-selfhost": ("README.md", "compose.yaml", "smoke.py", "start.py"),
+    "experiments/fourget-selfhost/fourplay": (".dockerignore", "Dockerfile", "entrypoint.sh",
+                                                "package-lock.json", "package.json", "policies.json", "server.cjs"),
 }
 
 

@@ -9,16 +9,10 @@ import sys
 import tempfile
 import unittest
 
+_missing = [] if importlib.util.find_spec('PIL') is not None else ['Pillow']
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPERIMENT = ROOT / "experiments/captcha-small-model"
-spec = importlib.util.spec_from_file_location("paddle_summary", EXPERIMENT / "summarize_paddle_text.py")
-module = importlib.util.module_from_spec(spec)
-sys.path.insert(0, str(EXPERIMENT))
-try:
-    spec.loader.exec_module(module)
-finally:
-    sys.path.remove(str(EXPERIMENT))
 
 
 def sample(index, label, source="source-a"):
@@ -33,7 +27,19 @@ def prediction(item, answer, *, latency=1.0, error=None):
             "latency_ms": latency, "confidence": 0.01 if error is None else None, "error": error}
 
 
+@unittest.skipIf(_missing, f"requires optional dependencies: {', '.join(_missing)}")
 class PaddleSummaryTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        global module
+        spec = importlib.util.spec_from_file_location("paddle_summary", EXPERIMENT / "summarize_paddle_text.py")
+        module = importlib.util.module_from_spec(spec)
+        sys.path.insert(0, str(EXPERIMENT))
+        try:
+            spec.loader.exec_module(module)
+        finally:
+            sys.path.remove(str(EXPERIMENT))
+
     def setUp(self):
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)

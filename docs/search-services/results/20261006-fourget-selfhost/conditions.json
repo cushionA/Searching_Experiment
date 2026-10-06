@@ -1,0 +1,22 @@
+{
+  "date_utc": "2026-10-06",
+  "service_id": "fourget",
+  "deployment": "managed cloud Docker; 127.0.0.1:8084",
+  "query": "Python documentation",
+  "scrapers_tested": [
+    "ddg",
+    "brave",
+    "google"
+  ],
+  "image": "luuul/4get@sha256:fb762cd27c29c0e2bba89848fa4b858d719d40396dea25baa66b95a75cb8b3fc",
+  "bot_protection": 0,
+  "scraper_proxy": "inherited cloud HTTP sidecar; configured for every PROXY_* constant",
+  "tls": "peer verification enabled; mounted cloud CA bundle; Alpine system libcurl (LD_PRELOAD empty)",
+  "verification_scope": "one query each; no pagination, load test, relevance grading, or external publishing",
+  "initial_failures": [
+    "proxy file mode 0600 prevented Apache from reading it; corrected to 0644 within private host runtime directory",
+    "bundled NSS libcurl returned curl error 77 loading PEM CA bundle; switched to system libcurl with verification enabled"
+  ],
+  "google_limitation": "4play required but not configured",
+  "target_master": "targets.json"
+}

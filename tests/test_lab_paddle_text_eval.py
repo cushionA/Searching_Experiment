@@ -9,17 +9,10 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from PIL import Image
+_missing = [] if importlib.util.find_spec('PIL') is not None else ['Pillow']
 
 
 ROOT = Path(__file__).resolve().parents[1]
-spec = importlib.util.spec_from_file_location(
-    "paddle_text_eval", ROOT / "experiments/captcha-small-model/evaluate_paddle_text.py"
-)
-module = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(module)
-
-
 class FakeOCR:
     predictions = {1: "ab1", 2: " E ", 3: "X"}
     interrupt_pixel = None
@@ -36,7 +29,19 @@ class FakeOCR:
         return self.predictions[pixel], 0.001
 
 
+@unittest.skipIf(_missing, f"requires optional dependencies: {', '.join(_missing)}")
 class PaddleEvaluationTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        global Image, module
+        from PIL import Image
+        root = Path(__file__).resolve().parents[1]
+        spec = importlib.util.spec_from_file_location(
+            'paddle_text_eval', root / 'experiments/captcha-small-model/evaluate_paddle_text.py')
+        module = importlib.util.module_from_spec(spec)
+        assert spec.loader is not None
+        spec.loader.exec_module(module)
+
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)

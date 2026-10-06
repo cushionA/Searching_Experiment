@@ -7,13 +7,7 @@ import sys
 import unittest
 
 EXPERIMENT = Path(__file__).resolve().parents[1] / 'experiments/captcha-small-model'
-spec = importlib.util.spec_from_file_location('ocr_alternatives_summary', EXPERIMENT / 'summarize_ocr_alternatives.py')
-module = importlib.util.module_from_spec(spec)
-sys.path.insert(0, str(EXPERIMENT))
-try:
-    spec.loader.exec_module(module)
-finally:
-    sys.path.remove(str(EXPERIMENT))
+_missing = [] if importlib.util.find_spec('PIL') is not None else ['Pillow']
 
 
 def row(index, label, answer, error=None):
@@ -21,7 +15,20 @@ def row(index, label, answer, error=None):
             'label': label, 'answer': answer, 'error': error}
 
 
+@unittest.skipIf(_missing, f"requires optional dependencies: {', '.join(_missing)}")
 class OCRAgreementTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        global module
+        spec = importlib.util.spec_from_file_location(
+            'ocr_alternatives_summary', EXPERIMENT / 'summarize_ocr_alternatives.py')
+        module = importlib.util.module_from_spec(spec)
+        sys.path.insert(0, str(EXPERIMENT))
+        try:
+            spec.loader.exec_module(module)
+        finally:
+            sys.path.remove(str(EXPERIMENT))
+
     def test_agreement_accepts_shared_errors_and_keeps_abstentions_in_denominator(self):
         left = [row(1, 'Ab0', 'Ab0'), row(2, 'cD1', 'c01'), row(3, 'Ef2', 'Ef2'), row(4, 'Gh3', '')]
         right = [row(1, 'Ab0', 'Ab0'), row(2, 'cD1', 'c01'), row(3, 'Ef2', 'ef2'), row(4, 'Gh3', '')]
