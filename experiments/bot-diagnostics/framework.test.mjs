@@ -21,6 +21,13 @@ test('Camoufox joins the same observation scenario and rejects grounding before 
   assert.throws(()=>prepare(manifest,{executionPolicy:'grounding'}),/unsupported_capability:camoufox_grounding/);
   assert.deepEqual(JSON.parse(fs.readFileSync(new URL('./sites.json',import.meta.url))).tools,original.tools);
 });
+test('4play is admitted as a browser tool but its grounding and session-pool paths are rejected',()=>{
+  const original=JSON.parse(fs.readFileSync(new URL('./sites.json',import.meta.url)));
+  const manifest={...original,tools:['4play']};
+  assert.deepEqual(prepare(manifest).tools,['4play']);
+  assert.throws(()=>prepare(manifest,{executionPolicy:'grounding'}),/unsupported_capability:fourplay_grounding/);
+  assert.throws(()=>prepare({...manifest,profiles:[{id:'pooled',session_pool:{max_sessions:2}}]}),/unsupported_capability:fourplay_session_pool/);
+});
 test('URL parameters cannot insert a new host or query separator',()=>{
   assert.equal(injectURL('https://example.com/search?q={query}',{query:'x&next=https://outside.example/'}),
     'https://example.com/search?q=x%26next%3Dhttps%3A%2F%2Foutside.example%2F');

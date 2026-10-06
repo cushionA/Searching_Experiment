@@ -6,7 +6,7 @@ CodexクラウドのGPT-6 Lunaが実験案・リンク選択・結果整理を�
 
 情報源の所在が未指定なら、`python3 -B -m jse.lab topic --run .lab-output/my-topic --topic '探したい情報'`から始める。テーマから検索の入口を作り、発見した外部サイトを予算内で辿り、回答文ごとの出典と原文を`ANSWER.md`へ保存する。[テーマ起点の探索手順と制約](docs/topic-discovery.md)
 
-無料の検索入口は[調査記録](docs/free-search-engines.md)と[全候補の台帳](experiments/search-candidates-20261002.json)へ保存した。[全保存ZIPと復元方法](experiments/snapshots/README.md)には5回分の取得本文・出典・失敗記録と実装を含める。4getはかなり有力な候補として優先保持し、ブロック対策による取得可能性は検証待ちとする。
+無料の検索入口は[調査記録](docs/free-search-engines.md)と[全候補の台帳](experiments/search-candidates-20261002.json)へ保存した。[全保存ZIPと復元方法](experiments/snapshots/README.md)には5回分の取得本文・出典・失敗記録と実装を含める。[自前4getと4play](experiments/fourget-selfhost/README.md)をDockerで起動でき、4playはブラウザ実験のToolAdapterとしてページ移動・応答本文・DOMの保存に対応する。検索用の単発検証は[4play検索手順](docs/bot-diagnostics-fourplay.md)を参照。
 
 ## すぐに動作確認
 

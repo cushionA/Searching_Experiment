@@ -1,6 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import {ToolAdapter} from './adapters.mjs';
+import {openFourplay} from './fourplay-runtime.mjs';
 
 function adapterWithTimezone(observedTimezone, browserOptions = {}) {
   const results = [];
@@ -78,4 +82,72 @@ test('ToolAdapter propagates explicit zero observation duration',async()=>{
 test('ToolAdapter rejects invalid observeMs values at construction',()=>{
   for(const observeMs of [-1,6001,1.5,'0',null])
     assert.throws(()=>adapterWithObservation({observeMs}),/invalid_observe_ms/);
+});
+
+test('4play exposes its actual capability limits, skips the HTTP robots client, and enforces site scope',async()=>{
+  let navigations=0,robotsOpens=0,closeCalls=0;
+  const evidence={policy:'browser_observation',results:[],result(value){this.results.push(value);}};
+  const browser={kind:'fourplay',ua:'Firefox',runtime:{engine:'firefox',headless:false},
+    navigate:async()=>{navigations++;return {url:'https://site.example/',dom:'',responses:[],errors:[]};},close:async()=>{closeCalls++;}};
+  const adapter=new ToolAdapter({tool:'4play',site:{id:'site',origins:['https://site.example'],links:{home:'https://site.example/'}},evidence,
+    options:{selectors:true},
+    browserOpener:async(_tool,options)=>{assert.equal(options.headful,true);return browser;},
+    clientOpener:async()=>{robotsOpens++;throw new Error('4play must not create HTTP client');}});
+  assert.equal(adapter.capabilities.headful,true);
+  assert.equal(adapter.capabilities.selectorOperations,false);
+  assert.equal(adapter.capabilities.challengeActions,false);
+  assert.equal(adapter.capabilities.extensions,false);
+  await adapter.open();
+  assert.equal(evidence.results[0].outcome,'adapter_ready');
+  assert.equal((await adapter.selectorProbe()).outcome,'unsupported_capability');
+  await assert.rejects(adapter.goto('https://outside.example/'),/outside_site_scope/);
+  assert.equal(navigations,0);
+  assert.equal(robotsOpens,0);
+  await adapter.close();
+  assert.equal(closeCalls,1);
+});
+
+test('4play bridge opener authenticates diagnostics calls, passes proxy, and closes its session',async()=>{
+  const oldDirect=process.env.BOT_DIAGNOSTICS_FOURPLAY_PASSWORD;
+  const oldFile=process.env.BOT_DIAGNOSTICS_FOURPLAY_PASSWORD_FILE;
+  const root=fs.mkdtempSync(path.join(os.tmpdir(),'bot-diagnostics-fourplay-bridge-'));
+  const passwordFile=path.join(root,'password.txt');
+  fs.writeFileSync(passwordFile,'fixture-secret\n');
+  delete process.env.BOT_DIAGNOSTICS_FOURPLAY_PASSWORD;
+  process.env.BOT_DIAGNOSTICS_FOURPLAY_PASSWORD_FILE=passwordFile;
+  const calls=[];
+  let navigateCalls=0;
+  const fetchImpl=async(url,options={})=>{
+    calls.push({url,options});
+    const data=url.endsWith('/health')?{browser_connected:true,ua:'Firefox',runtime:{engine:'firefox'}}:
+      url.endsWith('/diagnostics/session')?{session_id:'session-1',ua:'Firefox',runtime:{engine:'firefox'}}:
+      url.endsWith('/diagnostics/navigate')&&++navigateCalls===1?{url:'https://site.example/',dom:'<main>ready</main>',responses:[],errors:[]}:{ok:true};
+    return new Response(JSON.stringify(data),{status:url.endsWith('/diagnostics/navigate')&&navigateCalls>1?503:200,
+      headers:{'content-type':'application/json'}});
+  };
+  try {
+    const browser=await openFourplay({fixture:true,headful:true,fetchImpl});
+    assert.equal(browser.runtime.engine,'firefox');
+    assert.equal(browser.runtime.transport,'4play');
+    assert.equal(calls[0].url.endsWith('/health'),true);
+    assert.equal(calls[0].options.headers.authorization,undefined);
+    assert.ok(calls.slice(1).every(call=>call.options.headers.authorization==='Bearer fixture-secret'));
+    assert.deepEqual(JSON.parse(calls[1].options.body),{proxy:null,fixture:true});
+    const observed=await browser.navigate('https://site.example/',123);
+    assert.equal(observed.dom,'<main>ready</main>');
+    assert.deepEqual(JSON.parse(calls[2].options.body),{session_id:'session-1',url:'https://site.example/',observe_ms:123});
+    await assert.rejects(browser.navigate('https://site.example/error',0),/fourplay_bridge_http_503/);
+    await browser.close();
+    assert.equal(calls[4].url.endsWith('/diagnostics/close'),true);
+  } finally {
+    if(oldDirect===undefined) delete process.env.BOT_DIAGNOSTICS_FOURPLAY_PASSWORD;
+    else process.env.BOT_DIAGNOSTICS_FOURPLAY_PASSWORD=oldDirect;
+    if(oldFile===undefined) delete process.env.BOT_DIAGNOSTICS_FOURPLAY_PASSWORD_FILE;
+    else process.env.BOT_DIAGNOSTICS_FOURPLAY_PASSWORD_FILE=oldFile;
+    fs.rmSync(root,{recursive:true,force:true});
+  }
+});
+
+test('4play opener rejects grounding before making a bridge request',async()=>{
+  await assert.rejects(openFourplay({profile:'grounding',headful:true,fetchImpl:async()=>{throw new Error('must_not_call');}}),/fourplay_grounding/);
 });

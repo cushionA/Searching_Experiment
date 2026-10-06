@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "purpose": "Bot detectors and bounded, observational site diagnostics",
+  "clients": [
+    "wreq-js",
+    "impit",
+    "playwright-baseline",
+    "patchright",
+    "rebrowser-lightpanda"
+  ],
+  "targets": [
+    {
+      "name": "amazon",
+      "url": "https://www.amazon.co.jp/"
+    },
+    {
+      "name": "joshin",
+      "url": "https://joshinweb.jp/"
+    },
+    {
+      "name": "homes",
+      "url": "https://www.homes.co.jp/"
+    },
+    {
+      "name": "indeed",
+      "url": "https://jp.indeed.com/"
+    }
+  ],
+  "limits": {
+    "requests_per_client_target": 25,
+    "bytes_per_client_target": 8388608,
+    "bytes_per_response": 2097152,
+    "delay_seconds": 2,
+    "navigation_timeout_ms": 25000,
+    "observe_ms": 6000,
+    "max_redirects": 3
+  },
+  "identification": "DiscoveryLab/0.1",
+  "browser_resources": "same-origin GET only; images/media/fonts blocked; service workers blocked",
+  "detector_commit": "e1a25b1ff264cc9a5b5ea7fe8a6dfc26e3b1c718"
+}
