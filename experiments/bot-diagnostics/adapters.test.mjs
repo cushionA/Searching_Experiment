@@ -107,6 +107,25 @@ test('4play exposes its actual capability limits, skips the HTTP robots client, 
   assert.equal(closeCalls,1);
 });
 
+test('Camoufox fourplay uses native browser events without the HTTP helper and rejects unsupported capabilities',async()=>{
+  let robotsOpens=0,closeCalls=0;
+  const evidence={policy:'browser_observation',results:[],result(value){this.results.push(value);}};
+  const browser={kind:'fourplay-native',ua:'Firefox',runtime:{engine:'firefox',headless:false},close:async()=>{closeCalls++;}};
+  const adapter=new ToolAdapter({tool:'camoufox-fourplay',site:{id:'site',origins:['https://site.example']},evidence,
+    browserOpener:async(_tool,options)=>{assert.equal(options.headful,true);return browser;},
+    clientOpener:async()=>{robotsOpens++;throw new Error('native observation must not create HTTP client');}});
+  assert.equal(adapter.capabilities.headful,true);
+  assert.equal(adapter.capabilities.extensions,false);
+  await adapter.open();
+  assert.equal(evidence.results[0].outcome,'adapter_ready');
+  assert.equal(robotsOpens,0);
+  await adapter.close();
+  assert.equal(closeCalls,1);
+  assert.throws(()=>new ToolAdapter({tool:'camoufox-fourplay',site:{id:'site'},evidence,timezoneId:'Asia/Tokyo'}),/unsupported_capability:camoufox_fourplay_timezone/);
+  assert.throws(()=>new ToolAdapter({tool:'camoufox-fourplay',site:{id:'site'},evidence,profile:{id:'pooled',session_pool:{max_sessions:2}}}),/unsupported_capability:camoufox_fourplay_session_pool/);
+  assert.throws(()=>new ToolAdapter({tool:'camoufox-fourplay',site:{id:'site'},evidence,profile:{id:'custom',extensions:['/tmp/ext']}}),/unsupported_capability:camoufox_fourplay_extensions/);
+});
+
 test('4play bridge opener authenticates diagnostics calls, passes proxy, and closes its session',async()=>{
   const oldDirect=process.env.BOT_DIAGNOSTICS_FOURPLAY_PASSWORD;
   const oldFile=process.env.BOT_DIAGNOSTICS_FOURPLAY_PASSWORD_FILE;

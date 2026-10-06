@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import {EventEmitter} from 'node:events';
 import { classify, decodeBody, Evidence, verify, robots, robotsProbeDecision, httpSite, browserSite, detectorRun, browserRequestBlockReason, browserProfileUserAgent } from './runner.mjs';
 
 test('HTTP 202 AWS challenge is not a successful content response', () => {
@@ -177,6 +178,35 @@ test('4play reports detector fixture controls as unsupported without opening a b
   await detectorRun({result:value=>results.push(value)},'4play','http://127.0.0.1:3000');
   assert.deepEqual(results.map(result=>result.outcome),['unsupported_capability','unsupported_capability']);
   assert.ok(results.every(result=>result.capability==='detector_fixture_control'));
+});
+
+test('Camoufox fourplay records native context events and real response status',async()=>{
+  const root=fs.mkdtempSync(path.join(os.tmpdir(),'bot-diagnostics-camoufox-fourplay-native-'));
+  try {
+    const evidence=new Evidence(path.join(root,'run'),false,{policy:'browser_observation',authorization:'offline native event unit test'});
+    const context=new EventEmitter(),page=new EventEmitter();
+    const frame={url:()=>page.url()};
+    page.mainFrame=()=>frame;
+    page.url=()=> 'https://site.example/results';
+    page.content=async()=>'<html><body><main>results</main></body></html>';
+    let windowStopCalled=false;
+    page.evaluate=async fn=>{if(fn.toString().includes('window.stop')) windowStopCalled=true;};
+    page.goto=async()=>{
+      const request={url:()=>page.url(),method:()=> 'GET',resourceType:()=> 'document',isNavigationRequest:()=>true,
+        redirectChain:()=>[],frame:()=>frame,failure:()=>null};
+      context.emit('request',request);
+      context.emit('response',{request:()=>request,status:()=>207,headers:()=>({}),body:async()=>Buffer.from('<html><main>response</main></html>')});
+    };
+    const browser={kind:'fourplay-native',ua:'Firefox fixture',context,page,runtime:{engine:'firefox',budgeted_navigation:false,
+      redirect_chain_reporting:false,screenshots:false,observation_limits:['response_headers_not_provided_by_4play']},close:async()=>{}};
+    await browserSite(evidence,'camoufox-fourplay',{name:'fixture',url:'https://site.example/results',observe_ms:0},{browser});
+    assert.equal(evidence.results.at(-1).http_status,207);
+    assert.equal(evidence.results.at(-1).outcome,'content_observed');
+    assert.equal(evidence.records[0].request_method,'GET');
+    assert.deepEqual(evidence.records[0].response_headers,{});
+    assert.ok(evidence.results.at(-1).observation_limits.includes('response_headers_not_provided_by_4play'));
+    assert.equal(windowStopCalled,true);
+  } finally { fs.rmSync(root,{recursive:true,force:true}); }
 });
 
 test('browser observation HTTP path skips robots and records cross-origin redirect hops on the same key', async () => {

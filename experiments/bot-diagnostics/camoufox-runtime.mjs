@@ -136,7 +136,7 @@ export async function openCamoufox({
       env:{...process.env, ...(camoufoxOptions.env || {}), FONTCONFIG_PATH:path.join(browserDirectory, 'fontconfig', 'linux'),
         XDG_CACHE_HOME:cacheDirectory},
       ignoreHTTPSErrors:false,
-      timeout:15000,
+      timeout:30000,
       viewport:null,
       screen:{width:1280,height:720},
       ...(timezoneId?{timezoneId}:{}),

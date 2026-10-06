@@ -51,7 +51,8 @@ def main():
              "docs/oxibrowser-experiment.md", "docs/oxibrowser-selectors-20261001.json"]]
     for root in roots:
         files += [p for p in root.rglob("*") if p.is_file() and not p.is_symlink()
-                  and p.suffix not in {".zip", ".pyc"} and "__pycache__" not in p.parts]
+                  and p.suffix not in {".zip", ".pyc"}
+                  and not {"__pycache__", "runtime-state"}.intersection(p.relative_to(root).parts)]
     files = sorted(set(files))
     def archive_path(file):
         if file.is_relative_to(REPO):

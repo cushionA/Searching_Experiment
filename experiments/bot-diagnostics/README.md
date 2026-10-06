@@ -82,6 +82,22 @@ smokeは既存の診断用PlaywrightとChromiumも導入済みであることが
 
 2026-10-03のこのCloudでは導入とオフラインの接続・保護条件のテストは成功したが、実ブラウザは起動待ちでタイムアウトした。152.0.4-beta.30、直前のbeta.29、135.0.1-beta.24の別配備でも起動できず、headfulでも再現した。glxtest未配置、namespaceの書込拒否、SWGL描画エラーを観測したが原因は確定していない。Camoufoxのページ取得、TLS信頼・拒否、プロキシ実測とサイト通過率は未確認。既存ランナーへの追加コードを利用可能性の証明と扱わない。[検証状態](camoufox-validation.json)。通常のオフラインテストでは実ブラウザ試験2件をskipし、上の明示フラグで実行する。
 
+### Camoufoxを4play拡張で直接制御する
+
+任意の方式 `camoufox-fourplay` は、Camoufox JSの指紋・フォント・Firefox設定生成を使い、ブラウザの起動と操作をweb-extと4play拡張へ渡す。Playwrightによる起動・操作は使わず、Camoufox本体のJugglerは保持する。既存の方式 `4play` はself-hosted bridgeを使い、直接起動用の `fourplay-native-runtime.mjs` はCamoufox併用版のバックエンドを担当する。
+
+Linuxのheadful表示先、上記のCamoufox配備、`@lawlers/4play@1.2.5` とweb-extを入れた `.deps/fourplay`、4play拡張のソースが必要。拡張は専用ディレクトリへコピーし、`BOT_DIAGNOSTICS_CAMOUFOX_FOURPLAY_EXTENSION` へそのパスを設定する。`BOT_DIAGNOSTICS_CAMOUFOX_DEPS` と `BOT_DIAGNOSTICS_CAMOUFOX_BINARY` でCamoufoxの配置先を指定できる。
+
+拡張からの新規タブ作成には `allowAddonNewtab=true`、コンテナーには `privacy.userContext.enabled=true` を適用する。指紋設定とフォントを一時プロファイルへ引き継ぎ、初期タブを保持して、新しい対象タブを開いてから前のタブを閉じる。対象コンテナーに環境プロキシを設定し、CA指定時は一時NSS DBへ登録してTLS検証を維持する。
+
+サイトJSONの `tools` に `camoufox-fourplay` を指定し、既存の `framework.mjs plan|run --sites=FILE` で新しいrunを作る。headless、grounding、追加拡張、timezone、session poolは非対応。観測は通信本文とDOMに基づき、スクリーンショット、完全な応答ヘッダー、全リダイレクト経路は提供しない。全応答本文のbase64転送負荷と、背景通信の経路が未計測であることも比較条件に含める。
+
+```bash
+node --test experiments/bot-diagnostics/fourplay-native-runtime.test.mjs experiments/bot-diagnostics/camoufox-fourplay-runtime.test.mjs
+```
+
+上記は依存配備や実ブラウザを使わない回帰テスト。[2026-10-07の比較記録](../../lab-runs/4play-camoufox-20261007/hybrid/README.md)には、移植前の実ブラウザ検証・条件・制約と完全証拠チェックポイントの情報を保存する。証拠exportでは一時的な `runtime-state` を除外し、ブラウザCookie状態を再開時に作り直す。
+
 ### Obscura・Patchrightとの比較
 
 [公式Obscura](https://github.com/h4ckf0r0day/obscura) v0.2.3の通常版・stealth版・no-render版を固定SHA256で導入し、Lightpanda補完版およびPatchrightと比較できる。
