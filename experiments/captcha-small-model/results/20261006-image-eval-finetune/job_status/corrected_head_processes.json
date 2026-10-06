@@ -1,0 +1,72 @@
+{
+  "MobileCLIP2-S3": {
+    "command": [
+      "/workspace/work/ocr/venv/bin/python",
+      "-B",
+      "/workspace/Searching_Experiment/experiments/captcha-small-model/fit_image_head.py",
+      "--manifest",
+      "/workspace/work/image-finetune/eval-data/public_full.json",
+      "--features",
+      "/workspace/work/captcha-tuning-20261006/image-job-001/artifacts/public-eval-result-mobileclip2_s3/MobileCLIP2-S3.features.safetensors",
+      "--feature-index",
+      "/workspace/work/captcha-tuning-20261006/image-job-001/artifacts/public-eval-result-mobileclip2_s3/MobileCLIP2-S3.features.index.json",
+      "--train-split",
+      "/workspace/work/image-finetune/eval-data/grouped-train.json",
+      "--validation-split",
+      "/workspace/work/image-finetune/eval-data/grouped-validation.json",
+      "--test-split",
+      "/workspace/work/image-finetune/eval-data/grouped-test.json",
+      "--baseline-jsonl",
+      "/workspace/work/captcha-tuning-20261006/image-job-001/artifacts/public-eval-result-mobileclip2_s3/MobileCLIP2-S3.jsonl",
+      "--output",
+      "/workspace/work/captcha-tuning-20261006/image-selected-head-mobileclip2_s3",
+      "--epochs",
+      "1000",
+      "--patience",
+      "10",
+      "--threads",
+      "2"
+    ],
+    "process": {
+      "returncode": 0,
+      "timed_out": false,
+      "timeout_seconds": 180,
+      "stdout_drain_truncated": false
+    }
+  },
+  "MobileCLIP2-S4": {
+    "command": [
+      "/workspace/work/ocr/venv/bin/python",
+      "-B",
+      "/workspace/Searching_Experiment/experiments/captcha-small-model/fit_image_head.py",
+      "--manifest",
+      "/workspace/work/image-finetune/eval-data/public_full.json",
+      "--features",
+      "/workspace/work/captcha-tuning-20261006/image-job-001/artifacts/public-eval-result-mobileclip2_s4/MobileCLIP2-S4.features.safetensors",
+      "--feature-index",
+      "/workspace/work/captcha-tuning-20261006/image-job-001/artifacts/public-eval-result-mobileclip2_s4/MobileCLIP2-S4.features.index.json",
+      "--train-split",
+      "/workspace/work/image-finetune/eval-data/grouped-train.json",
+      "--validation-split",
+      "/workspace/work/image-finetune/eval-data/grouped-validation.json",
+      "--test-split",
+      "/workspace/work/image-finetune/eval-data/grouped-test.json",
+      "--baseline-jsonl",
+      "/workspace/work/captcha-tuning-20261006/image-job-001/artifacts/public-eval-result-mobileclip2_s4/MobileCLIP2-S4.jsonl",
+      "--output",
+      "/workspace/work/captcha-tuning-20261006/image-selected-head-mobileclip2_s4",
+      "--epochs",
+      "1000",
+      "--patience",
+      "10",
+      "--threads",
+      "2"
+    ],
+    "process": {
+      "returncode": 0,
+      "timed_out": false,
+      "timeout_seconds": 180,
+      "stdout_drain_truncated": false
+    }
+  }
+}

@@ -1,0 +1,227 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "started_at_utc": "2026-10-06T00:09:27.243268+00:00",
+  "completed_at_utc": "2026-10-06T00:11:31.947428+00:00",
+  "manifest_sha256": "4af07d4e8125d3734ed8e9a9282fad2a8d0683383a6ab4ca9638ec3a87a6090d",
+  "split_sha256": "d910dd103f86e12b8aee421721568ac6d08f4577b22797d4430665ee7e7d468e",
+  "checkpoint": {
+    "selected_epoch": 37,
+    "best_sha256": "cce95d7cd320d332fecb606b39ccdcf269eb9794093bea7e2c0a4e4b30c11691",
+    "last_sha256": "105ecab8a3f3dfa4409d478bd30b8d82ac4c58231a0040cea3d4498f7f0e3619",
+    "selected_using": "validation only",
+    "unchanged_epoch0_can_win": true
+  },
+  "stopping_reason": "validation_patience",
+  "training_epochs": 42,
+  "training_elapsed_seconds": 122.40880124899996,
+  "baseline": {
+    "validation": {
+      "samples": 307,
+      "exact_count": 92,
+      "exact_match": 0.2996742671009772,
+      "reference_characters": 1735,
+      "edit_distance": 544,
+      "character_error_rate": 0.31354466858789626,
+      "case_insensitive_exact_count": 98,
+      "by_source": {
+        "kaggle_fournierp_captcha_version_2": {
+          "samples": 107,
+          "exact_count": 77,
+          "exact_match": 0.719626168224299,
+          "reference_characters": 535,
+          "edit_distance": 32,
+          "character_error_rate": 0.059813084112149535,
+          "case_insensitive_exact_count": 83
+        },
+        "project_sloth_captcha_images_test": {
+          "samples": 200,
+          "exact_count": 15,
+          "exact_match": 0.075,
+          "reference_characters": 1200,
+          "edit_distance": 512,
+          "character_error_rate": 0.4266666666666667,
+          "case_insensitive_exact_count": 15
+        }
+      },
+      "seconds": 1.6308198870000012,
+      "device": "cuda",
+      "evaluation_batch_size": 32,
+      "decoder": "greedy CTC; no normalization or label-derived length"
+    },
+    "test": {
+      "samples": 614,
+      "exact_count": 162,
+      "exact_match": 0.26384364820846906,
+      "reference_characters": 3470,
+      "edit_distance": 1158,
+      "character_error_rate": 0.3337175792507205,
+      "case_insensitive_exact_count": 174,
+      "by_source": {
+        "kaggle_fournierp_captcha_version_2": {
+          "samples": 214,
+          "exact_count": 148,
+          "exact_match": 0.6915887850467289,
+          "reference_characters": 1070,
+          "edit_distance": 70,
+          "character_error_rate": 0.06542056074766354,
+          "case_insensitive_exact_count": 160
+        },
+        "project_sloth_captcha_images_test": {
+          "samples": 400,
+          "exact_count": 14,
+          "exact_match": 0.035,
+          "reference_characters": 2400,
+          "edit_distance": 1088,
+          "character_error_rate": 0.4533333333333333,
+          "case_insensitive_exact_count": 14
+        }
+      },
+      "seconds": 0.5736459640000078,
+      "device": "cuda",
+      "evaluation_batch_size": 32,
+      "decoder": "greedy CTC; no normalization or label-derived length"
+    }
+  },
+  "finetuned": {
+    "validation": {
+      "samples": 307,
+      "exact_count": 294,
+      "exact_match": 0.9576547231270358,
+      "reference_characters": 1735,
+      "edit_distance": 16,
+      "character_error_rate": 0.009221902017291067,
+      "case_insensitive_exact_count": 294,
+      "by_source": {
+        "kaggle_fournierp_captcha_version_2": {
+          "samples": 107,
+          "exact_count": 105,
+          "exact_match": 0.9813084112149533,
+          "reference_characters": 535,
+          "edit_distance": 2,
+          "character_error_rate": 0.003738317757009346,
+          "case_insensitive_exact_count": 105
+        },
+        "project_sloth_captcha_images_test": {
+          "samples": 200,
+          "exact_count": 189,
+          "exact_match": 0.945,
+          "reference_characters": 1200,
+          "edit_distance": 14,
+          "character_error_rate": 0.011666666666666667,
+          "case_insensitive_exact_count": 189
+        }
+      },
+      "seconds": 0.24452602099995602,
+      "device": "cuda",
+      "evaluation_batch_size": 32,
+      "decoder": "greedy CTC; no normalization or label-derived length"
+    },
+    "test": {
+      "samples": 614,
+      "exact_count": 567,
+      "exact_match": 0.9234527687296417,
+      "reference_characters": 3470,
+      "edit_distance": 55,
+      "character_error_rate": 0.01585014409221902,
+      "case_insensitive_exact_count": 568,
+      "by_source": {
+        "kaggle_fournierp_captcha_version_2": {
+          "samples": 214,
+          "exact_count": 201,
+          "exact_match": 0.9392523364485982,
+          "reference_characters": 1070,
+          "edit_distance": 13,
+          "character_error_rate": 0.012149532710280374,
+          "case_insensitive_exact_count": 202
+        },
+        "project_sloth_captcha_images_test": {
+          "samples": 400,
+          "exact_count": 366,
+          "exact_match": 0.915,
+          "reference_characters": 2400,
+          "edit_distance": 42,
+          "character_error_rate": 0.0175,
+          "case_insensitive_exact_count": 366
+        }
+      },
+      "seconds": 0.4880489490000173,
+      "device": "cuda",
+      "evaluation_batch_size": 32,
+      "decoder": "greedy CTC; no normalization or label-derived length"
+    }
+  },
+  "test_exact_count_delta": 405,
+  "by_source_test_exact_count_delta": {
+    "kaggle_fournierp_captcha_version_2": 53,
+    "project_sloth_captcha_images_test": 352
+  },
+  "limitation": "All source images have already been used in earlier model-selection benchmarks. These frozen internal folds prevent gradient/checkpoint-selection leakage within this pilot, but are not a fresh independently collected final test set. The pretrained model's training-image overlap with these public corpora is unknown.",
+  "config_sha256": "28923e3a23b7ffcf9c32b41ec8773fa3d6250105040fa30c303f88fef995add8",
+  "artifacts": {
+    "baseline-test.jsonl": {
+      "sha256": "1f9ff7c1615b64ed3789f6f2d17f61a4f42e1851daa91781b541189a4fd08fca",
+      "bytes": 169441
+    },
+    "baseline-validation.jsonl": {
+      "sha256": "b25fb1f4c711eed30542afe1e2365799ee532884efa9458fb6acaa2130469857",
+      "bytes": 84740
+    },
+    "baseline.json": {
+      "sha256": "62c207de55a5f04b70fdde2bcfe42912e22dcea0d830c5764facf1abd56a6d1f",
+      "bytes": 2100
+    },
+    "best.safetensors": {
+      "sha256": "cce95d7cd320d332fecb606b39ccdcf269eb9794093bea7e2c0a4e4b30c11691",
+      "bytes": 14291516
+    },
+    "config.json": {
+      "sha256": "28923e3a23b7ffcf9c32b41ec8773fa3d6250105040fa30c303f88fef995add8",
+      "bytes": 4155
+    },
+    "epochs.jsonl": {
+      "sha256": "b9faee5ba4da71ee33b5614aaa69831156eae96a39b93e97b55fa2612918cc28",
+      "bytes": 46484
+    },
+    "evaluate_crnn_text.py": {
+      "sha256": "79a0b6f1b4fcf432170f55d290decfb5b4494e83e24d693c685df2bed53f5616",
+      "bytes": 16203
+    },
+    "evaluate_public_text.py": {
+      "sha256": "a731eaf94a1025025d196511fe18dd6c67dc184b7ba864a4b6f84bfbb35d8034",
+      "bytes": 8494
+    },
+    "finetune_crnn_text.py": {
+      "sha256": "110ff4244b21a9bef6a408a71ba82f118f7f8af98d854f23603c4edbb25cf3ba",
+      "bytes": 24821
+    },
+    "finetuned-test.jsonl": {
+      "sha256": "2ec47a8a0acd50f4281a7d2e2f39bbbbb6b0c14202306c7e2edd111ae3c1c122",
+      "bytes": 169864
+    },
+    "finetuned-validation.jsonl": {
+      "sha256": "467fa6116217a54d1884b3651528146845b7906f68865baf2f7c70bc04f26d14",
+      "bytes": 84907
+    },
+    "input-manifest.json": {
+      "sha256": "4af07d4e8125d3734ed8e9a9282fad2a8d0683383a6ab4ca9638ec3a87a6090d",
+      "bytes": 1583151
+    },
+    "last-training-state.pt": {
+      "sha256": "abc0415181c498347a995b016654306f56d940186641b7031eacaba800ccefd5",
+      "bytes": 28606421
+    },
+    "last.safetensors": {
+      "sha256": "105ecab8a3f3dfa4409d478bd30b8d82ac4c58231a0040cea3d4498f7f0e3619",
+      "bytes": 14291572
+    },
+    "split.json": {
+      "sha256": "d910dd103f86e12b8aee421721568ac6d08f4577b22797d4430665ee7e7d468e",
+      "bytes": 801527
+    },
+    "split_crnn_text.py": {
+      "sha256": "4bda7d85b215379fc04d19f2e526fe1da380c5a127e67f8bd85b98622fd0ace6",
+      "bytes": 9085
+    }
+  }
+}

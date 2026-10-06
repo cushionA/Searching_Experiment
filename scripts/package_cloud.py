@@ -37,6 +37,7 @@ PATTERNS = {
     "requirements": ("crawl-tools.txt", "browser-tools.txt", "adaptive-tools.txt", "browser-benchmark.txt"),
     "experiments/bot-diagnostics": ("*.mjs", "*.json", "*.py", "*.sh", "Dockerfile", "README.md"),
     "experiments/bot-diagnostics/extensions/observation-probe": ("*.json", "*.js"),
+    "experiments/captcha-small-model": ("*.py",),
     "experiments/fourget-selfhost": ("README.md", "compose.yaml", "smoke.py", "start.py"),
     "experiments/fourget-selfhost/fourplay": (".dockerignore", "Dockerfile", "entrypoint.sh",
                                                 "package-lock.json", "package.json", "policies.json", "server.cjs"),
