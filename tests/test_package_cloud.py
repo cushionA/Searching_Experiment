@@ -25,6 +25,7 @@ class CloudPackageTests(unittest.TestCase):
                     "lab-runs/bot-diagnostics-evidence/impit-indeed-challenge.html",
                     "experiments/fourget-selfhost/start.py",
                     "experiments/fourget-selfhost/fourplay/server.cjs",
+                    "experiments/fourget-selfhost/fourplay/navigation-gate.cjs",
                     "experiments/bot-diagnostics/fourplay-runtime.mjs",
                     "experiments/bot-diagnostics/fourplay-bridge-trace.cjs",
                     "experiments/bot-diagnostics/dom-stability.mjs",

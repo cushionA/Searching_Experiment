@@ -40,7 +40,7 @@ PATTERNS = {
     "experiments/captcha-small-model": ("*.py",),
     "experiments/fourget-selfhost": ("README.md", "compose.yaml", "smoke.py", "start.py"),
     "experiments/fourget-selfhost/fourplay": (".dockerignore", "Dockerfile", "entrypoint.sh",
-                                                "package-lock.json", "package.json", "policies.json", "server.cjs"),
+                                                "package-lock.json", "package.json", "policies.json", "server.cjs", "navigation-gate.cjs"),
 }
 
 

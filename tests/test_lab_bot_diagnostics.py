@@ -54,7 +54,8 @@ class BotDiagnosticsTests(unittest.TestCase):
         result = subprocess.run(
             ["node", "--test", "experiments/bot-diagnostics/fourplay-native-runtime.test.mjs",
              "experiments/bot-diagnostics/camoufox-fourplay-runtime.test.mjs",
-             "experiments/bot-diagnostics/dom-stability.test.mjs"],
+             "experiments/bot-diagnostics/dom-stability.test.mjs",
+             "experiments/bot-diagnostics/fourplay-bridge-gate.test.mjs"],
             cwd=repo, text=True, capture_output=True, timeout=30,
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)

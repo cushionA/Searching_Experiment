@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN --mount=type=secret,id=proxy_ca,required=true \
     NODE_EXTRA_CA_CERTS=/run/secrets/proxy_ca npm ci --ignore-scripts
-COPY server.cjs entrypoint.sh ./
+COPY server.cjs navigation-gate.cjs entrypoint.sh ./
 COPY policies.json /usr/lib/firefox-esr/distribution/policies.json
 RUN chmod 755 /app/entrypoint.sh \
     && chmod 644 /app/server.cjs /app/package.json /app/package-lock.json \
