@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "tools": [
+    "camoufox-fourplay"
+  ],
+  "limits": {
+    "requests_per_tool_site": 25,
+    "body_bytes_per_tool_site": 8388608
+  },
+  "profiles": [
+    {
+      "id": "baseline",
+      "humanlike": false,
+      "extensions": []
+    }
+  ],
+  "recovery_plan": {
+    "max_attempts": 0,
+    "return_home_after_success": false,
+    "wait_seconds": 0,
+    "retry_original_target": false
+  },
+  "sites": [
+    {
+      "id": "google",
+      "name": "Google",
+      "group": "general",
+      "service_kind": "search",
+      "origins": [
+        "https://www.google.com"
+      ],
+      "links": {
+        "home": "https://www.google.com/",
+        "targets": [
+          "https://www.google.com/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": [],
+      "final_stage": true
+    },
+    {
+      "id": "bing",
+      "name": "Bing",
+      "group": "general",
+      "service_kind": "search",
+      "origins": [
+        "https://www.bing.com"
+      ],
+      "links": {
+        "home": "https://www.bing.com/",
+        "targets": [
+          "https://www.bing.com/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "brave",
+      "name": "Brave Search",
+      "group": "general",
+      "service_kind": "search",
+      "origins": [
+        "https://search.brave.com"
+      ],
+      "links": {
+        "home": "https://search.brave.com/",
+        "targets": [
+          "https://search.brave.com/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "ecosia",
+      "name": "Ecosia",
+      "group": "privacy",
+      "service_kind": "search",
+      "origins": [
+        "https://www.ecosia.org"
+      ],
+      "links": {
+        "home": "https://www.ecosia.org/",
+        "targets": [
+          "https://www.ecosia.org/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    },
+    {
+      "id": "perplexity",
+      "name": "Perplexity",
+      "group": "ai",
+      "service_kind": "answer_engine",
+      "origins": [
+        "https://www.perplexity.ai"
+      ],
+      "links": {
+        "home": "https://www.perplexity.ai/",
+        "targets": [
+          "https://www.perplexity.ai/search?q={query}"
+        ]
+      },
+      "params": {
+        "query": "早稲田大学 教員"
+      },
+      "selectors": {
+        "primary": null,
+        "challenge": null
+      },
+      "url_evidence": "Proposed plausible search URL, unverified; one query only.",
+      "query_status": "proposed_unverified",
+      "recovery": null,
+      "operations": []
+    }
+  ],
+  "options": {
+    "selectors": false,
+    "recoverSimple": false,
+    "seed": 1,
+    "headful": true
+  }
+}
