@@ -10,6 +10,8 @@ RUN chmod -R a+rX /app
 
 FROM runtime AS test
 COPY tests /app/tests
+COPY lab-runs/bot-diagnostics-evidence/patchright-indeed-challenge.html /app/lab-runs/bot-diagnostics-evidence/patchright-indeed-challenge.html
+COPY lab-runs/bot-diagnostics-evidence/impit-indeed-challenge.html /app/lab-runs/bot-diagnostics-evidence/impit-indeed-challenge.html
 COPY scripts/check_cloud_environment.py /app/scripts/check_cloud_environment.py
 COPY scripts/check_playwright_browser.py /app/scripts/check_playwright_browser.py
 RUN python -m unittest discover -s tests -p "test_lab*.py"
