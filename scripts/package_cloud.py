@@ -35,7 +35,7 @@ PATTERNS = {
     "scripts": ("check_*.py", "cloud_setup.sh", "setup_kaggle.sh", "package_cloud.py",
                 "browser_benchmark.py", "run_browser_benchmark.sh", "setup_browser_benchmark.sh", "with_proxy.py"),
     "requirements": ("crawl-tools.txt", "browser-tools.txt", "adaptive-tools.txt", "browser-benchmark.txt"),
-    "experiments/bot-diagnostics": ("*.mjs", "*.json", "*.py", "*.sh", "Dockerfile", "README.md"),
+    "experiments/bot-diagnostics": ("*.mjs", "*.cjs", "*.json", "*.py", "*.sh", "Dockerfile", "README.md"),
     "experiments/bot-diagnostics/extensions/observation-probe": ("*.json", "*.js"),
     "experiments/captcha-small-model": ("*.py",),
     "experiments/fourget-selfhost": ("README.md", "compose.yaml", "smoke.py", "start.py"),

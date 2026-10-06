@@ -22,7 +22,7 @@ const requests=[];let server;
 let sites=catalog.sites.filter(site=>['bing','brave'].includes(site.id));
 if(fixture) {
  server=http.createServer((req,res)=>{
-  requests.push({url:req.url,at:new Date().toISOString()});res.setHeader('content-type','text/html');res.setHeader('cache-control','no-store');
+  requests.push({url:req.url,at:new Date().toISOString()});res.setHeader('content-type','text/html; charset=utf-8');res.setHeader('cache-control','no-store');
   res.end('<!doctype html><title>Delayed query fixture</title><p id="result">pending</p><script>setTimeout(()=>{document.querySelector("#result").textContent="早稲田大学 教員の研究内容。".repeat(30);let a=document.createElement("a");a.href="http://example.test/teacher";a.textContent="早稲田大学 教員";document.body.append(a)},900)</script>');
  });await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const origin=`http://127.0.0.1:${server.address().port}`;
