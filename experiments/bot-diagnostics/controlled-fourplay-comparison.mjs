@@ -67,7 +67,7 @@ try {
         const start=performance.now();
         const result=await adapter.homepage(url);
         const markers=await adapter.browser.page.evaluate(()=>({ready:document.querySelector('#ready')?.textContent,result:document.querySelector('#result')?.textContent,webdriver:navigator.webdriver,ua:navigator.userAgent}));
-        row.pages.push({url,status:result.status,outcome:result.outcome,elapsed_ms:performance.now()-start,markers});
+        row.pages.push({url,status:result.http_status,outcome:result.outcome,elapsed_ms:performance.now()-start,markers});
       }
     } catch(error) {row.error=safeError(error);} finally {await adapter.close().catch(error=>{row.close_error=safeError(error);});}
     row.total_ms=performance.now()-started;row.verification=verify(directory);
