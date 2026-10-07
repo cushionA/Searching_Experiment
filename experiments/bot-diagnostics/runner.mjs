@@ -377,7 +377,7 @@ async function fourplaySite(evidence, name, target, browser) {
     observation_limits:['response_headers_not_exposed','request_and_failed_request_coverage_unavailable',
       'Playwright_events_and_CDP_unavailable','referrer_not_preserved_between_tabs']};
   try {
-    const observed=await browser.navigate(target.url,target.observe_ms);
+    const observed=await browser.navigate(target.url,target.observe_ms,target.ready_condition);
     if(!observed || typeof observed!=='object') throw new Error('fourplay_invalid_navigation_response');
     const responseRecords=[];
     for(const item of (Array.isArray(observed.responses)?observed.responses:[])) {
@@ -411,6 +411,8 @@ async function fourplaySite(evidence, name, target, browser) {
     result.user_agent=browser.ua;
     result.runtime=browser.runtime;
     result.title=typeof observed.title==='string'?observed.title:null;
+    result.bridge_navigation=observed.navigation||null;
+    result.ready_condition=observed.ready_condition||null;
     result.bridge_response_count=Array.isArray(observed.responses)?observed.responses.length:0;
     result.bridge_errors=Array.isArray(observed.errors)?observed.errors:[];
     result.bridge_response_bodies_complete=responseRecords.length===result.bridge_response_count;

@@ -43,3 +43,17 @@ test('stalled tab-list RPC is bounded, and scoped network failure can end early'
  s.errors=[{id:2,container:'container',url,error:'NS_ERROR_CONNECTION_REFUSED'}];
  assert.equal((await waitForDocument(s,{requestedURL:url,getTabs:async()=>[tab('about:blank')]})).outcome,'navigation_failed');
 });
+test('optional visible selector/text readiness is bounded and does not add default waiting',async()=>{
+ const {validateReadyCondition,waitForReadyCondition,remainingWaitBudget}=createRequire(import.meta.url)('../fourget-selfhost/fourplay/navigation-gate.cjs');
+ assert.equal(validateReadyCondition(undefined),null);
+ assert.throws(()=>validateReadyCondition({selector:'#ready',timeoutMs:6000}),/invalid_ready_condition/);
+ const policy=validateReadyCondition({selector:'#ready',text:'loaded',timeoutMs:500});let time=0,count=0;
+ const ready=await waitForReadyCondition(policy,{now:()=>time,sleep:async ms=>{time+=ms;},evaluate:async source=>{
+  assert.match(source,/getClientRects/);assert.match(source,/loaded/);return ++count===3;
+ }});
+ assert.equal(ready.outcome,'ready');assert.equal(ready.elapsed_ms,200);
+ time=0;assert.equal((await waitForReadyCondition(policy,{now:()=>time,sleep:async ms=>{time+=ms;},evaluate:async()=>false})).outcome,'timeout');
+ assert.equal(remainingWaitBudget(24000,18000,6000),0);
+ assert.equal(remainingWaitBudget(24000,10000,6000),7500);
+ const stalled=await waitForReadyCondition(policy,{timeoutMs:20,evaluate:()=>new Promise(()=>{})});assert.equal(stalled.outcome,'timeout');
+});

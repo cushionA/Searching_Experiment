@@ -3,7 +3,7 @@ const fplay = require('@lawlers/4play');
 const http = require('node:http');
 const fs = require('node:fs');
 const crypto = require('node:crypto');
-const {waitForDocument} = require('./navigation-gate.cjs');
+const {waitForDocument,validateReadyCondition,remainingWaitBudget,waitForReadyCondition} = require('./navigation-gate.cjs');
 const password = fs.readFileSync('/run/fourplay-password.txt', 'utf8').trim();
 const timeout = 28000;
 const sessions = new Map();
@@ -104,12 +104,22 @@ async function openTab(session,url) {
   session.tab=await fplay.tab_open(ws,checkedURL(url,session.fixture),false,session.container);
   if (!session.tab) throw new Error('tab_open_failed');
 }
-async function navigate(session,{url,observe_ms = 1000}) {
+async function navigate(session,{url,observe_ms = 1000,ready_condition}) {
+  const started=performance.now(),deadline=started+24000;
+  const condition=validateReadyCondition(ready_condition);
   if (!Number.isInteger(observe_ms) || observe_ms<0 || observe_ms>6000) throw new Error('invalid_observe_ms');
   await openTab(session,url);
   // Return observations before the adapter's 25-second HTTP deadline.
-  const navigation=await waitForDocument(session,{requestedURL:url,getTabs:()=>fplay.get_tab_list(ws)});
+  const navigation=await waitForDocument(session,{requestedURL:url,getTabs:()=>fplay.get_tab_list(ws),
+    timeoutMs:Math.min(18000,remainingWaitBudget(deadline,performance.now(),observe_ms))});
   if(navigation.outcome==='timeout') session.errors.push({url,error:'navigation_timeout'});
+  let readiness=null;
+  if(condition) {
+    readiness=navigation.outcome==='complete'
+      ?await waitForReadyCondition(condition,{evaluate:expression=>evaluate(session,expression),
+        timeoutMs:Math.min(condition.timeoutMs,remainingWaitBudget(deadline,performance.now(),observe_ms))})
+      :{outcome:'not_run_navigation_incomplete',policy:condition};
+  }
   await wait(observe_ms);
   let dom;
   try {dom=await evaluate(session,'({url:location.href,title:document.title,dom:document.documentElement.outerHTML})');}
@@ -121,7 +131,7 @@ async function navigate(session,{url,observe_ms = 1000}) {
   }
   await evaluate(session,'window.stop(); true').catch(()=>{});
   session.active=false;
-  return {...dom,responses:session.responses,errors:session.errors,navigation};
+  return {...dom,responses:session.responses,errors:session.errors,navigation,...(readiness?{ready_condition:readiness}:{})};
 }
 async function readJSON(req) {
   let size=0;const parts=[];

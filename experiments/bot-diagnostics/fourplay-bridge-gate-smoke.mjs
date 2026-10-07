@@ -20,11 +20,15 @@ const baseline=execFileSync('git',['show',baselineCommit+':experiments/fourget-s
 const fixed=fs.readFileSync(path.join(repo,'experiments/fourget-selfhost/fourplay/server.cjs'));
 const helper=fs.readFileSync(path.join(repo,'experiments/fourget-selfhost/fourplay/navigation-gate.cjs'));
 const requests=[],rows=[];
+const cases=[{path:'/slow'},{path:'/error'},{path:'/redirect'},{path:'/late'},
+ {path:'/late',readyCondition:{selector:'#ready',text:'loaded',timeoutMs:5000}},
+ {path:'/late-missing',readyCondition:{selector:'#missing',timeoutMs:500}},{path:'/never'}];
 const server=http.createServer((req,res)=>{
  requests.push({url:req.url,at:new Date().toISOString()});res.setHeader('cache-control','no-store');
  if(req.url==='/redirect') {res.writeHead(302,{location:'/slow'});res.end();return;}
  if(req.url==='/image.svg') {setTimeout(()=>{res.writeHead(200,{'content-type':'image/svg+xml'});res.end('<svg xmlns="http://www.w3.org/2000/svg"/>');},500);return;}
  if(req.url==='/never.svg') {res.writeHead(200,{'content-type':'image/svg+xml'});res.write('<svg xmlns="http://www.w3.org/2000/svg">');return;}
+ if(req.url.startsWith('/late')) {res.writeHead(200,{'content-type':'text/html'});res.end('<!doctype html><title>Late JS</title><p id="ready">pending</p><script>setTimeout(()=>document.querySelector("#ready").textContent="loaded",900)</script>');return;}
  res.writeHead(req.url==='/error'?503:200,{'content-type':'text/html; charset=utf-8'});
  res.end('<!doctype html><title>Bridge gate fixture</title><p id="ready">pending</p><img src="'+(req.url==='/never'?'/never.svg':'/image.svg')+'" onload="document.querySelector(\'#ready\').textContent=\'loaded\'">');
 });
@@ -36,7 +40,7 @@ try {
  write('conditions.json',{commit:execFileSync('git',['rev-parse','HEAD'],{cwd:repo,encoding:'utf8'}).trim(),baselineCommit,
   tracked_diff:execFileSync('git',['diff','HEAD','--stat'],{cwd:repo,encoding:'utf8'}).trim(),
   source_sha256:{legacy:sha(baseline),fixed:sha(fixed),helper:sha(helper)},environment:'Cloud Docker --network none; identical image, Camoufox binary/config, Xvfb :99, fresh profiles',
-  order,cases:['/slow','/error','/redirect','/never'],origin,observe_ms:100,gate_deadline_ms:18000,camoufox:config.metadata,
+  order,cases,origin,observe_ms:100,gate_deadline_ms:18000,camoufox:config.metadata,
   interpretation:'Only bridge navigation gate/error scoping/metadata changes. No public sites. Compatibility/correctness probe, not a performance ranking.'});
  write('fingerprint.json',Object.fromEntries(Object.entries(config.generated.env).filter(([k])=>/^CAMOU_CONFIG_\d+$/.test(k))));
  for(let index=0;index<order.length;index++) {
@@ -66,10 +70,11 @@ try {
     browser.navigate=async(...args)=>{const result=await navigate(...args);lastNavigation=result.navigation||null;return result;};return browser;
    }});
    await adapter.open();
-   for(const pathname of ['/slow','/error','/redirect','/never']) {
+   for(const testCase of cases) {
+    const pathname=testCase.path;adapter.options.readyCondition=testCase.readyCondition||null;
     const start=performance.now();const result=await adapter.goto(origin+pathname);
     const dom=result.dom_sha256?fs.readFileSync(path.join(evidence.directory,'blobs',result.dom_sha256),'utf8'):'';
-    row.pages.push({pathname,elapsed_ms:performance.now()-start,status:result.http_status,outcome:result.outcome,
+    row.pages.push({pathname,ready_requested:testCase.readyCondition||null,readiness:result.ready_condition,elapsed_ms:performance.now()-start,status:result.http_status,outcome:result.outcome,
      dom_ready:dom.includes('<p id="ready">loaded</p>'),navigation:lastNavigation,errors:result.bridge_errors,dom_sha256:result.dom_sha256});
    }
   } catch(error) {row.error=safeError(error);}
@@ -82,6 +87,13 @@ try {
   row.verification=verify(evidence.directory);evidence.save('measurement.json',row);rows.push(row);write('results.json',rows);
   console.log(JSON.stringify({arm,index:index+1,error:row.error,pages:row.pages.map(p=>({path:p.pathname,ready:p.dom_ready,navigation:p.navigation?.outcome,ms:Math.round(p.elapsed_ms)}))}));
  }
- if(rows.some(row=>row.error||!row.verification.ok||row.pages.length!==4||row.arm==='fixed'&&row.pages.some(p=>p.pathname==='/never'?p.navigation?.outcome!=='timeout'||p.dom_ready||p.elapsed_ms>25000:!p.dom_ready||p.navigation?.outcome!=='complete'||p.status!==(p.pathname==='/error'?503:200))))process.exitCode=1;
+ if(rows.some(row=>row.error||!row.verification.ok||row.pages.length!==cases.length))process.exitCode=1;
+ for(const row of rows.filter(row=>row.arm==='fixed')) for(const p of row.pages) {
+  const valid=p.pathname==='/never'?p.navigation?.outcome==='timeout'&&!p.dom_ready&&p.elapsed_ms<25000
+   :p.pathname==='/late-missing'?p.readiness?.outcome==='timeout'&&!p.dom_ready&&p.elapsed_ms<2000
+   :p.pathname==='/late'?(p.ready_requested?p.readiness?.outcome==='ready'&&p.dom_ready:!p.readiness&&!p.dom_ready)
+   :p.dom_ready&&p.navigation?.outcome==='complete'&&p.status===(p.pathname==='/error'?503:200);
+  if(!valid)process.exitCode=1;
+ }
 } catch(error) {write('setup-error.json',safeError(error));process.exitCode=1;}
 finally {write('fixture-requests.json',requests);await new Promise(resolve=>server.close(resolve));}
