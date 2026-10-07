@@ -1,0 +1,33 @@
+{
+  "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+  "started_at": "2026-10-07T12:54:24.449Z",
+  "mode": "standard",
+  "query": "グローブ",
+  "homepage_url": "https://joshinweb.jp/top.html",
+  "node": "v22.15.0",
+  "homepage_settle_ms": 6000,
+  "browser_control": "native Firefox + 4play WebExtension",
+  "profile": "fresh per run; same cookie session and tab retained for search submission",
+  "submission": "fill observed #suggest_input then DOM click on the observed changeSubmit search anchor",
+  "input_events_trusted": false,
+  "pointer_events_used": false,
+  "wheel_used": false,
+  "wait": "actual HTTP main-document response plus complete changed document; 30s timeout",
+  "network": "direct; TLS verification enabled",
+  "proxy_configured": false,
+  "tls_verification": "enabled",
+  "proxy_environment_present": {
+    "HTTPS_PROXY": false,
+    "https_proxy": false,
+    "HTTP_PROXY": false,
+    "http_proxy": false,
+    "ALL_PROXY": false,
+    "all_proxy": false
+  },
+  "capture_scope": "main-document request/response bodies, request header allowlist, DOM and extraction observations; subresources load normally but are not archived",
+  "limitations": [
+    "response headers unavailable from 4play",
+    "native DOM fill/click does not establish equivalence to trusted physical user input",
+    "product and pagination selectors remain unvalidated until a successful result DOM is available"
+  ]
+}

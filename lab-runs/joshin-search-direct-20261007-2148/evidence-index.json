@@ -1,0 +1,243 @@
+{
+  "schema_version": 1,
+  "scope": "8 Joshin experiment checkpoints; metadata index only. Checkpoint ZIPs and raw captures remain in their original lab-runs paths and are not added to Git.",
+  "measured_source_state": {
+    "head_recorded_by_all_summaries": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+    "interpretation": "source_commit is the measured base HEAD identifier, not by itself proof of a clean worktree. The direct-search summary records source_local_changes as joshin-product-search.mjs; its existing source.patch contains that file only. Exact executable source provenance therefore uses replay-source bytes in checkpoint.zip and the SHA256 maps below, including statically imported CJS files.",
+    "direct_run_existing_source_manifest": {
+      "path": "lab-runs/joshin-search-direct-20261007-2148/source-manifest.json",
+      "entries": {
+        "experiments/bot-diagnostics/camoufox-fourplay-runtime.mjs": {
+          "sha256": "a239de7f55ef476c20a0006c8d45eba2effa24554756b9b1609bb4c4830c8326",
+          "archive_match": true
+        },
+        "experiments/bot-diagnostics/camoufox-runtime.mjs": {
+          "sha256": "dfc74a42551aa4ba58b375622e63fd4969537e68d4ccf431dc38e3c2d544ad30",
+          "archive_match": true
+        },
+        "experiments/bot-diagnostics/config.json": {
+          "sha256": "3514cc191ce864029d7c0f403afd981482ee7b07aa10f2c2a869bc4cce6d7a4b",
+          "archive_match": true
+        },
+        "experiments/bot-diagnostics/evidence.mjs": {
+          "sha256": "0b5af3d82ad4936ed80f60fd7142d0a0e7a390f35a7a9490756bad24718b871e",
+          "archive_match": true
+        },
+        "experiments/bot-diagnostics/fourplay-native-runtime.mjs": {
+          "sha256": "fbf753d4ed9a03da5365c7acccd860db5e46a5094b148841bf134abf72b4eeb5",
+          "archive_match": true
+        },
+        "experiments/bot-diagnostics/joshin-product-extraction.mjs": {
+          "sha256": "0a08fecc55c3f82546da0c54de6a2098e00145a8704dbbbc789755d7f062647a",
+          "archive_match": true
+        },
+        "experiments/bot-diagnostics/joshin-product-search.mjs": {
+          "sha256": "c90f36653b07896a29ba896aa739b1679daa84884a3b9957d9328551ff5199d9",
+          "archive_match": true
+        },
+        "experiments/bot-diagnostics/runtime.mjs": {
+          "sha256": "fc483784f26402f686628a9f98fd50e7073afacd0407c0601e5dc035fac729e1",
+          "archive_match": true
+        },
+        "experiments/fourget-selfhost/fourplay/navigation-gate.cjs": {
+          "sha256": "caeb22a5491de778364fe750551a88c4d030aed8a2552b78c2b2ae60dff9902e",
+          "archive_match": true
+        },
+        "experiments/fourget-selfhost/fourplay/tab-navigation.cjs": {
+          "sha256": "56bc523a76517e0fe622f40301ced78f6456da913daf77b9c88fe0e96c7adb6d",
+          "archive_match": true
+        }
+      },
+      "all_entries_match_checkpoint_source": true,
+      "source_patch_path": "lab-runs/joshin-search-direct-20261007-2148/source.patch",
+      "source_patch_files": [
+        "experiments/bot-diagnostics/joshin-product-search.mjs"
+      ],
+      "source_patch_covers_extraction_module": false,
+      "note": "Do not overwrite the historical patch or manifest. The patch does not cover the extraction module; use the checkpoint source snapshot and actual hashes for full source binding."
+    },
+    "pr_cleanup_timing": "The PR adds post-measurement documentation/index work and moves the input diagnostic try/finally to cover fixture configuration setup. The archived measured sources remain unchanged. No live experiment was rerun for this index; the cleanup failure path was checked locally after measurement.",
+    "source_hash_algorithm": "SHA-256",
+    "source_hash_scope": "Per archive, SHA-256 for the three Joshin entrypoint/implementation files when present (joshin-product-search.mjs, joshin-product-extraction.mjs, joshin-input-diagnostics.mjs) and the two statically imported native navigation CJS dependencies (navigation-gate.cjs, tab-navigation.cjs).",
+    "direct_run_source_local_changes_recorded": [
+      "experiments/bot-diagnostics/joshin-product-search.mjs"
+    ]
+  },
+  "archive_policy": "Keep checkpoint.zip, checkpoint-export.zip, blobs, raw HTML, screenshots, and other raw captures in their current evidence locations. Track this report and hash index as lightweight pointers; do not move or delete evidence.",
+  "runs": [
+    {
+      "run_id": "joshin-search-direct-20261007-2148",
+      "summary": "summary.json",
+      "checkpoint": "checkpoint.json",
+      "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+      "checkpoint_archive": {
+        "path": "checkpoint.zip",
+        "bytes": 1621462,
+        "sha256": "f192b9274ac4b9c42a2a4509a1e0e3f7c3b6bfc95b7f36d5d342358e7c700954",
+        "checkpoint_bytes": 1621462,
+        "checkpoint_sha256": "f192b9274ac4b9c42a2a4509a1e0e3f7c3b6bfc95b7f36d5d342358e7c700954",
+        "archive_matches_checkpoint": true,
+        "crc_check": "passed",
+        "archive_member_count": 443
+      },
+      "implementation_sha256": {
+        "experiments/bot-diagnostics/joshin-product-extraction.mjs": "0a08fecc55c3f82546da0c54de6a2098e00145a8704dbbbc789755d7f062647a",
+        "experiments/bot-diagnostics/joshin-product-search.mjs": "c90f36653b07896a29ba896aa739b1679daa84884a3b9957d9328551ff5199d9",
+        "experiments/fourget-selfhost/fourplay/navigation-gate.cjs": "caeb22a5491de778364fe750551a88c4d030aed8a2552b78c2b2ae60dff9902e",
+        "experiments/fourget-selfhost/fourplay/tab-navigation.cjs": "56bc523a76517e0fe622f40301ced78f6456da913daf77b9c88fe0e96c7adb6d"
+      }
+    },
+    {
+      "run_id": "joshin-input-diagnostics-20261007-2215",
+      "summary": "summary.json",
+      "checkpoint": "checkpoint.json",
+      "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+      "checkpoint_archive": {
+        "path": "checkpoint.zip",
+        "bytes": 26315176,
+        "sha256": "cc4a5be93f4d9a45ad34a8f93cafa7ef08ea8d691f8367e010daded26927afc3",
+        "checkpoint_bytes": 26315176,
+        "checkpoint_sha256": "cc4a5be93f4d9a45ad34a8f93cafa7ef08ea8d691f8367e010daded26927afc3",
+        "archive_matches_checkpoint": true,
+        "crc_check": "passed",
+        "archive_member_count": 3195
+      },
+      "implementation_sha256": {
+        "experiments/bot-diagnostics/joshin-input-diagnostics.mjs": "d04b612e769b12eb3a3106d4085889d9d279ab17bf80843b48b983c1285e9101",
+        "experiments/bot-diagnostics/joshin-product-search.mjs": "c90f36653b07896a29ba896aa739b1679daa84884a3b9957d9328551ff5199d9",
+        "experiments/fourget-selfhost/fourplay/navigation-gate.cjs": "caeb22a5491de778364fe750551a88c4d030aed8a2552b78c2b2ae60dff9902e",
+        "experiments/fourget-selfhost/fourplay/tab-navigation.cjs": "56bc523a76517e0fe622f40301ced78f6456da913daf77b9c88fe0e96c7adb6d"
+      }
+    },
+    {
+      "run_id": "joshin-camoufox-ja-20261007-2308",
+      "summary": "summary.json",
+      "checkpoint": "checkpoint.json",
+      "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+      "checkpoint_archive": {
+        "path": "checkpoint.zip",
+        "bytes": 3061332,
+        "sha256": "7b4c02c37a480c0b9c40b9eb271f5c21ea5a7fb03a1d5d6f10cd436d65a88aba",
+        "checkpoint_bytes": 3061332,
+        "checkpoint_sha256": "7b4c02c37a480c0b9c40b9eb271f5c21ea5a7fb03a1d5d6f10cd436d65a88aba",
+        "archive_matches_checkpoint": true,
+        "crc_check": "passed",
+        "archive_member_count": 502
+      },
+      "implementation_sha256": {
+        "experiments/bot-diagnostics/joshin-input-diagnostics.mjs": "3abffb8c170e7ae22097367ad889e702093f2d53fba323378c0cf10ddf95ffd5",
+        "experiments/fourget-selfhost/fourplay/navigation-gate.cjs": "caeb22a5491de778364fe750551a88c4d030aed8a2552b78c2b2ae60dff9902e",
+        "experiments/fourget-selfhost/fourplay/tab-navigation.cjs": "56bc523a76517e0fe622f40301ced78f6456da913daf77b9c88fe0e96c7adb6d"
+      }
+    },
+    {
+      "run_id": "joshin-fourplay-ja-20261007-2318",
+      "summary": "summary.json",
+      "checkpoint": "checkpoint.json",
+      "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+      "checkpoint_archive": {
+        "path": "checkpoint.zip",
+        "bytes": 3715433,
+        "sha256": "f3fd416b7ef181bfa1b720f8cc7088bfc35872ab522745502524e3ee9948e6ab",
+        "checkpoint_bytes": 3715433,
+        "checkpoint_sha256": "f3fd416b7ef181bfa1b720f8cc7088bfc35872ab522745502524e3ee9948e6ab",
+        "archive_matches_checkpoint": true,
+        "crc_check": "passed",
+        "archive_member_count": 680
+      },
+      "implementation_sha256": {
+        "experiments/bot-diagnostics/joshin-input-diagnostics.mjs": "5e6153464205a55c1c43e9e0ff731e776c35180d0c3a3a3b27c427d2ac962326",
+        "experiments/fourget-selfhost/fourplay/navigation-gate.cjs": "caeb22a5491de778364fe750551a88c4d030aed8a2552b78c2b2ae60dff9902e",
+        "experiments/fourget-selfhost/fourplay/tab-navigation.cjs": "56bc523a76517e0fe622f40301ced78f6456da913daf77b9c88fe0e96c7adb6d"
+      }
+    },
+    {
+      "run_id": "joshin-proxy-ja-20261007-2340",
+      "summary": "summary.json",
+      "checkpoint": "checkpoint.json",
+      "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+      "checkpoint_archive": {
+        "path": "checkpoint.zip",
+        "bytes": 7217532,
+        "sha256": "891183b1587acfbad7231456f163495d53c108d8bf51947d4148bc90a04c9994",
+        "checkpoint_bytes": 7217532,
+        "checkpoint_sha256": "891183b1587acfbad7231456f163495d53c108d8bf51947d4148bc90a04c9994",
+        "archive_matches_checkpoint": true,
+        "crc_check": "passed",
+        "archive_member_count": 1251
+      },
+      "implementation_sha256": {
+        "experiments/bot-diagnostics/joshin-input-diagnostics.mjs": "b990cefd4efeeb972e53f429865aa61edb617b95b8abd9e3627e23fb848719bd",
+        "experiments/bot-diagnostics/joshin-product-search.mjs": "c90f36653b07896a29ba896aa739b1679daa84884a3b9957d9328551ff5199d9",
+        "experiments/fourget-selfhost/fourplay/navigation-gate.cjs": "caeb22a5491de778364fe750551a88c4d030aed8a2552b78c2b2ae60dff9902e",
+        "experiments/fourget-selfhost/fourplay/tab-navigation.cjs": "56bc523a76517e0fe622f40301ced78f6456da913daf77b9c88fe0e96c7adb6d"
+      }
+    },
+    {
+      "run_id": "joshin-assembled-pagination-20261008-0005",
+      "summary": "summary.json",
+      "checkpoint": "checkpoint.json",
+      "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+      "checkpoint_archive": {
+        "path": "checkpoint.zip",
+        "bytes": 11159928,
+        "sha256": "aa4988e6055e267895d7d4c9c8e313267bf9c0a73c6b9afe056bc51b91496c39",
+        "checkpoint_bytes": 11159928,
+        "checkpoint_sha256": "aa4988e6055e267895d7d4c9c8e313267bf9c0a73c6b9afe056bc51b91496c39",
+        "archive_matches_checkpoint": true,
+        "crc_check": "passed",
+        "archive_member_count": 1233
+      },
+      "implementation_sha256": {
+        "experiments/bot-diagnostics/joshin-product-extraction.mjs": "07846c4bbc92ec10cd2d66d11b66d0a0d245789496252221f61e0ccb125bc1fb",
+        "experiments/bot-diagnostics/joshin-product-search.mjs": "82781b707040b4dc676665f33cd7cd03067d6ceee1121be4c4438a6e524e5cf9",
+        "experiments/fourget-selfhost/fourplay/navigation-gate.cjs": "caeb22a5491de778364fe750551a88c4d030aed8a2552b78c2b2ae60dff9902e",
+        "experiments/fourget-selfhost/fourplay/tab-navigation.cjs": "56bc523a76517e0fe622f40301ced78f6456da913daf77b9c88fe0e96c7adb6d"
+      }
+    },
+    {
+      "run_id": "joshin-camoufox-pagination-20261008-0038",
+      "summary": "summary.json",
+      "checkpoint": "checkpoint.json",
+      "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+      "checkpoint_archive": {
+        "path": "checkpoint.zip",
+        "bytes": 15451195,
+        "sha256": "dff9e8db5f38354eee50db36fa9abb4731db5339241d57b191de931b3819901c",
+        "checkpoint_bytes": 15451195,
+        "checkpoint_sha256": "dff9e8db5f38354eee50db36fa9abb4731db5339241d57b191de931b3819901c",
+        "archive_matches_checkpoint": true,
+        "crc_check": "passed",
+        "archive_member_count": 1673
+      },
+      "implementation_sha256": {
+        "experiments/bot-diagnostics/joshin-product-extraction.mjs": "07846c4bbc92ec10cd2d66d11b66d0a0d245789496252221f61e0ccb125bc1fb",
+        "experiments/bot-diagnostics/joshin-product-search.mjs": "fc9d9fceb2dca2105209dca9bc579b88dc4667ffc2b363a7bcbb91d11462dddb",
+        "experiments/fourget-selfhost/fourplay/navigation-gate.cjs": "caeb22a5491de778364fe750551a88c4d030aed8a2552b78c2b2ae60dff9902e",
+        "experiments/fourget-selfhost/fourplay/tab-navigation.cjs": "56bc523a76517e0fe622f40301ced78f6456da913daf77b9c88fe0e96c7adb6d"
+      }
+    },
+    {
+      "run_id": "joshin-patchright-smoke-20261008-0116",
+      "summary": "summary.json",
+      "checkpoint": "checkpoint.json",
+      "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+      "checkpoint_archive": {
+        "path": "checkpoint.zip",
+        "bytes": 2299454,
+        "sha256": "1fefe87887fa1d150ca8b2d1753fe22d1f2c00278dc892133b218f5108c5430f",
+        "checkpoint_bytes": 2299454,
+        "checkpoint_sha256": "1fefe87887fa1d150ca8b2d1753fe22d1f2c00278dc892133b218f5108c5430f",
+        "archive_matches_checkpoint": true,
+        "crc_check": "passed",
+        "archive_member_count": 665
+      },
+      "implementation_sha256": {
+        "experiments/bot-diagnostics/joshin-product-extraction.mjs": "07846c4bbc92ec10cd2d66d11b66d0a0d245789496252221f61e0ccb125bc1fb",
+        "experiments/bot-diagnostics/joshin-product-search.mjs": "fe67f7be238613e1953bb024715bad667a1bc69faea6a4628c8113f37a894efe",
+        "experiments/fourget-selfhost/fourplay/navigation-gate.cjs": "caeb22a5491de778364fe750551a88c4d030aed8a2552b78c2b2ae60dff9902e",
+        "experiments/fourget-selfhost/fourplay/tab-navigation.cjs": "56bc523a76517e0fe622f40301ced78f6456da913daf77b9c88fe0e96c7adb6d"
+      }
+    }
+  ]
+}

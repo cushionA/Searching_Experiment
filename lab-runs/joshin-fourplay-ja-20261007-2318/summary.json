@@ -1,0 +1,328 @@
+{
+  "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+  "query": "グローブ",
+  "browser_control": "Ordinary Firefox + native 4play, without Camoufox",
+  "runtime": {
+    "engine": "firefox",
+    "startup_timing_ms": {
+      "profile_and_server_ms": 705.0463000000001,
+      "launch_and_extension_connect_ms": 16345.391200000002,
+      "session_setup_ms": 75.8676000000014,
+      "total_ms": 17126.513499999997
+    },
+    "version": "157.0",
+    "fourplay": "@lawlers/4play",
+    "fourplay_upstream_commit": "72f27922a8cdcfaae24531db5db2cd6f17470a02",
+    "extension_bg_original_sha256": "dae9d635abaa5a80d45fbe39d5bbe9c18f3717c8c00fc85a4a063768e1f25442",
+    "extension_bg_config_patch_sha256": "9d0bbc146390d057f4b85a8ca30a079a83c2aeb0e92f4740eb81d701ff9f22dc",
+    "proxy_ca_trusted": false,
+    "headless": false,
+    "display": ":99",
+    "viewport": null,
+    "screenshots": false,
+    "selector_operations": false,
+    "challenge_actions": false,
+    "initial_tabs_preserved": true,
+    "fixture_network_isolation": null,
+    "navigation_method": "about:blank complete, then MAIN-world location.assign via a temporary script; browser-generated request headers",
+    "wait_condition": "active tab/container HTTP document response matches tabs.onUpdated status=complete; blank cannot complete navigation",
+    "budgeted_navigation": false,
+    "redirect_chain_reporting": false,
+    "request_id_source": "not_exposed; correlation uses tab_id+method+type+url+arrival_order",
+    "frame_matching": "active_container_and_tab_id",
+    "observation_limits": [
+      "screenshots_unsupported",
+      "viewport_not_measured",
+      "frame_matching_incomplete",
+      "redirect_chain_not_reported",
+      "response_headers_not_provided_by_4play",
+      "websocket_frames_not_recorded"
+    ]
+  },
+  "conditions": {
+    "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+    "node": "v22.15.0",
+    "mode": "--live-fourplay-ja",
+    "query": "グローブ",
+    "homepage_url": "https://joshinweb.jp/top.html",
+    "browser_control": "Firefox + native 4play",
+    "transport": "direct_browser",
+    "fixture_network_route": null,
+    "home_settle_ms": 6000,
+    "seed": 271828,
+    "fingerprint_sha256": null,
+    "fingerprint_reused_from": null,
+    "regional_condition": null,
+    "native_fourplay_condition": {
+      "timezone_env": "Asia/Tokyo",
+      "firefox_user_prefs": {
+        "intl.accept_languages": "ja-JP,ja,en-US,en",
+        "intl.locale.privacy.web_exposed": "ja-JP",
+        "intl.regional_prefs.use_os_locales": true
+      },
+      "locale_environment": {
+        "LOCPATH": "/home/zabuton/.local/share/searchengine-bot-diagnostics/joshin-fourplay-ja-20261007-2318/locale",
+        "LC_ALL": "ja_JP.UTF-8",
+        "LANG": "ja_JP.UTF-8"
+      }
+    },
+    "fingerprint_config_key_presence": null,
+    "camoufox_metadata": null,
+    "profile": "fresh for every arm; retained for its homepage-to-search navigation",
+    "prior_evidence": {
+      "source": "experiments/bot-diagnostics/joshin-product-search.mjs",
+      "selection": "assembled arm from the separately saved earlier run",
+      "submission": "DOM fill plus DOM click; input and pointer events were untrusted"
+    },
+    "capture_scope": "main-frame documents and same-origin XHR or POST script only; all other resources load normally",
+    "cookies": "names only; values are never stored",
+    "proxy_environment_present": {
+      "HTTPS_PROXY": false,
+      "https_proxy": false,
+      "HTTP_PROXY": false,
+      "http_proxy": false,
+      "ALL_PROXY": false,
+      "all_proxy": false
+    },
+    "tls_verification_enabled": true
+  },
+  "results": [
+    {
+      "run": "live-fourplay-ja",
+      "arm": "dom-control",
+      "homepage_status": 200,
+      "search_status": 200,
+      "search_success": true,
+      "products": null,
+      "product_dom_observation": {
+        "card_selector": "div.search_container",
+        "card_count": 40,
+        "displayed_total": 3343,
+        "maximum_page_metadata": 84,
+        "displayed_range": [
+          1,
+          40
+        ],
+        "pagination_traversed": false,
+        "whole_catalog_retrieved": false
+      },
+      "stop_reason": "search_200_dom_obtained",
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 7,
+        "results": 1,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      },
+      "events": {
+        "input": {
+          "count": 1,
+          "trusted": 0
+        },
+        "change": {
+          "count": 1,
+          "trusted": 0
+        },
+        "click": {
+          "count": 1,
+          "trusted": 0
+        }
+      },
+      "search_request_headers": {
+        "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:157.0) Gecko/20100101 Firefox/157.0",
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "accept-language": "ja-JP,ja;q=0.9,en-US;q=0.8,en;q=0.7",
+        "accept-encoding": "gzip, deflate, br, zstd",
+        "referer": "https://joshinweb.jp/top.html",
+        "upgrade-insecure-requests": "1",
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "same-origin"
+      },
+      "search_cookie_names": [
+        "X-Oracle-PRD-ECWEB-81",
+        "AUTHENTICATION_ODR_2",
+        "authentication_uuid",
+        "QueueITAccepted-SDFrts345E-V3_wholeweb",
+        "_abck",
+        "ak_bmsc",
+        "bm_sz",
+        "X-Oracle-PRD-IMG-80",
+        "zd-cookie-user-id",
+        "zd-cookie-session-id",
+        "_gcl_au",
+        "ga_session_pv",
+        "__rtbh.uid",
+        "__rtbh.lid",
+        "_yjsu_yjad",
+        "_bdck",
+        "_bdsid",
+        "_bdnvf",
+        "_ga_Y972QW0EQF",
+        "_ga",
+        "_bd_prev_page",
+        "_clck",
+        "_bd_prev_page_ex",
+        "_clsk"
+      ],
+      "environment": {
+        "intl_datetime_format": {
+          "locale": "ja-JP",
+          "calendar": "gregory",
+          "numberingSystem": "latn",
+          "timeZone": "Asia/Tokyo",
+          "year": "numeric",
+          "month": "numeric",
+          "day": "numeric"
+        },
+        "date_timezone_offset_minutes": {
+          "now": -540,
+          "jan_1_2026": -540,
+          "jul_1_2026": -540
+        },
+        "navigator": {
+          "language": "ja-JP",
+          "languages": [
+            "ja-JP",
+            "ja",
+            "en-US",
+            "en"
+          ],
+          "platform": "Linux x86_64"
+        },
+        "document": {
+          "lang": "ja",
+          "character_set": "Shift_JIS"
+        },
+        "search_input_computed_font": {
+          "font": "16px / 20px YakuHanJP, \"Noto Sans Japanese\", \"ヒラギノ角ゴ Pro W3\", \"Hiragino Kaku Gothic Pro\", \"メイリオ\", Meiryo, \"ＭＳ Ｐゴシック\", Osaka, sans-serif",
+          "font_family": "YakuHanJP, \"Noto Sans Japanese\", \"ヒラギノ角ゴ Pro W3\", \"Hiragino Kaku Gothic Pro\", \"メイリオ\", Meiryo, \"ＭＳ Ｐゴシック\", Osaka, sans-serif",
+          "font_size": "16px",
+          "font_weight": "400"
+        },
+        "font_measurements": [
+          {
+            "family": "Arial",
+            "document_font_check": true,
+            "latin_width": 490.04998779296875,
+            "japanese_width": 142.4499969482422
+          },
+          {
+            "family": "Arimo",
+            "document_font_check": true,
+            "latin_width": 490.04998779296875,
+            "japanese_width": 142.4499969482422
+          },
+          {
+            "family": "Noto Sans CJK JP",
+            "document_font_check": true,
+            "latin_width": 490.04998779296875,
+            "japanese_width": 142.4499969482422
+          },
+          {
+            "family": "Noto Sans JP",
+            "document_font_check": true,
+            "latin_width": 490.04998779296875,
+            "japanese_width": 142.4499969482422
+          },
+          {
+            "family": "Noto Serif CJK JP",
+            "document_font_check": true,
+            "latin_width": 490.04998779296875,
+            "japanese_width": 142.4499969482422
+          },
+          {
+            "family": "monospace",
+            "document_font_check": true,
+            "latin_width": 500.9333190917969,
+            "japanese_width": 134.75
+          }
+        ],
+        "font_set_status": "loaded",
+        "loaded_font_resource_urls": [],
+        "cookie_names": [
+          "QueueITAccepted-SDFrts345E-V3_wholeweb",
+          "_abck",
+          "bm_sz",
+          "zd-cookie-session-id",
+          "zd-cookie-user-id",
+          "_gcl_au",
+          "ga_session_pv",
+          "__rtbh.uid",
+          "__rtbh.lid",
+          "_yjsu_yjad",
+          "_bdsid",
+          "_bdnvf",
+          "_bdck",
+          "_ga",
+          "_bd_prev_page",
+          "_ga_Y972QW0EQF",
+          "_clck",
+          "_bd_prev_page_ex",
+          "_clsk"
+        ],
+        "cookie_comparison": {
+          "request_cookie_names": [],
+          "document_cookie_names": [
+            "QueueITAccepted-SDFrts345E-V3_wholeweb",
+            "_abck",
+            "bm_sz",
+            "zd-cookie-session-id",
+            "zd-cookie-user-id",
+            "_gcl_au",
+            "ga_session_pv",
+            "__rtbh.uid",
+            "__rtbh.lid",
+            "_yjsu_yjad",
+            "_bdsid",
+            "_bdnvf",
+            "_bdck",
+            "_ga",
+            "_bd_prev_page",
+            "_ga_Y972QW0EQF",
+            "_clck",
+            "_bd_prev_page_ex",
+            "_clsk"
+          ],
+          "request_only_names": [],
+          "document_only_names": [
+            "QueueITAccepted-SDFrts345E-V3_wholeweb",
+            "_abck",
+            "bm_sz",
+            "zd-cookie-session-id",
+            "zd-cookie-user-id",
+            "_gcl_au",
+            "ga_session_pv",
+            "__rtbh.uid",
+            "__rtbh.lid",
+            "_yjsu_yjad",
+            "_bdsid",
+            "_bdnvf",
+            "_bdck",
+            "_ga",
+            "_bd_prev_page",
+            "_ga_Y972QW0EQF",
+            "_clck",
+            "_bd_prev_page_ex",
+            "_clsk"
+          ]
+        },
+        "request_accept_language": "ja-JP,ja;q=0.9,en-US;q=0.8,en;q=0.7"
+      },
+      "measurement": "live-fourplay-ja/01-dom-control/measurement.json"
+    }
+  ],
+  "submission": "DOM value assignment and synthetic input/change followed by DOM click; same method as the assembled and standalone Camoufox DOM language controls",
+  "fixture_all_checks_passed": true,
+  "previous_fixture": "fixture-fourplay-ja failed only the Intl locale check; the OS regional locale was then installed into this run directory and forced in Firefox preferences",
+  "assembled_evidence": "../joshin-input-diagnostics-20261007-2215/summary.json",
+  "camoufox_evidence": "../joshin-camoufox-ja-20261007-2308/summary.json",
+  "limitations": [
+    "This is one ordinary Firefox observation, not an estimated success rate.",
+    "Product cards are verified offline from the captured DOM. Pagination was not traversed.",
+    "Firefox and Camoufox versions and installed fonts differ; this is not a one-variable comparison.",
+    "Cookie values and site-side bot scores are not recorded.",
+    "document.fonts.check and canvas widths alone do not establish which Japanese fonts are installed.",
+    "Legacy resource-block configuration is retained by the evidence framework, but this browser run loads site resources normally."
+  ]
+}
