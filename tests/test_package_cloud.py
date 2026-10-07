@@ -26,6 +26,7 @@ class CloudPackageTests(unittest.TestCase):
                     "experiments/fourget-selfhost/start.py",
                     "experiments/fourget-selfhost/fourplay/server.cjs",
                     "experiments/fourget-selfhost/fourplay/navigation-gate.cjs",
+                    "experiments/fourget-selfhost/fourplay/tab-navigation.cjs",
                     "experiments/bot-diagnostics/fourplay-runtime.mjs",
                     "experiments/bot-diagnostics/fourplay-bridge-trace.cjs",
                     "experiments/bot-diagnostics/dom-stability.mjs",

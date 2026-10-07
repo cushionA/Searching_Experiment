@@ -12,6 +12,12 @@ python3 -B experiments/fourget-selfhost/start.py
 
 The bridge listens on `http://127.0.0.1:3004/`; `/health` reports browser connection and runtime metadata. Keep generated credentials and runtime files private. The start procedure and shutdown command are documented in [the self-hosted runtime README](../experiments/fourget-selfhost/README.md).
 
+Navigation first opens `about:blank` in the session's container, waits for that blank tab to complete, then runs ordinary `location.assign` in the page's MAIN world through a temporary script. The bridge and native controller, including Camoufox + 4play, share this helper. Firefox generates the request headers; the helper does not add input events. Target completion requires the same tab/container's HTTP document response and completed DOM, so the initial blank document cannot finish a target navigation. An HTTP 403 remains a captured 403 response.
+
+The [2026-10-07 Joshin investigation](../reports/2026-10/joshin-navigation-fix.md) records the navigation comparison, successful retrieval without wheel operations, later root-URL 403s shared by Camoufox, and separate Cloud proxy 503s. It includes a full evidence checkpoint and a loopback fixture for redirects, real same-tab links, cookies, referrers, and GET/POST 403 responses.
+
+The [Joshin グローブ search comparison](../reports/2026-10/joshin-glove-search.md) reached the top page with both ordinary 4play and Camoufox + 4play, but both search submissions returned 403 before product extraction or pagination. These observations used the managed Cloud proxy and do not reproduce a local direct-network success.
+
 ## Use from an experiment
 
 Add `"4play"` to the experiment manifest's `tools` array, then use the standard framework plan and run commands to create a new run. For legacy CLI selection, set `BOT_DIAGNOSTICS_CLIENTS=4play`. The adapter connects to the bridge selected by the runtime configuration and records setup metadata before target navigation. A local integration smoke and a browser-search smoke are available:

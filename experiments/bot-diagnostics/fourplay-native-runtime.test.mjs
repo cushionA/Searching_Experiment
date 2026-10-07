@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import http from 'node:http';
+import vm from 'node:vm';
 import {EventEmitter} from 'node:events';
 
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'fourplay-runtime-test-'));
@@ -33,10 +34,32 @@ test('native controller binds loopback and chooses a fresh unlogged session toke
   assert.ok(tokens.every(token=>/^[a-f0-9]{48}$/.test(token)));
 });
 
-function fixtureServer({emitNavigationEvents=false,httpErrorStatus=null}={}) {
-  const event=new EventEmitter(), calls=[];
-  let pageUrl='about:blank';
-  const server={event,calls,stopped:false,async stop(){server.stopped=true;},async call(method,...args){
+test('fixture traces redact the extension WebSocket authentication path',async t=>{
+  const server=fixtureServer();
+  const browser=await openFourplayNative({fixture:true,serverFactory:()=>server,
+    launch:()=>{queueMicrotask(()=>server.event.emit('browser_connect',{}));return {kill(){}};},connectTimeout:500});
+  t.after(()=>browser.close());
+  server.event.emit('web_request',{id:-1,container:'firefox-default',type:'websocket',method:'GET',
+    url:'ws://127.0.0.1:3030/private-fixture-token?secret=fixture'});
+  assert.equal(browser.runtime.fixture_event_trace.at(-1).url,'ws://127.0.0.1:3030/[redacted]');
+  assert.equal(JSON.stringify(browser.runtime.fixture_event_trace).includes('private-fixture-token'),false);
+});
+
+function fixtureServer({emitNavigationEvents=false,httpErrorStatus=null,redirectTo=null,completeNavigation=true,
+  injectionFailureAt=null,domReadyBeforeResponse=false,responseDelayMs=25}={}) {
+  const event=new EventEmitter(), calls=[],tabs=new Map(),navigations=[];
+  let pageUrl='about:blank',nextTabId=2,navigationAttempts=0;
+  const emitNavigation=(tabId,url,{status=httpErrorStatus||200,body='native response'}={})=>{
+    if(emitNavigationEvents) event.emit('web_request',{id:1,container:'container-1',url:'http://127.0.0.1:8080/favicon.ico',type:'other',method:'GET',headers:[]});
+    event.emit('web_request',{id:tabId,container:'container-1',url,type:'main_frame',method:'GET',headers:[]});
+    if(status>=400) event.emit('dom_load_fail',{id:tabId,container:'container-1',url,error:`HTTP/2 ${status} Forbidden`});
+    const response=()=>event.emit('web_response',{id:tabId,container:'container-1',url,type:'main_frame',method:'GET',status,headers:[],body:Buffer.from(body)});
+    if(domReadyBeforeResponse) {
+      event.emit('dom_ready',{id:tabId,container:'container-1',url,status:'complete'});
+      setTimeout(response,responseDelayMs);
+    } else response();
+  };
+  const server={event,calls,navigations,stopped:false,async stop(){server.stopped=true;},async call(method,...args){
     calls.push({method,args});
     if(method==='get_ua') return 'Mozilla/5.0 Firefox fixture';
     if(method==='close_all_tabs') return {id:1,url:'about:blank'};
@@ -44,19 +67,46 @@ function fixtureServer({emitNavigationEvents=false,httpErrorStatus=null}={}) {
     if(method==='container_create') return {id:'container-1'};
     if(method==='tab_open'){
       pageUrl=args[0];
-      if(emitNavigationEvents) {
-        event.emit('web_request',{id:1,container:'container-1',url:'http://127.0.0.1:8080/favicon.ico',type:'other',method:'GET',headers:[]});
-        event.emit('web_request',{id:2,container:'container-1',url:pageUrl,type:'main_frame',method:'GET',headers:[]});
-        if(httpErrorStatus) event.emit('dom_load_fail',{id:2,url:pageUrl,error:`HTTP/2 ${httpErrorStatus} Forbidden`});
-        event.emit('web_response',{id:2,container:'container-1',url:pageUrl,type:'main_frame',method:'GET',status:httpErrorStatus||200,headers:[],body:Buffer.from('native response')});
-      }
-      event.emit('dom_ready',{id:2,container:'container-1',url:pageUrl,status:'complete'});
-      return {id:2,url:pageUrl,container:'container-1'};
+      const tab={id:nextTabId++,url:'about:blank',status:'complete',container:'container-1'};
+      tabs.set(tab.id,tab);
+      // The blank document completes before navigation is injected. It must never
+      // satisfy the later target-document wait.
+      event.emit('dom_ready',{id:tab.id,container:tab.container,url:'about:blank',status:'complete'});
+      return tab;
     }
-    if(method==='tab_close'||method==='container_attach_proxy') return true;
+    if(method==='get_tab_list') return [...tabs.values()].map(tab=>({...tab}));
+    if(method==='tab_close') { tabs.delete(args[0]); return true; }
+    if(method==='container_attach_proxy') return true;
     if(method==='tab_inject_js') {
+      const tabId=typeof args[0]==='object'?args[0]?.id:args[0];
       const source=args[1];
       if(source.includes('fixture evaluation failure')) return {status:'fixture evaluation failure',result:null};
+      let requestedURL=null,injectionFailed=false;
+      const pageContext=vm.createContext({location:{assign:value=>{requestedURL=String(value);}}});
+      const document={
+        documentElement:{appendChild:script=>{
+          navigationAttempts++;
+          if(navigationAttempts===injectionFailureAt) { injectionFailed=true; return; }
+          vm.runInContext(script.textContent,pageContext);
+        }},
+        createElement:name=>({tagName:name.toUpperCase(),textContent:'',remove(){this.removed=true;}}),
+      };
+      try { vm.runInNewContext(source,{document}); } catch {}
+      if(injectionFailed) return {status:'fixture_navigation_injection_failed',result:null};
+      if(requestedURL!==null) {
+        navigations.push({tabId,url:requestedURL,isolated:args[2]===true});
+        if(completeNavigation) {
+          const finalURL=redirectTo || requestedURL;
+          if(redirectTo) {
+            emitNavigation(tabId,requestedURL,{status:302,body:'redirect'});
+            emitNavigation(tabId,finalURL,{status:200,body:'redirect target'});
+          } else emitNavigation(tabId,requestedURL);
+          pageUrl=finalURL;
+          tabs.set(tabId,{id:tabId,url:finalURL,status:'complete',container:'container-1'});
+          event.emit('dom_ready',{id:tabId,container:'container-1',url:finalURL,status:'complete'});
+        }
+        return {status:true,result:[{frameId:0,result:true}]};
+      }
       if(source.includes('document.documentElement?.outerHTML')) return {status:true,result:[{frameId:0,result:'<html><body><input id="q"></body></html>'}]};
       if(source.includes(',"inputValue",[]]')) return {status:true,result:[{frameId:0,result:'query'}]};
       if(source.includes(',"count",[]]')) return {status:true,result:[{frameId:0,result:1}]};
@@ -120,6 +170,28 @@ test('surfaces native evaluation errors and terminates server/profile on close',
   assert.equal(fs.existsSync(profile),false);
 });
 
+test('failed navigation closes only the new blank tab and restores the previous page',async t=>{
+  const server=fixtureServer({injectionFailureAt:2});
+  const browser=await openFourplayNative({fixture:true,serverFactory:()=>server,
+    launch:()=>{queueMicrotask(()=>server.event.emit('browser_connect',{}));return {kill(){}};},connectTimeout:500});
+  t.after(()=>browser.close());
+  await browser.page.goto('http://127.0.0.1:8080/first');
+  const firstTab=server.navigations[0].tabId;
+  assert.equal(browser.page.url(),'http://127.0.0.1:8080/first');
+
+  await assert.rejects(browser.page.goto('http://127.0.0.1:8080/injection-fails'),/navigation_injection_failed/);
+  const closes=()=>server.calls.filter(call=>call.method==='tab_close').map(call=>call.args[0]);
+  assert.deepEqual(closes(),[3]);
+  assert.equal(browser.page.url(),'http://127.0.0.1:8080/first');
+  assert.equal(await browser.page.evaluate(()=>42),'native-result');
+  assert.equal(server.calls.filter(call=>call.method==='tab_inject_js'&&
+    (typeof call.args[0]==='object'?call.args[0]?.id:call.args[0])===firstTab).length,2);
+
+  await browser.page.goto('http://127.0.0.1:8080/third');
+  assert.equal(browser.page.url(),'http://127.0.0.1:8080/third');
+  assert.deepEqual(closes(),[3,firstTab]);
+});
+
 test('ignores stale favicon traffic while binding navigation events to the target main frame',async t=>{
   const server=fixtureServer({emitNavigationEvents:true});
   const browser=await openFourplayNative({fixture:true,serverFactory:()=>server,
@@ -151,8 +223,50 @@ test('HTTP rejection notifications remain native responses and do not fail DOM n
   await browser.page.goto('http://127.0.0.1:8080/rejected');
   assert.equal(responses[0].status(),403);
   assert.equal((await responses[0].body()).toString(),'native response');
+  assert.equal(responses[0].request().method(),'GET');
+  assert.equal(responses[0].url(),'http://127.0.0.1:8080/rejected');
+  assert.equal(browser.page.url(),'http://127.0.0.1:8080/rejected');
   server.event.emit('dom_load_fail',{id:2,url:'http://127.0.0.1:8080/favicon.ico',error:'HTTP/2 404 Not Found'});
   assert.equal(failures.length,0);
+});
+
+test('initial about:blank completion cannot satisfy a target navigation wait',async t=>{
+  const server=fixtureServer({completeNavigation:false});
+  const browser=await openFourplayNative({fixture:true,serverFactory:()=>server,
+    launch:()=>{queueMicrotask(()=>server.event.emit('browser_connect',{}));return {kill(){}};},connectTimeout:500});
+  t.after(()=>browser.close());
+  await assert.rejects(browser.page.goto('http://127.0.0.1:8080/never',{timeout:100}),/fourplay_dom_ready_timeout/);
+  assert.equal(server.calls.filter(call=>call.method==='tab_open'&&call.args[0]==='about:blank').length,1);
+  assert.deepEqual(server.navigations,[{tabId:2,url:'http://127.0.0.1:8080/never',isolated:true}]);
+  assert.equal(browser.page.url(),'about:blank');
+});
+
+test('redirect completion waits for a matching final main-frame response',async t=>{
+  const server=fixtureServer({emitNavigationEvents:true,redirectTo:'http://127.0.0.1:8080/final'});
+  const browser=await openFourplayNative({fixture:true,serverFactory:()=>server,
+    launch:()=>{queueMicrotask(()=>server.event.emit('browser_connect',{}));return {kill(){}};},connectTimeout:500});
+  t.after(()=>browser.close());
+  const responses=[];browser.context.on('response',response=>responses.push({url:response.url(),status:response.status()}));
+  await browser.page.goto('http://127.0.0.1:8080/redirect-start');
+  assert.equal(browser.page.url(),'http://127.0.0.1:8080/final');
+  assert.deepEqual(responses,[
+    {url:'http://127.0.0.1:8080/redirect-start',status:302},
+    {url:'http://127.0.0.1:8080/final',status:200},
+  ]);
+});
+
+test('DOM completion before the response waits for the matching main-frame response',async t=>{
+  const server=fixtureServer({emitNavigationEvents:true,domReadyBeforeResponse:true,responseDelayMs:40});
+  const browser=await openFourplayNative({fixture:true,serverFactory:()=>server,
+    launch:()=>{queueMicrotask(()=>server.event.emit('browser_connect',{}));return {kill(){}};},connectTimeout:500});
+  t.after(()=>browser.close());
+  let settled=false;
+  const navigation=browser.page.goto('http://127.0.0.1:8080/dom-first',{timeout:500}).then(()=>{settled=true;});
+  await new Promise(resolve=>setTimeout(resolve,5));
+  assert.equal(settled,false);
+  await navigation;
+  assert.equal(settled,true);
+  assert.equal(browser.page.url(),'http://127.0.0.1:8080/dom-first');
 });
 
 test('fixture relay forwards loopback HTTP and rejects external and CONNECT traffic',async t=>{

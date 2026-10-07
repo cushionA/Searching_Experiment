@@ -1,0 +1,14 @@
+{
+  "reviewer_model": "gpt-6-luna (collaboration model override)",
+  "accepted_conclusion": "今回のCloud条件ではFetch MetadataのSec-Fetch-Siteが拒否の最有力仮説。待機不足の説明は弱い。",
+  "confirmed": [
+    "HTTP 2x2はsame-originが2/2で403、noneが2/2で200。Sec-Fetch-Userを交差させても結果不変。各組合せは1試行のみ。",
+    "hybridとseeded Playwrightの保存fingerprint SHA256は一致。初期要求のSec-Fetch-Site差と403/200差が同方向。",
+    "実行したHTTP scratch sourceはZIP内fetch-metadata/probe.py。後作成の配布helperは別版とsummaryに明記。"
+  ],
+  "limits": [
+    "Playwrightのredirect後top.html要求ではSec-Fetch-*が観測から欠ける。欠落を非送信とみなさない。",
+    "実ブラウザで一つのヘッダーのみ変更した比較ではない。起動/control/container/proxy egress差を残す。",
+    "Akamai内部ruleやbot scoreは不明。ブラウザでheaderを変えれば解消するという確定や本番修正の根拠にしない。"
+  ]
+}

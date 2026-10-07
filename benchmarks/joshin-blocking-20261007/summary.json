@@ -1,0 +1,1296 @@
+{
+  "source_commit": "3a197da67cac7103f659c3c00833b1142a64c8df",
+  "generated_at": "2026-10-07T03:25:56.189730+00:00",
+  "outcome": "Sec-Fetch-Siteの値が今回のジョーシン拒否と関係する強い証拠。待機差だけでは説明できない。",
+  "findings": [
+    "最新mainの4play HTTP bridgeでは通常load待機2回と追加selector待機2回がすべて403。追加waitは両回timeout、最終拒否DOMを保存。",
+    "同じCloud proxy設定のCamoufox/PlaywrightはDOMContentLoaded待機2回・load待機2回ともトップ200、後続2ページも全8件200。",
+    "同じCamoufox本体と保存fingerprintで4play native controlに変えると2回とも403。追加のheader観測runも2回とも403。",
+    "header観測hybridと完全同じfingerprint（allowAddonNewtab=true含む）をPlaywrightで再現すると待機両方式4回とも200、後続8ページも200。",
+    "新規タブ要求で4playはSec-Fetch-Site:same-origin/ユーザー操作headerなし、Playwrightはnone/Sec-Fetch-User:?1。",
+    "同一HTTPクライアントの2x2 probeではSec-Fetch-Site:same-originが2/2で403、noneが2/2で200と検索入力を確認。Sec-Fetch-User有無による差はなかった。",
+    "拒否ページのscript200とPOST201成功はアクセス許可を意味せず、最終文書は403。_abck/bm_szとx-akamai-transformedがAkamaiの存在を示唆する。",
+    "HTTPS peerのissuerはOpenAI, LLC/openai.com。Cloud経路ではTLS終端proxyを通るため、ブラウザのネイティブTLSが直接サイトへ届くという前提は使えない。"
+  ],
+  "limits": [
+    "Akamai/サイト側のrule ID、bot score、WAFログは未取得。Bot Managerが403を出したと確定していない。",
+    "実ブラウザでheaderだけ変更した比較は未実施。HTTP probeはHTTP/1.1であり、ブラウザのHTTP/2経路との差を残す。",
+    "実proxy egress IPは未測定。同一proxy設定だけで同一出口IPを保証しない。",
+    "4play/nativeの起動prefs、拡張response filter、contextual container、Playwright protocolが同時に違う。",
+    "non-proxyローカル環境は今回未実測。ユーザーの過去ローカル通過runは未特定。",
+    "HTTP metadata probeの実測ソースはcheckpoint fetch-metadata/probe.py。新しい配布helperは同じ4条件にnew-directory保護とエラー保存を追加した版で、追加ネットワーク実測はしていない。",
+    "原本の実測source snapshotsは各cell sources.json/blobに保持。調査中のdiagnosticスクリプト追加によるバージョン差を含む。",
+    "Playwrightのredirect後top.htmlではSec-Fetch-*がrequest.headers観測から欠ける。非送信と断定しない。HTTP matrix各組合せは1試行。"
+  ],
+  "browser_rows": [
+    {
+      "run": "fourplay",
+      "cell": "1-load-default",
+      "tool": "4play",
+      "repeat": 1,
+      "arm": "load-default",
+      "homepage_status": 403,
+      "homepage_outcome": "access_denied_observed",
+      "final_url": "https://joshinweb.jp/top.html",
+      "search_input_count": 0,
+      "targets": [],
+      "navigation_gate": {
+        "outcome": "complete",
+        "elapsed_ms": 11481.649405999997,
+        "polls": 113
+      },
+      "ready_condition": null,
+      "webdriver": false,
+      "request_observations": [],
+      "dom_sha256": "1a52ed591c0e8b762c964aca197e37bfb939d6f11212ca50c5a0d4eaa128a70a",
+      "evidence": "fourplay/1-load-default/measurement.json",
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 5,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "fourplay",
+      "cell": "1-load-selector-ready",
+      "tool": "4play",
+      "repeat": 1,
+      "arm": "load-selector-ready",
+      "homepage_status": 403,
+      "homepage_outcome": "access_denied_observed",
+      "final_url": "https://joshinweb.jp/top.html",
+      "search_input_count": 0,
+      "targets": [],
+      "navigation_gate": {
+        "outcome": "complete",
+        "elapsed_ms": 11057.16094100001,
+        "polls": 109
+      },
+      "ready_condition": {
+        "outcome": "timeout",
+        "elapsed_ms": 5000.370813000001,
+        "polls": 49,
+        "policy": {
+          "selector": "#suggest_input",
+          "timeoutMs": 5000
+        }
+      },
+      "webdriver": false,
+      "request_observations": [],
+      "dom_sha256": "1a52ed591c0e8b762c964aca197e37bfb939d6f11212ca50c5a0d4eaa128a70a",
+      "evidence": "fourplay/1-load-selector-ready/measurement.json",
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 5,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "fourplay",
+      "cell": "2-load-default",
+      "tool": "4play",
+      "repeat": 2,
+      "arm": "load-default",
+      "homepage_status": 403,
+      "homepage_outcome": "access_denied_observed",
+      "final_url": "https://joshinweb.jp/top.html",
+      "search_input_count": 0,
+      "targets": [],
+      "navigation_gate": {
+        "outcome": "complete",
+        "elapsed_ms": 10865.67792799999,
+        "polls": 107
+      },
+      "ready_condition": null,
+      "webdriver": false,
+      "request_observations": [],
+      "dom_sha256": "1a52ed591c0e8b762c964aca197e37bfb939d6f11212ca50c5a0d4eaa128a70a",
+      "evidence": "fourplay/2-load-default/measurement.json",
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 5,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "fourplay",
+      "cell": "2-load-selector-ready",
+      "tool": "4play",
+      "repeat": 2,
+      "arm": "load-selector-ready",
+      "homepage_status": 403,
+      "homepage_outcome": "access_denied_observed",
+      "final_url": "https://joshinweb.jp/top.html",
+      "search_input_count": 0,
+      "targets": [],
+      "navigation_gate": {
+        "outcome": "complete",
+        "elapsed_ms": 10948.94447100001,
+        "polls": 108
+      },
+      "ready_condition": {
+        "outcome": "timeout",
+        "elapsed_ms": 5000.805068000016,
+        "polls": 50,
+        "policy": {
+          "selector": "#suggest_input",
+          "timeoutMs": 5000
+        }
+      },
+      "webdriver": false,
+      "request_observations": [],
+      "dom_sha256": "1a52ed591c0e8b762c964aca197e37bfb939d6f11212ca50c5a0d4eaa128a70a",
+      "evidence": "fourplay/2-load-selector-ready/measurement.json",
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 5,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "camoufox",
+      "cell": "1-domcontentloaded",
+      "tool": "camoufox",
+      "repeat": 1,
+      "arm": "domcontentloaded",
+      "homepage_status": 200,
+      "homepage_outcome": "content_observed",
+      "final_url": "https://joshinweb.jp/top.html",
+      "search_input_count": 1,
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "navigation_gate": null,
+      "ready_condition": null,
+      "webdriver": false,
+      "request_observations": [],
+      "dom_sha256": "49a0035002fcbf7636d432d7c5897a82b99ab90f7747ecac7dde4d1cc5079c4d",
+      "evidence": "camoufox/1-domcontentloaded/measurement.json",
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 187,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "camoufox",
+      "cell": "1-load",
+      "tool": "camoufox",
+      "repeat": 1,
+      "arm": "load",
+      "homepage_status": 200,
+      "homepage_outcome": "content_observed",
+      "final_url": "https://joshinweb.jp/top.html",
+      "search_input_count": 1,
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "navigation_gate": null,
+      "ready_condition": null,
+      "webdriver": false,
+      "request_observations": [],
+      "dom_sha256": "d1aa6aa511bed46cfa8c5642a782112e0143868cf6b111d84f24bf235560b822",
+      "evidence": "camoufox/1-load/measurement.json",
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 195,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "camoufox",
+      "cell": "2-domcontentloaded",
+      "tool": "camoufox",
+      "repeat": 2,
+      "arm": "domcontentloaded",
+      "homepage_status": 200,
+      "homepage_outcome": "content_observed",
+      "final_url": "https://joshinweb.jp/top.html",
+      "search_input_count": 1,
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "navigation_gate": null,
+      "ready_condition": null,
+      "webdriver": false,
+      "request_observations": [],
+      "dom_sha256": "8e6b6254cc51c0c996af64eac528419e24adff83b06b156e83edb8ec05f62bc4",
+      "evidence": "camoufox/2-domcontentloaded/measurement.json",
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 182,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "camoufox",
+      "cell": "2-load",
+      "tool": "camoufox",
+      "repeat": 2,
+      "arm": "load",
+      "homepage_status": 200,
+      "homepage_outcome": "content_observed",
+      "final_url": "https://joshinweb.jp/top.html",
+      "search_input_count": 1,
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "navigation_gate": null,
+      "ready_condition": null,
+      "webdriver": false,
+      "request_observations": [],
+      "dom_sha256": "5358ad4f2b448f63222a3a6ce0cc582940a5c1e9b538a38ce34511c6667986bb",
+      "evidence": "camoufox/2-load/measurement.json",
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 189,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "hybrid",
+      "cell": "1-native-load",
+      "tool": "camoufox-fourplay",
+      "repeat": 1,
+      "arm": "native-load",
+      "homepage_status": 403,
+      "homepage_outcome": "access_denied_observed",
+      "final_url": "https://joshinweb.jp/top.html",
+      "search_input_count": 0,
+      "targets": [],
+      "navigation_gate": null,
+      "ready_condition": null,
+      "webdriver": false,
+      "request_observations": [],
+      "dom_sha256": "1a52ed591c0e8b762c964aca197e37bfb939d6f11212ca50c5a0d4eaa128a70a",
+      "evidence": "hybrid/1-native-load/measurement.json",
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 6,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "hybrid",
+      "cell": "2-native-load",
+      "tool": "camoufox-fourplay",
+      "repeat": 2,
+      "arm": "native-load",
+      "homepage_status": 403,
+      "homepage_outcome": "access_denied_observed",
+      "final_url": "https://joshinweb.jp/top.html",
+      "search_input_count": 0,
+      "targets": [],
+      "navigation_gate": null,
+      "ready_condition": null,
+      "webdriver": false,
+      "request_observations": [],
+      "dom_sha256": "1a52ed591c0e8b762c964aca197e37bfb939d6f11212ca50c5a0d4eaa128a70a",
+      "evidence": "hybrid/2-native-load/measurement.json",
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 6,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "hybrid-headers",
+      "cell": "1-native-load",
+      "tool": "camoufox-fourplay",
+      "repeat": 1,
+      "arm": "native-load",
+      "homepage_status": 403,
+      "homepage_outcome": "access_denied_observed",
+      "final_url": "https://joshinweb.jp/top.html",
+      "search_input_count": 0,
+      "targets": [],
+      "navigation_gate": null,
+      "ready_condition": null,
+      "webdriver": false,
+      "request_observations": [
+        {
+          "url": "https://joshinweb.jp/",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "connection": "keep-alive",
+            "upgrade-insecure-requests": "1",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "same-origin"
+          },
+          "cookie_names": []
+        },
+        {
+          "url": "https://joshinweb.jp/top.html",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "connection": "keep-alive",
+            "upgrade-insecure-requests": "1",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "same-origin"
+          },
+          "cookie_names": [
+            "X-Oracle-PRD-ECWEB-81",
+            "QueueITAccepted-SDFrts345E-V3_wholeweb",
+            "_abck",
+            "bm_sz"
+          ]
+        }
+      ],
+      "dom_sha256": "1a52ed591c0e8b762c964aca197e37bfb939d6f11212ca50c5a0d4eaa128a70a",
+      "evidence": "hybrid-headers/1-native-load/measurement.json",
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 6,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "hybrid-headers",
+      "cell": "2-native-load",
+      "tool": "camoufox-fourplay",
+      "repeat": 2,
+      "arm": "native-load",
+      "homepage_status": 403,
+      "homepage_outcome": "access_denied_observed",
+      "final_url": "https://joshinweb.jp/top.html",
+      "search_input_count": 0,
+      "targets": [],
+      "navigation_gate": null,
+      "ready_condition": null,
+      "webdriver": false,
+      "request_observations": [
+        {
+          "url": "https://joshinweb.jp/",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "connection": "keep-alive",
+            "upgrade-insecure-requests": "1",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "same-origin"
+          },
+          "cookie_names": []
+        },
+        {
+          "url": "https://joshinweb.jp/top.html",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "connection": "keep-alive",
+            "upgrade-insecure-requests": "1",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "same-origin"
+          },
+          "cookie_names": [
+            "X-Oracle-PRD-ECWEB-81",
+            "QueueITAccepted-SDFrts345E-V3_wholeweb",
+            "_abck",
+            "bm_sz"
+          ]
+        }
+      ],
+      "dom_sha256": "1a52ed591c0e8b762c964aca197e37bfb939d6f11212ca50c5a0d4eaa128a70a",
+      "evidence": "hybrid-headers/2-native-load/measurement.json",
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 6,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "camoufox-seeded",
+      "cell": "1-domcontentloaded",
+      "tool": "camoufox",
+      "repeat": 1,
+      "arm": "domcontentloaded",
+      "homepage_status": 200,
+      "homepage_outcome": "content_observed",
+      "final_url": "https://joshinweb.jp/top.html",
+      "search_input_count": 1,
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "navigation_gate": null,
+      "ready_condition": null,
+      "webdriver": false,
+      "request_observations": [
+        {
+          "url": "https://joshinweb.jp/",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "connection": "keep-alive",
+            "upgrade-insecure-requests": "1",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1"
+          },
+          "cookie_names": []
+        },
+        {
+          "url": "https://joshinweb.jp/top.html",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "connection": "keep-alive"
+          },
+          "cookie_names": [
+            "X-Oracle-PRD-ECWEB-81",
+            "QueueITAccepted-SDFrts345E-V3_wholeweb",
+            "_abck",
+            "bm_sz"
+          ]
+        },
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "referer": "https://joshinweb.jp/top.html",
+            "connection": "keep-alive",
+            "upgrade-insecure-requests": "1",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1"
+          },
+          "cookie_names": [
+            "X-Oracle-PRD-ECWEB-81",
+            "QueueITAccepted-SDFrts345E-V3_wholeweb",
+            "_abck",
+            "bm_sz",
+            "AUTHENTICATION_ODR_2",
+            "authentication_uuid",
+            "_gcl_au",
+            "ga_session_pv",
+            "X-Oracle-PRD-IMG-80",
+            "_ga_Y972QW0EQF",
+            "_ga",
+            "zd-cookie-user-id",
+            "zd-cookie-session-id",
+            "__rtbh.uid",
+            "__rtbh.lid",
+            "_bdck",
+            "_bdsid",
+            "_bdnvf",
+            "_clck",
+            "_bd_prev_page",
+            "_clsk",
+            "_yjsu_yjad",
+            "_bd_prev_page_ex"
+          ]
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "referer": "https://joshinweb.jp/tobuy.html",
+            "connection": "keep-alive",
+            "upgrade-insecure-requests": "1",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1"
+          },
+          "cookie_names": [
+            "X-Oracle-PRD-ECWEB-81",
+            "QueueITAccepted-SDFrts345E-V3_wholeweb",
+            "_abck",
+            "bm_sz",
+            "AUTHENTICATION_ODR_2",
+            "authentication_uuid",
+            "_gcl_au",
+            "ga_session_pv",
+            "X-Oracle-PRD-IMG-80",
+            "_ga_Y972QW0EQF",
+            "_ga",
+            "zd-cookie-user-id",
+            "zd-cookie-session-id",
+            "__rtbh.uid",
+            "__rtbh.lid",
+            "_bdck",
+            "_bdsid",
+            "_bdnvf",
+            "_clck",
+            "_bd_prev_page",
+            "_clsk",
+            "_yjsu_yjad",
+            "_bd_prev_page_ex"
+          ]
+        }
+      ],
+      "dom_sha256": "1ea13a5d3030fbb67e4fb8a45e39dd27147d6d8eca0156e62ccef46d70868e76",
+      "evidence": "camoufox-seeded/1-domcontentloaded/measurement.json",
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 186,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "camoufox-seeded",
+      "cell": "1-load",
+      "tool": "camoufox",
+      "repeat": 1,
+      "arm": "load",
+      "homepage_status": 200,
+      "homepage_outcome": "content_observed",
+      "final_url": "https://joshinweb.jp/top.html",
+      "search_input_count": 1,
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "navigation_gate": null,
+      "ready_condition": null,
+      "webdriver": false,
+      "request_observations": [
+        {
+          "url": "https://joshinweb.jp/",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "connection": "keep-alive",
+            "upgrade-insecure-requests": "1",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1"
+          },
+          "cookie_names": []
+        },
+        {
+          "url": "https://joshinweb.jp/top.html",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "connection": "keep-alive"
+          },
+          "cookie_names": [
+            "X-Oracle-PRD-ECWEB-81",
+            "QueueITAccepted-SDFrts345E-V3_wholeweb",
+            "_abck",
+            "bm_sz"
+          ]
+        },
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "referer": "https://joshinweb.jp/top.html",
+            "connection": "keep-alive",
+            "upgrade-insecure-requests": "1",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1"
+          },
+          "cookie_names": [
+            "X-Oracle-PRD-ECWEB-81",
+            "QueueITAccepted-SDFrts345E-V3_wholeweb",
+            "_abck",
+            "bm_sz",
+            "AUTHENTICATION_ODR_2",
+            "authentication_uuid",
+            "X-Oracle-PRD-IMG-80",
+            "_gcl_au",
+            "ga_session_pv",
+            "zd-cookie-user-id",
+            "zd-cookie-session-id",
+            "_bdck",
+            "_bdsid",
+            "_bdnvf",
+            "__rtbh.uid",
+            "__rtbh.lid",
+            "_ga_Y972QW0EQF",
+            "_ga",
+            "_bd_prev_page",
+            "_clck",
+            "_clsk",
+            "_yjsu_yjad",
+            "_bd_prev_page_ex"
+          ]
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "referer": "https://joshinweb.jp/tobuy.html",
+            "connection": "keep-alive",
+            "upgrade-insecure-requests": "1",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1"
+          },
+          "cookie_names": [
+            "X-Oracle-PRD-ECWEB-81",
+            "QueueITAccepted-SDFrts345E-V3_wholeweb",
+            "_abck",
+            "bm_sz",
+            "AUTHENTICATION_ODR_2",
+            "authentication_uuid",
+            "X-Oracle-PRD-IMG-80",
+            "_gcl_au",
+            "ga_session_pv",
+            "zd-cookie-user-id",
+            "zd-cookie-session-id",
+            "_bdck",
+            "_bdsid",
+            "_bdnvf",
+            "__rtbh.uid",
+            "__rtbh.lid",
+            "_ga_Y972QW0EQF",
+            "_ga",
+            "_bd_prev_page",
+            "_clck",
+            "_clsk",
+            "_yjsu_yjad",
+            "_bd_prev_page_ex"
+          ]
+        }
+      ],
+      "dom_sha256": "5c6d5c34e310aa89dad83375aeec6aaa7fffa8b4728c9ffe366341eb5fd3df86",
+      "evidence": "camoufox-seeded/1-load/measurement.json",
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 184,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "camoufox-seeded",
+      "cell": "2-domcontentloaded",
+      "tool": "camoufox",
+      "repeat": 2,
+      "arm": "domcontentloaded",
+      "homepage_status": 200,
+      "homepage_outcome": "content_observed",
+      "final_url": "https://joshinweb.jp/top.html",
+      "search_input_count": 1,
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "navigation_gate": null,
+      "ready_condition": null,
+      "webdriver": false,
+      "request_observations": [
+        {
+          "url": "https://joshinweb.jp/",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "connection": "keep-alive",
+            "upgrade-insecure-requests": "1",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1"
+          },
+          "cookie_names": []
+        },
+        {
+          "url": "https://joshinweb.jp/top.html",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "connection": "keep-alive"
+          },
+          "cookie_names": [
+            "X-Oracle-PRD-ECWEB-81",
+            "QueueITAccepted-SDFrts345E-V3_wholeweb",
+            "_abck",
+            "bm_sz"
+          ]
+        },
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "referer": "https://joshinweb.jp/top.html",
+            "connection": "keep-alive",
+            "upgrade-insecure-requests": "1",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1"
+          },
+          "cookie_names": [
+            "X-Oracle-PRD-ECWEB-81",
+            "QueueITAccepted-SDFrts345E-V3_wholeweb",
+            "_abck",
+            "bm_sz",
+            "AUTHENTICATION_ODR_2",
+            "authentication_uuid",
+            "X-Oracle-PRD-IMG-80",
+            "_gcl_au",
+            "ga_session_pv",
+            "_bdck",
+            "_bdsid",
+            "_bdnvf",
+            "__rtbh.uid",
+            "__rtbh.lid",
+            "_clck",
+            "_bd_prev_page",
+            "zd-cookie-user-id",
+            "zd-cookie-session-id",
+            "_ga_Y972QW0EQF",
+            "_ga",
+            "_clsk",
+            "_yjsu_yjad",
+            "_bd_prev_page_ex"
+          ]
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "referer": "https://joshinweb.jp/tobuy.html",
+            "connection": "keep-alive",
+            "upgrade-insecure-requests": "1",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1"
+          },
+          "cookie_names": [
+            "X-Oracle-PRD-ECWEB-81",
+            "QueueITAccepted-SDFrts345E-V3_wholeweb",
+            "_abck",
+            "bm_sz",
+            "AUTHENTICATION_ODR_2",
+            "authentication_uuid",
+            "X-Oracle-PRD-IMG-80",
+            "_gcl_au",
+            "ga_session_pv",
+            "_bdck",
+            "_bdsid",
+            "_bdnvf",
+            "__rtbh.uid",
+            "__rtbh.lid",
+            "_clck",
+            "_bd_prev_page",
+            "zd-cookie-user-id",
+            "zd-cookie-session-id",
+            "_ga_Y972QW0EQF",
+            "_ga",
+            "_clsk",
+            "_yjsu_yjad",
+            "_bd_prev_page_ex"
+          ]
+        }
+      ],
+      "dom_sha256": "e4a04f84d0439e6b08166df0e4356128fbb540b21db879047e3d295204038202",
+      "evidence": "camoufox-seeded/2-domcontentloaded/measurement.json",
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 185,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "camoufox-seeded",
+      "cell": "2-load",
+      "tool": "camoufox",
+      "repeat": 2,
+      "arm": "load",
+      "homepage_status": 200,
+      "homepage_outcome": "content_observed",
+      "final_url": "https://joshinweb.jp/top.html",
+      "search_input_count": 1,
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "navigation_gate": null,
+      "ready_condition": null,
+      "webdriver": false,
+      "request_observations": [
+        {
+          "url": "https://joshinweb.jp/",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "connection": "keep-alive",
+            "upgrade-insecure-requests": "1",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1"
+          },
+          "cookie_names": []
+        },
+        {
+          "url": "https://joshinweb.jp/top.html",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "connection": "keep-alive"
+          },
+          "cookie_names": [
+            "X-Oracle-PRD-ECWEB-81",
+            "QueueITAccepted-SDFrts345E-V3_wholeweb",
+            "_abck",
+            "bm_sz"
+          ]
+        },
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "referer": "https://joshinweb.jp/top.html",
+            "connection": "keep-alive",
+            "upgrade-insecure-requests": "1",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1"
+          },
+          "cookie_names": [
+            "X-Oracle-PRD-ECWEB-81",
+            "QueueITAccepted-SDFrts345E-V3_wholeweb",
+            "_abck",
+            "bm_sz",
+            "AUTHENTICATION_ODR_2",
+            "authentication_uuid",
+            "X-Oracle-PRD-IMG-80",
+            "_gcl_au",
+            "ga_session_pv",
+            "_bdck",
+            "_bdsid",
+            "_bdnvf",
+            "zd-cookie-user-id",
+            "zd-cookie-session-id",
+            "_clck",
+            "_bd_prev_page",
+            "_ga_Y972QW0EQF",
+            "_ga",
+            "_clsk",
+            "__rtbh.uid",
+            "__rtbh.lid",
+            "_yjsu_yjad",
+            "_bd_prev_page_ex"
+          ]
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "method": "GET",
+          "headers": {
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-US,en;q=0.9",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "referer": "https://joshinweb.jp/tobuy.html",
+            "connection": "keep-alive",
+            "upgrade-insecure-requests": "1",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1"
+          },
+          "cookie_names": [
+            "X-Oracle-PRD-ECWEB-81",
+            "QueueITAccepted-SDFrts345E-V3_wholeweb",
+            "_abck",
+            "bm_sz",
+            "AUTHENTICATION_ODR_2",
+            "authentication_uuid",
+            "X-Oracle-PRD-IMG-80",
+            "_gcl_au",
+            "ga_session_pv",
+            "_bdck",
+            "_bdsid",
+            "_bdnvf",
+            "zd-cookie-user-id",
+            "zd-cookie-session-id",
+            "_clck",
+            "_bd_prev_page",
+            "_ga_Y972QW0EQF",
+            "_ga",
+            "_clsk",
+            "__rtbh.uid",
+            "__rtbh.lid",
+            "_yjsu_yjad",
+            "_bd_prev_page_ex"
+          ]
+        }
+      ],
+      "dom_sha256": "2ec14fcf30607858b8eb02fef927254423230bb58fb4f5a5cc73f9bab4e06b07",
+      "evidence": "camoufox-seeded/2-load/measurement.json",
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 185,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    }
+  ],
+  "http_metadata_matrix": [
+    {
+      "index": 1,
+      "site": "same-origin",
+      "user": null,
+      "request_headers": {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "same-origin"
+      },
+      "url": "https://joshinweb.jp/top.html",
+      "status": 403,
+      "headers": {
+        "content-type": "text/html;charset=Windows-31J",
+        "x-akamai-transformed": "0 - 0 -",
+        "server": "envoy"
+      },
+      "body_sha256": "5529bac62eb2b4b3bb8b73d11fd9bb015f46e682590f5c96ba578b5db29a450d",
+      "body_bytes": 308,
+      "search_input_present": false,
+      "access_denied_visible": true,
+      "elapsed_ms": 10552.504701999966
+    },
+    {
+      "index": 2,
+      "site": "none",
+      "user": "?1",
+      "request_headers": {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1"
+      },
+      "url": "https://joshinweb.jp/top.html",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html;charset=Windows-31J",
+        "x-akamai-transformed": "0 - 0 -",
+        "content-encoding": "gzip",
+        "server": "envoy"
+      },
+      "body_sha256": "e967c2383b5f1d23b273dc23fa587210e7136e7a61c4618e14c72921d9f0d573",
+      "body_bytes": 48466,
+      "search_input_present": true,
+      "access_denied_visible": false,
+      "elapsed_ms": 613.5955980000745
+    },
+    {
+      "index": 3,
+      "site": "none",
+      "user": null,
+      "request_headers": {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none"
+      },
+      "url": "https://joshinweb.jp/top.html",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html;charset=Windows-31J",
+        "x-akamai-transformed": "0 - 0 -",
+        "content-encoding": "gzip",
+        "server": "envoy"
+      },
+      "body_sha256": "05b1bee552d0ac2558cae4687f678e115baf1e7b0f0858ea0530e6583b4a780c",
+      "body_bytes": 48466,
+      "search_input_present": true,
+      "access_denied_visible": false,
+      "elapsed_ms": 648.0488409999907
+    },
+    {
+      "index": 4,
+      "site": "same-origin",
+      "user": "?1",
+      "request_headers": {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:152.0) Gecko/20100101 Firefox/152.0",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-User": "?1"
+      },
+      "url": "https://joshinweb.jp/top.html",
+      "status": 403,
+      "headers": {
+        "content-type": "text/html;charset=Windows-31J",
+        "x-akamai-transformed": "0 - 0 -",
+        "server": "envoy"
+      },
+      "body_sha256": "ba4abb90796a7a43d5aa0d7565fd9f1e9ba8c5a108ea4d05f095a2c22fe0f3e2",
+      "body_bytes": 308,
+      "search_input_present": false,
+      "access_denied_visible": true,
+      "elapsed_ms": 10618.323731000033
+    }
+  ],
+  "http_control": {
+    "url": "https://joshinweb.jp/top.html",
+    "status": 200,
+    "headers": {
+      "content-type": "text/html;charset=Windows-31J",
+      "x-akamai-transformed": "0 - 0 -",
+      "server": "envoy"
+    },
+    "set_cookie_names": [
+      "X-Oracle-PRD-ECWEB-81",
+      "AUTHENTICATION_ODR",
+      "AUTHENTICATION_ODR_2",
+      "authentication_uuid",
+      "QueueITAccepted-SDFrts345E-V3_wholeweb",
+      "_abck",
+      "bm_sz"
+    ],
+    "body_sha256": "1c3bf9f401e16f1c9e2fe079cf6f69f61312e3b196117a2c40c7ce9ebe535396",
+    "peer_certificate_subject": [
+      [
+        [
+          "commonName",
+          "joshinweb.jp"
+        ]
+      ]
+    ],
+    "peer_certificate_issuer": [
+      [
+        [
+          "countryName",
+          "US"
+        ]
+      ],
+      [
+        [
+          "stateOrProvinceName",
+          "California"
+        ]
+      ],
+      [
+        [
+          "localityName",
+          "San Francisco"
+        ]
+      ],
+      [
+        [
+          "organizationName",
+          "OpenAI, LLC"
+        ]
+      ],
+      [
+        [
+          "commonName",
+          "openai.com"
+        ]
+      ]
+    ],
+    "tls_verification": true,
+    "path": "inherited environment proxy; urllib GET without browser JavaScript",
+    "started_at_utc": "2026-10-07T03:16:55Z",
+    "limitation": "HTTP client and Firefox wire headers/TLS differ; HTTP control cannot identify a bot rule"
+  },
+  "validation": {
+    "evidence_cells": 16,
+    "all_evidence_verified": true,
+    "python_lab_suite": {
+      "tests": 151,
+      "skipped": 15,
+      "passed": true,
+      "initial_setup_failure": "robots-parser未導入で1件失敗。固定lock依存導入後に151件成功。"
+    },
+    "node_targeted_tests": {
+      "tests": 17,
+      "passed": true
+    },
+    "syntax_checks": {
+      "node": true,
+      "python_ast": true
+    }
+  },
+  "production_changes": "なし。診断と再現用の2つのhelperを追加。header overrideやナビゲーション実装の修正は本番へ適用していない。",
+  "independent_review": "review.json"
+}

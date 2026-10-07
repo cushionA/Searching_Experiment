@@ -27,6 +27,9 @@ export function snapshotSources(evidence, roleSource = null) {
     .filter(entry => entry.isFile() && /\.(mjs|cjs|json|py)$/.test(entry.name) && !entry.name.endsWith('.test.mjs'))
     .map(entry => entry.name).sort();
   const sources = Object.fromEntries(files.map(name => [name, evidence.blob(fs.readFileSync(path.join(here, name)))]));
+  for(const name of ['tab-navigation.cjs','navigation-gate.cjs']) {
+    sources[`../fourget-selfhost/fourplay/${name}`]=evidence.blob(fs.readFileSync(path.join(here,'../fourget-selfhost/fourplay',name)));
+  }
   const patchDirectory=path.join(here,'patches');
   if(fs.existsSync(patchDirectory)) for(const entry of fs.readdirSync(patchDirectory,{withFileTypes:true})) {
     if(entry.isFile() && /\.(patch|txt|md)$/.test(entry.name)) {
