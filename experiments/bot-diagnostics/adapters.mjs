@@ -16,10 +16,23 @@ function canonicalTimezone(timezoneId) {
   catch { throw new Error('invalid_timezone_id'); }
 }
 
+function validateSessionInitialization(site,fixture) {
+  const rule=site.session_initialization;
+  if(rule===undefined) return;
+  if(!rule || rule.kind!=='sensor_revisit' || Object.keys(rule).some(key=>!['kind','sensor_url'].includes(key))
+    || Object.keys(rule).length!==2 || typeof rule.sensor_url!=='string') throw new Error('invalid_session_initialization');
+  let sensor;
+  try {sensor=new URL(rule.sensor_url);} catch {throw new Error('invalid_session_initialization_sensor_url');}
+  const localSensor=fixture&&sensor.protocol==='http:'&&['127.0.0.1','localhost'].includes(sensor.hostname);
+  if((sensor.protocol!=='https:'&&!localSensor) || sensor.username || sensor.password || sensor.hash || !site.origins?.includes(sensor.origin))
+    throw new Error('session_initialization_sensor_outside_site_scope');
+}
+
 /** Each adapter owns one session; all roles share its cookies and the site's budget. */
 export class ToolAdapter {
-  constructor({ tool, site, evidence, fixture = false, profile = {id:'baseline'}, options = {}, timezoneId, browserOpener = openBrowser, clientOpener = httpClient }) {
+  constructor({ tool, site, evidence, fixture = false, profile = {id:'baseline'}, options = {}, timezoneId, browserOpener = openBrowser, clientOpener = httpClient, siteObserver = browserSite }) {
     if (!TOOL_NAMES.includes(tool)) throw new Error('Unknown tool');
+    validateSessionInitialization(site,fixture);
     if (options.observeMs !== undefined && (!Number.isInteger(options.observeMs) || options.observeMs < 0 || options.observeMs > 6000))
       throw new Error('invalid_observe_ms');
     this.timezoneId = timezoneId;
@@ -28,7 +41,10 @@ export class ToolAdapter {
     this.tool = tool; this.site = site; this.evidence = evidence; this.fixture = fixture;
     this.profile = profile; this.options = options;
     this.browserOpener = browserOpener; this.clientOpener = clientOpener;
+    this.siteObserver=siteObserver;
     this.currentURL = null; this.sequence = 0;
+    this.sessionInitializationUsed=false; this.pendingSessionInitialization=null;
+    if(site.session_initialization&&profile.session_pool) throw new Error('unsupported_capability:session_initialization_session_pool');
     this.capabilities = { fetch: httpTools.has(tool), goto: !httpTools.has(tool),
       session: true, selectorOperations: !httpTools.has(tool) && !['4play','camoufox-fourplay'].includes(tool), challengeActions: !httpTools.has(tool) && !['4play','camoufox-fourplay'].includes(tool),
       headful: ['patchright','playwright-baseline','camoufox','4play','camoufox-fourplay'].includes(tool),
@@ -127,7 +143,9 @@ export class ToolAdapter {
             }
           }
         }
+        const firstRecord=this.evidence.records.length;
         const result=await this.accessLinkOnce(url,options);
+        this.pendingSessionInitialization={url,result,firstRecord,lastRecord:this.evidence.records.length};
         const decision=await observe(result,url);
         // Native fill/click/recovery operations are never automatically replayed.
         if(!this.sessions || options.operation || !this.sessions.retryAvailable(url,decision,
@@ -137,6 +155,34 @@ export class ToolAdapter {
         if(cooldown) return stopped(cooldown.outcome,{...cooldown,previous_outcome:result.outcome});
       }
     } finally {this.accessInFlight=false;}
+  }
+  async sessionInitialization(url,observation) {
+    const rule=this.site.session_initialization, pending=this.pendingSessionInitialization;
+    if(!rule || rule.kind!=='sensor_revisit' || this.sessionInitializationUsed || !pending
+      || pending.url!==url || pending.result!==observation) return {outcome:'session_initialization_not_applicable'};
+    const main=this.evidence.records.find(record=>record.index===observation.main_record);
+    const records=this.evidence.records.slice(pending.firstRecord,pending.lastRecord);
+    let rejectedURL;
+    try { rejectedURL=new URL(observation.final_url); } catch { return {outcome:'session_initialization_not_applicable'}; }
+    const requestedURL=new URL(url);
+    if(rejectedURL.origin!==requestedURL.origin || rejectedURL.username || rejectedURL.password || rejectedURL.hash)
+      return {outcome:'session_initialization_not_applicable'};
+    const rejectedDocument=main&&new URL(main.url).href===rejectedURL.href;
+    const sensorURL=new URL(rule.sensor_url), sameSensorOrigin=record=>{
+      try { const parsed=new URL(record.url); return parsed.origin===sensorURL.origin; } catch { return false; }
+    };
+    if(sensorURL.origin!==rejectedURL.origin) return {outcome:'session_initialization_not_applicable'};
+    const script200=records.some(record=>record.index>main?.index&&record.url===rule.sensor_url&&sameSensorOrigin(record)
+      &&record.resource_type==='script'&&record.request_method==='GET'&&record.status===200);
+    const post201=records.some(record=>record.index>main?.index&&record.url===rule.sensor_url&&sameSensorOrigin(record)
+      &&record.request_method==='POST'&&record.status===201);
+    if(observation.outcome!=='access_denied_observed'||observation.http_status!==403||main?.status!==403
+      || !rejectedDocument || !script200 || !post201) return {outcome:'session_initialization_not_applicable'};
+    this.sessionInitializationUsed=true;
+    const result=await this.accessLink(rejectedURL.href,{role:'session_initialization_revisit'});
+    const audit={requested_url:url,rejected_document_url:rejectedURL.href,revisit_url:rejectedURL.href,sensor_url:rule.sensor_url};
+    result.session_initialization=audit; this.evidence.flush?.();
+    return {outcome:'session_initialization_revisited',...audit,result};
   }
   async accessLinkOnce(url, { role = 'target', method = 'auto', preserveReferrer = false, operation = null } = {}) {
     url = this.assertScope(url);
@@ -156,7 +202,7 @@ export class ToolAdapter {
       ...(preserveReferrer && this.currentURL ? {referer: this.currentURL} : {}) };
     try {
       if (this.capabilities.fetch) await httpSite(this.evidence, this.tool, target, this.client);
-      else await browserSite(this.evidence, this.tool, target, {browser: this.browser, robots: this.robots});
+      else await this.siteObserver(this.evidence,this.tool,target,{browser:this.browser,robots:this.robots});
     const result = this.evidence.results.at(-1);
     const record = this.evidence.records.find(r=>r.index===result.main_record);
     const hash = result.dom_sha256 || record?.body_sha256;

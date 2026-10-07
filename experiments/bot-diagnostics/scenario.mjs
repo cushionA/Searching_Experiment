@@ -6,6 +6,7 @@ const standardRoles = {
   async returnHome({ adapter, links }) { return adapter.returnHome(links.home); },
   async selectorProbe({ adapter, site }) { return adapter.selectorProbe(site.operations); },
   async extensionProbe({ adapter }) { return adapter.extensionProbe(); },
+  async sessionInitialization({adapter,url,observation}) { return adapter.sessionInitialization(url,observation); },
 };
 
 export {standardRoles as roles};
@@ -29,6 +30,11 @@ export async function runScenario({adapter,site,roles=standardRoles,recoveryPlan
     const result=await (roles[role]||standardRoles[role])({...context,...extra});
     events.push({role,result});return result;
   };
+  const initialize=async(result,url)=>{
+    if(!site.session_initialization) return result;
+    const outcome=await invoke('sessionInitialization',{url,observation:result});
+    return outcome?.result||result;
+  };
   const finish=state=>({site:site.id,tool:adapter.tool,profile:profile.id,state,events});
   const recovery={...DEFAULT_RECOVERY_PLAN,...recoveryPlan};
   let attempts=0;
@@ -45,6 +51,7 @@ export async function runScenario({adapter,site,roles=standardRoles,recoveryPlan
     return classifyGate(await invoke(homepage?'homepage':'target',{url,retry:true}))==='continue'?'continue':'retry_failed';
   };
   let result=await invoke('homepage');
+  result=await initialize(result,site.links.home);
   if(profile.extensions?.length) {
     const probe=await invoke('extensionProbe');
     if(probe.outcome==='extension_loading_failed') return finish('extension_loading_failed');
@@ -59,7 +66,8 @@ export async function runScenario({adapter,site,roles=standardRoles,recoveryPlan
     }
   }
   for(const url of site.links.targets) {
-    result=await invoke('target',{url});state=await gate(result,{url});
+    result=await invoke('target',{url});
+    result=await initialize(result,url);state=await gate(result,{url});
     if(state!=='continue') return finish(state);
   }
   return finish('navigation_completed');

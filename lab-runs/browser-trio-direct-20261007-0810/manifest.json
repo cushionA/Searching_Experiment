@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "tools": [
+    "camoufox",
+    "camoufox-fourplay",
+    "4play"
+  ],
+  "sites": [
+    {
+      "id": "joshin",
+      "origins": [
+        "https://joshinweb.jp"
+      ],
+      "links": {
+        "home": "https://joshinweb.jp/",
+        "targets": [
+          "https://joshinweb.jp/tobuy.html",
+          "https://joshinweb.jp/javacookie.html"
+        ]
+      },
+      "params": {
+        "query": "USB-C"
+      },
+      "selectors": {
+        "primary": "#suggest_input",
+        "challenge": null
+      },
+      "selector_evidence": "selector-candidates.json",
+      "url_evidence": "both links observed on homepage; fetch behavior is untested",
+      "recovery": null,
+      "operations": [
+        {
+          "op": "fill",
+          "selector": "#suggest_input",
+          "value": "USB-C"
+        }
+      ],
+      "operation_evidence": "Merged main PR #6 CSS selector; offline replay only. Match/type and value are rechecked live before success.",
+      "session_initialization": {
+        "kind": "sensor_revisit",
+        "sensor_url": "https://joshinweb.jp/CIbl-mRCKq8eHv1cyg/QEcESVLcm2pGLriaub/Lw9CD1Y_SwE/SR/IpPwtCYwc"
+      },
+      "enabled": true
+    }
+  ],
+  "profiles": [
+    {
+      "id": "baseline",
+      "humanlike": false,
+      "extensions": []
+    }
+  ],
+  "execution_policy": "browser_observation",
+  "recovery_plan": {
+    "max_attempts": 0,
+    "return_home_after_success": false,
+    "wait_seconds": 0,
+    "retry_original_target": false
+  },
+  "options": {
+    "selectors": false,
+    "recoverSimple": false,
+    "seed": 1,
+    "headful": true,
+    "executionPolicy": "browser_observation",
+    "headfulExplicit": true,
+    "recoveryMaxAttempts": 0,
+    "observeMs": 6000
+  }
+}
