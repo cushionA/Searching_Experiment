@@ -1,0 +1,66 @@
+{
+  "commit": "dcf188cb16e6be9f57dd09368c3cc2d9512ea96b",
+  "baselineCommit": "ada0ff2615a3fcba132f2fde1bbd0a912d3fe897",
+  "tracked_diff": "",
+  "source_sha256": {
+    "legacy": "50bf01d5bd434c8f052fb3699ea988c8a9ccbca854cfe3809c8be5409e365f02",
+    "fixed": "2948eb711a377e6535a3ff27fbd874580953a5fe1644693165beedd4a5d767c1",
+    "helper": "564a038cb5397113a132b864b9c13acc32a5f371ce58ecd7e2f5811ff9ac9b90"
+  },
+  "environment": "Cloud Docker --network none; identical image, Camoufox binary/config, Xvfb :99, fresh profiles",
+  "order": [
+    "legacy",
+    "fixed",
+    "fixed",
+    "legacy"
+  ],
+  "cases": [
+    {
+      "path": "/slow"
+    },
+    {
+      "path": "/error"
+    },
+    {
+      "path": "/redirect"
+    },
+    {
+      "path": "/late"
+    },
+    {
+      "path": "/late",
+      "readyCondition": {
+        "selector": "#ready",
+        "text": "loaded",
+        "timeoutMs": 5000
+      }
+    },
+    {
+      "path": "/late-missing",
+      "readyCondition": {
+        "selector": "#missing",
+        "timeoutMs": 500
+      }
+    },
+    {
+      "path": "/never"
+    }
+  ],
+  "origin": "http://127.0.0.1:36243",
+  "observe_ms": 100,
+  "gate_deadline_ms": 18000,
+  "camoufox": {
+    "camoufox_version": "152.0.4-beta.30",
+    "camoufox_js": "0.12.0",
+    "executable_path": "/workspace/pr17-validation/.deps/camoufox/browser/camoufox-bin",
+    "config_sha256": "da9a8151fe5e135d73a88205b464b6cf4025996acf0a12377f68fffcaab2e1c9",
+    "font_count": 134,
+    "font_list_sha256": "b62fe49b3c8b9fcf67f12e3ca5f266ffbff5d5ae082787fdb1c06cef2bd70603",
+    "firefox_user_pref_count": 2,
+    "playwright_control": false,
+    "playwright_core_direct_import_statement": false,
+    "addon_tab_creation_enabled": true,
+    "launch_backend": "web-ext + native Firefox process"
+  },
+  "interpretation": "Only bridge navigation gate/error scoping/metadata changes. No public sites. Compatibility/correctness probe, not a performance ranking."
+}

@@ -1,0 +1,118 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 3.02kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 1.1s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 1.56kB done
+#3 DONE 0.1s
+
+#4 [runtime 1/8] FROM docker.io/library/python:3.12-slim@sha256:05cda9777409a9c3ffddd94a4c476b79f0769a0b4857f0c7ed9226b6800b0d6f
+#4 resolve docker.io/library/python:3.12-slim@sha256:05cda9777409a9c3ffddd94a4c476b79f0769a0b4857f0c7ed9226b6800b0d6f 0.0s done
+#4 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 0B / 12.12MB 0.1s
+#4 sha256:05cda9777409a9c3ffddd94a4c476b79f0769a0b4857f0c7ed9226b6800b0d6f 10.37kB / 10.37kB done
+#4 sha256:2b4f19dae3a777dfc3b76730bda1e82e1f66ab2a2686fa93ca78edbfb4f04ffe 1.75kB / 1.75kB done
+#4 sha256:df18428df8a0f9189c84e7424d214b4c50092af1f9dca5842a00c41c39bda316 5.66kB / 5.66kB done
+#4 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 0B / 29.84MB 0.1s
+#4 sha256:75b6a36c64a1cf3520fc4b4aae4739d5caa8a6a05c27835a920a61784c9c32f8 0B / 1.29MB 0.1s
+#4 ...
+
+#5 [internal] load build context
+#5 transferring context: 22.10MB 0.2s done
+#5 DONE 0.2s
+
+#4 [runtime 1/8] FROM docker.io/library/python:3.12-slim@sha256:05cda9777409a9c3ffddd94a4c476b79f0769a0b4857f0c7ed9226b6800b0d6f
+#4 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 2.10MB / 12.12MB 0.3s
+#4 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 2.10MB / 29.84MB 0.3s
+#4 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 12.12MB / 12.12MB 0.4s done
+#4 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 29.84MB / 29.84MB 0.5s done
+#4 sha256:75b6a36c64a1cf3520fc4b4aae4739d5caa8a6a05c27835a920a61784c9c32f8 1.29MB / 1.29MB 0.3s done
+#4 sha256:bbc5a12237474ec0b23b5051260d56d6436a24d70d9cad961adebe7a037ed813 0B / 249B 0.5s
+#4 sha256:bbc5a12237474ec0b23b5051260d56d6436a24d70d9cad961adebe7a037ed813 249B / 249B 0.5s done
+#4 extracting sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 0.1s
+#4 extracting sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 1.0s done
+#4 extracting sha256:75b6a36c64a1cf3520fc4b4aae4739d5caa8a6a05c27835a920a61784c9c32f8 0.1s
+#4 extracting sha256:75b6a36c64a1cf3520fc4b4aae4739d5caa8a6a05c27835a920a61784c9c32f8 0.2s done
+#4 extracting sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 0.1s
+#4 extracting sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 0.5s done
+#4 extracting sha256:bbc5a12237474ec0b23b5051260d56d6436a24d70d9cad961adebe7a037ed813 done
+#4 DONE 2.4s
+
+#6 [runtime 2/8] WORKDIR /app
+#6 DONE 0.2s
+
+#7 [runtime 3/8] RUN groupadd --gid 10001 lab && useradd --uid 10001 --gid lab --no-create-home lab && mkdir /data && chown lab:lab /data
+#7 DONE 0.3s
+
+#8 [runtime 4/8] COPY jse/__init__.py /app/jse/__init__.py
+#8 DONE 0.2s
+
+#9 [runtime 5/8] COPY jse/lab /app/jse/lab
+#9 DONE 0.2s
+
+#10 [runtime 6/8] COPY scripts/with_proxy.py /app/scripts/with_proxy.py
+#10 DONE 0.2s
+
+#11 [runtime 7/8] COPY experiments /app/experiments
+#11 DONE 0.2s
+
+#12 [runtime 8/8] RUN chmod -R a+rX /app
+#12 DONE 0.3s
+
+#13 [test  1/11] COPY tests /app/tests
+#13 DONE 0.2s
+
+#14 [test  2/11] COPY .dockerignore Dockerfile compose.yaml compose.bot-diagnostics-cloud.yaml README.md AGENTS.md /app/
+#14 DONE 0.4s
+
+#15 [test  3/11] COPY .agents/skills/bot-blocking-scenarios /app/.agents/skills/bot-blocking-scenarios
+#15 DONE 0.4s
+
+#16 [test  4/11] COPY docs/bot-diagnostics-2026-10-01.md docs/bot-diagnostics-evidence.md docs/oxibrowser-experiment.md docs/oxibrowser-selectors-20261001.json /app/docs/
+#16 DONE 0.2s
+
+#17 [test  5/11] COPY lab-runs/bot-diagnostics-evidence/patchright-indeed-challenge.html /app/lab-runs/bot-diagnostics-evidence/patchright-indeed-challenge.html
+#17 DONE 0.2s
+
+#18 [test  6/11] COPY lab-runs/bot-diagnostics-evidence/impit-indeed-challenge.html /app/lab-runs/bot-diagnostics-evidence/impit-indeed-challenge.html
+#18 DONE 0.2s
+
+#19 [test  7/11] COPY scripts/check_cloud_environment.py /app/scripts/check_cloud_environment.py
+#19 DONE 0.2s
+
+#20 [test  8/11] COPY scripts/check_playwright_browser.py /app/scripts/check_playwright_browser.py
+#20 DONE 0.2s
+
+#21 [test  9/11] RUN python -m unittest discover -s tests -p "test_lab*.py"
+#21 0.905 ................................ssssss.sssss....................................sssssssssssss.Wrote /tmp/tmp_z8fih26/legacy.ipynb (58,845 bytes; 1 manifest image references)
+#21 4.696 ........ssssssssss.....s...........................ssssss
+#21 7.413 ----------------------------------------------------------------------
+#21 7.413 Ran 151 tests in 6.590s
+#21 7.413
+#21 7.413 OK (skipped=41)
+#21 DONE 7.4s
+
+#22 [test 10/11] RUN python -m unittest discover -s tests -p "test_cloud_environment.py"
+#22 0.755 .......
+#22 0.758 ----------------------------------------------------------------------
+#22 0.758 Ran 7 tests in 0.010s
+#22 0.758
+#22 0.759 OK
+#22 DONE 0.8s
+
+#23 [test 11/11] RUN python -c "from pathlib import Path; Path('/tmp/validated').write_text('offline tests passed\n')"
+#23 DONE 0.3s
+
+#24 [final 1/1] COPY --from=test /tmp/validated /app/validated.txt
+#24 DONE 0.2s
+
+#25 exporting to image
+#25 exporting layers
+#25 exporting layers 0.3s done
+#25 writing image sha256:8413683587012799701ce6fb09b9c645b07a2aa8bda5248f338201f7c06fe076 done
+#25 naming to docker.io/library/discovery-lab:pr17 done
+#25 DONE 0.3s

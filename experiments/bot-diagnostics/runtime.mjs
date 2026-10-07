@@ -24,7 +24,7 @@ export const sha = value => crypto.createHash('sha256').update(value).digest('he
 /** Include extracted implementation modules automatically in new run provenance. */
 export function snapshotSources(evidence, roleSource = null) {
   const files = fs.readdirSync(here, {withFileTypes: true})
-    .filter(entry => entry.isFile() && /\.(mjs|json|py)$/.test(entry.name) && !entry.name.endsWith('.test.mjs'))
+    .filter(entry => entry.isFile() && /\.(mjs|cjs|json|py)$/.test(entry.name) && !entry.name.endsWith('.test.mjs'))
     .map(entry => entry.name).sort();
   const sources = Object.fromEntries(files.map(name => [name, evidence.blob(fs.readFileSync(path.join(here, name)))]));
   const patchDirectory=path.join(here,'patches');

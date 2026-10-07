@@ -3,6 +3,7 @@ const fplay = require('@lawlers/4play');
 const http = require('node:http');
 const fs = require('node:fs');
 const crypto = require('node:crypto');
+const {waitForDocument,validateReadyCondition,remainingWaitBudget,waitForReadyCondition} = require('./navigation-gate.cjs');
 const password = fs.readFileSync('/run/fourplay-password.txt', 'utf8').trim();
 const timeout = 28000;
 const sessions = new Map();
@@ -81,7 +82,7 @@ fplay.event.on('web_response',page=>forPage(page,session=>{
   if (session.responses.length>512) { session.active=false;session.errors.push({error:'response_capture_limit'}); }
 }));
 fplay.event.on('dom_load_fail',page=>forPage(page,session=>{
-  session.errors.push({url:page.url,error:page.error});
+  session.errors.push({id:page.id,container:page.container,url:page.url,error:page.error});
 }));
 fplay.event.on('browser_connect',async connection=>{
   browserReady=false;ws=connection;
@@ -103,19 +104,22 @@ async function openTab(session,url) {
   session.tab=await fplay.tab_open(ws,checkedURL(url,session.fixture),false,session.container);
   if (!session.tab) throw new Error('tab_open_failed');
 }
-async function navigate(session,{url,observe_ms = 1000}) {
+async function navigate(session,{url,observe_ms = 1000,ready_condition}) {
+  const started=performance.now(),deadline=started+24000;
+  const condition=validateReadyCondition(ready_condition);
   if (!Number.isInteger(observe_ms) || observe_ms<0 || observe_ms>6000) throw new Error('invalid_observe_ms');
   await openTab(session,url);
   // Return observations before the adapter's 25-second HTTP deadline.
-  const deadline=Date.now()+18000;
-  let completed=false;
-  while (Date.now()<deadline) {
-    const tabs=await fplay.get_tab_list(ws);
-    if (Array.isArray(tabs) && tabs.find(tab=>tab.id===session.tab.id)?.status==='complete') {completed=true;break;}
-    if (session.errors.length && !session.responses.some(p=>p.type==='main_frame')) break;
-    await wait(100);
+  const navigation=await waitForDocument(session,{requestedURL:url,getTabs:()=>fplay.get_tab_list(ws),
+    timeoutMs:Math.min(18000,remainingWaitBudget(deadline,performance.now(),observe_ms))});
+  if(navigation.outcome==='timeout') session.errors.push({url,error:'navigation_timeout'});
+  let readiness=null;
+  if(condition) {
+    readiness=navigation.outcome==='complete'
+      ?await waitForReadyCondition(condition,{evaluate:expression=>evaluate(session,expression),
+        timeoutMs:Math.min(condition.timeoutMs,remainingWaitBudget(deadline,performance.now(),observe_ms))})
+      :{outcome:'not_run_navigation_incomplete',policy:condition};
   }
-  if(!completed && !session.errors.length) session.errors.push({url,error:'navigation_timeout'});
   await wait(observe_ms);
   let dom;
   try {dom=await evaluate(session,'({url:location.href,title:document.title,dom:document.documentElement.outerHTML})');}
@@ -127,7 +131,7 @@ async function navigate(session,{url,observe_ms = 1000}) {
   }
   await evaluate(session,'window.stop(); true').catch(()=>{});
   session.active=false;
-  return {...dom,responses:session.responses,errors:session.errors};
+  return {...dom,responses:session.responses,errors:session.errors,navigation,...(readiness?{ready_condition:readiness}:{})};
 }
 async function readJSON(req) {
   let size=0;const parts=[];

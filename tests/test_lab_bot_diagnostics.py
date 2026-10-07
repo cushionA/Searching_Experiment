@@ -37,13 +37,25 @@ class BotDiagnosticsTests(unittest.TestCase):
                 self.assertEqual(checkpoint.read(evidence), b"saved-evidence")
                 self.assertTrue(any(name.endswith("/results.json") for name in names))
                 self.assertIn("SHA256.json", names)
+                for source in (".dockerignore", "Dockerfile", "compose.yaml",
+                               "compose.bot-diagnostics-cloud.yaml", "README.md", "AGENTS.md",
+                               ".agents/skills/bot-blocking-scenarios/SKILL.md",
+                               "docs/bot-diagnostics-2026-10-01.md",
+                               "docs/bot-diagnostics-evidence.md", "docs/oxibrowser-experiment.md",
+                               "docs/oxibrowser-selectors-20261001.json"):
+                    self.assertEqual(checkpoint.read(source), (repo / source).read_bytes())
+                manifest = json.loads(checkpoint.read("SHA256.json"))
+                for name, digest in manifest.items():
+                    self.assertEqual(hashlib.sha256(checkpoint.read(name)).hexdigest(), digest)
 
     @unittest.skipUnless(shutil.which("node"), "Node.js is an optional diagnostics dependency")
     def test_native_fourplay_and_camoufox_runtime(self):
         repo = Path(__file__).resolve().parents[1]
         result = subprocess.run(
             ["node", "--test", "experiments/bot-diagnostics/fourplay-native-runtime.test.mjs",
-             "experiments/bot-diagnostics/camoufox-fourplay-runtime.test.mjs"],
+             "experiments/bot-diagnostics/camoufox-fourplay-runtime.test.mjs",
+             "experiments/bot-diagnostics/dom-stability.test.mjs",
+             "experiments/bot-diagnostics/fourplay-bridge-gate.test.mjs"],
             cwd=repo, text=True, capture_output=True, timeout=30,
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)

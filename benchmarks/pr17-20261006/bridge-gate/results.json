@@ -1,0 +1,286 @@
+[
+  {
+    "index": 1,
+    "arm": "legacy",
+    "started_at": "2026-10-06T23:58:55.731Z",
+    "pages": [
+      {
+        "pathname": "/slow",
+        "elapsed_ms": 208.83077000000003,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [],
+        "dom_sha256": "b49fa63a0007f60d8df7644fcae9b9fd8c1a638be403a6220bc1404a9be5949c"
+      },
+      {
+        "pathname": "/error",
+        "elapsed_ms": 222.3589850000003,
+        "status": 503,
+        "outcome": "server_error_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [
+          {
+            "url": "http://127.0.0.1:40301/error",
+            "error": "HTTP/1.1 503 Service Unavailable"
+          },
+          {
+            "url": "http://127.0.0.1:40301/image.svg",
+            "error": "NS_BINDING_ABORTED"
+          }
+        ],
+        "dom_sha256": "b49fa63a0007f60d8df7644fcae9b9fd8c1a638be403a6220bc1404a9be5949c"
+      },
+      {
+        "pathname": "/redirect",
+        "elapsed_ms": 182.91737700000022,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [],
+        "dom_sha256": "b49fa63a0007f60d8df7644fcae9b9fd8c1a638be403a6220bc1404a9be5949c"
+      },
+      {
+        "pathname": "/never",
+        "elapsed_ms": 212.3301409999999,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [],
+        "dom_sha256": "ed7777a6e41f491645a789453324850a1a998cca425c6871b6506456175bc705"
+      }
+    ],
+    "verification": {
+      "ok": true,
+      "errors": [],
+      "records": 5,
+      "results": 5,
+      "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+    }
+  },
+  {
+    "index": 2,
+    "arm": "fixed",
+    "started_at": "2026-10-06T23:58:59.893Z",
+    "pages": [
+      {
+        "pathname": "/slow",
+        "elapsed_ms": 762.2858900000001,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": true,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 619.6105809999999,
+          "polls": 7
+        },
+        "errors": [],
+        "dom_sha256": "42f772458c052428421182e5286155fdb60f4ee352e0955d1eb30fbf1d43d716"
+      },
+      {
+        "pathname": "/error",
+        "elapsed_ms": 778.9013210000003,
+        "status": 503,
+        "outcome": "server_error_observed",
+        "dom_ready": true,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 621.629109,
+          "polls": 7
+        },
+        "errors": [
+          {
+            "id": 4,
+            "url": "http://127.0.0.1:40301/error",
+            "error": "HTTP/1.1 503 Service Unavailable"
+          }
+        ],
+        "dom_sha256": "42f772458c052428421182e5286155fdb60f4ee352e0955d1eb30fbf1d43d716"
+      },
+      {
+        "pathname": "/redirect",
+        "elapsed_ms": 769.0057220000008,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": true,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 616.9630640000005,
+          "polls": 7
+        },
+        "errors": [],
+        "dom_sha256": "42f772458c052428421182e5286155fdb60f4ee352e0955d1eb30fbf1d43d716"
+      },
+      {
+        "pathname": "/never",
+        "elapsed_ms": 18216.009681000003,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": {
+          "outcome": "timeout",
+          "elapsed_ms": 18000.66045,
+          "polls": 176
+        },
+        "errors": [
+          {
+            "url": "http://127.0.0.1:40301/never",
+            "error": "navigation_timeout"
+          }
+        ],
+        "dom_sha256": "ed7777a6e41f491645a789453324850a1a998cca425c6871b6506456175bc705"
+      }
+    ],
+    "verification": {
+      "ok": true,
+      "errors": [],
+      "records": 11,
+      "results": 5,
+      "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+    }
+  },
+  {
+    "index": 3,
+    "arm": "fixed",
+    "started_at": "2026-10-06T23:59:22.714Z",
+    "pages": [
+      {
+        "pathname": "/slow",
+        "elapsed_ms": 776.9621030000017,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": true,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 624.5792239999998,
+          "polls": 7
+        },
+        "errors": [],
+        "dom_sha256": "42f772458c052428421182e5286155fdb60f4ee352e0955d1eb30fbf1d43d716"
+      },
+      {
+        "pathname": "/error",
+        "elapsed_ms": 787.0197690000023,
+        "status": 503,
+        "outcome": "server_error_observed",
+        "dom_ready": true,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 622.2574810000001,
+          "polls": 7
+        },
+        "errors": [
+          {
+            "id": 4,
+            "url": "http://127.0.0.1:40301/error",
+            "error": "HTTP/1.1 503 Service Unavailable"
+          }
+        ],
+        "dom_sha256": "42f772458c052428421182e5286155fdb60f4ee352e0955d1eb30fbf1d43d716"
+      },
+      {
+        "pathname": "/redirect",
+        "elapsed_ms": 775.0689160000002,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": true,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 618.2779849999997,
+          "polls": 7
+        },
+        "errors": [],
+        "dom_sha256": "42f772458c052428421182e5286155fdb60f4ee352e0955d1eb30fbf1d43d716"
+      },
+      {
+        "pathname": "/never",
+        "elapsed_ms": 18213.200529000005,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": {
+          "outcome": "timeout",
+          "elapsed_ms": 18000.892229999998,
+          "polls": 168
+        },
+        "errors": [
+          {
+            "url": "http://127.0.0.1:40301/never",
+            "error": "navigation_timeout"
+          }
+        ],
+        "dom_sha256": "ed7777a6e41f491645a789453324850a1a998cca425c6871b6506456175bc705"
+      }
+    ],
+    "verification": {
+      "ok": true,
+      "errors": [],
+      "records": 11,
+      "results": 5,
+      "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+    }
+  },
+  {
+    "index": 4,
+    "arm": "legacy",
+    "started_at": "2026-10-06T23:59:45.548Z",
+    "pages": [
+      {
+        "pathname": "/slow",
+        "elapsed_ms": 203.00902599999972,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [],
+        "dom_sha256": "b49fa63a0007f60d8df7644fcae9b9fd8c1a638be403a6220bc1404a9be5949c"
+      },
+      {
+        "pathname": "/error",
+        "elapsed_ms": 213.8567350000012,
+        "status": 503,
+        "outcome": "server_error_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [
+          {
+            "url": "http://127.0.0.1:40301/error",
+            "error": "HTTP/1.1 503 Service Unavailable"
+          }
+        ],
+        "dom_sha256": "b49fa63a0007f60d8df7644fcae9b9fd8c1a638be403a6220bc1404a9be5949c"
+      },
+      {
+        "pathname": "/redirect",
+        "elapsed_ms": 208.72262300000148,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [],
+        "dom_sha256": "b49fa63a0007f60d8df7644fcae9b9fd8c1a638be403a6220bc1404a9be5949c"
+      },
+      {
+        "pathname": "/never",
+        "elapsed_ms": 210.61423099999956,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [],
+        "dom_sha256": "ed7777a6e41f491645a789453324850a1a998cca425c6871b6506456175bc705"
+      }
+    ],
+    "verification": {
+      "ok": true,
+      "errors": [],
+      "records": 6,
+      "results": 5,
+      "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+    }
+  }
+]

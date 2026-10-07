@@ -1,0 +1,55 @@
+{
+  "commit": "1cbd84ff66edd03c096fa9f6b259ff488e181727",
+  "dirty": "",
+  "environment": "Cloud Docker; --network none; loopback fixture only",
+  "node": "v24.21.0",
+  "display": ":99",
+  "camoufox": {
+    "camoufox_version": "152.0.4-beta.30",
+    "camoufox_js": "0.12.0",
+    "executable_path": "/workspace/pr17-validation/.deps/camoufox/browser/camoufox-bin",
+    "config_sha256": "52e3fd075e6c26fab78d843588823383f5ffe03dadc1193b47f466399be3a81b",
+    "font_count": 134,
+    "font_list_sha256": "b62fe49b3c8b9fcf67f12e3ca5f266ffbff5d5ae082787fdb1c06cef2bd70603",
+    "firefox_user_pref_count": 2,
+    "playwright_control": false,
+    "playwright_core_direct_import_statement": false,
+    "addon_tab_creation_enabled": true,
+    "launch_backend": "web-ext + native Firefox process"
+  },
+  "generated_args": [],
+  "firefox_user_prefs": {
+    "webgl.enable-webgl2": true,
+    "webgl.force-enabled": true
+  },
+  "fixed_fingerprint": true,
+  "arms": [
+    "firefox-fourplay",
+    "camoufox-fourplay",
+    "camoufox-load",
+    "camoufox-domcontentloaded"
+  ],
+  "order": [
+    [
+      "firefox-fourplay",
+      "camoufox-fourplay",
+      "camoufox-load",
+      "camoufox-domcontentloaded"
+    ],
+    [
+      "camoufox-domcontentloaded",
+      "camoufox-load",
+      "camoufox-fourplay",
+      "firefox-fourplay"
+    ]
+  ],
+  "navigation_timeout_ms": 25000,
+  "observe_ms": 100,
+  "query": "fixture",
+  "catalog": [
+    "/ok?q=fixture",
+    "/error?q=fixture"
+  ],
+  "origin": "http://127.0.0.1:45809",
+  "arm_semantics": "firefox-fourplay uses native runtime, NOT existing 4play HTTP bridge; Camoufox load vs domcontentloaded changes only wait gate"
+}

@@ -10,6 +10,11 @@ RUN chmod -R a+rX /app
 
 FROM runtime AS test
 COPY tests /app/tests
+# Checkpoint exports are source archives: keep every required source in the test
+# stage, without adding documentation or development metadata to the runtime.
+COPY .dockerignore Dockerfile compose.yaml compose.bot-diagnostics-cloud.yaml README.md AGENTS.md /app/
+COPY .agents/skills/bot-blocking-scenarios /app/.agents/skills/bot-blocking-scenarios
+COPY docs/bot-diagnostics-2026-10-01.md docs/bot-diagnostics-evidence.md docs/oxibrowser-experiment.md docs/oxibrowser-selectors-20261001.json /app/docs/
 COPY lab-runs/bot-diagnostics-evidence/patchright-indeed-challenge.html /app/lab-runs/bot-diagnostics-evidence/patchright-indeed-challenge.html
 COPY lab-runs/bot-diagnostics-evidence/impit-indeed-challenge.html /app/lab-runs/bot-diagnostics-evidence/impit-indeed-challenge.html
 COPY scripts/check_cloud_environment.py /app/scripts/check_cloud_environment.py

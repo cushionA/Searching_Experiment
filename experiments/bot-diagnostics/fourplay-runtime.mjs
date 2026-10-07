@@ -48,7 +48,7 @@ export async function openFourplay({fixture = false, profile = 'browser_observat
       ...(session.runtime.display===undefined?{display:process.env.DISPLAY||process.env.WAYLAND_DISPLAY||null}:{}),
       instrumentation:'bridge responses and captured DOM; no Playwright events or CDP'},
     sessionId:session.session_id, token, fixture, fetchImpl,
-    navigate: (url, observeMs) => request('/diagnostics/navigate',{method:'POST',token,fetchImpl,
-      body:{session_id:session.session_id,url,observe_ms:observeMs??L.observe_ms}}),
+    navigate: (url, observeMs, readyCondition) => request('/diagnostics/navigate',{method:'POST',token,fetchImpl,
+      body:{session_id:session.session_id,url,observe_ms:observeMs??L.observe_ms,...(readyCondition?{ready_condition:readyCondition}:{})}}),
     close:async()=>{if(closed)return;closed=true;await request('/diagnostics/close',{method:'POST',token,fetchImpl,body:{session_id:session.session_id}});}};
 }

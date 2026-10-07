@@ -1,0 +1,87 @@
+{
+  "commit": "3ec38e8da6ea32a496533eed6a11db9f43068fc0",
+  "tracked_diff": "",
+  "fixture": true,
+  "environment": "Cloud Docker headful Xvfb :99, same image/binary/host/proxy in both arms",
+  "query": "早稲田大学 教員",
+  "terms": [
+    "早稲田",
+    "教員"
+  ],
+  "catalog_revision": "20261003",
+  "catalog_sha256": "fc3108c235898b8feb005895699655d0ccf4f3f8d9e04e00b9aa246609e04af3",
+  "schedule": [
+    {
+      "repeat": 1,
+      "site": "bing",
+      "arm": "baseline"
+    },
+    {
+      "repeat": 1,
+      "site": "brave",
+      "arm": "dom-stable"
+    },
+    {
+      "repeat": 1,
+      "site": "bing",
+      "arm": "dom-stable"
+    },
+    {
+      "repeat": 1,
+      "site": "brave",
+      "arm": "baseline"
+    },
+    {
+      "repeat": 2,
+      "site": "brave",
+      "arm": "baseline"
+    },
+    {
+      "repeat": 2,
+      "site": "bing",
+      "arm": "dom-stable"
+    },
+    {
+      "repeat": 2,
+      "site": "brave",
+      "arm": "dom-stable"
+    },
+    {
+      "repeat": 2,
+      "site": "bing",
+      "arm": "baseline"
+    }
+  ],
+  "max_top_level_navigations": 8,
+  "min_start_interval_per_site_ms": 0,
+  "observe_ms": 100,
+  "navigation_timeout_ms": 25000,
+  "baseline": "native4play load-complete gate + existing observation delay",
+  "added": "same baseline then bounded read-only meaningful DOM stability wait before evidence capture",
+  "policy": {
+    "timeoutMs": 5000,
+    "stableMs": 750,
+    "pollMs": 250,
+    "minTextChars": 200,
+    "terms": [
+      "早稲田",
+      "教員"
+    ]
+  },
+  "stop_policy": "challenge/access-denied/rate-limit: close session and skip this site for the rest of this run; no retries",
+  "camoufox": {
+    "camoufox_version": "152.0.4-beta.30",
+    "camoufox_js": "0.12.0",
+    "executable_path": "/workspace/pr17-validation/.deps/camoufox/browser/camoufox-bin",
+    "config_sha256": "c2cbc2bb993b999d19e8db17b76d55393c268f90aa060c44f8d2d3c75a9e93ba",
+    "font_count": 134,
+    "font_list_sha256": "b62fe49b3c8b9fcf67f12e3ca5f266ffbff5d5ae082787fdb1c06cef2bd70603",
+    "firefox_user_pref_count": 2,
+    "playwright_control": false,
+    "playwright_core_direct_import_statement": false,
+    "addon_tab_creation_enabled": true,
+    "launch_backend": "web-ext + native Firefox process"
+  },
+  "network": "Docker network none",
+  "metrics": "DOM text/link quantities and query-token matching are proxies, not semantic accuracy or bypass success"
+}

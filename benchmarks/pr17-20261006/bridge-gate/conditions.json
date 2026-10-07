@@ -1,0 +1,40 @@
+{
+  "commit": "4a223c52ee3303fae8ee43541b34903b7f3703ce",
+  "baselineCommit": "ada0ff2615a3fcba132f2fde1bbd0a912d3fe897",
+  "tracked_diff": "",
+  "source_sha256": {
+    "legacy": "50bf01d5bd434c8f052fb3699ea988c8a9ccbca854cfe3809c8be5409e365f02",
+    "fixed": "2e4d4bd1fc9b43b9ad3c90aaea3ea88c2d98c3a56caad256faade056e883e9a3",
+    "helper": "a8ccc80641bc896d4537ef6520249f5db9b5c1bb142b3a52ba9b05d1f59669e0"
+  },
+  "environment": "Cloud Docker --network none; identical image, Camoufox binary/config, Xvfb :99, fresh profiles",
+  "order": [
+    "legacy",
+    "fixed",
+    "fixed",
+    "legacy"
+  ],
+  "cases": [
+    "/slow",
+    "/error",
+    "/redirect",
+    "/never"
+  ],
+  "origin": "http://127.0.0.1:40301",
+  "observe_ms": 100,
+  "gate_deadline_ms": 18000,
+  "camoufox": {
+    "camoufox_version": "152.0.4-beta.30",
+    "camoufox_js": "0.12.0",
+    "executable_path": "/workspace/pr17-validation/.deps/camoufox/browser/camoufox-bin",
+    "config_sha256": "d3b5f4d2b5b2f5790e5056b7ef2c9e41b9871fb9c18fb979cde4c7194b5c5b7d",
+    "font_count": 134,
+    "font_list_sha256": "b62fe49b3c8b9fcf67f12e3ca5f266ffbff5d5ae082787fdb1c06cef2bd70603",
+    "firefox_user_pref_count": 2,
+    "playwright_control": false,
+    "playwright_core_direct_import_statement": false,
+    "addon_tab_creation_enabled": true,
+    "launch_backend": "web-ext + native Firefox process"
+  },
+  "interpretation": "Only bridge navigation gate/error scoping/metadata changes. No public sites. Compatibility/correctness probe, not a performance ranking."
+}
