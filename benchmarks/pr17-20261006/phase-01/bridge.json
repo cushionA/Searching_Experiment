@@ -1,0 +1,60 @@
+{
+  "started_at": "2026-10-06T23:37:38.622Z",
+  "pages": [
+    {
+      "url": "http://127.0.0.1:45111/probe?q=fixture",
+      "status": 200,
+      "outcome": "content_observed",
+      "ms": 215.54401099999814,
+      "errors": []
+    },
+    {
+      "url": "http://127.0.0.1:45111/error?q=fixture",
+      "status": 503,
+      "outcome": "server_error_observed",
+      "ms": 223.83117800000036,
+      "errors": [
+        {
+          "url": "http://127.0.0.1:45111/error?q=fixture",
+          "error": "HTTP/1.1 503 Service Unavailable"
+        },
+        {
+          "url": "http://127.0.0.1:45111/favicon.ico",
+          "error": "NS_BINDING_ABORTED"
+        }
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:45111/probe?q=fixture",
+      "status": 200,
+      "outcome": "content_observed",
+      "ms": 215.36494900000253,
+      "errors": [
+        {
+          "url": "http://127.0.0.1:45111/slow.svg",
+          "error": "NS_BINDING_ABORTED"
+        }
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:45111/error?q=fixture",
+      "status": 503,
+      "outcome": "server_error_observed",
+      "ms": 218.6970580000052,
+      "errors": [
+        {
+          "url": "http://127.0.0.1:45111/error?q=fixture",
+          "error": "HTTP/1.1 503 Service Unavailable"
+        }
+      ]
+    }
+  ],
+  "launch_connect_and_poll_ms": 2076.596519999999,
+  "verification": {
+    "ok": true,
+    "errors": [],
+    "records": 6,
+    "results": 5,
+    "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+  }
+}

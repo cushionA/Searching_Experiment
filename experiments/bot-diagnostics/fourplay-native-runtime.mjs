@@ -122,15 +122,24 @@ function makePage(server, container, context, onNavigate, waitForDomReady) {
   page.url = () => tab?.url || 'about:blank';
   page.mainFrame = () => mainFrame;
   page.goto = async (url, options={}) => {
+    const started=performance.now();
+    const timing={};
+    page.lastNavigationTiming=timing;
     const previous=tab;
     tab=null;
     onNavigate(String(url));
     const opened = await server.call('tab_open',String(url),false,container);
+    timing.tab_open_ms=performance.now()-started;
     if (!opened || opened === false) throw new Error('fourplay_navigation_failed');
     page._setTab(opened);
+    const closeStarted=performance.now();
     if(previous?.id != null) await server.call('tab_close',previous.id);
+    timing.previous_tab_close_ms=performance.now()-closeStarted;
     onNavigate(null);
+    const gateStarted=performance.now();
     const ready=await waitForDomReady(opened.id,options.timeout);
+    timing.remaining_dom_gate_ms=performance.now()-gateStarted;
+    timing.total_ms=performance.now()-started;
     page._setTab({...opened,url:ready.url});
     page.emit('domcontentloaded'); page.emit('load');
     return null;
@@ -208,7 +217,7 @@ function waitForServerEvent(server,name,timeoutMs) {
   });
 }
 
-function prepareExtension(source, destination, port, password) {
+export function prepareExtension(source, destination, port, password) {
   fs.cpSync(source,destination,{recursive:true});
   const bgPath=path.join(destination,'bg.js');
   const original=fs.readFileSync(bgPath,'utf8');
@@ -274,6 +283,7 @@ export async function startFixtureRelay() {
 export async function openFourplayNative({fixture=false, profile='diagnostic', serverFactory=createServer,
   launch=defaultLaunch, port=3030, password=crypto.randomBytes(24).toString('hex'), commandTimeout=30000, connectTimeout=30000,
   executable=process.env.BOT_DIAGNOSTICS_FIREFOX, extension=process.env.BOT_DIAGNOSTICS_FOURPLAY_EXTENSION}={}) {
+  const started=performance.now(), startupTiming={};
   if (!executable || !extension) throw new Error('fourplay_setup_required: set BOT_DIAGNOSTICS_FIREFOX and BOT_DIAGNOSTICS_FOURPLAY_EXTENSION');
   if (!(process.env.DISPLAY || process.env.WAYLAND_DISPLAY)) throw new Error('fourplay_headful_requires_display');
   fs.mkdirSync(state,{recursive:true});
@@ -301,11 +311,15 @@ export async function openFourplayNative({fixture=false, profile='diagnostic', s
     if (!server?.event?.on || typeof server.call!=='function') throw new Error('fourplay_setup_invalid: @lawlers/4play worker API unavailable');
     const ready=waitForServerEvent(server,'server_ready',connectTimeout);
     await ready;
+    startupTiming.profile_and_server_ms=performance.now()-started;
     const connected=waitForServerEvent(server,'browser_connect',connectTimeout);
+    const launchStarted=performance.now();
     child=launch({profile:profileDirectory,executable,extension:extensionMetadata.path,headful:true});
     if (!child || typeof child.kill!=='function') throw new Error('fourplay_firefox_launch_failed');
     child.stderr?.on('data',()=>{});
     await connected;
+    startupTiming.launch_and_extension_connect_ms=performance.now()-launchStarted;
+    const sessionStarted=performance.now();
     const ua=await server.call('get_ua');
     if(typeof ua!=='string' || !ua) throw new Error('fourplay_user_agent_unavailable');
     const container=await server.call('container_create',`bot-diagnostics-${profile}`);
@@ -387,9 +401,11 @@ export async function openFourplayNative({fixture=false, profile='diagnostic', s
       if(activeTabId===event.id) page._setTab({...page._currentTab,url:event.url});
     };
     await server.call('web_response_whitelist',['main_frame','xmlhttprequest','sub_frame','script','stylesheet','image','font','media','object','ping','other']);
+    startupTiming.session_setup_ms=performance.now()-sessionStarted;
+    startupTiming.total_ms=performance.now()-started;
     server.event.on('web_request',onRequest); server.event.on('web_response',onResponse);
     server.event.on('dom_ready',onDomReady); server.event.on('dom_load_fail',onFailure);
-    const runtime={engine:'firefox',version:ua.match(/Firefox\/([\d.]+)/)?.[1]||'unknown',fourplay:'@lawlers/4play',fourplay_upstream_commit:extensionMetadata.commit,
+    const runtime={engine:'firefox',startup_timing_ms:startupTiming,version:ua.match(/Firefox\/([\d.]+)/)?.[1]||'unknown',fourplay:'@lawlers/4play',fourplay_upstream_commit:extensionMetadata.commit,
       extension_bg_original_sha256:extensionMetadata.sourceHash,extension_bg_config_patch_sha256:extensionMetadata.patchedHash,
       proxy_ca_trusted:proxyCaTrusted,headless:false,
       display:process.env.DISPLAY||process.env.WAYLAND_DISPLAY||null,viewport:null,screenshots:false,

@@ -1,0 +1,61 @@
+{
+  "commit": "45cdf3e1da6305820cc855f0d6d3ef931c65dd33",
+  "tracked_diff": "",
+  "environment": "same Cloud Docker image; --network none; DISPLAY :99; 1280x720x24",
+  "node": "v24.21.0",
+  "origin": "http://127.0.0.1:33099",
+  "orders": [
+    [
+      "hybrid",
+      "playwright-reuse",
+      "playwright-fresh"
+    ],
+    [
+      "playwright-fresh",
+      "playwright-reuse",
+      "hybrid"
+    ],
+    [
+      "playwright-reuse",
+      "hybrid",
+      "playwright-fresh"
+    ],
+    [
+      "playwright-fresh",
+      "hybrid",
+      "playwright-reuse"
+    ]
+  ],
+  "pages_per_session": 3,
+  "cold": "fresh profile, first navigation; NOT cold OS disk/page cache",
+  "warm": "subsequent navigation in same profile; cache-control no-store",
+  "camoufox": {
+    "camoufox_version": "152.0.4-beta.30",
+    "camoufox_js": "0.12.0",
+    "executable_path": "/workspace/pr17-validation/.deps/camoufox/browser/camoufox-bin",
+    "config_sha256": "129bf47bc0064db14d1532e35816804559e0a2a79d5298a96e0a82855f9903b6",
+    "font_count": 134,
+    "font_list_sha256": "b62fe49b3c8b9fcf67f12e3ca5f266ffbff5d5ae082787fdb1c06cef2bd70603",
+    "firefox_user_pref_count": 2,
+    "playwright_control": false,
+    "playwright_core_direct_import_statement": false,
+    "addon_tab_creation_enabled": true,
+    "launch_backend": "web-ext + native Firefox process"
+  },
+  "generated_args": [],
+  "firefox_user_prefs": {
+    "webgl.enable-webgl2": true,
+    "webgl.force-enabled": true
+  },
+  "observe_ms": 100,
+  "navigation_timeout_ms": 25000,
+  "fixture_resource_delay_ms": 500,
+  "extraction_order": "separate,batch,batch,separate on warm #1; reversed on warm #2; same DOM and 3 values",
+  "limitations": [
+    "same parent Node process; dependencies preloaded",
+    "hybrid proxy relay vs Playwright direct loopback",
+    "Playwright fresh tab changes creation/close policy only within Playwright",
+    "startup markers differ by protocol; not pure process spawn time",
+    "nested evaluate timing inside native content must not be added twice"
+  ]
+}

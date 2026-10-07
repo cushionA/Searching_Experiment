@@ -196,6 +196,8 @@ export class ToolAdapter {
       capture_screenshot:this.options.captureScreenshots !== false,
       primary_selector:this.site.selectors?.primary,
       ...(this.options.observeMs !== undefined ? {observe_ms:this.options.observeMs} : this.fixture ? {observe_ms:100} : {}),
+      ...(this.options.domWait ? {dom_wait:this.options.domWait} : {}),
+      ...(this.options.readyCondition ? {ready_condition:this.options.readyCondition} : {}),
       robots_redirect_origins:this.options.robotsRedirectOrigins ?? this.site.robots_redirect_origins ?? [],
       robots_unavailable_probe:!!(this.options.robotsUnavailableProbe ?? this.site.robots_unavailable_probe),
       ...(operation ? {operation, previousObservation:this.lastObservation} : {}),

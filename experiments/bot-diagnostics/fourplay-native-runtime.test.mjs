@@ -101,6 +101,10 @@ test('adapts official request/response events and evaluates in the extension iso
   assert.equal(browser.runtime.budgeted_navigation,false);
   assert.equal(browser.runtime.fourplay_upstream_commit,'fixture-upstream-commit');
   await browser.page.goto('http://127.0.0.1:8080/second');
+  for(const timing of [browser.runtime.startup_timing_ms,browser.page.lastNavigationTiming]) {
+    assert.ok(Object.values(timing).every(value=>Number.isFinite(value)&&value>=0));
+    assert.ok(timing.total_ms>=0);
+  }
   assert.equal(server.calls.filter(call=>call.method==='tab_close'&&call.args[0]===2).length,1);
   assert.equal(browser.runtime.headless,false);
 });
