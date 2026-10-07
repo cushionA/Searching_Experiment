@@ -9,7 +9,9 @@ import {openLightpanda} from './lightpanda-runtime.mjs';
 import {openObscura} from './obscura-runtime.mjs';
 import {assertChromiumTrustWritable} from './chromium-trust.mjs';
 import {openCamoufox} from './camoufox-runtime.mjs';
+import {waitForDOMStability} from './dom-stability.mjs';
 import {openFourplay} from './fourplay-runtime.mjs';
+import {openCamoufoxFourplay} from './camoufox-fourplay-runtime.mjs';
 
 // Preserve the existing runner API for scenarios and historical verification commands.
 export {Evidence, verify, safeError, classify, decodeBody};
@@ -154,6 +156,12 @@ export async function startFixture() {
 }
 
 export async function openBrowser(name, {extensions = [], lightpanda = null, fixture = false, headful = false, profile = 'diagnostic', timezoneId} = {}) {
+  if (name === 'camoufox-fourplay') {
+    if (profile === 'grounding') throw new Error('unsupported_capability:camoufox_fourplay_grounding');
+    if (extensions.length || timezoneId) throw new Error('unsupported_capability:camoufox_fourplay_extensions_or_timezone');
+    if (!headful) throw new Error('unsupported_capability:camoufox_fourplay_requires_headful');
+    return openCamoufoxFourplay({fixture,profile,headful,extensions,timezoneId});
+  }
   if (name === '4play') {
     if (profile === 'grounding') throw new Error('unsupported_capability:fourplay_grounding');
     if (extensions.length || timezoneId) throw new Error('unsupported_capability:fourplay_extensions_or_timezone');
@@ -258,6 +266,7 @@ export async function detectorRun(evidence, name, origin, browserOptions = {}) {
         if (new URL(route.request().url()).origin === origin) return route.continue();
         return route.abort('blockedbyclient');
       });
+      else if(b.kind==='fourplay-native') result.fixture_network_isolation=b.runtime.fixture_network_isolation;
       else {
         await page.setRequestInterception(true);
         page.removeAllListeners('request');
@@ -368,7 +377,7 @@ async function fourplaySite(evidence, name, target, browser) {
     observation_limits:['response_headers_not_exposed','request_and_failed_request_coverage_unavailable',
       'Playwright_events_and_CDP_unavailable','referrer_not_preserved_between_tabs']};
   try {
-    const observed=await browser.navigate(target.url,target.observe_ms);
+    const observed=await browser.navigate(target.url,target.observe_ms,target.ready_condition);
     if(!observed || typeof observed!=='object') throw new Error('fourplay_invalid_navigation_response');
     const responseRecords=[];
     for(const item of (Array.isArray(observed.responses)?observed.responses:[])) {
@@ -402,6 +411,8 @@ async function fourplaySite(evidence, name, target, browser) {
     result.user_agent=browser.ua;
     result.runtime=browser.runtime;
     result.title=typeof observed.title==='string'?observed.title:null;
+    result.bridge_navigation=observed.navigation||null;
+    result.ready_condition=observed.ready_condition||null;
     result.bridge_response_count=Array.isArray(observed.responses)?observed.responses.length:0;
     result.bridge_errors=Array.isArray(observed.errors)?observed.errors:[];
     result.bridge_response_bodies_complete=responseRecords.length===result.bridge_response_count;
@@ -444,7 +455,7 @@ export async function browserSite(evidence, name, target, sharedSession = null) 
       throw new Error('unsupported_capability:budgeted_navigation; redirect interception unavailable');
     }
     result.user_agent = b.ua;
-    robotsClient = sharedSession?.robots || await httpClient(name, b.ua);
+    robotsClient = sharedSession?.robots || (!observation && name !== 'camoufox-fourplay' ? await httpClient(name, b.ua) : null);
     const rules = observation ? {outcome:'not_enforced_browser_observation',allowed:true,robots_record:null,robots_redirect_trace:[]} : await robots(evidence, key, robotsClient, target, b.ua);
     const probe = robotsProbeDecision(target, rules);
     result.robots_outcome = rules.outcome;
@@ -516,7 +527,7 @@ export async function browserSite(evidence, name, target, sharedSession = null) 
       await session.send('Fetch.enable', { patterns: [{ urlPattern: '*', requestStage: 'Request' }] });
       // WebSockets are excluded from the legacy read-only GET benchmark.
       if (b.context.routeWebSocket) await b.context.routeWebSocket('**/*', socket => socket.close());
-    } else if (b.kind !== 'playwright') {
+    } else if (b.kind !== 'playwright' && !(observation && b.kind === 'fourplay-native')) {
       await b.page.setRequestInterception(true);
       watch('request', request => {
         const task = admit(request).then(record => record ? request.continue() : request.abort('blockedbyclient')).catch(() => {});
@@ -536,7 +547,7 @@ export async function browserSite(evidence, name, target, sharedSession = null) 
           record.response_headers = keptHeaders(headers);
           evidence.flush();
           const redirect = [301, 302, 303, 307, 308].includes(response.status());
-          const raw = redirect ? Buffer.alloc(0) : b.kind === 'playwright' ? await response.body() : await response.buffer();
+          const raw = redirect ? Buffer.alloc(0) : await (['playwright','fourplay-native'].includes(b.kind) ? response.body() : response.buffer());
           if (record.status !== 'interrupted') return;
           evidence.finish(record, response.status(), headers, raw, raw.length > record.cap);
           if (request.isNavigationRequest() && request.frame() === b.page.mainFrame()) documentResponses.push({ record, body: raw.subarray(0, record.cap) });
@@ -548,7 +559,7 @@ export async function browserSite(evidence, name, target, sharedSession = null) 
       const record = records.get(request) || (!observation && intercepted.find(x => x.url === request.url() && x.status === 'interrupted'));
       if (record?.status === 'interrupted') evidence.fail(record, new Error(request.failure()?.errorText || 'request_failed'));
     };
-    if (observation && b.kind === 'playwright') {
+    if (observation && ['playwright','fourplay-native'].includes(b.kind)) {
       // Passive context events preserve requests, including OOPIF and service-worker traffic.
       watchContext('request', request => {
         const task = admit(request).catch(error => { result.tracking_errors ||= []; result.tracking_errors.push(safeError(error)); return null; });
@@ -556,7 +567,7 @@ export async function browserSite(evidence, name, target, sharedSession = null) 
       });
       watchContext('response', responseListener);
       watchContext('requestfailed', failedListener);
-      result.observation_limits = ['websocket_handshake_or_frames_not_recorded'];
+      result.observation_limits = ['websocket_handshake_or_frames_not_recorded', ...(b.runtime?.observation_limits || [])];
     } else {
       watch('response', responseListener);
       watch('requestfailed', failedListener);
@@ -570,6 +581,7 @@ export async function browserSite(evidence, name, target, sharedSession = null) 
       catch (error) { result.operation = {outcome:'operation_error',error:safeError(error)}; }
     }
     await sleep(target.observe_ms ?? L.observe_ms);
+    if(target.dom_wait) result.dom_wait=await waitForDOMStability(b.page,target.dom_wait);
     // Legacy mode stops traffic before saving artifacts; normal observation snapshots first.
     if (!observation) stopped = true;
     if (!observation && b.kind === 'playwright') await b.context.setOffline(true);
@@ -593,10 +605,10 @@ export async function browserSite(evidence, name, target, sharedSession = null) 
     if (observation) {
       stopped = true;
       // End page loads only after the DOM and screenshot have been saved.
-      if (b.kind === 'playwright') {
+      if (['playwright','fourplay-native'].includes(b.kind)) {
         let stopSession;
         try {
-          if (b.runtime?.engine === 'firefox') await b.page.evaluate(() => window.stop());
+          if (b.kind === 'fourplay-native' || b.runtime?.engine === 'firefox') await b.page.evaluate(() => window.stop());
           else {
             stopSession = await b.context.newCDPSession(b.page);
             await stopSession.send('Page.stopLoading');
@@ -619,7 +631,7 @@ export async function browserSite(evidence, name, target, sharedSession = null) 
         status_source:'previous_document_response; no new document response during operation'});
     else result.outcome = 'navigation_unverified';
     result.resource_policy = observation?'normal browser network; legacy grounding restrictions not enforced':config.browser_resources;
-    if (observation) result.observation_limits = ['websocket_handshake_or_frames_not_recorded'];
+    if (observation) result.observation_limits = ['websocket_handshake_or_frames_not_recorded', ...(b.runtime?.observation_limits || [])];
     if (result.blocked_requests.some(x => /budget/.test(x.reason))) result.budget_limited = true;
     evidence.result(result);
   } catch (error) { evidence.result({ ...result, outcome: 'execution_error', error: safeError(error) }); }

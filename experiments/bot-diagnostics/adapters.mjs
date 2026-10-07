@@ -30,9 +30,16 @@ export class ToolAdapter {
     this.browserOpener = browserOpener; this.clientOpener = clientOpener;
     this.currentURL = null; this.sequence = 0;
     this.capabilities = { fetch: httpTools.has(tool), goto: !httpTools.has(tool),
-      session: true, selectorOperations: !httpTools.has(tool) && tool !== '4play', challengeActions: !httpTools.has(tool) && tool !== '4play',
-      headful: ['patchright','playwright-baseline','camoufox','4play'].includes(tool),
+      session: true, selectorOperations: !httpTools.has(tool) && !['4play','camoufox-fourplay'].includes(tool), challengeActions: !httpTools.has(tool) && !['4play','camoufox-fourplay'].includes(tool),
+      headful: ['patchright','playwright-baseline','camoufox','4play','camoufox-fourplay'].includes(tool),
       extensions: ['patchright','playwright-baseline'].includes(tool) };
+    if(tool==='camoufox-fourplay') {
+      this.capabilities.timezoneEmulation=false; this.capabilities.extensions=false;
+      this.capabilities.sessionContextReplacement=false;
+      if(profile.session_pool) throw new Error('unsupported_capability:camoufox_fourplay_session_pool');
+      if(profile.extensions?.length) throw new Error('unsupported_capability:camoufox_fourplay_extensions');
+      if(this.timezoneRequested) throw new Error('unsupported_capability:camoufox_fourplay_timezone');
+    }
     if(tool==='4play') { this.capabilities.timezoneEmulation=false; this.capabilities.extensions=false;
       this.capabilities.sessionContextReplacement=false;
       if(profile.session_pool) throw new Error('unsupported_capability:fourplay_session_pool'); }
@@ -48,10 +55,10 @@ export class ToolAdapter {
     else {
       this.browser = await this.browserOpener(this.tool, {extensions:this.profile.extensions || [],
         lightpanda:this.profile.lightpanda || null,fixture:this.fixture,
-        ...(this.timezoneRequested && this.tool!=='4play' ? {timezoneId:this.timezoneId} : {}),
+        ...(this.timezoneRequested && !['4play','camoufox-fourplay'].includes(this.tool) ? {timezoneId:this.timezoneId} : {}),
         headful:this.evidence.policy === 'browser_observation' ? this.capabilities.headful : !!this.options.headful,
         profile:this.evidence.policy || 'diagnostic'});
-      if(this.timezoneRequested && this.tool==='4play') {
+      if(this.timezoneRequested && ['4play','camoufox-fourplay'].includes(this.tool)) {
         observedTimezone=null;timezoneSupported=false;this.capabilities.timezoneId=false;
       } else if(this.timezoneRequested) {
         try { observedTimezone = await this.browser.page.evaluate(() => Intl.DateTimeFormat().resolvedOptions().timeZone); }
@@ -63,7 +70,7 @@ export class ToolAdapter {
         throw new Error('unsupported_capability:budgeted_navigation; redirect interception unavailable');
       }
       if(this.sessions && !this.browser.replaceContext) throw new Error('unsupported_capability:session_context_replacement');
-      if(this.tool!=='4play') this.robots = await this.clientOpener(this.tool, this.browser.ua, this.fixture);
+      if(!['4play','camoufox-fourplay'].includes(this.tool)) this.robots = await this.clientOpener(this.tool, this.browser.ua, this.fixture);
       this.sessions?.select();
     }
     this.evidence.result({client:this.tool,target:this.site.id,profile:this.profile.id,role:'adapter_setup',
@@ -143,6 +150,8 @@ export class ToolAdapter {
       capture_screenshot:this.options.captureScreenshots !== false,
       primary_selector:this.site.selectors?.primary,
       ...(this.options.observeMs !== undefined ? {observe_ms:this.options.observeMs} : this.fixture ? {observe_ms:100} : {}),
+      ...(this.options.domWait ? {dom_wait:this.options.domWait} : {}),
+      ...(this.options.readyCondition ? {ready_condition:this.options.readyCondition} : {}),
       robots_redirect_origins:this.options.robotsRedirectOrigins ?? this.site.robots_redirect_origins ?? [],
       robots_unavailable_probe:!!(this.options.robotsUnavailableProbe ?? this.site.robots_unavailable_probe),
       ...(operation ? {operation, previousObservation:this.lastObservation} : {}),

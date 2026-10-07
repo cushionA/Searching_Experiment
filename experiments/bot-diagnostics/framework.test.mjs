@@ -28,6 +28,17 @@ test('4play is admitted as a browser tool but its grounding and session-pool pat
   assert.throws(()=>prepare(manifest,{executionPolicy:'grounding'}),/unsupported_capability:fourplay_grounding/);
   assert.throws(()=>prepare({...manifest,profiles:[{id:'pooled',session_pool:{max_sessions:2}}]}),/unsupported_capability:fourplay_session_pool/);
 });
+test('Camoufox fourplay is admitted headful-only and rejects unsupported profile features',async()=>{
+  const original=JSON.parse(fs.readFileSync(new URL('./sites.json',import.meta.url)));
+  const manifest={...original,tools:['camoufox-fourplay']};
+  assert.deepEqual(prepare(manifest).tools,['camoufox-fourplay']);
+  assert.throws(()=>prepare(manifest,{executionPolicy:'grounding'}),/unsupported_capability:camoufox_fourplay_grounding/);
+  assert.throws(()=>prepare({...manifest,profiles:[{id:'pooled',session_pool:{max_sessions:2}}]}),/unsupported_capability:camoufox_fourplay_session_pool/);
+  assert.throws(()=>prepare(manifest,{extensions:true}),/unsupported_capability:camoufox_fourplay_extensions/);
+  await assert.rejects(openBrowser('camoufox-fourplay',{headful:false}),/unsupported_capability:camoufox_fourplay_requires_headful/);
+  await assert.rejects(openBrowser('camoufox-fourplay',{headful:true,timezoneId:'Asia/Tokyo'}),/unsupported_capability:camoufox_fourplay_extensions_or_timezone/);
+  assert.deepEqual(JSON.parse(fs.readFileSync(new URL('./sites.json',import.meta.url))).tools,original.tools);
+});
 test('URL parameters cannot insert a new host or query separator',()=>{
   assert.equal(injectURL('https://example.com/search?q={query}',{query:'x&next=https://outside.example/'}),
     'https://example.com/search?q=x%26next%3Dhttps%3A%2F%2Foutside.example%2F');

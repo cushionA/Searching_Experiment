@@ -1,0 +1,554 @@
+[
+  {
+    "index": 1,
+    "arm": "legacy",
+    "started_at": "2026-10-07T00:04:23.601Z",
+    "pages": [
+      {
+        "pathname": "/slow",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 221.84515199999987,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [],
+        "dom_sha256": "b49fa63a0007f60d8df7644fcae9b9fd8c1a638be403a6220bc1404a9be5949c"
+      },
+      {
+        "pathname": "/error",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 301.85480800000005,
+        "status": 503,
+        "outcome": "server_error_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [
+          {
+            "url": "http://127.0.0.1:36243/error",
+            "error": "HTTP/1.1 503 Service Unavailable"
+          }
+        ],
+        "dom_sha256": "b49fa63a0007f60d8df7644fcae9b9fd8c1a638be403a6220bc1404a9be5949c"
+      },
+      {
+        "pathname": "/redirect",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 199.541107,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [],
+        "dom_sha256": "b49fa63a0007f60d8df7644fcae9b9fd8c1a638be403a6220bc1404a9be5949c"
+      },
+      {
+        "pathname": "/late",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 180.4480620000004,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [],
+        "dom_sha256": "590b8988683a9637dfc026c5b7198972067d582ce5421ed1b0b3a5adbf6ba310"
+      },
+      {
+        "pathname": "/late",
+        "ready_requested": {
+          "selector": "#ready",
+          "text": "loaded",
+          "timeoutMs": 5000
+        },
+        "readiness": null,
+        "elapsed_ms": 182.26524999999947,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [],
+        "dom_sha256": "590b8988683a9637dfc026c5b7198972067d582ce5421ed1b0b3a5adbf6ba310"
+      },
+      {
+        "pathname": "/late-missing",
+        "ready_requested": {
+          "selector": "#missing",
+          "timeoutMs": 500
+        },
+        "readiness": null,
+        "elapsed_ms": 164.00318900000002,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [],
+        "dom_sha256": "590b8988683a9637dfc026c5b7198972067d582ce5421ed1b0b3a5adbf6ba310"
+      },
+      {
+        "pathname": "/never",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 222.61686200000076,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [
+          {
+            "url": "http://127.0.0.1:36243/never.svg",
+            "error": "NS_BINDING_ABORTED"
+          }
+        ],
+        "dom_sha256": "ed7777a6e41f491645a789453324850a1a998cca425c6871b6506456175bc705"
+      }
+    ],
+    "verification": {
+      "ok": true,
+      "errors": [],
+      "records": 10,
+      "results": 8,
+      "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+    }
+  },
+  {
+    "index": 2,
+    "arm": "fixed",
+    "started_at": "2026-10-07T00:04:28.687Z",
+    "pages": [
+      {
+        "pathname": "/slow",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 770.7110189999994,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": true,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 619.898717,
+          "polls": 7
+        },
+        "errors": [],
+        "dom_sha256": "42f772458c052428421182e5286155fdb60f4ee352e0955d1eb30fbf1d43d716"
+      },
+      {
+        "pathname": "/error",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 784.0776539999988,
+        "status": 503,
+        "outcome": "server_error_observed",
+        "dom_ready": true,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 623.6290509999999,
+          "polls": 7
+        },
+        "errors": [
+          {
+            "id": 4,
+            "url": "http://127.0.0.1:36243/error",
+            "error": "HTTP/1.1 503 Service Unavailable"
+          }
+        ],
+        "dom_sha256": "42f772458c052428421182e5286155fdb60f4ee352e0955d1eb30fbf1d43d716"
+      },
+      {
+        "pathname": "/redirect",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 790.3450570000005,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": true,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 625.215224,
+          "polls": 7
+        },
+        "errors": [],
+        "dom_sha256": "42f772458c052428421182e5286155fdb60f4ee352e0955d1eb30fbf1d43d716"
+      },
+      {
+        "pathname": "/late",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 294.6762440000002,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 106.22539400000005,
+          "polls": 2
+        },
+        "errors": [],
+        "dom_sha256": "590b8988683a9637dfc026c5b7198972067d582ce5421ed1b0b3a5adbf6ba310"
+      },
+      {
+        "pathname": "/late",
+        "ready_requested": {
+          "selector": "#ready",
+          "text": "loaded",
+          "timeoutMs": 5000
+        },
+        "readiness": {
+          "outcome": "ready",
+          "elapsed_ms": 952.1520979999996,
+          "polls": 10,
+          "policy": {
+            "selector": "#ready",
+            "text": "loaded",
+            "timeoutMs": 5000
+          }
+        },
+        "elapsed_ms": 1206.506617000001,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": true,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 105.45700599999964,
+          "polls": 2
+        },
+        "errors": [],
+        "dom_sha256": "dfae73c4de98d57c16f1cad6d10ad3be6a94e1eb362cd8b235ef55eae99fb399"
+      },
+      {
+        "pathname": "/late-missing",
+        "ready_requested": {
+          "selector": "#missing",
+          "timeoutMs": 500
+        },
+        "readiness": {
+          "outcome": "timeout",
+          "elapsed_ms": 500.7949829999998,
+          "polls": 6,
+          "policy": {
+            "selector": "#missing",
+            "timeoutMs": 500
+          }
+        },
+        "elapsed_ms": 1042.6185290000012,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 105.30304400000023,
+          "polls": 2
+        },
+        "errors": [],
+        "dom_sha256": "590b8988683a9637dfc026c5b7198972067d582ce5421ed1b0b3a5adbf6ba310"
+      },
+      {
+        "pathname": "/never",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 18229.06721,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": {
+          "outcome": "timeout",
+          "elapsed_ms": 18001.360043,
+          "polls": 176
+        },
+        "errors": [
+          {
+            "url": "http://127.0.0.1:36243/never",
+            "error": "navigation_timeout"
+          }
+        ],
+        "dom_sha256": "ed7777a6e41f491645a789453324850a1a998cca425c6871b6506456175bc705"
+      }
+    ],
+    "verification": {
+      "ok": true,
+      "errors": [],
+      "records": 17,
+      "results": 8,
+      "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+    }
+  },
+  {
+    "index": 3,
+    "arm": "fixed",
+    "started_at": "2026-10-07T00:04:54.206Z",
+    "pages": [
+      {
+        "pathname": "/slow",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 772.6381340000007,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": true,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 622.1875829999999,
+          "polls": 7
+        },
+        "errors": [],
+        "dom_sha256": "42f772458c052428421182e5286155fdb60f4ee352e0955d1eb30fbf1d43d716"
+      },
+      {
+        "pathname": "/error",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 780.5220880000052,
+        "status": 503,
+        "outcome": "server_error_observed",
+        "dom_ready": true,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 619.20784,
+          "polls": 7
+        },
+        "errors": [
+          {
+            "id": 4,
+            "url": "http://127.0.0.1:36243/error",
+            "error": "HTTP/1.1 503 Service Unavailable"
+          }
+        ],
+        "dom_sha256": "42f772458c052428421182e5286155fdb60f4ee352e0955d1eb30fbf1d43d716"
+      },
+      {
+        "pathname": "/redirect",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 780.5150370000047,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": true,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 619.9262559999997,
+          "polls": 7
+        },
+        "errors": [],
+        "dom_sha256": "42f772458c052428421182e5286155fdb60f4ee352e0955d1eb30fbf1d43d716"
+      },
+      {
+        "pathname": "/late",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 274.17754300000524,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 110.62978100000055,
+          "polls": 2
+        },
+        "errors": [],
+        "dom_sha256": "590b8988683a9637dfc026c5b7198972067d582ce5421ed1b0b3a5adbf6ba310"
+      },
+      {
+        "pathname": "/late",
+        "ready_requested": {
+          "selector": "#ready",
+          "text": "loaded",
+          "timeoutMs": 5000
+        },
+        "readiness": {
+          "outcome": "ready",
+          "elapsed_ms": 953.281516,
+          "polls": 10,
+          "policy": {
+            "selector": "#ready",
+            "text": "loaded",
+            "timeoutMs": 5000
+          }
+        },
+        "elapsed_ms": 1620.619952000001,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": true,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 109.52266899999995,
+          "polls": 2
+        },
+        "errors": [],
+        "dom_sha256": "dfae73c4de98d57c16f1cad6d10ad3be6a94e1eb362cd8b235ef55eae99fb399"
+      },
+      {
+        "pathname": "/late-missing",
+        "ready_requested": {
+          "selector": "#missing",
+          "timeoutMs": 500
+        },
+        "readiness": {
+          "outcome": "timeout",
+          "elapsed_ms": 500.8880250000002,
+          "polls": 6,
+          "policy": {
+            "selector": "#missing",
+            "timeoutMs": 500
+          }
+        },
+        "elapsed_ms": 996.8960279999956,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": {
+          "outcome": "complete",
+          "elapsed_ms": 109.56116900000052,
+          "polls": 2
+        },
+        "errors": [],
+        "dom_sha256": "590b8988683a9637dfc026c5b7198972067d582ce5421ed1b0b3a5adbf6ba310"
+      },
+      {
+        "pathname": "/never",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 18228.377804000003,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": {
+          "outcome": "timeout",
+          "elapsed_ms": 18002.035978,
+          "polls": 177
+        },
+        "errors": [
+          {
+            "url": "http://127.0.0.1:36243/never",
+            "error": "navigation_timeout"
+          }
+        ],
+        "dom_sha256": "ed7777a6e41f491645a789453324850a1a998cca425c6871b6506456175bc705"
+      }
+    ],
+    "verification": {
+      "ok": true,
+      "errors": [],
+      "records": 17,
+      "results": 8,
+      "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+    }
+  },
+  {
+    "index": 4,
+    "arm": "legacy",
+    "started_at": "2026-10-07T00:05:20.150Z",
+    "pages": [
+      {
+        "pathname": "/slow",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 208.66077599999699,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [],
+        "dom_sha256": "b49fa63a0007f60d8df7644fcae9b9fd8c1a638be403a6220bc1404a9be5949c"
+      },
+      {
+        "pathname": "/error",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 229.64349599999696,
+        "status": 503,
+        "outcome": "server_error_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [
+          {
+            "url": "http://127.0.0.1:36243/error",
+            "error": "HTTP/1.1 503 Service Unavailable"
+          }
+        ],
+        "dom_sha256": "b49fa63a0007f60d8df7644fcae9b9fd8c1a638be403a6220bc1404a9be5949c"
+      },
+      {
+        "pathname": "/redirect",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 220.2752560000008,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [],
+        "dom_sha256": "b49fa63a0007f60d8df7644fcae9b9fd8c1a638be403a6220bc1404a9be5949c"
+      },
+      {
+        "pathname": "/late",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 161.00067599999602,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [],
+        "dom_sha256": "590b8988683a9637dfc026c5b7198972067d582ce5421ed1b0b3a5adbf6ba310"
+      },
+      {
+        "pathname": "/late",
+        "ready_requested": {
+          "selector": "#ready",
+          "text": "loaded",
+          "timeoutMs": 5000
+        },
+        "readiness": null,
+        "elapsed_ms": 168.88656000000628,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [],
+        "dom_sha256": "590b8988683a9637dfc026c5b7198972067d582ce5421ed1b0b3a5adbf6ba310"
+      },
+      {
+        "pathname": "/late-missing",
+        "ready_requested": {
+          "selector": "#missing",
+          "timeoutMs": 500
+        },
+        "readiness": null,
+        "elapsed_ms": 162.87483700000303,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [],
+        "dom_sha256": "590b8988683a9637dfc026c5b7198972067d582ce5421ed1b0b3a5adbf6ba310"
+      },
+      {
+        "pathname": "/never",
+        "ready_requested": null,
+        "readiness": null,
+        "elapsed_ms": 216.73519900000247,
+        "status": 200,
+        "outcome": "content_observed",
+        "dom_ready": false,
+        "navigation": null,
+        "errors": [
+          {
+            "url": "http://127.0.0.1:36243/never.svg",
+            "error": "NS_BINDING_ABORTED"
+          }
+        ],
+        "dom_sha256": "ed7777a6e41f491645a789453324850a1a998cca425c6871b6506456175bc705"
+      }
+    ],
+    "verification": {
+      "ok": true,
+      "errors": [],
+      "records": 10,
+      "results": 8,
+      "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+    }
+  }
+]

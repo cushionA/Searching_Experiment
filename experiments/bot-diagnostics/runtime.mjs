@@ -15,7 +15,7 @@ export const config = JSON.parse(fs.readFileSync(path.join(here, 'config.json'))
 export const limits = config.limits;
 export const proxy = process.env.HTTPS_PROXY || process.env.https_proxy;
 export const TOOL_NAMES = ['wreq-js', 'impit', 'patchright', 'rebrowser-lightpanda', 'playwright-baseline',
-  'obscura', 'obscura-stealth', 'obscura-no-render', 'obscura-patched', 'camoufox', '4play'];
+  'obscura', 'obscura-stealth', 'obscura-no-render', 'obscura-patched', 'camoufox', '4play', 'camoufox-fourplay'];
 export const HTTP_USER_AGENT = `Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 ${config.identification}`;
 export const local = url => ['127.0.0.1', 'localhost'].includes(new URL(url).hostname);
 export const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -24,7 +24,7 @@ export const sha = value => crypto.createHash('sha256').update(value).digest('he
 /** Include extracted implementation modules automatically in new run provenance. */
 export function snapshotSources(evidence, roleSource = null) {
   const files = fs.readdirSync(here, {withFileTypes: true})
-    .filter(entry => entry.isFile() && /\.(mjs|json|py)$/.test(entry.name) && !entry.name.endsWith('.test.mjs'))
+    .filter(entry => entry.isFile() && /\.(mjs|cjs|json|py)$/.test(entry.name) && !entry.name.endsWith('.test.mjs'))
     .map(entry => entry.name).sort();
   const sources = Object.fromEntries(files.map(name => [name, evidence.blob(fs.readFileSync(path.join(here, name)))]));
   const patchDirectory=path.join(here,'patches');

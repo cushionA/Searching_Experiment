@@ -1,0 +1,141 @@
+{
+  "created_at": "2026-10-07",
+  "scope": "4play baseline search comparison; 50 cells",
+  "source": "4play-search-final/cells/{cell}/results.json and ledger.json",
+  "runtime_fix": "Current runtime excludes HTTP statusLine notifications from dom_load_fail and treats only communication failures as DOM-load failure; 403/404 regression checks passed per handoff.",
+  "baseline_comparison": "Recorded 50-site comparison predates the fix and remains unchanged. Early-stop effects on navigation timing and not-confirmed classifications cannot be ruled out.",
+  "counts": {
+    "cells": 50,
+    "navigation_error_records": 20,
+    "navigation_error_http_statusLine": 13,
+    "statusLine_histogram": {
+      "401": 3,
+      "403": 4,
+      "404": 5,
+      "500": 1
+    },
+    "native_ledger_matching_actual_http_error_records": 6
+  },
+  "http_statusLine_records": [
+    {
+      "cell": "disconnect",
+      "role": "target",
+      "line": 404,
+      "ledger_status": 404,
+      "response_received": true,
+      "results_http_status": 404,
+      "results_outcome": "response_observed"
+    },
+    {
+      "cell": "duckduckgo",
+      "role": "target",
+      "line": 404,
+      "ledger_status": 200,
+      "response_received": true,
+      "results_http_status": 200,
+      "results_outcome": "content_observed"
+    },
+    {
+      "cell": "felo",
+      "role": "homepage",
+      "line": 401,
+      "ledger_status": "error",
+      "response_received": null,
+      "results_http_status": 200,
+      "results_outcome": "content_observed"
+    },
+    {
+      "cell": "felo",
+      "role": "target",
+      "line": 401,
+      "ledger_status": "error",
+      "response_received": null,
+      "results_http_status": 200,
+      "results_outcome": "content_observed"
+    },
+    {
+      "cell": "lenso",
+      "role": "homepage",
+      "line": 404,
+      "ledger_status": "error",
+      "response_received": null,
+      "results_http_status": 200,
+      "results_outcome": "content_observed"
+    },
+    {
+      "cell": "mojeek",
+      "role": "target",
+      "line": 403,
+      "ledger_status": 403,
+      "response_received": true,
+      "results_http_status": 403,
+      "results_outcome": "access_denied_observed"
+    },
+    {
+      "cell": "mwmbl",
+      "role": "target",
+      "line": 500,
+      "ledger_status": 500,
+      "response_received": true,
+      "results_http_status": 500,
+      "results_outcome": "server_error_observed"
+    },
+    {
+      "cell": "oceanhero",
+      "role": "homepage",
+      "line": 404,
+      "ledger_status": 200,
+      "response_received": true,
+      "results_http_status": 200,
+      "results_outcome": "content_observed"
+    },
+    {
+      "cell": "perplexity",
+      "role": "homepage",
+      "line": 403,
+      "ledger_status": 200,
+      "response_received": true,
+      "results_http_status": 200,
+      "results_outcome": "content_observed"
+    },
+    {
+      "cell": "phind",
+      "role": "homepage",
+      "line": 403,
+      "ledger_status": 403,
+      "response_received": true,
+      "results_http_status": 403,
+      "results_outcome": "challenge_observed"
+    },
+    {
+      "cell": "unsplash",
+      "role": "homepage",
+      "line": 401,
+      "ledger_status": "200,error",
+      "response_received": "true,null",
+      "results_http_status": 200,
+      "results_outcome": "content_observed"
+    },
+    {
+      "cell": "yep",
+      "role": "homepage",
+      "line": 403,
+      "ledger_status": 403,
+      "response_received": true,
+      "results_http_status": 403,
+      "results_outcome": "challenge_observed"
+    },
+    {
+      "cell": "youcare",
+      "role": "target",
+      "line": 404,
+      "ledger_status": 404,
+      "response_received": true,
+      "results_http_status": 200,
+      "results_outcome": "content_observed"
+    }
+  ],
+  "hybrid": "Hybrid uses the corrected behavior, so it differs from baseline in implementation and cannot be treated as an otherwise identical rerun.",
+  "interpretation": "Where native ledger has an actual HTTP response and saved DOM, retain the observed status/DOM. Timing, completion, and classifications requiring confirmation may still have been affected by premature stop.",
+  "source_commit": "fd72ef7f305ad1efa765c390e0fc9939ea331cca"
+}

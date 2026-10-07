@@ -48,6 +48,7 @@ export function prepare(manifest,{includeGoogle=false,fixture=false,selectors=fa
   if(!['browser_observation','grounding'].includes(policy)) throw new Error('unknown_execution_policy');
   if(policy==='grounding' && manifest.tools.includes('camoufox')) throw new Error('unsupported_capability:camoufox_grounding');
   if(policy==='grounding' && manifest.tools.includes('4play')) throw new Error('unsupported_capability:fourplay_grounding');
+  if(policy==='grounding' && manifest.tools.includes('camoufox-fourplay')) throw new Error('unsupported_capability:camoufox_fourplay_grounding');
   if(policy==='grounding'&&(manifest.limits?.requests_per_tool_site!==limits.requests_per_client_target || manifest.limits?.body_bytes_per_tool_site!==limits.bytes_per_client_target)) throw new Error('limits_must_match_executor');
   const recoveryPlan={...DEFAULT_RECOVERY_PLAN,...manifest.recovery_plan};
   if(![0,1].includes(recoveryPlan.max_attempts) || !Number.isFinite(recoveryPlan.wait_seconds)
@@ -73,9 +74,11 @@ export function prepare(manifest,{includeGoogle=false,fixture=false,selectors=fa
     profileIDs.add(profile.id);
     if(profile.session_pool!==undefined) {
       if(profile.session_pool && manifest.tools.includes('4play')) throw new Error('unsupported_capability:fourplay_session_pool');
+      if(profile.session_pool && manifest.tools.includes('camoufox-fourplay')) throw new Error('unsupported_capability:camoufox_fourplay_session_pool');
       profile.session_pool=normalizeSessionPolicy(profile.session_pool);
       if(profile.session_pool && (manifest.tools.some(tool=>['wreq-js','impit'].includes(tool)) || profile.extensions?.length)) throw new Error('session_pool_requires_browser_without_extensions');
     }
+    if(profile.extensions?.length && manifest.tools.includes('camoufox-fourplay')) throw new Error('unsupported_capability:camoufox_fourplay_extensions');
     if(profile.lightpanda) {
       validateLightpanda(profile.lightpanda);
       if(manifest.tools.some(tool=>tool!=='rebrowser-lightpanda')) throw new Error('lightpanda_profile_requires_lightpanda');

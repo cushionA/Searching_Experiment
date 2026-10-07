@@ -113,7 +113,9 @@ export async function openCamoufox({
   try {
     const caFile = process.env.BOT_DIAGNOSTICS_CA || (!fixture ? process.env.CODEX_PROXY_CERT : null) || null;
     const proxyCaTrusted = configureFirefoxTrust(profileDirectory, caFile, runCommand);
+    const startupStarted=performance.now(), startupTiming={};
     const {firefox, launchOptions} = await loadDependencies();
+    startupTiming.dependencies_ms=performance.now()-startupStarted;
     if (typeof launchOptions !== 'function' || !firefox?.launchPersistentContext) {
       throw new Error('camoufox_setup_invalid: camoufox-js launchOptions and isolated playwright-core Firefox are required');
     }
@@ -129,6 +131,8 @@ export async function openCamoufox({
       ...(proxy ? {proxy:{server:proxy, bypass:'127.0.0.1,localhost'}} : {}),
       env:{...process.env, FONTCONFIG_PATH:path.join(browserDirectory, 'fontconfig', 'linux')},
     });
+    const launchStarted=performance.now();
+    startupTiming.options_ms=launchStarted-startupStarted-startupTiming.dependencies_ms;
     context = await firefox.launchPersistentContext(profileDirectory, {
       ...camoufoxOptions,
       executablePath:executable,
@@ -136,12 +140,14 @@ export async function openCamoufox({
       env:{...process.env, ...(camoufoxOptions.env || {}), FONTCONFIG_PATH:path.join(browserDirectory, 'fontconfig', 'linux'),
         XDG_CACHE_HOME:cacheDirectory},
       ignoreHTTPSErrors:false,
-      timeout:15000,
+      timeout:30000,
       viewport:null,
       screen:{width:1280,height:720},
       ...(timezoneId?{timezoneId}:{}),
       ...(proxy ? {proxy:{server:proxy, bypass:'127.0.0.1,localhost'}} : {}),
     });
+    startupTiming.launch_and_juggler_connect_ms=performance.now()-launchStarted;
+    const metadataStarted=performance.now();
     const page = context.pages()[0] || await context.newPage();
     const ua = await page.evaluate(() => navigator.userAgent);
     const viewport = await actualViewport(page);
@@ -152,9 +158,11 @@ export async function openCamoufox({
     try { browserMetadata = JSON.parse(fs.readFileSync(path.join(browserDirectory, 'version.json'), 'utf8')); } catch { /* optional metadata */ }
     const version = installMetadata.browser_version || [browserMetadata.version, browserMetadata.release].filter(Boolean).join('-') || 'unknown';
     const camoufoxJsVersion = installMetadata.package?.match(/@([^@]+)$/)?.[1] || 'unknown';
+    startupTiming.metadata_ms=performance.now()-metadataStarted;
+    startupTiming.total_ms=performance.now()-startupStarted;
     return {
       browser, context, page, ua, kind:'playwright',
-      runtime:{engine:'firefox',version,camoufox_js:camoufoxJsVersion,
+      runtime:{engine:'firefox',startup_timing_ms:startupTiming,version,camoufox_js:camoufoxJsVersion,
         playwright_core:installMetadata.playwright_core || 'unknown',executable,headless:!headful,
         display:headful?(process.env.DISPLAY||process.env.WAYLAND_DISPLAY):null,
         viewport,screenshots:true,budgeted_navigation:false,proxy_ca_trusted:proxyCaTrusted},

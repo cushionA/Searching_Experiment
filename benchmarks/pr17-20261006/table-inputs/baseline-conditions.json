@@ -1,0 +1,96 @@
+{
+  "commit": "c4adaa1ad463235da98d0c53296352b1de8d925a",
+  "tracked_diff": "",
+  "fixture": false,
+  "environment": "Cloud Docker headful Xvfb :99, same image/binary/host/proxy in both arms",
+  "query": "早稲田大学 教員",
+  "terms": [
+    "早稲田",
+    "教員"
+  ],
+  "catalog_revision": "20261003",
+  "catalog_sha256": "fc3108c235898b8feb005895699655d0ccf4f3f8d9e04e00b9aa246609e04af3",
+  "schedule": [
+    {
+      "repeat": 1,
+      "site": "bing",
+      "arm": "baseline"
+    },
+    {
+      "repeat": 1,
+      "site": "brave",
+      "arm": "dom-stable"
+    },
+    {
+      "repeat": 1,
+      "site": "bing",
+      "arm": "dom-stable"
+    },
+    {
+      "repeat": 1,
+      "site": "brave",
+      "arm": "baseline"
+    },
+    {
+      "repeat": 2,
+      "site": "brave",
+      "arm": "baseline"
+    },
+    {
+      "repeat": 2,
+      "site": "bing",
+      "arm": "dom-stable"
+    },
+    {
+      "repeat": 2,
+      "site": "brave",
+      "arm": "dom-stable"
+    },
+    {
+      "repeat": 2,
+      "site": "bing",
+      "arm": "baseline"
+    }
+  ],
+  "max_top_level_navigations": 8,
+  "min_start_interval_per_site_ms": 20000,
+  "observe_ms": 6000,
+  "navigation_timeout_ms": 25000,
+  "baseline": "native4play load-complete gate + existing observation delay",
+  "added": "same baseline then bounded read-only meaningful DOM stability wait before evidence capture",
+  "policy": {
+    "timeoutMs": 5000,
+    "stableMs": 750,
+    "pollMs": 250,
+    "minTextChars": 200,
+    "terms": [
+      "早稲田",
+      "教員"
+    ]
+  },
+  "stop_policy": "challenge/access-denied/rate-limit: close session and skip this site for the rest of this run; no retries",
+  "camoufox": {
+    "camoufox_version": "152.0.4-beta.30",
+    "camoufox_js": "0.12.0",
+    "executable_path": "/workspace/pr17-validation/.deps/camoufox/browser/camoufox-bin",
+    "config_sha256": "b44599207a90e6a730659bda09309ded487f27537433b01f5ec36299b5bc1013",
+    "font_count": 134,
+    "font_list_sha256": "b62fe49b3c8b9fcf67f12e3ca5f266ffbff5d5ae082787fdb1c06cef2bd70603",
+    "firefox_user_pref_count": 2,
+    "playwright_control": false,
+    "playwright_core_direct_import_statement": false,
+    "addon_tab_creation_enabled": true,
+    "launch_backend": "web-ext + native Firefox process"
+  },
+  "network": "existing managed proxy, configured CA, normal passive browser traffic; no background-route claim",
+  "metrics": "DOM text/link quantities and query-token matching are proxies, not semantic accuracy or bypass success",
+  "headful": true,
+  "tools": [
+    "camoufox-fourplay"
+  ],
+  "execution_policy": "browser_observation",
+  "arm": "baseline",
+  "table_repeat": 2,
+  "unmeasured_sites": 48,
+  "proxy_hostname_mapping": "Docker proxy hostname explicitly mapped to existing host-resolved managed proxy address; proxy URI and CA retained"
+}

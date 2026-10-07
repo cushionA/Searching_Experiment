@@ -82,6 +82,22 @@ smokeは既存の診断用PlaywrightとChromiumも導入済みであることが
 
 2026-10-03のこのCloudでは導入とオフラインの接続・保護条件のテストは成功したが、実ブラウザは起動待ちでタイムアウトした。152.0.4-beta.30、直前のbeta.29、135.0.1-beta.24の別配備でも起動できず、headfulでも再現した。glxtest未配置、namespaceの書込拒否、SWGL描画エラーを観測したが原因は確定していない。Camoufoxのページ取得、TLS信頼・拒否、プロキシ実測とサイト通過率は未確認。既存ランナーへの追加コードを利用可能性の証明と扱わない。[検証状態](camoufox-validation.json)。通常のオフラインテストでは実ブラウザ試験2件をskipし、上の明示フラグで実行する。
 
+### Camoufoxを4play拡張で直接制御する
+
+任意の方式 `camoufox-fourplay` は、Camoufox JSの指紋・フォント・Firefox設定生成を使い、ブラウザの起動と操作をweb-extと4play拡張へ渡す。Playwrightによる起動・操作は使わず、Camoufox本体のJugglerは保持する。既存の方式 `4play` はself-hosted bridgeを使い、直接起動用の `fourplay-native-runtime.mjs` はCamoufox併用版のバックエンドを担当する。
+
+Linuxのheadful表示先、上記のCamoufox配備、`@lawlers/4play@1.2.5` とweb-extを入れた `.deps/fourplay`、4play拡張のソースが必要。拡張は専用ディレクトリへコピーし、`BOT_DIAGNOSTICS_CAMOUFOX_FOURPLAY_EXTENSION` へそのパスを設定する。`BOT_DIAGNOSTICS_CAMOUFOX_DEPS` と `BOT_DIAGNOSTICS_CAMOUFOX_BINARY` でCamoufoxの配置先を指定できる。
+
+拡張からの新規タブ作成には `allowAddonNewtab=true`、コンテナーには `privacy.userContext.enabled=true` を適用する。指紋設定とフォントを一時プロファイルへ引き継ぎ、初期タブを保持して、新しい対象タブを開いてから前のタブを閉じる。対象コンテナーに環境プロキシを設定し、CA指定時は一時NSS DBへ登録してTLS検証を維持する。
+
+サイトJSONの `tools` に `camoufox-fourplay` を指定し、既存の `framework.mjs plan|run --sites=FILE` で新しいrunを作る。headless、grounding、追加拡張、timezone、session poolは非対応。観測は通信本文とDOMに基づき、スクリーンショット、完全な応答ヘッダー、全リダイレクト経路は提供しない。全応答本文のbase64転送負荷と、背景通信の経路が未計測であることも比較条件に含める。
+
+```bash
+node --test experiments/bot-diagnostics/fourplay-native-runtime.test.mjs experiments/bot-diagnostics/camoufox-fourplay-runtime.test.mjs
+```
+
+上記は依存配備や実ブラウザを使わない回帰テスト。[2026-10-07の比較記録](../../lab-runs/4play-camoufox-20261007/hybrid/README.md)には、移植前の実ブラウザ検証・条件・制約と完全証拠チェックポイントの情報を保存する。証拠exportでは一時的な `runtime-state` を除外し、ブラウザCookie状態を再開時に作り直す。
+
 ### Obscura・Patchrightとの比較
 
 [公式Obscura](https://github.com/h4ckf0r0day/obscura) v0.2.3の通常版・stealth版・no-render版を固定SHA256で導入し、Lightpanda補完版およびPatchrightと比較できる。
@@ -345,3 +361,31 @@ node experiments/bot-diagnostics/summarize.mjs
 このコマンドは今回の固定runパスからsummaryとdocsのレポートを再生成し、原履歴は保持する。一般の新しいrunを自動選択するコマンドではない。
 
 raw HTML、DOM、スクリーンショット、BotDのgetComponents/getDetections、Rebrowserの原rating、設定、台帳、環境とソースハッシュを保持する。HTTPクライアントのHTML取得をJS検知器の合格に換算しない。検知器の判定から実サイトのWAF原因を断定しない。
+
+### 上限付きDOM安定性待機（任意）
+
+load完了後の遅延JSを観測する場合、プログラムから`ToolAdapter`の`options.domWait`に
+`{timeoutMs:5000, stableMs:750, pollMs:250, minTextChars:200, terms:['早稲田','教員']}`を渡せる。
+共通runnerは既存observe時間の後、DOM保存前に本文とリンクの安定性を読み取り専用で調べる。
+`result.dom_wait.outcome`は`ready`、`timeout`、またはchallenge/拒否の停止。HTTP200の
+`content_observed`とは別指標であり、検索品質やブロック回避を保証しない。termsを省略すると
+本文長と安定性のみを判定する。既定は無効で、一般framework CLIの新フラグは追加していない。
+
+`hybrid-wait-comparison.mjs NEW_DIR --fixture`が遅延JSの局所検証、`--public`が固定Bing/Braveの
+最大8ナビゲーション比較。公開試験は管理proxy/CAとheadful表示先が必要。既存出力は上書きしない。
+[切り分け・公開試験・未解明部分](../../reports/2026-10/pr18-phase-and-wait-followup.md)を参照。
+
+### 4play HTTP bridgeの完了条件と追加待機
+
+HTTP bridgeは新規タブの`about:blank / complete`を完了扱いしない。同じタブ・container・
+最終HTTP(S) URLのmain-frame応答を確認してからcompleteとする（fragmentは照合から除外）。
+redirectは最終応答を待ち、HTTP 4xx/5xx自体やfavicon失敗では早期終了しない。
+
+`tool:'4play'`で必要なページだけ追加待機する場合は、`options.readyCondition`を指定する。
+例: `{selector:'#results', text:'教員', timeoutMs:3000}`。表示されている要素と任意のテキストを
+読み取り専用で確認する。最大5000ms、無指定では追加待機なし。既存observe時間は維持する。
+`result.bridge_navigation`と`result.ready_condition`で完了・ready・timeoutを区別できる。
+これはHTTP bridge用のselector条件で、native hybridの`options.domWait`（本文安定性）とは別。
+追加待機は残る観測時間と保存余裕を差し引いた予算内に短縮されることがある。
+
+[修正前後の無通信fixtureと上限検証](../../reports/2026-10/pr18-bridge-completion-fix.md)。
