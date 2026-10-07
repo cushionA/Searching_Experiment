@@ -12,7 +12,7 @@ RUN --mount=type=secret,id=proxy_ca,required=true \
 COPY server.cjs navigation-gate.cjs entrypoint.sh ./
 COPY policies.json /usr/lib/firefox-esr/distribution/policies.json
 RUN chmod 755 /app/entrypoint.sh \
-    && chmod 644 /app/server.cjs /app/package.json /app/package-lock.json \
+    && chmod 644 /app/server.cjs /app/navigation-gate.cjs /app/package.json /app/package-lock.json \
        /usr/lib/firefox-esr/distribution/policies.json
 USER node
 ENV DISPLAY=:99 NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt

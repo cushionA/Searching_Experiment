@@ -374,3 +374,18 @@ load完了後の遅延JSを観測する場合、プログラムから`ToolAdapte
 `hybrid-wait-comparison.mjs NEW_DIR --fixture`が遅延JSの局所検証、`--public`が固定Bing/Braveの
 最大8ナビゲーション比較。公開試験は管理proxy/CAとheadful表示先が必要。既存出力は上書きしない。
 [切り分け・公開試験・未解明部分](../../reports/2026-10/pr18-phase-and-wait-followup.md)を参照。
+
+### 4play HTTP bridgeの完了条件と追加待機
+
+HTTP bridgeは新規タブの`about:blank / complete`を完了扱いしない。同じタブ・container・
+最終HTTP(S) URLのmain-frame応答を確認してからcompleteとする（fragmentは照合から除外）。
+redirectは最終応答を待ち、HTTP 4xx/5xx自体やfavicon失敗では早期終了しない。
+
+`tool:'4play'`で必要なページだけ追加待機する場合は、`options.readyCondition`を指定する。
+例: `{selector:'#results', text:'教員', timeoutMs:3000}`。表示されている要素と任意のテキストを
+読み取り専用で確認する。最大5000ms、無指定では追加待機なし。既存observe時間は維持する。
+`result.bridge_navigation`と`result.ready_condition`で完了・ready・timeoutを区別できる。
+これはHTTP bridge用のselector条件で、native hybridの`options.domWait`（本文安定性）とは別。
+追加待機は残る観測時間と保存余裕を差し引いた予算内に短縮されることがある。
+
+[修正前後の無通信fixtureと上限検証](../../reports/2026-10/pr18-bridge-completion-fix.md)。
