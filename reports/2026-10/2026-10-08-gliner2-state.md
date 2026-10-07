@@ -61,4 +61,4 @@ GLiNER setup/import/load 7.11秒、初回warm-up314ms、実行全体37.45秒（�
 
 今回用途への組込みは保留。用途別に見ると、zero-shotで毎回ラベルを変更したい分類実験には価値がある一方、この固定4クラスではTF-IDFが有利だった。次に進むなら独立した実ページ本文の正解集合と業務別コスト、校正用validationを先に用意する。今回一巡で終了し、追加checkpoint探索・mLateOn検索開発・自動購入・merge/deployはしない。
 
-成果: `experiments/gliner2-state/`（コード・固定input/protocol・lock・再現コマンド）、`benchmarks/gliner2-state-20261008/`（全予測・数値・hash・source・エラー・検証ログ）。重みは/tmpへ保存しcommitしない。専用CIは6件の契約・data leak・保存数値再計算テストを行い、巨大モデルはCIで取得しない。最終remote commitとCI結果はPRで確認する。
+成果: `experiments/gliner2-state/`（コード・固定input/protocol・lock・再現コマンド）、`benchmarks/gliner2-state-20261008/`（全予測・数値・hash・source・エラー・検証ログ）。重みは/tmpへ保存しcommitしない。専用CIは6件の契約・data leak・保存数値再計算テストを行い、巨大モデルはCIで取得しない。ローカル新規6 tests成功、既存lab151 tests成功（15 skipped）、pip check成功、固定revisionの再取得manifest一致を確認。初回エラーログは行末空白だけ除去。最終remote commitとCI結果はPRで確認する。
