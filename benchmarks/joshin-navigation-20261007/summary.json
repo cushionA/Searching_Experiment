@@ -1,0 +1,2254 @@
+{
+  "schema": 1,
+  "generated_at_utc": "2026-10-07T04:19:16.627869+00:00",
+  "scope": {
+    "candidate_run": "joshin-navigation-candidates-20261007-02",
+    "navigation_fix_run": "joshin-navigation-fix-20261007",
+    "measurement_cells": 34,
+    "evidence_cells": 34,
+    "fixture_summaries": {
+      "fixture-native": {
+        "ok": true,
+        "schema": 1,
+        "mode": "native",
+        "fixture_origin": "http://127.0.0.1:35675",
+        "fixture": true,
+        "network_scope": "127.0.0.1 loopback fixture only",
+        "initial_navigation": {
+          "requested": "http://127.0.0.1:35675/start",
+          "redirect_target": "http://127.0.0.1:35675/redirect-target",
+          "title": "Redirect target",
+          "marker": "redirect-target-dom-complete",
+          "ready_state": "complete",
+          "dom_sha256": "0e628d9a29bcf870b095b08757857ae6c54fa98be8903d8c90116c6eb37ec094",
+          "response": {
+            "url": "http://127.0.0.1:35675/redirect-target",
+            "status": 200,
+            "method": "GET",
+            "resource_type": "document",
+            "navigation": true,
+            "body_bytes": 180,
+            "body_sha256": "48e14497be3acb55e597e76407b01ce9ee964aaa501177a829c410206ce40bf7",
+            "body_excerpt": "<!doctype html><meta charset=\"utf-8\"><title>Redirect target</title><main id=\"fixture\"><p id=\"marker\">redirect-target-dom-complete</p><a id=\"to-b\" href=\"/b\">Continue to B</a></main>"
+          }
+        },
+        "same_tab_anchor_chain": {
+          "tab_id_before": 2,
+          "tab_id_after": 2,
+          "container_id": "firefox-container-6",
+          "url": "http://127.0.0.1:35675/c",
+          "b": {
+            "referer": "http://127.0.0.1:35675/redirect-target",
+            "tab_id": 2,
+            "container_id": "firefox-container-6"
+          },
+          "c": {
+            "referer": "http://127.0.0.1:35675/b",
+            "tab_id": 2,
+            "container_id": "firefox-container-6"
+          },
+          "cookie_names": [
+            "fixture_session"
+          ]
+        },
+        "status_checks": {
+          "get": {
+            "url": "http://127.0.0.1:35675/denied-get",
+            "marker": "fixture-get-403-body",
+            "ready": "complete",
+            "response": {
+              "url": "http://127.0.0.1:35675/denied-get",
+              "status": 403,
+              "method": "GET",
+              "resource_type": "document",
+              "navigation": true,
+              "body_bytes": 127,
+              "body_sha256": "100fadcc819224f78a7c6b5dfbd809fdea66d6a96482f063b8226d00854e5cf0",
+              "body_excerpt": "<!doctype html><meta charset=\"utf-8\"><title>GET denied</title><main id=\"fixture\"><p id=\"marker\">fixture-get-403-body</p></main>"
+            }
+          },
+          "post": {
+            "url": "http://127.0.0.1:35675/denied-post",
+            "marker": "fixture-post-403-body",
+            "response": {
+              "url": "http://127.0.0.1:35675/denied-post",
+              "status": 403,
+              "method": "POST",
+              "resource_type": "document",
+              "navigation": true,
+              "body_bytes": 129,
+              "body_sha256": "9c65d8e6e952e8c4a6f1d2c3d4c362df83d5a21722d5843fe9cdf42cba27728a",
+              "body_excerpt": "<!doctype html><meta charset=\"utf-8\"><title>POST denied</title><main id=\"fixture\"><p id=\"marker\">fixture-post-403-body</p></main>"
+            }
+          }
+        },
+        "browser_runtime": {
+          "engine": "firefox",
+          "startup_timing_ms": {
+            "profile_and_server_ms": 88.85440500000001,
+            "launch_and_extension_connect_ms": 2122.0421659999997,
+            "session_setup_ms": 146.29967599999964,
+            "total_ms": 2357.232951
+          },
+          "version": "153.0",
+          "fourplay": "@lawlers/4play",
+          "fourplay_upstream_commit": "unknown",
+          "extension_bg_original_sha256": "dae9d635abaa5a80d45fbe39d5bbe9c18f3717c8c00fc85a4a063768e1f25442",
+          "extension_bg_config_patch_sha256": "62e34013fa61932835a1901e275627eb1ab1e464ea2972570d86928c309353e9",
+          "proxy_ca_trusted": false,
+          "headless": false,
+          "display": ":99",
+          "viewport": null,
+          "screenshots": false,
+          "selector_operations": false,
+          "challenge_actions": false,
+          "initial_tabs_preserved": true,
+          "fixture_event_trace": [
+            {
+              "kind": "request",
+              "id": -1,
+              "url": "ws://127.0.0.1:3030/[redacted]",
+              "type": "websocket",
+              "container": "firefox-default",
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 2,
+              "url": "http://127.0.0.1:35675/start",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 2,
+              "url": "http://127.0.0.1:35675/redirect-target",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 2,
+              "url": "http://127.0.0.1:35675/redirect-target",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 2,
+              "url": "http://127.0.0.1:35675/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 2,
+              "url": "http://127.0.0.1:35675/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 2,
+              "url": "http://127.0.0.1:35675/b",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 2,
+              "url": "http://127.0.0.1:35675/b",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 2,
+              "url": "http://127.0.0.1:35675/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 2,
+              "url": "http://127.0.0.1:35675/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 2,
+              "url": "http://127.0.0.1:35675/c",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 2,
+              "url": "http://127.0.0.1:35675/c",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 2,
+              "url": "http://127.0.0.1:35675/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 2,
+              "url": "http://127.0.0.1:35675/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 3,
+              "url": "http://127.0.0.1:35675/denied-get",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "active_tab": 3,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 3,
+              "url": "http://127.0.0.1:35675/denied-get",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "status": 403,
+              "active_tab": 3,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 3,
+              "url": "http://127.0.0.1:35675/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "active_tab": 3,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 3,
+              "url": "http://127.0.0.1:35675/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 3,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 4,
+              "url": "http://127.0.0.1:35675/start",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "active_tab": 4,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 4,
+              "url": "http://127.0.0.1:35675/redirect-target",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "active_tab": 4,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 4,
+              "url": "http://127.0.0.1:35675/redirect-target",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 4,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 4,
+              "url": "http://127.0.0.1:35675/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "active_tab": 4,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 4,
+              "url": "http://127.0.0.1:35675/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 4,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 4,
+              "url": "http://127.0.0.1:35675/denied-post",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "active_tab": 4,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 4,
+              "url": "http://127.0.0.1:35675/denied-post",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "status": 403,
+              "active_tab": 4,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 4,
+              "url": "http://127.0.0.1:35675/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "active_tab": 4,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 4,
+              "url": "http://127.0.0.1:35675/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 4,
+              "navigating_url": null
+            }
+          ],
+          "fixture_network_isolation": "container proxy forwards only loopback HTTP; external destinations and CONNECT are denied",
+          "navigation_method": "about:blank complete, then isolated page location.assign; browser-generated request headers",
+          "wait_condition": "active tab/container HTTP document response matches tabs.onUpdated status=complete; blank cannot complete navigation",
+          "budgeted_navigation": false,
+          "redirect_chain_reporting": false,
+          "request_id_source": "not_exposed; correlation uses tab_id+method+type+url+arrival_order",
+          "frame_matching": "active_container_and_tab_id",
+          "observation_limits": [
+            "screenshots_unsupported",
+            "viewport_not_measured",
+            "frame_matching_incomplete",
+            "redirect_chain_not_reported",
+            "response_headers_not_provided_by_4play",
+            "websocket_frames_not_recorded"
+          ]
+        },
+        "assertions": {
+          "redirect_target_dom_complete": true,
+          "requested_main_frame_response": true,
+          "same_tab_A_to_B_to_C": true,
+          "referer_and_cookie_observed_on_chain": true,
+          "container_and_tab_continuity": true,
+          "get_403_response": true,
+          "post_403_response": true
+        }
+      },
+      "fixture-hybrid": {
+        "ok": true,
+        "schema": 1,
+        "mode": "hybrid",
+        "fixture_origin": "http://127.0.0.1:40969",
+        "fixture": true,
+        "network_scope": "127.0.0.1 loopback fixture only",
+        "initial_navigation": {
+          "requested": "http://127.0.0.1:40969/start",
+          "redirect_target": "http://127.0.0.1:40969/redirect-target",
+          "title": "Redirect target",
+          "marker": "redirect-target-dom-complete",
+          "ready_state": "complete",
+          "dom_sha256": "0e628d9a29bcf870b095b08757857ae6c54fa98be8903d8c90116c6eb37ec094",
+          "response": {
+            "url": "http://127.0.0.1:40969/redirect-target",
+            "status": 200,
+            "method": "GET",
+            "resource_type": "document",
+            "navigation": true,
+            "body_bytes": 180,
+            "body_sha256": "48e14497be3acb55e597e76407b01ce9ee964aaa501177a829c410206ce40bf7",
+            "body_excerpt": "<!doctype html><meta charset=\"utf-8\"><title>Redirect target</title><main id=\"fixture\"><p id=\"marker\">redirect-target-dom-complete</p><a id=\"to-b\" href=\"/b\">Continue to B</a></main>"
+          }
+        },
+        "same_tab_anchor_chain": {
+          "tab_id_before": 2,
+          "tab_id_after": 2,
+          "container_id": "firefox-container-6",
+          "url": "http://127.0.0.1:40969/c",
+          "b": {
+            "referer": "http://127.0.0.1:40969/redirect-target",
+            "tab_id": 2,
+            "container_id": "firefox-container-6"
+          },
+          "c": {
+            "referer": "http://127.0.0.1:40969/b",
+            "tab_id": 2,
+            "container_id": "firefox-container-6"
+          },
+          "cookie_names": [
+            "fixture_session"
+          ]
+        },
+        "status_checks": {
+          "get": {
+            "url": "http://127.0.0.1:40969/denied-get",
+            "marker": "fixture-get-403-body",
+            "ready": "complete",
+            "response": {
+              "url": "http://127.0.0.1:40969/denied-get",
+              "status": 403,
+              "method": "GET",
+              "resource_type": "document",
+              "navigation": true,
+              "body_bytes": 127,
+              "body_sha256": "100fadcc819224f78a7c6b5dfbd809fdea66d6a96482f063b8226d00854e5cf0",
+              "body_excerpt": "<!doctype html><meta charset=\"utf-8\"><title>GET denied</title><main id=\"fixture\"><p id=\"marker\">fixture-get-403-body</p></main>"
+            }
+          },
+          "post": {
+            "url": "http://127.0.0.1:40969/denied-post",
+            "marker": "fixture-post-403-body",
+            "response": {
+              "url": "http://127.0.0.1:40969/denied-post",
+              "status": 403,
+              "method": "POST",
+              "resource_type": "document",
+              "navigation": true,
+              "body_bytes": 129,
+              "body_sha256": "9c65d8e6e952e8c4a6f1d2c3d4c362df83d5a21722d5843fe9cdf42cba27728a",
+              "body_excerpt": "<!doctype html><meta charset=\"utf-8\"><title>POST denied</title><main id=\"fixture\"><p id=\"marker\">fixture-post-403-body</p></main>"
+            }
+          }
+        },
+        "browser_runtime": {
+          "engine": "firefox",
+          "startup_timing_ms": {
+            "profile_and_server_ms": 121.69816099999997,
+            "launch_and_extension_connect_ms": 2985.584393,
+            "session_setup_ms": 10.560366000000158,
+            "total_ms": 3117.914167
+          },
+          "version": "152.0",
+          "fourplay": "@lawlers/4play",
+          "fourplay_upstream_commit": "unknown",
+          "extension_bg_original_sha256": "dae9d635abaa5a80d45fbe39d5bbe9c18f3717c8c00fc85a4a063768e1f25442",
+          "extension_bg_config_patch_sha256": "d78f35aa276ab867e4fdcb41478bf583581b15d22cf59df220d0bdcebc69b78d",
+          "proxy_ca_trusted": false,
+          "headless": false,
+          "display": ":99",
+          "viewport": null,
+          "screenshots": false,
+          "selector_operations": false,
+          "challenge_actions": false,
+          "initial_tabs_preserved": true,
+          "fixture_event_trace": [
+            {
+              "kind": "request",
+              "id": 2,
+              "url": "http://127.0.0.1:40969/start",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 2,
+              "url": "http://127.0.0.1:40969/redirect-target",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 2,
+              "url": "http://127.0.0.1:40969/redirect-target",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 2,
+              "url": "http://127.0.0.1:40969/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 2,
+              "url": "http://127.0.0.1:40969/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 2,
+              "url": "http://127.0.0.1:40969/b",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 2,
+              "url": "http://127.0.0.1:40969/b",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 2,
+              "url": "http://127.0.0.1:40969/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 2,
+              "url": "http://127.0.0.1:40969/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 2,
+              "url": "http://127.0.0.1:40969/c",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 2,
+              "url": "http://127.0.0.1:40969/c",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 2,
+              "url": "http://127.0.0.1:40969/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 2,
+              "url": "http://127.0.0.1:40969/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 2,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 3,
+              "url": "http://127.0.0.1:40969/denied-get",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "active_tab": 3,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 3,
+              "url": "http://127.0.0.1:40969/denied-get",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "status": 403,
+              "active_tab": 3,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 3,
+              "url": "http://127.0.0.1:40969/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "active_tab": 3,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 3,
+              "url": "http://127.0.0.1:40969/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 3,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 4,
+              "url": "http://127.0.0.1:40969/start",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "active_tab": 4,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 4,
+              "url": "http://127.0.0.1:40969/redirect-target",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "active_tab": 4,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 4,
+              "url": "http://127.0.0.1:40969/redirect-target",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 4,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 4,
+              "url": "http://127.0.0.1:40969/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "active_tab": 4,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 4,
+              "url": "http://127.0.0.1:40969/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 4,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 4,
+              "url": "http://127.0.0.1:40969/denied-post",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "active_tab": 4,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 4,
+              "url": "http://127.0.0.1:40969/denied-post",
+              "type": "main_frame",
+              "container": "firefox-container-6",
+              "status": 403,
+              "active_tab": 4,
+              "navigating_url": null
+            },
+            {
+              "kind": "request",
+              "id": 4,
+              "url": "http://127.0.0.1:40969/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "active_tab": 4,
+              "navigating_url": null
+            },
+            {
+              "kind": "response",
+              "id": 4,
+              "url": "http://127.0.0.1:40969/favicon.ico",
+              "type": "image",
+              "container": "firefox-container-6",
+              "status": 200,
+              "active_tab": 4,
+              "navigating_url": null
+            }
+          ],
+          "fixture_network_isolation": "container proxy forwards only loopback HTTP; external destinations and CONNECT are denied",
+          "navigation_method": "about:blank complete, then isolated page location.assign; browser-generated request headers",
+          "wait_condition": "active tab/container HTTP document response matches tabs.onUpdated status=complete; blank cannot complete navigation",
+          "budgeted_navigation": false,
+          "redirect_chain_reporting": false,
+          "request_id_source": "not_exposed; correlation uses tab_id+method+type+url+arrival_order",
+          "frame_matching": "active_container_and_tab_id",
+          "observation_limits": [
+            "screenshots_unsupported",
+            "viewport_not_measured",
+            "frame_matching_incomplete",
+            "redirect_chain_not_reported",
+            "response_headers_not_provided_by_4play",
+            "websocket_frames_not_recorded"
+          ],
+          "camoufox_version": "152.0.4-beta.30",
+          "camoufox_js": "0.12.0",
+          "executable_path": "/workspace/Searching_Experiment/.deps/camoufox/browser/camoufox-bin",
+          "config_sha256": "db85d6ac5feb96b3757a354ef54b7248db2acd2c8e20d2164ba084def3a43d71",
+          "font_count": 134,
+          "font_list_sha256": "b62fe49b3c8b9fcf67f12e3ca5f266ffbff5d5ae082787fdb1c06cef2bd70603",
+          "firefox_user_pref_count": 2,
+          "playwright_control": false,
+          "playwright_core_direct_import_statement": false,
+          "addon_tab_creation_enabled": true,
+          "launch_backend": "web-ext + native Firefox process",
+          "browser_engine": "Camoufox",
+          "browser_control": "4play WebExtension",
+          "fourplay_connected": true,
+          "playwright_core_peer_declared": "<1.61.0",
+          "playwright_core_require_cache_before": 0,
+          "playwright_core_require_cache_after": 0,
+          "playwright_core_cjs_cache_present_after": false,
+          "browser_binary_reused": true,
+          "required_firefox_pref_overrides": [
+            "privacy.userContext.enabled=true"
+          ],
+          "third_party_proxy_policy": "4play target container controls proxy routing",
+          "background_routing_not_measured": true
+        },
+        "assertions": {
+          "redirect_target_dom_complete": true,
+          "requested_main_frame_response": true,
+          "same_tab_A_to_B_to_C": true,
+          "referer_and_cookie_observed_on_chain": true,
+          "container_and_tab_continuity": true,
+          "get_403_response": true,
+          "post_403_response": true
+        }
+      }
+    },
+    "prior_benchmark_untouched": "benchmarks/joshin-blocking-20261007"
+  },
+  "home_http_status_counts": {
+    "200": 14,
+    "403": 14,
+    "503": 6
+  },
+  "target_http_status_counts": {
+    "200": 24,
+    "403": 1,
+    "503": 1
+  },
+  "conditions": {
+    "joshin-navigation-candidates-20261007-02/blank-isolated-location": {
+      "cells": 2,
+      "median_observation_ms": 8629.874624999997,
+      "entry_urls": {
+        "https://joshinweb.jp/": 2
+      },
+      "home_statuses": {
+        "200": 2
+      },
+      "target_statuses": {
+        "200": 2,
+        "403": 1
+      }
+    },
+    "joshin-navigation-candidates-20261007-02/blank-isolated-location/1-native-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-candidates-20261007-02/blank-isolated-location/2-native-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-candidates-20261007-02/blank-main-location": {
+      "cells": 2,
+      "median_observation_ms": 9065.9183385,
+      "entry_urls": {
+        "https://joshinweb.jp/": 2
+      },
+      "home_statuses": {
+        "200": 2
+      },
+      "target_statuses": {
+        "200": 4
+      }
+    },
+    "joshin-navigation-candidates-20261007-02/blank-main-location/1-native-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-candidates-20261007-02/blank-main-location/2-native-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-candidates-20261007-02/blank-update": {
+      "cells": 2,
+      "median_observation_ms": 17155.81953,
+      "entry_urls": {
+        "https://joshinweb.jp/": 2
+      },
+      "home_statuses": {
+        "403": 2
+      },
+      "target_statuses": {}
+    },
+    "joshin-navigation-candidates-20261007-02/blank-update/1-native-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-candidates-20261007-02/blank-update/2-native-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/bridge": {
+      "cells": 4,
+      "median_observation_ms": 9563.981254000002,
+      "entry_urls": {
+        "https://joshinweb.jp/": 4
+      },
+      "home_statuses": {
+        "200": 4
+      },
+      "target_statuses": {
+        "200": 8
+      }
+    },
+    "joshin-navigation-fix-20261007/bridge-main": {
+      "cells": 4,
+      "median_observation_ms": 9197.417961999998,
+      "entry_urls": {
+        "https://joshinweb.jp/": 4
+      },
+      "home_statuses": {
+        "200": 3,
+        "503": 1
+      },
+      "target_statuses": {
+        "200": 4,
+        "503": 1
+      }
+    },
+    "joshin-navigation-fix-20261007/bridge-main/1-load-default": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/bridge-main/1-load-selector-ready": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/bridge-main/2-load-default": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/bridge-main/2-load-selector-ready": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/bridge/1-load-default": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/bridge/1-load-selector-ready": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/bridge/2-load-default": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/bridge/2-load-selector-ready": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/camoufox-control": {
+      "cells": 4,
+      "median_observation_ms": 6155.299794500002,
+      "entry_urls": {
+        "https://joshinweb.jp/": 4
+      },
+      "home_statuses": {
+        "403": 4
+      },
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/camoufox-control/1-domcontentloaded": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/camoufox-control/1-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/camoufox-control/2-domcontentloaded": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/camoufox-control/2-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/camoufox-fresh": {
+      "cells": 4,
+      "median_observation_ms": 6239.529961499998,
+      "entry_urls": {
+        "https://joshinweb.jp/": 4
+      },
+      "home_statuses": {
+        "403": 4
+      },
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/camoufox-fresh/1-domcontentloaded": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/camoufox-fresh/1-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/camoufox-fresh/2-domcontentloaded": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/camoufox-fresh/2-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/camoufox-top": {
+      "cells": 4,
+      "median_observation_ms": 6816.829608999997,
+      "entry_urls": {
+        "https://joshinweb.jp/top.html": 4
+      },
+      "home_statuses": {
+        "200": 2,
+        "503": 2
+      },
+      "target_statuses": {
+        "200": 4
+      }
+    },
+    "joshin-navigation-fix-20261007/camoufox-top/1-domcontentloaded": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/camoufox-top/1-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/camoufox-top/2-domcontentloaded": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/camoufox-top/2-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/hybrid": {
+      "cells": 2,
+      "median_observation_ms": 6407.982981499999,
+      "entry_urls": {
+        "https://joshinweb.jp/": 2
+      },
+      "home_statuses": {
+        "403": 2
+      },
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/hybrid-main": {
+      "cells": 2,
+      "median_observation_ms": 6320.0897105,
+      "entry_urls": {
+        "https://joshinweb.jp/": 2
+      },
+      "home_statuses": {
+        "403": 2
+      },
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/hybrid-main/1-native-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/hybrid-main/2-native-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/hybrid-top": {
+      "cells": 2,
+      "median_observation_ms": 8181.083431000001,
+      "entry_urls": {
+        "https://joshinweb.jp/top.html": 2
+      },
+      "home_statuses": {
+        "200": 1,
+        "503": 1
+      },
+      "target_statuses": {
+        "200": 2
+      }
+    },
+    "joshin-navigation-fix-20261007/hybrid-top-confirm": {
+      "cells": 2,
+      "median_observation_ms": 6270.168457000001,
+      "entry_urls": {
+        "https://joshinweb.jp/top.html": 2
+      },
+      "home_statuses": {
+        "503": 2
+      },
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/hybrid-top-confirm/1-native-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/hybrid-top-confirm/2-native-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/hybrid-top/1-native-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/hybrid-top/2-native-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/hybrid/1-native-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    },
+    "joshin-navigation-fix-20261007/hybrid/2-native-load": {
+      "cells": 0,
+      "median_observation_ms": null,
+      "entry_urls": {},
+      "home_statuses": {},
+      "target_statuses": {}
+    }
+  },
+  "cells": [
+    {
+      "run": "joshin-navigation-candidates-20261007-02",
+      "condition": "blank-isolated-location",
+      "arm": "native-load",
+      "repeat": 1,
+      "started_at": "2026-10-07T03:55:32.258Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 200,
+      "home_outcome": "content_observed",
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "final_url": "https://joshinweb.jp/tobuy.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "final_url": "https://joshinweb.jp/javacookie.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "open_ms": 2070.5622350000003,
+      "observation_ms": 8448.885527,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 4,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 236,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-candidates-20261007-02",
+      "condition": "blank-isolated-location",
+      "arm": "native-load",
+      "repeat": 2,
+      "started_at": "2026-10-07T03:55:59.435Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 200,
+      "home_outcome": "content_observed",
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "final_url": "https://joshinweb.jp/tobuy.html",
+          "http_status": 403,
+          "outcome": "access_denied_observed"
+        }
+      ],
+      "open_ms": 2243.4081769999975,
+      "observation_ms": 8810.863722999995,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 3,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 118,
+        "results": 3,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-candidates-20261007-02",
+      "condition": "blank-main-location",
+      "arm": "native-load",
+      "repeat": 1,
+      "started_at": "2026-10-07T03:54:31.926Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 200,
+      "home_outcome": "content_observed",
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "final_url": "https://joshinweb.jp/tobuy.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "final_url": "https://joshinweb.jp/javacookie.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "open_ms": 1986.139073,
+      "observation_ms": 9104.366976000001,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 4,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 231,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-candidates-20261007-02",
+      "condition": "blank-main-location",
+      "arm": "native-load",
+      "repeat": 2,
+      "started_at": "2026-10-07T03:54:59.010Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 200,
+      "home_outcome": "content_observed",
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "final_url": "https://joshinweb.jp/tobuy.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "final_url": "https://joshinweb.jp/javacookie.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "open_ms": 2018.009299999998,
+      "observation_ms": 9027.469700999998,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 4,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 232,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-candidates-20261007-02",
+      "condition": "blank-update",
+      "arm": "native-load",
+      "repeat": 1,
+      "started_at": "2026-10-07T03:53:48.000Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 403,
+      "home_outcome": "access_denied_observed",
+      "targets": [],
+      "open_ms": 2416.970627,
+      "observation_ms": 17162.130819,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 2,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 6,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-candidates-20261007-02",
+      "condition": "blank-update",
+      "arm": "native-load",
+      "repeat": 2,
+      "started_at": "2026-10-07T03:54:07.620Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 403,
+      "home_outcome": "access_denied_observed",
+      "targets": [],
+      "open_ms": 2083.8165800000024,
+      "observation_ms": 17149.508241000003,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 2,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 6,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "bridge",
+      "arm": "load-default",
+      "repeat": 1,
+      "started_at": "2026-10-07T04:00:39.529Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 200,
+      "home_outcome": "content_observed",
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "final_url": "https://joshinweb.jp/tobuy.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "final_url": "https://joshinweb.jp/javacookie.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "open_ms": 40.227609,
+      "observation_ms": 10176.656986,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 0,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 198,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "bridge",
+      "arm": "load-selector-ready",
+      "repeat": 1,
+      "started_at": "2026-10-07T04:01:05.018Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 200,
+      "home_outcome": "content_observed",
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "final_url": "https://joshinweb.jp/tobuy.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "final_url": "https://joshinweb.jp/javacookie.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "open_ms": 8.668081999996502,
+      "observation_ms": 9538.322351000003,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 0,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 197,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "bridge",
+      "arm": "load-selector-ready",
+      "repeat": 2,
+      "started_at": "2026-10-07T04:01:29.776Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 200,
+      "home_outcome": "content_observed",
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "final_url": "https://joshinweb.jp/tobuy.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "final_url": "https://joshinweb.jp/javacookie.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "open_ms": 13.791516999997839,
+      "observation_ms": 9589.640157000002,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 0,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 194,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "bridge",
+      "arm": "load-default",
+      "repeat": 2,
+      "started_at": "2026-10-07T04:01:54.909Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 200,
+      "home_outcome": "content_observed",
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "final_url": "https://joshinweb.jp/tobuy.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "final_url": "https://joshinweb.jp/javacookie.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "open_ms": 11.504052000003867,
+      "observation_ms": 9059.890232000005,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 0,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 203,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "bridge-main",
+      "arm": "load-default",
+      "repeat": 1,
+      "started_at": "2026-10-07T04:05:54.072Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 200,
+      "home_outcome": "content_observed",
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "final_url": "https://joshinweb.jp/tobuy.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "final_url": "https://joshinweb.jp/javacookie.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "open_ms": 33.429044000000005,
+      "observation_ms": 9949.266797,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 0,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 200,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "bridge-main",
+      "arm": "load-selector-ready",
+      "repeat": 1,
+      "started_at": "2026-10-07T04:06:20.249Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 200,
+      "home_outcome": "content_observed",
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "final_url": "https://joshinweb.jp/tobuy.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "final_url": "https://joshinweb.jp/javacookie.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "open_ms": 33.178689000000304,
+      "observation_ms": 10166.587927,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 0,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 197,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "bridge-main",
+      "arm": "load-selector-ready",
+      "repeat": 2,
+      "started_at": "2026-10-07T04:06:45.386Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 200,
+      "home_outcome": "content_observed",
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "final_url": "https://joshinweb.jp/tobuy.html",
+          "http_status": 503,
+          "outcome": "server_error_observed"
+        }
+      ],
+      "open_ms": 14.660367999997106,
+      "observation_ms": 8445.569126999995,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 0,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 56,
+        "results": 3,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "bridge-main",
+      "arm": "load-default",
+      "repeat": 2,
+      "started_at": "2026-10-07T04:07:05.124Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/",
+      "home_http_status": 503,
+      "home_outcome": "server_error_observed",
+      "targets": [],
+      "open_ms": 9.80772799999977,
+      "observation_ms": 6197.364203999998,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 0,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 2,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "camoufox-control",
+      "arm": "domcontentloaded",
+      "repeat": 1,
+      "started_at": "2026-10-07T04:02:53.751Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/",
+      "home_http_status": 403,
+      "home_outcome": "access_denied_observed",
+      "targets": [],
+      "open_ms": 2137.353712,
+      "observation_ms": 6138.110993,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 1,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 1,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "camoufox-control",
+      "arm": "load",
+      "repeat": 1,
+      "started_at": "2026-10-07T04:03:02.320Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/",
+      "home_http_status": 403,
+      "home_outcome": "access_denied_observed",
+      "targets": [],
+      "open_ms": 1838.8677399999997,
+      "observation_ms": 6129.547543000001,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 1,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 1,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "camoufox-control",
+      "arm": "load",
+      "repeat": 2,
+      "started_at": "2026-10-07T04:03:10.537Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/",
+      "home_http_status": 403,
+      "home_outcome": "access_denied_observed",
+      "targets": [],
+      "open_ms": 1700.2715930000013,
+      "observation_ms": 6172.488596000003,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 1,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 1,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "camoufox-control",
+      "arm": "domcontentloaded",
+      "repeat": 2,
+      "started_at": "2026-10-07T04:03:18.806Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/",
+      "home_http_status": 403,
+      "home_outcome": "access_denied_observed",
+      "targets": [],
+      "open_ms": 2029.8330419999984,
+      "observation_ms": 6463.225556000001,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 1,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 1,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "camoufox-fresh",
+      "arm": "domcontentloaded",
+      "repeat": 1,
+      "started_at": "2026-10-07T04:04:49.922Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/",
+      "home_http_status": 403,
+      "home_outcome": "access_denied_observed",
+      "targets": [],
+      "open_ms": 2597.0260310000003,
+      "observation_ms": 6213.373533,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 1,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 1,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "camoufox-fresh",
+      "arm": "load",
+      "repeat": 1,
+      "started_at": "2026-10-07T04:04:59.177Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/",
+      "home_http_status": 403,
+      "home_outcome": "access_denied_observed",
+      "targets": [],
+      "open_ms": 2382.070057000001,
+      "observation_ms": 6389.442386000002,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 1,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 1,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "camoufox-fresh",
+      "arm": "load",
+      "repeat": 2,
+      "started_at": "2026-10-07T04:05:08.229Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/",
+      "home_http_status": 403,
+      "home_outcome": "access_denied_observed",
+      "targets": [],
+      "open_ms": 1760.4993899999972,
+      "observation_ms": 6178.270152000001,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 1,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 1,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "camoufox-fresh",
+      "arm": "domcontentloaded",
+      "repeat": 2,
+      "started_at": "2026-10-07T04:05:16.438Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/",
+      "home_http_status": 403,
+      "home_outcome": "access_denied_observed",
+      "targets": [],
+      "open_ms": 1638.5538990000023,
+      "observation_ms": 6265.686389999995,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 1,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 1,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "camoufox-top",
+      "arm": "domcontentloaded",
+      "repeat": 1,
+      "started_at": "2026-10-07T04:06:17.810Z",
+      "entry_url": "https://joshinweb.jp/top.html",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 200,
+      "home_outcome": "content_observed",
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "final_url": "https://joshinweb.jp/tobuy.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "final_url": "https://joshinweb.jp/javacookie.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "open_ms": 1897.068785,
+      "observation_ms": 7420.8453389999995,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 3,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 186,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "camoufox-top",
+      "arm": "load",
+      "repeat": 1,
+      "started_at": "2026-10-07T04:06:40.997Z",
+      "entry_url": "https://joshinweb.jp/top.html",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 200,
+      "home_outcome": "content_observed",
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "final_url": "https://joshinweb.jp/tobuy.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "final_url": "https://joshinweb.jp/javacookie.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "open_ms": 1672.0591270000004,
+      "observation_ms": 8288.821336999998,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 3,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 164,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "camoufox-top",
+      "arm": "load",
+      "repeat": 2,
+      "started_at": "2026-10-07T04:07:04.890Z",
+      "entry_url": "https://joshinweb.jp/top.html",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 503,
+      "home_outcome": "server_error_observed",
+      "targets": [],
+      "open_ms": 1887.8273289999997,
+      "observation_ms": 6126.887971000004,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 1,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 1,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "camoufox-top",
+      "arm": "domcontentloaded",
+      "repeat": 2,
+      "started_at": "2026-10-07T04:07:13.192Z",
+      "entry_url": "https://joshinweb.jp/top.html",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 503,
+      "home_outcome": "server_error_observed",
+      "targets": [],
+      "open_ms": 1741.4969450000062,
+      "observation_ms": 6212.813878999994,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 1,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 1,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "hybrid",
+      "arm": "native-load",
+      "repeat": 1,
+      "started_at": "2026-10-07T04:00:10.133Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/",
+      "home_http_status": 403,
+      "home_outcome": "access_denied_observed",
+      "targets": [],
+      "open_ms": 3462.454779,
+      "observation_ms": 6511.696980999999,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 1,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 2,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "hybrid",
+      "arm": "native-load",
+      "repeat": 2,
+      "started_at": "2026-10-07T04:00:20.154Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/",
+      "home_http_status": 403,
+      "home_outcome": "access_denied_observed",
+      "targets": [],
+      "open_ms": 2149.674155999999,
+      "observation_ms": 6304.268982,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 1,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 2,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "hybrid-main",
+      "arm": "native-load",
+      "repeat": 1,
+      "started_at": "2026-10-07T04:02:50.848Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/",
+      "home_http_status": 403,
+      "home_outcome": "access_denied_observed",
+      "targets": [],
+      "open_ms": 4110.897137,
+      "observation_ms": 6259.492937,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 1,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 2,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "hybrid-main",
+      "arm": "native-load",
+      "repeat": 2,
+      "started_at": "2026-10-07T04:03:01.260Z",
+      "entry_url": "https://joshinweb.jp/",
+      "final_home_url": "https://joshinweb.jp/",
+      "home_http_status": 403,
+      "home_outcome": "access_denied_observed",
+      "targets": [],
+      "open_ms": 2110.3801779999994,
+      "observation_ms": 6380.686484,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 1,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 2,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "hybrid-top",
+      "arm": "native-load",
+      "repeat": 1,
+      "started_at": "2026-10-07T04:06:16.273Z",
+      "entry_url": "https://joshinweb.jp/top.html",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 200,
+      "home_outcome": "content_observed",
+      "targets": [
+        {
+          "url": "https://joshinweb.jp/tobuy.html",
+          "final_url": "https://joshinweb.jp/tobuy.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        },
+        {
+          "url": "https://joshinweb.jp/javacookie.html",
+          "final_url": "https://joshinweb.jp/javacookie.html",
+          "http_status": 200,
+          "outcome": "content_observed"
+        }
+      ],
+      "open_ms": 2685.034236,
+      "observation_ms": 10129.768774,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 3,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 225,
+        "results": 4,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "hybrid-top",
+      "arm": "native-load",
+      "repeat": 2,
+      "started_at": "2026-10-07T04:06:44.591Z",
+      "entry_url": "https://joshinweb.jp/top.html",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 503,
+      "home_outcome": "server_error_observed",
+      "targets": [],
+      "open_ms": 2620.3364619999993,
+      "observation_ms": 6232.398088000002,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 1,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 2,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "hybrid-top-confirm",
+      "arm": "native-load",
+      "repeat": 1,
+      "started_at": "2026-10-07T04:09:45.306Z",
+      "entry_url": "https://joshinweb.jp/top.html",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 503,
+      "home_outcome": "server_error_observed",
+      "targets": [],
+      "open_ms": 2282.964851,
+      "observation_ms": 6225.537231,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 1,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 2,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    },
+    {
+      "run": "joshin-navigation-fix-20261007",
+      "condition": "hybrid-top-confirm",
+      "arm": "native-load",
+      "repeat": 2,
+      "started_at": "2026-10-07T04:09:53.854Z",
+      "entry_url": "https://joshinweb.jp/top.html",
+      "final_home_url": "https://joshinweb.jp/top.html",
+      "home_http_status": 503,
+      "home_outcome": "server_error_observed",
+      "targets": [],
+      "open_ms": 2097.276231,
+      "observation_ms": 6314.799683000001,
+      "navigation_method": "goto",
+      "session_sequence": 1,
+      "request_observations": 1,
+      "verification": {
+        "ok": true,
+        "errors": [],
+        "records": 2,
+        "results": 2,
+        "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+      }
+    }
+  ],
+  "proxy_503": {
+    "count": 7,
+    "classification": "Preserved response pages show envoy://cloudflare_https_tunnel/ Invalid argument. These connection/tunnel 503s are separated from the site's 403 access-denied responses; the classification is based on saved response text, not site or proxy operator logs.",
+    "records": [
+      {
+        "run": "joshin-navigation-fix-20261007",
+        "condition": "bridge-main",
+        "repeat": 2,
+        "phase": "target",
+        "url": "https://joshinweb.jp/tobuy.html",
+        "body_marker": "envoy://cloudflare_https_tunnel + Invalid argument"
+      },
+      {
+        "run": "joshin-navigation-fix-20261007",
+        "condition": "bridge-main",
+        "repeat": 2,
+        "phase": "home",
+        "url": "https://joshinweb.jp/",
+        "body_marker": "envoy://cloudflare_https_tunnel + Invalid argument"
+      },
+      {
+        "run": "joshin-navigation-fix-20261007",
+        "condition": "camoufox-top",
+        "repeat": 2,
+        "phase": "home",
+        "url": "https://joshinweb.jp/top.html",
+        "body_marker": "envoy://cloudflare_https_tunnel + Invalid argument"
+      },
+      {
+        "run": "joshin-navigation-fix-20261007",
+        "condition": "camoufox-top",
+        "repeat": 2,
+        "phase": "home",
+        "url": "https://joshinweb.jp/top.html",
+        "body_marker": "envoy://cloudflare_https_tunnel + Invalid argument"
+      },
+      {
+        "run": "joshin-navigation-fix-20261007",
+        "condition": "hybrid-top",
+        "repeat": 2,
+        "phase": "home",
+        "url": "https://joshinweb.jp/top.html",
+        "body_marker": "envoy://cloudflare_https_tunnel + Invalid argument"
+      },
+      {
+        "run": "joshin-navigation-fix-20261007",
+        "condition": "hybrid-top-confirm",
+        "repeat": 1,
+        "phase": "home",
+        "url": "https://joshinweb.jp/top.html",
+        "body_marker": "envoy://cloudflare_https_tunnel + Invalid argument"
+      },
+      {
+        "run": "joshin-navigation-fix-20261007",
+        "condition": "hybrid-top-confirm",
+        "repeat": 2,
+        "phase": "home",
+        "url": "https://joshinweb.jp/top.html",
+        "body_marker": "envoy://cloudflare_https_tunnel + Invalid argument"
+      }
+    ]
+  },
+  "source_snapshot_caveats": [
+    "Per-cell sources.json snapshots were made from the outer checkout filesystem at cell start; they do not prove which modules were already loaded or which source was installed in the bridge image.",
+    "environment/ records the installed helper/server/tab-navigation and package metadata. The initial direct-ISOLATED and final MAIN bridge helper versions are distinct source/time states.",
+    "Candidate extension copies implement tab_open(blank) then target. The contemporaneous main native goto directly opened the target, so this is not a like-for-like reproduction. The current native goto itself uses blank-to-MAIN; reproduce the historical POC with its base_commit/runtime snapshot, separately."
+  ],
+  "validation": {
+    "node_tests": 31,
+    "node_failed": 0,
+    "lab_tests": 151,
+    "lab_skipped": 15,
+    "lab_failed": 0
+  },
+  "export_redactions": {
+    "paths": [
+      "runs/joshin-navigation-fix-20261007/fixture-native/summary.json",
+      "summary.json"
+    ],
+    "reason": "Remove ephemeral extension WebSocket authentication paths from exported fixture JSON. Original local runs, Evidence ledgers and content-addressed blobs are preserved."
+  }
+}

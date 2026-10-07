@@ -1,0 +1,37 @@
+{
+  "run_sources": [
+    {
+      "name": "joshin-navigation-candidates-20261007-02",
+      "path": ".lab-output/joshin-navigation-candidates-20261007-02",
+      "included_unchanged_except_fixture_connection_redaction": true
+    },
+    {
+      "name": "joshin-navigation-fix-20261007",
+      "path": ".lab-output/joshin-navigation-fix-20261007",
+      "included_unchanged_except_fixture_connection_redaction": true
+    }
+  ],
+  "source_snapshot": "selected final working-tree files in source/; individual sources.json remain in shared evidence blobs",
+  "installed_bridge_snapshot": "environment/",
+  "extension_copies": "Candidate extension sources are retained without the runtime WebSocket password patch.",
+  "excluded": [
+    "browser profiles",
+    "runtime password files",
+    "runtime directories",
+    "dependency binaries",
+    "node_modules"
+  ],
+  "prior_benchmark": "benchmarks/joshin-blocking-20261007 was not modified or repackaged.",
+  "caveats": [
+    "Per-cell sources.json snapshots were made from the outer checkout filesystem at cell start; they do not prove which modules were already loaded or which source was installed in the bridge image.",
+    "environment/ records the installed helper/server/tab-navigation and package metadata. The initial direct-ISOLATED and final MAIN bridge helper versions are distinct source/time states.",
+    "Candidate extension copies implement tab_open(blank) then target. The contemporaneous main native goto directly opened the target, so this is not a like-for-like reproduction. The current native goto itself uses blank-to-MAIN; reproduce the historical POC with its base_commit/runtime snapshot, separately."
+  ],
+  "redaction": {
+    "paths": [
+      "runs/joshin-navigation-fix-20261007/fixture-native/summary.json",
+      "summary.json"
+    ],
+    "reason": "Remove ephemeral extension WebSocket authentication paths from exported fixture JSON. Original local runs, Evidence ledgers and content-addressed blobs are preserved."
+  }
+}
