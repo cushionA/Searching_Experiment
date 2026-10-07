@@ -7,6 +7,8 @@ import {createRequire} from 'node:module';
 import {EventEmitter} from 'node:events';
 import {Worker, isMainThread, parentPort, workerData} from 'node:worker_threads';
 import {repo, state, proxy} from './runtime.mjs';
+import navigation from '../fourget-selfhost/fourplay/tab-navigation.cjs';
+import documentGate from '../fourget-selfhost/fourplay/navigation-gate.cjs';
 
 const deps = path.resolve(process.env.BOT_DIAGNOSTICS_FOURPLAY_DEPS || path.join(repo, '.deps/fourplay'));
 const localRequire = createRequire(path.join(deps, 'package.json'));
@@ -32,6 +34,7 @@ if (!isMainThread && workerData?.fourplayServer) {
     tab_close:(tab,...args)=>fplay.tab_close(ws,tab,...args),
     container_attach_proxy:(container,config)=>fplay.container_attach_proxy(ws,container,config),
     tab_open:(url,awaitReady,container)=>fplay.tab_open(ws,url,awaitReady,container),
+    get_tab_list:()=>fplay.get_tab_list(ws),
     tab_inject_js:(tab,script,isolated)=>fplay.tab_inject_js(ws,tab,script,isolated),
     web_response_whitelist:sources=>fplay.web_response_whitelist(ws,sources)};
   parentPort.on('message',async message=>{
@@ -104,6 +107,13 @@ function nativeRequest(event, sequence, mainFrame) {
   return request;
 }
 
+function fixtureTraceURL(value) {
+  const text=String(value||'');
+  if(!/^wss?:/i.test(text)) return text;
+  // The extension authenticates its loopback WebSocket with a token in the path.
+  try {return new URL(text).origin+'/[redacted]';} catch {return 'websocket:[redacted]';}
+}
+
 class FourplayContext extends EventEmitter {
   constructor() { super(); this.browser = {version:()=>this.version || 'Firefox'}; }
   pages() { return this.page ? [this.page] : []; }
@@ -128,16 +138,26 @@ function makePage(server, container, context, onNavigate, waitForDomReady) {
     const previous=tab;
     tab=null;
     onNavigate(String(url));
-    const opened = await server.call('tab_open',String(url),false,container);
+    let opened;
+    try {
+      opened = await navigation.openDocumentTab({url:String(url),container,
+        tabOpen:(...args)=>server.call('tab_open',...args),
+        getTabs:()=>server.call('get_tab_list'),
+        inject:(...args)=>server.call('tab_inject_js',...args),
+        timeoutMs:Math.min(5000,options.timeout??25000),
+        onTab:opened=>{page._setTab(opened);onNavigate(null);}});
+    } catch(error) {
+      if(tab?.id!=null) await server.call('tab_close',tab.id).catch(()=>{});
+      page._setTab(previous);onNavigate(null);
+      throw error;
+    }
     timing.tab_open_ms=performance.now()-started;
     if (!opened || opened === false) throw new Error('fourplay_navigation_failed');
-    page._setTab(opened);
     const closeStarted=performance.now();
     if(previous?.id != null) await server.call('tab_close',previous.id);
     timing.previous_tab_close_ms=performance.now()-closeStarted;
-    onNavigate(null);
     const gateStarted=performance.now();
-    const ready=await waitForDomReady(opened.id,options.timeout);
+    const ready=await waitForDomReady(opened.id,Math.max(1,(options.timeout??25000)-(performance.now()-started)));
     timing.remaining_dom_gate_ms=performance.now()-gateStarted;
     timing.total_ms=performance.now()-started;
     page._setTab({...opened,url:ready.url});
@@ -334,9 +354,19 @@ export async function openFourplayNative({fixture=false, profile='diagnostic', s
       if (!await server.call('container_attach_proxy',container,proxyConfig)) throw new Error('fourplay_proxy_attach_failed');
     }
     let activeTabId=null,navigatingUrl=null;
-    const domReadyEvents=new Map(),domFailures=new Map(),domWaiters=new Map();
+    const domReadyEvents=new Map(),domFailures=new Map(),domWaiters=new Map(),documentResponses=new Map();
+    const completed=id=>{
+      const event=domReadyEvents.get(id);
+      return event && documentGate.completedDocument(event,{tab:{id},container,responses:documentResponses.get(id)||[]})?event:null;
+    };
+    const resolveDocument=id=>{
+      const ready=completed(id);
+      if(!ready) return;
+      domWaiters.get(id)?.resolve(ready);domWaiters.delete(id);
+    };
     const waitForDomReady=(id,timeout=25000)=>{
-      if(domReadyEvents.has(id)) return Promise.resolve(domReadyEvents.get(id));
+      const ready=completed(id);
+      if(ready) return Promise.resolve(ready);
       if(domFailures.has(id)) return Promise.reject(new Error(`fourplay_navigation_failed: ${domFailures.get(id)}`));
       return new Promise((resolve,reject)=>{
         const timer=setTimeout(()=>{domWaiters.delete(id);reject(new Error('fourplay_dom_ready_timeout'));},timeout);
@@ -346,6 +376,9 @@ export async function openFourplayNative({fixture=false, profile='diagnostic', s
     const page=makePage(server,container,context,url=>{
       navigatingUrl=url;
       activeTabId=url===null?page._tabId:null;
+      if(activeTabId!==null) {
+        domReadyEvents.delete(activeTabId);domFailures.delete(activeTabId);documentResponses.delete(activeTabId);
+      }
     },waitForDomReady);
     context.page=page;
     const mainFrame=page.mainFrame();
@@ -360,7 +393,7 @@ export async function openFourplayNative({fixture=false, profile='diagnostic', s
       ? `tab:${event.id}|method:${event.method||'GET'}|type:${event.type||'other'}|url:${event.url}`
       : `url:${event.url}:${++sequence}`;
     const onRequest=event=>{
-      if(fixture) fixtureEvents.push({kind:'request',id:event.id,url:event.url,type:event.type,container:event.container,active_tab:activeTabId,navigating_url:navigatingUrl});
+      if(fixture) fixtureEvents.push({kind:'request',id:event.id,url:fixtureTraceURL(event.url),type:event.type,container:event.container,active_tab:activeTabId,navigating_url:navigatingUrl});
       if(!accepts(event)) return;
       const request=nativeRequest(event,++sequence,mainFrame);
       const key=keyFor(event), queue=pending.get(key)||[]; queue.push(request); pending.set(key,queue);
@@ -368,7 +401,7 @@ export async function openFourplayNative({fixture=false, profile='diagnostic', s
       context.emit('request',request); page.emit('request',request);
     };
     const onResponse=event=>{
-      if(fixture) fixtureEvents.push({kind:'response',id:event.id,url:event.url,type:event.type,container:event.container,status:event.status,active_tab:activeTabId,navigating_url:navigatingUrl});
+      if(fixture) fixtureEvents.push({kind:'response',id:event.id,url:fixtureTraceURL(event.url),type:event.type,container:event.container,status:event.status,active_tab:activeTabId,navigating_url:navigatingUrl});
       if(!accepts(event)) return;
       const key=keyFor(event), queue=pending.get(key)||[], request=queue.shift() || nativeRequest(event,++sequence,mainFrame);
       if(queue.length) pending.set(key,queue); else pending.delete(key);
@@ -376,6 +409,10 @@ export async function openFourplayNative({fixture=false, profile='diagnostic', s
       const response={request:()=>request,url:()=>String(event.url||''),status:()=>Number(event.status),
         headers:()=>headersObject(event.headers),allHeaders:async()=>headersObject(event.headers),body:async()=>Buffer.from(raw)};
       context.emit('response',response); page.emit('response',response);
+      if(event.type==='main_frame') {
+        const documents=documentResponses.get(event.id)||[];documents.push(event);documentResponses.set(event.id,documents);
+        resolveDocument(event.id);
+      }
     };
     const onFailure=event=>{
       if(/^HTTP\/[\d.]+\s+[45]\d\d\b/i.test(String(event.error||''))) return;
@@ -395,9 +432,9 @@ export async function openFourplayNative({fixture=false, profile='diagnostic', s
       context.emit('requestfailed',request); page.emit('requestfailed',request);
     };
     const onDomReady=event=>{
-      if(String(event.container)!==String(container.id)) return;
+      if(event.id!==activeTabId || String(event.container)!==String(container.id) || !/^https?:\/\//i.test(event.url||'')) return;
       domReadyEvents.set(event.id,event);
-      domWaiters.get(event.id)?.resolve(event); domWaiters.delete(event.id);
+      resolveDocument(event.id);
       if(activeTabId===event.id) page._setTab({...page._currentTab,url:event.url});
     };
     await server.call('web_response_whitelist',['main_frame','xmlhttprequest','sub_frame','script','stylesheet','image','font','media','object','ping','other']);
@@ -412,7 +449,8 @@ export async function openFourplayNative({fixture=false, profile='diagnostic', s
       selector_operations:false,challenge_actions:false,initial_tabs_preserved:true,
       ...(fixture?{fixture_event_trace:fixtureEvents}:{}),
       fixture_network_isolation:fixture?'container proxy forwards only loopback HTTP; external destinations and CONNECT are denied':null,
-      wait_condition:'tab_open returns the native tab id; then waits for tabs.onUpdated status=complete (dom_ready)',
+      navigation_method:'about:blank complete, then MAIN-world location.assign via a temporary script; browser-generated request headers',
+      wait_condition:'active tab/container HTTP document response matches tabs.onUpdated status=complete; blank cannot complete navigation',
       budgeted_navigation:false,redirect_chain_reporting:false,request_id_source:'not_exposed; correlation uses tab_id+method+type+url+arrival_order',frame_matching:'active_container_and_tab_id',
       observation_limits:['screenshots_unsupported','viewport_not_measured','frame_matching_incomplete','redirect_chain_not_reported','response_headers_not_provided_by_4play','websocket_frames_not_recorded']};
     const close=async()=>{

@@ -4,6 +4,7 @@ const http = require('node:http');
 const fs = require('node:fs');
 const crypto = require('node:crypto');
 const {waitForDocument,validateReadyCondition,remainingWaitBudget,waitForReadyCondition} = require('./navigation-gate.cjs');
+const {openDocumentTab} = require('./tab-navigation.cjs');
 const password = fs.readFileSync('/run/fourplay-password.txt', 'utf8').trim();
 const timeout = 28000;
 const sessions = new Map();
@@ -15,6 +16,7 @@ const idOf = value => typeof value === 'string' ? value : value?.id;
 const runtime = {engine:'firefox',transport:'4play-extension',headless:false,display:':99',
   viewport:{width:1280,height:720},display_backend:'Xvfb',hardware_gpu_verified:false,
   screenshots:false,budgeted_navigation:false,response_headers:false};
+runtime.navigation_method='about:blank complete, then MAIN-world location.assign via a temporary script; browser-generated request headers';
 const supportedSources = ['main_frame','sub_frame','stylesheet','script','image','object',
   'xmlhttprequest','ping','font','media','csp_report','imageset','web_manifest','other'];
 
@@ -101,8 +103,17 @@ fplay.event.on('browser_disconnect',()=>{browserReady=false;ws=null;sessions.cle
 async function openTab(session,url) {
   if (session.tab) await fplay.tab_close(ws,session.tab);
   session.responses=[];session.errors=[];session.active=true;session.touched=Date.now();
-  session.tab=await fplay.tab_open(ws,checkedURL(url,session.fixture),false,session.container);
-  if (!session.tab) throw new Error('tab_open_failed');
+  session.tab=null;
+  try {
+    await openDocumentTab({url:checkedURL(url,session.fixture),container:session.container,
+      tabOpen:(...args)=>fplay.tab_open(ws,...args),getTabs:()=>fplay.get_tab_list(ws),
+      inject:(...args)=>fplay.tab_inject_js(ws,...args),onTab:tab=>{session.tab=tab;}});
+  } catch(error) {
+    session.active=false;
+    if(session.tab) await fplay.tab_close(ws,session.tab).catch(()=>{});
+    session.tab=null;
+    throw error;
+  }
 }
 async function navigate(session,{url,observe_ms = 1000,ready_condition}) {
   const started=performance.now(),deadline=started+24000;

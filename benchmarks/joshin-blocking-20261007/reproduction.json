@@ -1,0 +1,18 @@
+{
+  "preparation": [
+    "git fetch origin main",
+    "python3 -B experiments/fourget-selfhost/start.py",
+    "NODE_EXTRA_CA_CERTS=\"$CODEX_PROXY_CERT\" python3 -B experiments/bot-diagnostics/setup-camoufox.py"
+  ],
+  "fourplay": "node experiments/bot-diagnostics/joshin-wait-diagnostics.mjs NEW_DIRECTORY --4play",
+  "camoufox": "Run the helper --camoufox inside the same image with /workspace bound at the same path, Xvfb, inherited HTTP_PROXY/HTTPS_PROXY, the existing CA mounted read-only, and proxy hostname mapped to the host-resolved managed proxy IP.",
+  "hybrid": "Install benchmarks/pr17-20261006/environment/fourplay-package-lock.json in .deps/fourplay; verify/extract official 4play 1.10 XPI into .deps/fourplay/ext; set BOT_DIAGNOSTICS_CAMOUFOX_FOURPLAY_EXTENSION; run helper NEW_DIRECTORY --hybrid PRIOR_CAMOUFOX_DIRECTORY.",
+  "fingerprint_matched_playwright": "Run helper NEW_DIRECTORY --camoufox PRIOR_HYBRID_DIRECTORY.",
+  "metadata_probe": "python3 -B experiments/bot-diagnostics/joshin-fetch-metadata-probe.py NEW_DIRECTORY",
+  "runtime_environment": [
+    "BOT_DIAGNOSTICS_SOURCE_COMMIT=3a197da67cac7103f659c3c00833b1142a64c8df (for image without git)",
+    "CODEX_PROXY_CERT must refer to the read-only existing session CA inside Docker",
+    "retain environment proxy and verified TLS",
+    "a new output directory for every run"
+  ]
+}
