@@ -1,0 +1,1041 @@
+{
+  "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+  "query": "グローブ",
+  "target": "https://joshinweb.jp/",
+  "browser": "Patchright + Playwright, headful Chromium",
+  "condition": "direct; TLS verification enabled; Asia/Tokyo",
+  "runs": {
+    "fixture-ja-complete": {
+      "run": "fixture-ja-complete",
+      "mode": "patchright-ja-fixture",
+      "homepage_status": 200,
+      "status_codes": [
+        200,
+        200,
+        200
+      ],
+      "successful_result_pages": 3,
+      "total_product_occurrences": 6,
+      "unique_product_urls": 6,
+      "pagination_clicks": 2,
+      "catalog_total_reported": 6,
+      "max_page": 3,
+      "pagination_complete": true,
+      "stop_reason": "last_page_reached_and_reported_total_matched",
+      "environment": {
+        "observed": true,
+        "pages_observed": 4,
+        "all_match_expected_locale_and_jst": true,
+        "samples": [
+          {
+            "navigator_language": "ja-JP",
+            "navigator_languages": [
+              "ja-JP"
+            ],
+            "intl_locale": "ja-JP",
+            "timezone": "Asia/Tokyo",
+            "timezone_offset_minutes": {
+              "now": -540,
+              "jan_1_2026": -540,
+              "jul_1_2026": -540
+            }
+          },
+          {
+            "navigator_language": "ja-JP",
+            "navigator_languages": [
+              "ja-JP"
+            ],
+            "intl_locale": "ja-JP",
+            "timezone": "Asia/Tokyo",
+            "timezone_offset_minutes": {
+              "now": -540,
+              "jan_1_2026": -540,
+              "jul_1_2026": -540
+            }
+          },
+          {
+            "navigator_language": "ja-JP",
+            "navigator_languages": [
+              "ja-JP"
+            ],
+            "intl_locale": "ja-JP",
+            "timezone": "Asia/Tokyo",
+            "timezone_offset_minutes": {
+              "now": -540,
+              "jan_1_2026": -540,
+              "jul_1_2026": -540
+            }
+          },
+          {
+            "navigator_language": "ja-JP",
+            "navigator_languages": [
+              "ja-JP"
+            ],
+            "intl_locale": "ja-JP",
+            "timezone": "Asia/Tokyo",
+            "timezone_offset_minutes": {
+              "now": -540,
+              "jan_1_2026": -540,
+              "jul_1_2026": -540
+            }
+          }
+        ]
+      },
+      "document_observation": {
+        "document_requests": 4,
+        "search_document_requests": 3,
+        "frame_is_active_top_level_all_true": true,
+        "tab_ids_all_null": true,
+        "container_ids_all_null": true,
+        "playwright_page_model": "one retained browser.page; request frame is checked as active top-level",
+        "document_time_origin_values": [
+          1791390098553.2,
+          1791390099231.4,
+          1791390099878.8
+        ],
+        "numeric_time_origin_count": 3,
+        "unique_numeric_time_origin_count": 3,
+        "cookie_names_only": [
+          "joshin-pagination-session"
+        ]
+      },
+      "request_start_intervals": {
+        "count": 2,
+        "mean_seconds": 0.663,
+        "median_seconds": 0.663,
+        "min_seconds": 0.646,
+        "max_seconds": 0.68,
+        "p90_seconds": 0.677,
+        "p90_method": "linear interpolation, position=0.9*(n-1)"
+      },
+      "click_time_intervals": {
+        "count": 1,
+        "mean_seconds": 0.648,
+        "median_seconds": 0.648,
+        "min_seconds": 0.648,
+        "max_seconds": 0.648,
+        "p90_seconds": 0.648,
+        "p90_method": "linear interpolation, position=0.9*(n-1)"
+      },
+      "ledger_route_labels": [
+        "local_fixture"
+      ],
+      "conditions": {
+        "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+        "started_at": "2026-10-07T16:21:30.715Z",
+        "mode": "patchright-ja-fixture",
+        "query": "グローブ",
+        "homepage_url": "http://127.0.0.1:45219/top.html",
+        "node": "v22.15.0",
+        "homepage_settle_ms": 6000,
+        "browser_control": "Patchright + Playwright",
+        "profile": "fresh per run; same cookie session and tab retained for search submission",
+        "fingerprint_sha256": null,
+        "regional_condition": null,
+        "patchright_condition": {
+          "locale": "ja-JP",
+          "timezone": "Asia/Tokyo",
+          "context_source": "Patchright browser.newContext options",
+          "service_workers": "allow",
+          "tls_verification": "enabled",
+          "camoufox_fingerprint_applied": false,
+          "requested_page_limit": 3
+        },
+        "submission": "fill observed #suggest_input then DOM click on the observed changeSubmit search anchor",
+        "input_events_trusted": null,
+        "pointer_events_used": false,
+        "wheel_used": false,
+        "submission_control": "Playwright locator.fill plus observed anchor DOM click",
+        "search_click_is_trusted": false,
+        "tab_container_observation": "Playwright request metadata does not expose tab_id or container; values remain null",
+        "wait": "actual HTTP main-document response plus complete changed document; 30s timeout",
+        "network": "loopback fixture; TLS verification enabled",
+        "fixture": true,
+        "fixture_route": "Playwright context route allows same-origin loopback HTTP and aborts external requests",
+        "proxy_configured": false,
+        "tls_verification": "enabled",
+        "proxy_environment_present": {
+          "HTTPS_PROXY": false,
+          "https_proxy": false,
+          "HTTP_PROXY": false,
+          "http_proxy": false,
+          "ALL_PROXY": false,
+          "all_proxy": false
+        },
+        "capture_scope": "main-document request/response bodies, request header allowlist, DOM and extraction observations; subresources load normally but are not archived",
+        "limitations": [
+          "Playwright exposes response headers; tab_id and container are not exposed by request metadata",
+          "native DOM fill/click does not establish equivalence to trusted physical user input",
+          "Observed product cards, page fields, and pager anchors are recorded per document; page advancement requires a new document response, PAGE_NO increment, and displayed-range increment"
+        ]
+      },
+      "runtime": {
+        "executable": "/home/zabuton/.local/share/searchengine-bot-diagnostics/deps/chromium",
+        "version": "153.0.8010.12",
+        "headless": false,
+        "display": ":99",
+        "viewport": {
+          "width": 1280,
+          "height": 720
+        },
+        "locale": "ja-JP",
+        "timezoneId": "Asia/Tokyo",
+        "service_workers": "allow",
+        "tls_verification": "enabled",
+        "camoufox_fingerprint_applied": false
+      },
+      "submission": {
+        "input_value": "グローブ",
+        "input_name": "QK",
+        "form_action": "http://127.0.0.1:45219/srhzs.html",
+        "form_method": "get",
+        "accept_charset": "UTF-8",
+        "document_charset": "UTF-8",
+        "icon_count": 1,
+        "icon_href": "javascript:changeSubmit()"
+      },
+      "first_search_document": {
+        "http_status": 200,
+        "title": "グローブ | Joshin same-URL POST fixture",
+        "text_prefix": "検索\n6件中1～2件\n1 2 3 ->\nグローブ fixture 1\n1,000円（税込）\nグローブ fixture 2\n2,000円（税込）\n1 2 3 ->",
+        "document_time_origin": 1791390098553.2
+      },
+      "error": null,
+      "products_file": "product-names.json",
+      "csv_file": "product-names.csv"
+    },
+    "fixture-ja-denied": {
+      "run": "fixture-ja-denied",
+      "mode": "patchright-ja-fixture",
+      "homepage_status": 200,
+      "status_codes": [
+        200,
+        403
+      ],
+      "successful_result_pages": 1,
+      "total_product_occurrences": 2,
+      "unique_product_urls": 2,
+      "pagination_clicks": 1,
+      "catalog_total_reported": 6,
+      "max_page": 3,
+      "pagination_complete": false,
+      "stop_reason": "http_403_on_page_2",
+      "environment": {
+        "observed": true,
+        "pages_observed": 3,
+        "all_match_expected_locale_and_jst": true,
+        "samples": [
+          {
+            "navigator_language": "ja-JP",
+            "navigator_languages": [
+              "ja-JP"
+            ],
+            "intl_locale": "ja-JP",
+            "timezone": "Asia/Tokyo",
+            "timezone_offset_minutes": {
+              "now": -540,
+              "jan_1_2026": -540,
+              "jul_1_2026": -540
+            }
+          },
+          {
+            "navigator_language": "ja-JP",
+            "navigator_languages": [
+              "ja-JP"
+            ],
+            "intl_locale": "ja-JP",
+            "timezone": "Asia/Tokyo",
+            "timezone_offset_minutes": {
+              "now": -540,
+              "jan_1_2026": -540,
+              "jul_1_2026": -540
+            }
+          },
+          {
+            "navigator_language": "ja-JP",
+            "navigator_languages": [
+              "ja-JP"
+            ],
+            "intl_locale": "ja-JP",
+            "timezone": "Asia/Tokyo",
+            "timezone_offset_minutes": {
+              "now": -540,
+              "jan_1_2026": -540,
+              "jul_1_2026": -540
+            }
+          }
+        ]
+      },
+      "document_observation": {
+        "document_requests": 3,
+        "search_document_requests": 2,
+        "frame_is_active_top_level_all_true": true,
+        "tab_ids_all_null": true,
+        "container_ids_all_null": true,
+        "playwright_page_model": "one retained browser.page; request frame is checked as active top-level",
+        "document_time_origin_values": [
+          1791390108780.2,
+          1791390109454
+        ],
+        "numeric_time_origin_count": 2,
+        "unique_numeric_time_origin_count": 2,
+        "cookie_names_only": [
+          "joshin-pagination-session"
+        ]
+      },
+      "request_start_intervals": {
+        "count": 1,
+        "mean_seconds": 0.673,
+        "median_seconds": 0.673,
+        "min_seconds": 0.673,
+        "max_seconds": 0.673,
+        "p90_seconds": 0.673,
+        "p90_method": "linear interpolation, position=0.9*(n-1)"
+      },
+      "click_time_intervals": {
+        "count": 0,
+        "mean_seconds": null,
+        "median_seconds": null,
+        "min_seconds": null,
+        "max_seconds": null,
+        "p90_seconds": null,
+        "p90_method": "linear interpolation, position=0.9*(n-1)"
+      },
+      "ledger_route_labels": [
+        "local_fixture"
+      ],
+      "conditions": {
+        "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+        "started_at": "2026-10-07T16:21:41.751Z",
+        "mode": "patchright-ja-fixture",
+        "query": "グローブ",
+        "homepage_url": "http://127.0.0.1:42585/top.html",
+        "node": "v22.15.0",
+        "homepage_settle_ms": 6000,
+        "browser_control": "Patchright + Playwright",
+        "profile": "fresh per run; same cookie session and tab retained for search submission",
+        "fingerprint_sha256": null,
+        "regional_condition": null,
+        "patchright_condition": {
+          "locale": "ja-JP",
+          "timezone": "Asia/Tokyo",
+          "context_source": "Patchright browser.newContext options",
+          "service_workers": "allow",
+          "tls_verification": "enabled",
+          "camoufox_fingerprint_applied": false,
+          "requested_page_limit": 3
+        },
+        "submission": "fill observed #suggest_input then DOM click on the observed changeSubmit search anchor",
+        "input_events_trusted": null,
+        "pointer_events_used": false,
+        "wheel_used": false,
+        "submission_control": "Playwright locator.fill plus observed anchor DOM click",
+        "search_click_is_trusted": false,
+        "tab_container_observation": "Playwright request metadata does not expose tab_id or container; values remain null",
+        "wait": "actual HTTP main-document response plus complete changed document; 30s timeout",
+        "network": "loopback fixture; TLS verification enabled",
+        "fixture": true,
+        "fixture_route": "Playwright context route allows same-origin loopback HTTP and aborts external requests",
+        "proxy_configured": false,
+        "tls_verification": "enabled",
+        "proxy_environment_present": {
+          "HTTPS_PROXY": false,
+          "https_proxy": false,
+          "HTTP_PROXY": false,
+          "http_proxy": false,
+          "ALL_PROXY": false,
+          "all_proxy": false
+        },
+        "capture_scope": "main-document request/response bodies, request header allowlist, DOM and extraction observations; subresources load normally but are not archived",
+        "limitations": [
+          "Playwright exposes response headers; tab_id and container are not exposed by request metadata",
+          "native DOM fill/click does not establish equivalence to trusted physical user input",
+          "Observed product cards, page fields, and pager anchors are recorded per document; page advancement requires a new document response, PAGE_NO increment, and displayed-range increment"
+        ]
+      },
+      "runtime": {
+        "executable": "/home/zabuton/.local/share/searchengine-bot-diagnostics/deps/chromium",
+        "version": "153.0.8010.12",
+        "headless": false,
+        "display": ":99",
+        "viewport": {
+          "width": 1280,
+          "height": 720
+        },
+        "locale": "ja-JP",
+        "timezoneId": "Asia/Tokyo",
+        "service_workers": "allow",
+        "tls_verification": "enabled",
+        "camoufox_fingerprint_applied": false
+      },
+      "submission": {
+        "input_value": "グローブ",
+        "input_name": "QK",
+        "form_action": "http://127.0.0.1:42585/srhzs.html",
+        "form_method": "get",
+        "accept_charset": "UTF-8",
+        "document_charset": "UTF-8",
+        "icon_count": 1,
+        "icon_href": "javascript:changeSubmit()"
+      },
+      "first_search_document": {
+        "http_status": 200,
+        "title": "グローブ | Joshin same-URL POST fixture",
+        "text_prefix": "検索\n6件中1～2件\n1 2 3 ->\nグローブ fixture 1\n1,000円（税込）\nグローブ fixture 2\n2,000円（税込）\n1 2 3 ->",
+        "document_time_origin": 1791390108780.2
+      },
+      "error": null,
+      "products_file": "product-names.json",
+      "csv_file": "product-names.csv"
+    },
+    "fixture-en-complete": {
+      "run": "fixture-en-complete",
+      "mode": "patchright-en-fixture",
+      "homepage_status": 200,
+      "status_codes": [
+        200
+      ],
+      "successful_result_pages": 1,
+      "total_product_occurrences": 2,
+      "unique_product_urls": 2,
+      "pagination_clicks": 0,
+      "catalog_total_reported": 6,
+      "max_page": 3,
+      "pagination_complete": false,
+      "stop_reason": "requested_page_limit_reached",
+      "environment": {
+        "observed": true,
+        "pages_observed": 2,
+        "all_match_expected_locale_and_jst": true,
+        "samples": [
+          {
+            "navigator_language": "en-US",
+            "navigator_languages": [
+              "en-US"
+            ],
+            "intl_locale": "en-US",
+            "timezone": "Asia/Tokyo",
+            "timezone_offset_minutes": {
+              "now": -540,
+              "jan_1_2026": -540,
+              "jul_1_2026": -540
+            }
+          },
+          {
+            "navigator_language": "en-US",
+            "navigator_languages": [
+              "en-US"
+            ],
+            "intl_locale": "en-US",
+            "timezone": "Asia/Tokyo",
+            "timezone_offset_minutes": {
+              "now": -540,
+              "jan_1_2026": -540,
+              "jul_1_2026": -540
+            }
+          }
+        ]
+      },
+      "document_observation": {
+        "document_requests": 2,
+        "search_document_requests": 1,
+        "frame_is_active_top_level_all_true": true,
+        "tab_ids_all_null": true,
+        "container_ids_all_null": true,
+        "playwright_page_model": "one retained browser.page; request frame is checked as active top-level",
+        "document_time_origin_values": [
+          1791390118205.9
+        ],
+        "numeric_time_origin_count": 1,
+        "unique_numeric_time_origin_count": 1,
+        "cookie_names_only": [
+          "joshin-pagination-session"
+        ]
+      },
+      "request_start_intervals": {
+        "count": 0,
+        "mean_seconds": null,
+        "median_seconds": null,
+        "min_seconds": null,
+        "max_seconds": null,
+        "p90_seconds": null,
+        "p90_method": "linear interpolation, position=0.9*(n-1)"
+      },
+      "click_time_intervals": {
+        "count": 0,
+        "mean_seconds": null,
+        "median_seconds": null,
+        "min_seconds": null,
+        "max_seconds": null,
+        "p90_seconds": null,
+        "p90_method": "linear interpolation, position=0.9*(n-1)"
+      },
+      "ledger_route_labels": [
+        "local_fixture"
+      ],
+      "conditions": {
+        "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+        "started_at": "2026-10-07T16:21:51.236Z",
+        "mode": "patchright-en-fixture",
+        "query": "グローブ",
+        "homepage_url": "http://127.0.0.1:46345/top.html",
+        "node": "v22.15.0",
+        "homepage_settle_ms": 6000,
+        "browser_control": "Patchright + Playwright",
+        "profile": "fresh per run; same cookie session and tab retained for search submission",
+        "fingerprint_sha256": null,
+        "regional_condition": null,
+        "patchright_condition": {
+          "locale": "en-US",
+          "timezone": "Asia/Tokyo",
+          "context_source": "Patchright browser.newContext options",
+          "service_workers": "allow",
+          "tls_verification": "enabled",
+          "camoufox_fingerprint_applied": false,
+          "requested_page_limit": 1
+        },
+        "submission": "fill observed #suggest_input then DOM click on the observed changeSubmit search anchor",
+        "input_events_trusted": null,
+        "pointer_events_used": false,
+        "wheel_used": false,
+        "submission_control": "Playwright locator.fill plus observed anchor DOM click",
+        "search_click_is_trusted": false,
+        "tab_container_observation": "Playwright request metadata does not expose tab_id or container; values remain null",
+        "wait": "actual HTTP main-document response plus complete changed document; 30s timeout",
+        "network": "loopback fixture; TLS verification enabled",
+        "fixture": true,
+        "fixture_route": "Playwright context route allows same-origin loopback HTTP and aborts external requests",
+        "proxy_configured": false,
+        "tls_verification": "enabled",
+        "proxy_environment_present": {
+          "HTTPS_PROXY": false,
+          "https_proxy": false,
+          "HTTP_PROXY": false,
+          "http_proxy": false,
+          "ALL_PROXY": false,
+          "all_proxy": false
+        },
+        "capture_scope": "main-document request/response bodies, request header allowlist, DOM and extraction observations; subresources load normally but are not archived",
+        "limitations": [
+          "Playwright exposes response headers; tab_id and container are not exposed by request metadata",
+          "native DOM fill/click does not establish equivalence to trusted physical user input",
+          "Observed product cards, page fields, and pager anchors are recorded per document; page advancement requires a new document response, PAGE_NO increment, and displayed-range increment"
+        ]
+      },
+      "runtime": {
+        "executable": "/home/zabuton/.local/share/searchengine-bot-diagnostics/deps/chromium",
+        "version": "153.0.8010.12",
+        "headless": false,
+        "display": ":99",
+        "viewport": {
+          "width": 1280,
+          "height": 720
+        },
+        "locale": "en-US",
+        "timezoneId": "Asia/Tokyo",
+        "service_workers": "allow",
+        "tls_verification": "enabled",
+        "camoufox_fingerprint_applied": false
+      },
+      "submission": {
+        "input_value": "グローブ",
+        "input_name": "QK",
+        "form_action": "http://127.0.0.1:46345/srhzs.html",
+        "form_method": "get",
+        "accept_charset": "UTF-8",
+        "document_charset": "UTF-8",
+        "icon_count": 1,
+        "icon_href": "javascript:changeSubmit()"
+      },
+      "first_search_document": {
+        "http_status": 200,
+        "title": "グローブ | Joshin same-URL POST fixture",
+        "text_prefix": "検索\n6件中1～2件\n1 2 3 ->\nグローブ fixture 1\n1,000円（税込）\nグローブ fixture 2\n2,000円（税込）\n1 2 3 ->",
+        "document_time_origin": 1791390118205.9
+      },
+      "error": null,
+      "products_file": "product-names.json",
+      "csv_file": "product-names.csv"
+    },
+    "live-ja": {
+      "run": "live-ja",
+      "mode": "patchright-ja",
+      "homepage_status": 200,
+      "status_codes": [
+        404
+      ],
+      "successful_result_pages": 0,
+      "total_product_occurrences": null,
+      "unique_product_urls": null,
+      "pagination_clicks": 0,
+      "catalog_total_reported": null,
+      "max_page": null,
+      "pagination_complete": false,
+      "stop_reason": "search_http_404",
+      "environment": {
+        "observed": true,
+        "pages_observed": 2,
+        "all_match_expected_locale_and_jst": true,
+        "samples": [
+          {
+            "navigator_language": "ja-JP",
+            "navigator_languages": [
+              "ja-JP"
+            ],
+            "intl_locale": "ja-JP",
+            "timezone": "Asia/Tokyo",
+            "timezone_offset_minutes": {
+              "now": -540,
+              "jan_1_2026": -540,
+              "jul_1_2026": -540
+            }
+          },
+          {
+            "navigator_language": "ja-JP",
+            "navigator_languages": [
+              "ja-JP"
+            ],
+            "intl_locale": "ja-JP",
+            "timezone": "Asia/Tokyo",
+            "timezone_offset_minutes": {
+              "now": -540,
+              "jan_1_2026": -540,
+              "jul_1_2026": -540
+            }
+          }
+        ]
+      },
+      "document_observation": {
+        "document_requests": 2,
+        "search_document_requests": 1,
+        "frame_is_active_top_level_all_true": true,
+        "tab_ids_all_null": true,
+        "container_ids_all_null": true,
+        "playwright_page_model": "one retained browser.page; request frame is checked as active top-level",
+        "document_time_origin_values": [
+          1791390184986.6
+        ],
+        "numeric_time_origin_count": 1,
+        "unique_numeric_time_origin_count": 1,
+        "cookie_names_only": [
+          "AUTHENTICATION_ODR_2",
+          "QueueITAccepted-SDFrts345E-V3_wholeweb",
+          "X-Oracle-PRD-ECWEB-81",
+          "X-Oracle-PRD-IMG-80",
+          "__rtbh.lid",
+          "__rtbh.uid",
+          "_abck",
+          "_bd_prev_page",
+          "_bd_prev_page_ex",
+          "_bdck",
+          "_bdnvf",
+          "_bdsid",
+          "_clck",
+          "_clsk",
+          "_ga",
+          "_ga_Y972QW0EQF",
+          "_gcl_au",
+          "_yjsu_yjad",
+          "ak_bmsc",
+          "authentication_uuid",
+          "bm_sv",
+          "bm_sz",
+          "ga_session_pv",
+          "zd-cookie-session-id",
+          "zd-cookie-user-id"
+        ]
+      },
+      "request_start_intervals": {
+        "count": 0,
+        "mean_seconds": null,
+        "median_seconds": null,
+        "min_seconds": null,
+        "max_seconds": null,
+        "p90_seconds": null,
+        "p90_method": "linear interpolation, position=0.9*(n-1)"
+      },
+      "click_time_intervals": {
+        "count": 0,
+        "mean_seconds": null,
+        "median_seconds": null,
+        "min_seconds": null,
+        "max_seconds": null,
+        "p90_seconds": null,
+        "p90_method": "linear interpolation, position=0.9*(n-1)"
+      },
+      "ledger_route_labels": [
+        "environment_proxy"
+      ],
+      "conditions": {
+        "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+        "started_at": "2026-10-07T16:22:55.892Z",
+        "mode": "patchright-ja",
+        "query": "グローブ",
+        "homepage_url": "https://joshinweb.jp/top.html",
+        "node": "v22.15.0",
+        "homepage_settle_ms": 6000,
+        "browser_control": "Patchright + Playwright",
+        "profile": "fresh per run; same cookie session and tab retained for search submission",
+        "fingerprint_sha256": null,
+        "regional_condition": null,
+        "patchright_condition": {
+          "locale": "ja-JP",
+          "timezone": "Asia/Tokyo",
+          "context_source": "Patchright browser.newContext options",
+          "service_workers": "allow",
+          "tls_verification": "enabled",
+          "camoufox_fingerprint_applied": false,
+          "requested_page_limit": 3
+        },
+        "submission": "fill observed #suggest_input then DOM click on the observed changeSubmit search anchor",
+        "input_events_trusted": null,
+        "pointer_events_used": false,
+        "wheel_used": false,
+        "submission_control": "Playwright locator.fill plus observed anchor DOM click",
+        "search_click_is_trusted": false,
+        "tab_container_observation": "Playwright request metadata does not expose tab_id or container; values remain null",
+        "wait": "actual HTTP main-document response plus complete changed document; 30s timeout",
+        "network": "direct; TLS verification enabled",
+        "fixture": false,
+        "fixture_route": null,
+        "proxy_configured": false,
+        "tls_verification": "enabled",
+        "proxy_environment_present": {
+          "HTTPS_PROXY": false,
+          "https_proxy": false,
+          "HTTP_PROXY": false,
+          "http_proxy": false,
+          "ALL_PROXY": false,
+          "all_proxy": false
+        },
+        "capture_scope": "main-document request/response bodies, request header allowlist, DOM and extraction observations; subresources load normally but are not archived",
+        "limitations": [
+          "Playwright exposes response headers; tab_id and container are not exposed by request metadata",
+          "native DOM fill/click does not establish equivalence to trusted physical user input",
+          "Observed product cards, page fields, and pager anchors are recorded per document; page advancement requires a new document response, PAGE_NO increment, and displayed-range increment"
+        ]
+      },
+      "runtime": {
+        "executable": "/home/zabuton/.local/share/searchengine-bot-diagnostics/deps/chromium",
+        "version": "153.0.8010.12",
+        "headless": false,
+        "display": ":99",
+        "viewport": {
+          "width": 1280,
+          "height": 720
+        },
+        "locale": "ja-JP",
+        "timezoneId": "Asia/Tokyo",
+        "service_workers": "allow",
+        "tls_verification": "enabled",
+        "camoufox_fingerprint_applied": false
+      },
+      "submission": {
+        "input_value": "グローブ",
+        "input_name": "QK",
+        "form_action": "https://joshinweb.jp/srhzs.html",
+        "form_method": "get",
+        "accept_charset": "",
+        "document_charset": "Shift_JIS",
+        "icon_count": 1,
+        "icon_href": "javascript:if (document.getElementsByName(\"QK\")[0].value!='') { changeSubmit(); }"
+      },
+      "first_search_document": {
+        "http_status": 404,
+        "title": "Joshin web | 家電とパソコンの大型専門店",
+        "text_prefix": "家電・PC・ホビーの大型専門店Joshin webショップ通販サイト\n\n企業情報\n店舗情報\n買取サービス\n会員ページ\nお気に入り\nお買い物方法\nカートを見る\n一般商品\n0 点 0 円\n音楽映像\n0 点 0 円\n全ての商品\n冷蔵庫・洗濯機・掃除機・生活家電\nエアコン・季節・空調\n住宅設備・リフォーム\n調理・キッチン\n美容・健康\nインテリア・家具・照明\nテレビ・レコーダー\nオーディオ・ヘッドホン・楽器\n高級オーディオ\nパソコン・タブレット\nＰＣ周辺機器・ソフト・インク\n文房具・オフィス用品・電子辞書\nスマートフォン・アクセサリー\nカメラ\n車・バイク用品\nＤＩＹ・工具・ガーデニング\nスポーツ・釣具・アウトドア\nアパレル・シューズ・バッグ\n時計・スマートウォッチ\nテレビゲーム（TVゲーム）\nおもちゃ\n模型\n鉄道模型\n日用品・ベビー・介護・ペット\nお酒・飲料・食品\n医薬品\n音楽・映像ソフト\n新規会員登録\n無料\nログイン\nカテゴリから選ぶ\nカテゴリから選ぶ\nサーバーが混み合っております。しばらく経ってからもう一度お試しください。\n\n\n\nお買い物方法\n個人情報保護方針\n情報セキュリティ方針\n反社会的勢力排除に係る基本方針\n特定商取引法に基づく表記\nサイトマップ\n© 株式会社Joshin",
+        "document_time_origin": 1791390184986.6
+      },
+      "error": null,
+      "products_file": "product-names.json",
+      "csv_file": "product-names.csv"
+    },
+    "live-en": {
+      "run": "live-en",
+      "mode": "patchright-en",
+      "homepage_status": 200,
+      "status_codes": [
+        403
+      ],
+      "successful_result_pages": 0,
+      "total_product_occurrences": null,
+      "unique_product_urls": null,
+      "pagination_clicks": 0,
+      "catalog_total_reported": null,
+      "max_page": null,
+      "pagination_complete": false,
+      "stop_reason": "http_403_on_first_search_page",
+      "environment": {
+        "observed": true,
+        "pages_observed": 2,
+        "all_match_expected_locale_and_jst": true,
+        "samples": [
+          {
+            "navigator_language": "en-US",
+            "navigator_languages": [
+              "en-US"
+            ],
+            "intl_locale": "en-US",
+            "timezone": "Asia/Tokyo",
+            "timezone_offset_minutes": {
+              "now": -540,
+              "jan_1_2026": -540,
+              "jul_1_2026": -540
+            }
+          },
+          {
+            "navigator_language": "en-US",
+            "navigator_languages": [
+              "en-US"
+            ],
+            "intl_locale": "en-US",
+            "timezone": "Asia/Tokyo",
+            "timezone_offset_minutes": {
+              "now": -540,
+              "jan_1_2026": -540,
+              "jul_1_2026": -540
+            }
+          }
+        ]
+      },
+      "document_observation": {
+        "document_requests": 2,
+        "search_document_requests": 1,
+        "frame_is_active_top_level_all_true": true,
+        "tab_ids_all_null": true,
+        "container_ids_all_null": true,
+        "playwright_page_model": "one retained browser.page; request frame is checked as active top-level",
+        "document_time_origin_values": [
+          1791390197345.3
+        ],
+        "numeric_time_origin_count": 1,
+        "unique_numeric_time_origin_count": 1,
+        "cookie_names_only": [
+          "AUTHENTICATION_ODR_2",
+          "QueueITAccepted-SDFrts345E-V3_wholeweb",
+          "X-Oracle-PRD-ECWEB-81",
+          "X-Oracle-PRD-IMG-80",
+          "__rtbh.lid",
+          "__rtbh.uid",
+          "_abck",
+          "_bd_prev_page",
+          "_bd_prev_page_ex",
+          "_bdck",
+          "_bdnvf",
+          "_bdsid",
+          "_clck",
+          "_clsk",
+          "_ga",
+          "_ga_Y972QW0EQF",
+          "_gcl_au",
+          "_yjsu_yjad",
+          "ak_bmsc",
+          "authentication_uuid",
+          "bm_sv",
+          "bm_sz",
+          "ga_session_pv",
+          "zd-cookie-session-id",
+          "zd-cookie-user-id"
+        ]
+      },
+      "request_start_intervals": {
+        "count": 0,
+        "mean_seconds": null,
+        "median_seconds": null,
+        "min_seconds": null,
+        "max_seconds": null,
+        "p90_seconds": null,
+        "p90_method": "linear interpolation, position=0.9*(n-1)"
+      },
+      "click_time_intervals": {
+        "count": 0,
+        "mean_seconds": null,
+        "median_seconds": null,
+        "min_seconds": null,
+        "max_seconds": null,
+        "p90_seconds": null,
+        "p90_method": "linear interpolation, position=0.9*(n-1)"
+      },
+      "ledger_route_labels": [
+        "environment_proxy"
+      ],
+      "conditions": {
+        "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+        "started_at": "2026-10-07T16:23:09.111Z",
+        "mode": "patchright-en",
+        "query": "グローブ",
+        "homepage_url": "https://joshinweb.jp/top.html",
+        "node": "v22.15.0",
+        "homepage_settle_ms": 6000,
+        "browser_control": "Patchright + Playwright",
+        "profile": "fresh per run; same cookie session and tab retained for search submission",
+        "fingerprint_sha256": null,
+        "regional_condition": null,
+        "patchright_condition": {
+          "locale": "en-US",
+          "timezone": "Asia/Tokyo",
+          "context_source": "Patchright browser.newContext options",
+          "service_workers": "allow",
+          "tls_verification": "enabled",
+          "camoufox_fingerprint_applied": false,
+          "requested_page_limit": 1
+        },
+        "submission": "fill observed #suggest_input then DOM click on the observed changeSubmit search anchor",
+        "input_events_trusted": null,
+        "pointer_events_used": false,
+        "wheel_used": false,
+        "submission_control": "Playwright locator.fill plus observed anchor DOM click",
+        "search_click_is_trusted": false,
+        "tab_container_observation": "Playwright request metadata does not expose tab_id or container; values remain null",
+        "wait": "actual HTTP main-document response plus complete changed document; 30s timeout",
+        "network": "direct; TLS verification enabled",
+        "fixture": false,
+        "fixture_route": null,
+        "proxy_configured": false,
+        "tls_verification": "enabled",
+        "proxy_environment_present": {
+          "HTTPS_PROXY": false,
+          "https_proxy": false,
+          "HTTP_PROXY": false,
+          "http_proxy": false,
+          "ALL_PROXY": false,
+          "all_proxy": false
+        },
+        "capture_scope": "main-document request/response bodies, request header allowlist, DOM and extraction observations; subresources load normally but are not archived",
+        "limitations": [
+          "Playwright exposes response headers; tab_id and container are not exposed by request metadata",
+          "native DOM fill/click does not establish equivalence to trusted physical user input",
+          "Observed product cards, page fields, and pager anchors are recorded per document; page advancement requires a new document response, PAGE_NO increment, and displayed-range increment"
+        ]
+      },
+      "runtime": {
+        "executable": "/home/zabuton/.local/share/searchengine-bot-diagnostics/deps/chromium",
+        "version": "153.0.8010.12",
+        "headless": false,
+        "display": ":99",
+        "viewport": {
+          "width": 1280,
+          "height": 720
+        },
+        "locale": "en-US",
+        "timezoneId": "Asia/Tokyo",
+        "service_workers": "allow",
+        "tls_verification": "enabled",
+        "camoufox_fingerprint_applied": false
+      },
+      "submission": {
+        "input_value": "グローブ",
+        "input_name": "QK",
+        "form_action": "https://joshinweb.jp/srhzs.html",
+        "form_method": "get",
+        "accept_charset": "",
+        "document_charset": "Shift_JIS",
+        "icon_count": 1,
+        "icon_href": "javascript:if (document.getElementsByName(\"QK\")[0].value!='') { changeSubmit(); }"
+      },
+      "first_search_document": {
+        "http_status": 403,
+        "title": "Access Denied",
+        "text_prefix": "Access Denied\nYou don't have permission to access joshinweb.jp on this server.",
+        "document_time_origin": 1791390197345.3
+      },
+      "error": null,
+      "products_file": "product-names.json",
+      "csv_file": "product-names.csv"
+    }
+  },
+  "fixture_server_checks": {
+    "fixture-ja-complete": {
+      "search_requests": 3,
+      "query_matches_all": true,
+      "session_cookie_present_all": true,
+      "statuses": [
+        200,
+        200,
+        200
+      ]
+    },
+    "fixture-ja-denied": {
+      "search_requests": 2,
+      "query_matches_all": true,
+      "session_cookie_present_all": true,
+      "statuses": [
+        200,
+        403
+      ]
+    },
+    "fixture-en-complete": {
+      "search_requests": 1,
+      "query_matches_all": true,
+      "session_cookie_present_all": true,
+      "statuses": [
+        200
+      ]
+    }
+  },
+  "evidence_verification": {
+    "fixture-ja-complete": {
+      "ok": true,
+      "errors": [],
+      "records": 4,
+      "results": 4,
+      "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+    },
+    "fixture-ja-denied": {
+      "ok": true,
+      "errors": [],
+      "records": 3,
+      "results": 3,
+      "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+    },
+    "fixture-en-complete": {
+      "ok": true,
+      "errors": [],
+      "records": 2,
+      "results": 2,
+      "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+    },
+    "live-ja": {
+      "ok": true,
+      "errors": [],
+      "records": 2,
+      "results": 2,
+      "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+    },
+    "live-en": {
+      "ok": true,
+      "errors": [],
+      "records": 2,
+      "results": 2,
+      "note": "stored-body accounting and hashes verified; legacy limits checked only for grounding records"
+    }
+  },
+  "historical_observations": {
+    "direct_english_403": {
+      "run": "joshin-input-diagnostics-20261007-2215",
+      "path": "lab-runs/joshin-input-diagnostics-20261007-2215/live-dom-en/results.json",
+      "observed": "direct English-condition search returned HTTP 403"
+    },
+    "direct_japanese_200": {
+      "run": "joshin-input-diagnostics-20261007-2215",
+      "path": "lab-runs/joshin-input-diagnostics-20261007-2215/live-dom-ja/results.json",
+      "observed": "direct Japanese-condition search returned HTTP 200"
+    },
+    "proxy_japanese_403": {
+      "run": "joshin-proxy-ja-20261007-2340",
+      "path": "lab-runs/joshin-proxy-ja-20261007-2340/live-camoufox-ja/results.json",
+      "observed": "proxy Japanese-condition search returned HTTP 403"
+    }
+  },
+  "interpretation_limit": "Different locale, browser configuration, and prior proxy conditions do not isolate IP as the cause.",
+  "network_path_limit": {
+    "proxy_configured": false,
+    "public_ip_measured": false,
+    "ledger_route_label_semantics": "environment_proxy is a fixed Evidence.reserve label for non-loopback URLs, not an observed route or IP measurement."
+  },
+  "requested_limits": {
+    "live-ja": 3,
+    "live-en": 1
+  },
+  "report": "report.md"
+}

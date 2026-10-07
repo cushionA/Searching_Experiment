@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "source_commit": "308e049668e6e3f98ab21dc22f3675eeb79de998",
+  "source_local_changes": [
+    "experiments/bot-diagnostics/joshin-product-search.mjs"
+  ],
+  "source_patch": "source.patch",
+  "query": "グローブ",
+  "proxy_configured": false,
+  "proxy_environment_cleared": true,
+  "tls_verification_enabled": true,
+  "headful": true,
+  "display": ":0",
+  "concurrency": "three sequential runs, fresh profiles, same-tab search submission",
+  "homepage_settle_ms": 6000,
+  "actual_exit_ip_measured": false,
+  "camoufox_fingerprints_reused_between_arms": false,
+  "authorization": "mainフェッチ後、camoufox・4play・アセンブル版のジョーシン検索テストをプロキシなしで続行するというユーザー指示。",
+  "arms": [
+    {
+      "mode": "camoufox",
+      "label": "Camoufox",
+      "browser_control": "Camoufox + Playwright",
+      "browser_version": "152.0.4-beta.30",
+      "homepage_status": 200,
+      "search_status": 403,
+      "result_list_obtained": false,
+      "product_total": null,
+      "product_names_obtained": 0,
+      "pagination_clicks": 0,
+      "last_catalog_page": null,
+      "search_url": "https://joshinweb.jp/srhzs.html?KEYWORD=&KEY=ZS_ALL&KEY_M=ALL&QS=&QK=%83O%83%8D%81%5B%83u&category_id=&REQUEST_CODE=1",
+      "search_document_title": "Access Denied",
+      "started_at": "2026-10-07T12:53:40.745Z",
+      "finished_at": "2026-10-07T12:54:23.472Z",
+      "verification_ok": true,
+      "run": "camoufox"
+    },
+    {
+      "mode": "standard",
+      "label": "4play",
+      "browser_control": "native Firefox + 4play WebExtension",
+      "browser_version": "157.0",
+      "homepage_status": 200,
+      "search_status": 403,
+      "result_list_obtained": false,
+      "product_total": null,
+      "product_names_obtained": 0,
+      "pagination_clicks": 0,
+      "last_catalog_page": null,
+      "search_url": "https://joshinweb.jp/srhzs.html?KEYWORD=&KEY=ZS_ALL&KEY_M=ALL&QS=&QK=%83O%83%8D%81%5B%83u&category_id=&REQUEST_CODE=1",
+      "search_document_title": "Access Denied",
+      "started_at": "2026-10-07T12:54:24.449Z",
+      "finished_at": "2026-10-07T12:55:00.755Z",
+      "verification_ok": true,
+      "run": "standard"
+    },
+    {
+      "mode": "assembled",
+      "label": "Camoufox + 4play",
+      "browser_control": "Camoufox + native 4play WebExtension",
+      "browser_version": "152.0",
+      "homepage_status": 200,
+      "search_status": 403,
+      "result_list_obtained": false,
+      "product_total": null,
+      "product_names_obtained": 0,
+      "pagination_clicks": 0,
+      "last_catalog_page": null,
+      "search_url": "https://joshinweb.jp/srhzs.html?KEYWORD=&KEY=ZS_ALL&KEY_M=ALL&QS=&QK=%83O%83%8D%81%5B%83u&category_id=&REQUEST_CODE=1",
+      "search_document_title": "Access Denied",
+      "started_at": "2026-10-07T12:55:04.497Z",
+      "finished_at": "2026-10-07T12:55:50.613Z",
+      "verification_ok": true,
+      "run": "assembled"
+    }
+  ],
+  "fixtures": {
+    "4play": {
+      "ok": true,
+      "assertions": {
+        "redirect_target_dom_complete": true,
+        "requested_main_frame_response": true,
+        "same_tab_A_to_B_to_C": true,
+        "referer_and_cookie_observed_on_chain": true,
+        "container_and_tab_continuity": true,
+        "get_403_response": true,
+        "post_403_response": true
+      }
+    },
+    "assembled": {
+      "ok": true,
+      "assertions": {
+        "redirect_target_dom_complete": true,
+        "requested_main_frame_response": true,
+        "same_tab_A_to_B_to_C": true,
+        "referer_and_cookie_observed_on_chain": true,
+        "container_and_tab_continuity": true,
+        "get_403_response": true,
+        "post_403_response": true
+      }
+    }
+  },
+  "tests": {
+    "node": {
+      "total": 33,
+      "passed": 33,
+      "failed": 0
+    },
+    "lab": {
+      "total": 151,
+      "passed": 117,
+      "skipped": 34,
+      "failed": 0
+    }
+  },
+  "count_semantics": "検索結果DOMは取得できず、商品総数は不明。取得商品名0件は一致商品0件を意味しない。",
+  "previous_cloud_result": {
+    "report": "reports/2026-10/joshin-glove-search.md",
+    "proxy": "Cloud proxy",
+    "standard": [
+      200,
+      403
+    ],
+    "assembled": [
+      200,
+      403
+    ],
+    "adopted_as_current_measurement": false
+  },
+  "limits": [
+    "各方式1試行。拒否の内部原因とWAFスコアは未確定。",
+    "Camoufoxと通常Firefoxはブラウザ版・fingerprintが異なり、制御方式単独の因果比較ではない。",
+    "4playの応答ヘッダーとスクリーンショットは未取得。",
+    "依存パッケージと実ブラウザbinaryはチェックポイントに含まない。"
+  ],
+  "environment_incident": {
+    "first_fixture_attempt": "WSL restarted before fixture evidence was copied; empty log retained.",
+    "first_log": "validation/fixture-interrupted-4play.log",
+    "completed_evidence": "WSL persistent filesystem, then copied to Windows workspace"
+  },
+  "continuation_run": "/mnt/c/Users/tatuk/.codex/worktrees/joshin-direct-search/SearchEngine/lab-runs/joshin-search-direct-20261007-2148",
+  "replay_sources": "replay-source",
+  "checkpoint": "checkpoint.zip"
+}

@@ -75,6 +75,31 @@ HTTPSサイト向けにも `http://proxy.example:3128` を指定できる。プ�
 
 管理環境で提供されるVPN/TCP転送を選ぶ場合は、GCP側のTailscale等の接続、Cloud側のVPN設定と宛先TCP grant、必要に応じた環境の作り直しが必要になる。その経路の疎通確認とブラウザへの接続は今回のランチャーには含まない。ポリシーファイルの書き換え・既存proxyの解除・TLS検証の無効化で接続しない。
 
+## 既存の東京GCPプロキシ（ローカルWSL）
+
+2026-10-07にユーザーが確認した接続設定。SSHトンネルが動いている間だけ、ローカルのHTTPプロキシURLを利用できる。
+
+| 設定 | 値 |
+|---|---|
+| HTTPプロキシ | `http://127.0.0.1:3148` |
+| VM | `crawl-proxy-tokyo-20261004` |
+| Project / Zone | `groundingsearch` / `asia-northeast1-a` |
+| SSHユーザー | `gcpproxy` |
+| トンネル | WSLの `127.0.0.1:3148` → VM内の `127.0.0.1:3128` |
+| VM内のサービス | Squid |
+| WSLの秘密鍵 | `/home/zabuton/.ssh/gcp-crawl-proxy` |
+| WSLのknown-hosts | `/home/zabuton/.ssh/gcp-crawl-proxy-known-hosts` |
+
+VMの外部IPは起動時に変わるため、過去のIPを固定して再利用しない。次のコマンドで現在の状態とIPを確認する。
+
+```bash
+gcloud compute instances describe crawl-proxy-tokyo-20261004 \
+  --project=groundingsearch --zone=asia-northeast1-a \
+  --format='json(status,networkInterfaces)'
+```
+
+停止中のVMを試験のために起動した場合は、試験後に自分のSSHトンネルを閉じ、VMを停止状態へ戻す。接続手順と実行時の状態は `lab-runs/joshin-proxy-ja-20261007-2340/infrastructure/` に保存する。
+
 ## GCP側で確認すること
 
 既存プロキシのVMへSSHし、待受を確認する。
