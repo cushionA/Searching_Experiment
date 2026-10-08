@@ -100,6 +100,18 @@ gcloud compute instances describe crawl-proxy-tokyo-20261004 \
 
 停止中のVMを試験のために起動した場合は、試験後に自分のSSHトンネルを閉じ、VMを停止状態へ戻す。接続手順と実行時の状態は `lab-runs/joshin-proxy-ja-20261007-2340/infrastructure/` に保存する。
 
+## TODO: Joshinのローカル→日本プロキシ検索
+
+- [ ] Camoufox＋native 4playで、住宅回線から商品検索を1回成功させ、その同じブラウザーセッションを日本プロキシへ切り替え、再度実際の商品検索を成功させる。
+- [ ] 切替前後のPID・profile・tab・containerとcookie/storageの継続、実際のプロキシ経路、日本語ヘッダー・navigator・Intl・`Asia/Tokyo`を証拠で確認する。秘密値は保存しない。
+- [ ] 両段階の検索がHTTP 200かつ実商品カードを返すことを確認し、ソース・設定・通信時刻・DOM・台帳を検証してcheckpointへ保存する。トップ200だけや、ローカル検索404後の切替を成功したセッションの引継ぎとは扱わない。
+
+2026-10-09時点では未達。直近のC3アセンブル版はローカルのトップ200／検索404（混雑表示、文書読み込み完了）。別のWindows試行もローカル検索404／同一セッションで東京切替後403だった。C3アセンブル版は過去のローカル検索200例と指紋・日本語設定・DOM入力／クリック・ホーム待機6秒が一致したが、旧バイナリと拡張の完全同一性は記録不足。Nimbleは利用対象にない。作業はユーザー依頼で一時停止し、既存東京VMは停止済み（GCP status: TERMINATED）。
+
+再開時は既存VMの状態・現在IP・SSHトンネル・Squidを確認する。遅い自宅回線に合わせ、文書待機180秒、ホーム待機6秒、ホーム／入力後の同一origin未完了XHR待機最大90秒を維持する。固定relayの上流を切り替える際は既存接続を閉じ、同じtabから送信する。実対象前にloopbackの事前確認とfixtureで検証し、各段階1検索・結果1ページで条件を比較する。検索語を商品ブランド `SONY` に変える比較は未実行。新しい有料サービスは追加しない。
+
+証拠はこのチャットの `joshin-camoufox-proxy` worktreeに保持する。主な保存物は `.lab-output/joshin-assembled-retest-20261009-checkpoint.zip` と `.lab-output/joshin-camoufox-windows-session-20261009-through-44-checkpoint.zip`、対応する `lab-runs/` の結果・設定比較。
+
 ## GCP側で確認すること
 
 既存プロキシのVMへSSHし、待受を確認する。
