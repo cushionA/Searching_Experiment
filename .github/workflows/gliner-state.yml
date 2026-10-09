@@ -1,0 +1,19 @@
+name: gliner-state-evidence
+on:
+  push:
+    paths: ['experiments/gliner2-state/**', 'benchmarks/gliner2-state-20261008/**', '.github/workflows/gliner-state.yml']
+  pull_request:
+    paths: ['experiments/gliner2-state/**', 'benchmarks/gliner2-state-20261008/**', '.github/workflows/gliner-state.yml']
+permissions:
+  contents: read
+jobs:
+  verify-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Check typed state contract and recompute saved metrics
+        run: python -B -m unittest discover -s experiments/gliner2-state -p 'test_*.py' -v

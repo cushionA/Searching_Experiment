@@ -1,0 +1,47 @@
+Traceback (most recent call last):
+  File "/tmp/gliner2-venv/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2359, in _from_pretrained
+    tokenizer = cls(*init_inputs, **init_kwargs)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/gliner2-venv/lib/python3.12/site-packages/transformers/models/deberta_v2/tokenization_deberta_v2_fast.py", line 103, in __init__
+    super().__init__(
+  File "/tmp/gliner2-venv/lib/python3.12/site-packages/transformers/tokenization_utils_fast.py", line 178, in __init__
+    super().__init__(**kwargs)
+  File "/tmp/gliner2-venv/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 1472, in __init__
+    self._set_model_specific_special_tokens(special_tokens=self.extra_special_tokens)
+  File "/tmp/gliner2-venv/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 1210, in _set_model_specific_special_tokens
+    self.SPECIAL_TOKENS_ATTRIBUTES = self.SPECIAL_TOKENS_ATTRIBUTES + list(special_tokens.keys())
+                                                                           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'list' object has no attribute 'keys'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/experiments/gliner2-state/benchmark.py", line 167, in <module>
+    main()
+  File "/workspace/Searching_Experiment/experiments/gliner2-state/benchmark.py", line 125, in main
+    model = AutoExtractor.from_pretrained(str(args.model_dir), map_location='cpu', use_flashdeberta=False)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/gliner2-venv/lib/python3.12/site-packages/gliner2/auto.py", line 125, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/gliner2-venv/lib/python3.12/site-packages/gliner2/models/boundary/model.py", line 2101, in from_pretrained
+    tokenizer = load_extractor_tokenizer(tokenizer_source)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/gliner2-venv/lib/python3.12/site-packages/gliner2/models/base.py", line 44, in load_extractor_tokenizer
+    return AutoTokenizer.from_pretrained(repo_or_dir)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/gliner2-venv/lib/python3.12/site-packages/transformers/models/auto/tokenization_auto.py", line 1156, in from_pretrained
+    return tokenizer_class.from_pretrained(pretrained_model_name_or_path, *inputs, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/gliner2-venv/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2113, in from_pretrained
+    return cls._from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/gliner2-venv/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2360, in _from_pretrained
+    except import_protobuf_decode_error():
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/gliner2-venv/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 88, in import_protobuf_decode_error
+    raise ImportError(PROTOBUF_IMPORT_ERROR.format(error_message))
+ImportError:
+ requires the protobuf library but it was not found in your environment. Check out the instructions on the
+installation page of its repo: https://github.com/protocolbuffers/protobuf/tree/master/python#installation and follow the ones
+that match your environment. Please note that you may need to restart your runtime after installation.
