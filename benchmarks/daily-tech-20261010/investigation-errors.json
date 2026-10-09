@@ -1,0 +1,48 @@
+[
+  {
+    "stage": "previous_day_context",
+    "outcome": "Personal context is unavailable for this conversation.",
+    "impact": "Previous-day file/commit not located; use explicit user carry-forward context, not reconstructed evidence."
+  },
+  {
+    "stage": "source_lookup",
+    "url": "https://api.github.com/repos/docling-project/docling/contents/tests/test_ocr_region_selection.py?ref=v2.137.0",
+    "outcome": "HTTP 404",
+    "resolution": "Queried actual changed paths in upstream commit; correct file test_ocr_rects_vector_shapes.py."
+  },
+  {
+    "stage": "source_lookup",
+    "url": "https://www.homes.co.jp/sitemap/",
+    "outcome": "web tool inaccessible",
+    "impact": "No sitemap hierarchy/coverage inference."
+  },
+  {
+    "stage": "source_lookup",
+    "urls": [
+      "https://www.homes.co.jp/sitemap.xml",
+      "https://www.homes.co.jp/sitemap-bukken-detail-chintai.xml"
+    ],
+    "outcome": "web tool 400 Unsupported content-type: text/xml",
+    "impact": "Tool content-type limitation, not evidence of source refusal or empty sitemap. No discovered listing URLs measured."
+  },
+  {
+    "stage": "probe_only",
+    "outcome": "OcrOptions(kind=test) raised ValidationError: lang required",
+    "resolution": "Added lang=[en] for default-mode inspection; experimental runner already provided lang and was unaffected."
+  },
+  {
+    "stage": "installation",
+    "outcome": "pip cache path not writable warning; cache disabled",
+    "impact": "Install successful; no permission changes."
+  },
+  {
+    "stage": "lab_validation",
+    "outcome": "151 tests: 135 passed, 15 skipped, 1 failure; test_offline_diagnostics_guards missing robots-parser",
+    "impact": "Baseline dependency absent in .deps/bot-diagnostics. Kept failure; no routine CI repair."
+  },
+  {
+    "stage": "git_diff_check",
+    "outcome": "Uncompressed PDF xref records recognized as text/trailing whitespace",
+    "resolution": "Scoped inputs/.gitattributes marks PDFs binary; original PDF bytes/hashes unchanged."
+  }
+]

@@ -1,0 +1,206 @@
+{
+  "created_at": "2026-10-09T22:11:05.259566+00:00",
+  "revision": "d0f55469c56d38d93ed47049b8c9d17f6785e94b",
+  "files": [
+    {
+      "file": "text_with_vector_glyphs.pdf",
+      "url": "https://raw.githubusercontent.com/docling-project/docling/d0f55469c56d38d93ed47049b8c9d17f6785e94b/tests/data/pdf/text_with_vector_glyphs.pdf",
+      "bytes": 806,
+      "sha256": "7026e92d1ea428e71c7ad0ca0d0c0271eb1ee3c4fd03497df752d254306adba6",
+      "seconds": 0.5158453360000408
+    },
+    {
+      "file": "text_with_vector_rule.pdf",
+      "url": "https://raw.githubusercontent.com/docling-project/docling/d0f55469c56d38d93ed47049b8c9d17f6785e94b/tests/data/pdf/text_with_vector_rule.pdf",
+      "bytes": 640,
+      "sha256": "4ab90294f8afa67e460ad84b7292de7b2c3a9d02bc4b67f1ede07a5e5df6d94a",
+      "seconds": 0.3629637559999992
+    },
+    {
+      "file": "vector_glyph_edge_cases.pdf",
+      "url": "https://raw.githubusercontent.com/docling-project/docling/d0f55469c56d38d93ed47049b8c9d17f6785e94b/tests/data/pdf/vector_glyph_edge_cases.pdf",
+      "bytes": 916,
+      "sha256": "a8258557e2f08dbff895b7bf7200afb3c8d52b14900006ad708306390f43f59c",
+      "seconds": 0.3399843980000128
+    },
+    {
+      "file": "vector_glyphs_in_figure.pdf",
+      "url": "https://raw.githubusercontent.com/docling-project/docling/d0f55469c56d38d93ed47049b8c9d17f6785e94b/tests/data/pdf/vector_glyphs_in_figure.pdf",
+      "bytes": 1105,
+      "sha256": "0a2615899ffe7d12ee3a6f1bf7b4d9f5c9a6b37072d0b4bfd45f9a86145e8fe4",
+      "seconds": 0.4810326459999601
+    },
+    {
+      "file": "vector_glyphs_merged_fill.pdf",
+      "url": "https://raw.githubusercontent.com/docling-project/docling/d0f55469c56d38d93ed47049b8c9d17f6785e94b/tests/data/pdf/vector_glyphs_merged_fill.pdf",
+      "bytes": 864,
+      "sha256": "8a34a64068cf98ef4d15ae79ed3d441c43fe3b0ded361c4521737b788586bf60",
+      "seconds": 0.49769192200000134
+    },
+    {
+      "file": "LICENSE",
+      "url": "https://raw.githubusercontent.com/docling-project/docling/d0f55469c56d38d93ed47049b8c9d17f6785e94b/LICENSE",
+      "bytes": 1072,
+      "sha256": "edb765d1e3e60d0c7a7d5fba5f2bb2c3c29f7465cecb5c22cf1185c884954e4c",
+      "seconds": 0.49853257000000895
+    },
+    {
+      "file": "test_ocr_rects_vector_shapes.py",
+      "url": "https://raw.githubusercontent.com/docling-project/docling/d0f55469c56d38d93ed47049b8c9d17f6785e94b/tests/test_ocr_rects_vector_shapes.py",
+      "bytes": 16434,
+      "sha256": "561808f48ad507be3a8385dbadd86a9e17135533161349cae80edbd844f73e13",
+      "seconds": 0.3061802159999729
+    }
+  ],
+  "cases": [
+    {
+      "id": "ruled_text",
+      "pdf": "text_with_vector_rule.pdf",
+      "bbox_ltrb": [
+        60,
+        70,
+        380,
+        105
+      ],
+      "expected_ocr_eligible": false
+    },
+    {
+      "id": "empty",
+      "pdf": "text_with_vector_rule.pdf",
+      "bbox_ltrb": [
+        60,
+        400,
+        380,
+        450
+      ],
+      "expected_ocr_eligible": true
+    },
+    {
+      "id": "native_and_vector",
+      "pdf": "text_with_vector_glyphs.pdf",
+      "bbox_ltrb": [
+        30,
+        25,
+        220,
+        75
+      ],
+      "expected_ocr_eligible": true
+    },
+    {
+      "id": "vector_only",
+      "pdf": "text_with_vector_glyphs.pdf",
+      "bbox_ltrb": [
+        140,
+        125,
+        200,
+        175
+      ],
+      "expected_ocr_eligible": true
+    },
+    {
+      "id": "highlight",
+      "pdf": "text_with_vector_glyphs.pdf",
+      "bbox_ltrb": [
+        30,
+        225,
+        180,
+        260
+      ],
+      "expected_ocr_eligible": false
+    },
+    {
+      "id": "stroked_glyphs",
+      "pdf": "vector_glyph_edge_cases.pdf",
+      "bbox_ltrb": [
+        30,
+        70,
+        220,
+        105
+      ],
+      "expected_ocr_eligible": true
+    },
+    {
+      "id": "rule_through_glyphs",
+      "pdf": "vector_glyph_edge_cases.pdf",
+      "bbox_ltrb": [
+        30,
+        170,
+        220,
+        205
+      ],
+      "expected_ocr_eligible": true
+    },
+    {
+      "id": "filled_rule",
+      "pdf": "vector_glyph_edge_cases.pdf",
+      "bbox_ltrb": [
+        30,
+        235,
+        280,
+        270
+      ],
+      "expected_ocr_eligible": false
+    },
+    {
+      "id": "glyphs_fused_with_panel",
+      "pdf": "vector_glyphs_merged_fill.pdf",
+      "bbox_ltrb": [
+        30,
+        25,
+        220,
+        75
+      ],
+      "expected_ocr_eligible": true
+    },
+    {
+      "id": "panel_edge",
+      "pdf": "vector_glyphs_merged_fill.pdf",
+      "bbox_ltrb": [
+        30,
+        125,
+        130,
+        175
+      ],
+      "expected_ocr_eligible": false
+    },
+    {
+      "id": "figure_with_caption",
+      "pdf": "vector_glyphs_in_figure.pdf",
+      "bbox_ltrb": [
+        30,
+        25,
+        280,
+        120
+      ],
+      "expected_ocr_eligible": true
+    },
+    {
+      "id": "shaded_band",
+      "pdf": "vector_glyphs_in_figure.pdf",
+      "bbox_ltrb": [
+        30,
+        130,
+        280,
+        165
+      ],
+      "expected_ocr_eligible": false
+    },
+    {
+      "id": "shaded_sidebar",
+      "pdf": "vector_glyphs_in_figure.pdf",
+      "bbox_ltrb": [
+        30,
+        175,
+        280,
+        275
+      ],
+      "expected_ocr_eligible": false
+    }
+  ],
+  "versions": [
+    "2.135.0",
+    "2.137.0"
+  ],
+  "warm_repeats": 20,
+  "scope": "fixed upstream regions; no layout inference or OCR recognition; three backend paths"
+}
