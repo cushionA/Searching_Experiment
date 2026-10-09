@@ -1,0 +1,494 @@
+{
+  "measured_at_utc": "2026-10-09T13:53:04.653964+00:00",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "python": "3.12.14",
+  "threads": 2,
+  "batch_size": 32,
+  "dataset_sha256": "b013b7ea1e947da265b505f5b664b8cee2571e545a7f7a31344c5e663c96f1b7",
+  "evaluation_sha256": "c00a74a90e3d88c67712a23af7caa8c915af378d6eb49001ad11980e267361b8",
+  "data_limitations": "Synthetic Rakuten labels, prices and availability. Not production accuracy. No live scraping/cart action in benchmarks.",
+  "model": {
+    "repo": "Xenova/paraphrase-multilingual-MiniLM-L12-v2",
+    "revision": "2c4055b12046f11709e9df2c122e59ffbdc2f900",
+    "files": {
+      "onnx/model_quantized.onnx": {
+        "size_bytes": 118308126,
+        "sha256": "66fc00f5f29afcaff34092e1bdd20008ca3918265a82fb9695a551e510cc4ebc"
+      },
+      "tokenizer.json": {
+        "size_bytes": 17082913,
+        "sha256": "b60b6b43406a48bf3638526314f3d232d97058bc93472ff2de930d43686fa441"
+      }
+    },
+    "embedding_dimensions": 384,
+    "pooling": "attention-mask mean pooling followed by L2 normalization",
+    "max_sequence_length": 128,
+    "execution_provider": "CPUExecutionProvider"
+  },
+  "model_load_seconds": 1.662410194000131,
+  "evaluations": [
+    {
+      "mode": "sku",
+      "cases": 1000,
+      "records": 2000,
+      "evaluable_known_identity_cases": 917,
+      "incomplete_evidence_cases_excluded_from_accuracy": 83,
+      "distinct_input_texts": 769,
+      "encode_seconds": 2.239968869000222,
+      "token_length": {
+        "count": 2000,
+        "min": 14.0,
+        "p50": 21.0,
+        "p95": 25.0,
+        "max": 25.0
+      },
+      "right_truncated_input_count": 0,
+      "positive_similarity": {
+        "count": 500,
+        "min": 0.6550198793411255,
+        "p50": 0.9999998807907104,
+        "p95": 1.0,
+        "max": 1.000000238418579
+      },
+      "negative_similarity": {
+        "count": 417,
+        "min": 0.6284705400466919,
+        "p50": 0.898792028427124,
+        "p95": 0.9858766794204712,
+        "max": 0.9938205480575562
+      },
+      "incomplete_evidence_similarity": {
+        "count": 83,
+        "min": 0.6218597888946533,
+        "p50": 0.894378662109375,
+        "p95": 0.9768219590187073,
+        "max": 0.9822096228599548
+      },
+      "by_scenario": {
+        "negative_height_near_miss": {
+          "count": 84,
+          "min": 0.6574658751487732,
+          "p50": 0.8289544582366943,
+          "p95": 0.9866928458213806,
+          "max": 0.9916959404945374
+        },
+        "negative_lace_presence": {
+          "count": 83,
+          "min": 0.6284705400466919,
+          "p50": 0.898366391658783,
+          "p95": 0.9338365197181702,
+          "max": 0.9507117867469788
+        },
+        "negative_missing_lace_evidence": {
+          "count": 83,
+          "min": 0.6218597888946533,
+          "p50": 0.894378662109375,
+          "p95": 0.9768219590187073,
+          "max": 0.9822096228599548
+        },
+        "negative_near_color": {
+          "count": 84,
+          "min": 0.6433999538421631,
+          "p50": 0.8739187121391296,
+          "p95": 0.9809941053390503,
+          "max": 0.985927164554596
+        },
+        "negative_width_height_swap": {
+          "count": 83,
+          "min": 0.7000612616539001,
+          "p50": 0.9518687129020691,
+          "p95": 0.991007387638092,
+          "max": 0.9938205480575562
+        },
+        "negative_width_piece_count": {
+          "count": 83,
+          "min": 0.6464401483535767,
+          "p50": 0.9282234907150269,
+          "p95": 0.9704141616821289,
+          "max": 0.9798120260238647
+        },
+        "positive_format_variation": {
+          "count": 500,
+          "min": 0.6550198793411255,
+          "p50": 0.9999998807907104,
+          "p95": 1.0,
+          "max": 1.000000238418579
+        }
+      },
+      "thresholds_for_inspection_only": [
+        {
+          "threshold": 0.7,
+          "true_positive": 494,
+          "false_positive": 392,
+          "false_negative": 6,
+          "true_negative": 25,
+          "precision": 0.5575620767494357,
+          "recall": 0.988
+        },
+        {
+          "threshold": 0.8,
+          "true_positive": 359,
+          "false_positive": 256,
+          "false_negative": 141,
+          "true_negative": 161,
+          "precision": 0.583739837398374,
+          "recall": 0.718
+        },
+        {
+          "threshold": 0.85,
+          "true_positive": 284,
+          "false_positive": 228,
+          "false_negative": 216,
+          "true_negative": 189,
+          "precision": 0.5546875,
+          "recall": 0.568
+        },
+        {
+          "threshold": 0.9,
+          "true_positive": 279,
+          "false_positive": 205,
+          "false_negative": 221,
+          "true_negative": 212,
+          "precision": 0.5764462809917356,
+          "recall": 0.558
+        },
+        {
+          "threshold": 0.95,
+          "true_positive": 279,
+          "false_positive": 122,
+          "false_negative": 221,
+          "true_negative": 295,
+          "precision": 0.6957605985037406,
+          "recall": 0.558
+        }
+      ],
+      "highest_scoring_negatives": [
+        {
+          "case_id": "eval-000607",
+          "scenario": "negative_width_height_swap",
+          "similarity": 0.9938205480575562,
+          "au_input": "幅150×丈200cm(1枚組) / ベージュ / なし",
+          "rakuten_input": "幅200×丈150cm(1枚組) / ベージュ / なし"
+        },
+        {
+          "case_id": "eval-000247",
+          "scenario": "negative_width_height_swap",
+          "similarity": 0.9928406476974487,
+          "au_input": "幅150×丈200cm(2枚組) / ベージュ / あり",
+          "rakuten_input": "幅200×丈150cm(2枚組) / ベージュ / あり"
+        },
+        {
+          "case_id": "eval-000451",
+          "scenario": "negative_width_height_swap",
+          "similarity": 0.9922908544540405,
+          "au_input": "100×200cm / ユーカリグリーン / レースなし",
+          "rakuten_input": "200×100cm / ユーカリグリーン / レースなし"
+        },
+        {
+          "case_id": "eval-000625",
+          "scenario": "negative_height_near_miss",
+          "similarity": 0.9916959404945374,
+          "au_input": "幅100×丈185cm(2枚組) / ノクターンネイビー / なし",
+          "rakuten_input": "幅100×丈180cm(2枚組) / ノクターンネイビー / なし"
+        },
+        {
+          "case_id": "eval-000613",
+          "scenario": "negative_height_near_miss",
+          "similarity": 0.9916750192642212,
+          "au_input": "幅150×丈178cm(2枚組) / ノクターンネイビー / あり",
+          "rakuten_input": "幅150×丈180cm(2枚組) / ノクターンネイビー / あり"
+        },
+        {
+          "case_id": "eval-000655",
+          "scenario": "negative_width_height_swap",
+          "similarity": 0.9911525249481201,
+          "au_input": "幅150×丈178cm(2枚組) / コールブラック / あり",
+          "rakuten_input": "幅178×丈150cm(2枚組) / コールブラック / あり"
+        },
+        {
+          "case_id": "eval-000355",
+          "scenario": "negative_width_height_swap",
+          "similarity": 0.9910975098609924,
+          "au_input": "幅150×丈200cm(1枚組) / ライトグレー / なし",
+          "rakuten_input": "幅200×丈150cm(1枚組) / ライトグレー / なし"
+        },
+        {
+          "case_id": "eval-000943",
+          "scenario": "negative_width_height_swap",
+          "similarity": 0.9901965260505676,
+          "au_input": "幅150×丈135cm(2枚組) / コールブラック / あり",
+          "rakuten_input": "幅135×丈150cm(2枚組) / コールブラック / あり"
+        }
+      ]
+    },
+    {
+      "mode": "title-sku",
+      "cases": 1000,
+      "records": 2000,
+      "evaluable_known_identity_cases": 917,
+      "incomplete_evidence_cases_excluded_from_accuracy": 83,
+      "distinct_input_texts": 1465,
+      "encode_seconds": 26.32809433600005,
+      "token_length": {
+        "count": 2000,
+        "min": 29.0,
+        "p50": 115.0,
+        "p95": 125.0,
+        "max": 128.0
+      },
+      "right_truncated_input_count": 0,
+      "positive_similarity": {
+        "count": 500,
+        "min": 0.7015461921691895,
+        "p50": 0.8510906100273132,
+        "p95": 0.9242240786552429,
+        "max": 1.0
+      },
+      "negative_similarity": {
+        "count": 417,
+        "min": 0.7084001302719116,
+        "p50": 0.860106885433197,
+        "p95": 0.8806360363960266,
+        "max": 0.8990312814712524
+      },
+      "incomplete_evidence_similarity": {
+        "count": 83,
+        "min": 0.8083300590515137,
+        "p50": 0.8589460849761963,
+        "p95": 0.8757708072662354,
+        "max": 0.8807728290557861
+      },
+      "by_scenario": {
+        "negative_height_near_miss": {
+          "count": 84,
+          "min": 0.8379819393157959,
+          "p50": 0.8644005656242371,
+          "p95": 0.8807328939437866,
+          "max": 0.8843762874603271
+        },
+        "negative_lace_presence": {
+          "count": 83,
+          "min": 0.8313551545143127,
+          "p50": 0.8619869351387024,
+          "p95": 0.8774840235710144,
+          "max": 0.8811836242675781
+        },
+        "negative_missing_lace_evidence": {
+          "count": 83,
+          "min": 0.8083300590515137,
+          "p50": 0.8589460849761963,
+          "p95": 0.8757708072662354,
+          "max": 0.8807728290557861
+        },
+        "negative_near_color": {
+          "count": 84,
+          "min": 0.7084001302719116,
+          "p50": 0.8451316356658936,
+          "p95": 0.8844919800758362,
+          "max": 0.8922338485717773
+        },
+        "negative_width_height_swap": {
+          "count": 83,
+          "min": 0.8436385989189148,
+          "p50": 0.8609119653701782,
+          "p95": 0.8749187588691711,
+          "max": 0.8805280923843384
+        },
+        "negative_width_piece_count": {
+          "count": 83,
+          "min": 0.7265764474868774,
+          "p50": 0.8472336530685425,
+          "p95": 0.8915919661521912,
+          "max": 0.8990312814712524
+        },
+        "positive_format_variation": {
+          "count": 500,
+          "min": 0.7015461921691895,
+          "p50": 0.8510906100273132,
+          "p95": 0.9242240786552429,
+          "max": 1.0
+        }
+      },
+      "thresholds_for_inspection_only": [
+        {
+          "threshold": 0.7,
+          "true_positive": 500,
+          "false_positive": 417,
+          "false_negative": 0,
+          "true_negative": 0,
+          "precision": 0.5452562704471101,
+          "recall": 1.0
+        },
+        {
+          "threshold": 0.8,
+          "true_positive": 435,
+          "false_positive": 389,
+          "false_negative": 65,
+          "true_negative": 28,
+          "precision": 0.5279126213592233,
+          "recall": 0.87
+        },
+        {
+          "threshold": 0.85,
+          "true_positive": 256,
+          "false_positive": 301,
+          "false_negative": 244,
+          "true_negative": 116,
+          "precision": 0.45960502692998206,
+          "recall": 0.512
+        },
+        {
+          "threshold": 0.9,
+          "true_positive": 35,
+          "false_positive": 0,
+          "false_negative": 465,
+          "true_negative": 417,
+          "precision": 1.0,
+          "recall": 0.07
+        },
+        {
+          "threshold": 0.95,
+          "true_positive": 9,
+          "false_positive": 0,
+          "false_negative": 491,
+          "true_negative": 417,
+          "precision": 1.0,
+          "recall": 0.018
+        }
+      ],
+      "highest_scoring_negatives": [
+        {
+          "case_id": "eval-000585",
+          "scenario": "negative_width_piece_count",
+          "similarity": 0.8990312814712524,
+          "au_input": "遮光カーテン カーテン レースカーテン 断熱 洗濯可 / 幅100×丈135cm(2枚組) / ユーカリグリーン / なし",
+          "rakuten_input": "【楽天市場】【最大2000円OFFクーポン配布】カーテン 遮光 1級 2級 遮光カーテン 遮光率99.99% 幅100cm 幅150cm レースカーテンセット カーテンセット タッセル付き UVカット 厚手 断熱 遮熱 省エネ シンプル 無地 洗える ウォッシャブル ドレープカーテン おしゃれ：WEIMALL公式ストア 楽天市場店 / 150×135cm / ユーカリグリーン / レースなし"
+        },
+        {
+          "case_id": "eval-000393",
+          "scenario": "negative_width_piece_count",
+          "similarity": 0.895837664604187,
+          "au_input": "カーテン 1級遮光 レースカーテンセット タッセル付き / 幅100×丈120cm(4枚組) / カフェブラウン / あり",
+          "rakuten_input": "【楽天市場】【最大2000円OFFクーポン配布】カーテン 遮光 1級 2級 遮光カーテン 遮光率99.99% 幅100cm 幅150cm レースカーテンセット カーテンセット タッセル付き UVカット 厚手 断熱 遮熱 省エネ シンプル 無地 洗える ウォッシャブル ドレープカーテン おしゃれ：WEIMALL公式ストア 楽天市場店 / 150×120cm / カフェブラウン / レースあり"
+        },
+        {
+          "case_id": "eval-000861",
+          "scenario": "negative_width_piece_count",
+          "similarity": 0.8935161828994751,
+          "au_input": "カーテン 1級遮光 レースカーテンセット タッセル付き / 幅100×丈185cm(4枚組) / カフェブラウン / あり",
+          "rakuten_input": "【楽天市場】【最大2000円OFFクーポン配布】カーテン 遮光 1級 2級 遮光カーテン 遮光率99.99% 幅100cm 幅150cm レースカーテンセット カーテンセット タッセル付き UVカット 厚手 断熱 遮熱 省エネ シンプル 無地 洗える ウォッシャブル ドレープカーテン おしゃれ：WEIMALL公式ストア 楽天市場店 / 幅150×丈185cm(2枚組) / カフェブラウン / あり"
+        },
+        {
+          "case_id": "eval-000963",
+          "scenario": "negative_near_color",
+          "similarity": 0.8922338485717773,
+          "au_input": "遮光カーテン カーテン レースカーテン 断熱 洗濯可 / 幅100×丈80cm(4枚組) / ベージュ / あり",
+          "rakuten_input": "【楽天市場】【最大2000円OFFクーポン配布】カーテン 遮光 1級 2級 遮光カーテン 遮光率99.99% 幅100cm 幅150cm レースカーテンセット カーテンセット タッセル付き UVカット 厚手 断熱 遮熱 省エネ シンプル 無地 洗える ウォッシャブル ドレープカーテン おしゃれ：WEIMALL公式ストア 楽天市場店 / 100×80cm / サンドベージュ / レースあり"
+        },
+        {
+          "case_id": "eval-000693",
+          "scenario": "negative_width_piece_count",
+          "similarity": 0.8921286463737488,
+          "au_input": "遮光カーテン カーテン レースカーテン 断熱 洗濯可 / 幅100×丈120cm(4枚組) / ユーカリグリーン / あり",
+          "rakuten_input": "【楽天市場】【最大2000円OFFクーポン配布】カーテン 遮光 1級 2級 遮光カーテン 遮光率99.99% 幅100cm 幅150cm レースカーテンセット カーテンセット タッセル付き UVカット 厚手 断熱 遮熱 省エネ シンプル 無地 洗える ウォッシャブル ドレープカーテン おしゃれ：WEIMALL公式ストア 楽天市場店 / 150×120cm / ユーカリグリーン / レースあり"
+        },
+        {
+          "case_id": "eval-000657",
+          "scenario": "negative_width_piece_count",
+          "similarity": 0.8920789361000061,
+          "au_input": "遮光カーテン カーテン レースカーテン 断熱 洗濯可 / 幅100×丈220cm(4枚組) / ノクターンネイビー / あり",
+          "rakuten_input": "【楽天市場】【最大2000円OFFクーポン配布】カーテン 遮光 1級 2級 遮光カーテン 遮光率99.99% 幅100cm 幅150cm レースカーテンセット カーテンセット タッセル付き UVカット 厚手 断熱 遮熱 省エネ シンプル 無地 洗える ウォッシャブル ドレープカーテン おしゃれ：WEIMALL公式ストア 楽天市場店 / 幅150×丈220cm(2枚組) / ノクターンネイビー / あり"
+        },
+        {
+          "case_id": "eval-000351",
+          "scenario": "negative_near_color",
+          "similarity": 0.891383707523346,
+          "au_input": "遮光カーテン カーテン レースカーテン 断熱 洗濯可 / 幅150×丈178cm(2枚組) / ノクターンネイビー / あり",
+          "rakuten_input": "【楽天市場】【最大2000円OFFクーポン配布】カーテン 遮光 1級 2級 遮光カーテン 遮光率99.99% 幅100cm 幅150cm レースカーテンセット カーテンセット タッセル付き UVカット 厚手 断熱 遮熱 省エネ シンプル 無地 洗える ウォッシャブル ドレープカーテン おしゃれ：WEIMALL公式ストア 楽天市場店 / 幅150×丈178cm(2枚組) / ベージュ / あり"
+        },
+        {
+          "case_id": "eval-000099",
+          "scenario": "negative_near_color",
+          "similarity": 0.8884735107421875,
+          "au_input": "遮光カーテン カーテン レースカーテン 断熱 洗濯可 / 幅100×丈210cm(2枚組) / ライトグレー / なし",
+          "rakuten_input": "【楽天市場】【最大2000円OFFクーポン配布】カーテン 遮光 1級 2級 遮光カーテン 遮光率99.99% 幅100cm 幅150cm レースカーテンセット カーテンセット タッセル付き UVカット 厚手 断熱 遮熱 省エネ シンプル 無地 洗える ウォッシャブル ドレープカーテン おしゃれ：WEIMALL公式ストア 楽天市場店 / 幅100×丈210cm(2枚組) / ベージュ / なし"
+        }
+      ]
+    }
+  ],
+  "rankings": [
+    {
+      "mode": "sku",
+      "au_skus": 153,
+      "rakuten_skus": 306,
+      "reference": "canonical_attributes_of_synthetic_fixture",
+      "positive_queries": 140,
+      "top1_correct": 113,
+      "top1_accuracy_for_present_skus": 0.8071428571428572,
+      "absent_sku_top1_similarity": {
+        "count": 166,
+        "min": 0.8418921232223511,
+        "p50": 0.9137934148311615,
+        "p95": 0.9845143556594849,
+        "max": 0.9902949333190918
+      }
+    },
+    {
+      "mode": "title-sku",
+      "au_skus": 153,
+      "rakuten_skus": 306,
+      "reference": "canonical_attributes_of_synthetic_fixture",
+      "positive_queries": 140,
+      "top1_correct": 6,
+      "top1_accuracy_for_present_skus": 0.04285714285714286,
+      "absent_sku_top1_similarity": {
+        "count": 166,
+        "min": 0.8471070528030396,
+        "p50": 0.8702172935009003,
+        "p95": 0.881954699754715,
+        "max": 0.8936266303062439
+      }
+    }
+  ],
+  "fresh_inference": {
+    "text_count": 2048,
+    "seconds": 6.5084969310000815,
+    "texts_per_second": 314.66558588133324,
+    "data": "synthetic dimensions"
+  },
+  "workloads": [
+    {
+      "counts": {
+        "product_pairs": 1000,
+        "input_records": 459000,
+        "matched_csv_rows": 142479,
+        "rakuten_matched": 142479,
+        "rakuten_unmatched": 147590,
+        "rakuten_excluded": 15931,
+        "au_excluded": 5404,
+        "au_unmatched": 5117
+      },
+      "seconds": 10.170566433999738,
+      "input_records_per_second": 45130.22976435059,
+      "model_enabled": false,
+      "includes": "JSONL read, attribute normalization, indexing, match decisions; excludes CSV write"
+    },
+    {
+      "counts": {
+        "product_pairs": 1000,
+        "input_records": 459000,
+        "matched_csv_rows": 142479,
+        "rakuten_matched": 142479,
+        "rakuten_unmatched": 147590,
+        "rakuten_excluded": 15931,
+        "au_excluded": 5404,
+        "au_unmatched": 5117
+      },
+      "seconds": 12.229192077000334,
+      "input_records_per_second": 37533.14177338417,
+      "model_enabled": true,
+      "includes": "JSONL read, attribute normalization, indexing, match decisions; excludes CSV write"
+    }
+  ],
+  "process_peak_rss_mib": 890.26171875
+}

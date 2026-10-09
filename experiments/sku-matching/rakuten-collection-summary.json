@@ -1,0 +1,73 @@
+{
+  "retrieved_date_utc": "2026-10-09",
+  "scope": {
+    "store": "WEIMALL official Rakuten store",
+    "origin": "https://item.rakuten.co.jp",
+    "seed_url": "https://item.rakuten.co.jp/weimall/ct0/",
+    "discovery": "Direct same-store item links found in saved user-provided seed HTML; category links were excluded.",
+    "read_only": true,
+    "actions": "Public HTML GET only. No cart, account, checkout, or page interaction requests.",
+    "product_page_limit": 20,
+    "http_request_limit": 40,
+    "successful_product_pages": 20,
+    "http_request_count": 19,
+    "request_count_note": "Counts product GETs and redirect hops; saved seed HTML was copied from the earlier user-provided observation and is not fetched again.",
+    "raw_directory": ".lab-output/sku-real-rakuten-20261009"
+  },
+  "availability_note": "All 20 observed item pages report HIDDEN_STOCK, so visibly displayed per-SKU availability is unknown. Their HTML embeds per-SKU inventory quantities; these are labeled embedded JSON values, and derived availability (zero => out_of_stock, positive => in_stock) is kept separate from visible availability. A SKU without a matched quantity or with hidden_sku=true remains unknown. SKU-level price is the concrete taxIncludedPrice for that SKU, normalized to integer JPY only when the source value is integral; raw value is retained.",
+  "schema": {
+    "product_table": "products.jsonl",
+    "sku_table": "skus.jsonl",
+    "sku_axes": "option_values uses each product page variantSelectors[].key paired positionally with the row selectorValues[]; values are the raw returned Japanese labels.",
+    "identifier_join": "Inventory mapping first matches merchantDefinedSkuId to variantMappedInventories[].sku; if absent, falls back to variantId and records inventory_match_key."
+  },
+  "metrics": {
+    "product_rows": 20,
+    "structured_product_rows": 20,
+    "products_with_nonempty_sku_matrices": 18,
+    "sku_rows": 891,
+    "sku_rows_with_integer_jpy_price": 891,
+    "sku_rows_with_matched_inventory_quantity": 891,
+    "sku_rows_with_visible_availability_unknown": 891,
+    "sku_rows_using_variant_id_inventory_fallback": 72,
+    "distinct_option_axes": [
+      "Key0",
+      "カラー",
+      "カラー選択",
+      "サイズ",
+      "サイズ(幅)",
+      "セット数",
+      "タイプ",
+      "レースカーテン",
+      "耐荷重",
+      "長さ"
+    ],
+    "sku_rows_by_product": {
+      "ct0": 306,
+      "ctk": 54,
+      "dtw001": 36,
+      "faa006": 2,
+      "feb002": 95,
+      "fek002": 48,
+      "fgc005": 32,
+      "fia6080": 6,
+      "flc": 2,
+      "gad100": 3,
+      "hrs02p040": 192,
+      "jm60b": 60,
+      "pt0017a": 4,
+      "pt0033": 7,
+      "pt0038": 4,
+      "qaa0100": 9,
+      "rsb130": 14,
+      "stp01": 17
+    }
+  },
+  "offline_qa": {
+    "selector_value_count_mismatch": 0,
+    "nonintegral_or_missing_price": 0,
+    "inventory_unmatched": 0,
+    "hidden_true": 0
+  },
+  "errors": []
+}

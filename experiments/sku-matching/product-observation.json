@@ -1,0 +1,125 @@
+{
+  "retrieved_date_utc": "2026-10-09",
+  "scope": {
+    "user_provided_examples": [
+      "https://item.rakuten.co.jp/weimall/ct0/",
+      "https://wowma.jp/item/704502086"
+    ],
+    "observed_urls_only": true,
+    "method": "Read-only HTTPS GET of each user-provided URL; standard redirects followed; no page interactions or linked resources requested.",
+    "raw_responses_directory": ".lab-output/sku-observation-20261009",
+    "notes": "These are user-provided examples and the observations below are fetched page evidence. Product-page descriptions and SKU option fields are distinguished."
+  },
+  "observations": [
+    {
+      "url": "https://item.rakuten.co.jp/weimall/ct0/",
+      "status": 200,
+      "final_url": "https://item.rakuten.co.jp/weimall/ct0/",
+      "retrieved_at_utc": "2026-10-09T12:52:21.994296+00:00",
+      "response_bytes": 1130087,
+      "sha256": "5afed80a98492eb29541bb8a616e1f103c025890ddc12cf2ea1ecfa06a516820",
+      "raw_file": ".lab-output/sku-observation-20261009/rakuten.html",
+      "exact_product_title": "【楽天市場】【最大2000円OFFクーポン配布】カーテン 遮光 1級 2級 遮光カーテン 遮光率99.99% 幅100cm 幅150cm レースカーテンセット カーテンセット タッセル付き UVカット 厚手 断熱 遮熱 省エネ シンプル 無地 洗える ウォッシャブル ドレープカーテン おしゃれ：WEIMALL公式ストア 楽天市場店",
+      "option_evidence": {
+        "sku_selector_observation": "The returned HTML has empty SkuSelectionArea and OptionArea placeholders; no concrete selectable SKU values were present in those placeholders.",
+        "exact_product_description_snippets": [
+          "【幅100cm】 カーテン 2枚 タッセル 2枚 フック 14個 レースカーテン 2個 ※レースカーテン付きを選択の場合",
+          "【幅150cm】 カーテン 1枚 タッセル 1枚 フック 9個 レースカーテン 1個 ※レースカーテン付きを選択の場合",
+          "【1級遮光】 ライトグレー スモークグレー コールブラック ユーカリグリーン ノクターンネイビー サンドベージュ カフェブラウン ベージュ アイスグレー",
+          "（約）100×80cm （約）100×90cm （約）100×105cm （約）100×110cm （約）100×120cm （約）100×135cm （約）100×150cm （約）100×178cm （約）100×185cm （約）100×190cm （約）100×200cm （約）100×210cm （約）100×220cm （約）100×230cm （約）150×135cm （約）150×178cm （約）150×200cm",
+          "★レースカーテンの丈は上記の-2cmのサイズになります"
+        ],
+        "lace_and_piece_interpretation": "Page description explicitly makes lace curtains conditional on choosing the lace-curtain-included option. At width 100cm it describes two main curtains and, if included, two lace curtains; at width 150cm it describes one main curtain and, if included, one lace curtain. The title calls the product a lace-curtain set, but returned SKU selector placeholders did not expose the actual lace selection labels."
+      }
+    },
+    {
+      "url": "https://wowma.jp/item/704502086",
+      "status": 200,
+      "final_url": "https://wowma.jp/item/704502086",
+      "retrieved_at_utc": "2026-10-09T12:52:25.666305+00:00",
+      "response_bytes": 122973,
+      "sha256": "71705a5edccfdb3c595742c8b807f1a6f278332aa5c80cc796e5b36f54c2c70b",
+      "raw_file": ".lab-output/sku-observation-20261009/wowma.html",
+      "exact_product_title": "＼ランキング1位／【選べる17サイズ】 カーテン 4枚セット 遮光 レースカーテンセット 1級 三層構造 形状記憶 遮熱 遮像 防寒 洗える 遮光カーテン UVカット 幅100 幅150 4枚 2枚 カーテンセット カーテン4枚組 ミラーレース 厚手 省エネ 防音 無地 送料無料",
+      "option_evidence": {
+        "exact_sku_option_fields": "\"optionName\":{\"row\":\"カラー\",\"column\":\"サイズ\"}",
+        "exact_color_values": "\"rowNames\":[\"ベージュ\",\"アイスグレー\",\"ライトグレー\",\"スモークグレー\",\"サンドベージュ\",\"ユーカリグリーン\",\"ノクターンネイビー\",\"コールブラック\",\"カフェブラウン\"]",
+        "exact_size_values": "\"columnNames\":[\"幅100×丈80cm(4枚組)\",\"幅100×丈90cm(4枚組)\",\"幅100×丈105cm(4枚組)\",\"幅100×丈110cm(4枚組)\",\"幅100×丈120cm(4枚組)\",\"幅100×丈135cm(4枚組)\",\"幅100×丈150cm(4枚組)\",\"幅100×丈178cm(4枚組)\",\"幅100×丈185cm(4枚組)\",\"幅100×丈190cm(4枚組)\",\"幅100×丈200cm(4枚組)\",\"幅100×丈210cm(4枚組)\",\"幅100×丈220cm(4枚組)\",\"幅100×丈230cm(4枚組)\",\"幅150×丈135cm(2枚組)\",\"幅150×丈178cm(2枚組)\",\"幅150×丈200cm(2枚組)\"]",
+        "exact_product_description_snippets": [
+          "【幅100cm】 遮光カーテン 2枚 レースカーテン 2枚 タッセル 2枚 カーテンフック 14個",
+          "【幅150cm】 遮光カーテン 1枚 レースカーテン 1枚 タッセル 1枚 カーテンフック 7個"
+        ],
+        "lace_and_piece_interpretation": "The SKU size labels distinguish 4枚組 at width 100 and 2枚組 at width 150. The product description spells out what those counts mean: width 100 includes two blackout curtains plus two lace curtains; width 150 includes one blackout curtain plus one lace curtain. No separate lace-inclusion option appears in the observed SKU fields."
+      },
+      "api_observation": {
+        "item_api": {
+          "url": "https://wowma.jp/api/item/704502086",
+          "status": 200,
+          "retrieved_at_utc": "2026-10-09T12:54:22.601651+00:00",
+          "sha256": "5b1a400c961a6abf80767eb479c4c68dce4862cfafb6ae185b72eea090a85269",
+          "raw_file": ".lab-output/sku-observation-20261009/wowma-item-api.json",
+          "exact_field_evidence": {
+            "itemInfo.currentPrice": 3980,
+            "itemInfo.currentPrice_json_type": "integer",
+            "itemInfo.shopUserId": 36356553,
+            "shopSummaryInfo.shopId": 36356553,
+            "shopSummaryInfo.shopName": "WEIMALL",
+            "itemInfo.skuInfo.skuId": 331810175,
+            "itemInfo.skuInfo.rowCount": 9,
+            "itemInfo.skuInfo.columnCount": 17,
+            "itemInfo.skuInfo.optionName": {
+              "row": "カラー",
+              "column": "サイズ"
+            }
+          },
+          "stock_matrix": {
+            "shape": [
+              9,
+              17
+            ],
+            "combination_count": 153,
+            "flags": {
+              "isSoldOut_false": 142,
+              "isSoldOut_true": 11,
+              "isShortStock_true": 25,
+              "remainingStock": "null for all cells"
+            },
+            "shippingScheduleText_counts": {
+              "1-2営業日以内に発送": 120,
+              "【予約】10月中旬（〜20日までに発送）": 33
+            }
+          },
+          "caveat": "currentPrice is item-level, not per SKU. isSoldOut/isShortStock/schedule values are source flags; remainingStock is null, not a numeric inventory value."
+        },
+        "options_api": {
+          "url": "https://wowma.jp/api/items/704502086/itemOptions",
+          "status": 200,
+          "retrieved_at_utc": "2026-10-09T12:54:24.734138+00:00",
+          "sha256": "2b576311287aaf1540989b149090ccfb3eaeb4ad44d9ea575dee90e0eb82e4c",
+          "raw_file": ".lab-output/sku-observation-20261009/wowma-options-api.json",
+          "summary": "3 free options (includes required acknowledgment “※幅100cmは4枚セット、幅150cmは2枚セットになります”); 1 paid delivery-region option with 3 explicit choices priced 550, 1100, 1100. The full exact values are preserved in the raw JSON and normalized products.jsonl."
+        },
+        "same_description_sibling_evidence": [
+          {
+            "item_id": "704500131",
+            "anchor_text": "遮光カーテン 遮光&UVカット率99.9％以上!! 2枚セット",
+            "evidence": "Direct link in item 704502086 extraItemComment, labelled “遮光カーテン 遮光&UVカット率99.9％以上!! 2枚セット”; fetched sibling product title and product-content table describe blackout curtains without lace pieces.",
+            "observed_details": "The fetched sibling item API extraItemComment product-content table says: “【幅100cm】 遮光カーテン 2枚 タッセル 2枚 カーテンフック 14個 【幅150cm】 遮光カーテン 1枚 タッセル 1枚 カーテンフック 9個”. This product-content table does not list lace curtains."
+          },
+          {
+            "item_id": "778818828",
+            "anchor_text": "2枚セット",
+            "evidence": "Direct link in supplied item description; fetched API title describes 5層構造完全遮光カーテン 2枚セット."
+          },
+          {
+            "item_id": "778809347",
+            "anchor_text": "4枚セット",
+            "evidence": "Direct link in supplied item description; fetched API title describes 5層構造完全遮光カーテン plusミラーレースカーテンセット."
+          }
+        ],
+        "catalog_scope_note": "See experiments/sku-matching/au-collection-summary.json for same-shop catalog API query validation and separate product/SKU JSONL file contract."
+      }
+    }
+  ],
+  "matching_evidence_summary": "Both observed titles name curtains and lace-curtain sets; both product descriptions specify the same width-dependent curtain/lace piece composition. The observed Wowma SKU matrix exposes color and size labels; Rakuten page response exposes colors and sizes in product description, while its SKU selection placeholders are empty. This supports product-level correspondence and color/size comparison, but the captured Rakuten response does not expose a concrete SKU option matrix or lace-inclusion choice labels."
+}

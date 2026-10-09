@@ -1,0 +1,381 @@
+{
+  "retrieved_date_utc": "2026-10-09",
+  "scope": {
+    "shop_user_id": 36356553,
+    "shop_name": "WEIMALL",
+    "shop_identity_evidence": "Observed on supplied item 704502086: itemInfo.shopUserId=36356553 and shopSummaryInfo.shopId=36356553, shopName=WEIMALL.",
+    "category_id": 310608,
+    "category_name": "ドレープカーテン",
+    "category_evidence": "Observed directly in breadcrumb of user-provided item page.",
+    "scope_note": "Structured catalog API collection limited to the supplied shop and its directly observed drape-curtain category. No unrelated shop products were added."
+  },
+  "method": {
+    "search_endpoint": "GET https://wowma.jp/catalog/api/search/items",
+    "headers": {
+      "X-Catalog-API-Version": "1.0.0",
+      "Accept": "application/json"
+    },
+    "query_encoding": "Japanese keyword URL-encoded with CP932; query keyword was カーテン. The response condition.keyword decoded to カーテン; condition.keywordRaw and normalizedKeywordRaw were %83J%81%5B%83e%83%93.",
+    "searches": [
+      {
+        "file": "catalog-probe-1.json",
+        "retrieved_at_utc": "2026-10-09T13:46:56.823798+00:00",
+        "params": "user=36356553&keyword=%83J%81%5B%83e%83%93&ipp=40",
+        "purpose": "shop-filtered curtain keyword search",
+        "url": "https://wowma.jp/catalog/api/search/items?user=36356553&keyword=%83J%81%5B%83e%83%93&ipp=40",
+        "status": 200,
+        "sha256": "e57e0fb3edca8c5fe85408e7f73ce1ec5b9ba53bb676b901e77a6af3ad5cf2e2",
+        "response_bytes": 12625,
+        "raw_file": ".lab-output/sku-real-au-20261009/catalog-probe-1.json",
+        "condition": {
+          "shopId": 36356553,
+          "keyword": "カーテン",
+          "keywordRaw": "%83J%81%5B%83e%83%93",
+          "categoryId": 80,
+          "page": 1,
+          "limit": 40
+        },
+        "total_count": 6,
+        "returned_item_ids": [
+          704502086,
+          704500131,
+          778818828,
+          778809347,
+          783166798,
+          783059672
+        ]
+      },
+      {
+        "file": "catalog-probe-2.json",
+        "retrieved_at_utc": "2026-10-09T13:46:58.838624+00:00",
+        "params": "shopUserId=36356553&keyword=%83J%81%5B%83e%83%93&page=1&pageSize=40",
+        "purpose": "parameter-validation probe; ignored shopUserId, excluded from product collection",
+        "url": "https://wowma.jp/catalog/api/search/items?shopUserId=36356553&keyword=%83J%81%5B%83e%83%93&page=1&pageSize=40",
+        "status": 200,
+        "sha256": "9bdadf6060d6b1f89b8a87250007ac1368edd913851fcdd19082fcab5a776e1d",
+        "response_bytes": 78757,
+        "raw_file": ".lab-output/sku-real-au-20261009/catalog-probe-2.json",
+        "condition": {
+          "shopId": null,
+          "keyword": "カーテン",
+          "keywordRaw": "%83J%81%5B%83e%83%93",
+          "categoryId": 80,
+          "page": 1,
+          "limit": 40
+        },
+        "total_count": 335121,
+        "returned_item_ids": [
+          704502086,
+          763446318,
+          763445932,
+          543356374,
+          761911259,
+          704500131,
+          429881803,
+          703181752,
+          253041328,
+          304440436,
+          634016554,
+          510232944,
+          698040172,
+          258162640,
+          787513778,
+          712936871,
+          712940747,
+          511333434,
+          712936687,
+          298532399,
+          712914025,
+          258162508,
+          703184050,
+          368096872,
+          641042317,
+          575762488,
+          712938015,
+          439905028,
+          322552482,
+          501342897,
+          317413251,
+          425294235,
+          712937009,
+          419919606,
+          730078573,
+          500146474,
+          258162503,
+          586516077,
+          258162530,
+          703184051
+        ]
+      },
+      {
+        "file": "catalog-probe-3.json",
+        "retrieved_at_utc": "2026-10-09T13:47:00.449674+00:00",
+        "params": "user=36356553&keyword=%83J%81%5B%83e%83%93&ipp=40&categ_id=310608",
+        "purpose": "shop and directly observed drape-curtain category constrained search",
+        "url": "https://wowma.jp/catalog/api/search/items?user=36356553&keyword=%83J%81%5B%83e%83%93&ipp=40&categ_id=310608",
+        "status": 200,
+        "sha256": "b2e4b16a8158b94e4836eac4ed0de33f121b4ccafb300553ff335416bc75ca7c",
+        "response_bytes": 9846,
+        "raw_file": ".lab-output/sku-real-au-20261009/catalog-probe-3.json",
+        "condition": {
+          "shopId": 36356553,
+          "keyword": "カーテン",
+          "keywordRaw": "%83J%81%5B%83e%83%93",
+          "categoryId": 310608,
+          "page": 1,
+          "limit": 40
+        },
+        "total_count": 4,
+        "returned_item_ids": [
+          704502086,
+          704500131,
+          778818828,
+          778809347
+        ]
+      }
+    ],
+    "expansion": "Used IDs only from the successful shop/category constrained search and directly observed same-item-description sibling links. No generic link crawl."
+  },
+  "collection": {
+    "product_count": 4,
+    "sku_record_count": 360,
+    "actual_api_item_option_request_count": 8,
+    "catalog_search_request_count": 3,
+    "distinct_category_item_count": 4,
+    "category_search_returned_ids": [
+      704502086,
+      704500131,
+      778818828,
+      778809347
+    ],
+    "category_search_page": {
+      "totalCount": 4,
+      "limitValue": 40,
+      "currentPage": 1,
+      "totalPages": 1,
+      "firstPage": true,
+      "lastPage": true,
+      "startIndex": 1,
+      "endIndex": 4,
+      "pageNavigationStartPage": 1,
+      "pageNavigationEndPage": 1
+    },
+    "sku_records_are_actual_stock_matrix_cells": true,
+    "sku_level_price_field": "Not returned by these endpoints; currentPrice is product-level and retained as integer JSON field. No per-SKU prices inferred.",
+    "stock_semantics": "Each SKU row copies isSoldOut, isShortStock, remainingStock, and shippingScheduleText exactly from stockList; null remainingStock stays null. Counts below describe source flags only, not normalized availability judgments."
+  },
+  "products": [
+    {
+      "item_id": "704502086",
+      "item_title": "＼ランキング1位／【選べる17サイズ】 カーテン 4枚セット 遮光 レースカーテンセット 1級 三層構造 形状記憶 遮熱 遮像 防寒 洗える 遮光カーテン UVカット 幅100 幅150 4枚 2枚 カーテンセット カーテン4枚組 ミラーレース 厚手 省エネ 防音 無地 送料無料",
+      "current_price": 3980,
+      "current_price_json_type": "int",
+      "shop_user_id": 36356553,
+      "shop_name": "WEIMALL",
+      "sku_id": 331810175,
+      "sku_axes": {
+        "row": "カラー",
+        "column": "サイズ"
+      },
+      "row_count": 9,
+      "column_count": 17,
+      "combination_count": 153,
+      "is_sold_out_false_count": 142,
+      "stock_status_counts": [
+        {
+          "is_sold_out": false,
+          "is_short_stock": false,
+          "shipping_schedule_text": "1-2営業日以内に発送",
+          "count": 84
+        },
+        {
+          "is_sold_out": false,
+          "is_short_stock": false,
+          "shipping_schedule_text": "【予約】10月中旬（〜20日までに発送）",
+          "count": 33
+        },
+        {
+          "is_sold_out": false,
+          "is_short_stock": true,
+          "shipping_schedule_text": "1-2営業日以内に発送",
+          "count": 25
+        },
+        {
+          "is_sold_out": true,
+          "is_short_stock": false,
+          "shipping_schedule_text": "1-2営業日以内に発送",
+          "count": 11
+        }
+      ],
+      "free_option_count": 3,
+      "paid_option_count": 1,
+      "raw_item_sha256": "c7cfc2095c208663912996ff2ec8b90dc5a6b898951eab6974683c0121793467",
+      "raw_options_sha256": "2b576311287aaf1540989b14909084cfb3eaeb4ad44d9ea575dee90e0eb82e4c",
+      "raw_files": [
+        ".lab-output/sku-real-au-20261009/704502086-item.json",
+        ".lab-output/sku-real-au-20261009/704502086-options.json"
+      ]
+    },
+    {
+      "item_id": "704500131",
+      "item_title": "＼ランキング1位／ 【選べる17サイズ】 カーテン 2枚セット 遮光 1級 3層構造 形状記憶 遮熱 防寒 断熱 洗える 遮光カーテン 遮光率99.99% UVカット おしゃれ 幅100 幅150 2枚 カーテンセット カーテン2枚組 厚手 省エネ 無地 防音 ドレープカーテン 送料無料",
+      "current_price": 2980,
+      "current_price_json_type": "int",
+      "shop_user_id": 36356553,
+      "shop_name": "WEIMALL",
+      "sku_id": 331814079,
+      "sku_axes": {
+        "row": "カラー",
+        "column": "サイズ"
+      },
+      "row_count": 9,
+      "column_count": 17,
+      "combination_count": 153,
+      "is_sold_out_false_count": 145,
+      "stock_status_counts": [
+        {
+          "is_sold_out": false,
+          "is_short_stock": false,
+          "shipping_schedule_text": "1-2営業日以内に発送",
+          "count": 112
+        },
+        {
+          "is_sold_out": false,
+          "is_short_stock": false,
+          "shipping_schedule_text": "【予約】10月中旬（〜20日までに発送）",
+          "count": 33
+        },
+        {
+          "is_sold_out": true,
+          "is_short_stock": false,
+          "shipping_schedule_text": "1-2営業日以内に発送",
+          "count": 8
+        }
+      ],
+      "free_option_count": 3,
+      "paid_option_count": 1,
+      "raw_item_sha256": "79ac86eaaa96ce95a3a922ca9366d79275a5099e6e01c0d3ca20610ef1610cc2",
+      "raw_options_sha256": "19dba9de2d3a9b5573cc4aba6b888813e8179a711296ec49e9fe4501b058418d",
+      "raw_files": [
+        ".lab-output/sku-real-au-20261009/704500131-item.json",
+        ".lab-output/sku-real-au-20261009/704500131-options.json"
+      ]
+    },
+    {
+      "item_id": "778818828",
+      "item_title": "【選べる9サイズ】 カーテン 2枚セット 完全遮光 5層構造 形状記憶 1級 遮光カーテン 遮熱 遮像 丸洗い 洗える 遮光カーテン UVカット 幅100 幅150 4枚 2枚 カーテンセット カーテン2枚組 厚手 省エネ 防音 無地 送料無料",
+      "current_price": 3980,
+      "current_price_json_type": "int",
+      "shop_user_id": 36356553,
+      "shop_name": "WEIMALL",
+      "sku_id": 332504238,
+      "sku_axes": {
+        "row": "カラー",
+        "column": "サイズ"
+      },
+      "row_count": 3,
+      "column_count": 9,
+      "combination_count": 27,
+      "is_sold_out_false_count": 25,
+      "stock_status_counts": [
+        {
+          "is_sold_out": false,
+          "is_short_stock": false,
+          "shipping_schedule_text": "1-2営業日以内に発送",
+          "count": 23
+        },
+        {
+          "is_sold_out": false,
+          "is_short_stock": false,
+          "shipping_schedule_text": "【予約】10月中旬（〜20日までに発送）",
+          "count": 2
+        },
+        {
+          "is_sold_out": true,
+          "is_short_stock": false,
+          "shipping_schedule_text": "1-2営業日以内に発送",
+          "count": 2
+        }
+      ],
+      "free_option_count": 3,
+      "paid_option_count": 1,
+      "raw_item_sha256": "5870188ae94a8a6f35c6ac8fbc994218798842f5bf3016732b691ccad82d8057",
+      "raw_options_sha256": "2e9de5b0ad964c9617aabb09e3b03475d96367ccca680e8f64a5a8a4bd075ca9",
+      "raw_files": [
+        ".lab-output/sku-real-au-20261009/778818828-item.json",
+        ".lab-output/sku-real-au-20261009/778818828-options.json"
+      ]
+    },
+    {
+      "item_id": "778809347",
+      "item_title": "【選べる9サイズ】 カーテン 4枚セット 完全遮光 ミラーレースカーテンセット 5層構造 形状記憶 1級 遮光カーテン 遮熱 遮像 丸洗い 洗える 遮光カーテン UVカット 幅100 幅150 4枚 2枚 カーテンセット カーテン4枚組 ミラーレース 厚手 省エネ 防音 無地 送料無料",
+      "current_price": 4980,
+      "current_price_json_type": "int",
+      "shop_user_id": 36356553,
+      "shop_name": "WEIMALL",
+      "sku_id": 332481126,
+      "sku_axes": {
+        "row": "カラー",
+        "column": "サイズ"
+      },
+      "row_count": 3,
+      "column_count": 9,
+      "combination_count": 27,
+      "is_sold_out_false_count": 27,
+      "stock_status_counts": [
+        {
+          "is_sold_out": false,
+          "is_short_stock": false,
+          "shipping_schedule_text": "1-2営業日以内に発送",
+          "count": 23
+        },
+        {
+          "is_sold_out": false,
+          "is_short_stock": false,
+          "shipping_schedule_text": "【予約】10月中旬（〜20日までに発送）",
+          "count": 4
+        }
+      ],
+      "free_option_count": 3,
+      "paid_option_count": 1,
+      "raw_item_sha256": "d6e53d8a3d8c75cd724b19dfbe25196f8cb033a81cfa40cd3d0dafb4c83032a3",
+      "raw_options_sha256": "179c91900a32a5b52ede817497070830e6927266004787786e271ec3da9a9d77",
+      "raw_files": [
+        ".lab-output/sku-real-au-20261009/778809347-item.json",
+        ".lab-output/sku-real-au-20261009/778809347-options.json"
+      ]
+    }
+  ],
+  "stock_status_counts": [
+    {
+      "is_sold_out": false,
+      "is_short_stock": false,
+      "shipping_schedule_text": "1-2営業日以内に発送",
+      "count": 242
+    },
+    {
+      "is_sold_out": false,
+      "is_short_stock": false,
+      "shipping_schedule_text": "【予約】10月中旬（〜20日までに発送）",
+      "count": 72
+    },
+    {
+      "is_sold_out": false,
+      "is_short_stock": true,
+      "shipping_schedule_text": "1-2営業日以内に発送",
+      "count": 25
+    },
+    {
+      "is_sold_out": true,
+      "is_short_stock": false,
+      "shipping_schedule_text": "1-2営業日以内に発送",
+      "count": 21
+    }
+  ],
+  "files": {
+    "products_jsonl": ".lab-output/sku-real-au-20261009/products.jsonl",
+    "skus_jsonl": ".lab-output/sku-real-au-20261009/skus.jsonl",
+    "collector": "experiments/sku-matching/fetch_au.py",
+    "raw_dir": ".lab-output/sku-real-au-20261009"
+  }
+}

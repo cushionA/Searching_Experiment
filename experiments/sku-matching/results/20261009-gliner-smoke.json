@@ -1,0 +1,486 @@
+{
+  "model": "fastino/GLiNER2.5-multi-Decide",
+  "revision": "e173bca1f0c4217d7a55b3b0c705d5ece8a0218d",
+  "task": "pairwise SKU classification with three supplied labels",
+  "provider": "CPU / PyTorch",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.41"
+  },
+  "threads": {
+    "intra_op": 2,
+    "inter_op": 1
+  },
+  "dependency_versions": {
+    "gliner2": "2.0.0",
+    "torch": "2.7.1+cpu",
+    "transformers": "5.17.0",
+    "tokenizers": "0.23.3",
+    "safetensors": "0.8.0",
+    "huggingface-hub": "1.33.0"
+  },
+  "pip_check": {
+    "returncode": 0,
+    "stdout": "No broken requirements found.",
+    "stderr": ""
+  },
+  "reproduction_commands": [
+    "python3 -m venv .deps/sku-gliner-venv",
+    ".deps/sku-gliner-venv/bin/python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.7.1",
+    ".deps/sku-gliner-venv/bin/python -m pip install 'gliner2[local]'",
+    ".deps/sku-gliner-venv/bin/python -m pip install transformers==5.17.0",
+    ".deps/sku-gliner-venv/bin/python experiments/sku-matching/try_gliner.py --download",
+    ".deps/sku-gliner-venv/bin/python experiments/sku-matching/try_gliner.py --run"
+  ],
+  "source_manifest": {
+    "repo": "fastino/GLiNER2.5-multi-Decide",
+    "revision": "e173bca1f0c4217d7a55b3b0c705d5ece8a0218d",
+    "files": {
+      "model.safetensors": {
+        "size_bytes": 1149461028,
+        "sha256": "9efe0f88c99f2aa794452e9559dc60e98d60d9fa2bf1b60cf2710411b6da5b4e"
+      },
+      "tokenizer.json": {
+        "size_bytes": 16035853,
+        "sha256": "c62446df87ae18ec98b133f8f84fc449a07cc89bbf8ef192a4cb5f9c53777a7a"
+      },
+      "config.json": {
+        "size_bytes": 4106,
+        "sha256": "aa29cd584316b61b0bfed94d03ee1cfdaf28b46a37686293742929c49b8bd2f7"
+      },
+      "encoder_config/config.json": {
+        "size_bytes": 858,
+        "sha256": "d0ebbcb8b458e285a39e12cc315cbaf3d1c6f631e7281e6b22dd5b4071183f83"
+      },
+      "tokenizer_config.json": {
+        "size_bytes": 646,
+        "sha256": "fd4a31dc2f1f17e31638c5f0e783b81cdb2fbe6bddd116a8d9e5d50d78148cf1"
+      }
+    }
+  },
+  "load_seconds": 13.44,
+  "peak_rss_bytes": 2950488064,
+  "items": 12,
+  "correct_synthetic_checks": 4,
+  "mean_classification_seconds": 0.282,
+  "classifications_per_second": 3.546,
+  "score_kind": "confidence for the selected label, not a full candidate-label distribution",
+  "label_scores_available": true,
+  "runtime_notes": [
+    "Checkpoint-declared transformers version 5.17.0 was installed after gliner2[local] resolved 4.57.6; the older version failed on tokenizer extra_special_tokens format.",
+    "pip check was run after installing transformers 5.17.0.",
+    "Model loaded from the verified local snapshot; no base encoder checkpoint was downloaded.",
+    "Transformers reported that DeBERTa does not support SDPA and used eager attention."
+  ],
+  "results_are_synthetic_checks_not_production_ground_truth": true,
+  "results": [
+    {
+      "id": "same_exact_sku",
+      "text": "商品A: エレコム USB-C充電器 65W ブラック SKU ACDC-PD65BK。\n商品B: エレコム USB-C充電器 65W ブラック SKU ACDC-PD65BK。\n同一SKUか判定してください。",
+      "expected_synthetic_check": "same SKU and same product variant",
+      "prediction": "same SKU and same product variant",
+      "confidence": 0.7849467396736145,
+      "raw_output": {
+        "decision": {
+          "label": "same SKU and same product variant",
+          "confidence": 0.7849467396736145
+        }
+      },
+      "elapsed_seconds": 0.303,
+      "passed_synthetic_check": true
+    },
+    {
+      "id": "same_sku_reordered_title",
+      "text": "商品A: エレコム ACDC-PD65BK USB-C PD充電器、65W、ブラック。\n商品B: ブラック 65W USB-C PD充電器（エレコム）、SKU: ACDC-PD65BK。\n同一SKUか判定してください。",
+      "expected_synthetic_check": "same SKU and same product variant",
+      "prediction": "same SKU and same product variant",
+      "confidence": 0.8813581466674805,
+      "raw_output": {
+        "decision": {
+          "label": "same SKU and same product variant",
+          "confidence": 0.8813581466674805
+        }
+      },
+      "elapsed_seconds": 0.3659,
+      "passed_synthetic_check": true
+    },
+    {
+      "id": "same_name_different_color_sku",
+      "text": "商品A: USB-C充電器 65W ブラック SKU ACDC-PD65BK。\n商品B: USB-C充電器 65W ホワイト SKU ACDC-PD65WH。\n色違い型番の同一SKUか判定してください。",
+      "expected_synthetic_check": "different SKU or product variant",
+      "prediction": "same SKU and same product variant",
+      "confidence": 0.797440230846405,
+      "raw_output": {
+        "decision": {
+          "label": "same SKU and same product variant",
+          "confidence": 0.797440230846405
+        }
+      },
+      "elapsed_seconds": 0.2894,
+      "passed_synthetic_check": false
+    },
+    {
+      "id": "wrong_curtain_height",
+      "text": "商品A: 1級遮光カーテン 幅100cm 丈178cm 2枚組 ベージュ SKU CT-100178-BE。\n商品B: 1級遮光カーテン 幅100cm 丈200cm 2枚組 ベージュ SKU CT-100200-BE。\n丈が違う商品を同一SKUとして扱えるか判定してください。",
+      "expected_synthetic_check": "different SKU or product variant",
+      "prediction": "same SKU and same product variant",
+      "confidence": 0.6837694048881531,
+      "raw_output": {
+        "decision": {
+          "label": "same SKU and same product variant",
+          "confidence": 0.6837694048881531
+        }
+      },
+      "elapsed_seconds": 0.2883,
+      "passed_synthetic_check": false
+    },
+    {
+      "id": "lace_vs_main_curtain",
+      "text": "商品A: 遮光ドレープカーテン 幅100×丈178cm 2枚組 SKU DR-100178。\n商品B: ミラーレースカーテン 幅100×丈176cm 2枚組 SKU LC-100176。\nセット商品ではなくレースとドレープの違いを見て同一SKUか判定してください。",
+      "expected_synthetic_check": "different SKU or product variant",
+      "prediction": "same SKU and same product variant",
+      "confidence": 0.4691454768180847,
+      "raw_output": {
+        "decision": {
+          "label": "same SKU and same product variant",
+          "confidence": 0.4691454768180847
+        }
+      },
+      "elapsed_seconds": 0.3612,
+      "passed_synthetic_check": false
+    },
+    {
+      "id": "piece_count_difference",
+      "text": "商品A: 遮光カーテン 幅100×丈135cm 1枚 SKU BK-100135-1。\n商品B: 遮光カーテン 幅100×丈135cm 2枚組 SKU BK-100135-2。\n枚数違いを見て同一SKUか判定してください。",
+      "expected_synthetic_check": "different SKU or product variant",
+      "prediction": "same SKU and same product variant",
+      "confidence": 0.5142439007759094,
+      "raw_output": {
+        "decision": {
+          "label": "same SKU and same product variant",
+          "confidence": 0.5142439007759094
+        }
+      },
+      "elapsed_seconds": 0.2496,
+      "passed_synthetic_check": false
+    },
+    {
+      "id": "near_color_difference",
+      "text": "商品A: カーテン 幅100×丈178cm グレージュ 2枚組 SKU GV-100178-GJ。\n商品B: カーテン 幅100×丈178cm グレー 2枚組 SKU GV-100178-GY。\n色違いを見て同一SKUか判定してください。",
+      "expected_synthetic_check": "different SKU or product variant",
+      "prediction": "same SKU and same product variant",
+      "confidence": 0.7601869702339172,
+      "raw_output": {
+        "decision": {
+          "label": "same SKU and same product variant",
+          "confidence": 0.7601869702339172
+        }
+      },
+      "elapsed_seconds": 0.2534,
+      "passed_synthetic_check": false
+    },
+    {
+      "id": "width_difference",
+      "text": "商品A: 遮光カーテン 幅100×丈200cm 2枚組 アイボリー SKU SH-100200-IV。\n商品B: 遮光カーテン 幅150×丈200cm 2枚組 アイボリー SKU SH-150200-IV。\n幅違いを見て同一SKUか判定してください。",
+      "expected_synthetic_check": "different SKU or product variant",
+      "prediction": "same SKU and same product variant",
+      "confidence": 0.5823385119438171,
+      "raw_output": {
+        "decision": {
+          "label": "same SKU and same product variant",
+          "confidence": 0.5823385119438171
+        }
+      },
+      "elapsed_seconds": 0.2501,
+      "passed_synthetic_check": false
+    },
+    {
+      "id": "similar_family_different_model",
+      "text": "商品A: カーテンレール 伸縮 1.1〜2.0m シングル SKU RAIL-S-20。\n商品B: カーテンレール 伸縮 1.1〜2.0m ダブル SKU RAIL-D-20。\n型番とシングル・ダブルの違いを見て同一SKUか判定してください。",
+      "expected_synthetic_check": "different SKU or product variant",
+      "prediction": "same SKU and same product variant",
+      "confidence": 0.7799223065376282,
+      "raw_output": {
+        "decision": {
+          "label": "same SKU and same product variant",
+          "confidence": 0.7799223065376282
+        }
+      },
+      "elapsed_seconds": 0.2903,
+      "passed_synthetic_check": false
+    },
+    {
+      "id": "same_sku_title_abbreviation",
+      "text": "商品A: 遮光カーテン 幅100×丈178cm 2枚入 ネイビー SKU CUR-100178-NV。\n商品B: CUR-100178-NV / 遮光カーテン / 100-178cm / NAVY / 2P。\nSKUが同じで属性も一致するため同一SKUか判定してください。",
+      "expected_synthetic_check": "same SKU and same product variant",
+      "prediction": "same SKU and same product variant",
+      "confidence": 0.9889957904815674,
+      "raw_output": {
+        "decision": {
+          "label": "same SKU and same product variant",
+          "confidence": 0.9889957904815674
+        }
+      },
+      "elapsed_seconds": 0.2476,
+      "passed_synthetic_check": true
+    },
+    {
+      "id": "sku_conflicts_with_title",
+      "text": "商品A: カーテン 幅100×丈178cm ベージュ SKU CUR-100178-BE。\n商品B: カーテン 幅100×丈200cm ベージュ SKU CUR-100178-BE。\nSKU表記は同じですが丈が矛盾します。同一SKUか人手確認かを判定してください。",
+      "expected_synthetic_check": "needs human review",
+      "prediction": "same SKU and same product variant",
+      "confidence": 0.6611641049385071,
+      "raw_output": {
+        "decision": {
+          "label": "same SKU and same product variant",
+          "confidence": 0.6611641049385071
+        }
+      },
+      "elapsed_seconds": 0.2469,
+      "passed_synthetic_check": false
+    },
+    {
+      "id": "ambiguous_incomplete_title",
+      "text": "商品A: 遮光カーテン 型番 UNKNOWN-A。\n商品B: 遮光カーテン 型番 UNKNOWN-B。\n幅、丈、色、枚数の情報がありません。人手確認が必要か判定してください。",
+      "expected_synthetic_check": "needs human review",
+      "prediction": "needs human review",
+      "confidence": 0.9975271821022034,
+      "raw_output": {
+        "decision": {
+          "label": "needs human review",
+          "confidence": 0.9975271821022034
+        }
+      },
+      "elapsed_seconds": 0.2384,
+      "passed_synthetic_check": true
+    }
+  ],
+  "template_sensitivity_on_observed_pair": {
+    "source_file": "experiments/sku-matching/results/real-original-pair.jsonl",
+    "source_file_sha256": "5ffa32feb4b1f0680c6ecde003b2e032486f8d852c50b46f815c1eee12e8e2d8",
+    "source_pair_id": "observed-ct0-au-original-only",
+    "source_scope": "attribute_check_of_user_supplied_product_family; not_independent_product_identity_gold",
+    "source_note": "Observed au options and embedded Rakuten SKU rows; source artifact notes the collection is not independent product-identity ground truth.",
+    "template_definition": {
+      "pair_only": "AU title / SKU and Rakuten title / SKU with no classification question appended",
+      "question_ended": "same pair text followed by 同一SKUか判定してください。"
+    },
+    "controls_are_synthetic_expectations_not_production_gold": true,
+    "case_count": 6,
+    "total_classifications": 12,
+    "pair_only_correct": 4,
+    "question_ended_correct": 1,
+    "results": [
+      {
+        "case_id": "observed_exact_variant",
+        "source_au_sku_id": "331810175:row=0:col=0",
+        "source_rakuten_sku_id": "CT0180BE",
+        "expected_control_label": "same SKU and same product variant",
+        "pair_text": "au: ＼ランキング1位／【選べる17サイズ】 カーテン 4枚セット 遮光 レースカーテンセット 1級 三層構造 形状記憶 遮熱 遮像 防寒 洗える 遮光カーテン UVカット 幅100 幅150 4枚 2枚 カーテンセット カーテン4枚組 ミラーレース 厚手 省エネ 防音 無地 送料無料 / 幅100×丈80cm(4枚組) / ベージュ\nRakuten: 【最大2000円OFFクーポン配布】カーテン 遮光 1級 2級 遮光カーテン 遮光率99.99% 幅100cm 幅150cm レースカーテンセット カーテンセット タッセル付き UVカット 厚手 断熱 遮熱 省エネ シンプル 無地 洗える ウォッシャブル ドレープカーテン おしゃれ / 100×80cm / ベージュ / あり",
+        "sku_option_removed_for_test": false,
+        "batch_elapsed_seconds": 0.7686,
+        "comparisons": [
+          {
+            "template": "pair_only",
+            "prediction": "different SKU or product variant",
+            "confidence": 0.40909168124198914,
+            "passed_synthetic_expectation": false,
+            "raw_output": {
+              "decision": {
+                "label": "different SKU or product variant",
+                "confidence": 0.40909168124198914
+              }
+            }
+          },
+          {
+            "template": "question_ended",
+            "prediction": "same SKU and same product variant",
+            "confidence": 0.9130023717880249,
+            "passed_synthetic_expectation": true,
+            "raw_output": {
+              "decision": {
+                "label": "same SKU and same product variant",
+                "confidence": 0.9130023717880249
+              }
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "observed_wrong_height",
+        "source_au_sku_id": "331810175:row=0:col=0",
+        "source_rakuten_sku_id": "CT0190BE",
+        "expected_control_label": "different SKU or product variant",
+        "pair_text": "au: ＼ランキング1位／【選べる17サイズ】 カーテン 4枚セット 遮光 レースカーテンセット 1級 三層構造 形状記憶 遮熱 遮像 防寒 洗える 遮光カーテン UVカット 幅100 幅150 4枚 2枚 カーテンセット カーテン4枚組 ミラーレース 厚手 省エネ 防音 無地 送料無料 / 幅100×丈80cm(4枚組) / ベージュ\nRakuten: 【最大2000円OFFクーポン配布】カーテン 遮光 1級 2級 遮光カーテン 遮光率99.99% 幅100cm 幅150cm レースカーテンセット カーテンセット タッセル付き UVカット 厚手 断熱 遮熱 省エネ シンプル 無地 洗える ウォッシャブル ドレープカーテン おしゃれ / 100×90cm / ベージュ / あり",
+        "sku_option_removed_for_test": false,
+        "batch_elapsed_seconds": 0.7586,
+        "comparisons": [
+          {
+            "template": "pair_only",
+            "prediction": "different SKU or product variant",
+            "confidence": 0.4093058109283447,
+            "passed_synthetic_expectation": true,
+            "raw_output": {
+              "decision": {
+                "label": "different SKU or product variant",
+                "confidence": 0.4093058109283447
+              }
+            }
+          },
+          {
+            "template": "question_ended",
+            "prediction": "same SKU and same product variant",
+            "confidence": 0.9132363200187683,
+            "passed_synthetic_expectation": false,
+            "raw_output": {
+              "decision": {
+                "label": "same SKU and same product variant",
+                "confidence": 0.9132363200187683
+              }
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "observed_near_color",
+        "source_au_sku_id": "331810175:row=0:col=0",
+        "source_rakuten_sku_id": "CT0180SB",
+        "expected_control_label": "different SKU or product variant",
+        "pair_text": "au: ＼ランキング1位／【選べる17サイズ】 カーテン 4枚セット 遮光 レースカーテンセット 1級 三層構造 形状記憶 遮熱 遮像 防寒 洗える 遮光カーテン UVカット 幅100 幅150 4枚 2枚 カーテンセット カーテン4枚組 ミラーレース 厚手 省エネ 防音 無地 送料無料 / 幅100×丈80cm(4枚組) / ベージュ\nRakuten: 【最大2000円OFFクーポン配布】カーテン 遮光 1級 2級 遮光カーテン 遮光率99.99% 幅100cm 幅150cm レースカーテンセット カーテンセット タッセル付き UVカット 厚手 断熱 遮熱 省エネ シンプル 無地 洗える ウォッシャブル ドレープカーテン おしゃれ / 100×80cm / サンドベージュ / あり",
+        "sku_option_removed_for_test": false,
+        "batch_elapsed_seconds": 0.7544,
+        "comparisons": [
+          {
+            "template": "pair_only",
+            "prediction": "different SKU or product variant",
+            "confidence": 0.4163736402988434,
+            "passed_synthetic_expectation": true,
+            "raw_output": {
+              "decision": {
+                "label": "different SKU or product variant",
+                "confidence": 0.4163736402988434
+              }
+            }
+          },
+          {
+            "template": "question_ended",
+            "prediction": "same SKU and same product variant",
+            "confidence": 0.9079495668411255,
+            "passed_synthetic_expectation": false,
+            "raw_output": {
+              "decision": {
+                "label": "same SKU and same product variant",
+                "confidence": 0.9079495668411255
+              }
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "observed_no_lace",
+        "source_au_sku_id": "331810175:row=0:col=0",
+        "source_rakuten_sku_id": "CT0180BEH",
+        "expected_control_label": "different SKU or product variant",
+        "pair_text": "au: ＼ランキング1位／【選べる17サイズ】 カーテン 4枚セット 遮光 レースカーテンセット 1級 三層構造 形状記憶 遮熱 遮像 防寒 洗える 遮光カーテン UVカット 幅100 幅150 4枚 2枚 カーテンセット カーテン4枚組 ミラーレース 厚手 省エネ 防音 無地 送料無料 / 幅100×丈80cm(4枚組) / ベージュ\nRakuten: 【最大2000円OFFクーポン配布】カーテン 遮光 1級 2級 遮光カーテン 遮光率99.99% 幅100cm 幅150cm レースカーテンセット カーテンセット タッセル付き UVカット 厚手 断熱 遮熱 省エネ シンプル 無地 洗える ウォッシャブル ドレープカーテン おしゃれ / 100×80cm / ベージュ / なし",
+        "sku_option_removed_for_test": false,
+        "batch_elapsed_seconds": 0.8673,
+        "comparisons": [
+          {
+            "template": "pair_only",
+            "prediction": "different SKU or product variant",
+            "confidence": 0.4064401686191559,
+            "passed_synthetic_expectation": true,
+            "raw_output": {
+              "decision": {
+                "label": "different SKU or product variant",
+                "confidence": 0.4064401686191559
+              }
+            }
+          },
+          {
+            "template": "question_ended",
+            "prediction": "same SKU and same product variant",
+            "confidence": 0.9042381048202515,
+            "passed_synthetic_expectation": false,
+            "raw_output": {
+              "decision": {
+                "label": "same SKU and same product variant",
+                "confidence": 0.9042381048202515
+              }
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "observed_lace_option_omitted",
+        "source_au_sku_id": "331810175:row=0:col=0",
+        "source_rakuten_sku_id": "CT0180BE",
+        "expected_control_label": "needs human review",
+        "pair_text": "au: ＼ランキング1位／【選べる17サイズ】 カーテン 4枚セット 遮光 レースカーテンセット 1級 三層構造 形状記憶 遮熱 遮像 防寒 洗える 遮光カーテン UVカット 幅100 幅150 4枚 2枚 カーテンセット カーテン4枚組 ミラーレース 厚手 省エネ 防音 無地 送料無料 / 幅100×丈80cm(4枚組) / ベージュ\nRakuten: 【最大2000円OFFクーポン配布】カーテン 遮光 1級 2級 遮光カーテン 遮光率99.99% 幅100cm 幅150cm レースカーテンセット カーテンセット タッセル付き UVカット 厚手 断熱 遮熱 省エネ シンプル 無地 洗える ウォッシャブル ドレープカーテン おしゃれ / 100×80cm / ベージュ",
+        "sku_option_removed_for_test": true,
+        "batch_elapsed_seconds": 0.7569,
+        "comparisons": [
+          {
+            "template": "pair_only",
+            "prediction": "different SKU or product variant",
+            "confidence": 0.4243714511394501,
+            "passed_synthetic_expectation": false,
+            "raw_output": {
+              "decision": {
+                "label": "different SKU or product variant",
+                "confidence": 0.4243714511394501
+              }
+            }
+          },
+          {
+            "template": "question_ended",
+            "prediction": "same SKU and same product variant",
+            "confidence": 0.9376184940338135,
+            "passed_synthetic_expectation": false,
+            "raw_output": {
+              "decision": {
+                "label": "same SKU and same product variant",
+                "confidence": 0.9376184940338135
+              }
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "observed_different_width_piece_count",
+        "source_au_sku_id": "331810175:row=0:col=0",
+        "source_rakuten_sku_id": "CT02200BE",
+        "expected_control_label": "different SKU or product variant",
+        "pair_text": "au: ＼ランキング1位／【選べる17サイズ】 カーテン 4枚セット 遮光 レースカーテンセット 1級 三層構造 形状記憶 遮熱 遮像 防寒 洗える 遮光カーテン UVカット 幅100 幅150 4枚 2枚 カーテンセット カーテン4枚組 ミラーレース 厚手 省エネ 防音 無地 送料無料 / 幅100×丈80cm(4枚組) / ベージュ\nRakuten: 【最大2000円OFFクーポン配布】カーテン 遮光 1級 2級 遮光カーテン 遮光率99.99% 幅100cm 幅150cm レースカーテンセット カーテンセット タッセル付き UVカット 厚手 断熱 遮熱 省エネ シンプル 無地 洗える ウォッシャブル ドレープカーテン おしゃれ / 150×200cm / ベージュ / あり",
+        "sku_option_removed_for_test": false,
+        "batch_elapsed_seconds": 0.7647,
+        "comparisons": [
+          {
+            "template": "pair_only",
+            "prediction": "different SKU or product variant",
+            "confidence": 0.41259342432022095,
+            "passed_synthetic_expectation": true,
+            "raw_output": {
+              "decision": {
+                "label": "different SKU or product variant",
+                "confidence": 0.41259342432022095
+              }
+            }
+          },
+          {
+            "template": "question_ended",
+            "prediction": "same SKU and same product variant",
+            "confidence": 0.9109399318695068,
+            "passed_synthetic_expectation": false,
+            "raw_output": {
+              "decision": {
+                "label": "same SKU and same product variant",
+                "confidence": 0.9109399318695068
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

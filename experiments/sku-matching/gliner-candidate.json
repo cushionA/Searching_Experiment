@@ -1,0 +1,48 @@
+{
+  "candidate": "fastino/GLiNER2.5-multi-Decide",
+  "identity_verified": true,
+  "retrieved_date_utc": "2026-10-09",
+  "official_sources": [
+    {
+      "url": "https://huggingface.co/fastino/GLiNER2.5-multi-Decide",
+      "type": "official Hugging Face model card",
+      "revision": "e173bca1f0c4217d7a55b3b0c705d5ece8a0218d",
+      "last_modified_utc": "2026-10-08T19:42:04Z",
+      "model_card_claims": {
+        "description": "Multilingual operational classification model; candidate labels are supplied at call time; single-label and multi-label classification are supported.",
+        "recommended_interface": "gliner2.AutoExtractor.from_pretrained(...).classify_text(...) or schema extraction interface",
+        "architecture": "GLiNER2 boundary architecture; mDeBERTa-v3-base encoder",
+        "base_checkpoint": "fastino/gliner2.5-multi-v1",
+        "parameters": 287355159,
+        "runs_on": ["CPU", "GPU"],
+        "license": "Apache-2.0",
+        "model_card_warning": "Not a general-purpose model; it does not reason, explain, or answer open questions.",
+        "benchmark": "56.7% average exact-match on fastino/fast-decisions, an English suite with 17 domains and 300 held-out examples per domain. The model card recommends GLiNER2.5-Decide for English-only input and this multi variant for multilingual input. This is not a SKU-matching benchmark."
+      }
+    },
+    {
+      "url": "https://huggingface.co/api/models/fastino/GLiNER2.5-multi-Decide",
+      "type": "official Hugging Face model API",
+      "observed_fields": {
+        "model_id": "fastino/GLiNER2.5-multi-Decide",
+        "license": "apache-2.0",
+        "base_model": "fastino/gliner2.5-multi-v1",
+        "architecture": "Gliner2ForSchemaExtraction",
+        "parameter_dtype_count": {"F32": 287355159},
+        "used_storage_bytes": 1166145155,
+        "files_include": ["model.safetensors", "tokenizer.json", "config.json", "README.md"]
+      }
+    }
+  ],
+  "suitability_assessment": {
+    "plausible_trial": "Pairwise classification with caller-supplied labels such as same SKU, different SKU, and needs review; potentially classify normalized attributes if the schema is predefined.",
+    "not_a_drop_in_embedding_model": "The documented Decide interface returns class labels for an input and label set. It does not produce the reusable 384-dimensional text vectors used by MiniLM nearest-neighbor ranking. Compare it as a pairwise classifier or reranker, not as a vector embedding model.",
+    "attribute_extraction_caveat": "The card describes classification and schema-driven extraction, but it does not establish that this Decide checkpoint extracts arbitrary Japanese width, height, color, lace, or piece-count spans accurately. Test extraction separately; do not assume classification labels are canonical extracted values.",
+    "unknowns": [
+      "No published Japanese curtain SKU matching result was found on the official card.",
+      "No CPU throughput, peak RSS, quantization, or runtime guarantee is published on the card.",
+      "The 1,166,145,155-byte API storage figure is repository storage, not a measured resident-memory requirement."
+    ],
+    "recommendation": "Keep it as a classification candidate for a small, controlled CPU evaluation. Do not install or download the 1.17 GB repository artifact as part of this reference check; select and run it only in the separate model-selection session if its runtime cost fits the stated limits."
+  }
+}

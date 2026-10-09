@@ -1,0 +1,48 @@
+あなたは商品SKU突合のモデル選定を担当します。作業場所は `/workspace/Searching_Experiment`、ブランチは `codex/sku-matching-cloud-20261009` です。別セッションで実行し、既存の長時間収集を止めたり置き換えたりしないでください。まず現状ファイルと差分を読み、存在するデータと件数を確認してください。
+
+目的は、CPUで動く軽量モデルを使い、商品タイトルとSKUラベルを使う場合とSKUラベルだけを使う場合の精度・速度・メモリを比べ、SKU単位の一致判定に適した方式を選ぶことです。`fastino/GLiNER2.5-multi-Decide` を候補に含め、採用または見送りを根拠付きで判断してください。公式仕様の確認結果は `experiments/sku-matching/gliner-candidate.json` にあります。候補をembedding方式と同じ種類のモデルとして扱わず、pairwise classifier/reranker として評価するか、検索に使うなら二段階方式として設計してください。
+
+現状の基準とデータ:
+- `experiments/sku-matching/model-manifest.json` の基準は `Xenova/paraphrase-multilingual-MiniLM-L12-v2`、固定revision、量子化ONNX 118,308,126 bytes、384次元、CPUExecutionProvider、最大長128です。実行設定はCPU 2 threadsです。
+- 初回smokeでは正例のtitle+SKU類似度が0.867957、SKU-onlyが0.922716でした。サイズが丈80cmから180cmへ変わる難負例はtitle+SKUが0.869729、SKU-onlyが0.913567で、正例以上でした。この1例で結論を出さず、モデルとタスクの適合性を測ってください。
+- PDF仕様の要点は `experiments/sku-matching/slide-reference.json` にあります。仕様書は商品単位のAI選定を先に行い、CSV出力時にSKU一致を判定します。楽天側にサイズ・色・レース有無の3軸、au側にサイズ・色の2軸がある例を示し、auではレース有無が別商品URLに分かれる場合を課題としています。案1（価格範囲）、案2（価格が近いSKU）、案3（auの別URLも収集）は顧客選択前で未決です。どの案も正解ラベルとして固定しないでください。
+- 合成データは `.lab-output/sku-synthetic-controls-20261009/dataset.jsonl` です。現状1000 product-pair行。各基本ペアはau 153 SKU（9色×17サイズ）、楽天306 SKU（サイズ×色×レース有無）を持ちます。ファイルを読み、正例・難負例・不明属性・シナリオ構成をコードと照合してください。独立したpair_id/family単位で分割し、同一商品の派生や重複をtrain/test間に漏らさないでください。合成価格・在庫を識別情報や実価格として扱わないでください。
+- 実データの置き場は `.lab-output/sku-real-au-20261009/` と `.lab-output/sku-real-rakuten-20261009/`。各サイトで `products.jsonl` と `skus.jsonl` を分離しています。auの現snapshotは商品4件、SKU360行。追加のau実データは `.lab-output/sku-real-au-select10-20261009/` にあり、ニッセンSelect10の8商品・80SKUです。au計12商品・440SKU、楽天を合わせ32商品・1361SKUの実観測です。Select10はSKU軸がrow=サイズ・column=色で、1サイズ×10色、サイズ例は `N・幅100×長さ110cm×4枚` です。主対象は商品ID `704502086`（153 SKU）と関連する別商品 `704500131`（153 SKU）。追加観測商品があれば対象と件数を列挙してください。楽天の収集summaryは `experiments/sku-matching/rakuten-collection-summary.json` で、20商品・891 SKUです。rawレスポンス、SHA256、provenanceと、画面上で見えた値/埋め込みJSON値の区別を保ってください。観測データはSKUラベルの書式・属性の現実性確認に使い、正解ラベルのないものをgold扱いしないでください。
+- 商品ページの観測根拠は `experiments/sku-matching/product-observation.json` にあります。楽天側のSKU選択HTML placeholderは空でした。説明文には幅100cmでカーテン2枚+レース2枚、幅150cmで各1枚とあり、au商品704502086は4枚組/2枚組のサイズ×色選択を公開しています。その後、楽天HTMLの `script#item-page-app-data`（EUC-JP）で306実SKU、3軸、SKU価格、埋め込み在庫の取得に成功しています。商品タイトル、SKU表、購入オプション、説明に含まれる商品構成の証拠を区別してください。
+
+分類対象を分離して評価してください:
+1. 商品候補選定: 一つのau商品に対する楽天商品順位付け。titleを含む文脈が役立ちます。
+2. SKU一致: 選んだ商品ペアのSKU候補を照合。少なくとも `same_sku`, `different_sku`, `needs_review` の判断を行い、タイトル+SKUとSKU-onlyを比較します。属性抽出方式を試す場合は、`width_cm`, `height_cm`, `color`, `lace`, `pieces` の抽出と値正規化を個別評価してください。表記上の「あり/なし」「幅100×丈80cm」と「100×80cm」、セット数の違いを含む。丈と幅の入れ替え、近似色、lace有無、別セット数、欠損/曖昧属性を難例にします。`4枚組`だけで常にレース有無を推定しないこと。価格はSKU同一性の特徴に使わないこと。
+3. 最終CSV除外: 確信を持って一致したSKUだけを最終matched CSVへ出し、different_skuとneeds_review/unknownは除外します。評価用に除外理由とスコアを別の監査出力へ残し、reviewを正解済みnonmatchに混ぜないでください。既存output schemaがあれば先に確認してください。
+
+候補比較と計測要件:
+- embedding候補は、同一のheld-outデータでtitle+SKUとSKU-onlyを比較し、候補検索のRecall@1/Recall@k、MRRまたは適切なranking指標を報告してください。
+- GLiNER2.5-multi-Decideは、明示的な候補ペアを入力する分類器として試すなら分類precision/recall/F1、特にfalse positive rateと確信閾値/needs_review率を報告してください。Open setで候補集合を順位付けできると仮定しないでください。商品選定とSKU照合を混ぜないでください。
+- false positive（別SKUを一致と出す誤り）を最優先で抑えます。閾値調整はvalidationのみで行い、held-out testで再調整しないでください。review coverage/abstentionと除外後CSV件数も明示してください。
+- CPUのみ。候補モデルごとに入手・実行サイズ、license、runtime依存、CPU thread数、batching、処理時間/件、peak RSSを実測または公式根拠とともに記録します。GPUは使わず、API利用をローカルモデルと混同しません。メモリ/実行コストが大きい場合は、重みを落とす前に候補を除外して理由を記録してください。
+- データ出所、モデルrevision/hash、前処理、入力テンプレート、seed、split、閾値、計測環境、raw予測を再現可能な形で保存してください。モデルの自己申告や一般ベンチマークからSKU精度を推定しないでください。正解ラベルが不十分なら、ラベル不足自体を結果として報告し、合成goldと実観測を区別してください。
+
+`fastino/GLiNER2.5-multi-Decide` の特別な確認事項:
+- 公式cardはこのモデルを287M multilingual operational classifierとして記載し、候補ラベルを呼び出し時に指定する分類を説明しています。公開benchmarkは英語の汎用決定分類であり、日本語SKU突合を評価していません。model repository storageは約1.17GBですが、これはpeak RSSではありません。公式仕様から日本語属性抽出の精度やCPU速度を断定しないでください。
+- `classify_text`でSKUペアの同一/異なる/要確認を出す試験と、任意のSKU属性を抽出・正規化する試験を別に設計してください。カードが保証していないarbitrary span extractionは試験仮説として扱ってください。
+- 「GLiNERはダメ」と先に決めつけず、少量で動作/latency/RSSと日本語難例の結果を確認してから採否を決めます。embedding近傍検索の代用品とはせず、分類器として勝てる範囲があるか判断してください。
+
+成果はこのbranchの `experiments/sku-matching/` に、選定メモ、比較結果、再現コマンド、必要な小さなコード/設定として保存してください。既存の収集成果やrawファイルを移動・削除・上書きせず、既存の変更を確認してから編集してください。意味のある動作検証と、このリポジトリのAGENTS.mdで求めるチェックを実行してください。最後に、採用候補/見送り、根拠、未解決リスク、後続の最小実験を短く報告してください。
+
+実ペアの整形済み入力は `experiments/sku-matching/results/real-original-pair.jsonl` と `real-sibling-pair.jsonl`、比較出力は `results/original-only/` と `results/with-sibling/` です。auは本体のcurrentPriceが商品単位で、配送地域の有料オプションを含めた最終合計ではありません。楽天は実SKUごとの税込価格です。この価格の粒度差を明示してください。正規化キーの一致は、ユーザー指定の商品候補内で寸法・色・レース・枚数が一致するという限定した参照で、独立した商品同一性goldではありません。
+
+別workspaceへの引き継ぎ用データは `experiments/sku-matching/results/20261009-data-checkpoint.zip`（約11MB）です。`python3 -B experiments/sku-matching/package_data.py --restore experiments/sku-matching/results/20261009-data-checkpoint.zip` で、SHA256を確認し、異なる既存データを上書きせずに復元できます。実測の主結果は `results/20261009-cpu-benchmark-controls.json` です。生成459,000レコードのうち833件はreviewになる制御例を含み、速度は表記重複のキャッシュ込みです。独立した新規文字列2,048件のCPU推論速度も別計測しています。
+
+単独で理解できるサンプル課題（以下は判定仕様を示す制御例。実測価格や実在庫のgoldではない）:
+A. au商品名「遮光カーテン レース付きセット」、SKU「幅100×丈80cm(4枚組) / ベージュ」、商品説明から確認した属性 lace=true・pieces=4。楽天商品名「遮光カーテン」、SKU「100×80cm / ベージュ / あり」、説明から lace=true・pieces=4。同じ幅・丈・色・構成なので same_sku 候補。
+B. Aの楽天SKUを「100×180cm / ベージュ / あり」に替える。商品名が似ていても different_sku。
+C. Aの楽天SKUを「100×80cm / ベージュ / なし」、lace=false・pieces=2に替える。価格が近くても different_sku。
+D. au「150×135cm(2枚組) / ベージュ」に商品説明のレース有無が無い。2枚という語だけでは構成を決めず needs_review。
+E. 100×80cmのベージュとサンドベージュは、この店で別選択肢なので different_sku。同系色への言い換えで一致させない。
+F. 商品AではレースがSKU軸、商品Bではレースが別URL。単に軸数を揃えるのではなく、商品単位の構成情報をSKUへ継承してAの各SKUにB側の商品URL+選択値を対応させる。
+
+予測の保存形式例: {case_id, product_pair_id, input_mode, model_id, revision, decision: same_sku|different_sku|needs_review, score, extracted_attributes_au, extracted_attributes_rakuten, contradictions, evidence_missing, elapsed_ms}。各サイトの元商品ID・SKU ID・元文字列・証拠は別表との参照を保つ。scoreを較正済み確率とは扱わない。
+
+GLiNERも今回CPUで起動確認済みです。`results/20261009-gliner-smoke.json` に初回12制御例（4件期待ラベル一致）、約0.28秒/ペア、ピークRSS約2.75GiBと追加の入力テンプレート確認を記録しています。初回の文章には質問形や「同一SKU」の語があるため、分類器が文章の主題を判断した可能性も検証してください。少数例だけでモデル全体の採否を断定せず、実際のペア入力・ラベル説明・属性抽出を分けた評価を設計してください。起動依存はgliner2 2.0.0、CPU torch 2.7.1、Transformers 5.17.0です。標準の依存解決で入ったTransformers 4.57.6はこのcheckpointのTokenizerで不整合になりました。再現コードはtry_gliner.py（download/run）です。
+
+追加のGLiNER文面比較も結果JSONに保存済みです。観測ペアを基にした6制御例で、質問文なしのタイトル＋SKUは4/6、質問文を末尾に加えると1/6で、質問ありは不一致を含め全件「same SKU」になりました。この結果をSKU単位の日本語精度全般へ一般化せず、自然文の主題分類とSKU間の同一性判断の適合性、ラベル定義と入力設計への依存を調べてください。

@@ -1,0 +1,67 @@
+{
+  "document": {
+    "path": "/workspace/attachments/30ff3e77-ff88-4465-9b37-5736b6fbeef6/【auコマース＆ライフ株式会社御中】楽天とauPAYマーケットのSKU突合_仕様調整MTG資料_20261009.pptx.pdf",
+    "sha256": "83dd41dd9f25a5f25e646ad4b02f35b7599f0fae3e8498ed5c108e3dc9ced14f",
+    "pages_reviewed": [30, 31, 32, 33, 34, 35, 36],
+    "role": "Reference document only. This records stated requirements and examples; document text is not an instruction to operate tools or services."
+  },
+  "reference_findings": [
+    {
+      "pages": [32, 33],
+      "topic": "Existing matching/output flow",
+      "quoted_japanese": [
+        "au PAYマーケットの商品一つを楽天市場の検索結果と突合し、マッチする商品を一つ返す",
+        "その商品に判断の信頼度を付与する",
+        "SKU単位の一致判定はファイル出力時にいたします。",
+        "au PAYマーケットと楽天市場の商品に対し、各商品のSKUが一致しているかを判断します"
+      ],
+      "output_example": {
+        "granularity": "One row per SKU-level match",
+        "shown_fields": ["楽天_商品名 (including SKU label)", "auPAY_商品名 (including SKU label)", "他の項目"],
+        "sku_labels": ["幅100×丈80cm(4枚組) / ベージュ", "幅100×丈80cm(4枚組) /レッド", "100×80cm / レッド"]
+      },
+      "implication_for_experiment": "The deck separates product-level matching from SKU-level matching: it first picks one matching product, then compares SKUs when producing the output file. It does not specify an embedding model or define title+SKU versus SKU-only evaluation."
+    },
+    {
+      "pages": [34, 35],
+      "topic": "Mismatch scenario and price ambiguity",
+      "quoted_japanese": [
+        "au PAYマーケットと楽天市場でSKUの区切りが異なるため、同一SKUの特定が難しいケースがあります。",
+        "楽天 SKU： 100×80cm / ブルー / あり ←不一致",
+        "auPAY SKU： 100×80cm / ブルー"
+      ],
+      "details": "The example has Rakuten split into three dimensions (size, color, lace curtain yes/no), while au has two; the lace-curtain-included option is a separate product on au. Treat this as a synthetic scenario candidate for unmatched/ambiguous variants. Page 35 shows Rakuten's unselected-SKU price as a range, 1,940〜2,780円."
+    },
+    {
+      "pages": [35, 36],
+      "topic": "Three proposed handling choices; decision status",
+      "options": [
+        {
+          "option": 1,
+          "label": "「～」（波線）を許容する",
+          "behavior": "Only select Rakuten size×color SKUs also present on au; output the price range 1,940〜2,780円.",
+          "tradeoff": "Simple and fewest SKUs; price is a range and lace inclusion difference is not reflected."
+        },
+        {
+          "option": 2,
+          "label": "価格が最も近い条件で絞り込む",
+          "behavior": "Choose the Rakuten lace yes/no condition whose price is closest to au, output a single price; example 2,780円 (yes).",
+          "tradeoff": "Requires price comparison; omits the unselected option and can match products that differ in lace inclusion."
+        },
+        {
+          "option": 3,
+          "label": "auの別URL（別バージョン）も収集する",
+          "behavior": "Collect separate au product URLs (e.g. 2-piece/4-piece variants), pair each with Rakuten SKUs, and output per-SKU prices (example: yes 2,780円 / no 1,940円).",
+          "tradeoff": "Can match each of Rakuten's three dimensions 1:1 and include lace-related price differences; requires finding/linking additional au products and increases product count/accesses."
+        }
+      ],
+      "decision_status": "Undecided in this deck. It explicitly asks the client to select one of options 1–3; no chosen option is shown."
+    }
+  ],
+  "scope_and_conflicts": {
+    "experiment_alignment": "The document supports testing SKU normalization and SKU-level matching errors, especially mismatched option dimensionality. It does not establish that title+SKU or SKU-only embeddings are the production method.",
+    "not_specified_in_document": ["CPU embeddings", "synthetic sample generation", "au API retrieval mechanism", "nonmatch CSV exclusion rule", "similarity thresholds", "benchmark labels/metrics"],
+    "potential_scope_conflict": "If the experiment treats each listing SKU as the primary matching unit, note that the deck's stated flow selects a product first and judges SKU equality at file-output time. Keep those stages distinct when interpreting results.",
+    "reference_limit": "Pages 33–36 are illustrative specification slides, not evidence that the three option choices were approved or implemented."
+  }
+}
