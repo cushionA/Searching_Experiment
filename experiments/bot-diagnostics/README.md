@@ -33,6 +33,13 @@ flowchart LR
 ```
 
 各方式×サイト×比較条件内でCookieとブラウザセッションを維持する。比較条件ごとにセッションを新しくし、チャレンジ試行上限は全条件で共有する。取得予算の制限はgroundingモードに限る。
+指定したセンサーの通信後に同じセッションで一度再訪するサイトでは、`session_initialization` を注入する。
+
+```json
+{"session_initialization":{"kind":"sensor_revisit","sensor_url":"https://joshinweb.jp/CIbl-mRCKq8eHv1cyg/QEcESVLcm2pGLriaub/Lw9CD1Y_SwE/SR/IpPwtCYwc"}}
+```
+
+主文書と観測結果が403拒否で、その観測中に指定URLのscript GET 200とPOST 201の保存完了を確認した場合だけ、拒否された最終URLを同じセッションで一度開く。初回403と再訪結果は別イベントとして残し、再訪も拒否なら停止する。センサーURLはサイトの許可origin内のHTTPSに限定する。fixtureだけHTTPのloopbackを許可する。セッション交換を避けるためsession poolとの併用は拒否する。センサー通信の観測や200への変化だけではCookie単独の因果関係を確定しない。
 
 | 機能 | wreq-js / impit | Patchright / Playwright対照 | rebrowser-patches + Lightpanda |
 |---|---|---|---|
