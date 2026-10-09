@@ -17,11 +17,34 @@ def rows(path):
         return [json.loads(line) for line in source if line.strip()]
 
 
-def prepare(au_dir, rakuten_dir, include_sibling=False):
+AU_COMPOSITIONS = {"704502086": True, "704500131": False}
+
+
+def option_map(values):
+    """Read both capture layouts without silently losing duplicate axes."""
+    if isinstance(values, dict):
+        return values
+    if not isinstance(values, list):
+        raise ValueError("Expected captured SKU option values")
+    result = {}
+    for option in values:
+        key = option["axis_key"]
+        if key in result:
+            raise ValueError(f"Duplicate source option axis: {key}")
+        result[key] = option["value"]
+    return result
+
+
+def prepare(au_dir, rakuten_dir, include_sibling=False, au_item_id=None):
+    if include_sibling and au_item_id is not None:
+        raise ValueError("A fixed au product cannot also include its sibling")
+    if au_item_id is not None and au_item_id not in AU_COMPOSITIONS:
+        raise ValueError("Composition evidence is limited to the two supplied au products")
     products = {r["item_id"]: r for r in rows(au_dir / "products.jsonl")}
     rakuten_products = {r.get("manage_number"): r for r in rows(rakuten_dir / "products.jsonl")}
     title = rakuten_products["ct0"]["title"]
-    selected_ids = {"704502086": True}
+    fixed_id = au_item_id or "704502086"
+    selected_ids = {fixed_id: AU_COMPOSITIONS[fixed_id]}
     if include_sibling:
         selected_ids["704500131"] = False
     au = []
@@ -53,7 +76,7 @@ def prepare(au_dir, rakuten_dir, include_sibling=False):
     for r in rows(rakuten_dir / "skus.jsonl"):
         if r["manage_number"] != "ct0":
             continue
-        opts = r["option_values"]
+        opts = option_map(r["option_values"])
         if set(opts) != {"サイズ", "カラー", "レースカーテン"} or opts["レースカーテン"] not in ("あり", "なし"):
             raise ValueError("Unexpected ct0 option schema")
         size = SIZE.fullmatch(normalize(opts["サイズ"]))
@@ -74,13 +97,14 @@ def prepare(au_dir, rakuten_dir, include_sibling=False):
                 "composition": "observed_ct0_description_width100_2drape_2lace_width150_1drape_1lace",
                 "availability": "inferred_from_embedded_inventory_not_visible_stock_count",
                 "sha256": r["sha256"], "retrieved_at_utc": r["retrieved_at_utc"]}})
-    return {"pair_id": "observed-ct0-with-au-sibling" if include_sibling else "observed-ct0-au-original-only",
+    return {"pair_id": "observed-ct0-with-au-sibling" if include_sibling else f"observed-ct0-au-fixed-{fixed_id}",
             "au": au, "rakuten": rakuten,
             "scope": "attribute_check_of_user_supplied_product_family; not_independent_product_identity_gold",
             "notes": ["au prices are observed product-level prices, not separately measured SKU prices",
                       "delivery fees, delivery-region paid options, coupons and membership conditions excluded",
                       "lace inheritance and piece-count rules use these exact products' descriptions only",
-                      "sibling collection is an experimental comparison; customer SKU policy remains undecided"]}
+                      "each fixed-product input contains one selected au product; opposite Rakuten composition is excluded",
+                      "including siblings is retained only for reproducing the historical comparison"]}
 
 
 def main():
@@ -88,9 +112,13 @@ def main():
     parser.add_argument("--au-dir", type=Path, required=True)
     parser.add_argument("--rakuten-dir", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--include-sibling", action="store_true")
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument("--au-item-id", choices=tuple(AU_COMPOSITIONS),
+                           help="Keep this one au product fixed (default: 704502086)")
+    selection.add_argument("--include-sibling", action="store_true",
+                           help="Reproduce the historical multi-au comparison")
     args = parser.parse_args()
-    pair = prepare(args.au_dir, args.rakuten_dir, args.include_sibling)
+    pair = prepare(args.au_dir, args.rakuten_dir, args.include_sibling, args.au_item_id)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("x", encoding="utf-8") as target:
         target.write(json.dumps(pair, ensure_ascii=False) + "\n")

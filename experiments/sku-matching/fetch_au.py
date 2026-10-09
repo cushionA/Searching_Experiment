@@ -13,11 +13,14 @@ from datetime import datetime, timezone
 from html.parser import HTMLParser
 import hashlib
 import json
+import os
 from pathlib import Path
 import ssl
 import time
 from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
+from urllib.parse import urljoin, urlparse
+from urllib.request import (HTTPRedirectHandler, HTTPSHandler, Request, build_opener,
+                            urlopen)
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUT = ROOT / ".lab-output/sku-real-au-20261009"
@@ -72,6 +75,7 @@ def fetch(url: str, referer: str) -> tuple[dict, bytes]:
                 continue
             return ({"requested_url": url, "final_url": final_url, "status": status,
                      "retrieved_at_utc": datetime.now(timezone.utc).isoformat(),
+                     "attempt_count": attempt + 1,
                      "response_bytes": len(body), "sha256": hashlib.sha256(body).hexdigest(),
                      "content_type": content_type}, body)
         except HTTPError as exc:
@@ -81,6 +85,7 @@ def fetch(url: str, referer: str) -> tuple[dict, bytes]:
                 continue
             return ({"requested_url": url, "final_url": exc.geturl(), "status": exc.code,
                      "retrieved_at_utc": datetime.now(timezone.utc).isoformat(),
+                     "attempt_count": attempt + 1,
                      "response_bytes": len(body), "sha256": hashlib.sha256(body).hexdigest(),
                      "content_type": exc.headers.get("Content-Type")}, body)
         except (URLError, TimeoutError, OSError) as exc:
@@ -93,6 +98,223 @@ def fetch(url: str, referer: str) -> tuple[dict, bytes]:
 def append_jsonl(path: Path, row: dict) -> None:
     with path.open("a", encoding="utf-8") as f:
         f.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")) + "\n")
+
+
+class BudgetExceeded(RuntimeError):
+    pass
+
+
+def atomic_write(path: Path, body: bytes) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.name + f".{os.getpid()}.tmp")
+    with tmp.open("wb") as f:
+        f.write(body)
+        f.flush()
+        os.fsync(f.fileno())
+    os.replace(tmp, path)
+    try:
+        dfd = os.open(path.parent, os.O_RDONLY)
+        try: os.fsync(dfd)
+        finally: os.close(dfd)
+    except OSError:
+        pass
+
+
+class _NoRedirect(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+class BudgetedClient:
+    """GET-only au/catalog client with an fsync'd pre-network request ledger."""
+    def __init__(self, out: Path, max_http: int = 2600,
+                 max_catalog_http: int = 200,
+                 max_body_bytes: int = 500 * 1024 * 1024,
+                 max_response_bytes: int = 8 * 1024 * 1024,
+                 retries: int = 1) -> None:
+        self.out = out
+        self.max_http = max_http
+        self.max_catalog_http = max_catalog_http
+        self.max_body_bytes = max_body_bytes
+        self.max_response_bytes = max_response_bytes
+        self.retries = retries
+        self.state_path = out / "http-ledger-state.json"
+        self.response_dir = out / "http-responses"
+        self.out.mkdir(parents=True, exist_ok=True)
+        self.response_dir.mkdir(parents=True, exist_ok=True)
+        if self.state_path.exists():
+            self.state = json.loads(self.state_path.read_text(encoding="utf-8"))
+        else:
+            self.state = {"version": 1, "max_http": max_http,
+                          "max_catalog_http": max_catalog_http,
+                          "max_body_bytes": max_body_bytes,
+                          "max_response_bytes": max_response_bytes,
+                          "attempts": []}
+            self._save_state()
+        for key, expected in (("max_http", max_http),
+                              ("max_catalog_http", max_catalog_http),
+                              ("max_body_bytes", max_body_bytes),
+                              ("max_response_bytes", max_response_bytes)):
+            if self.state.get(key) != expected:
+                raise RuntimeError(f"budget configuration mismatch for {key}")
+        self.opener = build_opener(_NoRedirect(), HTTPSHandler(context=ssl.create_default_context()))
+        self._reconcile_pending()
+
+    def _save_state(self) -> None:
+        body = json.dumps(self.state, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        atomic_write(self.state_path, body)
+
+    def _reconcile_pending(self) -> None:
+        changed = False
+        for a in self.state["attempts"]:
+            if a.get("result") is None:
+                cap_path = self.response_dir / f"{a['attempt_id']}.body"
+                if cap_path.exists():
+                    b = cap_path.read_bytes()
+                    a["result"] = {"outcome": "response_captured_status_unknown",
+                                    "response_bytes_captured": len(b),
+                                    "sha256": hashlib.sha256(b).hexdigest(),
+                                    "completed_at_utc": datetime.now(timezone.utc).isoformat()}
+                else:
+                    a["result"] = {"outcome": "interrupted_after_charge_before_response_record",
+                                    "response_bytes_captured": 0,
+                                    "completed_at_utc": datetime.now(timezone.utc).isoformat()}
+                changed = True
+        if changed:
+            self._save_state()
+
+    @property
+    def charged_http(self) -> int:
+        return len(self.state["attempts"])
+
+    @property
+    def captured_bytes(self) -> int:
+        return sum(int((a.get("result") or {}).get("response_bytes_captured", 0))
+                   for a in self.state["attempts"])
+
+    @property
+    def catalog_http(self) -> int:
+        return sum(1 for a in self.state["attempts"] if a.get("budget_class") == "catalog")
+
+    def _charge(self, url: str, budget_class: str, request_type: str,
+                item_id: str | None, logical_request_id: str, redirect_from: str | None = None) -> dict:
+        if self.charged_http >= self.max_http:
+            raise BudgetExceeded(f"global HTTP cap {self.max_http} reached")
+        if budget_class == "catalog" and self.catalog_http >= self.max_catalog_http:
+            raise BudgetExceeded(f"catalog HTTP cap {self.max_catalog_http} reached")
+        if self.captured_bytes >= self.max_body_bytes:
+            raise BudgetExceeded(f"captured body cap {self.max_body_bytes} reached")
+        entry = {"attempt_id": f"a{self.charged_http + 1:05d}",
+                 "budget_class": budget_class, "request_type": request_type,
+                 "logical_request_id": logical_request_id, "item_id": item_id,
+                 "method": "GET", "url": url, "redirect_from": redirect_from,
+                 "charged_at_utc": datetime.now(timezone.utc).isoformat(), "result": None}
+        self.state["attempts"].append(entry)
+        # Atomic durable charge happens before any socket operation.
+        self._save_state()
+        return entry
+
+    def _one_get(self, url: str, headers: dict[str, str], budget_class: str,
+                 request_type: str, item_id: str | None, logical_id: str,
+                 redirect_from: str | None = None) -> tuple[dict, bytes]:
+        entry = self._charge(url, budget_class, request_type, item_id, logical_id, redirect_from)
+        attempt_id = entry["attempt_id"]
+        req = Request(url, headers=headers, method="GET")
+        response = None
+        status = None
+        response_headers = None
+        final_url = url
+        try:
+            response = self.opener.open(req, timeout=30)
+            status = response.status
+            response_headers = response.headers
+            final_url = response.geturl()
+        except HTTPError as exc:
+            response = exc
+            status = exc.code
+            response_headers = exc.headers
+            final_url = exc.geturl()
+        except Exception as exc:
+            entry["result"] = {"outcome": "network_error", "error": f"{type(exc).__name__}: {exc}",
+                                "response_bytes_captured": 0,
+                                "completed_at_utc": datetime.now(timezone.utc).isoformat()}
+            self._save_state()
+            raise
+        remaining = self.max_body_bytes - self.captured_bytes
+        read_cap = min(self.max_response_bytes + 1, remaining + 1)
+        try:
+            body = response.read(read_cap)
+        finally:
+            response.close()
+        if len(body) > self.max_response_bytes or len(body) > remaining:
+            entry["result"] = {"outcome": "body_capture_cap_exceeded", "status": status,
+                                "response_bytes_read": len(body), "response_bytes_captured": 0,
+                                "final_url": final_url,
+                                "completed_at_utc": datetime.now(timezone.utc).isoformat()}
+            self._save_state()
+            raise BudgetExceeded("per-response or cumulative body capture cap exceeded")
+        path = self.response_dir / f"{attempt_id}.body"
+        atomic_write(path, body)
+        meta = {"attempt_id": attempt_id, "request_type": request_type, "budget_class": budget_class,
+                "logical_request_id": logical_id, "item_id": item_id, "requested_url": url,
+                "final_url": final_url, "redirect_from": redirect_from, "status": status,
+                "retrieved_at_utc": datetime.now(timezone.utc).isoformat(),
+                "response_bytes": len(body), "sha256": hashlib.sha256(body).hexdigest(),
+                "content_type": response_headers.get("Content-Type") if response_headers else None,
+                "location": response_headers.get("Location") if response_headers else None,
+                "capture_file": str(path.relative_to(self.out))}
+        entry["result"] = {"outcome": "http_response", "status": status,
+                           "response_bytes_captured": len(body), "sha256": meta["sha256"],
+                           "final_url": final_url, "completed_at_utc": meta["retrieved_at_utc"],
+                           "capture_file": meta["capture_file"]}
+        self._save_state()
+        return meta, body
+
+    def get(self, url: str, headers: dict[str, str], budget_class: str,
+            request_type: str, item_id: str | None = None,
+            logical_request_id: str | None = None) -> tuple[dict, bytes]:
+        logical_id = logical_request_id or f"{request_type}:{item_id or hashlib.sha1(url.encode()).hexdigest()[:12]}:{self.charged_http+1}"
+        current = url
+        redirect_from = None
+        all_meta = []
+        for redirect_n in range(6):
+            last_error: Exception | None = None
+            result = None
+            for retry_n in range(self.retries + 1):
+                try:
+                    meta, body = self._one_get(current, headers, budget_class, request_type,
+                                               item_id, logical_id, redirect_from)
+                    all_meta.append(meta)
+                    result = (meta, body)
+                    if 500 <= meta["status"] <= 599 and retry_n < self.retries:
+                        time.sleep(0.3)
+                        continue
+                    break
+                except BudgetExceeded:
+                    raise
+                except Exception as exc:
+                    last_error = exc
+                    if retry_n < self.retries:
+                        time.sleep(0.3)
+                        continue
+            if result is None:
+                raise RuntimeError(f"GET failed after retries: {current}: {last_error}")
+            meta, body = result
+            if meta["status"] not in (301, 302, 303, 307, 308):
+                meta["network_attempts"] = [
+                    {k: v for k, v in m.items() if k != "network_attempts"}
+                    for m in all_meta
+                ]
+                return meta, body
+            location = None
+            location = meta.get("location")
+            if not location:
+                raise RuntimeError(f"redirect without Location header: {current}")
+            target = urljoin(current, location)
+            if urlparse(target).hostname not in {"wowma.jp", "www.wowma.jp"}:
+                raise RuntimeError(f"redirect outside approved host: {target}")
+            redirect_from, current = current, target
+        raise RuntimeError(f"too many redirects: {url}")
 
 
 def main() -> None:
@@ -113,8 +335,16 @@ def main() -> None:
         item_url = f"https://wowma.jp/api/item/{item_id}"
         options_url = f"https://wowma.jp/api/items/{item_id}/itemOptions"
         referer = f"https://wowma.jp/item/{item_id}"
-        item_meta, item_body = fetch(item_url, referer)
-        options_meta, options_body = fetch(options_url, referer)
+        try:
+            item_meta, item_body = fetch(item_url, referer)
+            options_meta, options_body = fetch(options_url, referer)
+        except Exception as exc:
+            append_jsonl(out / "errors.jsonl", {
+                "item_id": item_id, "error": f"{type(exc).__name__}: {exc}",
+                "retrieved_at_utc": datetime.now(timezone.utc).isoformat(),
+            })
+            print(json.dumps({"item_id": item_id, "error": f"{type(exc).__name__}: {exc}"}, ensure_ascii=False))
+            continue
         (out / f"{item_id}-item.json").write_bytes(item_body)
         (out / f"{item_id}-options.json").write_bytes(options_body)
         item_data = json.loads(item_body)

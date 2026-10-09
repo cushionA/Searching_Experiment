@@ -1,0 +1,118 @@
+実商品・実SKUサンプルの引き継ぎ
+
+今回の入力は公開au APIと楽天商品ページを実際にGETして取得したものだけ。
+合成サンプル、自作価格、自作在庫、推測で追加したSKUは含めない。
+既存のsku-synthetic*とsku-fixed-product*は別保存で、今回の入力・ZIPから除外する。
+取得時刻は各原本のUTCタイムスタンプを保持する。20261010は日本時間での整理日。
+
+取得済みの実データ
+  au: SKU商品642件 / 実stockListセル3,721件
+  楽天: 商品ページ953件 / 実SKU6,856件
+  合計: 1,595商品 / 10,577 SKUレコード
+  楽天953ページ中、SKUがある580ページ、SKUゼロ373ページ。
+  auの非SKU候補521件は追加収集の別ファイルに保存し、上のSKU商品数に含めない。
+  楽天のカテゴリページ320件は別保存し、商品ページ数に含めない。
+  各市場1,000商品を上限に取得。auは観測カタログ候補を使い切り、楽天は残予算と
+  未取得候補の状態から上記件数で終了。市場全体の網羅数・突合成功数ではない。
+
+使う商品表・SKU表（これらだけを入力にする。子バッチの表を重複ロードしない）
+  au:
+    .lab-output/sku-real-au-20261010/{products.jsonl,skus.jsonl}
+    .lab-output/sku-real-au-20261010-expanded/{products.jsonl,skus.jsonl}
+  楽天:
+    .lab-output/sku-real-rakuten-20261010-normalized-v2/{products.jsonl,skus.jsonl}
+    .lab-output/sku-real-rakuten-20261010-expanded/{products.jsonl,skus.jsonl}
+  .lab-output/sku-real-rakuten-20261010/は原本と旧正規化表の保存用。
+  normalized-v2は同じ92原本を再解析したもの。新商品・新HTTP取得として数えない。
+
+処理する順序
+  1. auのSKU商品を取得し、その商品1件の実SKU全セルを配列にする。
+  2. 商品単位で対応する楽天商品を特定する。候補と根拠を確認した対応を区別する。
+  3. 楽天商品を価格付きのSKUレコードに展開する。
+  4. 各楽天SKUを、固定したau商品とその全SKU配列に対して判定する。
+     au商品側のサイズ・セット構成等も使い、反対条件を紐付けない。
+     別のau URLへの振り分けは行わない。
+  5. 一致した販売中のSKUのみCSVへ出す。収集原本を消さず、不一致と保留理由を残す。
+
+データレイアウト
+  au products.jsonl: 1行=1商品。item_id、item_title、current_price、shop、
+    sku軸の名前と値、free_options、paid_options、商品/オプションAPI取得時刻とSHA。
+  au skus.jsonl: 1行=stockListの実セル。item_id、row_index、column_index、
+    row/columnの選択肢名と原文値、stock原文オブジェクト。
+    sku_idは行列のIDであり、セルごとの一意IDではない。
+    セルのキーは(item_id,row_index,column_index)。
+  楽天 products.jsonl: 1行=1取得商品ページ。URL、商品名、manage_number、SKU軸、
+    sku_count、価格範囲、在庫表示設定、原本HTML・取得時刻・SHA。
+  楽天 skus.jsonl: 1行=埋め込みJSONの実SKU配列要素。
+    sku_id/merchant_defined_sku_id/variant_idは原文IDを保持。
+    店舗SKU番号の重複実例があるため、source_row_indexとsku_record_keyで区別する。
+    option_valuesは[{axis_key,axis_name,value},...]で順序と原文を保持する。
+    price_jpy、price_raw_as_in_source、hidden_sku、quantity、在庫の取得根拠を保持。
+  SKU配列のないページに、架空のSKUや選択肢組み合わせを追加しない。
+
+商品ペアとSKU展開の出力
+  使用先: .lab-output/sku-observed-product-pairs-20261010-final-v4/
+  根拠を確認した商品対応29ペア、SKU展開1,383行。
+  未確定の商品対応候補1,379ペア、候補SKU展開27,819行は別ファイル。
+  同じ楽天SKUを複数の固定au商品から参照するため、展開行数は独立SKU件数ではない。
+  au_product_sku_arrays.jsonl: 1行=固定au商品+その実SKU全配列。
+    商品価格は商品につける。SKU文字列は取得済み選択肢からの表示用連結。
+  observed_product_pairs.jsonl: 商品対応と根拠、候補、未対応の区別。
+  rakuten_sku_expanded.jsonl: 根拠を確認した商品対応の楽天SKUを1行ずつ展開。
+    au商品と全SKU配列へ、ファイル・行・SHAを使って参照する。
+  candidate_sku_review.jsonl: 未確定の商品対応候補。確定した入力と別ファイル。
+  sku_exclusions.jsonl: 自然なSKUなしの除外471件。商品ペアからの参照を含むため、
+    件数はSKUゼロの商品373ページと同じ粒度ではない。架空SKUは生成しない。
+  商品対応の根拠は独立した正解ラベルではない。SKU判定はpendingとして残し、
+    属性未取得を一致扱いしない。構成不一致の実例も原文のまま保存する。
+
+価格・在庫の粒度
+  au価格はitemInfo.currentPriceの商品価格。SKUごとに測定した価格ではない。
+  楽天価格は実SKUのtaxIncludedPrice。商品範囲価格をSKU価格として使わない。
+  無料/有料オプション原文を残すが、未確認の選択組み合わせ・追加総額は作らない。
+  送料、配送地域加算、クーポン、会員条件を同一SKUの判断に使わない。
+  HIDDEN_STOCKは在庫表示の設定で、SKUのhiddenフラグとは別。
+  楽天のembedded quantity由来の在庫判定と、画面上の在庫表示を分ける。
+  売り切れ・未知の在庫も収集原本には残し、最終CSVで除外/保留する。
+
+固定au商品の実グリッド検証
+  .lab-output/sku-fixed-au-capture-20261010/
+  au704502086(レースあり)とau704500131(レースなし)をそれぞれ単独で固定。
+  各入力: au153セル(9色×17サイズ)、楽天306 SKU(9色×17サイズ×あり/なし)。
+  同じ構成の属性対応は各153、反対構成は各153。反対構成の出力受理は両方0。
+  在庫と単一整数価格の確認後のCSVは142行/144行。
+  この2商品のレース構成は説明に基づく明示設定。一般商品からの自動抽出や
+  小型モデルの汎用精度の検証結果ではない。
+
+原本と監査
+  取得URL・時刻・HTTP状態・SHAを保存し、SKUの軸・原文・価格・在庫を原本と照合。
+  最初のau小規模収集にはHTTP台帳の欠落があり、正確な総試行数を確定できない。
+  SKU商品の原本は全件保存・照合済み。未保存の非SKU候補原本と台帳の欠落は
+  provenanceと監査JSONに明記し、後から推測で埋めない。
+  追加収集はネットワーク前に永続台帳へ計上し、失敗・非SKU・中断も保持する。
+  合成と本物の保存先を分離し、real用パッケージは許可した本物の保存先のみ読む。
+
+再現コード
+  fetch_au.py / collect_au_samples_expanded.py: au API取得と予算付き再開。
+  fetch_rakuten.py / extract_rakuten_links.py: 楽天原本取得と選択肢展開。
+  build_observed_pair_records.py: 原本由来のSKU配列・商品対応・SKU展開。
+  audit_real_capture.py: 原本SHA、SKU全セル、重複、価格、在庫、台帳の照合。
+  check_fixed_au_capture.py: 指定カーテン2商品のau固定検証。
+  match_skus.py: 指定カーテンの属性正規化と販売中SKUのCSV出力。
+  package_real_capture.py: 本物だけのパッケージ作成とCRC/SHA照合。
+
+配布ファイル
+  real-tables.zip: 入力表、商品ペア、SKU展開、レイアウト例、監査、再現コード。
+  real-capture-checkpoint.zip: 上の内容にAPI/HTML原本と実検索の参照原本を追加。
+  両ZIPは原本の参照先ディレクトリ構造を保持する。表だけのZIPで原本を検証する
+  場合は完全版も同じルートへ展開する。原本パスは元ワークスペースの絶対パスを
+  含む場合があるため、別環境では.lab-output以下の同じ相対パスに読み替える。
+  許可した4入力ディレクトリ以外や子バッチを再帰的に入力すると重複計上になる。
+
+モデル選定へ渡すとき
+  上の本物の商品表/SKU表と商品ペア素材を使用する。
+  商品名+SKU原文と、SKU原文のみを別条件で比較する。
+  通常の対称SKUと、商品ページ側のサイズ・枚数・構成が必要なSKUを含める。
+  類似度の高さだけで同一SKUと判定せず、既知の属性矛盾を受理しない。
+  未確定候補や属性未知を正解ラベルにしない。別途注釈した正解集合で評価する。
+  同じ商品群・同じSKUの再参照を独立サンプルとして水増ししない。
