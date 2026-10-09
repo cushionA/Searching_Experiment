@@ -1,6 +1,8 @@
 import hashlib
+import importlib.util
 import json
 import pathlib
+import tempfile
 import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -11,7 +13,68 @@ def read_jsonl(path):
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
+SPEC = importlib.util.spec_from_file_location(
+    "build_luna_annotation_inputs", ROOT / "experiments/sku-matching/build_luna_annotation_inputs.py")
+builder = importlib.util.module_from_spec(SPEC)
+assert SPEC and SPEC.loader
+SPEC.loader.exec_module(builder)
+
+
 class LunaAnnotationInputTests(unittest.TestCase):
+    def test_semantic_split_preserves_specification_purchase_wording_and_product_names(self):
+        exception = "天板高さ50cmのシルバーには持ち手がありません。予めご了承の上、ご購入をお願いいたします。"
+        pet_cart = "ペットカートは軽量で折りたたみ可能です。"
+        round_type = "商品名：円型テーブル"
+        for text in (exception, pet_cart, round_type):
+            semantic, reason = builder.semantic_line(text)
+            self.assertEqual(semantic, text)
+            self.assertIsNone(reason)
+        masked, reason = builder.semantic_line("サイズ100cm、通常価格1,280円の商品です")
+        self.assertIn("サイズ100cm", masked)
+        self.assertNotIn("1,280円", masked)
+        self.assertIsNone(reason)
+        stock_masked, reason = builder.semantic_line("サイズ100cm、在庫ありです")
+        self.assertIn("サイズ100cm", stock_masked)
+        self.assertNotIn("在庫あり", stock_masked)
+        self.assertIsNone(reason)
+        self.assertEqual(builder.semantic_line("送料について：全国一律500円")[1], "shipping_policy")
+        self.assertEqual(builder.DEFAULT_OUTPUT.name, "sku-real-luna-annotation-inputs-20261010-v3")
+
+    def test_option_specifications_are_kept_and_raw_option_text_is_audit_only(self):
+        note = "天板高さ50cmのシルバーには持ち手がありません。予めご了承の上、ご購入をお願いいたします。"
+        result = builder.public_au_options({"free_options": [{"title": "仕様上の注意", "freeOptionsList": [{"title": note}]}]})
+        self.assertEqual(result["free_options"][0]["selection_titles"], [note])
+        self.assertEqual(result["raw_fields"][0]["selection_titles"], [note])
+        self.assertEqual(result["raw_fields"][0]["use"], "audit_only_not_semantic_input")
+
+    def test_description_extractors_preserve_raw_source_and_keep_mixed_specs_semantic(self):
+        au_record = {"itemInfo": {"extraItemComment": (
+            '<p>天板高さ50cmのシルバーには持ち手がありません。予めご了承の上、ご購入をお願いいたします。</p>'
+            '<p>ペットカートは軽量です。</p><p>円型テーブル</p><p>価格1,280円</p><p>送料について</p>')}}
+        rak_html = ('<span class="item_desc"><p>天板高さ50cmのシルバーには持ち手がありません。'
+                    '予めご了承の上、ご購入をお願いいたします。</p><p>ペットカート対応</p>'
+                    '<p>価格1,280円</p><p>送料について</p></span>')
+        with tempfile.TemporaryDirectory(dir=ROOT) as temp:
+            au_path = pathlib.Path(temp) / "au.json"
+            au_bytes = json.dumps(au_record, ensure_ascii=False).encode()
+            au_path.write_bytes(au_bytes)
+            au_desc = builder.extract_au_description(au_path, hashlib.sha256(au_bytes).hexdigest())
+            self.assertIn("ご購入をお願いいたします", "\n".join(b["text"] for b in au_desc["blocks"]))
+            self.assertIn("ペットカート", "\n".join(b["text"] for b in au_desc["blocks"]))
+            self.assertIn("円型テーブル", "\n".join(b["text"] for b in au_desc["blocks"]))
+            self.assertIn("raw_text", au_desc["raw_fields"][0])
+            self.assertTrue(any(x["reason"] == "shipping_policy" for x in au_desc["commercial_only_lines"]))
+
+            rk_path = pathlib.Path(temp) / "rakuten.html"
+            rk_bytes = rak_html.encode()
+            rk_path.write_bytes(rk_bytes)
+            rk_desc = builder.extract_rakuten_description(rk_path, hashlib.sha256(rk_bytes).hexdigest())
+            excerpt = rk_desc["individual_description_excerpt"]
+            self.assertIn("ご購入をお願いいたします", excerpt)
+            self.assertIn("ペットカート", excerpt)
+            self.assertIn("1,280円", rk_desc["raw_fields"][0]["raw_text"])
+            self.assertNotIn("1,280円", excerpt)
+
     def test_blind_cases_have_resolved_dossiers_and_stable_ids(self):
         cases = read_jsonl(OUTPUT / "cases.jsonl")
         index = json.loads((OUTPUT / "dossier_index.json").read_text(encoding="utf-8"))

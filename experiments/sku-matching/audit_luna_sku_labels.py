@@ -153,7 +153,8 @@ def allowed_source_refs(case: dict[str, Any], dossier: dict[str, Any]) -> dict[s
     rk_product = dossier.get("rakuten_product", {}).get("source", {})
     rk_desc = dossier.get("rakuten_product", {}).get("description", {}).get("source", {})
     refs = {key: set() for key in EVIDENCE_SOURCES}
-    refs["au_title"].update({str(au_src.get("json_path", "")), "$.itemInfo.itemName", "$.itemInfo.itemTitle"})
+    # JSONPaths are admitted below only after resolving them in the referenced raw JSON.
+    refs["au_title"].add(str(au_src.get("json_path", "")))
     refs["au_purchase_option"].update({"products.jsonl:free_options,paid_options",
                                        "products.jsonl:free_options", "products.jsonl:paid_options"})
     refs["au_row"].update(str(row.get("row_key")) for row in dossier.get("au_rows", []))
@@ -164,6 +165,97 @@ def allowed_source_refs(case: dict[str, Any], dossier: dict[str, Any]) -> dict[s
     refs["rakuten_sku"].update({str(rk.get("json_path", "")), str(rk.get("source_row_key", "")), str(rk.get("source_sku_key", ""))})
     refs["rakuten_description"].update({str(rk_desc.get("json_path", "")), str(rk_desc.get("page_url", ""))})
     return {k: {x for x in v if x} for k, v in refs.items()}
+
+
+def resolve_json_path(document: Any, json_path: str) -> Any:
+    """Resolve the deliberately small JSONPath subset used by source citations."""
+    if not json_path.startswith("$."):
+        raise ValueError("expected a rooted member JSONPath")
+    current = document
+    for part in json_path[2:].split("."):
+        if not part or not isinstance(current, dict) or part not in current:
+            raise ValueError(f"JSONPath member does not exist: {part}")
+        current = current[part]
+    return current
+
+
+def raw_json_citation_texts(source: str, source_ref: str, dossier: dict[str, Any]) -> set[str]:
+    """Return raw text only when the JSONPath is bound to this dossier evidence source."""
+    au = dossier.get("au_product", {})
+    if source == "au_title":
+        if source_ref != "$.itemInfo.itemTitle":
+            return set()
+        metadata = au.get("source", {})
+        expected = str(au.get("title_evidence_raw", {}).get("text") or au.get("title_raw", ""))
+    elif source == "au_description":
+        metadata = au.get("description", {}).get("source", {})
+        expected = None
+        declared_paths = set(map(str, metadata.get("json_paths", [])))
+        if source_ref not in declared_paths:
+            return set()
+    else:
+        return set()
+    raw_file = metadata.get("raw_file")
+    if not raw_file:
+        return set()
+    try:
+        raw_path = source_path(str(raw_file))
+        raw_bytes = raw_path.read_bytes()
+        expected_sha = metadata.get("sha256")
+        if expected_sha and sha256_bytes(raw_bytes) != expected_sha:
+            return set()
+        value = resolve_json_path(json.loads(raw_bytes), source_ref)
+    except (OSError, ValueError, TypeError, json.JSONDecodeError):
+        return set()
+    if isinstance(value, str):
+        texts = {value}
+    elif isinstance(value, list):
+        texts = {str(x) for x in value if isinstance(x, (str, int, float))}
+    else:
+        return set()
+    if expected is not None and expected not in texts:
+        return set()
+    if source == "au_description":
+        dossier_texts = {str(b.get("text", "")) for b in au.get("description", {}).get("blocks", [])
+                         if str(b.get("source_field", "")) == source_ref}
+        if not dossier_texts:
+            return set()
+        return {raw for raw in texts if any(normalize_quote(t) in normalize_quote(raw)
+                                            or normalize_quote(raw) in normalize_quote(t)
+                                            for t in dossier_texts)}
+    return texts
+
+
+def verified_raw_title(source: str, dossier: dict[str, Any]) -> str | None:
+    """Extract the original title from the dossier's hash-verified raw source."""
+    product = dossier.get("au_product" if source == "au_title" else "rakuten_product", {})
+    metadata = product.get("source", {})
+    raw_file, expected_sha = metadata.get("raw_file"), metadata.get("sha256")
+    if not raw_file or not expected_sha:
+        return None
+    try:
+        raw_path = source_path(str(raw_file))
+        raw_bytes = raw_path.read_bytes()
+        if sha256_bytes(raw_bytes) != expected_sha:
+            return None
+        if source == "au_title":
+            raw_title = resolve_json_path(json.loads(raw_bytes), "$.itemInfo.itemTitle")
+        elif source == "rakuten_title":
+            from fetch_rakuten import parse_page
+            page, _ = parse_page({"url": metadata.get("url", ""),
+                                  "requested_url": metadata.get("url", ""),
+                                  "retrieved_at_utc": "", "status": 200,
+                                  "raw_file": str(raw_file), "content_type": ""}, raw_bytes)
+            raw_title = page.get("title")
+        else:
+            return None
+    except (OSError, ValueError, TypeError, json.JSONDecodeError):
+        return None
+    if not isinstance(raw_title, str) or not raw_title:
+        return None
+    evidence_title = product.get("title_evidence_raw", {}).get("text")
+    expected_title = str(evidence_title or product.get("title_raw", ""))
+    return raw_title if raw_title == expected_title else None
 
 
 def case_option_texts(case: dict[str, Any], index: int) -> set[str]:
@@ -181,6 +273,8 @@ def case_option_texts(case: dict[str, Any], index: int) -> set[str]:
 def citation_source_binding(source: str, source_ref: str, case: dict[str, Any],
                             dossier: dict[str, Any], corpora: dict[str, set[str]]) -> set[str]:
     """Resolve a citation ref to the specific source excerpt/row it names."""
+    if source_ref.startswith("$."):
+        return raw_json_citation_texts(source, source_ref, dossier)
     dossier_id = str(dossier.get("dossier_id", ""))
     prefix = f"dossiers/{dossier_id}.json#"
     if source_ref.startswith(prefix):
@@ -198,6 +292,13 @@ def citation_source_binding(source: str, source_ref: str, case: dict[str, Any],
             return corpora[source]
         if isinstance(expected, tuple) and pointer in expected:
             return corpora[source]
+        raw_title_pointers = {
+            "au_title": "$.au_product.title_evidence_raw.text",
+            "rakuten_title": "$.rakuten_product.title_evidence_raw.text",
+        }
+        if source in raw_title_pointers and pointer == raw_title_pointers[source]:
+            raw_title = verified_raw_title(source, dossier)
+            return {raw_title} if raw_title else set()
         return set()
     case_prefix = (f"{case.get('shard_id')}/cases.jsonl[case_id={case.get('case_id')}]."
                    "rakuten.option_values[")

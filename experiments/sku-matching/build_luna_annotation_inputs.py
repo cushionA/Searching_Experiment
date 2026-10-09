@@ -12,7 +12,7 @@ from collections import defaultdict
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_INPUT = ROOT / ".lab-output/sku-observed-product-pairs-20261010-final-v4"
-DEFAULT_OUTPUT = ROOT / ".lab-output/sku-real-luna-annotation-inputs-20261010-v2"
+DEFAULT_OUTPUT = ROOT / ".lab-output/sku-real-luna-annotation-inputs-20261010-v3"
 SHARDS = ("shard-1", "shard-2", "shard-3")
 # Catalog families that should remain together even where the captured item IDs differ.
 RELATED_MANAGE_NUMBERS = (
@@ -28,11 +28,11 @@ FORBIDDEN_KEYS = {
 }
 TASK_SPEC = """Luna annotation task: real AU Pay Market and Rakuten SKU identity
 
-Use cases.jsonl in the assigned shard. Resolve dossier_id through dossier_index.json and read the JSON under dossiers/. Each dossier contains the fixed AU product title, non-commercial purchase-option wording, every AU SKU row, source descriptions from the individual AU/Rakuten product pages, and provenance. Each case contains exactly one real Rakuten SKU option combination. Dossier hashes and their source SHA-256 values are fixed in manifest.json and the shard manifest.
+Use cases.jsonl in the assigned shard. Resolve dossier_id through dossier_index.json and read the JSON under dossiers/. Each dossier contains the fixed AU product title, semantic product-option wording, every AU SKU row, source descriptions from the individual AU/Rakuten product pages, and provenance. `blocks`, `individual_description_excerpt`, and `purchase_options_raw` are the semantic identity input. `raw_fields`, `title_evidence_raw`, and `purchase_options_evidence_raw` are audit evidence only and must not be used as semantic input. Each case contains exactly one real Rakuten SKU option combination. Dossier hashes and their source SHA-256 values are fixed in manifest.json and the shard manifest.
 
 Independently decide whether the Rakuten SKU represents the same specific sellable product/variant as any AU SKU row. Recheck identity from the supplied specifications and cited source text. Do not infer identity from pair IDs, file organization, prices, inventory, availability, or model/matcher outputs. Price and inventory eligibility are stored separately in eligibility.jsonl and au_eligibility.jsonl; never use them as semantic identity evidence. Image contents are not transcribed; use review when the supplied text cannot resolve the case.
 
-Allowed decisions are matched, unmatched, and review. Return one JSON object per case in a separate labels.jsonl with these fields:
+Allowed decisions are matched, unmatched, and review. Keep all product specifications and exception conditions, including sentences that also contain purchase wording. Mixed specification lines remain semantic with only monetary amounts masked. Shipping, coupon, availability, purchase-CTA, review, and navigation-only lines are retained separately as nonsemantic. Full raw fields are audit evidence only. Return one JSON object per case in a separate labels.jsonl with these fields:
   case_id: exact input case_id
   decision: matched | unmatched | review
   matching_au_row_keys: list of dossier AU row_key values; required and non-empty for matched, empty for unmatched/review
@@ -133,6 +133,47 @@ def html_text(value: str, *, limit: int = 7000) -> tuple[str, list[str]]:
     return text[:limit], parser.hrefs
 
 
+_MONEY_AMOUNT = re.compile(
+    r"(?:[¥￥]\s*[0-9][0-9,]*(?:\.[0-9]+)?|[0-9][0-9,]*(?:(?:万|億)[0-9,]*)?(?:\.[0-9]+)?\s*円(?![年月日型]))"
+)
+_COMMERCIAL_CLAUSE = re.compile(
+    r"(?:(?:通常|販売|税込|参考)?価格(?:は|が|：|:)?\s*(?:[¥￥]?[0-9][0-9,]*(?:(?:万|億)[0-9,]*)?(?:円)?|(?:お問い合わせ|別途|要相談|ご確認)[^。]*)|"
+    r"在庫(?:あり|なし|有|無|切れ|状況)|残り\s*[0-9０-９]+(?:個|点|枚)?|送料無料|送料\s*(?:無料|込み|込|別)|"
+    r"クーポン(?:配布|利用|使用|対象|適用)|ポイント(?:還元|進呈|[0-9０-９]+倍))"
+)
+_SPEC_CUE = re.compile(r"サイズ|寸法|高さ|幅|奥行|長さ|カラー|色|材質|素材|持ち手|付属|内容|仕様|タイプ|型|枚|個|cm|mm", re.I)
+_COMMERCIAL_ONLY = (
+    ("price_policy", re.compile(r"^(?:(?:通常|販売|税込|参考)?価格)(?:について|は|が|：|:|\s|[0-9¥￥]).*$")),
+    ("shipping_policy", re.compile(r"^(?:送料|配送|発送|お届け)(?:について|方法|目安|先|日|無料|料|条件|案内).*$")),
+    ("coupon_policy", re.compile(r"^(?:クーポン|ポイント)(?:配布|利用|使用|進呈|還元|キャンペーン).*$")),
+    ("availability_notice", re.compile(r"^(?:在庫(?:状況)?|残り\s*[0-9０-９]+(?:個|点|枚)?|売り切れ|品切れ).*$")),
+    ("purchase_cta", re.compile(r"^(?:ご注文|ご購入|購入|カート)(?:はこちら|手続き|方法|に進む|に入れる|ください|願います).*$")),
+    ("review_or_navigation", re.compile(r"^(?:レビュー|総合評価|商品番号|関連商品|おすすめ商品).*$")),
+)
+
+
+def semantic_line(line: str) -> tuple[str, str | None]:
+    """Mask money locally and classify only standalone commercial notices."""
+    clean = line.strip()
+    for reason, pattern in _COMMERCIAL_ONLY:
+        if pattern.search(clean) and not _SPEC_CUE.search(clean):
+            return clean, reason
+    clean = _COMMERCIAL_CLAUSE.sub("[販売案内]", clean)
+    return _MONEY_AMOUNT.sub("[金額]", clean), None
+
+
+def split_semantic_lines(text: str) -> tuple[list[dict], list[dict]]:
+    semantic, commercial = [], []
+    for line_number, raw_line in enumerate(text.splitlines(), 1):
+        raw_line = raw_line.strip()
+        if not raw_line:
+            continue
+        cleaned, reason = semantic_line(raw_line)
+        entry = {"line": line_number, "text": raw_line, "semantic_text": cleaned}
+        (commercial if reason else semantic).append({**entry, **({"reason": reason} if reason else {})})
+    return semantic, commercial
+
+
 def source_path(value: str) -> Path:
     path = Path(value)
     return path if path.is_absolute() else ROOT / path
@@ -144,7 +185,7 @@ def extract_au_description(raw_path: Path, expected_sha: str) -> dict:
         raise ValueError(f"AU raw SHA mismatch: {raw_path}")
     record = json.loads(raw)
     info = record.get("itemInfo", {})
-    blocks = []
+    blocks, raw_fields, commercial_only = [], [], []
     linked_items = set()
     for key, scope in (("extraItemComment", "product_page_extra_comment"),
                        ("itemComment", "product_page_comment"),
@@ -152,17 +193,20 @@ def extract_au_description(raw_path: Path, expected_sha: str) -> dict:
         value = info.get(key)
         if not isinstance(value, str) or not value.strip():
             continue
+        raw_fields.append({"source_field": f"$.itemInfo.{key}", "raw_text": value,
+                           "use": "audit_only_not_semantic_input"})
         text, hrefs = html_text(value)
         linked_items.update(re.findall(r"/item/(\d+)", " ".join(hrefs)))
-        chunks = [part.strip() for part in re.split(r"\n+", text) if part.strip()]
-        for chunk in chunks:
-            if re.search(r"価格|送料|在庫|残り|購入|カート|クーポン|円(?:\b|[~～])|ポイント", chunk):
-                continue
+        semantic, commercial = split_semantic_lines(text)
+        commercial_only.extend({"source_field": f"$.itemInfo.{key}", **row} for row in commercial)
+        for part in semantic:
+            chunk = part["semantic_text"]
             likely_series = bool(re.search(r"ラインナップ|シリーズ|選べる|サイズ展開|カラー展開", chunk))
             blocks.append({
                 "source_field": f"$.itemInfo.{key}",
                 "scope": "series_or_sibling_context" if likely_series else scope,
                 "text": chunk[:1800],
+                "source_line": part["line"],
             })
             if sum(len(b["text"]) for b in blocks) >= 6500:
                 break
@@ -170,8 +214,10 @@ def extract_au_description(raw_path: Path, expected_sha: str) -> dict:
         "source": {"raw_file": str(raw_path.relative_to(ROOT)), "sha256": expected_sha,
                    "json_paths": ["$.itemInfo.extraItemComment", "$.itemInfo.itemComment", "$.itemInfo.detailComment"]},
         "blocks": blocks[:80],
+        "raw_fields": raw_fields,
+        "commercial_only_lines": commercial_only,
         "linked_au_item_ids": sorted(linked_items),
-        "extraction_note": "Raw source fields are individual AU product-page fields; series/sibling cues are tagged where text explicitly signals a lineup. Image content is not transcribed.",
+        "extraction_note": "blocks contain semantic-clean source lines; only monetary amounts are locally masked. Commercial-only lines are separate. raw_fields preserve full source fields for audit only. Series/sibling cues are tagged where explicitly signaled.",
     }
 
 
@@ -189,31 +235,45 @@ def extract_rakuten_description(raw_path: Path, expected_sha: str) -> dict:
     parser = RakutenItemDescription()
     parser.feed(source)
     text = "\n".join(" ".join(x.split()) for x in "".join(parser.parts).splitlines() if x.strip())
-    # Strip purchase, price, stock, review and ad text before publishing the dossier.
     lines = [x.strip() for x in text.splitlines() if x.strip()]
-    excluded = [x for x in lines if re.search(r"価格|送料|在庫|残り|購入|カート|クーポン|円(?:\b|[~～])|ポイント|レビュー|総合評価|商品番号", x)]
-    lines = [x for x in lines if x not in excluded]
-    text = "\n".join(lines).strip()
+    raw_text = "\n".join(lines).strip()
+    semantic, commercial = split_semantic_lines(raw_text)
+    text = "\n".join(x["semantic_text"] for x in semantic).strip()
     return {
         "source": {"raw_file": str(raw_path.relative_to(ROOT)), "sha256": expected_sha,
                    "page_url": None, "encoding": encoding, "json_path": "Rakuten product page HTML body"},
         "individual_description_excerpt": text[:7000],
-        "filtered_line_count": len(excluded),
-        "extraction_note": "Excerpt comes from the individual Rakuten page's item_desc region, excluding navigation and other page chrome. It can include item-specific specifications and shared series copy. Commercial availability details are excluded from this excerpt.",
+        "raw_fields": [{"source_field": "Rakuten item_desc", "raw_text": raw_text,
+                        "use": "audit_only_not_semantic_input"}],
+        "commercial_only_lines": commercial,
+        "masked_money_count": sum("[金額]" in x["semantic_text"] for x in semantic),
+        "extraction_note": "Semantic excerpt preserves specification and exception text, masking only numeric monetary amounts. Commercial-only lines are retained separately. Full raw text is audit evidence only.",
     }
 
 
 def public_au_options(options_raw: dict) -> dict:
-    """Retain product-option wording while excluding commercial/shipping choices."""
-    blocked = re.compile(r"送料|在庫|残り|購入|カート|クーポン|価格|円|¥|地域|北海道|沖縄|離島|発送手配|配送", re.I)
-    result = {"free_options": [], "paid_options": []}
+    """Keep option specifications; separate only standalone commercial notices."""
+    result = {"free_options": [], "paid_options": [], "commercial_only": [], "raw_fields": []}
     for kind in result:
+        if kind not in {"free_options", "paid_options"}:
+            continue
         for option in options_raw.get(kind, []) or []:
             title = str(option.get("title") or "").strip()
             selections = [str(x.get("title") or "").strip() for x in option.get("freeOptionsList" if kind == "free_options" else "paidOptionsList", []) or []]
-            if blocked.search(title) or any(blocked.search(choice) for choice in selections):
-                continue
-            result[kind].append({"title": title, "selection_titles": selections})
+            result["raw_fields"].append({"kind": kind, "title": title, "selection_titles": selections,
+                                         "use": "audit_only_not_semantic_input"})
+            clean_title, title_reason = semantic_line(title)
+            clean_selections = []
+            for choice in selections:
+                cleaned, reason = semantic_line(choice)
+                if reason:
+                    result["commercial_only"].append({"kind": kind, "text": choice, "reason": reason})
+                else:
+                    clean_selections.append(cleaned)
+            if title_reason:
+                result["commercial_only"].append({"kind": kind, "text": title, "reason": title_reason})
+            elif clean_title or clean_selections:
+                result[kind].append({"title": clean_title, "selection_titles": clean_selections})
     return result
 
 
@@ -320,6 +380,7 @@ def build(input_dir: Path = DEFAULT_INPUT, output_dir: Path = DEFAULT_OUTPUT) ->
         au_raw_path, rk_raw_path = source_path(au_raw_ref["file"]), source_path(rk_raw_ref["file"])
         au_description = extract_au_description(au_raw_path, au_raw_ref["sha256"])
         rk_description = extract_rakuten_description(rk_raw_path, rk_raw_ref["sha256"])
+        au_options = public_au_options(au.get("au_product_options_raw", {}))
         rk_description["source"]["page_url"] = first["rakuten_product_ref"]["url"]
         pair_hash = hashlib.sha256(pair_id.encode()).hexdigest()[:16]
         dossier_id = f"pair-{pair_hash}"
@@ -342,15 +403,23 @@ def build(input_dir: Path = DEFAULT_INPUT, output_dir: Path = DEFAULT_OUTPUT) ->
         au_eligibility[item_id] = {"au_product_id": item_id, "au_product_price_jpy_once": au.get("au_product_price_jpy_once"),
                                    "rows": au_stock_rows}
         dossier = {
-            "schema_version": "luna-sku-dossier-v2", "dossier_id": dossier_id, "group_id": group,
+            "schema_version": "luna-sku-dossier-v3", "dossier_id": dossier_id, "group_id": group,
             "pair_ref": pair_id,
-            "au_product": {"product_id": item_id, "title_raw": au["au_product_title_raw"],
-                           "purchase_options_raw": public_au_options(au.get("au_product_options_raw", {})),
+            "au_product": {"product_id": item_id,
+                           "title_raw": semantic_line(str(au["au_product_title_raw"]))[0],
+                           "title_evidence_raw": {"text": au["au_product_title_raw"],
+                                                  "use": "audit_only_not_semantic_input"},
+                           "purchase_options": {k: au_options[k] for k in ("free_options", "paid_options")},
+                           "purchase_options_commercial_only": au_options["commercial_only"],
+                           "purchase_options_raw": {k: au_options[k] for k in ("free_options", "paid_options")},
+                           "purchase_options_evidence_raw": au_options["raw_fields"],
                            "source": {"raw_file": au_raw_ref["file"], "sha256": au_raw_ref["sha256"],
                                       "json_path": au_raw_ref.get("json_path", "$.itemInfo")},
                            "description": au_description},
             "au_rows": public_au_rows,
-            "rakuten_product": {"title_raw": first["raku_title_raw"],
+            "rakuten_product": {"title_raw": semantic_line(str(first["raku_title_raw"]))[0],
+                                 "title_evidence_raw": {"text": first["raku_title_raw"],
+                                                        "use": "audit_only_not_semantic_input"},
                                  "source": {"url": first["rakuten_product_ref"]["url"],
                                             "raw_file": rk_raw_ref["file"], "sha256": rk_raw_ref["sha256"],
                                             "json_path": first["provenance"].get("rakuten_json_path")},
@@ -369,7 +438,7 @@ def build(input_dir: Path = DEFAULT_INPUT, output_dir: Path = DEFAULT_OUTPUT) ->
                 "schema_version": "luna-sku-case-v1", "case_id": case_id, "group_id": group,
                 "split": "test" if group in test_groups else "dev",
                 "shard_id": shard, "dossier_id": dossier_id,
-                "rakuten": {"title_raw": record["raku_title_raw"],
+                "rakuten": {"title_raw": semantic_line(str(record["raku_title_raw"]))[0],
                             "option_values": [{"axis_key": o.get("axis_key"), "axis_name": o.get("axis_name"), "value": o.get("value")}
                                               for o in sku.get("option_values", [])],
                             "axes_labels": [{"key": a.get("key"), "label": a.get("label"), "name": a.get("name")}
@@ -438,7 +507,13 @@ def build(input_dir: Path = DEFAULT_INPUT, output_dir: Path = DEFAULT_OUTPUT) ->
     if source_before != source_after or raw_before != raw_after:
         raise RuntimeError("Source input changed during build")
     manifest = {
-        "schema_version": "luna-sku-annotation-manifest-v2", "created_by": "build_luna_annotation_inputs.py",
+        "schema_version": "luna-sku-annotation-manifest-v3", "created_by": "build_luna_annotation_inputs.py",
+        "build_notes": {
+            "semantic_description_policy": "Keep product specifications and exceptions; locally mask numeric monetary amounts; classify standalone commercial-only lines separately.",
+            "raw_field_policy": "Full AU source description fields, Rakuten item_desc text, and AU option wording are retained as audit-only evidence.",
+            "identity_assignments": "Case IDs, group IDs, splits, and shard assignments retain the deterministic v2 construction rules.",
+            "synthetic_data_included": False,
+        },
         "source_dimensions": {"rakuten_sku_cases": len(rk_rows), "product_pairs": len(pairs),
                                "rakuten_urls": len({r["rakuten_product_ref"]["url"] for r in rk_rows}),
                                "au_products": len({str(r["au_product_ref"]["item_id"]) for r in rk_rows})},
