@@ -1,0 +1,133 @@
+# 商品SKU突合：CPU小型モデルの選定調査
+
+**調査基準日：2026年10月9日（Asia/Tokyo）**  
+**これは候補選定とデータ・マニフェスト監査であり、SKU精度・CPU速度・RSSのベンチマーク結果ではありません。**
+
+## 結論
+
+商品・SKUの候補検索には **Bekko embedding a8m / Granite 97m r2 / Ruri v3 30m** を比較する。ペア判定には **japanese-reranker-xsmall-v2 / GLiNER2.5-multi-Decide**、属性抽出には **gliner2.5-multi-v1** を別枠で比較する。既存の固定MiniLMは対照として維持する。
+
+10月6日にTransformersへ追加された **EmbeddingGemma 2** は最新候補として第二陣に残す。全体740Mではなく、画像・音声encoderを使わない **text-only 270M** を検証対象にする。[gemma2][gemma2_transformers][gemma2_usage]
+
+本番設計の比較対象は「商品候補選定 → SKU属性抽出/正規化 → 明確な矛盾を除外 → 候補ペアを必要なときだけ判定 → 不明はreview」である。これは実験仮説であり、精度が確認された勝者ではない。
+
+## 届いたデータの確認結果
+
+届いたのは `SKU-DATA-MANIFEST.json`（10,953 bytes）だけである。内容は61ファイルのパス、bytes、SHA256で、参照先のJSONLやrawレスポンス本体はこの環境にはない。列挙サイズの合計は426,742,931 bytes。全エントリーのbytes型・非負性、SHA256表記を検査し、形式不備は0件だった。
+
+これはマニフェストの整合性であって、本体のファイルhash・内容・件数を検証した結果ではない。商品行数、SKU行数、goldラベル、クラス分布、family構成は未確認。
+
+|マニフェストのグループ|列挙ファイル数|宣言bytes合計|
+|---|---:|---:|
+|sku-real-au-20261009|13|424,589|
+|sku-real-au-select10-20261009|19|318,187|
+|sku-real-rakuten-20261009|22|7,862,496|
+|sku-synthetic-controls-20261009|3|416,832,559|
+|sku-observation-20261009|4|1,305,100|
+
+実観測3グループの `products.jsonl` と `skus.jsonl` 計6ファイルは、合計 **1,012,479 bytes（約1.01MB）**。まず書式・属性・件数を確認するための小さな受け渡し単位になる。合成 `dataset.jsonl` は415,078,832 bytesあり、別に送るか圧縮して受け渡す。
+
+### マニフェストから見つかった監査項目
+
+**合成データのパスが違う。** 最初の依頼は `sku-synthetic-20261009/dataset.jsonl`、今回の一覧は `sku-synthetic-controls-20261009/dataset.jsonl`。同じ1000行だとはまだ扱わない。`evaluation.json` は評価結果らしい名前でも、内容を読まずにgoldやモデル結果として利用しない。
+
+**同じ宣言SHA256のグループが3つある。** Select10のoptions 8件、楽天ct0.htmlと観測用rakuten.html、auの704502086-options.jsonと観測用wowma-options-api.json。実際の同一内容は本体確認待ちだが、独立した観測やtrain/testの独立例として二重計上しないための系譜監査対象になる。SKU行が重複しているという結論ではない。
+
+**提示されたSKU合計には未解決差がある。** ユーザー提示のau440＋楽天891は1,331で、併記された1,361とは30件差。マニフェストは行数を含まないため、この差は解決できない。
+
+**必要な実験ファイルは一覧にない。** 既存model-manifest.json、gliner-candidate.json、生成コード、AGENTS.md、整形済みreal-original-pair.jsonl / real-sibling-pair.jsonl、既存output schemaは本体を未読。データフォルダの場所だけで内容を再構成しない。
+
+## 初回の比較候補
+
+MBは十進の重みファイルサイズであり、Tokenizer・依存runtime・peak RSSを含まない。
+
+|候補|役割|サイズ・配備|公開ライセンス|評価に入れる理由|
+|---|---|---|---|---|
+|hotchpotch/bekko-embedding-v1-a8m|候補検索embedding|総105.98M、active7.67M、384次元。推奨ONNX 130,099,079 bytes|MIT|2026年の小演算量候補|
+|ibm-granite/granite-embedding-97m-multilingual-r2|候補検索embedding|97M、384次元。AVX2 INT8 ONNX約98.2MB|Apache-2.0|2026-04-29公開。日本語を含み、配布ONNXあり|
+|cl-nagoya/ruri-v3-30m|日本語embedding対照|総37M、256次元。公式FP32約147MB|Apache-2.0|2025年のモデルだが日本語小型対照として有用|
+|hotchpotch/japanese-reranker-xsmall-v2|ペア関連度|約36.8M、INT8 ONNX約37.4MB|MIT|GLiNERと比べる軽量なcross-encoder|
+|fastino/GLiNER2.5-multi-Decide|明示ペアの分類|287M、重み約1.15GB、repo約1.17GB|Apache-2.0|先入観で除外せず、少量の日本語難例とCPU計測を先に行う|
+|fastino/gliner2.5-multi-v1|属性抽出|287M。配布サイズの表記不一致は下記参照|Apache-2.0|SKUごとに属性を抽出し、コードで値比較する方式を試す|
+
+出典：[bekko][bekko_onnx][granite][granite_onnx][ruri][ruri_files][reranker][reranker_onnx][decide][decide_files][extract][extract_weight]
+
+### サイズ・役割の注意
+
+Bekkoの「a8m」は総8Mではない。多言語語彙のlookup表が大きく、総数は約106M。推奨ONNXではその表をINT8にし、TransformerはFP32に保つ。別環境で公開されたCPU throughputは今回のCPU 2 threadsで再現された数値ではない。[bekko][bekko_onnx]
+
+Ruriは最新2026モデルではなく、日本語特化の比較基準として入れる。v3の検索prefixと対称類似度の入力形式を明示して固定する。FP32と独自INT8を混ぜてモデル名だけで結果を集約しない。[ruri]
+
+xsmall-v2は関連度モデルであり、SKU一致確率や既製の三値分類器ではない。数値違い・否定・セット数違いを落とせるか、明示ペアで測る。閾値とreview域はvalidationのみで決定する。[reranker][reranker_onnx]
+
+GLiNER Decideは分類器として評価する。英語17-domainの公開benchmarkを日本語SKUの成績として扱わない。明示ペアの `same_sku / different_sku / needs_review`、FPR、review率、採択precision/coverageを確認するまで本番採否は保留する。[decide][decide_benchmark]
+
+属性用multi-v1の現行カードは **AutoExtractor / BoundaryExtractor** を案内しており、旧 `GLiNER2 / SpanExtractor` の読み込みを使わないよう注意している。冒頭の自動生成スニペットと本文が一致しない場合は、固定revisionのconfig・ライブラリ実装に合わせて動作確認する。[extract]
+
+また、multi-v1はカードに約594MB（mostly FP16）、配布ファイルページに約1.15GBという異なる記載が見つかった。別revision・dtype等の可能性を推測で確定せず、選ぶrevision・実ファイル・SHA256・実ロードdtypeを記録する。どちらのサイズもRSSの根拠にはならない。[extract][extract_weight]
+
+## 最新候補と見送り
+
+**EmbeddingGemma 2** はtext-only 270MでCPU試験する第二陣。768次元で、128/256/512次元への切り詰めをサポート。画像・音声部分を外す構成の実ロードと使用ファイルを確認してから、必要なものだけをダウンロードする。重みを測定していないので実行サイズ・RSS欄は空欄としている。[gemma2][gemma2_hf][gemma2_transformers][gemma2_usage]
+
+**Bekko System One 17M** は重みのライセンスが未確定なので、顧客案件の初回比較ではダウンロード前に見送る。コードrepoのMITとweightsの条件を混同しない。多言語Bekko embeddingとは別モデルである。[system_one]
+
+**Jina embeddings v5 text nano** は239Mの新しい候補だが、公開weightsはCC-BY-NC-4.0。商用利用条件未確認なら初回から外す。text-matching adapterという名前だけでSKU等価判定器とは見なさない。[jina]
+
+## タスクに合わせた最小実験
+
+商品候補選定はtitleを含む文脈で順位付けする。SKUは固定した同一候補集合について、title+SKUとSKU-onlyを比較する。入力に必要な情報がないケースは、実物が同じSKUであってもreviewが適切になり得る。「潜在的な同一性」と「与えた証拠だけで判定できるか」のラベルを分ける。
+
+`width_cm / height_cm / color / lace / pieces` のルール対照を必ず置く。表記・単位を正規化しても幅と丈は勝手に交換せず、近似色を自動同義にせず、4枚組だけでlaceを推定しない。抽出spanと出典範囲を残す。商品タイトルに複数SKUの選択肢が羅列されている場合、それを選択済み属性にしない。
+
+モデル単体、ルール単体、モデル＋属性ガードを別々に集計する。高い類似度で明確な寸法矛盾を覆したり、不明なレース構成を埋めたりしない。
+
+au153 SKU×楽天306 SKUなら全ペア46,818件。一方、SKUごとのembedding/抽出は459件。上位10候補だけにペア分類を行えば1,530ペアになる。これは件数の算術で、実測速度ではない。検索で落とした正例も最終recallに含める。
+
+分割はpair_idの文字列だけでなく、同じ元商品・兄弟URL・派生・重複を含むfamily単位。全て同じ商品由来なら独立したheld-out評価ができないこと自体を報告する。正解のない実観測を合成goldへ混ぜない。
+
+検索はRecall@1/5/10とMRR。分類は三値confusion matrix、precision/recall/F1、確実なdifferentを分母にしたFPR、reviewを誤受理した率、review率とcoverage。抽出はspan指標と正規化exact matchを分離する。threshold/prompt/色alias等の調整はvalidationのみで終え、testで変更しない。
+
+CPU2 threads、batch1/8、モデル別プロセスを提案する。cold load、Tokenizer込みのp50/p95、件当たり時間、peak RSSを記録。embeddingの128 tokensと、2文＋ラベルschemaを読む分類器のtoken budgetを区別し、SKU証拠の切り落としを監査する。
+
+最終CSVへは確信のあるsameのみを出す。different、review、unlabeledは別理由の監査出力へ残す。価格は同一性特徴に使わない。ユーザー提示のau商品単位currentPriceと楽天SKU単位税込価格の粒度差、顧客の案1/2/3未決を維持する。
+
+## 保存と実施範囲
+
+指定ローカル作業ディレクトリは存在せず、先のGitHub接続でも指定refが404だった。このパッケージはブランチに保存していない。AGENTS.md、既存差分・schemaの確認、モデルdownload/inference、CPU実測、SKU評価は未実施。既存収集・rawファイルには変更を加えていない。
+
+同梱内容：選定メモ、候補JSON、評価計画JSON、元マニフェストの不変コピー、メタデータ監査結果、再現用のread-only Pythonスクリプト。
+
+```sh
+# マニフェストだけの再検査（モデル実行やネットワークアクセスなし）
+python experiments/sku-matching/audit_manifest.py
+
+# データを置いた実際のリポジトリで、存在・サイズ・SHA256を検査する場合
+# 読み取り中に変化するファイルは不安定として報告する。上書きや削除はしない。
+python experiments/sku-matching/audit_manifest.py \
+  --data-root /workspace/Searching_Experiment
+```
+
+本体のSHA256検査はファイルを読み通すため、収集が書き込み中のファイルではなく完了snapshotを対象にする。正しいsourceファイルが揃っても、このスクリプト単体ではSKU行数やgoldを評価しない。
+
+## 一次資料
+
+- [bekko] https://huggingface.co/hotchpotch/bekko-embedding-v1-a8m
+- [bekko_onnx] https://huggingface.co/hotchpotch/bekko-embedding-v1-a8m/commit/6c498280a6b99b50997dd1b3293a68666f883132
+- [granite] https://huggingface.co/ibm-granite/granite-embedding-97m-multilingual-r2
+- [granite_onnx] https://huggingface.co/ibm-granite/granite-embedding-97m-multilingual-r2/blob/main/onnx/model_quint8_avx2.onnx
+- [ruri] https://huggingface.co/cl-nagoya/ruri-v3-30m
+- [ruri_files] https://huggingface.co/cl-nagoya/ruri-v3-30m/tree/main
+- [reranker] https://huggingface.co/hotchpotch/japanese-reranker-xsmall-v2
+- [reranker_onnx] https://huggingface.co/hotchpotch/japanese-reranker-xsmall-v2/tree/main/onnx
+- [decide] https://huggingface.co/fastino/GLiNER2.5-multi-Decide/blame/main/README.md
+- [decide_files] https://huggingface.co/fastino/GLiNER2.5-multi-Decide/tree/main
+- [decide_benchmark] https://huggingface.co/datasets/fastino/fast-decisions
+- [extract] https://huggingface.co/fastino/gliner2.5-multi-v1
+- [extract_weight] https://huggingface.co/fastino/gliner2.5-multi-v1/blob/main/model.safetensors
+- [gemma2] https://ai.google.dev/gemma/docs/embeddinggemma/model_card_2
+- [gemma2_hf] https://huggingface.co/google/embeddinggemma-2
+- [gemma2_transformers] https://huggingface.co/docs/transformers/en/model_doc/embedding_gemma2
+- [gemma2_usage] https://ai.google.dev/gemma/docs/embeddinggemma/multimodal-embeddinggemma-with-sentence-transformers
+- [system_one] https://huggingface.co/hotchpotch/bekko-system-one-v0-17m
+- [jina] https://huggingface.co/jinaai/jina-embeddings-v5-text-nano

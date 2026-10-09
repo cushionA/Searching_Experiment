@@ -39,6 +39,7 @@ PATTERNS = {
     "experiments/bot-diagnostics/extensions/observation-probe": ("*.json", "*.js"),
     "experiments/captcha-small-model": ("*.py",),
     "experiments/sku-matching": ("*.py", "*.sh", "*.json", "*.jsonl", "*.txt", "README.md"),
+    "experiments/sku-matching/manifests": ("*.json",),
     "experiments/fourget-selfhost": ("README.md", "compose.yaml", "smoke.py", "start.py"),
     "experiments/fourget-selfhost/fourplay": (".dockerignore", "Dockerfile", "entrypoint.sh",
                                                 "package-lock.json", "package.json", "policies.json", "server.cjs", "navigation-gate.cjs", "tab-navigation.cjs"),

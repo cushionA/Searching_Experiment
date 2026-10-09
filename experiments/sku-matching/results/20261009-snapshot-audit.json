@@ -1,0 +1,735 @@
+{
+  "arithmetic_check": {
+    "au_select10_skus": 80,
+    "au_total": 440,
+    "au_weimall_skus": 360,
+    "note": "440 + 891 = 1,331; 1,361 is not supported by these six observed JSONL tables.",
+    "observed_total": 1331,
+    "rakuten_total": 891
+  },
+  "audit_date": "2026-10-09",
+  "candidate_pair_inputs": {
+    "real-original-pair.jsonl": {
+      "au_sku_rows": 153,
+      "bytes": 575528,
+      "jsonl_records": 1,
+      "pair_id": "observed-ct0-au-original-only",
+      "rakuten_sku_rows": 306,
+      "sha256": "5ffa32feb4b1f0680c6ecde003b2e032486f8d852c50b46f815c1eee12e8e2d8"
+    },
+    "real-sibling-pair.jsonl": {
+      "au_sku_rows": 306,
+      "bytes": 831652,
+      "jsonl_records": 1,
+      "pair_id": "observed-ct0-with-au-sibling",
+      "rakuten_sku_rows": 306,
+      "sha256": "4eb2b1dc245f4dce5221f6bace3f67ee558f7b3ebe5b080e5d21fbbd7a0b4365"
+    }
+  },
+  "checks": {
+    "all_checkpoint_payload_hashes_match_embedded_manifest": true,
+    "duplicate_product_ids": 0,
+    "duplicate_sku_grain_keys": 0,
+    "observed_table_totals_match_expected": true,
+    "raw_page_sha_reuse_means_duplicate_sku": false
+  },
+  "groups": {
+    "au_select10": {
+      "files": {
+        "au_select10/products.jsonl": {
+          "bytes": 22929,
+          "sha256": "fe44ac9d015771dc23afa79a4e5df8cb51279a946f0cfcdc3364d7adfc0c6454"
+        },
+        "au_select10/skus.jsonl": {
+          "bytes": 30064,
+          "sha256": "dfe62af90039d59a4f1dfc488a59a12e3206f142b9f67a9be236db8fab9c3f85"
+        }
+      },
+      "product_ids": [
+        "711740048",
+        "711740046",
+        "711740052",
+        "711740050",
+        "711740060",
+        "711740054",
+        "711740056",
+        "711740058"
+      ],
+      "products": 8,
+      "products_with_sku_rows": 8,
+      "products_with_zero_sku_rows": [],
+      "row_column_shape_by_product": {
+        "711740046": {
+          "cells": 10,
+          "columns": 10,
+          "observed_sku_rows": 10,
+          "rows": 1
+        },
+        "711740048": {
+          "cells": 10,
+          "columns": 10,
+          "observed_sku_rows": 10,
+          "rows": 1
+        },
+        "711740050": {
+          "cells": 10,
+          "columns": 10,
+          "observed_sku_rows": 10,
+          "rows": 1
+        },
+        "711740052": {
+          "cells": 10,
+          "columns": 10,
+          "observed_sku_rows": 10,
+          "rows": 1
+        },
+        "711740054": {
+          "cells": 10,
+          "columns": 10,
+          "observed_sku_rows": 10,
+          "rows": 1
+        },
+        "711740056": {
+          "cells": 10,
+          "columns": 10,
+          "observed_sku_rows": 10,
+          "rows": 1
+        },
+        "711740058": {
+          "cells": 10,
+          "columns": 10,
+          "observed_sku_rows": 10,
+          "rows": 1
+        },
+        "711740060": {
+          "cells": 10,
+          "columns": 10,
+          "observed_sku_rows": 10,
+          "rows": 1
+        }
+      },
+      "sku_axes_by_role": {
+        "column": [
+          "色"
+        ],
+        "row": [
+          "サイズ"
+        ]
+      },
+      "sku_id_repeats_within_group": 72,
+      "sku_id_unique_count": 8,
+      "sku_row_grain": [
+        "item_id",
+        "row_index",
+        "column_index"
+      ],
+      "sku_rows": 80,
+      "sku_rows_by_product": {
+        "711740046": 10,
+        "711740048": 10,
+        "711740050": 10,
+        "711740052": 10,
+        "711740054": 10,
+        "711740056": 10,
+        "711740058": 10,
+        "711740060": 10
+      },
+      "sku_rows_with_source_sha256": 0,
+      "source_sha256_reused_sku_rows": 0,
+      "source_sha256_unique_count": 0
+    },
+    "au_weimall": {
+      "files": {
+        "au_weimall/products.jsonl": {
+          "bytes": 15029,
+          "sha256": "2a5edce059e213679aada64e95968825dff53077e4f8adac01eb9db083c1d200"
+        },
+        "au_weimall/skus.jsonl": {
+          "bytes": 138092,
+          "sha256": "bbe70502dfe3e52dd2c627bb4baf931b8ea6e3eff77f12803abae2bd76646a22"
+        }
+      },
+      "product_ids": [
+        "704502086",
+        "704500131",
+        "778818828",
+        "778809347"
+      ],
+      "products": 4,
+      "products_with_sku_rows": 4,
+      "products_with_zero_sku_rows": [],
+      "row_column_shape_by_product": {
+        "704500131": {
+          "cells": 153,
+          "columns": 17,
+          "observed_sku_rows": 153,
+          "rows": 9
+        },
+        "704502086": {
+          "cells": 153,
+          "columns": 17,
+          "observed_sku_rows": 153,
+          "rows": 9
+        },
+        "778809347": {
+          "cells": 27,
+          "columns": 9,
+          "observed_sku_rows": 27,
+          "rows": 3
+        },
+        "778818828": {
+          "cells": 27,
+          "columns": 9,
+          "observed_sku_rows": 27,
+          "rows": 3
+        }
+      },
+      "sku_axes_by_role": {
+        "column": [
+          "サイズ"
+        ],
+        "row": [
+          "カラー"
+        ]
+      },
+      "sku_id_repeats_within_group": 356,
+      "sku_id_unique_count": 4,
+      "sku_row_grain": [
+        "item_id",
+        "row_index",
+        "column_index"
+      ],
+      "sku_rows": 360,
+      "sku_rows_by_product": {
+        "704500131": 153,
+        "704502086": 153,
+        "778809347": 27,
+        "778818828": 27
+      },
+      "sku_rows_with_source_sha256": 0,
+      "source_sha256_reused_sku_rows": 0,
+      "source_sha256_unique_count": 0
+    },
+    "rakuten_weimall": {
+      "availability_from_embedded_quantity_values": {
+        "in_stock": 811,
+        "out_of_stock": 80
+      },
+      "files": {
+        "rakuten_weimall/products.jsonl": {
+          "bytes": 24402,
+          "sha256": "d53f9607ef7145a1eb4d52e95cfc2717b14e118f0fe2f68f4fba2e475232d709"
+        },
+        "rakuten_weimall/skus.jsonl": {
+          "bytes": 781963,
+          "sha256": "1debbd1acbe8c38f1958d0e3085bd5ec9f5eff43f6fd535d3041404633b963a8"
+        }
+      },
+      "hidden_sku_rows": 0,
+      "hidden_sku_values": {
+        "False": 891
+      },
+      "product_ids": [
+        "https://item.rakuten.co.jp/weimall/ct0/",
+        "https://item.rakuten.co.jp/weimall/ctk/",
+        "https://item.rakuten.co.jp/weimall/dtw001/",
+        "https://item.rakuten.co.jp/weimall/faa006/",
+        "https://item.rakuten.co.jp/weimall/feb002/",
+        "https://item.rakuten.co.jp/weimall/fek002/",
+        "https://item.rakuten.co.jp/weimall/fgc005/",
+        "https://item.rakuten.co.jp/weimall/fia6080/",
+        "https://item.rakuten.co.jp/weimall/flc/",
+        "https://item.rakuten.co.jp/weimall/gad100/",
+        "https://item.rakuten.co.jp/weimall/hrs02p040/",
+        "https://item.rakuten.co.jp/weimall/jm60b/",
+        "https://item.rakuten.co.jp/weimall/pt0017a/",
+        "https://item.rakuten.co.jp/weimall/pt0033/",
+        "https://item.rakuten.co.jp/weimall/pt0038/",
+        "https://item.rakuten.co.jp/weimall/pt0039/",
+        "https://item.rakuten.co.jp/weimall/qaa0100/",
+        "https://item.rakuten.co.jp/weimall/rsb130/",
+        "https://item.rakuten.co.jp/weimall/stp01/",
+        "https://item.rakuten.co.jp/weimall/wstp01/"
+      ],
+      "products": 20,
+      "products_with_sku_rows": 18,
+      "products_with_zero_sku_rows": [
+        "https://item.rakuten.co.jp/weimall/pt0039/",
+        "https://item.rakuten.co.jp/weimall/wstp01/"
+      ],
+      "sku_id_repeats_within_group": 0,
+      "sku_id_unique_count": 891,
+      "sku_row_grain": [
+        "source_url",
+        "sku_id"
+      ],
+      "sku_rows": 891,
+      "sku_rows_by_product": {
+        "https://item.rakuten.co.jp/weimall/ct0/": 306,
+        "https://item.rakuten.co.jp/weimall/ctk/": 54,
+        "https://item.rakuten.co.jp/weimall/dtw001/": 36,
+        "https://item.rakuten.co.jp/weimall/faa006/": 2,
+        "https://item.rakuten.co.jp/weimall/feb002/": 95,
+        "https://item.rakuten.co.jp/weimall/fek002/": 48,
+        "https://item.rakuten.co.jp/weimall/fgc005/": 32,
+        "https://item.rakuten.co.jp/weimall/fia6080/": 6,
+        "https://item.rakuten.co.jp/weimall/flc/": 2,
+        "https://item.rakuten.co.jp/weimall/gad100/": 3,
+        "https://item.rakuten.co.jp/weimall/hrs02p040/": 192,
+        "https://item.rakuten.co.jp/weimall/jm60b/": 60,
+        "https://item.rakuten.co.jp/weimall/pt0017a/": 4,
+        "https://item.rakuten.co.jp/weimall/pt0033/": 7,
+        "https://item.rakuten.co.jp/weimall/pt0038/": 4,
+        "https://item.rakuten.co.jp/weimall/qaa0100/": 9,
+        "https://item.rakuten.co.jp/weimall/rsb130/": 14,
+        "https://item.rakuten.co.jp/weimall/stp01/": 17
+      },
+      "sku_rows_with_source_sha256": 891,
+      "source_sha256_reused_sku_rows": 873,
+      "source_sha256_unique_count": 18,
+      "visible_availability_values": {
+        "unknown_hidden_stock_display": 891
+      }
+    }
+  },
+  "handoff_bundle": {
+    "bytes": 66153,
+    "entries": [
+      {
+        "bytes": 15029,
+        "path": "data/au_weimall/products.jsonl",
+        "sha256": "2a5edce059e213679aada64e95968825dff53077e4f8adac01eb9db083c1d200"
+      },
+      {
+        "bytes": 138092,
+        "path": "data/au_weimall/skus.jsonl",
+        "sha256": "bbe70502dfe3e52dd2c627bb4baf931b8ea6e3eff77f12803abae2bd76646a22"
+      },
+      {
+        "bytes": 22929,
+        "path": "data/au_select10/products.jsonl",
+        "sha256": "fe44ac9d015771dc23afa79a4e5df8cb51279a946f0cfcdc3364d7adfc0c6454"
+      },
+      {
+        "bytes": 30064,
+        "path": "data/au_select10/skus.jsonl",
+        "sha256": "dfe62af90039d59a4f1dfc488a59a12e3206f142b9f67a9be236db8fab9c3f85"
+      },
+      {
+        "bytes": 24402,
+        "path": "data/rakuten_weimall/products.jsonl",
+        "sha256": "d53f9607ef7145a1eb4d52e95cfc2717b14e118f0fe2f68f4fba2e475232d709"
+      },
+      {
+        "bytes": 781963,
+        "path": "data/rakuten_weimall/skus.jsonl",
+        "sha256": "1debbd1acbe8c38f1958d0e3085bd5ec9f5eff43f6fd535d3041404633b963a8"
+      },
+      {
+        "bytes": 575528,
+        "path": "pair-inputs/real-original-pair.jsonl",
+        "sha256": "5ffa32feb4b1f0680c6ecde003b2e032486f8d852c50b46f815c1eee12e8e2d8"
+      },
+      {
+        "bytes": 831652,
+        "path": "pair-inputs/real-sibling-pair.jsonl",
+        "sha256": "4eb2b1dc245f4dce5221f6bace3f67ee558f7b3ebe5b080e5d21fbbd7a0b4365"
+      },
+      {
+        "bytes": 9644,
+        "path": "PROVENANCE.json",
+        "sha256": "a81f062ec789a173d7b347481e59835e7ed5109d67adcd774b3a9df3fcc96a95"
+      }
+    ],
+    "entry_count": 9,
+    "manifest_path": "experiments/sku-matching/results/20261009-real-tables.manifest.json",
+    "path": "experiments/sku-matching/results/20261009-real-tables.zip",
+    "sha256": "7492ddd31fc92d9a7a1e2ac5b9c2b2366f09618b78f31a32101ff84b64251d45"
+  },
+  "source_archive": {
+    "bytes": 11008084,
+    "entries": [
+      {
+        "bytes": 49804,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-20261009/704500131-item.json",
+        "sha256": "79ac86eaaa96ce95a3a922ca9366d79275a5099e6e01c0d3ca20610ef1610cc2"
+      },
+      {
+        "bytes": 1070,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-20261009/704500131-options.json",
+        "sha256": "19dba9de2d3a9b5573cc4aba6b888813e8179a711296ec49e9fe4501b058418d"
+      },
+      {
+        "bytes": 50962,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-20261009/704502086-item.json",
+        "sha256": "c7cfc2095c208663912996ff2ec8b90dc5a6b898951eab6974683c0121793467"
+      },
+      {
+        "bytes": 1078,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-20261009/704502086-options.json",
+        "sha256": "2b576311287aaf1540989b14909084cfb3eaeb4ad44d9ea575dee90e0eb82e4c"
+      },
+      {
+        "bytes": 32759,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-20261009/778809347-item.json",
+        "sha256": "d6e53d8a3d8c75cd724b19dfbe25196f8cb033a81cfa40cd3d0dafb4c83032a3"
+      },
+      {
+        "bytes": 1090,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-20261009/778809347-options.json",
+        "sha256": "179c91900a32a5b52ede817497070830e6927266004787786e271ec3da9a9d77"
+      },
+      {
+        "bytes": 32417,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-20261009/778818828-item.json",
+        "sha256": "5870188ae94a8a6f35c6ac8fbc994218798842f5bf3016732b691ccad82d8057"
+      },
+      {
+        "bytes": 1060,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-20261009/778818828-options.json",
+        "sha256": "2e9de5b0ad964c9617aabb09e3b03475d96367ccca680e8f64a5a8a4bd075ca9"
+      },
+      {
+        "bytes": 12625,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-20261009/catalog-probe-1.json",
+        "sha256": "e57e0fb3edca8c5fe85408e7f73ce1ec5b9ba53bb676b901e77a6af3ad5cf2e2"
+      },
+      {
+        "bytes": 78757,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-20261009/catalog-probe-2.json",
+        "sha256": "9bdadf6060d6b1f89b8a87250007ac1368edd913851fcdd19082fcab5a776e1d"
+      },
+      {
+        "bytes": 9846,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-20261009/catalog-probe-3.json",
+        "sha256": "b2e4b16a8158b94e4836eac4ed0de33f121b4ccafb300553ff335416bc75ca7c"
+      },
+      {
+        "bytes": 15029,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-20261009/products.jsonl",
+        "sha256": "2a5edce059e213679aada64e95968825dff53077e4f8adac01eb9db083c1d200"
+      },
+      {
+        "bytes": 138092,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-20261009/skus.jsonl",
+        "sha256": "bbe70502dfe3e52dd2c627bb4baf931b8ea6e3eff77f12803abae2bd76646a22"
+      },
+      {
+        "bytes": 30821,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/711740046-item.json",
+        "sha256": "4469dad3cd90f3d2314f93105878985502c2f203ca8091cfdca17e0391e61a43"
+      },
+      {
+        "bytes": 256,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/711740046-options.json",
+        "sha256": "4b7d2a19ef68d831d9cd5abfee3911514c7535c0b99d7209d2c92f81ef3bf6cb"
+      },
+      {
+        "bytes": 30820,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/711740048-item.json",
+        "sha256": "e165e48e6b6f51129022e486e5bd12b83f2a605338e4fa93ffe22e8f4a469d3c"
+      },
+      {
+        "bytes": 256,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/711740048-options.json",
+        "sha256": "4b7d2a19ef68d831d9cd5abfee3911514c7535c0b99d7209d2c92f81ef3bf6cb"
+      },
+      {
+        "bytes": 30820,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/711740050-item.json",
+        "sha256": "120b3ae39f986b4414c1aeda2d3296b6812cef483e2f6c1ac1ec3f2257ae4172"
+      },
+      {
+        "bytes": 256,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/711740050-options.json",
+        "sha256": "4b7d2a19ef68d831d9cd5abfee3911514c7535c0b99d7209d2c92f81ef3bf6cb"
+      },
+      {
+        "bytes": 30818,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/711740052-item.json",
+        "sha256": "396327b3f5427afdbb79596878dc5119f33493ee42a0c0fee957ba583b083179"
+      },
+      {
+        "bytes": 256,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/711740052-options.json",
+        "sha256": "4b7d2a19ef68d831d9cd5abfee3911514c7535c0b99d7209d2c92f81ef3bf6cb"
+      },
+      {
+        "bytes": 30819,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/711740054-item.json",
+        "sha256": "7d418ac33e0a2b87264a55a46bd7854ef967f9aa0d0e02e4e899a51774f850d2"
+      },
+      {
+        "bytes": 256,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/711740054-options.json",
+        "sha256": "4b7d2a19ef68d831d9cd5abfee3911514c7535c0b99d7209d2c92f81ef3bf6cb"
+      },
+      {
+        "bytes": 30821,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/711740056-item.json",
+        "sha256": "62514748968eb4ed8232cdb70c0a1e00128ac9abf4c6b4606456e688df30d276"
+      },
+      {
+        "bytes": 256,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/711740056-options.json",
+        "sha256": "4b7d2a19ef68d831d9cd5abfee3911514c7535c0b99d7209d2c92f81ef3bf6cb"
+      },
+      {
+        "bytes": 30819,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/711740058-item.json",
+        "sha256": "3d2d068383da3cc8973040d80756c76a136c2f2f2cdcea458df70ea8e58522a1"
+      },
+      {
+        "bytes": 256,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/711740058-options.json",
+        "sha256": "4b7d2a19ef68d831d9cd5abfee3911514c7535c0b99d7209d2c92f81ef3bf6cb"
+      },
+      {
+        "bytes": 30825,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/711740060-item.json",
+        "sha256": "df2d4579f4c5af4bd6cebc19fb0efc95a928823deb6a4a5c9c82c99fca4a8929"
+      },
+      {
+        "bytes": 256,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/711740060-options.json",
+        "sha256": "4b7d2a19ef68d831d9cd5abfee3911514c7535c0b99d7209d2c92f81ef3bf6cb"
+      },
+      {
+        "bytes": 16583,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/catalog-select10.json",
+        "sha256": "4a663fd251ed8630d8a393f344a13d43135361cf9134778ed8739ea4d691059d"
+      },
+      {
+        "bytes": 22929,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/products.jsonl",
+        "sha256": "fe44ac9d015771dc23afa79a4e5df8cb51279a946f0cfcdc3364d7adfc0c6454"
+      },
+      {
+        "bytes": 30064,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-au-select10-20261009/skus.jsonl",
+        "sha256": "dfe62af90039d59a4f1dfc488a59a12e3206f142b9f67a9be236db8fab9c3f85"
+      },
+      {
+        "bytes": 1130087,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/ct0.html",
+        "sha256": "5afed80a98492eb29541bb8a616e1f103c025890ddc12cf2ea1ecfa06a516820"
+      },
+      {
+        "bytes": 361765,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/ctk.html",
+        "sha256": "1f944ab5d766726bdc5f4c9f638ec49f5d7f696748e39c4a470019a88ec8fa99"
+      },
+      {
+        "bytes": 339090,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/dtw001.html",
+        "sha256": "4778502e1e9549f3dfb379300924c83db5458fcec8cdca5928a7b9b26631bedc"
+      },
+      {
+        "bytes": 222920,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/faa006.html",
+        "sha256": "8b5479aa34ddd3ebcac1b746c76bd616ca7f1381fd0543b7a96eb6d1b8ea8190"
+      },
+      {
+        "bytes": 592067,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/feb002.html",
+        "sha256": "0da470f73410cf34f524f1a4dfdc86685d60513fa9e135b51b6e09cf53ca1f03"
+      },
+      {
+        "bytes": 380613,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/fek002.html",
+        "sha256": "6173fe153b55654c0718747398242a2e136a656874a4844cd86a2fc5c0c80e8f"
+      },
+      {
+        "bytes": 362623,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/fgc005.html",
+        "sha256": "b7c8b5a88a24720c89a1ff880ef178c4b338b8392ae746565abe46b006b60b56"
+      },
+      {
+        "bytes": 210947,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/fia6080.html",
+        "sha256": "c1ce5bceec8a56764bff5351ab1271cf7ce8ffad565198b00ce4aaa49da63d98"
+      },
+      {
+        "bytes": 197632,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/flc.html",
+        "sha256": "d3f602c8cee3696af3ef68970edb01e69d59b606fedc9bba4008ebce6a556a47"
+      },
+      {
+        "bytes": 238339,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/gad100.html",
+        "sha256": "96f80c1619d9feac76e43405568d1b5bc12d8de8a1376d2fe1b3fa4b2b122271"
+      },
+      {
+        "bytes": 706393,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/hrs02p040.html",
+        "sha256": "ae2cad3f2583408a398c0e36291a203db45d30f7d61ae9e4fc07b41000368bfb"
+      },
+      {
+        "bytes": 452949,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/jm60b.html",
+        "sha256": "7bbe18fc954ad189957318acb516150f47fd3bf5cde22e0707b8b7109216a11a"
+      },
+      {
+        "bytes": 24402,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/products.jsonl",
+        "sha256": "d53f9607ef7145a1eb4d52e95cfc2717b14e118f0fe2f68f4fba2e475232d709"
+      },
+      {
+        "bytes": 234437,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/pt0017a.html",
+        "sha256": "b315779289ee9313325194758573a37ffe1bec084dcdd516b5bf982923e373a3"
+      },
+      {
+        "bytes": 249461,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/pt0033.html",
+        "sha256": "561bcf9a39877aeb5e50f68ead7caa0a3f4f351da56790e85d749b1ab6c2f827"
+      },
+      {
+        "bytes": 237280,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/pt0038.html",
+        "sha256": "394af438ce8b8adb60fd33702270ab8519c0bd0192c8b6db8f9e9a6afb4837cb"
+      },
+      {
+        "bytes": 181965,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/pt0039.html",
+        "sha256": "e5ebd170b7aa24ee8d4895f183556ad852f5728fb404f1e08f32c4acb9c9a184"
+      },
+      {
+        "bytes": 236401,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/qaa0100.html",
+        "sha256": "f403dd6a6422740b32a017c817ac8e80109b50ce721c88099d84d875a573a720"
+      },
+      {
+        "bytes": 275344,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/rsb130.html",
+        "sha256": "1b32bb27b46fd8deff5af22fe251eacaba350927f242c8abced698be684aa963"
+      },
+      {
+        "bytes": 781963,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/skus.jsonl",
+        "sha256": "1debbd1acbe8c38f1958d0e3085bd5ec9f5eff43f6fd535d3041404633b963a8"
+      },
+      {
+        "bytes": 255273,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/stp01.html",
+        "sha256": "4c74cdc62989ebec318a72f0556827a16204f5cbf079893ba9605bcfdc084fed"
+      },
+      {
+        "bytes": 190545,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-real-rakuten-20261009/wstp01.html",
+        "sha256": "972ef7ba36c2c5da6b12b8fe1397a9ab5f6757dc491e0d7926c682ba15948994"
+      },
+      {
+        "bytes": 415078832,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-synthetic-controls-20261009/dataset.jsonl",
+        "sha256": "cc12c04f1a235bcecc1b8338a2635528d7b9af9bf690d60673f488b0ba28488f"
+      },
+      {
+        "bytes": 1753288,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-synthetic-controls-20261009/evaluation.json",
+        "sha256": "9aee98fb436e9d7a73ec58839347668c7f4d7fdf63c65047f6ebd61f97cf7f51"
+      },
+      {
+        "bytes": 439,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-synthetic-controls-20261009/manifest.json",
+        "sha256": "3b6972daaad3848ec5e12f1e863d5833a3e61ae03170a395bfb61231f1e6a0a3"
+      },
+      {
+        "bytes": 1130087,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-observation-20261009/rakuten.html",
+        "sha256": "5afed80a98492eb29541bb8a616e1f103c025890ddc12cf2ea1ecfa06a516820"
+      },
+      {
+        "bytes": 50962,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-observation-20261009/wowma-item-api.json",
+        "sha256": "5b1a400c961a6abf80767eb479c4c68dce4862cfafb6ae185b72eea090a85269"
+      },
+      {
+        "bytes": 1078,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-observation-20261009/wowma-options-api.json",
+        "sha256": "2b576311287aaf1540989b14909084cfb3eaeb4ad44d9ea575dee90e0eb82e4c"
+      },
+      {
+        "bytes": 122973,
+        "matches_embedded_manifest": true,
+        "path": ".lab-output/sku-observation-20261009/wowma.html",
+        "sha256": "71705a5edccfdb3c595742c8b807f1a6f278332aa5c80cc796e5b36f54c2c70b"
+      },
+      {
+        "bytes": 10953,
+        "path": "SKU-DATA-MANIFEST.json",
+        "sha256": "0030d3c1daa2477a7be58df6091da37cfe85f57fddd007e4e436db447710cb4a"
+      }
+    ],
+    "entry_count": 62,
+    "matches_adjacent_manifest": true,
+    "path": "experiments/sku-matching/results/20261009-data-checkpoint.zip",
+    "sha256": "1762ff038b7caa740e0511355a91afcc42a6de443ba19667c2122abcf5473ee3",
+    "zip_integrity": "passed"
+  },
+  "totals": {
+    "products": 32,
+    "sku_rows": 1331,
+    "table_file_bytes": 1012479
+  }
+}

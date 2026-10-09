@@ -1,0 +1,83 @@
+{
+  "repo": "hotchpotch/bekko-embedding-v1-a8m",
+  "revision": "c721113d59a1d91b447450324f51c4b3332c924a",
+  "retrieved_date_utc": "2026-10-09",
+  "official_sources": [
+    {
+      "url": "https://huggingface.co/hotchpotch/bekko-embedding-v1-a8m",
+      "type": "official Hugging Face model card",
+      "revision": "c721113d59a1d91b447450324f51c4b3332c924a",
+      "last_modified_utc": "2026-08-05T01:30:32Z",
+      "claims": {
+        "license": "MIT",
+        "active_parameters": 7670000,
+        "embedding_dimensions": 384,
+        "languages": "100+",
+        "maximum_context_tokens": 8192,
+        "query_document_usage": "same encode call; no prefixes or task instructions needed",
+        "normalization": "Pass normalize_embeddings=True for cosine or dot-product search"
+      }
+    },
+    {
+      "url": "https://huggingface.co/api/models/hotchpotch/bekko-embedding-v1-a8m",
+      "type": "official Hugging Face model API",
+      "observed_fields": {
+        "model_id": "hotchpotch/bekko-embedding-v1-a8m",
+        "sha": "c721113d59a1d91b447450324f51c4b3332c924a",
+        "lastModified": "2026-08-05T01:30:32.000Z",
+        "pipeline_tag": "sentence-similarity",
+        "license": "mit",
+        "architecture": "ModernBertModel",
+        "model_type": "modernbert"
+      }
+    },
+    {
+      "url": "https://huggingface.co/hotchpotch/bekko-embedding-v1-a8m/tree/c721113d59a1d91b447450324f51c4b3332c924a",
+      "type": "official Hugging Face files and LFS metadata",
+      "observed": {
+        "default_onnx_file": "onnx/model.onnx",
+        "onnx_output": "last_hidden_state [batch, sequence, 384]",
+        "pooling_config": "1_Pooling/config.json: mean_tokens=true, other pooling modes=false",
+        "prompts": "config_sentence_transformers.json: query='', document='', default_prompt_name=null",
+        "sentence_bert_config": "max_seq_length=8192, do_lower_case=false"
+      }
+    }
+  ],
+  "embedding_dimensions": 384,
+  "max_sequence_length": 8192,
+  "query_document_mode": "symmetric; same text encoding, no prefix or instruction",
+  "pooling": "attention-mask mean pooling over token states (including special tokens), followed by L2 normalization; ONNX file returns token states, so pooling is applied once in backend",
+  "execution_provider": "CPUExecutionProvider",
+  "files": {
+    "model.onnx": {
+      "source_path": "onnx/model.onnx",
+      "size_bytes": 130099079,
+      "sha256": "96d8cc6199e96357b21b2fb12f6d7ffd2d4abc7b182fe94b5468fbd6dc819af7"
+    },
+    "tokenizer.json": {
+      "source_path": "tokenizer.json",
+      "size_bytes": 34363442,
+      "sha256": "8bd47075711f75a143d1b78e01a41cc65c1c591b00d3cfeffc23db07adce1392"
+    },
+    "config.json": {
+      "source_path": "config.json",
+      "size_bytes": 1207,
+      "sha256": "950f344b034bb96a6ac3da045b1cd5ba037c08d8e4978471d407324622f8878e"
+    },
+    "pooling.json": {
+      "source_path": "1_Pooling/config.json",
+      "size_bytes": 312,
+      "sha256": "029891eaab443d10165e66e6f3d5d9008a16b712481f71ae7c938234e8fdeca1"
+    },
+    "sentence_bert_config.json": {
+      "source_path": "sentence_bert_config.json",
+      "size_bytes": 55,
+      "sha256": "23aa234ef6021d513cdf56947c07aaa6977000d85dcd1fd423f650b3382a39ca"
+    },
+    "config_sentence_transformers.json": {
+      "source_path": "config_sentence_transformers.json",
+      "size_bytes": 289,
+      "sha256": "02b5cbeb897dc871cfc463ad2f06c3062fdfdd1e4a08264ad8da073b6858ad92"
+    }
+  }
+}

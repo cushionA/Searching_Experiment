@@ -1,0 +1,147 @@
+{
+  "candidate": "fastino/gliner2.5-multi-v1",
+  "repo": "fastino/gliner2.5-multi-v1",
+  "revision": "cf5593a5d45e3bbf204b9df621b13b1c0cf25ee3",
+  "files": {
+    "model.safetensors": {
+      "size_bytes": 1149461028,
+      "sha256": "c1ff4ec0bc00031c15530b8f3c33d3677f27949e6a0cb52e1247a6224b6c5395"
+    },
+    "tokenizer.json": {
+      "size_bytes": 16035853,
+      "sha256": "c62446df87ae18ec98b133f8f84fc449a07cc89bbf8ef192a4cb5f9c53777a7a"
+    },
+    "config.json": {
+      "size_bytes": 4104,
+      "sha256": "3e4a96bf01da1094180f2d8998411c1a9fd6e2ae4b5b3e4bc6950318cee95bb7"
+    },
+    "encoder_config/config.json": {
+      "size_bytes": 857,
+      "sha256": "fa4f9ef2903b5369ab172333aae4574e6a476511d7465845cf59f8360ee18716"
+    },
+    "tokenizer_config.json": {
+      "size_bytes": 645,
+      "sha256": "0bf3ea0873234bd9bfdd3853c440395009ac6365a925b91654daed5396d655e1"
+    }
+  },
+  "identity_verified": true,
+  "retrieved_date_utc": "2026-10-09",
+  "official_sources": [
+    {
+      "url": "https://huggingface.co/fastino/gliner2.5-multi-v1",
+      "type": "official Hugging Face model card",
+      "revision": "cf5593a5d45e3bbf204b9df621b13b1c0cf25ee3",
+      "last_modified_utc": "2026-10-08T18:52:15Z",
+      "claims": {
+        "description": "GLiNER2.5 Multi is the multilingual boundary checkpoint for schema based information extraction.",
+        "architecture": "Gliner2ForSchemaExtraction; BoundaryExtractor selected by AutoExtractor",
+        "encoder": "mDeBERTa-v3-base",
+        "parameters": 287355159,
+        "languages": ["multilingual", "en"],
+        "license": "Apache-2.0"
+      }
+    },
+    {
+      "url": "https://huggingface.co/api/models/fastino/gliner2.5-multi-v1",
+      "type": "official Hugging Face model API",
+      "observed_fields": {
+        "model_id": "fastino/gliner2.5-multi-v1",
+        "revision": "cf5593a5d45e3bbf204b9df621b13b1c0cf25ee3",
+        "parameter_dtype_count": {"F32": 287355159},
+        "safetensors_total_parameters": 287355159,
+        "files": [
+          "model.safetensors",
+          "tokenizer.json",
+          "config.json",
+          "encoder_config/config.json",
+          "tokenizer_config.json"
+        ]
+      }
+    },
+    {
+      "url": "https://huggingface.co/api/models/fastino/gliner2.5-multi-v1/tree/cf5593a5d45e3bbf204b9df621b13b1c0cf25ee3?recursive=true&expand=true",
+      "type": "official Hugging Face revision file metadata",
+      "files": {
+        "model.safetensors": {
+          "size_bytes": 1149461028,
+          "lfs_sha256": "c1ff4ec0bc00031c15530b8f3c33d3677f27949e6a0cb52e1247a6224b6c5395"
+        },
+        "tokenizer.json": {
+          "size_bytes": 16035853,
+          "lfs_sha256": "c62446df87ae18ec98b133f8f84fc449a07cc89bbf8ef192a4cb5f9c53777a7a"
+        },
+        "config.json": {"size_bytes": 4104},
+        "encoder_config/config.json": {"size_bytes": 857},
+        "tokenizer_config.json": {"size_bytes": 645}
+      }
+    }
+  ],
+  "download": {
+    "location": ".deps/sku-gliner-extract-model",
+    "files": [
+      "model.safetensors",
+      "tokenizer.json",
+      "config.json",
+      "encoder_config/config.json",
+      "tokenizer_config.json"
+    ],
+    "expected_total_bytes": 1165502487,
+    "limit_bytes": 1300000000,
+    "encoder_weights_downloaded_separately": false,
+    "hashes_and_sizes_verified": true,
+    "actual_total_bytes": 1165502487
+  },
+  "runtime": {
+    "venv": ".deps/sku-gliner-venv",
+    "gliner2": "2.0.0",
+    "torch": "2.7.1+cpu",
+    "transformers": "5.17.0",
+    "loader": "gliner2.AutoExtractor.from_pretrained(local_model_dir, local_files_only=True)",
+    "extraction": "model.batch_extract(texts, schema, batch_size=8, include_spans=True, include_confidence=True)",
+    "offline_after_download": true,
+    "functional_check": {
+      "loaded_class": "BoundaryExtractor",
+      "cold_load_seconds": 17.19,
+      "cpu_threads": 2,
+      "sample": "遮光カーテン 幅100×丈178cm 2枚組 グレージュ レースあり",
+      "japanese_description_schema": "all five attributes extracted with evidence spans",
+      "english_description_schema": "missed height; extracted width, color, lace, and pieces",
+      "transformers_runtime_note": "DeBERTaV2 did not accept sdpa and fell back to eager attention"
+    }
+  },
+  "evaluation_design": {
+    "task": "extract width_cm, height_cm, color, lace, and pieces from Japanese product descriptions",
+    "schema_comparison": "same English field names with Japanese versus English semantic descriptions",
+    "schema_labels": {
+      "ja": {
+        "width_cm": "選択されたSKUの幅寸法。幅×丈の2値表記は最初の値だけを対象にし、シリーズ全体のサイズ候補を列挙した説明から選択外の幅を拾わない。",
+        "height_cm": "選択されたSKUの丈または高さ寸法。幅×丈の2値表記は2番目の値だけを対象にし、シリーズ全体のサイズ候補を列挙した説明から選択外の丈を拾わない。",
+        "color": "商品の色名、色柄の名前。色違いを区別する原文の範囲を抽出する。",
+        "lace": "この選択SKUにレースカーテンが含まれるかの明示的な選択肢。あり・なし、付属・非付属などの状態語だけを抽出する。レースカーテンという商品種類名だけから有無を推定しない。",
+        "pieces": "商品に含まれる枚数、個数、組数、セット数。数量を示す原文の範囲を抽出する。"
+      },
+      "en": {
+        "width_cm": "The width dimension of the selected SKU. For a width-by-drop pair, use only the first component. Do not extract other size choices listed for the wider product series.",
+        "height_cm": "The curtain drop or height dimension of the selected SKU. For a width-by-drop pair, use only the second component. Do not extract other size choices listed for the wider product series.",
+        "color": "A product color or color-pattern name. Extract the exact source span that distinguishes color variants.",
+        "lace": "An explicit selected-SKU option stating whether a lace curtain is included or not included. Extract an inclusion or exclusion status only. Never infer inclusion from a product type such as lace curtain or sheer curtain.",
+        "pieces": "The number of pieces, panels, items, or sets included in the product. Extract the exact source span that gives the quantity."
+      }
+    },
+    "output": ["candidate attribute values", "original evidence text and offsets", "unmodified model output"],
+    "sku_gold_claimed": false
+  },
+  "suitability_assessment": {
+    "candidate_use": "standalone attribute extraction candidate, distinct from the Decide pairwise classifier",
+    "open_questions": [
+      "Japanese product attribute precision and recall are unmeasured.",
+      "CPU throughput and peak RSS have not yet been measured for this extraction task.",
+        "The encoder config declares dtype float16, while both the HF API and verified safetensors header report F32 stored weights."
+      ],
+      "verified_safetensors_header": {
+        "tensor_count": 334,
+        "stored_dtypes": ["F32"],
+        "file_sha256_verified": true
+      }
+  }
+}

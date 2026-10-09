@@ -1,4 +1,4 @@
-あなたは商品SKU突合のモデル選定を担当します。作業場所は `/workspace/Searching_Experiment`、ブランチは `codex/sku-matching-cloud-20261009` です。別セッションで実行し、既存の長時間収集を止めたり置き換えたりしないでください。まず現状ファイルと差分を読み、存在するデータと件数を確認してください。
+あなたは商品SKU突合のモデル選定を担当します。作業場所は `/workspace/Searching_Experiment`、今回の比較ブランチは `codex/sku-model-comparison-20261009`、元検証は `codex/sku-matching-cloud-20261009` です。別セッションで実行し、既存の長時間収集を止めたり置き換えたりしないでください。まず現状ファイルと差分を読み、存在するデータと件数を確認してください。
 
 目的は、CPUで動く軽量モデルを使い、商品タイトルとSKUラベルを使う場合とSKUラベルだけを使う場合の精度・速度・メモリを比べ、SKU単位の一致判定に適した方式を選ぶことです。`fastino/GLiNER2.5-multi-Decide` を候補に含め、採用または見送りを根拠付きで判断してください。公式仕様の確認結果は `experiments/sku-matching/gliner-candidate.json` にあります。候補をembedding方式と同じ種類のモデルとして扱わず、pairwise classifier/reranker として評価するか、検索に使うなら二段階方式として設計してください。
 
@@ -7,7 +7,7 @@
 - 初回smokeでは正例のtitle+SKU類似度が0.867957、SKU-onlyが0.922716でした。サイズが丈80cmから180cmへ変わる難負例はtitle+SKUが0.869729、SKU-onlyが0.913567で、正例以上でした。この1例で結論を出さず、モデルとタスクの適合性を測ってください。
 - PDF仕様の要点は `experiments/sku-matching/slide-reference.json` にあります。仕様書は商品単位のAI選定を先に行い、CSV出力時にSKU一致を判定します。楽天側にサイズ・色・レース有無の3軸、au側にサイズ・色の2軸がある例を示し、auではレース有無が別商品URLに分かれる場合を課題としています。案1（価格範囲）、案2（価格が近いSKU）、案3（auの別URLも収集）は顧客選択前で未決です。どの案も正解ラベルとして固定しないでください。
 - 合成データは `.lab-output/sku-synthetic-controls-20261009/dataset.jsonl` です。現状1000 product-pair行。各基本ペアはau 153 SKU（9色×17サイズ）、楽天306 SKU（サイズ×色×レース有無）を持ちます。ファイルを読み、正例・難負例・不明属性・シナリオ構成をコードと照合してください。独立したpair_id/family単位で分割し、同一商品の派生や重複をtrain/test間に漏らさないでください。合成価格・在庫を識別情報や実価格として扱わないでください。
-- 実データの置き場は `.lab-output/sku-real-au-20261009/` と `.lab-output/sku-real-rakuten-20261009/`。各サイトで `products.jsonl` と `skus.jsonl` を分離しています。auの現snapshotは商品4件、SKU360行。追加のau実データは `.lab-output/sku-real-au-select10-20261009/` にあり、ニッセンSelect10の8商品・80SKUです。au計12商品・440SKU、楽天を合わせ32商品・1361SKUの実観測です。Select10はSKU軸がrow=サイズ・column=色で、1サイズ×10色、サイズ例は `N・幅100×長さ110cm×4枚` です。主対象は商品ID `704502086`（153 SKU）と関連する別商品 `704500131`（153 SKU）。追加観測商品があれば対象と件数を列挙してください。楽天の収集summaryは `experiments/sku-matching/rakuten-collection-summary.json` で、20商品・891 SKUです。rawレスポンス、SHA256、provenanceと、画面上で見えた値/埋め込みJSON値の区別を保ってください。観測データはSKUラベルの書式・属性の現実性確認に使い、正解ラベルのないものをgold扱いしないでください。
+- 実データの置き場は `.lab-output/sku-real-au-20261009/` と `.lab-output/sku-real-rakuten-20261009/`。各サイトで `products.jsonl` と `skus.jsonl` を分離しています。auの現snapshotは商品4件、SKU360行。追加のau実データは `.lab-output/sku-real-au-select10-20261009/` にあり、ニッセンSelect10の8商品・80SKUです。au計12商品・440SKU、楽天を合わせ32商品・1331SKUの実観測です。Select10はSKU軸がrow=サイズ・column=色で、1サイズ×10色、サイズ例は `N・幅100×長さ110cm×4枚` です。主対象は商品ID `704502086`（153 SKU）と関連する別商品 `704500131`（153 SKU）。追加観測商品があれば対象と件数を列挙してください。楽天の収集summaryは `experiments/sku-matching/rakuten-collection-summary.json` で、20商品・891 SKUです。rawレスポンス、SHA256、provenanceと、画面上で見えた値/埋め込みJSON値の区別を保ってください。観測データはSKUラベルの書式・属性の現実性確認に使い、正解ラベルのないものをgold扱いしないでください。
 - 商品ページの観測根拠は `experiments/sku-matching/product-observation.json` にあります。楽天側のSKU選択HTML placeholderは空でした。説明文には幅100cmでカーテン2枚+レース2枚、幅150cmで各1枚とあり、au商品704502086は4枚組/2枚組のサイズ×色選択を公開しています。その後、楽天HTMLの `script#item-page-app-data`（EUC-JP）で306実SKU、3軸、SKU価格、埋め込み在庫の取得に成功しています。商品タイトル、SKU表、購入オプション、説明に含まれる商品構成の証拠を区別してください。
 
 分類対象を分離して評価してください:
@@ -46,3 +46,9 @@ F. 商品AではレースがSKU軸、商品Bではレースが別URL。単に軸
 GLiNERも今回CPUで起動確認済みです。`results/20261009-gliner-smoke.json` に初回12制御例（4件期待ラベル一致）、約0.28秒/ペア、ピークRSS約2.75GiBと追加の入力テンプレート確認を記録しています。初回の文章には質問形や「同一SKU」の語があるため、分類器が文章の主題を判断した可能性も検証してください。少数例だけでモデル全体の採否を断定せず、実際のペア入力・ラベル説明・属性抽出を分けた評価を設計してください。起動依存はgliner2 2.0.0、CPU torch 2.7.1、Transformers 5.17.0です。標準の依存解決で入ったTransformers 4.57.6はこのcheckpointのTokenizerで不整合になりました。再現コードはtry_gliner.py（download/run）です。
 
 追加のGLiNER文面比較も結果JSONに保存済みです。観測ペアを基にした6制御例で、質問文なしのタイトル＋SKUは4/6、質問文を末尾に加えると1/6で、質問ありは不一致を含め全件「same SKU」になりました。この結果をSKU単位の日本語精度全般へ一般化せず、自然文の主題分類とSKU間の同一性判断の適合性、ラベル定義と入力設計への依存を調べてください。
+
+2026-10-09追記: au440＋楽天891＝1331SKUに訂正。過去の1361は集計ではなく算術誤記。今回の1000合成pair_idは同じ元商品から派生しており、独立した1000商品familyではありません。独立familyを持つ本番held-out精度は未検証とし、比較結果は固定診断集合でのスコア・誤り・CPU計測として報告してください。楽天306SKUを照合のqueryにする現在の方向では、上位10候補は最大3060ペアです。au153SKUをqueryにする場合の1530ペアと区別してください。
+
+追加CPU比較を実施済みです。results/20261009-model-comparison.json とREADMEの追加モデル比較を先に確認してください。MiniLM/Bekko/Granite/Ruriの対称類似度、共通MiniLM上位10候補を使うreranker、GLiNER属性抽出を別タスクとして記録しました。バッチ1/8の結果は混ぜず、GLiNER Decideの既存少数smokeも候補一般の精度と扱わないでください。今回のfixtureでRuriのSKU-only候補検索は良好でしたが、類似度閾値だけでは既知の不一致を受理しました。
+
+別環境へ渡す際は results/20261009-model-comparison.zip（コード・固定診断入力・実テーブル・予測・計測）を渡してください。受け渡し先でブランチを取得できる前提にしないこと。実テーブルだけの小型版は results/20261009-real-tables.zip（9エントリー、66,153 bytes）。全raw本文と459k生成stressデータを必要とする場合は従来の11MB results/20261009-data-checkpoint.zipも渡すこと。

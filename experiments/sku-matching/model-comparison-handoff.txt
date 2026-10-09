@@ -1,0 +1,26 @@
+商品SKUモデル比較 引き継ぎメモ
+
+作業ブランチ: codex/sku-model-comparison-20261009
+外部push: なし
+
+元データ
+元の results/20261009-data-checkpoint.zip は変更していない。サイズ 11,008,084 bytes、SHA256 1762ff038b7caa740e0511355a91afcc42a6de443ba19667c2122abcf5473ee3。ZIPは62エントリー（payload 61件と埋込manifest）。payload 61件すべてのbytesとSHA256を埋込manifestに照合済み。
+
+実観測テーブル
+6つのJSONLは合計32商品、1,331 SKU行、1,012,479 bytes。内訳はau WEIMALL 4商品/360行、au select10 8商品/80行、楽天WEIMALL 20商品/891行。計算は440 + 891 = 1,331。楽天20商品のうちpt0039とwstp01はproducts行があるがSKU行は0件。
+
+受け渡し用 results/20261009-real-tables.zip は圧縮66,153 bytes、9エントリー。実テーブル6件、既存pair入力2件、PROVENANCE.jsonを含む。全エントリーのbytes/SHA256は results/20261009-real-tables.manifest.json に記録。再監査には experiments/sku-matching/audit_snapshot.py も一緒に渡すこと。小型ZIPにはraw本文と合成データ本体を含めていない。
+
+範囲と限界
+実データはカーテンの商品群に限られる。複数の独立商品ファミリーをまたぐ実データ検証ではない。元checkpoint内の合成コントロールは別データであり、実データの正解ラベルや独立したfamily holdoutの代用にしない。元checkpointと監査JSONには合成データの内容・件数情報がある。
+楽天の同じrawページSHA256が多数SKU行に現れるのは、1ページ由来の複数SKU行であることを示す。同じSKU行の重複を意味しない。楽天のhidden_sku、画面上の在庫表示、埋込数量から導いたavailabilityは別の観測項目として保つ。
+
+別セッションへ移す場合は、コードとデータを両方渡すこと。最低限 audit_snapshot.py、20261009-real-tables.zip、20261009-real-tables.manifest.json、20261009-snapshot-audit.json、およびモデル比較に必要な実験コードを含める。pair入力は候補比較用の既存入力で、独立に検証されたidentity goldではない。
+
+モデル比較結果
+
+CPU 2 threads、モデル別プロセス、バッチ1/8でMiniLM・Bekko・Granite・Ruri・rerankerを計10設定で実測。属性抽出GLiNERは48制御ペア・両入力形式・日本語/英語説明・両バッチの計8設定。詳細は results/20261009-model-comparison.json とREADME。今回の候補検索ではRuriのSKU単体R@10が99.3%（306 query）。高い類似度でも不一致の受理が残るため、最終判定は属性一致と欠損のreviewを必要とする。独立familyの本番精度は未検証。GLiNER Decideの旧smokeと属性checkpointの今回の評価を区別する。
+
+全部の再現用コード・固定入力・実テーブル・予測は results/20261009-model-comparison.zip に含める。重み・venv・資格情報は含めない。集計元の大きなJSON/JSONLディレクトリはworkspace内に維持し、ZIPの各payload SHA256とCRCを検証する。元raw全体と459k stressデータを再検査する場合は、元11MBチェックポイントも必要。
+
+検証: python3 -B -m unittest discover -s tests -p 'test_lab*.py' — 178件、失敗0、任意依存の15件skip。
