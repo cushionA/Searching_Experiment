@@ -138,6 +138,10 @@ class GenericResidualEvidenceTests(unittest.TestCase):
             bad_cards[0]["source_sku_key"] = "wrong-source-SKU"
             with self.assertRaises(ValueError):
                 exporter.validate(cases, products, bad_cards)
+            reverse_cards = copy.deepcopy(cards)
+            reverse_cards[0]["direction"] = "au_to_rakuten"
+            with self.assertRaisesRegex(ValueError, "requires rakuten_to_au"):
+                exporter.validate(cases, products, reverse_cards)
             across_rows = copy.deepcopy(cards)
             across_rows[1]["condition_id"] = across_rows[0]["condition_id"]
             exporter.validate(cases, products, across_rows)

@@ -118,6 +118,8 @@ def validate(cases: list[dict[str, Any]], products: list[dict[str, Any]],
             raise ValueError(f"fixed AU product ID mismatch: {case['case_id']}")
     seen = set()
     for card in cards:
+        if card.get("direction", "rakuten_to_au") != "rakuten_to_au":
+            raise ValueError("AU evidence exporter requires rakuten_to_au; keep reverse obligations separate")
         missing = [key for key in REQUIRED if key not in card]
         if missing:
             raise ValueError(f"residual card missing fields: {missing}")

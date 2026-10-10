@@ -1,0 +1,92 @@
+Claude PR #26の参照と全文確認への接続（2026-10-10）
+
+参照元
+https://github.com/cushionA/Searching_Experiment/pull/26
+head: 983c6086a718190ede41ca14424114e1a6085f18
+base: codex-sku-model-comparison-20261009
+作業ブランチ: codex-sku-generic-model-gates-20261010
+PR全体や旧規則を取り込まず、最新のモデル版対応づけの受け渡しを接続した。
+元PR・収集原本・以前の出力は変更していない。
+
+タスクの前提
+商品単位の突合は完了済み。1件の楽天SKUについて、固定AU商品の各SKU行を
+候補にする。別URLへ振り分けない。対応づけできなかった条件の種類を選別せず、
+固定AUの商品名・説明全文で確認する。複合値と同じ軸の全選択肢を保持する。
+価格は突合モデルの入力にせず、楽天SKU識別子との結合を保持する。
+最終unknownは自動除外。手動確認待ちの出力を新設しない。
+
+取り込んだ入力
+Claudeのselected arm:
+  align-japanese-reranker-small-v2-cpu-reverse-all-v4axes
+判定器: hotchpotch/japanese-reranker-small-v2（約70M）
+revision: e8091d132c23b372e059505edbb9255f346100d3
+元ZIP SHA256:
+  b1455573e0eac04844718ad827f67654e49142442274aef14b9f39aa6b968317
+元handoff 2,081行から3,007条件を接続した。
+  片側の条件 2,897 / 値の一部しか対応していない条件 110。
+前段のaligned 2,701条件も出典付きで保存するが、独立した証明とは扱わない。
+
+漏れていたケースの復元
+元PRは対称軸の値が未解決だと、矛盾がなくても全文確認へ渡していなかった。
+凍結済みの質問・モデル回答・コードから、対象78ケースを再構成した。
+  legacy 42 / family 36。
+既知矛盾54行を除き、全370候補行を保持。元decisionの行状態と全78ケース一致。
+850条件を追加した（対称軸の未解決370 / 片側の条件480）。
+再推論・正解ラベルの参照・新しい商品別規則の追加は行っていない。
+
+接続後の実データ
+2,159ケース / 2,451候補行 / 3,857条件。
+固定AU 81商品 / AUの全685行を文書側に保持。
+商品名と説明の全624窓 / 条件と窓の組み合わせ30,983件。
+300文字窓・75文字重複。条件による本文削除や上位窓への絞り込みはしない。
+全条件の値・選択肢・原文span、固定AU行、楽天SKUキーを原入力と再照合した。
+汎用入力の240原本のSHA256を実ファイルで再検証した。
+
+複合値と逆方向の義務
+AU「ホワイトグレージュ（パイル）」に楽天「ホワイトグレージュ」が対応しても、
+楽天の色だけの確認ではAU側の「パイル」が残る。値の長さや語彙で対象を決めず、
+全110件の部分対応についてAUの値全体も別ファイルに保持した。
+逆方向は楽天側の証拠で確認する必要がある。AU全文用タスクには混ぜない。
+逆方向のモデル確認・最終SKU採用は未実装なので、自動採用可能とはしない。
+
+PRの評価
+多数の商品別条件分岐から、ペア内の選択肢と小型モデルへ移した方向は合っている。
+ただし閾値のない相互最近傍は順位の一致であり、意味の同一性の証明ではない。
+PR内にも複合タイプ軸をAUカラーへ誤対応させた例がある。こうした前段の誤対応で
+除外されたものは、今回の78ケース復元だけでは回復しない。
+PRのスコアはラベル既読の開発データ上の診断。独立した最終精度とは扱わない。
+後段モデルの精度改善を今回測ったわけではなく、新しいモデル推論は行っていない。
+以前の100条件のCPU比較結果も変更していない。
+次の試行では元HTMLの引用・リンク・表の所属をモデル入力へ接続し、
+少量で支持の回収を確認してから全件へ広げる。
+
+再現（リポジトリルート、未作成の出力ディレクトリを指定）
+先に既存20261010-sku-generic-residual-checkpoint.zipの汎用入力・原本を復元する。
+新しい差分ZIPは原本とモデル重みを重複収録しない。ベースZIPのSHA256は
+17c79a8d01692e180322d5b59e749150337faeb8792c8c14ad1ca9c8b02a7f17。
+
+python3 -B experiments/sku-matching/import_claude_alignment_handoff_v1.py \
+  --archive .lab-output/sku-claude-pr26-review-20261010-v1/20261010-sku-align-v1.zip \
+  --input-dir .lab-output/sku-generic-model-inputs-20261010-v2 \
+  --expected-sha256 b1455573e0eac04844718ad827f67654e49142442274aef14b9f39aa6b968317 \
+  --output-dir NEW_HANDOFF_DIR
+python3 -B experiments/sku-matching/recover_claude_unresolved_rows_v1.py \
+  --archive .lab-output/sku-claude-pr26-review-20261010-v1/20261010-sku-align-v1.zip \
+  --alignment-code .lab-output/sku-claude-pr26-review-20261010-v1/align_sku_conditions.py \
+  --input-dir .lab-output/sku-generic-model-inputs-20261010-v2 \
+  --output-dir NEW_RECOVERY_DIR
+python3 -B experiments/sku-matching/prepare_claude_residual_evidence_v1.py \
+  --handoff-dir NEW_HANDOFF_DIR --recovery-dir NEW_RECOVERY_DIR \
+  --output-dir NEW_EVIDENCE_DIR
+
+出力: .lab-output/sku-claude-pr26-residual-evidence-20261010-v1
+cards.jsonlは楽天→AU。reverse_conditions.jsonlはAU→楽天で未評価。
+evidence/tasks.jsonlとdocuments.jsonlは全文確認用。manifestに入力・コードSHA。
+出典の絶対パスは当時の保存場所。移設時はSHA・ZIP内相対パスで参照を解決する。
+上書き・モデル重みのダウンロード・モデル推論は上記CLIで行わない。
+人工SKUは実データに混ぜず、合成fixtureはtests内だけに置いた。
+
+検証
+追加3モジュール22テスト＋既存の関連58テスト、合計80成功。
+ZIP全memberのsize・SHA256・CRC、入力整合、全文coverageを別途確認。
+これらは転記・結合の検証であり、意味判断の正解率ではない。
