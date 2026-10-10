@@ -1,0 +1,416 @@
+{
+  "checkpoint": {
+    "path": "experiments/sku-matching/results/20261010-sku-integrated-cpu-checkpoint.zip",
+    "sha256": "a109b34f87f9feac3a4fa1a659f1429354f9b6f3be04c2762b073f0fedaa81b2",
+    "bytes": 18030638,
+    "members": 334
+  },
+  "source_replay": {
+    "archive_sha256": "a109b34f87f9feac3a4fa1a659f1429354f9b6f3be04c2762b073f0fedaa81b2",
+    "fresh_extraction_source_gate_reproduced": true,
+    "predictions_byte_identical": true,
+    "cases": 2409,
+    "model_weights_required_for_hybrid_reexecution": true,
+    "summary": {
+      "legacy": {
+        "cases": 1383,
+        "counts": {
+          "accept": 470,
+          "drop": 913
+        },
+        "reasons": {
+          "one_full_row_and_all_other_rows_conflict": 470,
+          "every_au_row_has_explicit_conflict": 910,
+          "unresolved_requirement": 3
+        },
+        "notice_accepts": 35
+      },
+      "family": {
+        "cases": 970,
+        "counts": {
+          "accept": 309,
+          "drop": 661
+        },
+        "reasons": {
+          "one_full_row_and_all_other_rows_conflict": 309,
+          "every_au_row_has_explicit_conflict": 572,
+          "unresolved_requirement": 86,
+          "au_only_condition_not_corroborated": 3
+        },
+        "notice_accepts": 30
+      },
+      "novel": {
+        "cases": 56,
+        "counts": {
+          "drop": 48,
+          "accept": 8
+        },
+        "reasons": {
+          "every_au_row_has_explicit_conflict": 43,
+          "one_full_row_and_all_other_rows_conflict": 8,
+          "unresolved_requirement": 5
+        },
+        "notice_accepts": 0
+      }
+    }
+  },
+  "tests": {
+    "run": 488,
+    "skipped": 18,
+    "passed": true,
+    "log_sha256": "f7f127cd86cce08a02199f95fbf3e014fe958ce0a2ed40ff26951b3415e8e81d"
+  },
+  "machine_reference_diagnostics": {
+    "sku-integrated-gate-20261010-v2": {
+      "legacy": {
+        "reference_cases": 1383,
+        "counts": {
+          "correct_accept": 435,
+          "correct_drop": 911,
+          "unresolved_reference_accept": 35,
+          "unresolved_reference_drop": 2
+        },
+        "precision_against_resolved_machine_references": 1.0,
+        "recall_against_machine_references": 1.0,
+        "errors": [],
+        "unresolved_reference_accepted_case_ids": [
+          "case-069d6decd5e4c69f266e",
+          "case-180a9baafb740879a120",
+          "case-28ed3ad5fa5fc32e37e0",
+          "case-31211ab96ee30e46ea46",
+          "case-34b8850033be4f3692cd",
+          "case-37663265ec384d3a6c97",
+          "case-4475d8e742a04f99abd3",
+          "case-496e8651a65d3b00f561",
+          "case-4d8e59847a0ea214cc52",
+          "case-4f025a87beb77a1655b0",
+          "case-4fb7194ff5153ec12ab3",
+          "case-5eade2ac7eb910df0259",
+          "case-662cab3386303fa5fd16",
+          "case-6f6f060c93ff73ae2966",
+          "case-724cc7a185173fe91a97",
+          "case-7711fdf6a039757f2dfe",
+          "case-7a1f9ca82e5aa279df3f",
+          "case-80fe48e8611abceef173",
+          "case-854f83898a6d8023f734",
+          "case-8c9ed23d10e9e6bff736",
+          "case-93af135a347a9f434829",
+          "case-9eb728d378b79c1a1836",
+          "case-9ee7f4c46f8a4ec8a78c",
+          "case-aef841c600881fb29a99",
+          "case-b545dd2e8408d8d701a3",
+          "case-bb24c5aeb4de59051fa3",
+          "case-bc25776161088eb847e0",
+          "case-c52a6e9cfe4231458fb3",
+          "case-c83161aa56b63e562388",
+          "case-d1a658c2201e96543378",
+          "case-e5234864b98cd0243074",
+          "case-e67a6253328820ca3a7b",
+          "case-eed1a9f6adfb4cfc4849",
+          "case-f0f81e952ac05432f90e",
+          "case-faf49a5872192e6de8de"
+        ]
+      },
+      "novel": {
+        "reference_cases": 56,
+        "counts": {
+          "correct_drop": 43,
+          "correct_accept": 8,
+          "missed_match": 5
+        },
+        "precision_against_resolved_machine_references": 1.0,
+        "recall_against_machine_references": 0.6153846153846154,
+        "errors": [
+          {
+            "case_id": "case-4affc9a0b923a185a28b",
+            "kind": "missed_match",
+            "au_row_key": null,
+            "reason": "unresolved_requirement"
+          },
+          {
+            "case_id": "case-6d132609cd667403eb58",
+            "kind": "missed_match",
+            "au_row_key": null,
+            "reason": "unresolved_requirement"
+          },
+          {
+            "case_id": "case-05e5c1205a1e6f72eb73",
+            "kind": "missed_match",
+            "au_row_key": null,
+            "reason": "unresolved_requirement"
+          },
+          {
+            "case_id": "case-6e3a342c60ef68a1e3f6",
+            "kind": "missed_match",
+            "au_row_key": null,
+            "reason": "unresolved_requirement"
+          },
+          {
+            "case_id": "case-a9182edf578ee8dc2819",
+            "kind": "missed_match",
+            "au_row_key": null,
+            "reason": "unresolved_requirement"
+          }
+        ],
+        "unresolved_reference_accepted_case_ids": []
+      }
+    },
+    "sku-integrated-nli-20261010-v2": {
+      "legacy": {
+        "reference_cases": 1383,
+        "counts": {
+          "correct_accept": 435,
+          "correct_drop": 911,
+          "unresolved_reference_accept": 35,
+          "unresolved_reference_drop": 2
+        },
+        "precision_against_resolved_machine_references": 1.0,
+        "recall_against_machine_references": 1.0,
+        "errors": [],
+        "unresolved_reference_accepted_case_ids": [
+          "case-069d6decd5e4c69f266e",
+          "case-180a9baafb740879a120",
+          "case-28ed3ad5fa5fc32e37e0",
+          "case-31211ab96ee30e46ea46",
+          "case-34b8850033be4f3692cd",
+          "case-37663265ec384d3a6c97",
+          "case-4475d8e742a04f99abd3",
+          "case-496e8651a65d3b00f561",
+          "case-4d8e59847a0ea214cc52",
+          "case-4f025a87beb77a1655b0",
+          "case-4fb7194ff5153ec12ab3",
+          "case-5eade2ac7eb910df0259",
+          "case-662cab3386303fa5fd16",
+          "case-6f6f060c93ff73ae2966",
+          "case-724cc7a185173fe91a97",
+          "case-7711fdf6a039757f2dfe",
+          "case-7a1f9ca82e5aa279df3f",
+          "case-80fe48e8611abceef173",
+          "case-854f83898a6d8023f734",
+          "case-8c9ed23d10e9e6bff736",
+          "case-93af135a347a9f434829",
+          "case-9eb728d378b79c1a1836",
+          "case-9ee7f4c46f8a4ec8a78c",
+          "case-aef841c600881fb29a99",
+          "case-b545dd2e8408d8d701a3",
+          "case-bb24c5aeb4de59051fa3",
+          "case-bc25776161088eb847e0",
+          "case-c52a6e9cfe4231458fb3",
+          "case-c83161aa56b63e562388",
+          "case-d1a658c2201e96543378",
+          "case-e5234864b98cd0243074",
+          "case-e67a6253328820ca3a7b",
+          "case-eed1a9f6adfb4cfc4849",
+          "case-f0f81e952ac05432f90e",
+          "case-faf49a5872192e6de8de"
+        ]
+      },
+      "novel": {
+        "reference_cases": 56,
+        "counts": {
+          "correct_drop": 43,
+          "correct_accept": 13
+        },
+        "precision_against_resolved_machine_references": 1.0,
+        "recall_against_machine_references": 1.0,
+        "errors": [],
+        "unresolved_reference_accepted_case_ids": []
+      }
+    },
+    "sku-integrated-gliner-component-20261010-v1": {
+      "legacy": {
+        "reference_cases": 1383,
+        "counts": {
+          "correct_accept": 435,
+          "correct_drop": 911,
+          "unresolved_reference_accept": 35,
+          "unresolved_reference_drop": 2
+        },
+        "precision_against_resolved_machine_references": 1.0,
+        "recall_against_machine_references": 1.0,
+        "errors": [],
+        "unresolved_reference_accepted_case_ids": [
+          "case-069d6decd5e4c69f266e",
+          "case-180a9baafb740879a120",
+          "case-28ed3ad5fa5fc32e37e0",
+          "case-31211ab96ee30e46ea46",
+          "case-34b8850033be4f3692cd",
+          "case-37663265ec384d3a6c97",
+          "case-4475d8e742a04f99abd3",
+          "case-496e8651a65d3b00f561",
+          "case-4d8e59847a0ea214cc52",
+          "case-4f025a87beb77a1655b0",
+          "case-4fb7194ff5153ec12ab3",
+          "case-5eade2ac7eb910df0259",
+          "case-662cab3386303fa5fd16",
+          "case-6f6f060c93ff73ae2966",
+          "case-724cc7a185173fe91a97",
+          "case-7711fdf6a039757f2dfe",
+          "case-7a1f9ca82e5aa279df3f",
+          "case-80fe48e8611abceef173",
+          "case-854f83898a6d8023f734",
+          "case-8c9ed23d10e9e6bff736",
+          "case-93af135a347a9f434829",
+          "case-9eb728d378b79c1a1836",
+          "case-9ee7f4c46f8a4ec8a78c",
+          "case-aef841c600881fb29a99",
+          "case-b545dd2e8408d8d701a3",
+          "case-bb24c5aeb4de59051fa3",
+          "case-bc25776161088eb847e0",
+          "case-c52a6e9cfe4231458fb3",
+          "case-c83161aa56b63e562388",
+          "case-d1a658c2201e96543378",
+          "case-e5234864b98cd0243074",
+          "case-e67a6253328820ca3a7b",
+          "case-eed1a9f6adfb4cfc4849",
+          "case-f0f81e952ac05432f90e",
+          "case-faf49a5872192e6de8de"
+        ]
+      },
+      "novel": {
+        "reference_cases": 56,
+        "counts": {
+          "correct_drop": 43,
+          "correct_accept": 8,
+          "missed_match": 5
+        },
+        "precision_against_resolved_machine_references": 1.0,
+        "recall_against_machine_references": 0.6153846153846154,
+        "errors": [
+          {
+            "case_id": "case-4affc9a0b923a185a28b",
+            "kind": "missed_match",
+            "au_row_key": null,
+            "reason": "unresolved_requirement"
+          },
+          {
+            "case_id": "case-6d132609cd667403eb58",
+            "kind": "missed_match",
+            "au_row_key": null,
+            "reason": "unresolved_requirement"
+          },
+          {
+            "case_id": "case-05e5c1205a1e6f72eb73",
+            "kind": "missed_match",
+            "au_row_key": null,
+            "reason": "unresolved_requirement"
+          },
+          {
+            "case_id": "case-6e3a342c60ef68a1e3f6",
+            "kind": "missed_match",
+            "au_row_key": null,
+            "reason": "unresolved_requirement"
+          },
+          {
+            "case_id": "case-a9182edf578ee8dc2819",
+            "kind": "missed_match",
+            "au_row_key": null,
+            "reason": "unresolved_requirement"
+          }
+        ],
+        "unresolved_reference_accepted_case_ids": []
+      }
+    },
+    "sku-integrated-nli-int8-20261010-v1": {
+      "legacy": {
+        "reference_cases": 1383,
+        "counts": {
+          "correct_accept": 435,
+          "correct_drop": 911,
+          "unresolved_reference_accept": 35,
+          "unresolved_reference_drop": 2
+        },
+        "precision_against_resolved_machine_references": 1.0,
+        "recall_against_machine_references": 1.0,
+        "errors": [],
+        "unresolved_reference_accepted_case_ids": [
+          "case-069d6decd5e4c69f266e",
+          "case-180a9baafb740879a120",
+          "case-28ed3ad5fa5fc32e37e0",
+          "case-31211ab96ee30e46ea46",
+          "case-34b8850033be4f3692cd",
+          "case-37663265ec384d3a6c97",
+          "case-4475d8e742a04f99abd3",
+          "case-496e8651a65d3b00f561",
+          "case-4d8e59847a0ea214cc52",
+          "case-4f025a87beb77a1655b0",
+          "case-4fb7194ff5153ec12ab3",
+          "case-5eade2ac7eb910df0259",
+          "case-662cab3386303fa5fd16",
+          "case-6f6f060c93ff73ae2966",
+          "case-724cc7a185173fe91a97",
+          "case-7711fdf6a039757f2dfe",
+          "case-7a1f9ca82e5aa279df3f",
+          "case-80fe48e8611abceef173",
+          "case-854f83898a6d8023f734",
+          "case-8c9ed23d10e9e6bff736",
+          "case-93af135a347a9f434829",
+          "case-9eb728d378b79c1a1836",
+          "case-9ee7f4c46f8a4ec8a78c",
+          "case-aef841c600881fb29a99",
+          "case-b545dd2e8408d8d701a3",
+          "case-bb24c5aeb4de59051fa3",
+          "case-bc25776161088eb847e0",
+          "case-c52a6e9cfe4231458fb3",
+          "case-c83161aa56b63e562388",
+          "case-d1a658c2201e96543378",
+          "case-e5234864b98cd0243074",
+          "case-e67a6253328820ca3a7b",
+          "case-eed1a9f6adfb4cfc4849",
+          "case-f0f81e952ac05432f90e",
+          "case-faf49a5872192e6de8de"
+        ]
+      },
+      "novel": {
+        "reference_cases": 56,
+        "counts": {
+          "correct_drop": 43,
+          "correct_accept": 8,
+          "missed_match": 5
+        },
+        "precision_against_resolved_machine_references": 1.0,
+        "recall_against_machine_references": 0.6153846153846154,
+        "errors": [
+          {
+            "case_id": "case-4affc9a0b923a185a28b",
+            "kind": "missed_match",
+            "au_row_key": null,
+            "reason": "unresolved_requirement"
+          },
+          {
+            "case_id": "case-6d132609cd667403eb58",
+            "kind": "missed_match",
+            "au_row_key": null,
+            "reason": "unresolved_requirement"
+          },
+          {
+            "case_id": "case-05e5c1205a1e6f72eb73",
+            "kind": "missed_match",
+            "au_row_key": null,
+            "reason": "unresolved_requirement"
+          },
+          {
+            "case_id": "case-6e3a342c60ef68a1e3f6",
+            "kind": "missed_match",
+            "au_row_key": null,
+            "reason": "unresolved_requirement"
+          },
+          {
+            "case_id": "case-a9182edf578ee8dc2819",
+            "kind": "missed_match",
+            "au_row_key": null,
+            "reason": "unresolved_requirement"
+          }
+        ],
+        "unresolved_reference_accepted_case_ids": []
+      }
+    }
+  },
+  "limitations": {
+    "independent_holdout": false,
+    "human_verified_gold": false,
+    "novel56_overlaps_family": true,
+    "unresolved_reference_accepts_excluded_from_accuracy": 35
+  },
+  "report": "20261010-sku-integrated-cpu-report.txt"
+}

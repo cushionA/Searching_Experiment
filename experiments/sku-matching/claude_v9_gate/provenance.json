@@ -1,0 +1,31 @@
+{
+  "vendor": "Claude SKU gates v9",
+  "source_checkout": "/workspace/Searching_Experiment-pr25-review-v9-20261010",
+  "source_head": "7b5ab57be4afe82714bea2ec765a0308314c7386",
+  "source_commit": "34d5ae739bf39632fccb5e01bc9d94f81d44e269",
+  "source_files": {
+    "sku_gate_atoms.py": {
+      "sha256": "70f27d44c6716cd6657d6c7cc5c39764d7b28a1aa8cc7995610bca42453f806b",
+      "vendor_path": "sku_gate_atoms.py",
+      "vendor_sha256": "4864977411d8ff07c98954b6a282d251ff0d2383a40625853f333da0511b1bf5",
+      "changes": ["slash-separated alternatives on the last labeled dimension preserve all fixed labeled dimensions and full source quote"]
+    },
+    "sku_gate_sources.py": {
+      "sha256": "a3b07aefcc48fc69e1fd4fbef86108bf1cb0a39cea2b66cea75f40f3821b9761",
+      "vendor_path": "sku_gate_sources.py",
+      "vendor_sha256": "67459d9f3c699116fde69fe75b31816c094355e0abe8a1746c7425a6f799f828",
+      "changes": ["raw absolute paths resolve through the caller-provided RawStore root; removed fixed checkout prefix"]
+    },
+    "sku_gates.py": {
+      "sha256": "d01d0bdc75c2d1833f803dcd33083e10ed8362b1cebdf037bee97ac5f1f23ec3",
+      "vendor_path": "sku_gates.py",
+      "vendor_sha256": "45fe4d12d6c92250abc52ee1b296532d7a498f88595b2ed60f81a4cc86a3dc10",
+      "changes": ["imports made package-relative", "labeled dimension alternatives compare as allowed values", "A requires one full row and explicit conflicts on all other rows", "all row-level requirement and AU-only results are retained", "line spans from closed-contents sum facts propagate into structured evidence spans", "sibling selector conflicts retain literal option-value spans"]
+    }
+  },
+  "adapter": {
+    "path": "../sku_integrated_gate_v1.py",
+    "sha256": "cb0377f5a1c872ded69c2eee12f8a15b2fbc97db8ed16058db11a5e8cdf5051c"
+  },
+  "policy": "Run A with full_spec_notice. Accept only one full row with all other AU rows in explicit conflict; otherwise drop. Page-spec differences are notices. When RawStore is supplied, all adopted requirements and support evidence plus at least one explicit, verified conflict on every excluded row must resolve to original source spans."
+}

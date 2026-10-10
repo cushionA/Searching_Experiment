@@ -1,0 +1,100 @@
+SKU突合：統合ゲート＋CPU条件検証（2026-10-10）
+
+有望な構成は「固定商品ペアの構造的SKU突合＋未証明条件だけ日本語NLI」です。
+候補モデル：0x3/bert-base-japanese-v3_nli-jsnli-jnli-jsick、111,209,475 parameters、FP32・CPU。
+revision: 21df45469d02809dc430e3ac5f5d6f67b63aabf3
+モデルは原文1引用と条件1つについて support/conflict/unknown を返します。
+最終システムは accept/drop の2択です。未知は自動除外し、人手保留のフローは設けていません。
+
+契約
+- 商品単位の突合は済んでいる。入力1レコードは楽天SKU1つ。
+- 相手は固定AU URLの全SKU行。別URLへ振り分けない。
+- 同じAU行で全条件が支持され、他の全AU行が引用付き矛盾で除外できた場合だけ採用。
+- 既に支持・矛盾が証明された条件をモデルで上書きしない。
+- 今回のモデル補完対象は component_presence=True の未証明条件だけ。
+- ページ全体の引用は、該当部品がAUの選択軸で変わらない場合だけ使う。
+- 原文範囲・SHA256・固定商品ID・仮説・要件・候補行を照合する。
+- 引用間で支持と矛盾が混在したら採用しない。
+- 明示的な閉じた内容物リストからの不存在推論を維持する。
+- ページ間の寸法・素材・付属数の差はユーザー方針に従い注意として保持する。
+- 価格・在庫・送料は同一SKUの意味判定に使わない。
+
+実データの粒度
+評価レコード2,409 = legacy1,383 + family970 + novel56。
+固定AU商品×楽天SKUの異なる組は2,353、楽天の異なるsource_sku_keyは1,309。
+132 AU商品ページ、108楽天ページ、133商品ペア。AU行への参照は106,189。
+novel56はfamilyのSKUと原本を共有する。独立した追加56SKUではない。
+SKU選択肢、価格、原本を変更していない。自作データは評価入力に含めていない。
+240原本SHAを監査し一致。全2,409ケースで元の楽天SKU価格を取得できた。
+楽天55ページでは選択SKUによって価格が異なることを確認。
+モデル入力から価格を外す一方、元のSKUキーを保持しCSVでは元SKU価格を結合する。
+AU価格は固定ページのcurrentPrice。楽天の商品全体の範囲価格への代替はしない。
+
+予測結果（正解ラベルを読む前に保存・SHA固定）
+                          source-only   NLI FP32   GLiNER component   NLI int8
+legacy 採用/除外          470/913       470/913    470/913             470/913
+family 採用/除外          309/661       344/626    309/661             309/661
+novel 採用/除外             8/48         13/43       8/48                8/48
+
+NLIの改善は40 case_id。そのうちnovel5がfamilyと重複するので実対応は35件。
+7つの固定AU URL×5色で、「バー付き」を原文から支持できた。
+バー固有の一致ルールは追加していない。モデルの支持確率は約0.958。
+天板等の既に証明済み条件は構造ゲートが処理する。
+「回転本棚」から本棚の存在は支持されても、「天然木」が未証明なら最終採用しない。
+カバーあり・なしの両方の引用がある4条件は未知のまま自動除外。
+
+特に依頼されたカーテンの結果（元の612ケース）
+AU704500131：レースなし153採用、レースあり153除外。
+AU704502086：レースあり153採用、レースなし153除外。
+いずれもAUの相手URLを変更していない。
+
+後段の既存機械ラベルとの照合
+legacy: 正しい行で一致435、既存不一致を除外911、既存一致の取りこぼし0、既存不一致の誤採用0。
+37未確定ラベルのうち注意付き採用35・除外2。これらを正解率の分母に混ぜていない。
+novel: NLIは一致13・不一致43を再現（source-onlyは一致5取りこぼし）。
+参照は人手未確認の既存Luna機械ラベル。入力を既に改善に使用しており、独立holdoutや確定goldではない。
+特にカーテンのフック数27件等、注意付き採用を実物の完全一致が確認されたケースとして数えない。
+family35の新採用全件について独立した正解ラベルを取得したわけではない。
+全体精度100%が確定したとは主張しない。新しい商品群で独立検証する前の候補構成である。
+
+モデル・タスクの比較
+同じ原文付き21問い、採用閾値0.90を推論前に固定。
+21問いには原本が違う同文の問いが含まれ、互いに独立な21種類の意味問題ではない。
+8つの重複を除いた構造的対照は支持4/矛盾4。独立goldではない。
+NLI FP32: 支持提案14/矛盾提案6/未知1。対照は支持3正答・1未知、矛盾4正答。
+GLiNER2.5-multi-Decide（287M）: relation形式とcomponent形式の両方で全21問いが閾値未達。
+GLiNER revision: e173bca1f0c4217d7a55b3b0c705d5ece8a0218d
+NLI動的int8: 全21問いが閾値未達。この量子化方式は現状採用しない。
+CPUモデル自体は0.111Bなので、今回の有望候補はFP32でも小さい。
+CPU4threads、batch8、入力は512token以内。原文の否定句を削る切り詰めはしない。
+推論エラー0、切り詰めなし。時間は共有CPU上の小規模試行で、本番の速度・費用測定ではない。
+
+統合・監査上の変更
+Claude v9のソースをprivate namespaceに保ち、元commitと各変換のSHAを記録。
+他の候補が未知のままなら一意一致にしない条件を追加。
+短い「サイズ」見出しと、購入案内に混在した仕様文を原本から復元。
+複数寸法の最後の高さ10/15cmを高さの選択値として保持し、固定幅・奥行を維持。
+内容物合算の引用は元の複数spanとして保持し、合成文字列を原文引用と偽装しない。
+選択肢一覧を根拠とした別値の除外にも原文spanを付ける。
+モデル仮説の一般名詞に「完全遮光」「ミラー」等の未要求条件を足さない。
+全488テスト成功、18skip。実行ログも保存。
+
+ファイル
+コード：experiments/sku-matching/claude_v9_gate/、*_integrated_*v1.py、*_cpu_requirement_*v1.py。
+統合入力：.lab-output/sku-integrated-inputs-20261010-v1/inputs。
+基準予測：.lab-output/sku-integrated-gate-20261010-v2。
+最終候補：.lab-output/sku-integrated-nli-20261010-v2。
+問い：.lab-output/sku-cpu-requirement-tasks-20261010-v3。
+評価：.lab-output/sku-integrated-cpu-evaluation-20261010-v1/reused-label-diagnostics.json。
+CSV：同/csv/。all-decisions.csv、accepted-diagnostics.csv、newly-accepted-diagnostics.csv。
+CSVは在庫適格性を適用していない診断用。売り切れ除外を済ませた製品出力ではない。
+確認用CSVには価格と商品名＋SKU、注意を保持。カートへの追加操作は行っていない。
+
+再現
+ZIPを展開するとコード、統合入力、利用原本、予測、freeze、model runner snapshot、診断、元の価格表が復元される。
+python3 -B experiments/sku-matching/run_integrated_sku_gate_v1.py --output .lab-output/reproduction-source
+モデル推論にはfreezeが指定する同revisionのモデルweightとランタイムが別途必要。
+weight・venv・認証情報はZIPに含めない。freezeにPython/torch/transformers/tokenizers/gliner2の版を保存。
+.deps/sku-gliner-venv/bin/python -B experiments/sku-matching/trial_cpu_requirement_relations_v1.py --input .lab-output/sku-cpu-requirement-tasks-20261010-v3/tasks.jsonl --output .lab-output/reproduction-nli --backend nli --precision fp32 --threads 4 --batch-size 8
+python3 -B experiments/sku-matching/apply_cpu_requirement_relations_v1.py --gate-run .lab-output/sku-integrated-gate-20261010-v2 --tasks-run .lab-output/sku-cpu-requirement-tasks-20261010-v3 --model-run .lab-output/reproduction-nli --output .lab-output/reproduction-hybrid
+未確定ラベルは後段診断用に隔離し、モデルの問いや予測入力には混ぜない。
