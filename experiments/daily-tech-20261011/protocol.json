@@ -1,0 +1,13 @@
+{
+  "hypothesis": "Playwright 1.64 includeShadow serializes open and nested shadow links omitted by default page.content; this is a serialization gain, not necessarily a gain over live locators.",
+  "repeats": 30,
+  "expected": {
+    "default_parser": ["inert", "light", "slot"],
+    "shadow_parser": ["inert", "light", "nested", "open", "slot"],
+    "live_locator": ["light", "nested", "open", "slot"],
+    "child_frame_parser": ["frame"]
+  },
+  "limitations_to_check": ["closed shadow omitted", "iframe not expanded in parent snapshot", "inert template false candidate", "no real-site coverage claim"],
+  "network": "offline context; fixture setContent and evaluate only, no site navigation or link following",
+  "decision": "B until actual target pages show useful incremental discovery or saved preprocessing cost; no integration PR for synthetic-only gain"
+}

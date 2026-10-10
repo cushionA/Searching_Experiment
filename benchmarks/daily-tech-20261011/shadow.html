@@ -1,0 +1,8 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>保存HTMLとShadow DOM</title></head><body>
+<a href="https://fixture.invalid/light">通常リンク</a>
+<div id="open-host"><template shadowrootmode="open"><a href="https://fixture.invalid/open">公開シャドウのリンク</a><slot name="nav"></slot><div><template shadowrootmode="open"><a href="https://fixture.invalid/nested">入れ子のリンク</a></template></div></template><a slot="nav" href="https://fixture.invalid/slot">スロットのリンク</a></div>
+<div id="closed-host"></div>
+<template id="inert"><a href="https://fixture.invalid/inert">未使用テンプレート</a></template>
+<iframe id="child" title="子フレーム" srcdoc="&lt;a href=&quot;https://fixture.invalid/frame&quot;&gt;子フレームリンク&lt;/a&gt;"></iframe>
+
+</body></html>
