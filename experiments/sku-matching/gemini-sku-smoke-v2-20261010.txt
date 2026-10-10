@@ -5,7 +5,8 @@ Work branch: codex-sku-gemini-vertex-smoke-20261010.
 Model requested: gemini-3.5-flash-lite (user confirmed).
 Vertex route: service-account authentication, user ADC, or a temporary OAuth token
 -> Vertex model API, project groundingsearch, location global.
-Execution credentials are still missing.
+The initial preparation had no execution credentials. The OAuth Vertex trial
+was subsequently run with GCP_ACCESS_TOKEN; see the dated report in results/.
 
 The user authorized combining the previously separate model tasks for efficiency.
 The model receives the selected Rakuten SKU, all fixed AU SKU rows, and complete
@@ -14,11 +15,18 @@ checks unresolved conditions against the same fixed AU text within one request.
 Six real cases: five legacy, one novel; 50 AU rows and 403 source text records.
 No gold labels or rule/model predictions are read. No new product fetches.
 
-The response must account for every AU row. Candidate rows must account for every
-Rakuten and AU condition. Quotes must occur in the cited source; SKU citations
-must belong to the same candidate row. Unknown and contradiction block adoption.
-Exactly one fully supported candidate is required for adoption. Citation meaning
-and applicability still require review; structural validation is not SKU accuracy.
+The current runner uses responseSchema for ordered rows and ordered condition
+checks. Input includes selected axis/value pairs and fixed AU source text, without
+the Rakuten choices list or forensic provenance. Model output contains only
+status and source_ids; no copied quotes, reasons, case IDs, or long row IDs.
+A0/A1 refer to conditions of the current AU row; S0/S1 are explicit source keys.
+Stable IDs, exact source text, and provenance are restored locally from the frozen
+inputs in expanded_response. This text is not a model-generated quotation.
+Every row and every Rakuten/AU condition must be accounted for, including
+contradictory rows. Unknown and contradiction block adoption. Exactly one fully
+supported candidate is required for adoption. A schema constrains shape, not
+the meaning of a status, a source's applicability, or the semantic order of rows.
+Meaning still requires review; structural validation is not SKU accuracy.
 
 Authentication observations are saved in results/20261010-gemini-api-auth-probes.json.
 The configured GOOGLE_CSE_KEY is present but all tested Vertex key-auth routes
@@ -28,7 +36,7 @@ Gemini Developer API returned 403 SERVICE_DISABLED for consumer project number
 The remaining five requests were stopped; no inference response was received.
 Its human-readable project name has not been verified. --project
 groundingsearch applies only to the Vertex backend, not to Developer API billing.
-No successful model inference or SKU evaluation has yet been obtained.
+These API-key attempts obtained no successful model inference or SKU evaluation.
 
 Prepare without API calls
 python3 -B experiments/sku-matching/trial_gemini_sku_smoke_v2.py --backend gemini --prepare-only --output-dir .lab-output/gemini-sku-smoke-v2-new-prepared
@@ -98,10 +106,34 @@ Six inference requests at most; no automatic retries. HTTP errors stop subsequen
 requests. Failed/unrequested cases are not_evaluated, not model exclusions.
 Output directories cannot be reused. Keys are neither printed nor saved. Model
 identity comes from the response's modelVersion field, not its generated answer.
+An output parse error is saved separately as parseerror-NN.json; rawresponse,
+modelVersion, usageMetadata and finishReason are retained for diagnosis.
 
-Offline checks passed: positive adoption; unknown and contradiction exclusion;
-fabricated quote, duplicate row, missing condition, and other-row citation rejection.
-The existing required lab suite ran 493 tests with 37 skipped, 17 errors and one
+First live OAuth trial (before responseSchema)
+Report: results/20261010T135059Z-gemini-vertex-smoke-v2-report.txt
+Six calls, five parsed answers, four structural passes, two machine adoptions.
+Semantic review found a false adoption from another product's 4-step link and a
+false exclusion from confusing the selected color with the choices list.
+The first response failed JSON parsing and the original exception handler
+overwrote its saved raw response. The current runner fixes that preservation bug.
+Past evidence archives retain the exact old script and outputs.
+
+The current runner's seven offline tests passed: ordered trimmed input/schema,
+row-local source reconstruction, complete condition coverage and reference scope,
+unique adoption and fail-closed exclusions, required evidence, preserved malformed
+responses, and redacted HTTP error handling with no subsequent requests.
+The latest required lab suite ran 499 tests with 56 skipped, 17 errors and one
 failure, due to missing pre-existing .lab-output fixtures, sku_gate_atoms, and
-robots-parser. This new diagnostic is covered by the preparation and offline
-checks; the full lab suite is not claimed to pass in the fresh worktree.
+robots-parser. The seven focused tests were also checked afterward; the full
+lab suite is not claimed to pass in this worktree.
+
+Structured-output continuation after user-reported environment reconnection
+At 2026-10-10T14:50:20Z, managed GCP_ACCESS_TOKEN still matched the previous
+invalid-token diagnostic in memory and Google tokeninfo returned HTTP 400
+invalid_token. No credential value, fingerprint, identity, or tokeninfo URL was
+printed or exported. Environment spec 13 subsequently became ready/enforced,
+but a new non-login process still observed the same old token. No Vertex model
+request was sent during this continuation. The structured six-case retrial is
+still blocked; readiness alone is not credential validity or SKU quality.
+Next: save a freshly issued token as GCP_ACCESS_TOKEN in this task's execution
+environment, verify the process sees a valid value, then run all six fixed cases.

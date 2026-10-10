@@ -1,0 +1,93 @@
+Vertex Gemini SKU smoke v2 実行評価
+
+指定ブランチ codex-sku-gemini-vertex-smoke-20261010 をcheckoutし、6ケースを実行した。
+実行経路は Vertex AI / groundingsearch / global、認証は GCP_ACCESS_TOKEN。
+要求モデルと保存済み5応答のmodelVersionは gemini-3.5-flash-lite で一致した。
+接続・推論は実行できたが、この出力をそのまま自動SKU採用に使うには不十分。
+構造検証を通過した踏み台に誤採用、novelのマットに誤除外が見つかった。
+
+実行条件
+  commit: 3ea1b8c26b4c7b101ad551d5c0ecb0d22b293272
+  開始: 2026-10-10 22:50:59 UTC+09:00 (2026-10-10T13:50:59Z)
+  endpoint: https://aiplatform.googleapis.com/v1/projects/groundingsearch/locations/global/publishers/google/models/gemini-3.5-flash-lite:generateContent
+  credential_source: oauth_access_token_secret_environment
+  Python: 3.12.14 / google-auth: 2.61.0 / requests: 2.34.2
+  temperature: 0 / maxOutputTokens: 8192 / responseMimeType: application/json
+  固定入力: legacy 5件、novel 1件、AU SKU 50行、source 403件
+  入力zip SHA-256: c69bb28d88968cc48e1a8f6d825c4794cd1d44d0cedd0e685f141a186e9c683a
+  呼び出し: 6件、追加・再試行0件、新規商品取得0件、gold・既存モデル予測の参照0件
+  所要時間: 35.774秒 / スクリプト終了コード: 2
+
+機械判定と意味レビュー
+  1 case-01f6fc36ae1d87a566c7 / カーテン / 27行
+    機械判定: not_evaluated / JSONDecodeError / 17.837秒
+    モデル回答JSONの解析に失敗。SKU判断を評価できない。
+    スクリプトの例外処理がrawresponse-01.jsonをエラー情報で上書きした。
+    元回答、finishReason、使用トークン数が残っておらず、解析失敗原因は特定不能。
+    打ち切りやトークン上限到達を原因と断定しない。
+
+  2 case-00b9d1779fa191acf665 / 踏み台 / 5行
+    構造: pass / 機械判定: adopt / au:597651839:168445336:4:0
+    意味レビュー: 誤採用。
+    楽天の選択条件は4段・ホワイト。モデルはS5の「4段」を段数supportの根拠とした。
+    固定AU商品597651839のS0タイトルは3段、S46は「・3段タイプ」、
+    S36は3つの踏み台高さ。固定商品の明示仕様は4段と矛盾する。
+    frozen raw JSONのSHA-256を確認し、extraItemCommentの該当範囲を調べた。
+    S5は別商品 /item/644490098 へのリンク文言であり、固定AU行の4段根拠にならない。
+    カラー引用は正しくても、説明の適用範囲と明示矛盾を見落としている。
+
+  3 case-00dea3bdb495becd1dd4 / マットレス / 10行
+    構造: pass / 機械判定: exclude
+    意味レビュー: 除外は妥当。楽天はセミダブル、S3は「こちらのページはシングルサイズです」。
+    ただしAUの複合値「ベージュ（パイル）」全体を、S41「ベージュ」だけでsupportとする点は不十分。
+    他色行のau_checksでもS41を矛盾引用として使っており、選択条件との比較根拠が弱い。
+    今回はサイズ矛盾によって除外されるため、これらの問題は最終判定を変えない。
+
+  4 case-03eb5704d3bb159f757b / ペットフェンス / 2行
+    構造: fail / 機械判定: exclude
+    validation_error: invalid_source_quote:au:653618158:319149609:0:0:rakuten_checks
+    2行のR0/R1で計4引用が原文と一致しない。
+    S8「50×50cm:13枚set」を「50×50cm:13sets」とし、
+    S3「こちらのページは50×50cm:13枚setです」の「枚」も落としている。
+    意味上も楽天の21枚・70×50に対し固定AUは13枚・50×50なので、除外方向は妥当。
+    正しい除外方向でも、引用の完全一致という試験契約は満たしていない。
+
+  5 case-0a4bfea40c723b989ecc / 丸テーブル / 3行
+    構造: pass / 機械判定: adopt / au:695394169:305587038:2:0
+    意味レビュー: 提示入力の範囲で採用を支持できる。
+    対象行のカラーはマーブルホワイト。S19も同色、S21は「（約）直径80x高さ74cm」。
+    S0タイトルも幅80cmで、楽天のマーブルホワイト・直径80cmと対応する。
+    他の2カラー行を除外する理由も妥当。
+
+  6 case-4c8b1efa512c2a2c76e0 / ジョイントマット (novel) / 3行
+    構造: pass / 機械判定: exclude
+    意味レビュー: 誤除外。
+    楽天の選択valueはナチュラル。S30「【12畳用】」とS31「ジョイントマット64枚」はセットを支持。
+    モデルはナチュラルのほかグレー・ホワイトも「楽天の選択肢に含まれる」としてR0 supportにした。
+    選択済みvalueと選択肢一覧choicesを混同している。
+    3行とも全supportとなり、一意の採用候補だけを許すゲートでexcludeになった。
+    提示入力ではナチュラル行 au:764777172:327558278:0:0 が唯一の対応候補。
+
+集計と検証
+  解析済みモデル回答: 5/6件 / 構造検証通過: 4/6件
+  機械判定: adopt 2件、exclude 3件、not_evaluated 1件
+  構造検証通過4件でも、踏み台の誤採用とマットの誤除外が残る。
+  保存された5回答はすべてfinishReason STOP。1番のfinishReasonは保存されていない。
+  保存された5回答のみのusage合計: input 13,530 / output 6,383 / total 19,913 tokens。
+  1番のusageが不明なため、これは6呼び出し全体のトークン数・課金額ではない。
+  入力zip・展開入力・6リクエストのハッシュ、構造検証、判定を再計算して一致を確認した。
+  GCP_ACCESS_TOKENの値が出力ファイルに含まれないことを確認した。認証ヘッダーも保存していない。
+  ソースコードは変更しておらず、既存実験基盤の全体テストは今回実行していない。
+
+評価の範囲
+  これは6件のsmokeと原文に基づく意味レビューで、独立goldによるSKU精度測定ではない。
+  構造passは引用文字列・行/条件網羅を保証するが、引用の意味と当該行への適用は保証しない。
+  次に直すべき点は、説明リンクの適用範囲、選択valueとchoicesの区別、
+  AU複合条件の全体確認、およびJSON解析失敗時の生応答・メタデータ保存。
+  今回の6呼び出し枠を超える再試験は行っていない。
+
+成果物
+  元出力: .lab-output/gemini-sku-smoke-v2-vertex-20261010T135059Z/
+  証拠archive: experiments/sku-matching/results/20261010T135059Z-gemini-vertex-smoke-v2-evidence.zip
+  archiveには入力、6リクエスト、応答/エラー、manifest、summary、実行情報、
+  audit、意味レビュー、当該実行のスクリプト、報告を含む。認証値は含まない。

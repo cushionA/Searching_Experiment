@@ -1,0 +1,24 @@
+構造化出力6ケース再試験：再接続後も認証で停止
+
+対象: branch codex-sku-gemini-vertex-smoke-20261010、Vertex AI
+project groundingsearch、location global、model gemini-3.5-flash-lite。
+入力: 同じ凍結6ケース、50 AU行、403 source。値のみのSKU条件と固定AU本文を渡し、
+responseSchemaでstatus/source_idsのみ生成。IDと原文はローカルで復元する。
+
+ユーザーは実行環境を再起動／再接続したと回答。
+2026-10-10T14:50:20Zの実行プロセスではGCP_ACCESS_TOKENが旧invalid_token診断時と
+同じ値で、Google OAuth tokeninfoはHTTP400 invalid_token。Cloud Shell側で先に
+確認されたHTTP200は、こちらの実行環境の同じ値が有効という証明ではない。
+環境spec13/observed13はunknownからready、network enforcedへ戻ったが、その後の
+新規non-login実行でもトークン値は旧値のまま。ログインシェルの影響ではない。
+値が実際に保存されていないのか、配布／実行プロセスへの反映の問題かは未確定。
+
+この継続でVertexへのリクエストは0回。モデル応答0件、6ケースは未評価。
+認証エラーをSKU除外やモデル能力の結果とは扱わない。
+現在コードのfocused offline tests 7件は成功。以前のfull lab suiteは499件、
+56 skip、17 errors、1 failureで不成功（既存fixture/依存の不足を含む）。
+
+次に必要なのは、このチャットの実行環境のGCP_ACCESS_TOKENへ、その場で発行した
+新しいaccess tokenを保存すること。再起動を繰り返さず、実行時の値の有効性を
+確認後、同じ6ケースを新しい出力先で1回ずつ試す。
+トークン値、トークンのfingerprint、認証header、tokeninfo URL、identityは成果物に含めない。

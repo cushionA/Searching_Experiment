@@ -1,0 +1,59 @@
+別セッションへの継続メモ
+
+リポジトリ: cushionA/Searching_Experiment
+ブランチ: codex-sku-gemini-vertex-smoke-20261010
+このブランチの最新リモートcommitから続行する。ZIP復元は不要。
+目的は trial_gemini_sku_smoke_v2.py の凍結6ケースを、Vertex AIの
+groundingsearch/global、gemini-3.5-flash-lite、GCP_ACCESS_TOKENで実行し、
+構造と意味の両方を評価すること。対象と6件の推論はユーザーが許可済み。
+
+現在の実装
+- 入力は楽天の選択済みaxis/value、AU全SKU行のaxis/value、固定AU本文。
+  choices、長いID、provenanceをモデルへ渡さない。
+- responseSchemaによりstatus/source_idsのみ返す。行/条件は入力順。
+  A0/A1はその候補行のAU条件、S0/S1は明示的な本文キー。
+- 元ID、根拠全文、provenanceをローカルで復元。引用文をモデルに再生成させない。
+- 全行/全条件、参照先をローカル検証。unknown/contradictionは採用不可。
+  全supportの候補が1行だけなら採用。構造passは意味の正しさを保証しない。
+- JSON解析に失敗してもrawresponseとfinishReason/modelVersion/usageを保持し、
+  parseerrorを別ファイルへ保存。HTTPエラーは認証値を伏せて保存し、以降を停止。
+
+試験状態
+新しい構造化出力の6ケースは認証で止まっており、まだ評価できていない。
+一度は従来出力で6件を実行した。5件解析、4件構造pass、2件機械採用。
+踏み台の別商品4段リンクによる誤採用、マットのchoices混同による誤除外、
+マットレスの複合値確認不足、フェンスの引用不一致があった。
+以前の結果は results/20261010T135059Z-gemini-vertex-smoke-v2-report.txt。
+これを新しい実装の結果や独立gold精度として扱わない。
+単純化前のresponseSchemaでHTTP400が1回あり、当時のbodyは未保存で原因不明。
+現在の簡略schemaが実APIで通るかも未確認。400なら保存されたerrorを調べる。
+
+認証状態
+ユーザーのCloud Shellでgcloud由来トークンはtokeninfo HTTP200だった。
+しかし旧実行環境では設定変更・再接続後も以前の値のままでHTTP400 invalid_token。
+spec13 ready/enforced後の新規non-loginプロセスでも同じだった。
+再起動を繰り返さず、新セッションのGCP_ACCESS_TOKENをまず検証する。
+値、認証header、tokeninfo URL、identityをログやチャットへ出さない。
+トークンのチャット貼付を求めない。readyだけで認証成功と判断しない。
+最新診断: results/20261010T145020Z-gemini-structured-reconnection-report.txt。
+
+検証
+Python 3.12以上。隔離venvへgoogle-authとrequestsを導入する。
+python3 -B -m unittest discover -s tests -p 'test_lab_gemini_sku_smoke_v2.py'
+focused 7件は成功。full lab suiteは499件、56 skip、17 errors、1 failure。
+既存のfixture/sku_gate_atoms/robots-parser不足などがあり、full passではない。
+コードレビューは読み取り専用で重大な不備なし。実APIの代わりにはならない。
+
+認証確認後の実行例（新しい出力先を使う）
+python3 -B experiments/sku-matching/trial_gemini_sku_smoke_v2.py --backend vertex --project groundingsearch --location global --access-token-env GCP_ACCESS_TOKEN --output-dir .lab-output/gemini-sku-structured-values-vertex-NEW_UNIQUE_RUN
+default input ZIPは同ブランチにある results/20261010-sku-generic-presence-checkpoint.zip。
+SHA256: c69bb28d88968cc48e1a8f6d825c4794cd1d44d0cedd0e685f141a186e9c683a
+固定6ケース、50 AU行、403 source。新しい商品取得、gold、過去モデル予測参照は不要。
+APIの自動再試行なし。各ケース1回。HTTPエラーなら残りを未実行と記録する。
+
+完了条件
+6件のrawresponse/manifest/results/summaryを保存し、API応答のmodelVersionを確認。
+構造検証、採用/除外/未評価、実行時間、usageとfinishReasonを集計。
+根拠が固定商品・現在行へ適用されるか、選択value、複合値全体、明示矛盾をレビュー。
+引用はローカル復元原文でありモデル生成引用ではないことを明示する。
+日本語で結果と限界を短く報告し、必要なコード/結果メモをこのブランチへ保存する。
