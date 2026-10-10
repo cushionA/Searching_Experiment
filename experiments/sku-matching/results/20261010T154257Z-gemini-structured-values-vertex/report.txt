@@ -1,0 +1,100 @@
+Gemini SKU構造化出力・固定6ケース実API試験
+
+開始: 2026-10-11 00:42:57 JST（2026-10-10 15:42:57 UTC）
+ブランチ: codex-sku-gemini-vertex-smoke-20261010、実行時commit a5a772d。
+実験コードはacda4f9のまま変更なし。コードSHA256はverification.jsonに記録。
+Vertex AI: project/quota project groundingsearch、location global。
+requested model / 全6応答のmodelVersion: gemini-3.5-flash-lite。
+
+認証
+ユーザーが明示した一時トークンを非表示stdinで受け取り、実行プロセスのメモリで
+GCP_ACCESS_TOKENへ適用した。環境設定やファイルへトークンを保存していない。
+tokeninfo HTTP200、cloud-platform scopeあり、残存2210秒（確認時点）。
+試験と同じgoogle-auth AuthorizedSessionのVertex読み取りAPIもHTTP200。
+同じ実行環境・プロキシ・SDK経路で成功したため、先の401はproject/global/schema
+だけでは説明できず、従来runtime値の有効性・反映経路の問題が残る。原因は未特定。
+トークン値・認証header・identityは表示/保存しない。出力に値が混入しないことも確認。
+
+実行と構造
+固定6ケースを各1回、計6推論。HTTP200×6、finishReason STOP×6。
+自動再試行なし。新しいこの保存先を使用。新しい商品取得・独立gold・過去予測参照なし。
+6件ともJSON解析成功、構造検証pass。全50 AU行・216条件チェックを網羅。
+unknown 135、support 46、contradiction 35。sourceは固定403件。
+選択済みaxis/valueのみのSKU入力、status/source_idsのresponseSchemaを維持。
+choices/長いID/provenanceはモデル入力に含めず、ID・原文・provenanceはローカル復元。
+既存ZIPとの入力一致、入力/6 requestのhash、復元結果、機械決定を独立に再確認した。
+引用は凍結入力からの復元原文であり、モデルが生成した引用ではない。
+簡略responseSchemaは今回の実APIで受理された。構造passは意味の正しさを保証しない。
+
+ケース別結果（usageはprompt / candidates / total tokens、時間はリクエスト秒）
+商品              機械判定  意味レビュー  usage                 時間
+1 カーテン        除外      除外          3643 / 1630 / 5273    4.520
+2 踏み台          採用      除外          2531 /  268 / 2799    1.388
+3 マットレス      除外      除外          2646 /  702 / 3348    2.875
+4 ペットフェンス  除外      除外          2431 /  178 / 2609    1.098
+5 テーブル        採用      採用          1898 /  365 / 2263    1.487
+6 ジョイントマット採用      採用          2324 /  359 / 2683    1.550
+全ケースのmodelVersionは上記モデル、finishReasonはSTOP、usage trafficTypeはON_DEMAND。
+機械: 採用3・除外3・未評価0。意味レビュー後: 採用2・除外4・未評価0。
+usage合計: prompt 15,473 / candidates 3,502 / total 18,975 tokens。
+推論run全体12.930秒、各リクエスト合計12.918秒。事前認証時間は合計0.649秒。
+rawの機械予測・summaryは維持し、意味レビューはreview-summary.jsonへ別に保存した。
+summary.jsonのpending semantic reviewはrunner生成時点の状態。最終レビューは完了し、
+採用2・除外4という最終件数はreview-summary.json/このreportを参照する。
+
+意味レビュー
+1 case-01f6fc36ae1d87a566c7 カーテン
+  候補au:778818828:332504238:2:6の色・サイズは選択値に合うが、
+  楽天R0サイズのsupportがS42「ユーカリグリーン」、R1カラーがS50「150×135cm」と
+  逆の根拠を指している。R2レースカーテンなしはunknownのため採用不可。
+  他26行の楽天チェックもすべてunknownで、明示的な色/サイズ不一致を判定しきれない。
+  幅150cmの1枚表記は固定本文と整合するので、枚数差を除外理由にしない。
+  除外は未確認条件が残るという意味で、SKU不一致を確定した判断ではない。
+
+2 case-00b9d1779fa191acf665 踏み台
+  機械採用au:597651839:168445336:4:0は誤採用。
+  R0=4段のsupport根拠S5「4段」は、原文では<a href="/item/644490098">内にあり、
+  固定商品597651839ではなく別商品リンク。固定商品タイトル/本文は3段。
+  白のAU行が合っていても、この段数不一致を覆せない。
+  ほか4色の行でもR1=ホワイトをsupportとし、ベージュ/ブラック/グレー/モカブラウン
+  の行固有値に対して商品全体の色一覧を使っている。選択値比較の意味誤りが残る。
+  元JSONのhash・locator付きリンク前後文脈はsemantic-context.jsonに保存した。
+
+3 case-00dea3bdb495becd1dd4 マットレス
+  S3「こちらのページはシングルサイズです」は選択セミダブルと明示矛盾。除外は妥当。
+  一方、R2=ベージュを非ベージュ9行でもsupportとしており、例えばグレー（パイル）
+  行のA0/S39「グレー」はベージュの根拠にならない。AU側はcontradictionで非対称。
+  ベージュ（パイル）のAU行は原文のパイル色一覧と整合するが、楽天に生地指定はない。
+  色の支持を、生地を含む複合値の楽天側適合まで立証した結果と扱わない。
+
+4 case-03eb5704d3bb159f757b ペットフェンス
+  固定本文は50×50cm・13枚（パネル12枚＋ドア1枚）。選択値70×50cm・21枚
+  （20枚＋ドア1枚）と不一致。S8/S38の数量・サイズ矛盾による除外は妥当。
+
+5 case-0a4bfea40c723b989ecc テーブル
+  au:695394169:305587038:2:0を採用可。
+  行A0/S19「マーブルホワイト」、S21「（約）直径80x高さ74cm」が選択色・直径を支持。
+  固定商品の詳細表でも確認でき、他色行は除外されている。
+
+6 case-4c8b1efa512c2a2c76e0 ジョイントマット
+  au:764777172:327558278:0:0を採用可。
+  行A0/S34「ナチュラル」、S3「こちらのページは12畳/64枚です」＋S31
+  「ジョイントマット64枚」が選択色と複合セット全体を支持。固定詳細表でも確認。
+  他色行のAU側supportは自己値の本文掲載確認にとどまり、楽天色との対応証拠ではない。
+  楽天側は他色行をcontradictionとしているため採用行の結論には影響しない。
+
+問題点と限界
+構造化出力は引用再生成の不一致やJSON崩れを今回防げたが、適用商品・条件の意味は
+保証しない。色/サイズ根拠の取り違え、選択値に反する色のsupport、別商品根拠による
+誤採用が残った。sourceを短い文字列に分割すると、リンク先・本文適用範囲を失う。
+現状を構造passだけで自動採用する用途へ採用しない。改善候補は入力根拠の適用範囲を
+ローカル原文から保持することと、選択値/行固有値/各根拠の意味の検証。追加推論は未実施。
+6件の固定smokeに対する意味レビューであり、独立gold精度や全件matching性能ではない。
+unknownによる保守的除外を、意味判定能力の実証と混同しない。
+
+検証・保存
+実験前のfocused offline unittest 7件成功。実装コード変更なし。
+全lab suiteは今回再実行せず、過去の既存fixture/依存による失敗を解消したとは扱わない。
+rawresponse-01～06、inputs、request-01～06、manifest、results、summary、authentication、
+verification、semantic-context、review-summary、このreportを保存。新しいZIPは作成しない。
+追加の再試行・別ケース・モデル変更は行わず、構造化6ケース再試験は完了した。

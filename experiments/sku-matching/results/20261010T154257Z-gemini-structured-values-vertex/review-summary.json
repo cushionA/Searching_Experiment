@@ -1,0 +1,328 @@
+{
+  "scope": "fixed six-case smoke; independent gold accuracy unmeasured",
+  "raw_model_predictions_preserved": true,
+  "review_basis": "frozen inputs and their provenance in existing checkpoint; no new web fetch, gold or past predictions",
+  "evidence_text_origin": "frozen_input_not_model_generated",
+  "cases": [
+    {
+      "product": "カーテン",
+      "reviewed_decision": "exclude",
+      "reviewed_adopted_row_key": null,
+      "reason": "レースカーテンなしのAU根拠未確認。サイズ・カラー根拠IDが逆である。除外は不一致確定ではなく採用条件不足。",
+      "issues": [
+        {
+          "kind": "condition_evidence_swapped",
+          "row_key": "au:778818828:332504238:2:6",
+          "condition_id": "R0",
+          "model_status": "support",
+          "source_ids": [
+            "S42"
+          ],
+          "local_quote": "ユーカリグリーン"
+        },
+        {
+          "kind": "condition_evidence_swapped",
+          "row_key": "au:778818828:332504238:2:6",
+          "condition_id": "R1",
+          "model_status": "support",
+          "source_ids": [
+            "S50"
+          ],
+          "local_quote": "150×135cm"
+        }
+      ],
+      "caveats": [
+        "レースカーテンなしはR2 unknownで根拠なし。",
+        "他26行の楽天チェックはunknownで、明示的な色/サイズ不一致も判定しきれていない。",
+        "幅150cmの1枚表記は固定商品本文と整合し、枚数差を除外理由にはしない。"
+      ],
+      "case_id": "case-01f6fc36ae1d87a566c7",
+      "structure_validation": "pass",
+      "machine_decision": "exclude",
+      "machine_adopted_row_key": null,
+      "semantic_review_completed": true,
+      "api_modelVersion": "gemini-3.5-flash-lite",
+      "usageMetadata": {
+        "promptTokenCount": 3643,
+        "candidatesTokenCount": 1630,
+        "totalTokenCount": 5273,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 3643
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 1630
+          }
+        ]
+      },
+      "elapsed_seconds": 4.52,
+      "finishReasons": [
+        "STOP"
+      ]
+    },
+    {
+      "product": "踏み台",
+      "reviewed_decision": "exclude",
+      "reviewed_adopted_row_key": null,
+      "reason": "機械採用は誤採用。4段のS5は別商品/item/644490098へのリンクで、固定商品597651839はタイトル・本文とも3段。",
+      "issues": [
+        {
+          "kind": "other_product_evidence_false_adoption",
+          "row_key": "au:597651839:168445336:4:0",
+          "condition_id": "R0",
+          "model_status": "support",
+          "source_ids": [
+            "S5"
+          ],
+          "local_quote": "4段",
+          "linked_product_id": "644490098",
+          "fixed_product_id": "597651839",
+          "context_artifact": "semantic-context.json"
+        },
+        {
+          "kind": "selected_color_ignored",
+          "condition_id": "R1",
+          "model_status": "support",
+          "row_keys": [
+            "au:597651839:168445336:0:0",
+            "au:597651839:168445336:1:0",
+            "au:597651839:168445336:2:0",
+            "au:597651839:168445336:3:0"
+          ],
+          "selected_value": "ホワイト",
+          "current_row_values": [
+            "ベージュ",
+            "ブラック",
+            "グレー",
+            "モカブラウン"
+          ]
+        }
+      ],
+      "caveats": [
+        "AU行の色一致だけでは段数不一致を覆せない。",
+        "本文を短い文字列へ分割した入力では、リンク先・適用範囲の文脈が失われている。"
+      ],
+      "case_id": "case-00b9d1779fa191acf665",
+      "structure_validation": "pass",
+      "machine_decision": "adopt",
+      "machine_adopted_row_key": "au:597651839:168445336:4:0",
+      "semantic_review_completed": true,
+      "api_modelVersion": "gemini-3.5-flash-lite",
+      "usageMetadata": {
+        "promptTokenCount": 2531,
+        "candidatesTokenCount": 268,
+        "totalTokenCount": 2799,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 2531
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 268
+          }
+        ]
+      },
+      "elapsed_seconds": 1.388,
+      "finishReasons": [
+        "STOP"
+      ]
+    },
+    {
+      "product": "マットレス",
+      "reviewed_decision": "exclude",
+      "reviewed_adopted_row_key": null,
+      "reason": "固定AUページはシングル、楽天選択はセミダブル。S3による除外は妥当。",
+      "issues": [
+        {
+          "kind": "selected_color_ignored",
+          "condition_id": "R2",
+          "model_status": "support",
+          "selected_value": "ベージュ",
+          "mismatched_row_count": 9,
+          "example_row_key": "au:337595272:326826849:0:0",
+          "example_source_ids": [
+            "A0",
+            "S39"
+          ],
+          "example_local_quotes": [
+            "グレー（パイル）",
+            "グレー"
+          ]
+        }
+      ],
+      "caveats": [
+        "ベージュ（パイル）のAU行と原文のパイル色一覧は整合するが、楽天側に生地指定はなく、生地まで一致確認済みとは扱わない。",
+        "複合値の対応を色だけのチェックで保証しない。"
+      ],
+      "case_id": "case-00dea3bdb495becd1dd4",
+      "structure_validation": "pass",
+      "machine_decision": "exclude",
+      "machine_adopted_row_key": null,
+      "semantic_review_completed": true,
+      "api_modelVersion": "gemini-3.5-flash-lite",
+      "usageMetadata": {
+        "promptTokenCount": 2646,
+        "candidatesTokenCount": 702,
+        "totalTokenCount": 3348,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 2646
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 702
+          }
+        ]
+      },
+      "elapsed_seconds": 2.875,
+      "finishReasons": [
+        "STOP"
+      ]
+    },
+    {
+      "product": "ペットフェンス",
+      "reviewed_decision": "exclude",
+      "reviewed_adopted_row_key": null,
+      "reason": "固定AUページは50×50cm・13枚（パネル12枚＋ドア1枚）。楽天の70×50cm・21枚（20枚＋ドア1枚）と明示不一致。",
+      "issues": [],
+      "caveats": [
+        "別サイズのラインナップは固定商品の仕様として使わない。"
+      ],
+      "case_id": "case-03eb5704d3bb159f757b",
+      "structure_validation": "pass",
+      "machine_decision": "exclude",
+      "machine_adopted_row_key": null,
+      "semantic_review_completed": true,
+      "api_modelVersion": "gemini-3.5-flash-lite",
+      "usageMetadata": {
+        "promptTokenCount": 2431,
+        "candidatesTokenCount": 178,
+        "totalTokenCount": 2609,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 2431
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 178
+          }
+        ]
+      },
+      "elapsed_seconds": 1.098,
+      "finishReasons": [
+        "STOP"
+      ]
+    },
+    {
+      "product": "テーブル",
+      "reviewed_decision": "adopt",
+      "reviewed_adopted_row_key": "au:695394169:305587038:2:0",
+      "reason": "選択マーブルホワイトは行A0/S19と一致。S21（約）直径80x高さ74cmが直径80cmを直接支持する。",
+      "issues": [],
+      "caveats": [],
+      "case_id": "case-0a4bfea40c723b989ecc",
+      "structure_validation": "pass",
+      "machine_decision": "adopt",
+      "machine_adopted_row_key": "au:695394169:305587038:2:0",
+      "semantic_review_completed": true,
+      "api_modelVersion": "gemini-3.5-flash-lite",
+      "usageMetadata": {
+        "promptTokenCount": 1898,
+        "candidatesTokenCount": 365,
+        "totalTokenCount": 2263,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 1898
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 365
+          }
+        ]
+      },
+      "elapsed_seconds": 1.487,
+      "finishReasons": [
+        "STOP"
+      ]
+    },
+    {
+      "product": "ジョイントマット",
+      "reviewed_decision": "adopt",
+      "reviewed_adopted_row_key": "au:764777172:327558278:0:0",
+      "reason": "選択ナチュラルは行A0/S34と一致。S3こちらのページは12畳/64枚ですとS31ジョイントマット64枚が複合セット全体を支持する。",
+      "issues": [],
+      "caveats": [
+        "別色行のau_checks supportはAU本文での自己値確認にとどまる。楽天ナチュラルとの対応はrakuten_checksでcontradictionになり、採用行の判断には影響しない。"
+      ],
+      "case_id": "case-4c8b1efa512c2a2c76e0",
+      "structure_validation": "pass",
+      "machine_decision": "adopt",
+      "machine_adopted_row_key": "au:764777172:327558278:0:0",
+      "semantic_review_completed": true,
+      "api_modelVersion": "gemini-3.5-flash-lite",
+      "usageMetadata": {
+        "promptTokenCount": 2324,
+        "candidatesTokenCount": 359,
+        "totalTokenCount": 2683,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 2324
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 359
+          }
+        ]
+      },
+      "elapsed_seconds": 1.55,
+      "finishReasons": [
+        "STOP"
+      ]
+    }
+  ],
+  "machine_counts": {
+    "adopt": 3,
+    "exclude": 3,
+    "not_evaluated": 0
+  },
+  "reviewed_counts": {
+    "adopt": 2,
+    "exclude": 4,
+    "not_evaluated": 0
+  },
+  "structure_passed_cases": 6,
+  "semantic_reviewed_cases": 6,
+  "usage_totals": {
+    "promptTokenCount": 15473,
+    "candidatesTokenCount": 3502,
+    "totalTokenCount": 18975
+  },
+  "runner_elapsed_seconds": 12.93,
+  "model_quality_assessment": "structured output accepted and complete; semantic failures remain, including one false adoption from another product link; unsuitable for unconditional adoption on structure alone",
+  "implementation_changed": false
+}
