@@ -1,0 +1,41 @@
+{
+  "schema": "sku-smoke-auth-preflight-v1",
+  "source_commit": "acda4f920221b72a98f62a02a8f05330f244aa87",
+  "runtime_observation": {
+    "spec_revision": "2",
+    "observed_spec_revision": "2",
+    "observations_current": true,
+    "observed_phase": "running",
+    "network_policy_state": "enforced",
+    "runtime_variable": "GCP_ACCESS_TOKEN",
+    "runtime_variable_state": "ready"
+  },
+  "probes": [
+    {
+      "checked_at_utc": "2026-10-10T15:17:14.357411+00:00",
+      "probe": "google_oauth_tokeninfo",
+      "credential_variable": "GCP_ACCESS_TOKEN",
+      "http_status": 400,
+      "authenticated": false,
+      "reason": "invalid_token",
+      "elapsed_seconds": 0.224
+    },
+    {
+      "checked_at_utc": "2026-10-10T15:17:55.160084+00:00",
+      "probe": "vertex_list_locations_read_only",
+      "project": "groundingsearch",
+      "credential_variable": "GCP_ACCESS_TOKEN",
+      "http_status": 401,
+      "authenticated": false,
+      "reason": "UNAUTHENTICATED",
+      "elapsed_seconds": 0.373
+    }
+  ],
+  "authenticated": false,
+  "model_inference_calls": 0,
+  "credential_values_recorded": false,
+  "authorization_headers_recorded": false,
+  "tokeninfo_url_recorded": false,
+  "identity_recorded": false,
+  "scope": "allowlisted status and timing only; response bodies and headers not retained"
+}

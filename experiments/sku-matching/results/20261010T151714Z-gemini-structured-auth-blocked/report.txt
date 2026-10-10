@@ -1,0 +1,66 @@
+Gemini SKU構造化出力 smoke 続行・新セッション認証診断
+
+確認日時: 2026-10-11 00:17:14–00:17:55 JST（UTC 2026-10-10 15:17）
+ブランチ: codex-sku-gemini-vertex-smoke-20261010
+実装・入力の基準commit: acda4f9（実行前にリモート最新版をfetch/checkout）
+対象: Vertex AI / project groundingsearch / location global / gemini-3.5-flash-lite
+
+結果
+新セッションでも認証確認に失敗したため、固定6ケースの推論は開始していない。
+tokeninfo: HTTP400 invalid_token、0.224秒。
+Vertex AI locations一覧の読み取り専用GET: HTTP401 UNAUTHENTICATED、0.373秒。
+認証リクエストはそれぞれ1回。推論呼び出し0回、自動再試行・再起動なし。
+環境はspec_revision=2、observations_current=true、GCP_ACCESS_TOKEN=ready、
+network_policy=enforcedだったが、これをAPI認証成功の根拠にはしていない。
+旧セッションとのトークン値比較はしていない。失効・設定値・反映のどれが原因かは未確定。
+トークン値、認証ヘッダー、tokeninfo URL、identity、認証応答本文は表示・保存していない。
+authentication.jsonには許可した項目のHTTP状態・理由・時間だけを記録した。
+
+ケース別結果（並び順は凍結CASE_IDSのまま）
+1 case-01f6fc36ae1d87a566c7 カーテン: 未評価
+  選択値: 150×135cm / ユーカリグリーン / レースカーテンなし。AU27行。
+2 case-00b9d1779fa191acf665 踏み台: 未評価
+  選択値: 4段 / ホワイト。AU5行。
+3 case-00dea3bdb495becd1dd4 マットレス: 未評価
+  選択値: フラットタイプ / セミダブル / ベージュ。AU10行。
+4 case-03eb5704d3bb159f757b ペットフェンス: 未評価
+  選択値: 21枚セット(パネル20枚＋ドア1枚) / 70×50cm / 半透明。AU2行。
+5 case-0a4bfea40c723b989ecc テーブル: 未評価
+  選択値: マーブルホワイト / 80cm(直径)。AU3行。
+6 case-4c8b1efa512c2a2c76e0 ジョイントマット: 未評価
+  選択値: ナチュラル / 64枚セット(12畳用)。AU3行。
+
+採用0、除外0、未評価6。認証失敗をSKU不一致やモデルの除外判断として数えない。
+全ケースのmodelVersion・usage・finishReasonは未取得。推論実行時間は未計測。
+構造検証とSKU判定の意味レビューはAPI応答がないため未評価。
+簡略responseSchemaの実API受理も未確認。構造化出力の6ケース再試験は未完了。
+
+ローカル確認
+AGENTS.mdとgemini-sku-smoke-continuation-20261010.txtを先に読んだ。
+Python 3.12.14、隔離.venvにgoogle-auth 2.61.0とrequests 2.34.2を導入。
+focused unittest 7件成功（offline fixture、0.009秒）。
+全lab suiteは今回再実行していない。引き継ぎ記載の既存失敗を解消したとは扱わない。
+固定入力ZIPのSHA256はc69bb28d88968cc48e1a8f6d825c4794cd1d44d0cedd0e685f141a186e9c683aと一致。
+固定6ケース、AU50行、source403件を既存入力から準備した。
+6 requestのpayloadが選択済みaxis/value、全AU行axis/value、固定sourcesだけであり、
+responseSchemaの条件チェックがstatus/source_idsだけであることをローカルで確認。
+choices、長いID、provenanceはモデル向けpayloadに入っていない。
+コードは変更せず、ID・根拠全文のローカル復元と採用条件を維持した。
+引用は固定入力から復元する仕様で、モデルが生成した引用ではない。
+読み取り専用コード監査も実API互換性や判定の意味の正しさを保証しない。
+新しい商品取得、独立gold、過去モデル予測の参照は行っていない。
+
+保存物
+このディレクトリのinputs.json、request-01～06.jsonはprepare-onlyの準備物。
+manifest.jsonにblocked_before_inference、attempted_calls=0を明記した。
+results.json=[]、summary.jsonは6件ともnot_evaluated。
+rawresponse-*.jsonは実API推論応答がないため作成していない。
+authentication.jsonとlocal-validation.jsonを同梱。新しいZIPは作成していない。
+
+続行条件
+Cloud環境設定のGCP_ACCESS_TOKENを有効な値に更新し、その設定が適用された
+新セッションで認証を実応答で確認する。トークン値をチャットへ貼付しない。
+ready表示だけで続行せず、今回の保存先を再利用しない。
+認証成功後、trial_gemini_sku_smoke_v2.pyを新しいoutput-dirで各ケース1回実行する。
+HTTPエラーなら停止し、後続は未評価。応答が得られたものは構造検証に加え、
+固定商品・現在行への根拠適用、選択値、複合値全体、明示矛盾を意味レビューする。

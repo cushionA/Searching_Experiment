@@ -1,5 +1,18 @@
 別セッションへの継続メモ
 
+2026-10-11 JST 新セッションでの続行結果
+- 最新リモートacda4f9をcheckout。認証preflightはtokeninfo HTTP400 invalid_token、
+  Vertex locations読み取りAPI HTTP401 UNAUTHENTICATED。環境spec2 ready/enforced
+  だけでは成功と判断せず、6ケースの推論は未実行（採用0、除外0、未評価6）。
+- トークン値・認証header・tokeninfo URL・identity・認証応答本文は表示/保存せず、
+  旧セッションとの値比較もしなかった。失効/設定/反映の原因は未確定。
+- 記録とprepare-only入力/6 requestは
+  results/20261010T151714Z-gemini-structured-auth-blocked/ に保存。
+  report.txt、authentication.json、local-validation.json、manifest/results/summaryあり。
+  rawresponseは推論未実行のため存在しない。コード変更なし、focused 7件成功。
+- 有効なGCP_ACCESS_TOKENが適用された新セッションで、まず実API認証を確認し、
+  成功後に別の新しい出力先で6件を各1回実行する。構造化6ケース再試験は未完了。
+
 リポジトリ: cushionA/Searching_Experiment
 ブランチ: codex-sku-gemini-vertex-smoke-20261010
 このブランチの最新リモートcommitから続行する。ZIP復元は不要。
@@ -35,7 +48,8 @@ spec13 ready/enforced後の新規non-loginプロセスでも同じだった。
 再起動を繰り返さず、新セッションのGCP_ACCESS_TOKENをまず検証する。
 値、認証header、tokeninfo URL、identityをログやチャットへ出さない。
 トークンのチャット貼付を求めない。readyだけで認証成功と判断しない。
-最新診断: results/20261010T145020Z-gemini-structured-reconnection-report.txt。
+旧セッション最終診断: results/20261010T145020Z-gemini-structured-reconnection-report.txt。
+新セッション最新診断: results/20261010T151714Z-gemini-structured-auth-blocked/report.txt。
 
 検証
 Python 3.12以上。隔離venvへgoogle-authとrequestsを導入する。
