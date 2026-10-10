@@ -1,0 +1,137 @@
+Claude PR26 v3 の実データ接続とCPUタスク検証
+
+参照: https://github.com/cushionA/Searching_Experiment/pull/26
+head: 86b5e3b7612f88185be639b86a88233a7c06f431
+作業ブランチ: codex-sku-generic-model-gates-20261010
+元ZIP: 20261011-sku-align-v3.zip
+SHA256: 46388080b7ab0abfd56629760cb21871e376a6853b6b1e8de99009a70ae5d6d4
+
+モデル実行はv2の凍結入力で完了後、Claudeの最新v3を別の出力先へ取り込んだ。
+v3ではmatched_by（identical/model）が付いた。証明済みにはせず、そのまま保存する。
+legacy/familyの10レコードファイルは、この新しい項目と版のパスだけを除いて一致。
+類似度の4ファイルはバイト一致。比較手順・件数・SHAを受領監査receiptに保存した。
+新しく生成した12条件・552モデル要求は、v2の要求とメタデータまでバイト一致。
+既存推論結果を引き継ぐ。v3で再推論したり、実行時間を再測定したとは呼ばない。
+v3の2,701 alignedはidentical 1,981 / model 720。extra 107はmodel。
+モデル要求にはこのmatched_byを足さず、原文・全選択肢・AU行だけを使う。
+
+商品単位の突合を前提に、楽天SKUから固定AU URLの各行を確認する。
+別URLへ振り分けない。未対応条件の種類による対象選別を行わない。
+楽天SKUのキーを保持する。価格レコードの粒度は変更しない。
+旧v1のデータ・出力・収集原本・正解ラベルは上書きしていない。
+
+今回受け取ったv3
+2,078ケース・2,078候補行・3,001未対応条件。
+内訳: one_sided 2,894 / extra_in_value 107。
+上流aligned 2,701条件は観測として別保存し、独立した証明とは呼ばない。
+AU側の複合値107件は逆方向の確認義務として全体を保持した。
+パイルの品質注意6ケースも残っている。逆方向が未確認なら自動採用しない。
+元JSONLのNaNは原バイトで保存し、生成JSONだけ欠損値nullに直した。
+
+受け渡し行を凍結済みの実入力と直接照合した。
+固定AU・AU行・楽天SKU識別子・原文の軸値・全選択肢・spanが一致。
+元ZIP全メンバーのCRC・サイズ・SHA256、原本240ファイルのSHA256が一致。
+生成カードのID重複は0。77固定AU文書のタイトル・説明全文へ接続した。
+v2で生成済みの全文の条件×窓は24,299件。条件・原文が同じv3へ引き継ぐ。
+これは入力接続数であり、全件推論数ではない。
+
+上流が省略した対称軸未解決81ケース（legacy45/family36）は未処理として明記。
+今回それらを旧版の復元データで埋めていない。上流の既知矛盾も上書きしない。
+producer側cases/productsのバイトはこのZIPに無く、申告SHAは未再検証。
+受け取った各行と実入力の意味上の結合、および実入力のバイトは検証済み。
+familyは商品対応自体が候補のため、確定商品ペアの正解率には混ぜない。
+
+タスク試行
+元受け渡しから12条件・11AU商品を選んだ。人工SKUは混ぜていない。
+レース有無、段数、サイズ、タイプ、色の複合値、枚数、高さ等の構造差を含む。
+選び方は課題の境界事例を含めた手動の開発用サンプルで、無作為評価ではない。
+
+1. ModernBERT JEV（argos1111/modernbert-ja-310m-jev、315M）
+   AU行・商品名・原文引用を自然文で渡し、元の全選択肢＋不明から選ばせる。
+   natural_flat と natural_structure で同じ本文と選択肢を使う。
+   後者にだけ見出し・親リンク先・表の同じ行を付ける。
+   取得済み説明の全fieldを220文字・40文字重複の窓で覆い、552要求を保存。
+   重複を含め全文を保持する。512 tokens超過は切り捨てず未推論として残す。
+   552要求のうち520が推論成功、32は入力長超過。
+   取得済み本文の窓はすべて保存したが、全窓をモデルが読めたとは呼ばない。
+   実行時間1,123.29秒。モデル・入力・出力は保存済み。
+   両armとも閾値0.50/0.70/0.90で、集約は12条件すべてunknown。
+   機械注釈のsupport6件の回収0/6、誤support0、precisionは未定義。
+   タイトルだけを棄却無しargmaxで採点するとsupport2/6、conflict2/2を回収。
+   unknown注釈をconflictとした2件もあり、これを自動採用の精度とはしない。
+
+2. 既存日本語NLI（0x3/bert-base-japanese-v3_nli-jsnli-jnli-jsick、111M）
+   同じ12条件でタイトル＋選択行の小規模対照を先に実施。
+   各元選択肢を「この商品の『軸名』は『値』です」という一種類の仮説にする。
+   24要求・90仮説、重複する両armを含む。説明全文のNLI評価ではない。
+   confidence0.90以上のsupportは0。全体NLI推論には広げない。
+   主閾値でsupport回収0/6。比較用0.50では1/6、誤support0。
+   1件だけの回収でprecision100%を採用根拠にはしない。
+   実行時間23.42秒。全文JEVとの速度比較やGCP見積りには使わない。
+
+3. GLiNER2.5 multi-v1（fastino/gliner2.5-multi-v1）
+   タイトルと選択AU行から原文spanを抽出する小規模対照。
+   固定の属性辞書を使わず、元の軸名だけをschemaに渡す。
+   軸名のみと、軸名＋全選択肢を汎用文で説明する二形式を試した。
+   前者は6/12、後者は5/12条件にspanを返した。これは正解率ではない。
+   後者では「3段」「70×100cm」「13枚セット」「50cm」等を抽出した。
+   レース有無は両形式で抽出できず、タイプでは無関係な名詞も返った。
+   「ベージュ」「パイル」のように複合値を部分抽出しても、値全体を確認済みにしない。
+   文字列未検出はunknownであり、不在の証明にしない。
+
+モデル入力には楽天の希望値をAUの前提として挿入しない。
+希望値は元の選択肢の一つ、および照合用メタデータとして保持する。
+モデル・入力・コード・出力をSHAで凍結し、再実行は新しい出力先で行う。
+CPU FP32での開発試行。時間は共有CPU上の観測で、GCP料金・速度の実測ではない。
+
+評価の扱い
+モデル予測を見ないLunaが同じ12条件を原本全文から注釈した。
+機械注釈はsupport6 / conflict2 / unknown4。人手確定goldではない。
+注釈の引用と適用範囲は評価用に残す。商品SKU全体の正解率とは区別する。
+主診断閾値0.90、比較用0.50/0.70は推論前に固定。ラベルで閾値を選ばない。
+JEVの候補softmaxを校正済み正解確率とは扱わない。
+複数の選択値が別窓で支持された場合はunknownにする。
+窓の所属を入力で明示しただけで、所属がモデルにより証明されたとは呼ばない。
+最終システムのaccept/dropやCSVはこの試行で変更しない。
+
+追加10件の品質注意は前回のsidecarを維持する。
+敷きパッド4件: 楽天のSKU属性200cmと本文205cmが食い違う。
+マットレス6件: 生地属性がメッシュにも同じため、パイルの直接証明にならない。
+元ラベルを不一致へ書き換えたり、運用の手動確認待ちを新設したりしていない。
+詳細: sku-label-quality-review-20261011.txt / 20261011-sku-label-quality-audit.zip。
+
+再現用の基礎データ
+20261010-sku-generic-residual-checkpoint.zip
+SHA256: 17c79a8d01692e180322d5b59e749150337faeb8792c8c14ad1ca9c8b02a7f17
+新しいZIPはモデル重み・人工SKUを含めない。この基礎ZIPの実入力・原本が必要。
+
+主要CLI（リポジトリルート、新しい出力先を指定）
+python3 -B experiments/sku-matching/import_claude_alignment_handoff_v2.py \
+  --archive UPSTREAM_V3_ZIP --expected-head 86b5e3b7612f88185be639b86a88233a7c06f431 \
+  --output-dir NEW_CARDS_DIR
+python3 -B experiments/sku-matching/prepare_generic_residual_evidence_v1.py \
+  --residual-cards NEW_CARDS_DIR/cards.jsonl --output-dir NEW_EVIDENCE_DIR
+python3 -B experiments/sku-matching/prepare_generic_html_scope_packets_v1.py \
+  --input-dir SELECTED_EVIDENCE_DIR --output-dir NEW_PACKETS_DIR
+python3 -B experiments/sku-matching/prepare_structured_choice_probe_v1.py \
+  --input-dir SELECTED_EVIDENCE_DIR --packet-dir NEW_PACKETS_DIR --output-dir NEW_REQUESTS_DIR
+.deps/sku-gliner-venv/bin/python -B experiments/sku-matching/trial_structured_choice_probe_v1.py \
+  --input-dir NEW_REQUESTS_DIR --output-dir NEW_JEV_RUN --backend jev
+
+12条件のselection・原本付き注釈入力・要求を成果物に凍結する。
+選択AU行の材料/構成等が残る場合は、逆方向義務を解決するまで採用できない。
+
+今回の判断
+構造情報を渡すだけでは、このJEV/NLI構成の支持回収を改善できなかった。
+閾値を下げて少数の正答を拾った値を、汎用性のある精度とは呼ばない。
+GLiNERは数量等の根拠抽出に使える可能性があるが、有無判定の代替にはならない。
+推論結果・引用所属の対照・全選択肢のrankを、次のタスク構築用に保存する。
+全3,001条件の意味判断や最終SKUスコアを測ったわけではない。
+
+検証
+新規接続・構造窓・凍結採点の24テスト成功。
+規約の全体検査は583テスト、18 skip、既存パッケージ検査2件がerror。
+一方は古いDecide成果物不足、もう一方はworktreeの.lab-output symlink拒否。
+tests/test_lab_luna_package.pyのこの2件に関わるコードは変更していない。
+機械注釈12件のID・軸・選択値・AU行、原文引用18箇所を別途照合済み。
+引用の存在は検証したが、注釈がすべて意味的に正しい保証とは区別する。

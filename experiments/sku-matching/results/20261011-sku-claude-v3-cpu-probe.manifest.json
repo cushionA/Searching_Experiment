@@ -1,0 +1,414 @@
+{
+  "schema_version": "claude-v3-cpu-probe-checkpoint-v1",
+  "source_pr": 26,
+  "source_head": "86b5e3b7612f88185be639b86a88233a7c06f431",
+  "data_scope": "real received handoff; no synthetic SKU records; synthetic fixtures limited to tests",
+  "whole_sku_accuracy_measured": false,
+  "production_adoption_changed": false,
+  "model_weights_included": false,
+  "dependencies": {
+    "base_raw_inputs": {
+      "path": "experiments/sku-matching/results/20261010-sku-generic-residual-checkpoint.zip",
+      "sha256": "17c79a8d01692e180322d5b59e749150337faeb8792c8c14ad1ca9c8b02a7f17",
+      "bytes": 17478704
+    },
+    "prior_quality_flags_and_silver_labels": {
+      "path": "experiments/sku-matching/results/20261011-sku-label-quality-audit.zip",
+      "sha256": "386ddd10c5ab88d4c3cb7dec5be300017ba524b3548a7cc18a4f8857fdd98b62",
+      "bytes": 845940
+    }
+  },
+  "evaluation_labels": "12 independently blind machine annotations; not human gold",
+  "inference_input_version": "v2; v3 model requests byte-identical, receipt retained",
+  "v3_model_inference_run": false,
+  "payload_file_count": 95,
+  "uncompressed_payload_bytes": 228109275,
+  "entries": {
+    ".lab-output/sku-claude-pr26-generic-axis-span-20261011-v1/code/backend_gliner_extract.py": {
+      "sha256": "00cc1bde74bc906ef2f99973e4373ae1fd26f9db53e49a9d10c685d38abe6798",
+      "size_bytes": 10675
+    },
+    ".lab-output/sku-claude-pr26-generic-axis-span-20261011-v1/code/trial_generic_axis_span_v1.py": {
+      "sha256": "368ab87b51e5954c0b5b8e4f9b42183557851fd3711d21734653bda89bafe596",
+      "size_bytes": 5958
+    },
+    ".lab-output/sku-claude-pr26-generic-axis-span-20261011-v1/code/trial_structured_choice_probe_v1.py": {
+      "sha256": "6a0609a1f2ccddf384ff2d54339c9ce7385ea39e71baa9a9d9b39521fa1de843",
+      "size_bytes": 4763
+    },
+    ".lab-output/sku-claude-pr26-generic-axis-span-20261011-v1/freeze.json": {
+      "sha256": "28b637480d52c651a0a648a72b8825e3a8d3d237b0461578a2623aa86f3850a5",
+      "size_bytes": 991
+    },
+    ".lab-output/sku-claude-pr26-generic-axis-span-20261011-v1/predictions.jsonl": {
+      "sha256": "7c6c6ecaa95c933a118d463b05403e25b3fd4bea06cf8cebc96a97447e75c6ee",
+      "size_bytes": 31714
+    },
+    ".lab-output/sku-claude-pr26-generic-axis-span-20261011-v1/requests.jsonl": {
+      "sha256": "2854e21b1c9c953112b1fe1219923b516437ade387cb78b4962d07fbdd90e995",
+      "size_bytes": 28837
+    },
+    ".lab-output/sku-claude-pr26-generic-axis-span-20261011-v1/summary.json": {
+      "sha256": "4b739fe3276cdd264138de615c74b2f74f4de0e3ff6b11bb371f74ed0990e314",
+      "size_bytes": 2346
+    },
+    ".lab-output/sku-claude-pr26-generic-axis-span-20261011-v2/code/backend_gliner_extract.py": {
+      "sha256": "00cc1bde74bc906ef2f99973e4373ae1fd26f9db53e49a9d10c685d38abe6798",
+      "size_bytes": 10675
+    },
+    ".lab-output/sku-claude-pr26-generic-axis-span-20261011-v2/code/trial_generic_axis_span_v1.py": {
+      "sha256": "2a639e2add0fd7ffb1d6571096c847dffdb7831172b5a37276404b8b694ef3c6",
+      "size_bytes": 6590
+    },
+    ".lab-output/sku-claude-pr26-generic-axis-span-20261011-v2/code/trial_structured_choice_probe_v1.py": {
+      "sha256": "6a0609a1f2ccddf384ff2d54339c9ce7385ea39e71baa9a9d9b39521fa1de843",
+      "size_bytes": 4763
+    },
+    ".lab-output/sku-claude-pr26-generic-axis-span-20261011-v2/freeze.json": {
+      "sha256": "18feebb7c82c764b872164dba6855d89d8fe213d9853a0ac86e706923cd4d09f",
+      "size_bytes": 1072
+    },
+    ".lab-output/sku-claude-pr26-generic-axis-span-20261011-v2/predictions.jsonl": {
+      "sha256": "ef3824a905aed4565d5a23f7ee0bfb4c51a20bfbc7cd47d86335c3bbb3e36ba1",
+      "size_bytes": 34565
+    },
+    ".lab-output/sku-claude-pr26-generic-axis-span-20261011-v2/requests.jsonl": {
+      "sha256": "3bb36b52c6a5e17a0e853dd4f917a1bbb0438b9d258d275fb3643fa6307e5b6b",
+      "size_bytes": 32302
+    },
+    ".lab-output/sku-claude-pr26-generic-axis-span-20261011-v2/summary.json": {
+      "sha256": "8e78567d09b22d16f5458acb2b7ad51f4734cd88c15e0c02d234f0eda0255dbd",
+      "size_bytes": 2426
+    },
+    ".lab-output/sku-claude-pr26-handoff-cards-20261011-v2/cards.jsonl": {
+      "sha256": "8dc366d0f7bb53d780eb0932af72fda46ccac2ea578d90165713d262ee6441fe",
+      "size_bytes": 8210925
+    },
+    ".lab-output/sku-claude-pr26-handoff-cards-20261011-v2/manifest.json": {
+      "sha256": "3fcd1029e8af0054464a29a9a9628bc2a48d1a66e7ba6197c25645b7f24e152b",
+      "size_bytes": 15124
+    },
+    ".lab-output/sku-claude-pr26-handoff-cards-20261011-v2/original_handoff.jsonl": {
+      "sha256": "a3acf20fa7c614466c74f9d44b3ecfcea5f5e3b9131fd165239fba5baaef7896",
+      "size_bytes": 5605735
+    },
+    ".lab-output/sku-claude-pr26-handoff-cards-20261011-v2/reverse_conditions.jsonl": {
+      "sha256": "0d6479ac0e8ae76e3850056905a8d494c37349e071d3358b282b2db90a577f7c",
+      "size_bytes": 305435
+    },
+    ".lab-output/sku-claude-pr26-handoff-cards-20261011-v2/upstream_context.jsonl": {
+      "sha256": "724412bef96c56684e0f9399acce45b626b084fb77767fc9e99f60d5a8b8c677",
+      "size_bytes": 6736589
+    },
+    ".lab-output/sku-claude-pr26-handoff-cards-20261011-v3/cards.jsonl": {
+      "sha256": "419533cfb8a8e3f3009e1b3fcdcf09bb83b83c4243bbc545239818733a9e5191",
+      "size_bytes": 8265264
+    },
+    ".lab-output/sku-claude-pr26-handoff-cards-20261011-v3/manifest.json": {
+      "sha256": "fe9fd3ebc13b5b003777df3402b77edd09727073e5d7977d9d5c86700569e4b4",
+      "size_bytes": 15130
+    },
+    ".lab-output/sku-claude-pr26-handoff-cards-20261011-v3/original_handoff.jsonl": {
+      "sha256": "978622cbd6241f6595b41916f55e6b7429621496e140906adf10484b71ba82de",
+      "size_bytes": 5736123
+    },
+    ".lab-output/sku-claude-pr26-handoff-cards-20261011-v3/reverse_conditions.jsonl": {
+      "sha256": "550ffad817215b13df950988c3fb00b3ab46140f2d086674b12bcb98e7fe8afb",
+      "size_bytes": 307682
+    },
+    ".lab-output/sku-claude-pr26-handoff-cards-20261011-v3/upstream_context.jsonl": {
+      "sha256": "5488cf956ff2bd18cb5fe8578c49915259b790f8f6d3bc2f0020ac04fc3cbb69",
+      "size_bytes": 6801234
+    },
+    ".lab-output/sku-claude-pr26-residual-evidence-20261011-v2/documents.jsonl": {
+      "sha256": "6968acba9671aff53fa8b163da136240a54c894a41993fafb0245b1f7b0a10ea",
+      "size_bytes": 8188236
+    },
+    ".lab-output/sku-claude-pr26-residual-evidence-20261011-v2/manifest.json": {
+      "sha256": "1ac3e6c1c935c376994072c628efe485c79347ba9217395567db185a1dd56900",
+      "size_bytes": 36499
+    },
+    ".lab-output/sku-claude-pr26-residual-evidence-20261011-v2/tasks.jsonl": {
+      "sha256": "ef0c90e2d5ab5a86a76029fdce9e539815405902cd867839ebaa3228639ea52c",
+      "size_bytes": 44098225
+    },
+    ".lab-output/sku-claude-pr26-review-20261011-v2/20261011-sku-align-v2.manifest.json": {
+      "sha256": "445b3888f57c7a612060cdb592304ef7d9c716823db9703fbece5ab2b81db250",
+      "size_bytes": 1439
+    },
+    ".lab-output/sku-claude-pr26-review-20261011-v2/20261011-sku-align-v2.zip": {
+      "sha256": "81c0a3b6e72c907068183e2f70bd604d0a8c6932d203e42a6436a80928573efc",
+      "size_bytes": 524334
+    },
+    ".lab-output/sku-claude-pr26-review-20261011-v2/align_sku_conditions.py": {
+      "sha256": "194755324b80945cda478acea283fc7b063600cb68c0bff23c7b4b74ce4089f8",
+      "size_bytes": 16418
+    },
+    ".lab-output/sku-claude-pr26-review-20261011-v2/code/claude-pr26-v2-residual-trial-20261011.txt": {
+      "sha256": "faafdd7c1f82355453f2a4b4e3d34f00b3cba930b05dd53c1a55d1b6a4e8ae95",
+      "size_bytes": 9041
+    },
+    ".lab-output/sku-claude-pr26-review-20261011-v2/code/import_claude_alignment_handoff_v2.py": {
+      "sha256": "92944b5795668057fb2ef702643b02cdf7d1781b9369b8f4cf0e222df79e0e58",
+      "size_bytes": 22971
+    },
+    ".lab-output/sku-claude-pr26-review-20261011-v2/integration-validation.json": {
+      "sha256": "94e98b88a9bf922fa124d12c199f8daa4b2e5b0b050ddeea89b635e0d714fdde",
+      "size_bytes": 794
+    },
+    ".lab-output/sku-claude-pr26-review-20261011-v2/producer-v10.zip": {
+      "sha256": "af7d26e093dc672944544d3945c18f1cdf8670c61917ed15019b85a4f0a82161",
+      "size_bytes": 73536
+    },
+    ".lab-output/sku-claude-pr26-review-20261011-v2/provenance.json": {
+      "sha256": "ea1b0af06e813f7b0361b7f3c6f4b1a1e3a301ca148ef01424f49143b9faf3b2",
+      "size_bytes": 1107
+    },
+    ".lab-output/sku-claude-pr26-review-20261011-v2/raw-source-recheck.json": {
+      "sha256": "5eb91790a6cb52b33bb2d290615c6e41f36f589481dd7bc2618d2bd45a0ea27e",
+      "size_bytes": 46026
+    },
+    ".lab-output/sku-claude-pr26-review-20261011-v2/unittest-discover.log": {
+      "sha256": "ba804596773b0fe05cb5a3f85a2105b2978b0b52c5eabd1e68c6faddec2c418b",
+      "size_bytes": 3917
+    },
+    ".lab-output/sku-claude-pr26-review-20261011-v3/20261011-sku-align-v3.manifest.json": {
+      "sha256": "325e4d08e879f4d3e9eb0cf1f12e7f5d0268e87162c45caed9caa7196cbead14",
+      "size_bytes": 1351
+    },
+    ".lab-output/sku-claude-pr26-review-20261011-v3/20261011-sku-align-v3.zip": {
+      "sha256": "46388080b7ab0abfd56629760cb21871e376a6853b6b1e8de99009a70ae5d6d4",
+      "size_bytes": 528020
+    },
+    ".lab-output/sku-claude-pr26-review-20261011-v3/align_sku_conditions.py": {
+      "sha256": "5154beb7ede7778b3bac3060cf17dc776e8421b72eb6ed1953915ea4391a7c33",
+      "size_bytes": 16761
+    },
+    ".lab-output/sku-claude-pr26-review-20261011-v3/model-input-equivalence.json": {
+      "sha256": "1c31df941990b3d16f6b1dc90fd7a68f4efa85d387ed7d88165866abd2352cdb",
+      "size_bytes": 3034
+    },
+    ".lab-output/sku-claude-pr26-review-20261011-v3/provenance.json": {
+      "sha256": "a22a4c740f2b9b2dd2303311026527f55af6a4d6ffdb01a8a097e2005649fd0e",
+      "size_bytes": 817
+    },
+    ".lab-output/sku-claude-pr26-review-20261011-v3/unittest-discover.log": {
+      "sha256": "e6886edef5e89fdbac2de694503d58732ae858391df5a38c29bd8ce73489c864",
+      "size_bytes": 3918
+    },
+    ".lab-output/sku-claude-pr26-review-20261011-v3/v2-v3-equivalence.json": {
+      "sha256": "49d22884efc8dd24f33fda9a80f944b3e8c6a20b44ecc0618f50894abec7a087",
+      "size_bytes": 8911
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-evidence-20261011-v1/documents.jsonl": {
+      "sha256": "ffcb8b1bab17d4a35b6d9274fb87aae1b7e195462bfa415a10d482326c0147c7",
+      "size_bytes": 1582228
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-evidence-20261011-v1/manifest.json": {
+      "sha256": "680fe821f0f6945134af99222bf8ee259c41ee38792b27b2fcddcd65715b20cc",
+      "size_bytes": 36500
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-evidence-20261011-v1/tasks.jsonl": {
+      "sha256": "bcb74ca04a4325c2faa9e8c8e6fa5c5ce2e52ffa15999f4539aa3914b8a19a0c",
+      "size_bytes": 171725
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-evidence-20261011-v3/documents.jsonl": {
+      "sha256": "ffcb8b1bab17d4a35b6d9274fb87aae1b7e195462bfa415a10d482326c0147c7",
+      "size_bytes": 1582228
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-evidence-20261011-v3/manifest.json": {
+      "sha256": "5ea82de221d921671aca1d6e7e6df99904393d872578f93afd7c9a4fe84a52ce",
+      "size_bytes": 36500
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-evidence-20261011-v3/tasks.jsonl": {
+      "sha256": "94d1ed7d2446a96ac293ea199e204376ab261d3ee6cee18360c6155e4eee9d52",
+      "size_bytes": 171947
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-jev-20261011-v1/code/trial_generic_model_jev_v1.py": {
+      "sha256": "100b43a09e41c0bce4de09cdfcc9bad6623ab41e4bb4db43dc9ed2d18a790863",
+      "size_bytes": 23142
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-jev-20261011-v1/code/trial_structured_choice_probe_v1.py": {
+      "sha256": "6a0609a1f2ccddf384ff2d54339c9ce7385ea39e71baa9a9d9b39521fa1de843",
+      "size_bytes": 4763
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-jev-20261011-v1/freeze.json": {
+      "sha256": "13d624afbcbb5a8c0288f24140c21853be0ffd2ee7269aa5dd41aa975cc6e137",
+      "size_bytes": 660
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-jev-20261011-v1/predictions.jsonl": {
+      "sha256": "670743b523609d9ebe818db590ba5c70c7452742f2eb70c7975e52b5c0dcae4a",
+      "size_bytes": 43395778
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-jev-20261011-v1/requests.jsonl": {
+      "sha256": "3cf8a35d5d168181e31dba6d729c43c342cb02522f45be3f91afe0779bb7149b",
+      "size_bytes": 19832672
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-jev-20261011-v1/summary.json": {
+      "sha256": "da67dfde88eed19b8f4fae26bef22d56b32a96493fa208fa1d21a2db0313e2fd",
+      "size_bytes": 4599
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-packets-20261011-v1/documents.jsonl": {
+      "sha256": "ffcb8b1bab17d4a35b6d9274fb87aae1b7e195462bfa415a10d482326c0147c7",
+      "size_bytes": 1582228
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-packets-20261011-v1/manifest.json": {
+      "sha256": "c860f8f0c920b29a3cbe48d3d57151f17fc17f18385956376cdac0d2fe814ef3",
+      "size_bytes": 3394
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-packets-20261011-v1/packets.jsonl": {
+      "sha256": "ac07be6b5f8d2d1f0912f61bfa4909f22c33d321cdd0b6c06a6477da2e4b3375",
+      "size_bytes": 22088651
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-packets-20261011-v1/tasks.jsonl": {
+      "sha256": "bcb74ca04a4325c2faa9e8c8e6fa5c5ce2e52ffa15999f4539aa3914b8a19a0c",
+      "size_bytes": 171725
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-requests-20261011-v1/manifest.json": {
+      "sha256": "ae77b24104015e478cb3b1de544e94f89c8391a50ef061ac27a9c3eef38abe7f",
+      "size_bytes": 44391
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-requests-20261011-v1/requests.jsonl": {
+      "sha256": "3cf8a35d5d168181e31dba6d729c43c342cb02522f45be3f91afe0779bb7149b",
+      "size_bytes": 19832672
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-requests-20261011-v3/manifest.json": {
+      "sha256": "26e2335a1d62a832397a1d3f623235fd89a4a3dc3e0fc93bd48178f7a415f51d",
+      "size_bytes": 44391
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-requests-20261011-v3/requests.jsonl": {
+      "sha256": "3cf8a35d5d168181e31dba6d729c43c342cb02522f45be3f91afe0779bb7149b",
+      "size_bytes": 19832672
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-selection-20261011-v1/annotation-evidence-validation.json": {
+      "sha256": "8424c6019e6b0b41b38d4e7eed4d44b6af8cab11122cd18c9ce154907d4ccdb1",
+      "size_bytes": 6412
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-selection-20261011-v1/annotation-inputs.jsonl": {
+      "sha256": "e2541717e35a87fd8d8b3364bed951abaac66f996911141cd815bb6ece9c8c80",
+      "size_bytes": 305041
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-selection-20261011-v1/annotation-inputs.manifest.json": {
+      "sha256": "49a61f8cc4cab7e15814ebf33678d0e82d7870f341d3546d1c8512542b53f861",
+      "size_bytes": 1746
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-selection-20261011-v1/annotations-luna.jsonl": {
+      "sha256": "cecef6560b9bc92e2ae0ffd057019fbb0dc4a7fba8490c5c161693c9e91eb893",
+      "size_bytes": 8482
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-selection-20261011-v1/annotations-luna.manifest.json": {
+      "sha256": "ddf238859c96bc3a11daf1f162ec1501aaf15ff219fe38e145baf604d50d3138",
+      "size_bytes": 916
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-selection-20261011-v1/cards.jsonl": {
+      "sha256": "e690148a3c7ce917a1c657369ba86db6758012999016ddd41ed2fd45b52d4307",
+      "size_bytes": 33160
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-selection-20261011-v1/model-comparison.json": {
+      "sha256": "d31e0a2abd7031dc11b3247be62b408d09451fe50dc0d712f1bf3513147054d6",
+      "size_bytes": 74944
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-selection-20261011-v1/selection.json": {
+      "sha256": "1de2e60e3c912346712444c7fb08e7d90d752a9e22e9d4efe2818ec9223cf0a9",
+      "size_bytes": 3202
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-selection-20261011-v1/title-nli-score.json": {
+      "sha256": "681994cbeaeace88eeb0aca0f0c12b1fd33e73eecf79d60053ef42b2d49cc5c7",
+      "size_bytes": 36835
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-selection-20261011-v3/cards.jsonl": {
+      "sha256": "1960cefc9406e3fc283ff7c3899002824c5eaa0cccafaa34de3689717630fbb5",
+      "size_bytes": 33382
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-selection-20261011-v3/manifest.json": {
+      "sha256": "5ce907fc1fb3005216933ea0952acc08a716e609ccab3dbda43d13aea35e1559",
+      "size_bytes": 263
+    },
+    ".lab-output/sku-claude-pr26-structured-probe-selection-20261011-v3/selection.json": {
+      "sha256": "1de2e60e3c912346712444c7fb08e7d90d752a9e22e9d4efe2818ec9223cf0a9",
+      "size_bytes": 3202
+    },
+    ".lab-output/sku-claude-pr26-title-nli-20261011-v1/code/trial_cpu_requirement_relations_v1.py": {
+      "sha256": "d5bf039e5c799a2f703c1fd3e1ff3e73e3d495cea96178c8cee45dc04c120eb2",
+      "size_bytes": 30453
+    },
+    ".lab-output/sku-claude-pr26-title-nli-20261011-v1/code/trial_generic_model_nli_v1.py": {
+      "sha256": "97ac4af19534c2f26b4e7cf85961e7e331c9b6cdf9695d1b7d6cec019caf22eb",
+      "size_bytes": 9552
+    },
+    ".lab-output/sku-claude-pr26-title-nli-20261011-v1/code/trial_structured_choice_probe_v1.py": {
+      "sha256": "6a0609a1f2ccddf384ff2d54339c9ce7385ea39e71baa9a9d9b39521fa1de843",
+      "size_bytes": 4763
+    },
+    ".lab-output/sku-claude-pr26-title-nli-20261011-v1/freeze.json": {
+      "sha256": "61082b754e02483a0364047badc6005a2be79202059ff4a659e5e5f8b85e6ba4",
+      "size_bytes": 773
+    },
+    ".lab-output/sku-claude-pr26-title-nli-20261011-v1/pairs.jsonl": {
+      "sha256": "3b3ad1c80a9cac186ce7f36f8092736c93886b7cfd768d7115970209db52cfa3",
+      "size_bytes": 466099
+    },
+    ".lab-output/sku-claude-pr26-title-nli-20261011-v1/predictions.jsonl": {
+      "sha256": "8d34d1b17741733bcdeaa3f3b3676ef7a1b4bcb1bb45277a8d8347420a66c72c",
+      "size_bytes": 519654
+    },
+    ".lab-output/sku-claude-pr26-title-nli-20261011-v1/requests.jsonl": {
+      "sha256": "612b85bcad245ea7ea209aa2e3dc4babdb399710e752139eac843c5c743b3e50",
+      "size_bytes": 131976
+    },
+    ".lab-output/sku-claude-pr26-title-nli-20261011-v1/summary.json": {
+      "sha256": "c2b7c9b42dc83ef3ea670f617aa627affe73e1f008347a9a13a8f8637106df62",
+      "size_bytes": 3766
+    },
+    ".lab-output/sku-claude-pr26-title-nli-requests-20261011-v1/manifest.json": {
+      "sha256": "f2bc10bd722df16f041e9e4020974204dcb97c164c8b77c607da8a5a8157b08b",
+      "size_bytes": 432
+    },
+    ".lab-output/sku-claude-pr26-title-nli-requests-20261011-v1/requests.jsonl": {
+      "sha256": "612b85bcad245ea7ea209aa2e3dc4babdb399710e752139eac843c5c743b3e50",
+      "size_bytes": 131976
+    },
+    "experiments/sku-matching/claude-pr26-v3-residual-trial-20261011.txt": {
+      "sha256": "3e9d34baef8c80468abc3deb2786a747176cd8a36ecf14ccbd087c6f6fdad612",
+      "size_bytes": 10006
+    },
+    "experiments/sku-matching/import_claude_alignment_handoff_v2.py": {
+      "sha256": "ad5f3dda2dbec4c04947eb2b6f420821b4d6a9197647149c6a950b00cdf3db78",
+      "size_bytes": 24013
+    },
+    "experiments/sku-matching/prepare_structured_choice_probe_v1.py": {
+      "sha256": "9826f1c78f9ea774255ec40da37c3b9e4411be5ef8c781422490aab742e6a4f5",
+      "size_bytes": 12738
+    },
+    "experiments/sku-matching/score_structured_choice_probe_v1.py": {
+      "sha256": "24df36277b693c821f2f146c2a5a960d3b5c534d2131ace6e2a7c93aa68b0498",
+      "size_bytes": 6783
+    },
+    "experiments/sku-matching/trial_generic_axis_span_v1.py": {
+      "sha256": "2a639e2add0fd7ffb1d6571096c847dffdb7831172b5a37276404b8b694ef3c6",
+      "size_bytes": 6590
+    },
+    "experiments/sku-matching/trial_structured_choice_probe_v1.py": {
+      "sha256": "6a0609a1f2ccddf384ff2d54339c9ce7385ea39e71baa9a9d9b39521fa1de843",
+      "size_bytes": 4763
+    },
+    "tests/test_lab_claude_handoff_v2.py": {
+      "sha256": "6b7d02ad37573aaf602c43403679e6509ccd4a2ad6e4e7eb0923a23c6c988508",
+      "size_bytes": 17464
+    },
+    "tests/test_lab_sku_structured_choice_probe.py": {
+      "sha256": "1a38a8e6e2b832810b32ee0d5637928f8bc662b00ced8da6824d9b8f00d82450",
+      "size_bytes": 9885
+    },
+    "tests/test_lab_sku_structured_probe_scoring.py": {
+      "sha256": "7749eac390ba439e70934b6670c804b93c091e9108df922ce6a1364f6c8ee15e",
+      "size_bytes": 4865
+    }
+  },
+  "archive": {
+    "path": "experiments/sku-matching/results/20261011-sku-claude-v3-cpu-probe.zip",
+    "sha256": "fc3bebf6a5a1016a96b18a28dc83b4faf02bf6f8e67e6f28c38a7ef4a0d476ff",
+    "bytes": 12634080,
+    "member_count": 96
+  }
+}
