@@ -86,6 +86,37 @@ class AtomTests(unittest.TestCase):
         none = atomize("なし", "オプション", family=("なし", "毛布セット"))["atoms"]
         self.assertEqual([(a["component"], a["value"]) for a in none], [("blanket", False)])
 
+    def test_counts_and_measures_keep_units_roles_and_quotes(self):
+        cases = {("枚数", "50枚"): [("piece_total", None, 50)],
+                 ("数量", "4脚セット"): [("unit_count", "脚", 4)],
+                 ("重さ", "1.5kg×2個セット"): [("measure", "weight", 1500.0), ("unit_count", "個", 2)],
+                 ("限界温度", "-15℃"): [("measure", "temperature", -15.0)],
+                 ("容量", "256GB"): [("measure", "storage", 256.0)]}
+        for (label, value), want in cases.items():
+            parsed = atomize(value, label)
+            self.assertEqual(parsed["decomposition"], "complete", value)
+            got = [(a["type"], a.get("unit") if a["type"] == "unit_count" else a.get("kind"), a["value"])
+                   for a in parsed["atoms"]]
+            self.assertEqual(sorted(got, key=str), sorted(want, key=str), value)
+            for atom in parsed["atoms"]:
+                self.assertEqual(value[atom["offset"][0]:atom["offset"][1]], atom["quote"])
+        # Apparel sizes are not litres; a bare W or t needs a power or load role.
+        self.assertEqual([a["type"] for a in atomize("4L", "サイズ")["atoms"]], ["variant"])
+        self.assertNotIn("measure", [a["type"] for a in atomize("2t", "サイズ")["atoms"]])
+        load, weight = atomize("1.2t", "耐荷重")["atoms"][0], atomize("1200kg", "重量")["atoms"][0]
+        self.assertFalse(gates.comparable(load, weight))
+        self.assertFalse(gates.comparable(atomize("2個", "数量")["atoms"][0], atomize("2脚", "数量")["atoms"][0]))
+
+    def test_add_ons_named_by_axis_or_value(self):
+        battery = atomize("あり", "モバイルバッテリー")["atoms"]
+        self.assertEqual([(a["component"], a["value"]) for a in battery], [("axis:モバイルバッテリー", True)])
+        cover = atomize("カバーなしタイプ", "タイプ")["atoms"]
+        self.assertEqual([(a["component"], a["value"]) for a in cover], [("word:カバー", False)])
+        single = atomize("単品", "セット", family=("単品", "2個セット", "5個セット"))["atoms"]
+        self.assertEqual([(a["type"], a["unit"], a["value"]) for a in single], [("unit_count", "個", 1)])
+        long_size = atomize("シングルロング", "サイズ")["atoms"]
+        self.assertEqual([(a["type"], a["value"]) for a in long_size], [("named_size", "シングル"), ("variant", "ロング")])
+
     def test_named_size_is_a_word(self):
         from sku_gate_atoms import title_facts
         self.assertNotIn("named_size", title_facts("＼ランキング1位／ マットレス", frozenset(), ()))
@@ -210,6 +241,25 @@ class GateTests(unittest.TestCase):
                                 au_lines=["こちらのページはダブルサイズです", "商 品 詳 細", "サイズ", "（約）幅140cm×長さ205cm"])
         case["rakuten_selected"]["variant_attributes"] = [{"title": "本体縦幅", "value": "200", "unit": "cm", "value_span": None}]
         self.assertEqual(run("A", facts, case)["decision"], "review")
+
+    def test_new_types_decide_on_the_same_row_only(self):
+        fam = {"数量": ("1脚", "2脚セット", "4脚セット"), "モバイルバッテリー": ("あり", "なし")}
+        rows = [[("数量", "1脚"), ("モバイルバッテリー", "なし")], [("数量", "2脚セット"), ("モバイルバッテリー", "なし")],
+                [("数量", "2脚セット"), ("モバイルバッテリー", "あり")]]
+        facts, case = make_pair(rows, [("数量", "2脚セット"), ("モバイルバッテリー", "あり")], fam)
+        for method in ("A", "B"):
+            out = run(method, facts, case)
+            self.assertEqual((out["decision"], out["top_row_key"]), ("matched", "au:1:9:2:0"), method)
+        facts, case = make_pair(rows[:2], [("数量", "4脚セット"), ("モバイルバッテリー", "あり")], fam)
+        for method in ("A", "B"):
+            self.assertEqual(run(method, facts, case)["decision"], "unmatched", method)
+        # A load capacity in the AU title never decides a product-weight requirement.
+        facts, case = make_pair([[("カラー", "赤")]], [("重量", "2kg"), ("カラー", "赤")], {"重量": ("2kg", "3kg"), "カラー": ("赤",)},
+                                au_title="台車 耐荷重2t")
+        for method in ("A", "B"):
+            out = run(method, facts, case)
+            self.assertEqual(out["decision"], "review", method)
+            self.assertEqual(out["rows"][0]["atom_results"][0]["status"], "unknown")
 
     def test_price_and_stock_fields_do_not_change_decisions(self):
         facts, case = make_pair([[("カラー", "赤")], [("カラー", "青")]], [("カラー", "赤")], {"カラー": ("赤", "青")})

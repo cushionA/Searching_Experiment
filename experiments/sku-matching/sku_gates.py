@@ -23,7 +23,7 @@ from sku_gate_atoms import (atomize, color_base_vocab, compact, code_crosswalk, 
                             fact_family, atom_value_key, title_facts, NAMED_SIZES, SIZE_CODES)
 import sku_gate_sources as src
 
-TASK_VERSION = "sku-gate-task-v2"
+TASK_VERSION = "sku-gate-task-v3"
 CURTAIN_COMPONENTS = ("drape", "lace")
 # Separately packed items a contents list can enumerate. Built-in features
 # (armrest, top board, bookshelf, handle) are never inferred from list absence.
@@ -341,6 +341,10 @@ def comparable(req: dict, cand: dict) -> bool:
         return False
     if req["type"] in ("component_presence", "component_count", "component_material"):
         return req["component"] == cand["component"]
+    if req["type"] == "unit_count":
+        return req["unit"] == cand["unit"]
+    if req["type"] == "measure":
+        return (req["kind"], req.get("role")) == (cand["kind"], cand.get("role"))
     if req["type"] == "dimension":
         return compare_dims(req, cand) != "incomparable"
     return True
@@ -356,8 +360,8 @@ def compare_atoms(req: dict, cand: dict, contrast: callable) -> str:
     if kind in ("named_size",):
         both_named = req["value"] in NAMED_SIZES and cand["value"] in NAMED_SIZES
         return "conflict" if both_named else "unknown"
-    if kind in ("piece_total", "tier_count", "component_count", "component_presence", "transparency",
-                "fabric", "seat_width"):
+    if kind in ("piece_total", "unit_count", "measure", "tier_count", "component_count", "component_presence",
+                "transparency", "fabric", "seat_width"):
         return "conflict"
     if kind in ("color", "variant", "qualifier"):
         return "conflict" if contrast(req, cand) else "unknown"
@@ -877,7 +881,7 @@ def _requirement_card(atom: dict) -> dict:
     card = {k: atom.get(k) for k in ("requirement_id", "type", "value", "quote", "span", "scope", "axis_index",
                                       "axis_key", "axis_label", "axis_label_quote", "axis_label_span",
                                       "axis_value_quote", "decomposition", "residue")}
-    for key in ("component", "role", "labels", "derivation"):
+    for key in ("component", "role", "labels", "derivation", "unit", "kind"):
         if atom.get(key) is not None:
             card[key] = atom[key]
     card["axis_provenance"] = {"axis_key": atom["axis_key"], "axis_label_quote": atom.get("axis_label_quote"),

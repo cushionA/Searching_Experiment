@@ -54,6 +54,24 @@ SECTION_HEADINGS = {
     "生産国": "ignore", "毛布(オプション)": "option_size",
 }
 OBJECT_HEADINGS = ("パネル", "ドアパーツ", "ドア")
+# Counted units other than 枚 (枚 stays piece_total). A count only compares with the same unit.
+COUNT_UNITS = ("ケース", "パック", "セット", "個", "本", "脚", "組", "台", "点", "袋", "箱", "足", "巻", "缶")
+_COUNT_UNIT_RE = "|".join(COUNT_UNITS)
+_PACK_SUFFIX = r"(?:入り|入|組|セット|set)?"
+# Measured quantities: unit -> (kind, factor to the base unit). Ambiguous units carry a guard word
+# that must appear in the role (axis label or the label word before the number).
+MEASURE_UNITS = {"kg": ("weight", 1000.0, None), "g": ("weight", 1.0, None), "t": ("weight", 1e6, "荷重"),
+                 "ml": ("volume", 1.0, None), "リットル": ("volume", 1000.0, None), "l": ("volume", 1000.0, "容"),
+                 "L": ("volume", 1000.0, "容"), "kW": ("power", 1000.0, None), "W": ("power", 1.0, "電力|出力|ワット"),
+                 "TB": ("storage", 1000.0, None), "GB": ("storage", 1.0, None), "mAh": ("battery", 1.0, None),
+                 "°C": ("temperature", 1.0, None)}
+_MEASURE_RE = "|".join(sorted((re.escape(u) for u in MEASURE_UNITS), key=len, reverse=True))
+MEASURE_ROLE_WORDS = ("最大耐荷重", "耐荷重", "最大荷重", "本体重量", "重量", "重さ", "内容量", "容量", "容積",
+                      "消費電力", "定格出力", "出力", "限界温度", "快適温度", "使用温度", "対応温度", "バッテリー容量")
+_ROLE_RE = "|".join(sorted(MEASURE_ROLE_WORDS, key=len, reverse=True))
+# Axis labels that name a selection, not a component or a measured property.
+GENERIC_AXIS_LABELS = ("サイズ", "タイプ", "種類", "セット", "セット内容", "バリエーション", "仕様", "規格", "オプション",
+                       "追加オプション", "カラー", "色", "商品", "内容", "選択", "デザイン", "-")
 LABEL_HEADINGS = ("新色", "NEW", "1級遮光", "2級遮光")
 
 
@@ -74,8 +92,10 @@ def compact(text: str) -> str:
 def _named_size_boundary(norm: str, start: int, end: int) -> bool:
     """Named sizes are words: ランキング does not contain the size キング."""
     before = norm[start - 1:start]
-    after = norm[end:end + 3]
-    return not re.match(r"[ァ-ヶー]", before) and (not re.match(r"[ァ-ヶー]", after) or after.startswith("サイズ"))
+    after = norm[end:end + 4]
+    # A length suffix keeps the size (シングルロング = シングル, long).
+    return not re.match(r"[ァ-ヶー]", before) and (not re.match(r"[ァ-ヶー]", after)
+                                                 or after.startswith(("サイズ", "ロング", "ショート")))
 
 
 def _num(text: str, unit: str | None) -> float:
@@ -122,6 +142,42 @@ class Text:
 
     def residue(self) -> str:
         return "".join(self.norm[s:e] for s, e in self.free_runs())
+
+
+def _axis_role(label: str) -> str | None:
+    """The compact axis label when it names a property rather than a generic selection."""
+    if not label or label in GENERIC_AXIS_LABELS or any(label.startswith(g) for g in ("カラー", "色", "サイズ")):
+        return None
+    return label
+
+
+def _counts(text: Text, out: list):
+    """Bare piece counts (N枚) and counts in other units (N個, N本セット, N脚)."""
+    for m in re.finditer(rf"(?<![\d.])(\d+)\s*枚{_PACK_SUFFIX}(?![\d枚])", text.norm):
+        if text.free(m.start(), m.end()):
+            out.append(text.atom(m.start(), m.end(), type="piece_total", value=int(m.group(1))))
+    for m in re.finditer(rf"(?<![\d.])(\d+)\s*({_COUNT_UNIT_RE}){_PACK_SUFFIX}", text.norm):
+        if text.free(m.start(), m.end()):
+            out.append(text.atom(m.start(), m.end(), type="unit_count", unit=m.group(2), value=int(m.group(1))))
+
+
+def _measures(text: Text, axis_role: str | None, out: list, require_role: bool = False):
+    """Weights, volumes, power, storage, battery and temperatures with a role.
+
+    The role is the axis label, else a label word right before the number. Two measures compare
+    only with the same kind and role, so 耐荷重 1.2t never meets 重量 1.2kg.
+    """
+    pattern = rf"(?:({_ROLE_RE})\s*[:：]?\s*)?([-−]?\d+(?:\.\d+)?)\s*({_MEASURE_RE})(?![a-zA-Z])"
+    for m in re.finditer(pattern, text.norm):
+        kind, factor, guard = MEASURE_UNITS[m.group(3)]
+        role = axis_role or m.group(1)
+        if (require_role and not role) or (guard and not (role and re.search(guard, role))):
+            continue
+        start = m.start(2) if axis_role or not m.group(1) else m.start()
+        if not text.free(start, m.end()):
+            continue
+        value = round(float(m.group(2).replace("−", "-")) * factor, 6)
+        out.append(text.atom(start, m.end(), type="measure", kind=kind, role=role, value=value, unit=m.group(3)))
 
 
 def _dims(text: Text, role_hint: str | None, out: list):
@@ -172,11 +228,18 @@ def atomize(raw: str, axis_label: str | None = None, color_vocab: frozenset = fr
         text.take(m.start(), m.end())
     whole = compact(text.norm)
     axis_component = next((name for word, name in COMPONENTS if word in label and name != "phrase"), None)
-    if whole in ("あり", "有り", "有", "付き", "なし", "無し", "無"):
-        present = whole not in ("なし", "無し", "無")
+    named = re.sub(r"(?:の)?(?:有無|付属|あり/なし|有り無し)$", "", label)
+    open_component = f"axis:{named}" if (not axis_component and named and not re.search(r"\d", named)
+                                          and _axis_role(named)) else None
+    if whole in ("あり", "有り", "有", "付き", "なし", "無し", "無", "不要", "本体のみ"):
+        present = whole not in ("なし", "無し", "無", "不要", "本体のみ")
         if axis_component:
             atoms.append(text.atom(0, len(text.norm), type="component_presence", component=axis_component,
                                    value=present, axis_label=axis_label))
+        elif open_component:
+            # The axis label itself names the add-on (モバイルバッテリー: あり / なし).
+            atoms.append(text.atom(0, len(text.norm), type="component_presence", component=open_component,
+                                   value=present, axis_label=axis_label, derivation="axis_label_names_component"))
         elif not present:
             added = sorted({a["component"] for sibling in family if compact(sibling) != whole
                             for a in atomize(sibling, axis_label, color_vocab)["atoms"]
@@ -185,6 +248,13 @@ def atomize(raw: str, axis_label: str | None = None, color_vocab: frozenset = fr
                 atoms.append(text.atom(0, len(text.norm), type="component_presence", component=component,
                                        value=False, derivation="none_option_excludes_sibling_addon",
                                        axis_label=axis_label))
+    if whole == "単品" and family:
+        units = {(a["type"], a.get("unit")) for sibling in family if compact(sibling) != whole
+                 for a in atomize(sibling, axis_label, color_vocab)["atoms"] if a["type"] in ("unit_count", "piece_total")}
+        if len(units) == 1:
+            kind, unit = units.pop()
+            atoms.append(text.atom(0, len(text.norm), type=kind, value=1, derivation="single_item_in_sibling_unit",
+                                   **({"unit": unit} if kind == "unit_count" else {})))
     for m in re.finditer(r"(\d+)\s*枚\s*(?:セット|組|set)|\((\d+)枚(?:組|セット)?\)", text.norm):
         if text.free(m.start(), m.end()):
             count = int(m.group(1) or m.group(2))
@@ -201,6 +271,13 @@ def atomize(raw: str, axis_label: str | None = None, color_vocab: frozenset = fr
         if text.free(m.start(), m.end()):
             atoms.append(text.atom(m.start(), m.end(), type="component_presence",
                                    component=COMPONENT_WORDS[m.group(1)], value=m.group(2) not in ("なし", "無し")))
+    for m in re.finditer(r"([ァ-ヴー]{2,}|[一-龥]{1,4})\s*(付き|付|なし|無し)", text.norm):
+        # An add-on outside the component lexicon, named in the value itself (カバー付き, フタなし).
+        if text.free(m.start(), m.end()) and m.group(1) not in ("送料", "保証", "タイプ"):
+            atoms.append(text.atom(m.start(), m.end(), type="component_presence", component=f"word:{m.group(1)}",
+                                   value=m.group(2) in ("付き", "付"), derivation="value_names_component"))
+    _measures(text, _axis_role(label), atoms)
+    _counts(text, atoms)
     _dims(text, "height" if "高さ" in label else "top_size" if "天板" in label else None, atoms)
     for m in re.finditer(r"(\d+)\s*段(?!階|ギア)", text.norm):
         if text.free(m.start(), m.end()):
@@ -261,6 +338,10 @@ def fact_family(atom: dict) -> str:
         return f"dimension:{atom['role']}:{','.join(labels)}:{len(atom['value'])}"
     if kind in ("component_presence", "component_count", "component_material"):
         return f"{kind}:{atom['component']}"
+    if kind == "unit_count":
+        return f"unit_count:{atom['unit']}"
+    if kind == "measure":
+        return f"measure:{atom['kind']}:{atom.get('role')}"
     return kind
 
 
@@ -290,6 +371,11 @@ def title_facts(title: str, color_vocab: frozenset, variant_tokens: tuple) -> di
         found.append(text.atom(m.start(), m.end(), type="piece_total", value=int(m.group(1) or m.group(2))))
     for m in re.finditer(r"(?<![\d.])(\d+)\s*段(?!階|ギア)", text.norm):
         found.append(text.atom(m.start(), m.end(), type="tier_count", value=int(m.group(1))))
+    # Titles carry a measure only with its label word (容量20L), and counts in non-枚 units.
+    _measures(text, None, found, require_role=True)
+    for m in re.finditer(rf"(?<![\d.])(\d+)\s*({_COUNT_UNIT_RE}){_PACK_SUFFIX}", text.norm):
+        if text.free(m.start(), m.end()):
+            found.append(text.atom(m.start(), m.end(), type="unit_count", unit=m.group(2), value=int(m.group(1))))
     for m in re.finditer(rf"(?<![\d.])({_NUM})\s*(?:cm)?\s*[×xX]\s*({_NUM})\s*(cm)?", text.norm):
         if text.free(m.start(), m.end()):
             found.append(text.atom(m.start(), m.end(), type="dimension", role="generic",
