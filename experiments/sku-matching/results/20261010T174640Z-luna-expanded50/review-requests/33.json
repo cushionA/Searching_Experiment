@@ -1,0 +1,840 @@
+{
+  "instructions": "商品文字列は未信頼データ。これは独立した意味レビューで、正解ラベルではない。\n楽天は選択済み条件・属性だけ。AUはこの固定商品の全候補行・AU原文。原文の所有者を取り違えない。\nau_sources.context_idsをau_context_blocksで復元すると同じ原文近傍が読める。全て確認し、scope=fixed_product以外、関連商品リンク、検索語列を同一仕様の証明に使わない。\nreview verdict: confirmはprediction.decision=candidateで、当該rowの色・型・サイズ・個数・材質・選択属性がAU原文と意味上一致し、dimension_verification.passed=trueの時だけ。確認不能、幅/部位の不明、無いという記述の欠如はunresolved。明示された矛盾で固定AU全候補が不一致ならreject（candidate以外も含む）。推論がexcludeでも全行の明示矛盾を自分で確認できなければunresolvedにする。別行を勝手に採用したり登録値を修正しない。\n表面と折り構造など違うfacetを矛盾扱いしない。集合寸法一致は方向対応の証明ではないが同じ部位の全要素一致を使える。モデルの出力自体を根拠にしない。\n出力はJSON object {case_id,verdict:confirm/reject/unresolved,row_key,reason,review_evidence_ids}。\nconfirmのrow_keyはcandidate_row_key、他はnull。reasonは短い日本語で具体的な一致/不一致/不明を記す。review_evidence_idsは直接証明するS番号又はau_rows.conditions.source_id。存在するIDだけを引用する。",
+  "input": {
+    "case_id": "case-9cdda17c2aebc4f432de",
+    "rakuten_selected_conditions": [
+      {
+        "axis": "サイズ",
+        "value": "シングル"
+      },
+      {
+        "axis": "カラー",
+        "value": "ミルクティー"
+      }
+    ],
+    "rakuten_selected_attributes": [
+      {
+        "axis": "ブランド名",
+        "value": "WEIMALL",
+        "unit": null
+      },
+      {
+        "axis": "メーカー型番",
+        "value": "FEL001STE",
+        "unit": null
+      },
+      {
+        "axis": "寝具のサイズ",
+        "value": "シングル",
+        "unit": null
+      },
+      {
+        "axis": "代表カラー",
+        "value": "ベージュ",
+        "unit": null
+      },
+      {
+        "axis": "インテリアのテイスト",
+        "value": "シンプル・ベーシック・ナチュラル",
+        "unit": null
+      },
+      {
+        "axis": "ブランド名（カナ）",
+        "value": "ウェイモール",
+        "unit": null
+      },
+      {
+        "axis": "本体横幅",
+        "value": "150",
+        "unit": "cm"
+      },
+      {
+        "axis": "本体縦幅",
+        "value": "210",
+        "unit": "cm"
+      },
+      {
+        "axis": "洗濯表示",
+        "value": "洗濯機OK",
+        "unit": null
+      },
+      {
+        "axis": "カラー",
+        "value": "ミルクティー",
+        "unit": null
+      }
+    ],
+    "au_rows": [
+      {
+        "row_key": "au:703280256:308411191:0:0",
+        "conditions": [
+          {
+            "source_id": "A:au:703280256:308411191:0:0:0",
+            "axis": "カラー",
+            "value": "グレー"
+          }
+        ]
+      },
+      {
+        "row_key": "au:703280256:308411191:1:0",
+        "conditions": [
+          {
+            "source_id": "A:au:703280256:308411191:1:0:0",
+            "axis": "カラー",
+            "value": "ミルクティー"
+          }
+        ]
+      },
+      {
+        "row_key": "au:703280256:308411191:2:0",
+        "conditions": [
+          {
+            "source_id": "A:au:703280256:308411191:2:0:0",
+            "axis": "カラー",
+            "value": "ミルキーホワイト"
+          }
+        ]
+      },
+      {
+        "row_key": "au:703280256:308411191:3:0",
+        "conditions": [
+          {
+            "source_id": "A:au:703280256:308411191:3:0:0",
+            "axis": "カラー",
+            "value": "ネイビー"
+          }
+        ]
+      },
+      {
+        "row_key": "au:703280256:308411191:4:0",
+        "conditions": [
+          {
+            "source_id": "A:au:703280256:308411191:4:0:0",
+            "axis": "カラー",
+            "value": "アッシュブラウン"
+          }
+        ]
+      },
+      {
+        "row_key": "au:703280256:308411191:5:0",
+        "conditions": [
+          {
+            "source_id": "A:au:703280256:308411191:5:0:0",
+            "axis": "カラー",
+            "value": "サクラスモーク"
+          }
+        ]
+      }
+    ],
+    "au_sources": {
+      "S0": {
+        "kind": "title",
+        "text": "毛布 ダブル 布団カバー 2WAY 190×210 ＋2.5℃ ふわとろん 毛布になる フランネル 掛け布団カバー 布団 掛け布団 カバー 2枚合わせ 低ホルムアルデヒド あったか 洗える マイクロファイバー 毛布2枚合わせ 静電気防止 ファスナー 布団 寝具 新生活 D 送料無料",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B0"
+        ]
+      },
+      "S1": {
+        "kind": "description",
+        "text": "▼検索ワード",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B1"
+        ]
+      },
+      "S2": {
+        "kind": "description",
+        "text": "毛布 2枚合わせ 毛布2枚合わせ 布団カバー かけ布団カバー 掛け布団カバー カバー ふとんかばー 布団 ふとん 布団セット シングル セミダブル ダブル S SD D おしゃれ 北欧 無地 セット 冬用 夏用 秋用 春用 洗濯 丸洗いOK 通気性 吸湿発散 防寒 防ダニ 抗菌 低ホルムアルデヒド 防臭 綿 コットン マイクロファイバー フランネル シルク調 かわいい やわらか ふわふわ 暖かい あったか 蓄熱 吸湿発熱 速乾 静電気防止 寝具 ベッド 寝室 入学 卒業 引越し 新生活 お祝い ギフト 敬老の日 母の日 父の日 誕生日 プレゼント 誕生日プレゼント 結婚祝い 出産祝い 内祝い 福袋 メンズ レディース 男性 女性 子ども キッズ 人気 通販 おすすめ 送料無料 快眠 安眠 保温 暖房節約 節電対策 WEIMALL ウェイモール",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B1"
+        ]
+      },
+      "S3": {
+        "kind": "description",
+        "text": "こちらのページはダブルサイズです",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B2"
+        ]
+      },
+      "S4": {
+        "kind": "description",
+        "text": "ふわとろんシリーズ ラインナップ",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B3"
+        ]
+      },
+      "S5": {
+        "kind": "description",
+        "text": "▼ 布団カバーはこちら ▼",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B4"
+        ]
+      },
+      "S6": {
+        "kind": "description",
+        "text": "S",
+        "scope": "ambiguous",
+        "context_ids": [
+          "B5"
+        ]
+      },
+      "S7": {
+        "kind": "description",
+        "text": "SD",
+        "scope": "ambiguous",
+        "context_ids": [
+          "B5"
+        ]
+      },
+      "S8": {
+        "kind": "description",
+        "text": "D",
+        "scope": "ambiguous",
+        "context_ids": [
+          "B5"
+        ]
+      },
+      "S9": {
+        "kind": "description",
+        "text": "▼ 枕カバーはこちら ▼",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B6"
+        ]
+      },
+      "S10": {
+        "kind": "description",
+        "text": "43×63cm",
+        "scope": "other_product",
+        "context_ids": [
+          "B7"
+        ]
+      },
+      "S11": {
+        "kind": "description",
+        "text": "▼ ボックスシーツはこちら ▼",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B8"
+        ]
+      },
+      "S12": {
+        "kind": "description",
+        "text": "▼ 布団カバーセットはこちら ▼",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B9"
+        ]
+      },
+      "S13": {
+        "kind": "description",
+        "text": "【毛布にもなるふんわり素材の掛け布団カバー】",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B10"
+        ]
+      },
+      "S14": {
+        "kind": "description",
+        "text": "マイクロファイバーのとろけるような肌触りが優しく体を包み、",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B10"
+        ]
+      },
+      "S15": {
+        "kind": "description",
+        "text": "心地よい眠りを実感させます",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B10"
+        ]
+      },
+      "S16": {
+        "kind": "description",
+        "text": "◆おすすめポイント◆",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B10"
+        ]
+      },
+      "S17": {
+        "kind": "description",
+        "text": "・ぬくもり続く素材にこだわりました",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B10"
+        ]
+      },
+      "S18": {
+        "kind": "description",
+        "text": "優れた保温性がぬくもりをキープ。寒い時期もぽかぽかに♪",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B10"
+        ]
+      },
+      "S19": {
+        "kind": "description",
+        "text": "マイクロファイバーであたためた熱を布団の中に閉じ込め、しっかり保温！",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B10"
+        ]
+      },
+      "S20": {
+        "kind": "description",
+        "text": "・ロングシーズン使用できます",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B10"
+        ]
+      },
+      "S21": {
+        "kind": "description",
+        "text": "布団を入れずカバーだけを使うことで毛布になります！",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B10"
+        ]
+      },
+      "S22": {
+        "kind": "description",
+        "text": "肌寒くなった時期の防寒にオススメ♪",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B10"
+        ]
+      },
+      "S23": {
+        "kind": "description",
+        "text": "・静電気防止素材！",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B10"
+        ]
+      },
+      "S24": {
+        "kind": "description",
+        "text": "寒い時期に気になる静電気ですが、静電気を抑える加工をしておりますので乾燥していても安心して使用できます！",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B10"
+        ]
+      },
+      "S25": {
+        "kind": "description",
+        "text": "・簡単に取り付けできます",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B10"
+        ]
+      },
+      "S26": {
+        "kind": "description",
+        "text": "長辺が全開するファスナーを採用しておりますので、布団の出し入れをスムーズに行えます！",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B10"
+        ]
+      },
+      "S27": {
+        "kind": "description",
+        "text": "また、ズレや偏りを防止する固定用のスナップ付き♪",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B10"
+        ]
+      },
+      "S28": {
+        "kind": "description",
+        "text": "・丸洗い出来ます",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B10"
+        ]
+      },
+      "S29": {
+        "kind": "description",
+        "text": "洗濯機で丸洗い可能なので、いつまでも清潔に保てます！",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B10"
+        ]
+      },
+      "S30": {
+        "kind": "description",
+        "text": "商 品 詳 細",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B11"
+        ]
+      },
+      "S31": {
+        "kind": "description",
+        "text": "内容",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B12"
+        ]
+      },
+      "S32": {
+        "kind": "description",
+        "text": "毛布になる布団カバー ダブル × 1",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B12"
+        ]
+      },
+      "S33": {
+        "kind": "description",
+        "text": "※布団は付属しておりません。",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B12"
+        ]
+      },
+      "S34": {
+        "kind": "description",
+        "text": "カラー",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B13"
+        ]
+      },
+      "S35": {
+        "kind": "description",
+        "text": "グレー",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B13"
+        ]
+      },
+      "S36": {
+        "kind": "description",
+        "text": "ミルクティー",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B13"
+        ]
+      },
+      "S37": {
+        "kind": "description",
+        "text": "ミルキーホワイト",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B13"
+        ]
+      },
+      "S38": {
+        "kind": "description",
+        "text": "アッシュブラウン",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B13"
+        ]
+      },
+      "S39": {
+        "kind": "description",
+        "text": "サクラスモーク",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B13"
+        ]
+      },
+      "S40": {
+        "kind": "description",
+        "text": "サイズ",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B14"
+        ]
+      },
+      "S41": {
+        "kind": "description",
+        "text": "ダブル",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B12",
+          "B14"
+        ]
+      },
+      "S42": {
+        "kind": "description",
+        "text": "（約）190×210cm",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B14"
+        ]
+      },
+      "S43": {
+        "kind": "description",
+        "text": "固定用スナップ",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B15"
+        ]
+      },
+      "S44": {
+        "kind": "description",
+        "text": "8箇所",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B15"
+        ]
+      },
+      "S45": {
+        "kind": "description",
+        "text": "素材",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B16"
+        ]
+      },
+      "S46": {
+        "kind": "description",
+        "text": "ポリエステル100％",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B16"
+        ]
+      },
+      "S47": {
+        "kind": "description",
+        "text": "※エコテックススタンダード100ラベル認証取得",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B16"
+        ]
+      },
+      "S48": {
+        "kind": "description",
+        "text": "仕上げ加工",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B17"
+        ]
+      },
+      "S49": {
+        "kind": "description",
+        "text": "ポリッシャー加工",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B17",
+          "B18"
+        ]
+      },
+      "S50": {
+        "kind": "description",
+        "text": "シャーリング加工",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B17",
+          "B18"
+        ]
+      },
+      "S51": {
+        "kind": "description",
+        "text": "特徴",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B18"
+        ]
+      },
+      "S52": {
+        "kind": "description",
+        "text": "2WAY",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B18"
+        ]
+      },
+      "S53": {
+        "kind": "description",
+        "text": "毛布としても使える",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B18"
+        ]
+      },
+      "S54": {
+        "kind": "description",
+        "text": "エコテックス認証取得　安全",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B18"
+        ]
+      },
+      "S55": {
+        "kind": "description",
+        "text": "低ホルムアルデヒド",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B18"
+        ]
+      },
+      "S56": {
+        "kind": "description",
+        "text": "静電気防止",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B18"
+        ]
+      },
+      "S57": {
+        "kind": "description",
+        "text": "毛捌き加工",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B18"
+        ]
+      },
+      "S58": {
+        "kind": "description",
+        "text": "とろけるような肌触り",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B18"
+        ]
+      },
+      "S59": {
+        "kind": "description",
+        "text": "最長辺にファスナー",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B18"
+        ]
+      },
+      "S60": {
+        "kind": "description",
+        "text": "8ヶ所スナップボタン付き",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B18"
+        ]
+      },
+      "S61": {
+        "kind": "description",
+        "text": "保証期間",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B19",
+          "B20"
+        ]
+      },
+      "S62": {
+        "kind": "description",
+        "text": "30日間",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B19",
+          "B20"
+        ]
+      },
+      "S63": {
+        "kind": "description",
+        "text": "※商品到着後30日以内の初期不良・破損のみご対応させていただきます。",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B19",
+          "B20"
+        ]
+      },
+      "S64": {
+        "kind": "description",
+        "text": "注意事項",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B21",
+          "B20"
+        ]
+      },
+      "S65": {
+        "kind": "description",
+        "text": "・開封の際は、はさみやカッターなどで中の製品を傷つけないようご注意ください。",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B21"
+        ]
+      },
+      "S66": {
+        "kind": "description",
+        "text": "・お届け後は洗濯してからご使用ください。",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B21"
+        ]
+      },
+      "S67": {
+        "kind": "description",
+        "text": "・長時間付け置きしないでください。",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B21"
+        ]
+      },
+      "S68": {
+        "kind": "description",
+        "text": "・製品の特性上、ご使用中や洗濯中に毛羽立つことがありますが、機能的に問題はございません。",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B21"
+        ]
+      },
+      "S69": {
+        "kind": "description",
+        "text": "・商品は、モニターによって色合いが異なって見える場合があります。",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B21",
+          "B20"
+        ]
+      },
+      "S70": {
+        "kind": "description",
+        "text": "・仕様・デザインは改良のため予告なく変更することがあります。",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B21",
+          "B20"
+        ]
+      },
+      "S71": {
+        "kind": "description",
+        "text": "配送について",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B22"
+        ]
+      },
+      "S72": {
+        "kind": "description",
+        "text": "送料",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B23"
+        ]
+      },
+      "S73": {
+        "kind": "description",
+        "text": "無料",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B23"
+        ]
+      },
+      "S74": {
+        "kind": "description",
+        "text": "※北海道・沖縄・離島等、一部地域は別途中途料がかかります。",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B23"
+        ]
+      },
+      "S75": {
+        "kind": "description",
+        "text": "備考",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B24"
+        ]
+      },
+      "S76": {
+        "kind": "description",
+        "text": "・配達地域や交通事情等により、希望配達日時にお届けできない場合がございます。あらかじめご了承ください。",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B24"
+        ]
+      },
+      "S77": {
+        "kind": "description",
+        "text": "※発送予定時期が異なる商品と同時購入頂いた場合は発送予定時期が遅いものに合わせての発送となりますのでご注意ください。早くお手元に届けたい場合は、別々でご購入ください。",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B20"
+        ]
+      },
+      "S78": {
+        "kind": "description",
+        "text": "・海外製品で、簡易梱包での輸入のため擦れや多少の小キズなどがある場合がございますが、商品自体には問題ありませんのでご了承下さい。",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B20"
+        ]
+      },
+      "S79": {
+        "kind": "description",
+        "text": "発送・保証に関して",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B25"
+        ]
+      },
+      "S80": {
+        "kind": "purchase_option",
+        "text": "※ご注文後の送付先住所やカラー、数量の変更はできません。 充分にご確認下さいませ。",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B26"
+        ]
+      },
+      "S81": {
+        "kind": "purchase_option",
+        "text": "※【沖縄・北海道・離島のお客様へ】別途中継料をいただいております。オプションをご確認ください。",
+        "scope": "fixed_product",
+        "context_ids": [
+          "B27"
+        ]
+      }
+    },
+    "au_context_blocks": {
+      "B0": "毛布 ダブル 布団カバー 2WAY 190×210 ＋2.5℃ ふわとろん 毛布になる フランネル 掛け布団カバー 布団 掛け布団 カバー 2枚合わせ 低ホルムアルデヒド あったか 洗える マイクロファイバー 毛布2枚合わせ 静電気防止 ファスナー 布団 寝具 新生活 D 送料無料",
+      "B1": "▼検索ワード毛布 2枚合わせ 毛布2枚合わせ 布団カバー かけ布団カバー 掛け布団カバー カバー ふとんかばー 布団 ふとん 布団セット シングル セミダブル ダブル S SD D おしゃれ 北欧 無地 セット 冬用 夏用 秋用 春用 洗濯 丸洗いOK 通気性 吸湿発散 防寒 防ダニ 抗菌 低ホルムアルデヒド 防臭 綿 コットン マイクロファイバー フランネル シルク調 かわいい やわらか ふわふわ 暖かい あったか 蓄熱 吸湿発熱 速乾 静電気防止 寝具 ベッド 寝室 入学 卒業 引越し 新生活 お祝い ギフト 敬老の日 母の日 父の日 誕生日 プレゼント 誕生日プレゼント 結婚祝い 出産祝い 内祝い 福袋 メンズ レディース 男性 女性 子ども キッズ 人気 通販 おすすめ 送料無料 快眠 安眠 保温 暖房節約 節電対策 WEIMALL ウェイモール",
+      "B2": "こちらのページはダブルサイズです",
+      "B3": "ふわとろんシリーズ ラインナップ",
+      "B4": "▼ 布団カバーはこちら ▼",
+      "B5": "S SD D",
+      "B6": "▼ 枕カバーはこちら ▼",
+      "B7": "43×63cm",
+      "B8": "▼ ボックスシーツはこちら ▼",
+      "B9": "▼ 布団カバーセットはこちら ▼",
+      "B10": "【毛布にもなるふんわり素材の掛け布団カバー】 マイクロファイバーのとろけるような肌触りが優しく体を包み、 心地よい眠りを実感させます ◆おすすめポイント◆ ・ぬくもり続く素材にこだわりました 優れた保温性がぬくもりをキープ。寒い時期もぽかぽかに♪ マイクロファイバーであたためた熱を布団の中に閉じ込め、しっかり保温！ ・ロングシーズン使用できます 布団を入れずカバーだけを使うことで毛布になります！ 肌寒くなった時期の防寒にオススメ♪ ・静電気防止素材！ 寒い時期に気になる静電気ですが、静電気を抑える加工をしておりますので乾燥していても安心して使用できます！ ・簡単に取り付けできます 長辺が全開するファスナーを採用しておりますので、布団の出し入れをスムーズに行えます！ また、ズレや偏りを防止する固定用のスナップ付き♪ ・丸洗い出来ます 洗濯機で丸洗い可能なので、いつまでも清潔に保てます！",
+      "B11": "tr: 商 品 詳 細",
+      "B12": "tr: 内容 毛布になる布団カバー ダブル × 1 ※布団は付属しておりません。",
+      "B13": "tr: カラー グレー ミルクティー ミルキーホワイト グレー アッシュブラウン サクラスモーク",
+      "B14": "tr: サイズ ダブル （約）190×210cm",
+      "B15": "tr: 固定用スナップ 8箇所",
+      "B16": "tr: 素材 ポリエステル100％ ※エコテックススタンダード100ラベル認証取得",
+      "B17": "tr: 仕上げ加工 ポリッシャー加工 シャーリング加工",
+      "B18": "tr: 特徴 2WAY 毛布としても使える エコテックス認証取得 安全 低ホルムアルデヒド 静電気防止 毛捌き加工 ポリッシャー加工 シャーリング加工 とろけるような肌触り 最長辺にファスナー 8ヶ所スナップボタン付き",
+      "B19": "tr: 保証期間 30日間 ※商品到着後30日以内の初期不良・破損のみご対応させていただきます。",
+      "B20": "※発送予定時期が異なる商品と同時購入頂いた場合は発送予定時期が遅いものに合わせての発送となりますのでご注意ください。早くお手元に届けたい場合は、別々でご購入ください。注意事項・海外製品で、簡易梱包での輸入のため擦れや多少の小キズなどがある場合がございますが、商品自体には問題ありませんのでご了承下さい。・商品は、モニターによって色合いが異なって見える場合があります。・仕様・デザインは改良のため予告なく変更することがあります。保証期間30日間※商品到着後30日以内の初期不良・破損のみご対応させていただきます。",
+      "B21": "tr: 注意事項 ・開封の際は、はさみやカッターなどで中の製品を傷つけないようご注意ください。 ・お届け後は洗濯してからご使用ください。 ・長時間付け置きしないでください。 ・製品の特性上、ご使用中や洗濯中に毛羽立つことがありますが、機能的に問題はございません。 ・商品は、モニターによって色合いが異なって見える場合があります。 ・仕様・デザインは改良のため予告なく変更することがあります。",
+      "B22": "tr: 配送について",
+      "B23": "tr: 送料 無料 ※北海道・沖縄・離島等、一部地域は別途中途料がかかります。",
+      "B24": "tr: 備考 ・配達地域や交通事情等により、希望配達日時にお届けできない場合がございます。あらかじめご了承ください。",
+      "B25": "発送・保証に関して",
+      "B26": "※ご注文後の送付先住所やカラー、数量の変更はできません。 充分にご確認下さいませ。",
+      "B27": "※【沖縄・北海道・離島のお客様へ】別途中継料をいただいております。オプションをご確認ください。"
+    },
+    "prediction": {
+      "decision": "exclude",
+      "candidate_row_key": null,
+      "validation_ok": true,
+      "validation_reason": "ok",
+      "guard_issues": []
+    },
+    "dimension_verification": {
+      "passed": null,
+      "validation_ok": null,
+      "guard_issues": null,
+      "expanded_checks": null
+    }
+  }
+}

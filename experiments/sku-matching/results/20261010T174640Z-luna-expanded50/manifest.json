@@ -1,0 +1,464 @@
+{
+  "schema": "luna-sku-round-v1",
+  "task_version": "selected-sku-scoped-bidirectional-v2",
+  "mode": "scoped",
+  "created_utc": "2026-10-10T17:47:02.705819+00:00",
+  "backend": "collaboration_subagent_api_emulation",
+  "model_requested": "gpt-6-luna",
+  "served_model_id": null,
+  "model_runtime_verified": false,
+  "usage": null,
+  "routing_evidence": "explicit model override recorded separately in dispatch.json",
+  "source_input_hashes": {
+    "zip_sha256": "c69bb28d88968cc48e1a8f6d825c4794cd1d44d0cedd0e685f141a186e9c683a",
+    "cases_jsonl_sha256": "1b758132e051d96f7672476236d3cdfc49ab689984fe78de91e3c517fbdf39e3",
+    "products_jsonl_sha256": "7ed4e6896fba2a47fb262aa855c6cb335b4e5a64ff7713c4cbf6f44a85837acf"
+  },
+  "selection": {
+    "selection_rule": "Label-blind deterministic selection: cohorts legacy/novel; exclude previous case IDs and (AU product,Rakuten URL,variantId) pairs; first one example per unseen product/source; then product round-robin SHA256 order of new SKU pairs from pools of 1-15 AU rows. Two unseen curtain cases keep complete 153-row pools. No family/synthetic cases.",
+    "selected_case_ids": [
+      "case-1473f33548b72e2b62fe",
+      "case-da88a18f3fd0a6ebcfc6",
+      "case-25ec722fb7d2cd2e8fa8",
+      "case-ea6e74e5142122ac51f3",
+      "case-9348cfa85764e06e970d",
+      "case-9395f0769441029bfa60",
+      "case-a37c2935d0c9b83c73e4",
+      "case-1de94aa3f58f3478a392",
+      "case-3380506d9850c4598f5e",
+      "case-76ab7ad82a4accb5c398",
+      "case-7fc348bc0de4502a7218",
+      "case-bed5b328e9c55ab14901",
+      "case-520f2d30c3b9a57a88d5",
+      "case-ea360843aae32ee11a51",
+      "case-068f7d1af274de03db3a",
+      "case-7f8208ad1cd7f6e00b1b",
+      "case-d1247afcfeb72d3f7618",
+      "case-c9b2da22d064f32b03b2",
+      "case-4753003d8e6821f81195",
+      "case-493e0491a70a66e2414c",
+      "case-f0f81e952ac05432f90e",
+      "case-71bffd6b0e56b9e1e5c0",
+      "case-4025f95c4116a7a66c34",
+      "case-eca7428341dd58747cfd",
+      "case-3cfcba3f4f71d8fbf2eb",
+      "case-e542bef2a0d21829c89b",
+      "case-6715e2ac47e4efaad965",
+      "case-f01cb6e94520a7ec6846",
+      "case-af6b42128bc948afd671",
+      "case-15921b4f7eed081e5463",
+      "case-7711fdf6a039757f2dfe",
+      "case-89337f7621bacc16f6ca",
+      "case-9cdda17c2aebc4f432de",
+      "case-05e5c1205a1e6f72eb73",
+      "case-d5d5b4f53ba100d3a064",
+      "case-af4b765124c839738388",
+      "case-cd79984cd1eb5ae191b5",
+      "case-eafa4704c28bc0d1866c",
+      "case-e342d4607a748d6382bd",
+      "case-462facff1d3001c5d935",
+      "case-de64a67e58a84c78cc49",
+      "case-a790bf4081df903b02d4",
+      "case-8657a80b1265cff911a8",
+      "case-46e7303cc581a52ce510",
+      "case-371efe2105befa74b7ac",
+      "case-a350215faa8a86b83ef9",
+      "case-e894bf417349dee4ed69",
+      "case-c83161aa56b63e562388",
+      "case-0d0d6016194301a93c56",
+      "case-590326f9f840ed0ef9b4"
+    ],
+    "previous_case_ids": [
+      "case-01f6fc36ae1d87a566c7",
+      "case-00b9d1779fa191acf665",
+      "case-00dea3bdb495becd1dd4",
+      "case-03eb5704d3bb159f757b",
+      "case-0a4bfea40c723b989ecc",
+      "case-4c8b1efa512c2a2c76e0",
+      "case-aab02eae648f680d29b3",
+      "case-d7df86a192e4d9d8ae22",
+      "case-f65150b5dc310c69f809",
+      "case-531832427225b2ceca6a",
+      "case-0b8f48a174e50f5d9bf9",
+      "case-70d52fe3904a87140a21",
+      "case-854f83898a6d8023f734",
+      "case-88d26222c9665771ab65",
+      "case-6d0e42e63c2cf9ef1298",
+      "case-4a9f6fc8e92c39935f3c",
+      "case-bcfab52a0b502eb3780e",
+      "case-8adeff600efd6e8c77b5"
+    ],
+    "selected_count": 50,
+    "unique_au_products": 31,
+    "unique_rakuten_urls": 20,
+    "new_au_products": [
+      "524251610",
+      "666720279",
+      "704500131",
+      "704502086"
+    ],
+    "new_au_product_count": 4,
+    "au_row_count_distribution": {
+      "153": 2,
+      "1": 2,
+      "2": 6,
+      "6": 19,
+      "5": 4,
+      "7": 2,
+      "3": 6,
+      "10": 2,
+      "4": 6,
+      "8": 1
+    },
+    "cohort_counts": {
+      "legacy": 44,
+      "novel": 6
+    },
+    "per_product_cases": {
+      "704500131": 1,
+      "524251610": 2,
+      "704502086": 1,
+      "666720279": 2,
+      "703280256": 2,
+      "724257905": 2,
+      "704282431": 2,
+      "704280046": 2,
+      "703279419": 2,
+      "597651839": 2,
+      "753670518": 2,
+      "537246358": 2,
+      "764777172": 2,
+      "337595272": 2,
+      "700957229": 2,
+      "469850986": 1,
+      "765496131": 2,
+      "704284693": 2,
+      "772334211": 2,
+      "695394169": 2,
+      "309329265": 2,
+      "763158008": 2,
+      "704285114": 1,
+      "398508173": 1,
+      "763454500": 1,
+      "662585498": 1,
+      "653618158": 1,
+      "695392874": 1,
+      "483077897": 1,
+      "509691375": 1,
+      "688640726": 1
+    },
+    "independent_product_sample": false,
+    "labels_read_for_selection": false,
+    "raw_predictions_used_for_selection": false,
+    "case_unit": "selected Rakuten SKU × fixed AU product, not an AU candidate row",
+    "target": 50
+  },
+  "planned_calls": 50,
+  "inputs_sha256": "f42ffbe3700ed94a7ccdba45acb5c8f114bb349f5e049b584478dc34eeb3151d",
+  "source_contexts_sha256": "19dcd91c8d42cf9fd77f022dce643b13d7ff5ecae8b5a6af1effd9d663b1d2e4",
+  "labels_read": false,
+  "independent_gold_used": false,
+  "new_web_fetches": 0,
+  "entries": [
+    {
+      "case_id": "case-1473f33548b72e2b62fe",
+      "request": "requests/01.json",
+      "answer": "answers/01.json",
+      "request_sha256": "1db60f2d587c0c7cea644005b49be9cb0b55d51f2c66523654b043521af4af19"
+    },
+    {
+      "case_id": "case-da88a18f3fd0a6ebcfc6",
+      "request": "requests/02.json",
+      "answer": "answers/02.json",
+      "request_sha256": "c0ee34c26fb958f0d7406bee7f13fcd090b5f77de8cc8b37876c4e477333581e"
+    },
+    {
+      "case_id": "case-25ec722fb7d2cd2e8fa8",
+      "request": "requests/03.json",
+      "answer": "answers/03.json",
+      "request_sha256": "25372c2e5e72a013da190a5f05ef292f2fa1dd39829b203f589a56af96625288"
+    },
+    {
+      "case_id": "case-ea6e74e5142122ac51f3",
+      "request": "requests/04.json",
+      "answer": "answers/04.json",
+      "request_sha256": "83d7923d1412c0da643a661d09ec49131510221d4d8e6ff0643b147a03cf7650"
+    },
+    {
+      "case_id": "case-9348cfa85764e06e970d",
+      "request": "requests/05.json",
+      "answer": "answers/05.json",
+      "request_sha256": "7dc8f1006991e224d3efa2ea3561ed60446b8af5483a10f32c6da61565a71859"
+    },
+    {
+      "case_id": "case-9395f0769441029bfa60",
+      "request": "requests/06.json",
+      "answer": "answers/06.json",
+      "request_sha256": "d77759e54fa30dd9b8545a9e632dc21c7421f8cfa81b686e36a9d283b68fc1bb"
+    },
+    {
+      "case_id": "case-a37c2935d0c9b83c73e4",
+      "request": "requests/07.json",
+      "answer": "answers/07.json",
+      "request_sha256": "b30511251d8a1a1cd4b9aa1106e4fb0b1678d84778a280cf3815cc242fdd5f5a"
+    },
+    {
+      "case_id": "case-1de94aa3f58f3478a392",
+      "request": "requests/08.json",
+      "answer": "answers/08.json",
+      "request_sha256": "8c12828288e069dd652dd99c81db81daf5648e0ac95a8de9acb1c7197509d4d0"
+    },
+    {
+      "case_id": "case-3380506d9850c4598f5e",
+      "request": "requests/09.json",
+      "answer": "answers/09.json",
+      "request_sha256": "5ee2be9c82c6eeb8f3dc0647462cb4c7e3f7d2d153084727b5a98132e7a14adb"
+    },
+    {
+      "case_id": "case-76ab7ad82a4accb5c398",
+      "request": "requests/10.json",
+      "answer": "answers/10.json",
+      "request_sha256": "74ff0469305e0bc2fd23aa111d275a543488ef42e9c8f851f72e459c7019cf69"
+    },
+    {
+      "case_id": "case-7fc348bc0de4502a7218",
+      "request": "requests/11.json",
+      "answer": "answers/11.json",
+      "request_sha256": "a32853b1942d5bc0ddc70a386fbf81efe8359d276dd8036293826d51d72cef6b"
+    },
+    {
+      "case_id": "case-bed5b328e9c55ab14901",
+      "request": "requests/12.json",
+      "answer": "answers/12.json",
+      "request_sha256": "0418a3f2c4859e9fb22d9bd1ece34e9fad591bd35382679fff205660eb4d206b"
+    },
+    {
+      "case_id": "case-520f2d30c3b9a57a88d5",
+      "request": "requests/13.json",
+      "answer": "answers/13.json",
+      "request_sha256": "73e3cdefc11a7e28504913adcf558e927bb89fb2a690b4ec23c91770834fbbb0"
+    },
+    {
+      "case_id": "case-ea360843aae32ee11a51",
+      "request": "requests/14.json",
+      "answer": "answers/14.json",
+      "request_sha256": "557ad6c0862cc186676ea610dfa3e770c37f625863f840d58e76931790597c76"
+    },
+    {
+      "case_id": "case-068f7d1af274de03db3a",
+      "request": "requests/15.json",
+      "answer": "answers/15.json",
+      "request_sha256": "6f69e7f4f097a136b00794c6c6aca1f701d8616945a099ffc0b79e98a2b2af66"
+    },
+    {
+      "case_id": "case-7f8208ad1cd7f6e00b1b",
+      "request": "requests/16.json",
+      "answer": "answers/16.json",
+      "request_sha256": "41b2ae54f102f5d1c2f21f4c0e7ddc81e8a2506fa4128a807173524116e01e59"
+    },
+    {
+      "case_id": "case-d1247afcfeb72d3f7618",
+      "request": "requests/17.json",
+      "answer": "answers/17.json",
+      "request_sha256": "7aef87d431fc17e997b81f16c5bbb36801f9672abae49ca10a5a74822f3630d0"
+    },
+    {
+      "case_id": "case-c9b2da22d064f32b03b2",
+      "request": "requests/18.json",
+      "answer": "answers/18.json",
+      "request_sha256": "19ffdae0878d81c1157fe1060afb4a12accabe4cf7dd351afc2a1a4bb1db7da8"
+    },
+    {
+      "case_id": "case-4753003d8e6821f81195",
+      "request": "requests/19.json",
+      "answer": "answers/19.json",
+      "request_sha256": "50ae4ec87e928e1f8f72bc8f059815de7db44341281bc418f0318bcf32baa0e8"
+    },
+    {
+      "case_id": "case-493e0491a70a66e2414c",
+      "request": "requests/20.json",
+      "answer": "answers/20.json",
+      "request_sha256": "6beae540ebcd64f796947115e7908551e042bb03e10d38fdea27f630f445a9c6"
+    },
+    {
+      "case_id": "case-f0f81e952ac05432f90e",
+      "request": "requests/21.json",
+      "answer": "answers/21.json",
+      "request_sha256": "02ee9aafb5cc1ca0dd7afb6197beb2b3dfc261d6d64a1f8d8b9c60634bf8cddf"
+    },
+    {
+      "case_id": "case-71bffd6b0e56b9e1e5c0",
+      "request": "requests/22.json",
+      "answer": "answers/22.json",
+      "request_sha256": "58d6af437f96d9cd0a2800e3d5d633d7533d5e2d394b2f85b206d8948144ffa0"
+    },
+    {
+      "case_id": "case-4025f95c4116a7a66c34",
+      "request": "requests/23.json",
+      "answer": "answers/23.json",
+      "request_sha256": "816b05001085900d671c862f4f9ef704c21659eecd09e12d08b38a89e6d46eaf"
+    },
+    {
+      "case_id": "case-eca7428341dd58747cfd",
+      "request": "requests/24.json",
+      "answer": "answers/24.json",
+      "request_sha256": "433b377a04cd114d9c09e36824f3920bf00ffaa8835b81042844e9287edaaa7a"
+    },
+    {
+      "case_id": "case-3cfcba3f4f71d8fbf2eb",
+      "request": "requests/25.json",
+      "answer": "answers/25.json",
+      "request_sha256": "63f95d14208bc3840940191fbc14de412df91653d794ef112da32896ec1ac715"
+    },
+    {
+      "case_id": "case-e542bef2a0d21829c89b",
+      "request": "requests/26.json",
+      "answer": "answers/26.json",
+      "request_sha256": "6e0d6fc02f9252818e250dd01f9a8ca3b91702bcb22d9b9dce527251656661ac"
+    },
+    {
+      "case_id": "case-6715e2ac47e4efaad965",
+      "request": "requests/27.json",
+      "answer": "answers/27.json",
+      "request_sha256": "57b4cb656869708d980b43433513a6b25ec2d3a6d9bc55b386ffee3a52c138aa"
+    },
+    {
+      "case_id": "case-f01cb6e94520a7ec6846",
+      "request": "requests/28.json",
+      "answer": "answers/28.json",
+      "request_sha256": "901119d5f99cda9e8859d3217ac4011c50e08067949dabb7afe4a66d2e4eaf2e"
+    },
+    {
+      "case_id": "case-af6b42128bc948afd671",
+      "request": "requests/29.json",
+      "answer": "answers/29.json",
+      "request_sha256": "476f3c7497baf9bfc54ed796ac9687a5fdf2d8f5bf2e008e4eb3ab9c777bf9ff"
+    },
+    {
+      "case_id": "case-15921b4f7eed081e5463",
+      "request": "requests/30.json",
+      "answer": "answers/30.json",
+      "request_sha256": "9e9298335c43f8d85b2267df173a737a682951a5b6615da8a1e2d14e5dc83d4a"
+    },
+    {
+      "case_id": "case-7711fdf6a039757f2dfe",
+      "request": "requests/31.json",
+      "answer": "answers/31.json",
+      "request_sha256": "598b193baac20bfd30c76d923ad25cd64783375621dda8c944bf34d92d2a77ac"
+    },
+    {
+      "case_id": "case-89337f7621bacc16f6ca",
+      "request": "requests/32.json",
+      "answer": "answers/32.json",
+      "request_sha256": "ddf218209483fed38210030547a318963c038834eab2e34b9387c3245e055684"
+    },
+    {
+      "case_id": "case-9cdda17c2aebc4f432de",
+      "request": "requests/33.json",
+      "answer": "answers/33.json",
+      "request_sha256": "f3b942708aa8b627425e8933a4d03260f86feee639d600e6ed3330f916eae3bc"
+    },
+    {
+      "case_id": "case-05e5c1205a1e6f72eb73",
+      "request": "requests/34.json",
+      "answer": "answers/34.json",
+      "request_sha256": "9a9736cf169e35d99bea9357f87a9f1e71754656feac6a41e0954d3bb8832535"
+    },
+    {
+      "case_id": "case-d5d5b4f53ba100d3a064",
+      "request": "requests/35.json",
+      "answer": "answers/35.json",
+      "request_sha256": "7268b891a00b7070b6d37019f18c73b6c770cfbffe02a6608a4e663c60c715d8"
+    },
+    {
+      "case_id": "case-af4b765124c839738388",
+      "request": "requests/36.json",
+      "answer": "answers/36.json",
+      "request_sha256": "ccb3f9ef97a78e89d3bcf8cf8e406824b502b680feca6551b81cf6b18af56eff"
+    },
+    {
+      "case_id": "case-cd79984cd1eb5ae191b5",
+      "request": "requests/37.json",
+      "answer": "answers/37.json",
+      "request_sha256": "6923ca3707b7274570ad981eaff8dd2b874d85387e0ccc156ae4b3513c3fb95c"
+    },
+    {
+      "case_id": "case-eafa4704c28bc0d1866c",
+      "request": "requests/38.json",
+      "answer": "answers/38.json",
+      "request_sha256": "c85622f2fb70b8eb320fd896827d85c7938a611443c2b0a2095a7f4190d7fe57"
+    },
+    {
+      "case_id": "case-e342d4607a748d6382bd",
+      "request": "requests/39.json",
+      "answer": "answers/39.json",
+      "request_sha256": "5947d38e41e36bdb201dfe61a05f6b544bf7c2085d131dfc84d54c3310e32c93"
+    },
+    {
+      "case_id": "case-462facff1d3001c5d935",
+      "request": "requests/40.json",
+      "answer": "answers/40.json",
+      "request_sha256": "52ed6238028310b3459e509567e26c32c1fe83ca16fd067083fb5762c4e5cdbb"
+    },
+    {
+      "case_id": "case-de64a67e58a84c78cc49",
+      "request": "requests/41.json",
+      "answer": "answers/41.json",
+      "request_sha256": "7ec64376d43e70bf9428fd55b4cc7bef6b5dfdf2f830bcf5641d3d7dc5ab3e69"
+    },
+    {
+      "case_id": "case-a790bf4081df903b02d4",
+      "request": "requests/42.json",
+      "answer": "answers/42.json",
+      "request_sha256": "8630bf15ad26d2506b8c1bff41724810163f7e34c2e04d17dfb979c9eb4c083d"
+    },
+    {
+      "case_id": "case-8657a80b1265cff911a8",
+      "request": "requests/43.json",
+      "answer": "answers/43.json",
+      "request_sha256": "1cc1d3df3db728c77571e534df4906f36387ad9ff4e1f61e44ca4938d00325fe"
+    },
+    {
+      "case_id": "case-46e7303cc581a52ce510",
+      "request": "requests/44.json",
+      "answer": "answers/44.json",
+      "request_sha256": "f40e234348312eccbbff1d2b2a2a497b50d6d1fd02a96fccc541727646a13ca1"
+    },
+    {
+      "case_id": "case-371efe2105befa74b7ac",
+      "request": "requests/45.json",
+      "answer": "answers/45.json",
+      "request_sha256": "4b4e7689fb68752b01cb9ae158f2a5a5fae359a7c9f9ed31368c289518be8a11"
+    },
+    {
+      "case_id": "case-a350215faa8a86b83ef9",
+      "request": "requests/46.json",
+      "answer": "answers/46.json",
+      "request_sha256": "24c6ed8cb8253ff2c23a49054edea1bc2de0766ca3ac83b2e56c2270127a5d92"
+    },
+    {
+      "case_id": "case-e894bf417349dee4ed69",
+      "request": "requests/47.json",
+      "answer": "answers/47.json",
+      "request_sha256": "4471e3adda8e5927f9e4b8881fb61737b27e1c39d10246b3358e4bac95642daf"
+    },
+    {
+      "case_id": "case-c83161aa56b63e562388",
+      "request": "requests/48.json",
+      "answer": "answers/48.json",
+      "request_sha256": "684c5e2e7bcaf280532c06501841c957d6eac8a33e9b607f51c6b8a2c869b645"
+    },
+    {
+      "case_id": "case-0d0d6016194301a93c56",
+      "request": "requests/49.json",
+      "answer": "answers/49.json",
+      "request_sha256": "62029f7430df5212c4a2259ebf66434cbbe526f6779eedcfcfce6ec6a25a5254"
+    },
+    {
+      "case_id": "case-590326f9f840ed0ef9b4",
+      "request": "requests/50.json",
+      "answer": "answers/50.json",
+      "request_sha256": "a9b7ed79f003eb94981ad479631755fecd79ea2e4da346ecddc23183b5fe3b09"
+    }
+  ]
+}
