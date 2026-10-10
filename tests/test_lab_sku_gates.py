@@ -177,6 +177,40 @@ class GateTests(unittest.TestCase):
             self.assertEqual(out["reason"], "page_specification_conflict_on_candidate_row")
         self.assertEqual(run("A", facts, case, "full_no_derived_conflicts")["decision"], "matched")
 
+    def test_same_scope_contents_count_disagreement_blocks_accept(self):
+        fam = {"サイズ": ("150×200cm",), "レースカーテン": ("あり", "なし")}
+        au = ["商 品 詳 細", "内容", "【幅150cm】", "遮光カーテン 1枚", "レースカーテン 1枚", "カーテンフック 7個"]
+        rak = ["商 品 詳 細", "内容", "【幅150cm】", "カーテン 1枚", "フック 9個", "レースカーテン 1個 ※レースカーテン付きを選択の場合"]
+        facts, case = make_pair([[("サイズ", "幅150×丈200cm(2枚組)")]], [("サイズ", "150×200cm"), ("レースカーテン", "あり")],
+                                fam, au_lines=au, rak_lines=rak)
+        for method in ("A", "B"):
+            out = run(method, facts, case)
+            self.assertEqual((out["decision"], out["reason"]), ("review", "page_specification_conflict_on_candidate_row"))
+            conflict = out["rows"][0]["derived_conflicts"][0]
+            self.assertEqual((conflict["family"], conflict["au"]["value"], conflict["rakuten"]["value"]),
+                             ("component_count:hook", 7, 9))
+
+    def test_body_dimension_disagreement_needs_one_value_per_side(self):
+        fam = {"カラー": ("ラテ",)}
+        au = ["商 品 詳 細", "サイズ", "（約）幅66x奥行57x高さ70cm"]
+        facts, case = make_pair([[("カラー", "ラテ")]], [("カラー", "ラテ")], fam, au_lines=au,
+                                rak_lines=["商 品 詳 細", "サイズ", "（約）幅50x奥行57x高さ70cm"])
+        self.assertEqual(run("A", facts, case)["decision"], "review")
+        # A side stating two different values is internally inconsistent: no conflict is claimed.
+        fam = {"サイズ": ("ダブル",), "カラー": ("赤",)}
+        facts, case = make_pair([[("カラー", "赤")]], [("サイズ", "ダブル"), ("カラー", "赤")], fam,
+                                au_lines=["こちらのページはダブルサイズです", "商 品 詳 細", "サイズ", "（約）幅140cm×長さ205cm（ダブルサイズ）"],
+                                rak_lines=["商 品 詳 細", "サイズ", "【シングル】（約）幅100×長さ205cm", "【ダブル】（約）幅140×長さ205cm"])
+        case["rakuten_selected"]["variant_attributes"] = [{"title": "本体縦幅", "value": "200", "unit": "cm", "value_span": None}]
+        out = run("A", facts, case)
+        self.assertEqual(out["decision"], "matched")
+        case["rakuten_selected"]["variant_attributes"][0]["value"] = "205"
+        self.assertEqual(run("A", facts, case)["decision"], "matched")
+        facts, case = make_pair([[("カラー", "赤")]], [("サイズ", "ダブル"), ("カラー", "赤")], fam,
+                                au_lines=["こちらのページはダブルサイズです", "商 品 詳 細", "サイズ", "（約）幅140cm×長さ205cm"])
+        case["rakuten_selected"]["variant_attributes"] = [{"title": "本体縦幅", "value": "200", "unit": "cm", "value_span": None}]
+        self.assertEqual(run("A", facts, case)["decision"], "review")
+
     def test_price_and_stock_fields_do_not_change_decisions(self):
         facts, case = make_pair([[("カラー", "赤")], [("カラー", "青")]], [("カラー", "赤")], {"カラー": ("赤", "青")})
         before = run("A", facts, case)
@@ -254,6 +288,11 @@ class RealSourceTests(unittest.TestCase):
             for axis in ci["rakuten_selected"]["axes"]:
                 self.assertTrue(src.verify_span(self.store, axis["value_span"]))
                 self.assertEqual(axis["value_span"]["quote"], axis["value"])
+            for attr in ci["rakuten_selected"]["variant_attributes"]:
+                self.assertNotRegex(attr["title"], "価格|送料|在庫|ポイント")
+                if attr["value_span"]:
+                    self.assertTrue(src.verify_span(self.store, attr["value_span"]))
+                    self.assertEqual(attr["value_span"]["quote"], attr["value"])
         ctx_schema = validator("sku_gate_product_context.schema.json")
         for ctx in self.contexts.values():
             ctx_schema.validate(ctx)
@@ -299,6 +338,10 @@ class RealSourceTests(unittest.TestCase):
             self.assertEqual(status, {"r0.0": "unknown", "r0.1": "support"})
             blanket = self._run("case-03df33141d94ac3c09fc", method)
             self.assertNotEqual(blanket["decision"], "matched")
+            # Hook counts differ in the same width-150 contents scope of the fixed lace-set pair.
+            hooks = self._run("case-180a9baafb740879a120", method)
+            self.assertEqual(hooks["decision"], "review")
+            self.assertIn("component_count:hook", json.dumps(hooks["rows"], ensure_ascii=False))
 
 
 if __name__ == "__main__":

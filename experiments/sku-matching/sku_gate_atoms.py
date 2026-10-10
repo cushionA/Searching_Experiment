@@ -485,8 +485,14 @@ def describe_lines(lines: list[dict], color_vocab: frozenset, variant_tokens: tu
             continue
         text = Text(raw)
         labeled = re.match(r"^[・\s]*([^：:]{1,16})[：:]\s*(.+)$", text.norm)
-        label, value_start = None, 0
-        if labeled:
+        # A leading 【condition】 scopes only this line, e.g. 【ダブル】（約）幅140×長さ205cm.
+        bracket_prefix = re.match(r"^[・\s]*【([^】]+)】\s*[:：]?\s*(?=\S)", text.norm)
+        label, value_start, line_condition = None, 0, None
+        if bracket_prefix:
+            label = compact(bracket_prefix.group(1))
+            value_start = text.raw_from(bracket_prefix.end())
+            line_condition = parse_condition(label, color_vocab, variant_tokens)
+        elif labeled:
             label = compact(labeled.group(1))
             value_start = text.raw_from(labeled.start(2))
         if section == "material":
@@ -502,7 +508,9 @@ def describe_lines(lines: list[dict], color_vocab: frozenset, variant_tokens: tu
             continue
         if section in ("size", "folded", "option_size"):
             role, label_condition = object_role, None
-            if label:
+            if line_condition:
+                label_condition = {"atoms": line_condition, "text": label}
+            elif label:
                 bare = label.strip("【】")
                 code = re.fullmatch(rf"({_CODE_RE})(?:\((.+?)\))?", bare)
                 if code:

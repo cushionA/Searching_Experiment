@@ -29,10 +29,10 @@ import sku_gates as gates  # noqa: E402
 ROOT = HERE.parents[1]
 ANNOTATION = ".lab-output/sku-real-luna-annotation-inputs-20261010-v3"
 ARRAYS = ".lab-output/sku-observed-product-pairs-20261010-final-v4/au_product_sku_arrays.jsonl"
-DEFAULT_OUT = ".lab-output/sku-gate-tasks-20261010-v1"
+DEFAULT_OUT = ".lab-output/sku-gate-tasks-20261010-v2"
 CODE_FILES = ["experiments/sku-matching/sku_gate_sources.py", "experiments/sku-matching/sku_gate_atoms.py",
               "experiments/sku-matching/sku_gates.py", "experiments/sku-matching/run_sku_gates.py",
-              "tests/test_lab_sku_gates.py"]
+              "experiments/sku-matching/evaluate_sku_gates.py", "tests/test_lab_sku_gates.py"]
 SCHEMA_FILES = ["experiments/sku-matching/schemas/sku_gate_product_context.schema.json",
                 "experiments/sku-matching/schemas/sku_gate_case_input.schema.json",
                 "experiments/sku-matching/schemas/sku_gate_a_output.schema.json",
@@ -110,9 +110,11 @@ def frozen_hashes(out: Path) -> dict:
     return hashes
 
 
-def freeze(out: Path, note: str):
+def freeze(out: Path, note: str, labels_seen: str | None = None):
+    # labels_seen documents a development iteration designed after reading the
+    # diagnostic labels of an earlier freeze; such results are label-informed.
     record = {"frozen_at_utc": datetime.now(timezone.utc).isoformat(), "task_version": gates.TASK_VERSION,
-              "labels_read_before_freeze": False, "note": note,
+              "labels_read_before_freeze": bool(labels_seen), "label_informed_changes": labels_seen, "note": note,
               "git_head": _git("rev-parse", "HEAD"), "git_status_porcelain": _git("status", "--porcelain"),
               "python": platform.python_version(), "jsonschema": jsonschema.__version__ if hasattr(jsonschema, "__version__") else None,
               "methods": ["A", "B"], "source_configs": gates.SOURCE_CONFIGS, "primary_config": gates.PRIMARY_CONFIG,
@@ -170,12 +172,14 @@ def main():
     parser.add_argument("step", choices=["prepare", "freeze", "predict"])
     parser.add_argument("--out", default=DEFAULT_OUT)
     parser.add_argument("--note", default="")
+    parser.add_argument("--labels-seen", default=None,
+                        help="freeze only: describe label-informed changes made after reading earlier results")
     args = parser.parse_args()
     out = ROOT / args.out
     if args.step == "prepare":
         prepare(out)
     elif args.step == "freeze":
-        freeze(out, args.note)
+        freeze(out, args.note, args.labels_seen)
     else:
         predict(out)
 

@@ -22,7 +22,7 @@ from sku_gate_atoms import (atomize, color_base_vocab, compact, code_crosswalk, 
                             fact_family, atom_value_key, title_facts, NAMED_SIZES, SIZE_CODES)
 import sku_gate_sources as src
 
-TASK_VERSION = "sku-gate-task-v1"
+TASK_VERSION = "sku-gate-task-v2"
 CURTAIN_COMPONENTS = ("drape", "lace")
 # Separately packed items a contents list can enumerate. Built-in features
 # (armrest, top board, bookshelf, handle) are never inferred from list absence.
@@ -239,7 +239,9 @@ def build_case_input(store, case: dict, context: dict) -> dict:
             "rakuten_selected": {"url": source["url"], "raw_file": source["raw_file"], "sha256": source["sha256"],
                                  "variant_id": variant_id, "source_row_key": source["source_row_key"],
                                  "source_sku_key": source["source_sku_key"], "sku_record_key": source["sku_record_key"],
-                                 "source_row_index": source["source_row_index"], "axes": axes},
+                                 "source_row_index": source["source_row_index"], "axes": axes,
+                                 "variant_attributes": src.rakuten_variant_attributes(
+                                     store, source["raw_file"], context["rakuten_product"]["encoding"], variant_id)},
             "excluded_non_identity_fields": list(NON_IDENTITY_FIELDS)}
 
 
@@ -393,11 +395,14 @@ class Evaluator:
             self._au_cache[row["row_key"]] = _exceptions_override(self.au_product_facts(row))
         return self._au_cache[row["row_key"]]
 
-    def rak_facts_for(self, selected) -> list[dict]:
-        key = canonical_json([[a["type"], a.get("component"), a.get("role"), a.get("labels"), a["value"]]
-                              for a in selected])
+    def rak_facts_for(self, selected, attributes=None) -> list[dict]:
+        key = canonical_json([[[a["type"], a.get("component"), a.get("role"), a.get("labels"), a["value"]]
+                               for a in selected], [[x["title"], x["value"]] for x in attributes or []]])
         if key not in self._rak_cache:
-            self._rak_cache[key] = _exceptions_override(self.rakuten_product_facts(selected))
+            facts = self.rakuten_product_facts(selected)
+            if self.cfg["derived"]:
+                facts = facts + attribute_facts(attributes)
+            self._rak_cache[key] = _exceptions_override(facts)
         return self._rak_cache[key]
 
     def evaluate_cached(self, req: dict, row: dict, facts: list[dict]) -> dict:
@@ -761,20 +766,80 @@ class Evaluator:
 
     # --- derived page conflicts ---------------------------------------------
     def derived_conflicts(self, au_facts, rak_facts) -> list[dict]:
+        """Page-specification disagreements for this row and the selected SKU.
+
+        Covered: component presence/material statements, explicit component
+        counts in the same contents scope, and body dimensions stated once per
+        side (size section, page declaration, Rakuten per-SKU attributes).
+        """
         if not self.cfg["derived"]:
             return []
         out = []
-        au = [f for f in au_facts if f.get("derived") and self.usable(f)]
-        rk = [f for f in rak_facts if f.get("derived") and self.usable(f)]
-        for a in au:
-            for r in rk:
-                if fact_family(a["atom"]) != fact_family(r["atom"]):
-                    continue
-                if atom_value_key(a["atom"]) != atom_value_key(r["atom"]):
-                    out.append({"family": fact_family(a["atom"]),
-                                "au": {"quote": a["atom"].get("quote"), "value": a["atom"]["value"], "span": a.get("span")},
-                                "rakuten": {"quote": r["atom"].get("quote"), "value": r["atom"]["value"], "span": r.get("span")}})
+        au = [f for f in au_facts if self.usable(f) and not f.get("closed_contents")]
+        rk = [f for f in rak_facts if self.usable(f) and not f.get("closed_contents")]
+
+        def statement(f):
+            atom = f["atom"]
+            return f.get("derived") and atom["type"] != "dimension" or (
+                f.get("scope") == "contents" and atom["type"] == "component_count")
+        for a in filter(statement, au):
+            for r in filter(statement, rk):
+                if fact_family(a["atom"]) == fact_family(r["atom"]) and atom_value_key(a["atom"]) != atom_value_key(r["atom"]):
+                    out.append(self._conflict(fact_family(a["atom"]), a, r))
+        au_dims, rk_dims = self._body_dims(au), self._body_dims(rk)
+        for label in sorted(set(au_dims) & set(rk_dims)):
+            (a_val, a_fact), (r_val, r_fact) = au_dims[label], rk_dims[label]
+            if a_val is not None and r_val is not None and a_val != r_val:
+                out.append(self._conflict(f"body_dimension:{label}", a_fact, r_fact))
         return out
+
+    @staticmethod
+    def _conflict(family, a, r):
+        return {"family": family,
+                "au": {"source": a["source"], "quote": a["atom"].get("quote"), "value": a["atom"]["value"], "span": a.get("span")},
+                "rakuten": {"source": r["source"], "quote": r["atom"].get("quote"), "value": r["atom"]["value"], "span": r.get("span")}}
+
+    @staticmethod
+    def _body_dims(facts) -> dict:
+        """label -> (value, fact); a label stated with two values on one side is ambiguous (None)."""
+        out: dict[str, tuple] = {}
+        for f in facts:
+            atom = f["atom"]
+            if (atom["type"] != "dimension" or atom.get("role") != "labeled" or not f.get("single_valued")
+                    or f.get("scope") not in DERIVED_DIMENSION_SCOPES):
+                continue
+            for label, value in zip(atom.get("labels") or [], atom["value"]):
+                if label in ("unlabeled",):
+                    continue
+                if label in out and out[label][0] != value:
+                    out[label] = (None, f)
+                else:
+                    out.setdefault(label, (value, f))
+        return out
+
+
+# Rakuten per-SKU attribute titles that state a body dimension of the selected SKU.
+ATTRIBUTE_DIMENSIONS = {"本体横幅": "width", "本体縦幅": "length", "本体奥行": "depth", "本体高さ": "height",
+                        "マットレスの厚さ": "thickness", "天板高さ": "height"}
+DERIVED_DIMENSION_SCOPES = ("size_section", "labeled_size_line", "page_declaration", "selected_sku_attributes")
+
+
+def attribute_facts(attributes: list[dict]) -> list[dict]:
+    out = []
+    for attr in attributes or []:
+        label = ATTRIBUTE_DIMENSIONS.get(attr["title"])
+        if not label or (attr.get("unit") or "cm") != "cm":
+            continue
+        try:
+            value = float(attr["value"])
+        except ValueError:
+            continue
+        atom = {"type": "dimension", "role": "labeled", "labels": [label], "value": [value],
+                "quote": attr["value"], "attribute_title": attr["title"]}
+        out.append({"atom": atom, "source": "rakuten_variant_attributes", "scope": "selected_sku_attributes",
+                    "single_valued": True, "family": f"dimension:labeled:{label}:1", "span": attr.get("value_span"),
+                    "derived": True})
+    return out
 
 
 def _exceptions_override(facts: list[dict]) -> list[dict]:
@@ -851,7 +916,7 @@ def run_method(method: str, case_input: dict, facts: PairFacts, config_name: str
     """Method A (structural) or B (quoted) for one case under one source config."""
     evaluator = evaluator or make_evaluator(method, facts, config_name)
     reqs = selected_atoms(case_input, facts)
-    rak_facts = evaluator.rak_facts_for(reqs)
+    rak_facts = evaluator.rak_facts_for(reqs, case_input["rakuten_selected"].get("variant_attributes"))
     rows_out, full_rows, conflict_rows, row_status = [], [], [], {}
     details = {}
     for row in facts.rows:

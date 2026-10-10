@@ -95,6 +95,46 @@
               }
             }
           }
+        },
+        "variant_attributes": {
+          "type": "array",
+          "description": "Per-SKU structured attributes of the selected variant from the original page JSON (identity facts only; no price fields).",
+          "items": {
+            "type": "object",
+            "required": [
+              "title",
+              "value",
+              "unit",
+              "value_span"
+            ],
+            "properties": {
+              "title": {
+                "type": "string",
+                "not": {
+                  "pattern": "価格|ポイント|送料|在庫"
+                }
+              },
+              "value": {
+                "type": "string"
+              },
+              "unit": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "value_span": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/span"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
         }
       },
       "not": {

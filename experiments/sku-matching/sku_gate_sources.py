@@ -187,6 +187,33 @@ def rakuten_selected_values(store: RawStore, rel: str, encoding: str, variant_id
     return spans
 
 
+def rakuten_variant_attributes(store: RawStore, rel: str, encoding: str, variant_id: str) -> list[dict]:
+    """Per-SKU structured attributes (title/value/unit) of one variant, with value spans."""
+    text = store.text(rel, encoding)
+    marker = '{"variantId":' + json.dumps(variant_id, ensure_ascii=False) + ',"selectorValues":['
+    start = text.find(marker)
+    if start < 0:
+        raise ValueError(f"Variant {variant_id} is missing in {rel}")
+    variant, end = json.JSONDecoder().raw_decode(text, start)
+    out, pos = [], start
+    for index, attr in enumerate(variant.get("attributes", [])):
+        title, value = attr.get("title"), attr.get("value")
+        if not isinstance(title, str) or not isinstance(value, str) or not value:
+            continue
+        literal = '{"title":' + json.dumps(title, ensure_ascii=False) + ',"value":' + json.dumps(value, ensure_ascii=False)
+        at = text.find(literal, pos, end)
+        if at < 0:
+            continue
+        value_start = at + len(literal) - len(json.dumps(value, ensure_ascii=False)) + 1
+        locator = {"kind": "html_text", "encoding": encoding,
+                   "path": f"sku[variantId={variant_id}].attributes[{index}].value"}
+        span = make_span(store, rel, locator, value_start, value_start + len(value), value) \
+            if json.dumps(value, ensure_ascii=False)[1:-1] == value else None
+        out.append({"title": title, "value": value, "unit": attr.get("unit"), "value_span": span})
+        pos = at + len(literal)
+    return out
+
+
 def rakuten_variant_selectors(store: RawStore, rel: str, encoding: str) -> list[dict]:
     """Axis keys/labels and allowed values from the page's variantSelectors JSON."""
     text = store.text(rel, encoding)
