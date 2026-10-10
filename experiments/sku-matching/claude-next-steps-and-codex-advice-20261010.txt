@@ -590,13 +590,14 @@ Claude 3. holdout適用の入口
   - Qwen3.5 0.8B/2B は選択肢の順番で答えが変わり、該当が無いときも近いものを選んだ。Qwen3.5-4B は複合値の一部一致（スリム / グレー → グレー）で採用した。ModernBERT-Ja-jev は ダークブラウン → ラテ と答えた。いずれも採用しない。
 
 13-4. Codexへの受け渡し
-- ファイル: `results/20261011-sku-align-v2.zip` 内の
-  `.lab-output/sku-align-20261011-v2/{legacy,family}/align/handoff.jsonl`
+- ファイル: `results/20261011-sku-align-v3.zip` 内の
+  `.lab-output/sku-align-20261011-v3/{legacy,family}/align/handoff.jsonl`
   （29ペア 1,317行、family 761行）。値の組は `value_pairs.jsonl`、軸の判定は `axes.jsonl`。
 - 1行 = 1ケース × 1候補AU行（矛盾も対称軸の未解決も無い行だけ）。項目:
   - case_id、dossier_id、au_product_id、au_row_key、AU原本（raw_file、sha256）
   - 楽天SKU（source_sku_key、sku_record_key、variant_id、url、raw_file、sha256）
   - conditions: その行の全条件と状態（one_sided、extra_in_value、aligned）。楽天の軸名・選択値、組になったAU軸とその行のAU値
+  - matched_by: 対応確認済み・値に余分ありの条件が、完全一致（identical）で決まったか、モデル（model）で決まったか
   - rakuten_axes: 楽天の各軸の選択肢一覧と、選択値の原文span
 - 説明の引用・抜粋は付けない。Codex側のデータセットは説明全文を持っている。
 - 行ごとの条件の全表は保存しない。similarities.jsonl と入力から、同じ関数で再計算できる（score もそうしている）。
@@ -614,3 +615,11 @@ Claude 3. holdout適用の入口
 - 新しい商品群の独立データでの最終評価。
 - Ruri v3 Reranker（全軸の相互一致）と Qwen3.5-4B の family 分は計測中のため未記載。
 - familyの軸の参照表は未作成（29ペアのみ）。
+
+13-8. 追記（2026-10-11）: 第二意見のデータ品質確認を受けて
+- 正解行で対応確認済みの762条件のうち、モデルが決めたのはカーテンのサイズ333条件だけ（値の組34種類、すべて「100×105cm」と「幅100×丈105cm(2枚)」の型）。残り429はモデルを使わない完全一致（カーテンの色333、その他の色・タイプ96）。ラベル付きの範囲で確かめられたモデルの働きは、この1つの型に限られる。
+- 各条件に matched_by（identical / model）を記録し、採点も分けて数える（v3）。
+- 穴: 「(2枚)」「(4枚組)」のような、文字列の包含にならないAU側だけの情報は「含む/含まれる」で検出できず、モデルの対応で確認済みになる。今の29ペアでは枚数がレースの有無（非対称、Codex行き）と結びつくので最終判断への影響は小さいと見込むが、未検証。
+- カテゴリ別（機械ラベルで一致の435ケース）: カーテン333ケース、その他88、マットレス（AU 337595272）10、敷きパッド（AU 483077897）4。第二意見の品質注意10件（マットレス6、敷きパッド4）は、sidecar（quality-sidecar.csv）が届いたら分けて採点する。マットレス6件は、この段階で「値に余分あり」としてCodexに回した6条件と一致する。
+- 独立評価のデータは、カーテンに偏らせず、色以外の対称な軸（サイズ・タイプなど）で文字列が違う例を意図して含める。
+

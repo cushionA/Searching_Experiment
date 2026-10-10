@@ -122,6 +122,7 @@ def value_pairs(entry) -> pd.DataFrame:
     table = pd.concat([rak, au.iloc[best_au].reset_index(drop=True)], axis=1)
     table["paired"] = best_rak[best_au] == np.arange(len(rak))
     table["extra"] = [a != b and (a in b or b in a) for a, b in zip(table["value"].map(norm), table["au_value"].map(norm))]
+    table["matched_by"] = np.where(same[np.arange(len(rak)), best_au], "identical", "model")
     return table
 
 
@@ -140,20 +141,22 @@ def conditions(case, context, table, symmetric, au_only) -> pd.DataFrame:
     rows = pd.DataFrame([{a["axis_name"]: a["value"] for a in r["axes"]} for r in context["au_rows"]],
                         index=[r["row_key"] for r in context["au_rows"]])
     paired = table[table["paired"] & (table["au_axis"] == table["axis_key"].map(symmetric))]
-    mapped = {(k, v): (a, x) for k, v, a, x in paired[["axis_key", "value", "au_value", "extra"]].itertuples(index=False)}
+    mapped = {(k, v): (a, x, m) for k, v, a, x, m in paired[["axis_key", "value", "au_value", "extra", "matched_by"]].itertuples(index=False)}
     out = []
     for axis in case["rakuten_selected"]["axes"]:
         au_axis = symmetric.get(axis["axis_key"])
-        au_value, extra = mapped.get((axis["axis_key"], axis["value"]), (None, False))
+        au_value, extra, matched_by = mapped.get((axis["axis_key"], axis["value"]), (None, False, None))
         row_values = rows.get(au_axis, pd.Series(None, index=rows.index, dtype=object)).to_numpy()
         status = np.select([np.full(len(rows), au_axis is None), np.full(len(rows), au_value is None),
                             row_values != au_value, np.full(len(rows), extra)],
                            ["one_sided", "symmetric_unresolved", "contradiction", "extra_in_value"], "aligned")
         out.append(pd.DataFrame({"row_key": rows.index, "kind": "rakuten", "axis_key": axis["axis_key"],
                                  "axis_label": axis["axis_label"], "value": axis["value"], "au_axis": au_axis,
-                                 "au_value": row_values, "status": status}))
+                                 "au_value": row_values, "status": status,
+                                 "matched_by": np.where(np.isin(status, ["aligned", "extra_in_value"]), matched_by, None)}))
     out += [pd.DataFrame({"row_key": rows.index, "kind": "au_only", "axis_key": None, "axis_label": n, "value": None,
-                          "au_axis": n, "au_value": rows[n].to_numpy(), "status": "one_sided"}) for n in au_only]
+                          "au_axis": n, "au_value": rows[n].to_numpy(), "status": "one_sided", "matched_by": None})
+            for n in au_only]
     return pd.concat(out, ignore_index=True)
 
 
@@ -252,7 +255,7 @@ def score(args):
         states = row_states(conds)
         true = conds[conds["row_key"].isin(g["matching_au_row_keys"]) & (conds["kind"] == "rakuten")]
         side = true["axis_label"].map(lambda label: "symmetric" if reference[d][label]["au_axis"] else "one_sided")
-        cond.update(side + "_" + true["status"])
+        cond.update(side + "_" + true["status"] + true["matched_by"].map(lambda m: f"_{m}" if m else ""))
         competitors["cases"] += 1
         competitors["all_competitors_contradicted"] += bool((states[~states.index.isin(g["matching_au_row_keys"])]
                                                              == "contradiction").all())

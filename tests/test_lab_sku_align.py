@@ -59,6 +59,9 @@ class TableTests(unittest.TestCase):
         conds = al.conditions(case(("size", "サイズ", "100×80cm"), ("colour", "カラー", "グレー")),
                               context, self.table, symmetric, au_only)
         self.assertEqual(al.decide(al.row_states(conds)), ("matched", "r0", "all_conditions_aligned_on_one_row"))
+        # Whether the pair came from identical strings or from the model is kept on every aligned condition.
+        aligned = conds[(conds["row_key"] == "r0")].set_index("axis_key")["matched_by"].to_dict()
+        self.assertEqual(aligned, {"size": "model", "colour": "identical"})
         # A one-sided condition sends the surviving row to the description check.
         conds = al.conditions(case(("size", "サイズ", "100×80cm"), ("colour", "カラー", "グレー"), ("lace", "レースカーテン", "あり")),
                               context, self.table, symmetric, au_only)
