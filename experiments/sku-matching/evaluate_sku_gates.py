@@ -151,10 +151,16 @@ def main():
                                       "gold": g["decision"], "gold_rows": g["matching_au_row_keys"],
                                       "gold_rationale": g.get("rationale")})
     eval_dir = out / args.eval_dir
+    invariants_path = out / "invariants" / "summary.json"
+    invariants = None
+    if invariants_path.exists():
+        inv = json.loads(invariants_path.read_text(encoding="utf-8"))
+        invariants = {"sha256": src.sha256_file(invariants_path), "all_passed": inv["all_passed"],
+                      "violation_count": inv["violation_count"]}
     summary = {"created_at_utc": datetime.now(timezone.utc).isoformat(),
                "freeze_sha256": src.sha256_file(out / "freeze.json"), "freeze_note": freeze.get("note"),
                "prediction_manifest_sha256": src.sha256_file(out / "predictions" / "manifest.json"),
-               "evaluator_sha256": src.sha256_file(Path(__file__)),
+               "evaluator_sha256": src.sha256_file(Path(__file__)), "label_free_invariants": invariants,
                "labels": {"path": LABELS, "sha256": labels_sha, "human_verified": False,
                           "status": "Luna machine-labelled reused development diagnostic; no independent holdout",
                           "counts": dict(Counter(g["decision"] for g in labels.values()))},

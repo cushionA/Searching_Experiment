@@ -49,7 +49,8 @@
         "every_au_row_has_explicit_conflict",
         "page_specification_conflict_on_candidate_row",
         "ambiguous_or_conflicting_sources",
-        "unresolved_requirement"
+        "unresolved_requirement",
+        "unquoted_requirement"
       ]
     },
     "candidate_row_keys": {
@@ -296,6 +297,31 @@
         "properties": {
           "top_row_key": {
             "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "enum": [
+              "matched",
+              "unmatched"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "requirements": {
+            "items": {
+              "properties": {
+                "span": {
+                  "$ref": "#/$defs/span"
+                }
+              }
+            }
           }
         }
       }

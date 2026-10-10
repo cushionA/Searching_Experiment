@@ -11,6 +11,7 @@ combination) block acceptance but never justify unmatched on their own.
 """
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import re
@@ -907,6 +908,28 @@ def _row_summary(row_key, status, results, au_only, derived, detail):
     return out
 
 
+def sibling_swaps(store, case_input: dict):
+    """Label-free metamorphic variants: one selected value replaced by a sibling option.
+
+    The sibling is quoted from the page's own option list. Variant attributes belong to the
+    original variant and are dropped. Siblings whose option span cannot be resolved are skipped.
+    """
+    sel = case_input["rakuten_selected"]
+    for i, axis in enumerate(sel["axes"]):
+        encoding = axis["value_span"]["locator"].get("encoding", "utf-8")
+        for sibling in axis["family_values"]:
+            if unicodedata.normalize("NFKC", sibling) == unicodedata.normalize("NFKC", axis["value"]):
+                continue
+            span = src.rakuten_selector_value_span(store, sel["raw_file"], encoding, axis["axis_index"],
+                                                   axis["axis_key"], sibling)
+            if span is None:
+                continue
+            swapped = copy.deepcopy(case_input)
+            swapped["rakuten_selected"]["axes"][i].update(value=sibling, value_span=span)
+            swapped["rakuten_selected"]["variant_attributes"] = []
+            yield {"axis_index": axis["axis_index"], "from": axis["value"], "to": sibling}, swapped
+
+
 def make_evaluator(method: str, facts: PairFacts, config_name: str) -> Evaluator:
     return Evaluator(facts, SOURCE_CONFIGS[config_name], require_verified=(method == "B"))
 
@@ -985,6 +1008,9 @@ def run_method(method: str, case_input: dict, facts: PairFacts, config_name: str
             decision, reason = "unmatched", "every_au_row_has_verified_contradiction"
         else:
             reason = _review_reason(row_status)
+    if decision != "review" and any(not r.get("span") for r in reqs):
+        # A requirement whose selected value has no verified source span cannot decide either way.
+        decision, top, reason = "review", None, "unquoted_requirement"
     focus = set(full_rows) | ({top} if top else set())
     if not focus:
         ranked = sorted(facts.rows, key=lambda r: (row_status[r["row_key"]] == "conflict",

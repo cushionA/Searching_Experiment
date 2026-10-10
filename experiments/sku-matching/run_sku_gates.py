@@ -5,8 +5,9 @@ Steps (each refuses to overwrite existing outputs):
   freeze   hash task code, schemas, tests, and inputs before any label is read
   predict  verify the freeze, then write A/B predictions for every source config
 
-Labels are never opened here. Evaluation lives in evaluate_sku_gates.py and
-checks this freeze first.
+Labels are never opened here. Label-free invariants live in
+check_sku_gate_invariants.py; evaluation lives in evaluate_sku_gates.py. Both
+check this freeze first.
 """
 from __future__ import annotations
 
@@ -29,10 +30,11 @@ import sku_gates as gates  # noqa: E402
 ROOT = HERE.parents[1]
 ANNOTATION = ".lab-output/sku-real-luna-annotation-inputs-20261010-v3"
 ARRAYS = ".lab-output/sku-observed-product-pairs-20261010-final-v4/au_product_sku_arrays.jsonl"
-DEFAULT_OUT = ".lab-output/sku-gate-tasks-20261010-v2"
+DEFAULT_OUT = ".lab-output/sku-gate-tasks-20261010-v2b"
 CODE_FILES = ["experiments/sku-matching/sku_gate_sources.py", "experiments/sku-matching/sku_gate_atoms.py",
               "experiments/sku-matching/sku_gates.py", "experiments/sku-matching/run_sku_gates.py",
-              "experiments/sku-matching/evaluate_sku_gates.py", "tests/test_lab_sku_gates.py"]
+              "experiments/sku-matching/evaluate_sku_gates.py", "experiments/sku-matching/check_sku_gate_invariants.py",
+              "tests/test_lab_sku_gates.py"]
 SCHEMA_FILES = ["experiments/sku-matching/schemas/sku_gate_product_context.schema.json",
                 "experiments/sku-matching/schemas/sku_gate_case_input.schema.json",
                 "experiments/sku-matching/schemas/sku_gate_a_output.schema.json",

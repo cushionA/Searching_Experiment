@@ -220,6 +220,18 @@ class GateTests(unittest.TestCase):
         self.assertEqual(before["decision"], after["decision"])
         self.assertEqual(before["top_row_key"], after["top_row_key"])
 
+    def test_unquoted_requirement_never_decides(self):
+        fam = {"カラー": ("赤", "青", "緑")}
+        for selected, quoted in (("赤", "matched"), ("緑", "unmatched")):
+            facts, case = make_pair([[("カラー", "赤")], [("カラー", "青")]], [("カラー", selected)], fam)
+            for method in ("A", "B"):
+                self.assertEqual(run(method, facts, case)["decision"], quoted, method)
+            case["rakuten_selected"]["axes"][0]["value_span"] = None
+            for method in ("A", "B"):
+                out = run(method, facts, case)
+                validator(f"sku_gate_{method.lower()}_output.schema.json").validate(out)
+                self.assertEqual((out["decision"], out["reason"]), ("review", "unquoted_requirement"), method)
+
     def test_outputs_keep_row_keys_and_provenance(self):
         facts, case = make_pair([[("カラー", "赤")], [("カラー", "青")]], [("カラー", "赤")], {"カラー": ("赤", "青")})
         out = run("A", facts, case)
@@ -342,6 +354,29 @@ class RealSourceTests(unittest.TestCase):
             hooks = self._run("case-180a9baafb740879a120", method)
             self.assertEqual(hooks["decision"], "review")
             self.assertIn("component_count:hook", json.dumps(hooks["rows"], ensure_ascii=False))
+
+    def test_sibling_swap_never_reaccepts_the_same_row(self):
+        # Label-free metamorphic check: replace one selected value with a sibling option quoted
+        # from the page's own option list; the row accepted for the original SKU must not be
+        # accepted again. Two accepted cases per fixed pair keep the test fast.
+        checked, per_pair = 0, {}
+        for case_id in sorted(self.inputs):
+            case, ci = self.inputs[case_id]
+            key = case["dossier_id"]
+            if per_pair.get(key, 0) >= 2:
+                continue
+            original = gates.run_method("A", ci, self.facts[key], "full")
+            if original["decision"] != "matched":
+                continue
+            per_pair[key] = per_pair.get(key, 0) + 1
+            for swap, swapped in gates.sibling_swaps(self.store, ci):
+                for method in ("A", "B"):
+                    out = gates.run_method(method, swapped, self.facts[key], "full")
+                    self.assertFalse(out["decision"] == "matched" and out["top_row_key"] == original["top_row_key"],
+                                     (method, case_id, swap))
+                    checked += 1
+        self.assertGreater(len(per_pair), 20)
+        self.assertGreater(checked, 500)
 
 
 if __name__ == "__main__":

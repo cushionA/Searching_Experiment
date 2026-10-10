@@ -242,6 +242,38 @@ def rakuten_variant_selectors(store: RawStore, rel: str, encoding: str) -> list[
     return out
 
 
+def rakuten_selector_value_span(store: RawStore, rel: str, encoding: str, axis_index: int, axis_key: str,
+                                value: str) -> dict | None:
+    """Span of one option value inside variantSelectors[axis_index], the page's own option list.
+
+    Used for label-free sibling-swap checks; a selected SKU itself is always quoted from its
+    variant record, never from this list.
+    """
+    text = store.text(rel, encoding)
+    marker = '"variantSelectors":'
+    start = text.find(marker)
+    if start < 0:
+        return None
+    _, length = json.JSONDecoder().raw_decode(text[start + len(marker):])
+    region_end = start + len(marker) + length
+    at = start
+    for _ in range(axis_index + 1):
+        at = text.find('"key":', at + 1, region_end)
+        if at < 0:
+            return None
+    if not text.startswith('"key":' + json.dumps(axis_key, ensure_ascii=False), at):
+        return None
+    next_key = text.find('"key":', at + 1, region_end)
+    literal = '"value":' + json.dumps(value, ensure_ascii=False)
+    hit = text.find(literal, at, next_key if next_key > 0 else region_end)
+    if hit < 0:
+        return None
+    begin = hit + len('"value":"')
+    return make_span(store, rel, {"kind": "html_text", "encoding": encoding,
+                                  "path": f"variantSelectors[{axis_index}].values[value={value}]"},
+                     begin, begin + len(value), value)
+
+
 def html_title_span(store: RawStore, rel: str, encoding: str, title_text: str) -> dict | None:
     text = store.text(rel, encoding)
     open_at = text.find("<title>")
