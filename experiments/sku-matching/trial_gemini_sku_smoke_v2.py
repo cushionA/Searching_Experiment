@@ -157,12 +157,32 @@ def safe_json(data: Any, secret: str) -> bytes:
     return (raw + "\n").encode("utf-8")
 
 
+def vertex_credentials(secret_env: str) -> tuple[Any, str]:
+    import google.auth
+    from google.oauth2 import service_account
+
+    scopes = ["https://www.googleapis.com/auth/cloud-platform"]
+    raw = os.environ.get(secret_env, "")
+    if raw:
+        try:
+            info = json.loads(raw)
+            if not isinstance(info, dict) or info.get("type") != "service_account":
+                raise ValueError("wrong credential type")
+            credentials = service_account.Credentials.from_service_account_info(info, scopes=scopes)
+        except Exception:
+            raise ValueError(f"{secret_env} must contain valid service-account JSON; credential details suppressed") from None
+        return credentials, "service_account_secret_environment"
+    credentials, _ = google.auth.default(scopes=scopes)
+    return credentials, "application_default_credentials"
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--backend", choices=("vertex", "gemini"), default="vertex")
     ap.add_argument("--project", default="groundingsearch")
     ap.add_argument("--location", default="global")
     ap.add_argument("--api-key-env", default="GEMINI_API_KEY")
+    ap.add_argument("--service-account-json-env", default="GCP_SERVICE_ACCOUNT_JSON")
     ap.add_argument("--input-zip", type=Path, default=DEFAULT_ZIP)
     ap.add_argument("--output-dir", type=Path, required=True)
     ap.add_argument("--prepare-only", action="store_true")
@@ -196,7 +216,8 @@ def main() -> int:
                 import google.auth.transport.requests
             except ImportError:
                 raise ValueError("Vertex backend needs google-auth and requests installed") from None
-            credentials, _ = google.auth.default(scopes=["https://www.googleapis.com/auth/cloud-platform"])
+            credentials, credential_source = vertex_credentials(args.service_account_json_env)
+            manifest["vertex_credential_source"] = credential_source
             session = google.auth.transport.requests.AuthorizedSession(credentials, max_refresh_attempts=0)
             base = "https://aiplatform.googleapis.com" if args.location == "global" else f"https://{args.location}-aiplatform.googleapis.com"
             endpoint = f"{base}/v1/projects/{args.project}/locations/{args.location}/publishers/google/models/{MODEL}:generateContent"
