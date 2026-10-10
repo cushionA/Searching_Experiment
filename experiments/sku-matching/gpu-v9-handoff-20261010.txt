@@ -1,0 +1,55 @@
+SKU照合 v9 GPU 継続資料（2026-10-10）
+
+Kaggle v9 smoke は `superbigzabuton/sku-qwen35-4b-nf4-v9-smoke` version 1（上限3600秒）で完了しました。結果は `.lab-output/sku-kaggle-gpu-20261010-v9/job/artifacts/sku-v9-results/`、訂正後の評価は `.lab-output/sku-kaggle-gpu-20261010-v9/evaluation-audited/` にあります。初回の `evaluation/` は監査集計の不具合があったため使わず、この訂正済みフォルダーだけを参照してください。
+
+再現条件
+
+- model `Qwen/Qwen3.5-4B`, revision `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a`, runtime NF4 double-quant、fp16、CUDA。事前量子化公式checkpointではありません。
+- 固定入力は14ケース、28推論（simple/strict各1）、全ケースで同一AU商品ページの全候補行を保持。798 AU row references（curtain 765、その他33）、14ケースは6 dossierに属します。入力SHA `6e2a3057dca06e50e1c0c0f421fb9ce234e6964b2f47f668661e664abe1af23d`、source cases SHA `a91fca45c574f4d531eca2dc450e81a9adc44fa38c934955109831cf3147e18f`。
+- v9 runner SHA `3149f26ed19ad342ea1f1e796e848debe986ff6daa597f0f5bbb949d033a2517`、config SHA `3452f5bf2f85873ba4e6d88c3fb0f891c8b49dff7bb64a9fadf89a456bb63214`。freezeとupload manifestを照合してください。
+- Transformers標準の `prefill_chunk_size` はQwen ConditionalGenerationの3D position IDsで失敗。手動cached 512-token prefill + greedy 1-token decodeを使用。CPU上の対象6/6テストはskipなしで成功し、chunk 4/64の数値比較およびfull prefillとのgreedy比較も一致しました。CPUテストはGPU性能・量子化精度を示しません。
+- 数値wrapper確認後の全lab suiteは383 tests、16 skips、367実行passでした。`post-evaluation-validation.json` と `post-evaluation-tests.log` をチェックポイントに含めます。
+
+v9 smoke結果と評価
+
+14ケースすべてでstrict/simpleを各1回、計28推論が完了しました。OOM 0、runtime error 0、実行時間はモデルロード込み408秒でした。strictは出力14件すべてがinvalid、simpleは有効出力5件・invalid 9件です。simple rawは5件をmatchedとして受理しましたが、内訳は機械ラベル上の既知negativeへのfalse accept 3件とreview対象へのaccept 2件で、正解matchedへのacceptは0件でした。このうち2件は反対のレース構成を受理しています。fixed-pool guardは5件すべてをreviewに戻し、acceptは0件です。監査後の誤ったAU行へのacceptは0件でした。5件すべて正しい、または5件すべて間違ったAU行を選んだ、とは結論しません。
+
+同じ14件で走らせたCPU比較は、機械ラベル上のmatched 2件を2/2 acceptし、既知negative 10件のうち5件をunmatched、5件をreviewにし、review 2件もdeferしました。これらのラベルは未検証で人手正解ではなく、再利用した開発サンプル上の診断です。v9は有効なNF4精度比較や一般化精度評価ではありません。量子化は公式の事前量子化checkpointではなく、公式Qwen重みをbitsandbytes NF4 runtime quantizeしました。GCP速度・費用測定はしていません。
+
+タスク固定条件
+
+1つのRakuten選択SKUを、先に固定した1つのAU商品URLの全SKU配列と照合します。全条件は同一AU行で満たすこと。Rakuten-only条件は固定AUタイトルを確認後、適用範囲が明確な現ページ情報で確認。AU-only条件、複合選択、全枚数・セット構成、付属品も必須です。単語がないだけでは否定しません。兄弟URLへ移動せず、価格・在庫を別評価し、出典を消したりカート投入したりしません。実データと合成データを分離します。
+
+現行ベンチマーク全体は実データ1,383件、AU商品29件/481 SKU行、Rakuten選択SKU 644件、広域収集SKU 10,577件です。v9の14件は既に再利用した診断サンプルでfresh holdoutではありません。設計メモ作成時、v8のraw scored記録1件にあるgold欄を誤って開いて表示してしまいました。設計にはラベル値を使っていませんが、このサンプルを独立検証と呼ばないでください。
+
+既知の比較結果
+
+CPU v10 source-gateはmatched 337 / unmatched 815 / review 231（1383件）。Luna機械ラベルは未検証で、人手確定正解ではありません。CPU残差GLiNER ablation v16は296件を保持、41件をreviewへ移し、新しいmatchedは0でした。GPU v8は14件すべて処理したものの、OOM 5件、生成9件は全て形式・証拠検証に失敗し、有効予測0件でした。v8はNF4量子化精度を測っていません。GCPの速度・費用測定は、妥当なaccuracy結果を得るまで行いません。
+
+復元と最終化
+
+復元では、まず `experiments/sku-matching/results/20261010-claude-task-checkpoint.zip` と `20261010-sku-continuation-cpu-checkpoint.zip` をこの順でrepo rootへ展開します。続いてv9 supplementはrepo rootへ直接展開せず、例えば `.lab-output/sku-kaggle-gpu-20261010-v9-checkpoint/` へ展開してください。ZIP内は元のrepo相対パスではなく `input/`, `runner/`, `result/`, `evaluation/` などのportable namespaceです。元の `.lab-output` や `experiments/` の場所へ自動復元されるわけではありません。必要なら次の対応でファイルを明示的に配置します。
+
+| supplement内パス | 元repoでの対応先 |
+| --- | --- |
+| `input/*` | `.lab-output/sku-kaggle-gpu-20261010-v9/dataset-upload/*` |
+| `runner/kaggle_gpu_sku_runner_v3.py` | `.lab-output/sku-kaggle-gpu-20261010-v9/dataset-upload/kaggle_gpu_sku_runner_v3.py` |
+| `runner/test_lab_gpu_sku_runner_v3.py` | `tests/test_lab_gpu_sku_runner_v3.py` |
+| `notebook/*` | `.lab-output/sku-kaggle-gpu-20261010-v9/notebook-upload/*` |
+| `result/*` | `.lab-output/sku-kaggle-gpu-20261010-v9/job/artifacts/sku-v9-results/*` |
+| `evaluation/{manifest,metrics.csv,metrics.json,report.txt,predictions-*.jsonl}` | `.lab-output/sku-kaggle-gpu-20261010-v9/evaluation-audited/*` |
+| `evaluation/evaluate_gpu_sku_trial_v3.py` | `experiments/sku-matching/evaluate_gpu_sku_trial_v3.py` |
+| `evaluation/test_lab_gpu_sku_evaluation_v3.py` | `tests/test_lab_gpu_sku_evaluation_v3.py` |
+| `transport-freeze.json`, `transport/prepare_transport.py` | `.lab-output/sku-kaggle-gpu-20261010-v9/` 以下の同名ファイル |
+| `proof/*` | `.lab-output/sku-kaggle-gpu-20261010-v9/` 以下の同名ファイル |
+| `design/gpu-residual-task-design-20261010.txt` | `experiments/sku-matching/gpu-residual-task-design-20261010.txt` |
+| `handoff/gpu-v9-handoff-20261010.txt` | `experiments/sku-matching/gpu-v9-handoff-20261010.txt` |
+| `packaging/prepare_checkpoint.py` | `.lab-output/v9/prepare_checkpoint.py` |
+
+旧ZIP SHA256はそれぞれ `89909023f95fa211f4b45b54749b9a464d08f8313186a1ae3e64df13608096d4` と `ba6d7b8131df2e2dd258da8f1b7355d5340f9bd69070bfe8afa8dddbe6ed1eaf`。再開時は各manifestとzip SHAを照合します。v9 archive SHAは同梱sidecarと結果manifestを確認してください。
+
+repo rootから `python3 .lab-output/v9/prepare_checkpoint.py --results-dir .lab-output/sku-kaggle-gpu-20261010-v9/job/artifacts/sku-v9-results --evaluation-dir .lab-output/sku-kaggle-gpu-20261010-v9/evaluation-audited` を実行すると、freeze済み素材、完了raw出力、訂正済み評価、数値テスト証拠を含むallowlist ZIP、manifest、SHA256 sidecarを再生成します。packagerはcomplete状態、run/continuation manifestのraw hash、凍結payload、評価コードと評価出力manifestのhash、主要な監査結果を照合してから作成します。mutableなjob状態/session log、secret、weights、venv、既存checkpointの複製は入れません。
+
+評価は凍結済み `evaluate_gpu_sku_trial_v3.py` とそのテストを使い、simple/strict別に形式妥当性、同一AU行・証拠制約、レビュー率を報告します。精度は独立した人手正解なしには主張しません。v9の全推論がinvalidならaccuracyは推定不能です。条件ごとに集約する前に失敗型と誤採択リスクを確認します。
+
+次の改善設計では汎用の商品条件を扱い、カーテン専用ルールに限定しません。モデルには小さいcondition単位の証拠判定だけを任せ、SKU行・case ID・引用IDはrunner側で固定します。欠落語を負例にせず、タイトルを優先し、現ページの構造化されたscopeを使います。accuracyが測定できる結果を得るまではGCP速度・費用を測りません。
