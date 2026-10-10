@@ -1,0 +1,64 @@
+Claude Code 並列検証ハンドオフ — SKU判定タスク構築
+作成日: 2026-10-10
+
+目的
+固定済みの商品ペアを前提に、楽天の1選択SKUを、同一AU URLの全SKU選択肢と商品ページ根拠に照らして判定するタスク構造を実装・検証する。優先は構築品質と実運用上の誤受理防止。SKU判定前の商品検索や別URLへの再ルーティングは行わない。提案書だけで終わらず、2方式以上をCPUで実装し、source-preservation testを通してから診断評価を行う。
+
+開始手順
+- handoff元ブランチは `codex/sku-model-comparison-20261009`、基準コミットは `8e10f14`。rootがこのブランチへpushした後、rootから共有されたURLでcloneして以下を実行する。
+  1. `git clone https://github.com/cushionA/Searching_Experiment.git Searching_Experiment`
+  2. `cd Searching_Experiment`
+  3. `git fetch origin codex/sku-model-comparison-20261009`
+  4. `git worktree add ../Searching_Experiment-claude-task -b claude/task-construction origin/codex/sku-model-comparison-20261009`
+  5. `cd ../Searching_Experiment-claude-task` とし、`git merge-base --is-ancestor 8e10f14 HEAD` が成功することを確認する。
+- rootが用意した `experiments/sku-matching/results/20261010-claude-task-checkpoint.zip` を、リポジトリルートへ展開する。ZIPは136 payload files / 142,123,313 uncompressed bytes / 11,397,724 archive bytes、SHA-256=`89909023f95fa211f4b45b54749b9a464d08f8313186a1ae3e64df13608096d4`。隣接する `20261010-claude-task-checkpoint.manifest.json`（SHA-256=`a273cc7fe471d9283ab1df4048ced90d6207ed80ea1f1cf1be7c39128044ac46`）のアーカイブSHA/サイズ/ファイル数を照合し、payload 136 files / 142,123,313 bytes、source code base commit `8e10f145574d86afd8c7682ba246db9327abc4a4` を確認する。ZIP側も `(cd experiments/sku-matching/results && sha256sum -c 20261010-claude-task-checkpoint.zip.sha256)` で確認する。ZIPを `unzip -n -q experiments/sku-matching/results/20261010-claude-task-checkpoint.zip -d .` で展開し、manifest内の136 payload各SHAとCRC検証状態を確認する。`.lab-output/` 以下の参照構造を保つ。既存ファイルを上書きしない。
+- CPU補足 `experiments/sku-matching/results/20261010-cpu-minimal-claims.zip`（127,320 bytes、SHA-256=`c5b184e734ee19cbe69b0a36c4b2867fd9d1cf2950571136d802a18e1cefd80a`）も隣接manifest/sha256と照合して同じルートへ展開する。125条件×2形式の250生出力、freeze、コード、入力、集計を含む。clone/worktree/manifest/ZIPが見つからなければ、既知の数値や別ファイルで代替して進めず、手順を報告する。AGENTS.mdを最初に読む。
+- 出力は独立ブランチに限定。Kaggle v5入力・出力・コード・ジョブ、既存のCPU実験出力、rootの未追跡ファイルを編集しない。GCP速度/費用実測はまだ行わない。新しい外部サービス/API、商品データの追加ネットワーク取得、認証利用、autopushは禁止。既存のCPUモデルはローカルで利用可。必要な場合に限り、固定revisionのCPUモデルを取得・準備してSHAを記録できる。Kaggle/GPUジョブを起動しない。pushはrootが行う。
+
+データと評価の前提
+- 実データ由来の確認済み商品ペアは29 AU商品、AU側の実SKU選択肢は合計481行。楽天SKU展開は1,383行、うち同一196行の診断コホートも報告対象。商品ペアは固定済み入力であり、SKU判定時に商品検索や別AU URLへのルーティングをしない。
+- 1,383行のLuna-machine診断注釈はmatch 435 / unmatch 911 / review 37。人手未確認で、独立正解集合でも外部一般化評価でもない。独立holdoutは存在しない。
+- 8件と27件は既知のreview監査ケースで、合計35件とも1,383行の開発ベンチマークに含まれる。通常の開発データとして読み、review状態とソース矛盾を保つ。スコアを上げるために除外・二値化しない。
+- 現行CPUで有望な設計方向は、引用・ソース範囲・明示条件を使ったevidence gate。埋め込み方式の改善が確立したとは扱わない。既存CPU best baselineと比較し、同じ行で構築差分・根拠ソースのgainをablationする。v9 Decideの実行は既知不具合修正前の診断なので確定結果として扱わない。
+- title-only GLiNER実験は29 AUタイトルからの根拠候補抽出であり、SKU照合スコアや精度ではない。
+- CPUの最小claim実験は、23商品から採った125件の固有タイトル/残余claimについて、同じ入力・同じGLiNERモデルに異なる一般ラベルA/Bを与えたソース分類。Aはsupport 123 / contradict 2 / unknown 0、Bはsupport 32 / contradict 4 / unknown 89。信頼度0.7以上はAが4件、Bが0件だった。これは正解率でも確率校正でもなく、プロンプトラベルへの感度を示すだけ。SKU判定へ適用していない。model argmaxやconfidenceだけでmatch/unmatchを決めず、literal quoteとsource scopeが無ければunknown/reviewにする。rootが `.lab-output/sku-cpu-minimal-claims-20261010-v1` を含む補足ZIPを用意した場合は、同梱manifest/SHA確認後に同じ原則のレビューに使う。
+
+読み始めるデータ・コード（ZIP展開後の相対パス）
+- `.lab-output/sku-real-luna-annotation-inputs-20261010-v3/cases.jsonl` と `dossiers/*.json`: 楽天の選択値、固定AUの全選択肢、ページ説明、引用元。eligibility.jsonl / au_eligibility.jsonlは価格・在庫・出力可否のsidecar。
+- `.lab-output/sku-observed-product-pairs-20261010-final-v4/{au_product_sku_arrays.jsonl,rakuten_sku_expanded.jsonl}`: AU商品全SKU配列と楽天SKU1件ごとの実価格付き展開。AUセルは商品ID・row_index・column_indexで識別し、楽天はsource row/SKU keyで識別する。グローバルAU配列は642商品を含むが、ZIPのAPI/HTML原本46ファイルは今回の29固定AU／17楽天ページのベンチマーク分だけ。
+- `.lab-output/sku-structured-task-trials-20261010-v10/{tasks.jsonl,evidence.jsonl}`: 既存のソース由来属性と出典。`hybrid/predictions.jsonl` と `hybrid/summary.json` が比較基準。予測はmatched337 / unmatched815 / review231、機械ラベルに対する行対応つきmatched recallは337/435=77.5%。自動判定率83.3%、カーテンrecall83.8%、非カーテン56.9%。人手確定精度ではない。
+- `.lab-output/sku-real-luna-labels-20261010-v3/labels.jsonl`: 評価用の機械ラベルとmatching_au_row_keys。`labels-core-attributes.jsonl` は別の限定スコープであり、既定の正解として混ぜない。構築freeze・予測保存後に読む。
+- `.lab-output/sku-kaggle-gpu-20261010-v2/dataset-upload/inputs.jsonl`: 同一196ケースのID集合と入力。164非カーテン＋32カーテン。GPUを起動する目的で使わない。
+- `.lab-output/sku-cpu-residual-task-20261010-v9/{tasks.jsonl,products.jsonl}`: AU配列を商品側へ一度だけ置いたCPU試作用レイアウト。`code/` は実行時の凍結コピー。v9は説明候補を先頭8件で切る、条件スコープが不十分、任意文字列の軸差を即不一致にする、引用パスが解決不能な説明文になっている、旧内蔵採点が行キーを検査しない等の既知問題がある。採用設計ではなく診断素材として読む。
+- `.lab-output/sku-cpu-title-evidence-20261010-v2/title-evidence.jsonl`: 29タイトルの候補span。28タイトルは前処理後の派生文字列で、raw_source_refと原本一致フラグを併記。SKU一致精度を示すものではない。
+- `experiments/sku-matching/{structured_sku_task.py,enrich_page_sku_attributes.py,evaluate_fixed_pool_hybrid.py,evaluate_gpu_sku_trial.py}`: 現行の要件・出典・全候補検査・層別評価を読む入口。全docsや巨大runtime/cacheの再帰走査は不要。
+- CPU重みとvenvはZIPに含まない。固定revisionと重みSHAは `experiments/sku-matching/manifests/`、`try_gliner.py`、各CPU freezeにある。
+
+判定タスクの必須条件
+1. 1ケースは「固定AU商品ペア + 楽天の選択済み1 SKU」。候補はその固定AU URLに属する全AU SKU配列。別AU URLへ振り分けない。
+2. 楽天選択SKUの軸値は同じ選択行から一体で扱う。複数の共通条件は同一のAU SKU行で同時に成立させ、別行から寄せ集めて一致にしない。
+3. 楽天にのみ明示された条件は、固定AU商品タイトル、次に範囲が明確なAU商品説明を根拠として照合する。AUに選択軸が無い事実だけでは反対値とみなさず、固定ページの根拠で解決できない場合はunknown/reviewに残す。共通軸の表記差も、確認済み仕様差と未知の名寄せを区別する。
+4. 選択SKUの全必須条件と複合軸の全要素を保持する。一部だけの支持は全体一致にしない。条件が未支持、適用範囲不明、複数解釈ならreview。固定AUの行または適切なソース範囲で明示矛盾が確認できる場合に限りunmatchedを検討する。
+5. 文言の不在から「なし」を推論しない。シリーズ全体の候補、選択外条件、適用範囲が曖昧な説明はreviewに残す。
+6. 価格、送料、在庫、クーポン、販促を同一性の根拠に使わない。
+7. 原文、正規化値、引用、ファイルSHA、商品ID、選択行キー、行番号を併記する。JSONPathを実原本で解決し、引用文字列とoffsetがleafに一致することを確認する。派生タイトルを実原本そのものとして引用しない。元ワークスペースの絶対パスは現在のcheckoutへ読み替え、凍結ファイルを編集しない。
+8. 幅150cm、または高さ50cmかつシルバーなどの適用条件は同じ候補SKU行の値で評価する。条件付き記述を商品単位で全行へキャッシュしない。購入案内中の商品仕様やペットカートの説明を、単語フィルターで丸ごと消さない。根拠を黙って先頭数件へ切り詰めない。
+9. 同一性と出力可否は分離する。価格・在庫の元値をsidecarへ残し、au商品単位価格と楽天SKU単位価格を維持する。売り切れ等のCSV除外は別フィールド。原本削除やカート追加は行わない。
+
+実データで必ず含める例
+- カーテン `case-001a5707d96903cfe7da`: 固定AU商品 `704500131`、楽天選択SKU `サイズ=100×220cm / カラー=スモークグレー / レースカーテン=なし`。同じ商品ペアの `case-003b9c60664f6b5059a8` は `100×110cm / スモークグレー / あり`。楽天の商品タイトルにはシリーズ説明として「レースカーテンセット」があるが、選択SKUには「あり/なし」がある。固定AU商品704500131のタイトルにはその語句がない。別商品704502086のタイトルとも混同しない。シリーズタイトルだけで個別選択を上書きしない。
+- 複合枚数 `case-03eb5704d3bb159f757b`: `21枚セット(パネル20枚＋ドア1枚)` は合計21、パネル20、ドア1の全要素を要求する。AUの行が色だけを示すなら構成は未支持。AUタイトルの13枚/12枚＋ドアは異なるソース範囲として記録する。
+- 複合タイプ `case-0722ef51b816b9837580`: `タイプ=スリム / グレー`。AU行が `カラー選択=グレー` だけなら、スリム要素は未解決。
+- 追加オプション `case-03df33141d94ac3c09fc`: `オプション=毛布セット` は敷きパッドに毛布が含まれる条件。AUの色行だけで毛布同梱まで一致にしない。
+- 追加の複合値（13枚/12枚+ドア、パネルのみ、天板付き/天然木、本棚付き/天然木）のソース行・SKUキーは `.lab-output/sku-cpu-title-evidence-20261010-v2/compound-selected-options-audit.json` に記録済み。配布ZIP内の同じ監査ファイルを使う。
+
+実装・評価の手順
+1. ラベルを開く前に、下記2方式の入力/出力契約を実装する。両方ともソース引用とスコープを保存し、誤った引用・複合要件の脱落・AU行をまたいだ条件合成を検出するsource-preservation testsを作る。タスク構築コードと入力manifestを固定・hash化してから注釈をロードする。
+   A. **同一行の構造ゲート**: 明示された正規化軸を型付き要件として1選択SKUから作り、固定AU配列の各行で全条件を評価する。欠落軸はunknown/review、値の明示矛盾はunmatched候補。複合値を複数原子として表現する。
+   B. **引用付き要件ゲート**: 原文と引用スパン・出典scopeを持つ原子的要件カードを作り、AUの選択行・固定商品タイトル・スコープ付き説明へ各原子を対応させる。全原子支持かつ同一行条件を満たす場合だけaccept候補。部分支持、条件の適用不明、未解決原子はreview。
+2. 既存ベストCPUベースラインとA/Bを同じ1,383行、同じ196コホートで採点する。方式、評価集合、閾値を見てから変更しない。診断ラベルで構築・調整した場合はそのまま明示し、汎化やholdoutを主張しない。
+3. evidence sourceのgain ablationを行う。最低限、(i) 選択SKU原文/軸のみ、(ii) SKU + 楽天タイトル、(iii) SKU + 固定AUタイトル、(iv) スコープのある商品説明を加えた条件を比較し、使えないデータは「未測定」とする。title-only抽出値は候補根拠であって正解属性ではない。
+4. 指標はケース行単位と商品マクロ平均、カーテン/非カーテン別で報告する。matchedは選択AU行キー1件を返し、機械ラベルがmatchedかつそのキーがmatching_au_row_keysに含まれる場合だけ行対応まで正しい受理と数える。誤行の受理・複数行を返す不確定出力は別掲。保守的accepted precisionは予測accept全件を分母とし、gold reviewのacceptも未確認/unsafeとして分母に含める。補助としてknown-only precisionも別掲できる。誤accept、誤delete/unmatch、review率、coverage、recallを示し、全reviewでprecisionだけを良く見せない。実測なしは未測定と記載する。
+5. 35件の既知reviewケースを含め、診断行を除外してスコアを上げない。reviewの維持状況・誤accept・ソース矛盾の扱いを例ごとに監査する。
+
+最終handoffには、作成したファイル、2方式とsource-preservation tests、実装前に固定したmanifest/hash、指標と未測定項目、使用コマンドとテスト結果、代表例の引用/AU行キー/各原子の支持・未解決・矛盾、ブランチ名を記録する。pushせずrootへ返す。
