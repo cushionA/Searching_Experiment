@@ -1,5 +1,7 @@
 # 固定ペアSKU同一性判定タスク構築 — 方式A/B 実装・検証報告（2026-10-10）
 
+> 追記（v3〜v6）: この報告書はv1/v2/v2cまでを扱う。全実データ受領後の作業は `claude-next-steps-and-codex-advice-20261010.txt` の §5・§6 に記録した。対象は、型の追加（v3）、reviewを出さない二択の出力（v4）、family 104ペアで見つかった誤った「省く」の修正（v5）、AU側のみ構成（v6）。成果物は `results/20261010-sku-gate-v3-v6.zip` にある。
+
 作業ブランチ: `claude/task-construction`（handoff元 `origin/codex-sku-model-comparison-20261009` = `381f67b`、基準 `8e10f14` を祖先として確認）。pushは未実施（rootへhandoff）。
 
 ## 1. 結論
