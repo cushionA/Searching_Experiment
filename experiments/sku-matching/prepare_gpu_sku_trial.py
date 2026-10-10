@@ -15,6 +15,12 @@ MODELS = [
      "load": "nf4", "model_type": "qwen3_5", "parameter_class": "9B",
      "quantization_origin": "official base checkpoint quantized at load time with bitsandbytes NF4"},
 ]
+MODEL_PLANS = {
+    "9b": MODELS,
+    "4b": [{"name": "Qwen/Qwen3.5-4B", "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+            "load": "nf4", "model_type": "qwen3_5", "parameter_class": "4B",
+            "quantization_origin": "official base checkpoint quantized at load time with bitsandbytes NF4"}],
+}
 
 
 def sha(path: Path) -> str:
@@ -89,9 +95,11 @@ def normalized_case(case: dict, dossier: dict, task: dict) -> dict:
             "au": {"title": au["title_raw"], "description": "\n".join(descriptions), "sku_rows": pool}}
 
 
-def prepare(inputs: Path, tasks_path: Path, output: Path, cap: int) -> dict:
+def prepare(inputs: Path, tasks_path: Path, output: Path, cap: int, model_size: str = "9b") -> dict:
     if output.exists():
         raise ValueError("Refusing existing output")
+    if model_size not in MODEL_PLANS:
+        raise ValueError("model_size must be 9b or 4b")
     cases = read_rows(inputs / "cases.jsonl")
     tasks = read_rows(tasks_path)
     if [c["case_id"] for c in cases] != [t["case_id"] for t in tasks]:
@@ -109,7 +117,7 @@ def prepare(inputs: Path, tasks_path: Path, output: Path, cap: int) -> dict:
     with (output / "inputs.jsonl").open("x", encoding="utf-8") as f:
         for row in records:
             f.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")) + "\n")
-    config = {"models": MODELS, "max_input_tokens": 16000, "max_new_tokens": 384,
+    config = {"models": MODEL_PLANS[model_size], "max_input_tokens": 16000, "max_new_tokens": 384,
               "batch_size": 1, "runtime_budget_seconds": 7200,
               "enable_thinking": False,
               "selection_policy": "Evaluate current Qwen3.5 9B in NF4 first; consider quantized 4B only after reviewing adequate 9B accuracy.",
@@ -141,6 +149,8 @@ if __name__ == "__main__":
     parser.add_argument("--tasks", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--per-dossier-cap", type=int, default=8)
+    parser.add_argument("--model-size", choices=("9b", "4b"), default="9b",
+                        help="Start with 9b; use 4b only after reviewing adequate 9b accuracy")
     args = parser.parse_args()
-    result = prepare(args.inputs_dir, args.tasks, args.output, args.per_dossier_cap)
+    result = prepare(args.inputs_dir, args.tasks, args.output, args.per_dossier_cap, args.model_size)
     print(json.dumps({k: result[k] for k in ("input_count", "inputs_bytes", "inputs_sha256", "dossier_count", "strata_counts")}, ensure_ascii=False))

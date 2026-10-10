@@ -74,8 +74,25 @@ class GpuSkuEvaluationTests(unittest.TestCase):
         self.assertEqual(set(joined), {"sample"})
 
     def test_cpu_adapter_preserves_decision_and_selected_key(self):
-        pred = evaluator.prediction_for({"case_id": "cpu", "decision": "matched", "top_row_key": "au-row"})
+        adapted = evaluator.adapt_cpu_predictions(
+            [{"case_id": "cpu", "decision": "matched", "top_row_key": "au-row"},
+             {"case_id": "bad", "decision": "matched", "top_row_key": "outside"}],
+            [{"case_id": "cpu"}, {"case_id": "bad"}],
+            {"cpu": {"au_candidates": [{"row_key": "au-row"}]},
+             "bad": {"au_candidates": [{"row_key": "au-row"}]}})
+        pred = evaluator.prediction_for(adapted[0])
         self.assertEqual(pred, {"decision": "matched", "au_row_key": "au-row"})
+        self.assertEqual(adapted[0]["status"], "ok")
+        self.assertEqual(evaluator.prediction_for(adapted[1]), {"decision": "review", "au_row_key": None})
+
+    def test_selected_categories_copy_from_normalized_sample_inputs(self):
+        cases = [{"case_id": f"case-{i}", "source_category": "curtain" if i < 32 else "non_curtain"}
+                 for i in range(196)]
+        tasks_full = [{"case_id": c["case_id"], "au_candidates": []} for c in cases]
+        selected = evaluator.select_tasks(cases, tasks_full)
+        self.assertEqual(sum(t["source_category"] == "curtain" for t in selected), 32)
+        self.assertEqual(sum(t["source_category"] == "non_curtain" for t in selected), 164)
+        self.assertTrue(all("source_category" not in t for t in tasks_full))
 
     def test_allowlist_accepts_current_9b_and_future_4b_pins_only(self):
         for model in ("Qwen/Qwen3.5-9B", "Qwen/Qwen3.5-4B"):

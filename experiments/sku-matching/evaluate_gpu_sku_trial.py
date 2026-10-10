@@ -276,6 +276,36 @@ def select_by_ids(full_rows: list[dict], selected_rows: list[dict], label: str) 
     return [by_id[r["case_id"]] for r in selected_rows]
 
 
+def select_tasks(cases: list[dict], tasks_full: list[dict]) -> list[dict]:
+    """Select full-pool task rows in input order and copy normalized strata."""
+    full_ids, sample_ids = ids(tasks_full, "tasks"), ids(cases, "inputs")
+    if not sample_ids.issubset(full_ids):
+        raise ValueError("GPU case sample must be a subset of the full task set")
+    by_id = {t["case_id"]: t for t in tasks_full}
+    selected = []
+    for case in cases:
+        task = dict(by_id[case["case_id"]])
+        task["source_category"] = case.get("source_category")
+        selected.append(task)
+    return selected
+
+
+def adapt_cpu_predictions(cpu_rows: list[dict], cases: list[dict], tasks_by_id: dict[str, dict]) -> list[dict]:
+    selected = select_by_ids(cpu_rows, cases, "CPU predictions")
+    adapted = []
+    for row in selected:
+        task = tasks_by_id[row["case_id"]]
+        decision = row.get("decision")
+        key = row.get("top_row_key", row.get("au_row_key"))
+        pool = {c["row_key"] for c in task.get("au_candidates", [])}
+        valid = decision in DECISIONS and (decision != "matched" or key in pool)
+        parsed = ({"decision": decision, "au_row_key": key if decision == "matched" else None}
+                  if valid else None)
+        adapted.append({**row, "status": "ok" if valid else "invalid_output",
+                        "parsed": parsed, "evaluation_adapter": "CPU decision/top_row_key"})
+    return adapted
+
+
 def opposite_lace_accepts(tasks: list[dict], scored: list[dict]) -> list[str]:
     found = []
     for task, result in zip(tasks, scored, strict=True):
@@ -310,12 +340,9 @@ def main(argv: list[str] | None = None) -> int:
     tasks_full = read_jsonl(args.tasks)
     task_ids = ids(tasks_full, "tasks")
     sample_ids = ids(cases, "inputs")
-    if not sample_ids.issubset(task_ids):
-        raise ValueError("GPU case sample must be a subset of the full task set")
     task_by_id = {t["case_id"]: t for t in tasks_full}
-    tasks = [dict(task_by_id[c["case_id"]]) for c in cases]
-    for case in cases:
-        task = task_by_id[case["case_id"]]
+    tasks = select_tasks(cases, tasks_full)
+    for case, task in zip(cases, tasks, strict=True):
         pool_a = [r.get("row_key") for r in case.get("au", {}).get("sku_rows", [])]
         pool_b = [r.get("row_key") for r in task.get("au_candidates", [])]
         if pool_a != pool_b:
@@ -323,16 +350,10 @@ def main(argv: list[str] | None = None) -> int:
         for key in ("split", "dossier_id"):
             if case.get(key) != task.get(key):
                 raise ValueError(f"Task/input {key} mismatch for {case['case_id']}")
-        task["source_category"] = case.get("source_category")
     cpu_full = read_jsonl(args.cpu_predictions)
     if ids(cpu_full, "CPU predictions") != task_ids:
         raise ValueError("CPU prediction IDs must exactly match full task set")
-    cpu = select_by_ids(cpu_full, cases, "CPU predictions")
-    cpu = [{**row, "status": ("ok" if row.get("decision") in DECISIONS
-                              and (row.get("decision") != "matched" or row.get("top_row_key") in
-                                   {c["row_key"] for c in task_by_id[row["case_id"]].get("au_candidates", [])})
-                              else "invalid_output"), "evaluation_adapter": "CPU decision/top_row_key"}
-           for row in cpu]
+    cpu = adapt_cpu_predictions(cpu_full, cases, task_by_id)
 
     gpu_records = {}
     model_names = [model_slug(m["name"]) for m in run_manifest["models"]]
@@ -540,4 +561,3 @@ def latency_stats(records: list[dict]) -> dict:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
