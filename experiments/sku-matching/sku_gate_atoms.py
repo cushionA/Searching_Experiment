@@ -153,6 +153,16 @@ def _axis_role(label: str) -> str | None:
     return label
 
 
+def _dimension_hint(label: str) -> str | None:
+    """The dimension an axis label names (サイズ(幅) -> width), when it names exactly one."""
+    if "高さ" in label:
+        return "height"
+    if "天板" in label:
+        return "top_size"
+    named = {DIM_LABELS[word] for word in DIM_LABELS if word in label}
+    return named.pop() if len(named) == 1 else None
+
+
 def _counts(text: Text, out: list):
     """Bare piece counts (N枚) and counts in other units (N個, N本セット, N脚)."""
     for m in re.finditer(rf"(?<![\d.])(\d+)\s*枚{_PACK_SUFFIX}(?![\d枚])", text.norm):
@@ -290,7 +300,7 @@ def atomize(raw: str, axis_label: str | None = None, color_vocab: frozenset = fr
                                    value=m.group(2) in ("付き", "付"), derivation="value_names_component"))
     _measures(text, _axis_role(label), atoms)
     _counts(text, atoms)
-    _dims(text, "height" if "高さ" in label else "top_size" if "天板" in label else None, atoms)
+    _dims(text, _dimension_hint(label), atoms)
     code = re.match(r"\s*([A-Za-z0-9]{1,4})\s*\(", text.norm)
     if code and text.free(code.start(1), code.end(1)) and any(
             a["type"] == "dimension" and a["offset"][0] >= text.raw_span(code.end(), code.end() + 1)[0] for a in atoms):

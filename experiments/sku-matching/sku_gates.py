@@ -21,10 +21,10 @@ from pathlib import Path
 
 import sku_gate_atoms as atoms_mod
 from sku_gate_atoms import (atomize, color_base_vocab, compact, code_crosswalk, describe_lines,
-                            fact_family, atom_value_key, title_facts, NAMED_SIZES, SIZE_CODES)
+                            fact_family, atom_value_key, title_facts, FABRIC, NAMED_SIZES, SIZE_CODES)
 import sku_gate_sources as src
 
-TASK_VERSION = "sku-gate-task-v8"
+TASK_VERSION = "sku-gate-task-v9"
 CURTAIN_COMPONENTS = ("drape", "lace")
 # Separately packed items a contents list can enumerate. Built-in features
 # (armrest, top board, bookshelf, handle) are never inferred from list absence.
@@ -332,6 +332,8 @@ def compare_dims(req: dict, cand: dict) -> str:
         if len(req["value"]) == len(cand["value"]):
             if req["value"] == cand["value"]:
                 return "support"
+            if len(req["value"]) == 1:
+                return "incomparable"  # one unlabeled number may measure any dimension (68cm vs 15cm)
             # 120×60 vs 60×120: unlabeled numbers in another order are not a contradiction.
             return "incomparable" if sorted(req["value"]) == sorted(cand["value"]) else "conflict"
         return "incomparable"
@@ -885,6 +887,8 @@ class Evaluator:
 # Rakuten per-SKU attribute titles that state a body dimension of the selected SKU.
 ATTRIBUTE_DIMENSIONS = {"本体横幅": "width", "本体縦幅": "length", "本体奥行": "depth", "本体高さ": "height",
                         "マットレスの厚さ": "thickness", "天板高さ": "height"}
+ATTRIBUTE_FABRIC_TITLES = ("素材（生地・毛糸）", "素材(生地・毛糸)", "生地")
+ATTRIBUTE_NAMED_SIZE_TITLES = ("寝具のサイズ",)
 DERIVED_DIMENSION_SCOPES = ("size_section", "labeled_size_line", "page_declaration", "selected_sku_attributes")
 
 
@@ -903,6 +907,22 @@ def attribute_facts(attributes: list[dict]) -> list[dict]:
         out.append({"atom": atom, "source": "rakuten_variant_attributes", "scope": "selected_sku_attributes",
                     "single_valued": True, "family": f"dimension:labeled:{label}:1", "span": attr.get("value_span"),
                     "derived": True})
+    for attr in attributes or []:
+        # Structured per-SKU properties of the selected variant; they corroborate AU-only conditions.
+        value, span = attr.get("value") or "", attr.get("value_span")
+        atoms = []
+        if attr["title"] in ATTRIBUTE_FABRIC_TITLES:
+            for piece in re.split(r"[・、,/／\s]+", value):
+                if piece in FABRIC:
+                    start = value.find(piece)
+                    atoms.append({"type": "fabric", "value": FABRIC[piece], "quote": piece, "offset": [start, start + len(piece)]})
+        elif attr["title"] in ATTRIBUTE_NAMED_SIZE_TITLES and value in NAMED_SIZES:
+            atoms.append({"type": "named_size", "value": value, "quote": value, "offset": [0, len(value)]})
+        for atom in atoms:
+            atom["attribute_title"] = attr["title"]
+            out.append({"atom": atom, "source": "rakuten_variant_attributes", "scope": "selected_sku_attributes",
+                        "single_valued": True, "family": fact_family(atom), "derived": False,
+                        "span": src.sub_span(span, atom["offset"][0], len(atom["quote"])) if span else None})
     return out
 
 

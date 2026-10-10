@@ -331,6 +331,26 @@ class GateTests(unittest.TestCase):
             out = run(method, facts, case)
             self.assertEqual((out["binary"]["decision"], out["binary"]["top_row_key"]), ("matched", "au:1:9:0:0"), method)
 
+    def test_selected_sku_attributes_corroborate_au_only_fabric(self):
+        # The selected variant's structured attribute 素材 = パイル proves the AU row's (パイル).
+        rows = [[("カラー", "ブラウン(パイル)")], [("カラー", "ブラウン(メッシュ)")]]
+        fam = {"カラー": ("ブラウン", "ブラウン(メッシュ)")}
+        facts, case = make_pair(rows, [("カラー", "ブラウン")], fam)
+        self.assertNotEqual(run("A", facts, case)["binary"]["decision"], "matched")
+        case["rakuten_selected"]["variant_attributes"] = [{"title": "素材（生地・毛糸）", "value": "パイル・タオル", "unit": None,
+                                                           "value_span": {"raw_file": "fixture", "sha256": "0" * 64,
+                                                                          "locator": {"kind": "html_text"}, "start": 0,
+                                                                          "end": 7, "quote": "パイル・タオル"}}]
+        out = run("A", facts, case)
+        self.assertEqual((out["binary"]["decision"], out["binary"]["top_row_key"]), ("matched", "au:1:9:0:0"))
+        self.assertEqual(out["rows"][0]["au_only_atoms"][0]["evidence"][0]["quote"], "パイル")
+
+    def test_axis_label_names_the_dimension_and_lone_numbers_never_contradict(self):
+        self.assertEqual(atomize("68cm", "サイズ(幅)")["atoms"][0]["labels"], ["width"])
+        lone = atomize("68cm", "サイズ")["atoms"][0]
+        self.assertFalse(gates.comparable(lone, atomize("15cm", "サイズ")["atoms"][0]))
+        self.assertEqual(gates.compare_dims(lone, atomize("68cm", "サイズ")["atoms"][0]), "support")
+
     def test_several_candidate_rows_are_excluded_not_ordered(self):
         # Review P1-3: AU 青/5本 and 青/10本 against Rakuten 青 / オプションなし.
         fam = {"カラー": ("青", "赤"), "オプション": ("なし", "毛布セット")}
