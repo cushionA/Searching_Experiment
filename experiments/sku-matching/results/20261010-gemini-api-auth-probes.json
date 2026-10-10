@@ -1,0 +1,47 @@
+{
+  "requested_model": "gemini-3.5-flash-lite",
+  "requested_vertex_project": "groundingsearch",
+  "requested_vertex_location": "global",
+  "credential_environment_variable": "GOOGLE_CSE_KEY",
+  "credential_value_saved": false,
+  "successful_inference_responses": 0,
+  "sku_cases_evaluated": 0,
+  "probes": [
+    {
+      "backend": "vertex",
+      "endpoint": "https://aiplatform.googleapis.com/v1/projects/groundingsearch/locations/global/publishers/google/models/gemini-3.5-flash-lite:generateContent",
+      "auth_transport": "x-goog-api-key header",
+      "http_status": 401,
+      "reason": "CREDENTIALS_MISSING",
+      "message": "API keys are not supported by this API; credentials asserting a principal are required."
+    },
+    {
+      "backend": "vertex_express",
+      "endpoint": "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-3.5-flash-lite:generateContent",
+      "auth_transport": "x-goog-api-key header",
+      "http_status": 401,
+      "reason": "CREDENTIALS_MISSING",
+      "message": "API keys are not supported by this API; credentials asserting a principal are required."
+    },
+    {
+      "backend": "vertex_express",
+      "endpoint": "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-3.5-flash-lite:generateContent",
+      "auth_transport": "official key query parameter; key value omitted",
+      "http_status": 401,
+      "reason": "CREDENTIALS_MISSING",
+      "message": "API keys are not supported by this API; credentials asserting a principal are required."
+    },
+    {
+      "backend": "gemini_developer",
+      "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+      "auth_transport": "x-goog-api-key header",
+      "http_status": 403,
+      "reason": "SERVICE_DISABLED",
+      "service": "generativelanguage.googleapis.com",
+      "observed_consumer": "projects/363571044248",
+      "project_name_mapping_verified": false,
+      "activation_url": "https://console.developers.google.com/apis/api/generativelanguage.googleapis.com/overview?project=363571044248"
+    }
+  ],
+  "scope": "Connectivity and authentication probes only; model capability remains unmeasured."
+}
