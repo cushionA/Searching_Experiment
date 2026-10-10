@@ -1,0 +1,26 @@
+spec4反映状態での認証確認
+
+確認日時: 2026-10-11 00:27:44 JST（2026-10-10 15:27:44 UTC）
+対象ブランチ: codex-sku-gemini-vertex-smoke-20261010、基準commit 8990e04。
+ユーザーの「確認する」を受け、この環境で更新状態と実認証を確認した。
+
+環境のspec_revision/observed_spec_revisionは2から4へ更新されていた。
+observations_current=true、GCP_ACCESS_TOKEN=ready、network=enforced。
+同じ実行環境IDであり、新しい環境への切り替えは確認していない。
+この管理状態の更新は確認できたが、変数の値が変わったかは比較していない。
+
+新しいnon-loginプロセスから、前回保存したprobe_auth.pyを1回実行。
+tokeninfoをrequestsで1回: HTTP400 invalid_token、0.229秒。
+試験のvertex_credentials/AuthorizedSessionでlocations GETを1回:
+HTTP401 UNAUTHENTICATED、0.360秒。project/quota projectはgroundingsearch。
+継承プロキシ/CA trust/TLS検証を維持。再起動・refresh・自動再試行なし。
+秘密値・認証header・tokeninfo URL・fingerprint・identity・認証本文は非表示/非保存。
+
+ユーザー側HTTP200の確認コマンドは、その場でgcloud auth print-access-tokenを
+呼んで得た値を検証しており、GCP_ACCESS_TOKENを読まない。
+その値とCodex環境の変数値が同一か、現在の変数値が古い/失効済みなのか、
+保存/反映経路に問題があるのかは未確定。「更新されていない」とは断定しない。
+
+構造化6ケースは引き続き未実行。推論0、採用0、除外0、未評価6。
+modelVersion/usage/finishReason/推論時間は未取得、構造・意味評価は未完了。
+SKU入出力仕様は変更していない。有効な実認証を確認するまで推論を開始しない。

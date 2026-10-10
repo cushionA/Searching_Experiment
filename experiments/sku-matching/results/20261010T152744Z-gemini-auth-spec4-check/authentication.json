@@ -1,0 +1,48 @@
+{
+  "schema": "sku-smoke-auth-client-crosscheck-v1",
+  "source_commit": "8990e04",
+  "runtime_observation": {
+    "spec_revision": "4",
+    "observed_spec_revision": "4",
+    "observations_current": true,
+    "runtime_variable": "GCP_ACCESS_TOKEN",
+    "runtime_variable_state": "ready",
+    "network_policy_state": "enforced",
+    "same_execution_environment_as_previous_checks": true
+  },
+  "probes": [
+    {
+      "checked_at_utc": "2026-10-10T15:27:44.235692+00:00",
+      "probe": "requests_tokeninfo_same_env",
+      "proxy_preserved": true,
+      "TLS_verification_enabled": true,
+      "http_status": 400,
+      "authenticated": false,
+      "reason": "invalid_token",
+      "elapsed_seconds": 0.229
+    },
+    {
+      "checked_at_utc": "2026-10-10T15:27:44.464790+00:00",
+      "probe": "trial_vertex_credentials_AuthorizedSession_read_only",
+      "project": "groundingsearch",
+      "quota_project": "groundingsearch",
+      "proxy_preserved": true,
+      "TLS_verification_enabled": true,
+      "model_inference_calls": 0,
+      "http_status": 401,
+      "authenticated": false,
+      "reason": "UNAUTHENTICATED",
+      "allowed_error_reasons": [],
+      "elapsed_seconds": 0.36
+    }
+  ],
+  "probe_source": "../20261010T152249Z-gemini-auth-sdk-crosscheck/probe_auth.py",
+  "shell_login": false,
+  "model_inference_calls": 0,
+  "user_reported_HTTP200_token_same_as_runtime_value_verified": false,
+  "response_headers_recorded": false,
+  "response_body_recorded": false,
+  "credential_values_recorded": false,
+  "token_fingerprint_recorded": false,
+  "identity_recorded": false
+}

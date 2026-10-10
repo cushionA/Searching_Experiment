@@ -1,5 +1,13 @@
 別セッションへの継続メモ
 
+2026-10-11 00:27:44 JST spec4での再確認
+- 管理状態はspec2→4、observed4/current/ready/enforcedへ更新。同じ環境ID。
+  更新は確認できたが、runtime値の変更・ユーザー側200値との同一性は未確認。
+- 保存probeを新しいnon-loginプロセスで1回実行し、tokeninfo400 invalid_token、
+  Vertex読み取り401 UNAUTHENTICATED。推論0、6ケースは引き続き未評価。
+- 最新診断: results/20261010T152744Z-gemini-auth-spec4-check/report.txt。
+  readyでも認証成功ではなく、古い値/期限/反映不具合の原因は断定しない。
+
 2026-10-11 00:22:49 JST 認証経路の再点検
 - ユーザー側HTTP200との食い違いを受け、requests tokeninfoと試験コードそのままの
   vertex_credentials/AuthorizedSessionでも確認。各1回、400 invalid_token / 401
