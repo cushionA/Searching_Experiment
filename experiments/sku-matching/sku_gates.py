@@ -24,7 +24,7 @@ from sku_gate_atoms import (atomize, color_base_vocab, compact, code_crosswalk, 
                             fact_family, atom_value_key, title_facts, FABRIC, NAMED_SIZES, SIZE_CODES)
 import sku_gate_sources as src
 
-TASK_VERSION = "sku-gate-task-v9"
+TASK_VERSION = "sku-gate-task-v10"
 CURTAIN_COMPONENTS = ("drape", "lace")
 # Separately packed items a contents list can enumerate. Built-in features
 # (armrest, top board, bookshelf, handle) are never inferred from list absence.
@@ -874,7 +874,7 @@ class Evaluator:
             for label, value in zip(atom.get("labels") or [], atom["value"]):
                 if label in ("unlabeled",):
                     continue
-                if atom.get("alternatives"):
+                if atom.get("alternatives") and label == atom.get("alternatives_label"):
                     out[label] = (None, f)
                     continue
                 if label in out and out[label][0] != value:
@@ -1158,8 +1158,10 @@ def run_method(method: str, case_input: dict, facts: PairFacts, config_name: str
     decision, top, reason = "review", None, None
     partial_cards = [r["requirement_id"] for r in reqs if r["decomposition"] != "complete"]
     if method == "A":
-        if len(full_rows) == 1:
+        if len(full_rows) == 1 and len(conflict_rows) == total - 1:
             decision, top, reason = "matched", full_rows[0], "single_row_satisfies_all_requirements"
+        elif len(full_rows) == 1:
+            reason = "competing_row_not_excluded"
         elif len(full_rows) > 1:
             reason = "multiple_rows_satisfy_all_requirements"
         elif len(conflict_rows) == total:

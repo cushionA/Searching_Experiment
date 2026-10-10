@@ -479,3 +479,63 @@ Claude 3. holdout適用の入口
   - GPUの比較は Codex 側で行う。
 - 独立した評価: どちらの開発にも使っていない商品群（カテゴリ・店舗）を選び、人手で確認した標本を用意する。
 - 成果物の扱い: 結果ZIPは `experiments/sku-matching/results/` に置く。`.lab-output` はコンテナにしか無いので、push済みのZIPとコードだけが永続する。
+
+12. v10（ローカル実行、2026-10-10）: Codex v9 再実測レビューへの対応
+12-1. 変更
+- 方式Aの一意性（11-3(2)、Codexレビュー A）:
+  - 採用は「全要件を満たす行が1つ、かつ他の全行が明示的な矛盾」の場合に限る。満たさない場合は除外し、理由コードは competing_row_not_excluded。
+  - 不変条件 binary_proof に「採用行以外はすべて conflict」を追加した。
+  - 合成テスト（一方の行は full、もう一方は unknown）で、A・B とも除外になることを確認した。
+- 複数寸法式の末尾の別値（Codexレビュー C）:
+  - `幅68×奥行28.5×高さ10/15cm` を、1つの寸法（幅68・奥行28.5・高さ10、高さの候補値 10/15）として読む。以前は「高さ10」と「ラベル無しの15cm」に分かれていた。
+  - ページ間の仕様差では、候補値を持つ高さだけを比較不能とする。幅・奥行は比較に残す。
+- `package_sku_gates.py`: Windowsで ZIP 内のパス区切りが `\` になる不具合を修正した（as_posix）。
+- TASK_VERSION は sku-gate-task-v10、既定の出力先は `.lab-output/sku-gate-tasks-20261010-v10`。
+
+12-2. 実行（ローカル Windows、Python 3.13.7、jsonschema 4.25.1。requirements の指定は 4.26.0）
+- 入力: claude-task checkpoint と all-real-data の ZIP を SHA で照合し、worktree の `.lab-output` へ `unzip -n` で展開した。
+  - all-real-data の manifest 7,230 ファイルは全件一致。既存 96 は同一、新規 7,132、内容の異なる既存ファイルは 0。
+- 29ペア: prepare → freeze（a8a09bcf…1d01）→ predict → 不変条件 → evaluate。
+- family: `build_raw_pair_inputs.py family` で、今のコードから入力を作り直した（104ペア・970件、失敗0）。
+  - variant_tokens はコードと同じ版になる（Codexの前処理指摘1）。
+  - freeze（9769dcf4…d729）→ predict → 不変条件。
+- テスト: `tests.test_lab_sku_gates` 37件、全件成功（実データの3件を含む。スキップ0）。
+- 結果ZIP: `results/20261010-sku-gate-v10.zip`（SHA-256 af7d26e0…2161、13ファイル）。予測ファイルは含まない。
+
+12-3. 結果
+- 29ペア（機械ラベル、開発値）。A full_spec_notice の二択:
+
+  | 採用 | 除外 | 確認済み正答 | 誤採用 | 行違い | 一致の見逃し | 注意付き採用（gold review） | gold review の除外 |
+  |---|---|---|---|---|---|---|---|
+  | 470 | 913 | 435/435 | 0 | 0 | 0 | 35 | 2 |
+
+  - 注意付き採用35件は、gold上は未確定なので正答に数えない。
+  - 除外の理由: 全行に明示矛盾 910、要件がAU上で未証明 3。competing_row_not_excluded は 0。
+  - 不変条件: 全項目で違反0（強化した binary_proof を含む）。
+- family（ラベル無し。開発に使用済みで独立holdoutではない）:
+  - 採用309／除外661。notices 付きの採用は30件（厚み24、奥行4、高さ2）。
+  - 残る高さ2件は AU 783819406（AU `110×高さ14` と楽天 `高さ53cm`）。踏み台とは別の商品で、v8 の30件に含まれていたもの。
+- v9コードとの差（同じ v10 入力、ラベル不使用）:
+  - 29ペア: 1,383件すべて同一。
+  - family: 踏み台2件（AU 398508173、case-c028be93f5f68edddbbc / case-b5eefb361f258b2de5db）の高さ notice が消えただけ。採否・採用行の変化は0。
+- novel 56件の再採点は未実施。
+
+12-4. 11-3(1) の照合結果（Codex v5 の素材区別との比較）
+- 規則は同じだった。
+  - Codex v5 の attach_selector_family_proof は、Claude の evaluate_au_only にある兄弟選択肢の対比（rakuten_sibling_value_carries_qualifier）に原本spanを付ける。
+  - 加えて、選択SKUの素材属性が対比と食い違う場合は、矛盾ではなく ambiguous にする。
+- 測定（ラベル不使用、v10入力）:
+  - 29ペア: 対比による矛盾は262件。兄弟選択肢の原本spanは全件で解決できた。
+  - 採用ケースの競合行除外に使われているのは19件。
+  - 選択SKUの属性が対比と食い違う例は0件。
+  - family: 対比の例は0件。
+- 判定への影響は無い。ただし Claude 側の対比根拠には span が無い（quote のみ）。
+  - 入力の selector_families に値の span が無いので、付けるには prepare と schema の変更が要る。次版の候補とする。
+
+12-5. 残り
+- Codexレビュー D: `_align` は軸の意味の整合を検証していない。今回のデータでは軸の混線は0件。
+- 寸法の候補値と要件の比較:
+  - compare_dims は候補値を見ず、先頭の値で比べる。
+  - 今のデータでは、候補値を持つラベルとの比較は0件。
+  - 要件の値が候補値に含まれる場合に、誤った矛盾（誤除外の方向）になりうる。
+- Phase B（11-4）と独立評価は未着手。

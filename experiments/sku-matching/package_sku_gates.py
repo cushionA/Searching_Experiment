@@ -37,7 +37,7 @@ def main():
                     for p in ([ROOT / run] if (ROOT / run).is_file() else (ROOT / run).rglob("*")) if p.is_file()})
     if not files:
         raise FileNotFoundError("Nothing to package")
-    entries = {str(p.relative_to(ROOT)): {"size_bytes": p.stat().st_size, "sha256": sha256(p)} for p in files}
+    entries = {p.relative_to(ROOT).as_posix(): {"size_bytes": p.stat().st_size, "sha256": sha256(p)} for p in files}
     embedded = {"schema_version": 1, "purpose": args.purpose, "created_at_utc": datetime.now(timezone.utc).isoformat(),
                 "extract_at": "repository root; preserve .lab-output relative paths; use unzip -n",
                 "raw_label_files_included": False, "label_derived_content": args.label_content,

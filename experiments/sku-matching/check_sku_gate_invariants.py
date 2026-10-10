@@ -13,7 +13,8 @@ property the gates must hold regardless of any gold answer:
   unquoted_guard       dropping the source span of a selected value always yields review, and the
                        adopt/exclude output excludes it with reason unquoted_requirement
   binary_consistency   the adopt/exclude output adopts exactly the gate's matched row, else excludes
-  binary_proof         an adopted row has every requirement and every AU-only condition supported
+  binary_proof         an adopted row has every requirement and every AU-only condition supported,
+                       and every other row of the fixed AU product is an explicit conflict
   binary_injectivity   one AU row is never adopted for two different Rakuten selections
 
 sibling_swap also compares each swap with the real case of the same fixed pair whose
@@ -175,7 +176,8 @@ def main():
             by_row[(p["dossier_id"], b["top_row_key"])].add(selection(cid))
             row = next(r for r in p["rows"] if r["row_key"] == b["top_row_key"])
             if any(x["status"] != "support" for x in row["atom_results"]) or any(
-                    a["status"] != "support" for a in row["au_only_atoms"]):
+                    a["status"] != "support" for a in row["au_only_atoms"]) or any(
+                    r["status"] != "conflict" for r in p["rows"] if r["row_key"] != b["top_row_key"]):
                 unproven.append(cid)
         shared = {k: sorted(v) for k, v in by_row.items() if len(v) > 1}
         for name, bad in ((f"binary_consistency_{method}", inconsistent), (f"binary_proof_{method}", unproven)):

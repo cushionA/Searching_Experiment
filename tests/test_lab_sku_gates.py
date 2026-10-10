@@ -220,14 +220,20 @@ class GateTests(unittest.TestCase):
                                 rak_title="カーテン 2枚組")
         self.assertEqual(run("A", facts, case)["decision"], "unmatched")
 
-    def test_b_requires_competing_rows_to_be_excluded(self):
+    def test_competing_rows_must_be_excluded(self):
         # The second row lacks the size axis, so it is unknown rather than excluded.
         fam = {"カラー": ("赤", "青"), "サイズ": ("S", "M")}
         facts, case = make_pair([[("カラー", "赤"), ("サイズ", "S")], [("カラー", "赤")]],
                                 [("カラー", "赤"), ("サイズ", "S")], fam)
-        self.assertEqual(run("A", facts, case)["decision"], "matched")
-        b = run("B", facts, case)
-        self.assertEqual((b["decision"], b["reason"]), ("review", "competing_row_not_excluded"))
+        for method in ("A", "B"):
+            out = run(method, facts, case)
+            self.assertEqual((out["decision"], out["reason"]), ("review", "competing_row_not_excluded"), method)
+            self.assertEqual(out["candidate_row_keys"], ["au:1:9:0:0"])
+            self.assertEqual(out["binary"]["decision"], "unmatched")
+            self.assertIn("competing_row_not_excluded", out["binary"]["reason_codes"])
+        facts, case = make_pair([[("カラー", "赤"), ("サイズ", "S")], [("カラー", "青"), ("サイズ", "S")]],
+                                [("カラー", "赤"), ("サイズ", "S")], fam)
+        self.assertEqual(run("A", facts, case)["binary"]["decision"], "matched")
 
     def test_derived_page_conflict_blocks_accept_without_unmatched(self):
         fam = {"高さ": ("50cm",), "カラー": ("シルバー",)}
@@ -273,6 +279,18 @@ class GateTests(unittest.TestCase):
                                 au_lines=["こちらのページはダブルサイズです", "商 品 詳 細", "サイズ", "（約）幅140cm×長さ205cm"])
         case["rakuten_selected"]["variant_attributes"] = [{"title": "本体縦幅", "value": "200", "unit": "cm", "value_span": None}]
         self.assertEqual(run("A", facts, case)["decision"], "review")
+
+    def test_trailing_alternatives_make_only_that_dimension_variable(self):
+        atoms = atomize("（約）幅68×奥行28.5×高さ10/15cm", "サイズ")["atoms"]
+        self.assertEqual([(a["labels"], a["value"], a["alternatives"], a["alternatives_label"]) for a in atoms],
+                         [(["width", "depth", "height"], [68.0, 28.5, 10.0], [10.0, 15.0], "height")])
+        fam = {"カラー": ("ナチュラル",)}
+        facts, case = make_pair([[("カラー", "ナチュラル")]], [("カラー", "ナチュラル")], fam,
+                                au_lines=["商 品 詳 細", "サイズ", "（約）幅68×奥行28.5×高さ10/15cm"])
+        for title, value, decision in (("本体高さ", "15", "matched"), ("本体高さ", "10", "matched"),
+                                       ("本体横幅", "70", "review")):
+            case["rakuten_selected"]["variant_attributes"] = [{"title": title, "value": value, "unit": "cm", "value_span": None}]
+            self.assertEqual(run("A", facts, case)["decision"], decision, (title, value))
 
     def test_new_types_decide_on_the_same_row_only(self):
         fam = {"数量": ("1脚", "2脚セット", "4脚セット"), "モバイルバッテリー": ("あり", "なし")}

@@ -202,15 +202,18 @@ def _dims(text: Text, role_hint: str | None, out: list):
         if m.start() > 0 and re.match(r"[A-Za-z\d.]", text.norm[m.start() - 1]):
             continue
         parts = [(m.group(i), m.group(i + 1), m.group(i + 2)) for i in (1, 4, 7) if m.group(i + 1)]
-        alt = re.match(rf"((?:\s*/\s*{_NUM})+)\s*({_UNIT})?", text.norm[m.end():]) if len(parts) == 1 and parts[0][0] else None
-        if alt:
+        last_label, last_unit = parts[-1][0], parts[-1][2]
+        alt = re.match(rf"((?:\s*/\s*{_NUM})+)\s*({_UNIT})?", text.norm[m.end():]) \
+            if last_label and (len(parts) == 1 or not last_unit) else None
+        if alt and len(parts) == 1:
             # 高さ55/62/70cm: one label with alternative values (adjustable or per-variant).
             unit = alt.group(2) or parts[0][2]
             values = [_num(x, unit) for x in [parts[0][1]] + re.findall(_NUM, alt.group(1))]
             out.append(text.atom(m.start(), m.end() + alt.end(), type="dimension", role="labeled",
-                                 labels=[DIM_LABELS[parts[0][0]]], value=values[:1], alternatives=values))
+                                 labels=[DIM_LABELS[parts[0][0]]], value=values[:1], alternatives=values,
+                                 alternatives_label=DIM_LABELS[parts[0][0]]))
             continue
-        units = [p[2] for p in parts if p[2]]
+        units = [p[2] for p in parts if p[2]] + ([alt.group(2)] if alt and alt.group(2) else [])
         labels = [DIM_LABELS.get(p[0]) if p[0] else None for p in parts]
         follow = text.norm[m.end():m.end() + 1]
         if len(parts) == 1 and (not units and not labels[0] or re.match(r"[枚段層個本点kgK%℃NDd]", follow)):
@@ -219,13 +222,19 @@ def _dims(text: Text, role_hint: str | None, out: list):
         if len(parts) > 1 and units == [parts[-1][2]] and labels[-1] == "thickness":
             unit = "cm"  # 幅50×奥行50×厚み3mm: the trailing unit belongs to the thickness only
         values = [_num(p[1], p[2] or unit) for p in parts]
-        diameter_suffix = re.match(r"\s*\((?:直径|径)\)", text.norm[m.end():])
-        end = m.end() + (diameter_suffix.end() if diameter_suffix else 0)
+        extra = {}
+        if alt:
+            # 幅68×奥行28.5×高さ10/15cm: the last label alone takes the alternative values.
+            extra = {"alternatives": [values[-1]] + [_num(x, unit) for x in re.findall(_NUM, alt.group(1))],
+                     "alternatives_label": labels[-1]}
+        tail = m.end() + (alt.end() if alt else 0)
+        diameter_suffix = re.match(r"\s*\((?:直径|径)\)", text.norm[tail:])
+        end = tail + (diameter_suffix.end() if diameter_suffix else 0)
         if diameter_suffix and len(values) == 1:
             labels = ["diameter"]
         if any(labels):
             atom = {"type": "dimension", "role": "labeled", "labels": [x or "unlabeled" for x in labels],
-                    "value": values}
+                    "value": values, **extra}
         elif role_hint == "top_size":
             atom = {"type": "dimension", "role": "top_size", "value": values}
         elif role_hint in DIM_LABELS.values() and len(values) == 1:
