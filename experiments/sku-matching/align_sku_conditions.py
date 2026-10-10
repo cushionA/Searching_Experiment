@@ -7,8 +7,10 @@ align       four table steps, no vocabulary and no value parsing:
             2. a Rakuten value and an AU value pair when each is the other's best match; only identical
                pairs are confirmed, the model's pairs are candidates (it always names a best match, so
                it cannot say a value has no counterpart);
-            3. a Rakuten axis and an AU axis are symmetric when their identical pairs join only each
-               other; other Rakuten axes, and AU axes with several values that join none, are one-sided;
+            3. a Rakuten axis and an AU axis are symmetric when their pairs, identical or the model's, join
+               only each other; other Rakuten axes, and AU axes with several values that join none, are
+               one-sided. A join made only by model pairs has no identical pair, so none of its values is
+               ever confirmed: a wrong join costs false contradictions and exclusions, not adoptions;
             4. per AU row: aligned or contradiction on symmetric axes; model candidates and one-sided
                conditions go to the description check; an unpaired value on a symmetric axis is excluded.
 score       after the outputs are saved: Luna machine labels and the manual axis reference.
@@ -128,8 +130,8 @@ def value_pairs(entry) -> pd.DataFrame:
 
 def axis_pairs(table: pd.DataFrame, au_options) -> tuple[dict, list]:
     """Step 3: {Rakuten axis_key: AU axis} for symmetric axes, and the varying AU-only axes."""
-    identical = table[table["paired"] & (table["matched_by"] == "identical")]
-    links = pd.crosstab(identical["axis_key"], identical["au_axis"]) > 0
+    paired = table[table["paired"]]
+    links = pd.crosstab(paired["axis_key"], paired["au_axis"]) > 0
     alone = links & (links.sum(axis=1) == 1).to_numpy()[:, None] & (links.sum(axis=0) == 1).to_numpy()[None, :]
     symmetric = alone.idxmax(axis=1)[alone.any(axis=1)].to_dict()
     values = pd.DataFrame(au_options, columns=["au_axis", "au_value"]).groupby("au_axis")["au_value"].nunique()
@@ -273,7 +275,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("step", choices=["similarity", "align", "score"])
     parser.add_argument("--run", default=".lab-output/sku-gate-tasks-20261010-v10")
-    parser.add_argument("--out", default=".lab-output/sku-align-20261011-v4/legacy")
+    parser.add_argument("--out", default=".lab-output/sku-align-20261011-v5/legacy")
     parser.add_argument("--threads", type=int, default=4)
     parser.add_argument("--labels-seen", default=None,
                         help="align only: describe changes made after reading labels or references of earlier outputs")
