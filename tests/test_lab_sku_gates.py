@@ -117,6 +117,25 @@ class AtomTests(unittest.TestCase):
         long_size = atomize("シングルロング", "サイズ")["atoms"]
         self.assertEqual([(a["type"], a["value"]) for a in long_size], [("named_size", "シングル"), ("variant", "ロング")])
 
+    def test_dimension_units_alternatives_and_code_aliases(self):
+        from sku_gate_atoms import title_facts
+        thick = atomize("幅50×奥行50×厚み3mm", "サイズ")["atoms"][0]
+        self.assertEqual((thick["labels"], thick["value"]), (["width", "depth", "thickness"], [50.0, 50.0, 0.3]))
+        adjustable = atomize("高さ55/62/70cm", "サイズ")["atoms"][0]
+        self.assertEqual(adjustable["alternatives"], [55.0, 62.0, 70.0])
+        self.assertFalse(title_facts("テーブル 高さ55/62/70cm", frozenset(), ())["dimension:labeled:height:1"]["single_valued"])
+        rug = atomize("L(200×250cm)", "サイズ")["atoms"]
+        self.assertEqual({(a["type"], a.get("alias")) for a in rug},
+                         {("dimension", None), ("variant", "code_named_by_bracketed_dimension")})
+        mat = atomize("32枚セット(6畳用)", "セット")
+        self.assertEqual(mat["decomposition"], "complete")
+        self.assertEqual({(a["type"], a.get("unit"), a["value"]) for a in mat["atoms"]},
+                         {("piece_total", None, 32), ("unit_count", "畳", 6)})
+        wagon = title_facts("【木製天板&小物入れ付き】 キッチンワゴン", frozenset(), ())
+        self.assertIn("component_presence:top_board", wagon)
+        series = title_facts("スツール キャスター付き/キャスターなし 選べる", frozenset(), ())
+        self.assertFalse(series["component_presence:word:キャスター"]["single_valued"])
+
     def test_named_size_is_a_word(self):
         from sku_gate_atoms import title_facts
         self.assertNotIn("named_size", title_facts("＼ランキング1位／ マットレス", frozenset(), ()))
@@ -286,6 +305,41 @@ class GateTests(unittest.TestCase):
                 for policy in gates.FORCED_POLICIES:
                     self.assertEqual(out["forced_binary"][policy]["decision"], decision)
                     self.assertEqual(out["forced_binary"][policy]["top_row_key"], out["top_row_key"])
+
+    def test_title_outranks_description_and_orientation_is_not_a_conflict(self):
+        fam = {"カラー": ("ベージュ", "ブラウン"), "枚数": ("20枚", "40枚")}
+        facts, case = make_pair([[("カラー", "ベージュ")]], [("カラー", "ベージュ"), ("枚数", "20枚")], fam)
+        req = gates.selected_atoms(case, facts)[1]
+        span = {"raw_file": "fixture", "sha256": "0" * 64, "locator": {"kind": "json_leaf", "json_path": "$.x"},
+                "start": 0, "end": 1, "quote": "x"}
+
+        def fact(source, scope, value, quote):
+            return {"atom": {"type": "piece_total", "value": value, "quote": quote}, "source": source, "scope": scope,
+                    "single_valued": True, "family": "piece_total", "span": span}
+        # A per-piece size note (1枚) in a description must not overrule the title's 20枚セット, and the reverse.
+        for method in ("A", "B"):
+            ev = gates.make_evaluator(method, facts, "full")
+            out = ev.evaluate(req, facts.rows[0], [fact("au_title", "fixed_au_title", 20, "20枚セット"),
+                                                   fact("au_description", "size_section", 1, "(1枚)")])
+            self.assertEqual((out["status"], out["note"]), ("support", "title_outranks_description"), method)
+            out = ev.evaluate(req, facts.rows[0], [fact("au_title", "fixed_au_title", 40, "40枚セット"),
+                                                   fact("au_description", "page_declaration", 20, "20枚")])
+            self.assertEqual(out["status"], "conflict", method)
+            out = ev.evaluate(req, facts.rows[0], [fact("au_description", "size_section", 20, "20枚"),
+                                                   fact("au_description", "page_declaration", 40, "40枚")])
+            self.assertEqual(out["status"], "ambiguous", method)
+        facts, case = make_pair([[("カラー", "白")]], [("サイズ", "120cm×60cm"), ("カラー", "白")],
+                                {"サイズ": ("120cm×60cm", "90cm×60cm"), "カラー": ("白",)},
+                                au_title="テーブル 120cm×60cm", au_lines=["こちらのページは60×120cmです"])
+        self.assertEqual(run("A", facts, case)["decision"], "matched")
+
+    def test_open_world_fails_a_different_value_on_the_row_axis(self):
+        fam = {"カラー選択": ("ネイビー", "コヨーテ")}
+        facts, case = make_pair([[("カラー選択", "グリーン")], [("カラー選択", "ブルー")]], [("カラー選択", "ネイビー")], fam)
+        out = run("A", facts, case)
+        self.assertEqual(out["decision"], "review")
+        for policy in gates.FORCED_POLICIES:
+            self.assertEqual(out["forced_binary"][policy]["decision"], "unmatched", policy)
 
     def test_price_and_stock_fields_do_not_change_decisions(self):
         facts, case = make_pair([[("カラー", "赤")], [("カラー", "青")]], [("カラー", "赤")], {"カラー": ("赤", "青")})

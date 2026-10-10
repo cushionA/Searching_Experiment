@@ -55,9 +55,9 @@ SECTION_HEADINGS = {
 }
 OBJECT_HEADINGS = ("パネル", "ドアパーツ", "ドア")
 # Counted units other than 枚 (枚 stays piece_total). A count only compares with the same unit.
-COUNT_UNITS = ("ケース", "パック", "セット", "個", "本", "脚", "組", "台", "点", "袋", "箱", "足", "巻", "缶")
+COUNT_UNITS = ("ケース", "パック", "セット", "個", "本", "脚", "組", "台", "点", "袋", "箱", "足", "巻", "缶", "畳")
 _COUNT_UNIT_RE = "|".join(COUNT_UNITS)
-_PACK_SUFFIX = r"(?:入り|入|組|セット|set)?"
+_PACK_SUFFIX = r"(?:入り|入|組|セット|set|用)?"
 # Measured quantities: unit -> (kind, factor to the base unit). Ambiguous units carry a guard word
 # that must appear in the role (axis label or the label word before the number).
 MEASURE_UNITS = {"kg": ("weight", 1000.0, None), "g": ("weight", 1.0, None), "t": ("weight", 1e6, "荷重"),
@@ -69,6 +69,8 @@ _MEASURE_RE = "|".join(sorted((re.escape(u) for u in MEASURE_UNITS), key=len, re
 MEASURE_ROLE_WORDS = ("最大耐荷重", "耐荷重", "最大荷重", "本体重量", "重量", "重さ", "内容量", "容量", "容積",
                       "消費電力", "定格出力", "出力", "限界温度", "快適温度", "使用温度", "対応温度", "バッテリー容量")
 _ROLE_RE = "|".join(sorted(MEASURE_ROLE_WORDS, key=len, reverse=True))
+_ADDON_RE = r"([ァ-ヴー]{2,}|[一-龥]{1,4})\s*(付き|付|なし|無し)"
+_ADDON_STOP = ("送料", "保証", "タイプ", "ポイント", "クーポン")
 # Axis labels that name a selection, not a component or a measured property.
 GENERIC_AXIS_LABELS = ("サイズ", "タイプ", "種類", "セット", "セット内容", "バリエーション", "仕様", "規格", "オプション",
                        "追加オプション", "カラー", "色", "商品", "内容", "選択", "デザイン", "-")
@@ -190,12 +192,22 @@ def _dims(text: Text, role_hint: str | None, out: list):
         if m.start() > 0 and re.match(r"[A-Za-z\d.]", text.norm[m.start() - 1]):
             continue
         parts = [(m.group(i), m.group(i + 1), m.group(i + 2)) for i in (1, 4, 7) if m.group(i + 1)]
+        alt = re.match(rf"((?:\s*/\s*{_NUM})+)\s*({_UNIT})?", text.norm[m.end():]) if len(parts) == 1 and parts[0][0] else None
+        if alt:
+            # 高さ55/62/70cm: one label with alternative values (adjustable or per-variant).
+            unit = alt.group(2) or parts[0][2]
+            values = [_num(x, unit) for x in [parts[0][1]] + re.findall(_NUM, alt.group(1))]
+            out.append(text.atom(m.start(), m.end() + alt.end(), type="dimension", role="labeled",
+                                 labels=[DIM_LABELS[parts[0][0]]], value=values[:1], alternatives=values))
+            continue
         units = [p[2] for p in parts if p[2]]
         labels = [DIM_LABELS.get(p[0]) if p[0] else None for p in parts]
         follow = text.norm[m.end():m.end() + 1]
         if len(parts) == 1 and (not units and not labels[0] or re.match(r"[枚段層個本点kgK%℃NDd]", follow)):
             continue
         unit = units[-1] if units else "cm"
+        if len(parts) > 1 and units == [parts[-1][2]] and labels[-1] == "thickness":
+            unit = "cm"  # 幅50×奥行50×厚み3mm: the trailing unit belongs to the thickness only
         values = [_num(p[1], p[2] or unit) for p in parts]
         diameter_suffix = re.match(r"\s*\((?:直径|径)\)", text.norm[m.end():])
         end = m.end() + (diameter_suffix.end() if diameter_suffix else 0)
@@ -271,14 +283,20 @@ def atomize(raw: str, axis_label: str | None = None, color_vocab: frozenset = fr
         if text.free(m.start(), m.end()):
             atoms.append(text.atom(m.start(), m.end(), type="component_presence",
                                    component=COMPONENT_WORDS[m.group(1)], value=m.group(2) not in ("なし", "無し")))
-    for m in re.finditer(r"([ァ-ヴー]{2,}|[一-龥]{1,4})\s*(付き|付|なし|無し)", text.norm):
+    for m in re.finditer(_ADDON_RE, text.norm):
         # An add-on outside the component lexicon, named in the value itself (カバー付き, フタなし).
-        if text.free(m.start(), m.end()) and m.group(1) not in ("送料", "保証", "タイプ"):
+        if text.free(m.start(), m.end()) and m.group(1) not in _ADDON_STOP:
             atoms.append(text.atom(m.start(), m.end(), type="component_presence", component=f"word:{m.group(1)}",
                                    value=m.group(2) in ("付き", "付"), derivation="value_names_component"))
     _measures(text, _axis_role(label), atoms)
     _counts(text, atoms)
     _dims(text, "height" if "高さ" in label else "top_size" if "天板" in label else None, atoms)
+    code = re.match(r"\s*([A-Za-z0-9]{1,4})\s*\(", text.norm)
+    if code and text.free(code.start(1), code.end(1)) and any(
+            a["type"] == "dimension" and a["offset"][0] >= text.raw_span(code.end(), code.end() + 1)[0] for a in atoms):
+        # L(200×250cm): the code is a name for the dimension in brackets, which carries the identity.
+        atoms.append(text.atom(code.start(1), code.end(1), type="variant", value=code.group(1),
+                               alias="code_named_by_bracketed_dimension"))
     for m in re.finditer(r"(\d+)\s*段(?!階|ギア)", text.norm):
         if text.free(m.start(), m.end()):
             atoms.append(text.atom(m.start(), m.end(), type="tier_count", value=int(m.group(1))))
@@ -380,10 +398,12 @@ def title_facts(title: str, color_vocab: frozenset, variant_tokens: tuple) -> di
         if text.free(m.start(), m.end()):
             found.append(text.atom(m.start(), m.end(), type="dimension", role="generic",
                                    value=[float(m.group(1)), float(m.group(2))]))
-    for m in re.finditer(rf"({_DIM_LABEL_RE})\s*({_NUM})\s*({_UNIT})?", text.norm):
+    for m in re.finditer(rf"({_DIM_LABEL_RE})\s*({_NUM}(?:\s*/\s*{_NUM})*)\s*({_UNIT})?", text.norm):
         if text.free(m.start(), m.end()):
-            found.append(text.atom(m.start(), m.end(), type="dimension", role="labeled",
-                                   labels=[DIM_LABELS[m.group(1)]], value=[_num(m.group(2), m.group(3))]))
+            # 高さ55/62/70cm gives three values, so the family is series-level in the title.
+            for value in re.findall(_NUM, m.group(2)):
+                found.append({**text.atom(m.start(), m.end(), type="dimension", role="labeled",
+                                          labels=[DIM_LABELS[m.group(1)]], value=[_num(value, m.group(3))])})
     for size in NAMED_SIZES:
         for m in re.finditer(size, text.norm):
             if text.free(m.start(), m.end()) and _named_size_boundary(text.norm, m.start(), m.end()):
@@ -394,10 +414,16 @@ def title_facts(title: str, color_vocab: frozenset, variant_tokens: tuple) -> di
                 found.append(text.atom(m.start(), m.end(), type="transparency", value=word))
     for m in re.finditer(rf"({_COMPONENT_RE})(セット|付き|付)?", text.norm):
         name = COMPONENT_WORDS[m.group(1)]
-        # Bare 本棚/天板/ドア in a title is usually a use-case keyword; require 付き/セット.
-        explicit = m.group(2) is not None or name in ("lace", "armrest")
+        # Bare 本棚/天板/ドア in a title is usually a use-case keyword; require 付き/セット, also at the
+        # end of a short coordination (天板&小物入れ付き).
+        explicit = m.group(2) is not None or name in ("lace", "armrest") or bool(
+            re.match(r"(?:[&＆・と][^\s【】&＆・、と]{1,8}?)+(?:付き|付|セット)", text.norm[m.end():]))
         if name in ("lace", "armrest", "door", "top_board", "bookshelf") and explicit and text.free(m.start(), m.end()):
             found.append(text.atom(m.start(), m.end(), type="component_presence", component=name, value=True))
+    for m in re.finditer(_ADDON_RE, text.norm):
+        if text.free(m.start(), m.end()) and m.group(1) not in _ADDON_STOP and m.group(1) not in COMPONENT_WORDS:
+            found.append(text.atom(m.start(), m.end(), type="component_presence", component=f"word:{m.group(1)}",
+                                   value=m.group(2) in ("付き", "付")))
     _literal_tokens(text, variant_tokens, "variant", found)
     _literal_tokens(text, tuple(color_vocab), "color", found, word_boundary=True)
     return group_facts(found)

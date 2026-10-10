@@ -23,7 +23,7 @@ from sku_gate_atoms import (atomize, color_base_vocab, compact, code_crosswalk, 
                             fact_family, atom_value_key, title_facts, NAMED_SIZES, SIZE_CODES)
 import sku_gate_sources as src
 
-TASK_VERSION = "sku-gate-task-v4"
+TASK_VERSION = "sku-gate-task-v5"
 CURTAIN_COMPONENTS = ("drape", "lace")
 # Separately packed items a contents list can enumerate. Built-in features
 # (armrest, top board, bookshelf, handle) are never inferred from list absence.
@@ -317,7 +317,10 @@ def compare_dims(req: dict, cand: dict) -> str:
         return "incomparable"
     if a_role == b_role == "generic":
         if len(req["value"]) == len(cand["value"]):
-            return "support" if req["value"] == cand["value"] else "conflict"
+            if req["value"] == cand["value"]:
+                return "support"
+            # 120×60 vs 60×120: unlabeled numbers in another order are not a contradiction.
+            return "incomparable" if sorted(req["value"]) == sorted(cand["value"]) else "conflict"
         return "incomparable"
     if a_role == "generic" or b_role == "generic":
         generic, labeled = (req, cand) if a_role == "generic" else (cand, req)
@@ -706,6 +709,16 @@ class Evaluator:
                             "note": "component absent from an explicit contents list for this row"}
                 (supports if relation == "support" else conflicts).append(evidence)
         if supports and conflicts:
+            # The fixed page's title outranks description lines, which also carry per-unit specs,
+            # compatible-size lists and sibling products. Disagreement at the same rank stays ambiguous.
+            best_support = min(SOURCE_RANK.get(e["source"], 9) for e in supports)
+            best_conflict = min(SOURCE_RANK.get(e["source"], 9) for e in conflicts)
+            if best_support < best_conflict:
+                return {"status": "support", "evidence": supports, "overridden": conflicts, "notes": notes,
+                        "note": "title_outranks_description"}
+            if best_conflict < best_support:
+                return {"status": "conflict", "evidence": conflicts, "overridden": supports, "notes": notes,
+                        "note": "title_outranks_description"}
             return {"status": "ambiguous", "evidence": supports + conflicts, "notes": notes,
                     "note": "product_sources_disagree"}
         if supports:
@@ -792,7 +805,10 @@ class Evaluator:
                 if fact_family(a["atom"]) == fact_family(r["atom"]) and atom_value_key(a["atom"]) != atom_value_key(r["atom"]):
                     out.append(self._conflict(fact_family(a["atom"]), a, r))
         au_dims, rk_dims = self._body_dims(au), self._body_dims(rk)
-        for label in sorted(set(au_dims) & set(rk_dims)):
+        # A title that lists several values for a dimension (高さ55/62/70cm) makes that dimension variable.
+        variable = {fam.split(":")[2] for title in (self.f.au_title, self.f.rak_title) for fam, data in title.items()
+                    if fam.startswith("dimension:labeled:") and not data["single_valued"]}
+        for label in sorted((set(au_dims) & set(rk_dims)) - variable):
             (a_val, a_fact), (r_val, r_fact) = au_dims[label], rk_dims[label]
             if a_val is not None and r_val is not None and a_val != r_val:
                 out.append(self._conflict(f"body_dimension:{label}", a_fact, r_fact))
@@ -815,6 +831,9 @@ class Evaluator:
                 continue
             for label, value in zip(atom.get("labels") or [], atom["value"]):
                 if label in ("unlabeled",):
+                    continue
+                if atom.get("alternatives"):
+                    out[label] = (None, f)
                     continue
                 if label in out and out[label][0] != value:
                     out[label] = (None, f)
@@ -866,6 +885,8 @@ def selected_atoms(case_input: dict, facts: PairFacts) -> list[dict]:
     for axis in case_input["rakuten_selected"]["axes"]:
         parsed = atomize(axis["value"], axis["axis_label"], facts.vocab, tuple(axis["family_values"]))
         for i, atom in enumerate(parsed["atoms"]):
+            if atom.get("alias"):
+                continue  # L(200×250cm): the bracketed dimension is the requirement
             span = src.sub_span(axis["value_span"], atom["offset"][0], atom["offset"][1] - atom["offset"][0]) \
                 if axis.get("value_span") else None
             out.append({**atom, "requirement_id": f"r{axis['axis_index']}.{i}", "axis_index": axis["axis_index"],
@@ -894,6 +915,8 @@ def _requirement_card(atom: dict) -> dict:
 # ---------------------------------------------------------------------------
 
 FORCED_POLICIES = ("closed_world", "open_world")
+SOURCE_RANK = {"au_title": 0, "rakuten_title": 0, "au_purchase_option": 1, "au_description": 2,
+               "rakuten_description": 2}
 
 
 def forced_binary(policy: str, reqs: list[dict], rows: list[dict], row_status: dict, details: dict,
@@ -903,7 +926,8 @@ def forced_binary(policy: str, reqs: list[dict], rows: list[dict], row_status: d
     A gate decision (matched / unmatched) is kept. Only a review case is forced:
     - closed_world: what the AU page does not state is not offered. An unknown requirement fails
       unless it is an absence (なし); a page-specification conflict fails the row.
-    - open_world: only an explicit contradiction fails a row; unknown and mixed sources pass.
+    - open_world: a missing attribute and mixed sources pass; an explicit contradiction or a
+      different, unresolved value on the same row axis (ネイビー vs グリーン) fails the row.
     Among passing rows the one with the most supported requirements wins, then the most
     verified AU-only atoms, then the lowest row index (reported as a tie).
     """
@@ -922,8 +946,9 @@ def forced_binary(policy: str, reqs: list[dict], rows: list[dict], row_status: d
             if status == "support":
                 continue
             req = by_id[res["requirement_id"]]
-            if policy == "open_world" and status in ("unknown", "ambiguous"):
-                continue
+            if policy == "open_world" and (status == "ambiguous" or (
+                    status == "unknown" and res.get("note") != "unresolved_spelling")):
+                continue  # a missing attribute passes; a different value on the same row axis does not
             if policy == "closed_world":
                 if status == "unknown" and req["type"] == "component_presence" and req["value"] is False:
                     continue
