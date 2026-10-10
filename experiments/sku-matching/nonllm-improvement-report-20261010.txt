@@ -1,0 +1,37 @@
+SKU 非LLM改善チェックポイント — 2026-10-10
+
+概要
+固定された楽天SKU 1件と、固定URLから取得したAU全商品行を比較し、二値の accept/drop を返すソース根拠型ゲートを記録した。未知・未確証は内部判定のまま自動dropし、人手確認フローは設けない。凍結入力、予測、変更差分、実装スナップショット、診断、実行ログをZIPに保存した。
+
+最終ゲート結果
+・旧実データ 1,383件（29商品）：baseline は accept 244 / drop 1,139。改善版は accept 426 / drop 957。
+・再利用した機械ラベルとの照合は、人手未確認・独立goldではない。改善版は正解ラベル一致accept 426、誤accept 0、未一致drop 911、review扱いラベルdrop 37、見逃し9。照合上のprecision 100%、recall 97.9%。精度の独立推定や本番precisionとはみなせない。
+・カーテンは333/333件をacceptし、非カーテンは93/102件をaccept、9件を見逃した。
+・新規実データ56件はラベルを読まず、13件accept / 43件drop。ハンガー35件で5/30、マット6件で3/3、ワゴン6件で3/3、踏み台9件で2/7をacceptした。全行参照数は新規229、旧データ100,757。
+・新旧合計1,439件の処理結果は accept 439 / drop 1,000。新規56件の受入れ数を旧データのラベル評価に加算していない。
+
+モデル補助試行
+・GLiNER 2.5 multi v1 のraw v2試行は97テキスト単位、68スパン。意味監査は支持62、誤り4、不明2。
+・文脈拡張v4は169単位、139スパンで、支持123、誤り14、不明2。天板ラベルを捉えた一方、天板あり/なしをレース状態と誤分類する混同が残る。SKU最終採用には使っていない。
+・日本語NLI v1（97ペア）はFP32で entailment 0 / contradiction 2 / unknown 95、動的INT8で unknown 97。v1両形式のargmax一致は24/97。短い主張に変えたFP32 v2は entailment 1 / contradiction 3 / unknown 93。config-check失敗はTransformers 5.17によるid2label JSONキーの型変換を設定不一致と誤認したもので、推論開始前に停止している。どのNLI試行もSKU精度ではなく、最終判定には未採用。
+
+検証と収録内容
+・凍結した最終v4の `freeze.json` は、ラベル・合成入力・モデル・ネットワークを使っていないことを記録。`manifest.json` は入力、出力、コードスナップショットのハッシュを記録し、ラベル診断は予測保存後の再利用機械ラベル照合として明示している。
+・既存の最終テストログは442件、18 skip、424 pass（OK）。このパッケージ作成中にテストは再実行していない。
+・ZIP内 `CHECKSUMS.sha256` の全81ペイロードを検査し、ZIP CRCも検証済み。
+・旧binary gate v1/v3は巨大な予測本体を重複収録せず、凍結・summary・manifest、存在する再利用ラベル診断を保存。GLiNER失敗試行v1/v3はfreeze/invalidity等の小さなメタデータのみを保存。NLI失敗config-check、source audit v1–v3、scope audit、model-span audit v1/v2、NLI candidate reportを収録。
+
+再現・復元依存
+ZIPはコードと結果のチェックポイントであり、.deps、秘密情報、全raw captureは含めない。入力の出典・生HTML/JSONを使ったspan検証には以下の既存アーカイブが必要。
+・`results/20261010-all-real-data.zip` SHA-256 `020dda59dfcc207cc47b6f93d8caadc3e0130f4ea1e1eefb4073a100aaddf084`。ZIP内 `sku-all-real-delivery-20261010/source/FOO` は `.lab-output/FOO` に対応する。展開時はこの相対パス対応を保つ。
+・`experiments/sku-matching/results/20261010-sku-condition-task-checkpoint.zip` SHA-256 `26e0d9eb46f5f753e41135ea03e8f33f69726de2a69f2dfc06c7d3ca51078977`。novel実データ56件のソース、CPU入力、および当時のClaude gateコードを含む。
+・旧1,383件入力を再構築して再実行するには `/workspace/Searching_Experiment-claude-share-20261010/experiments/sku-matching/results/20261010-sku-gate-tasks.zip` が必要。SHA-256 `e173e71815d39fc71046f9159659bf049324b3915760fa28cdfdef43fb955c3f`。ゲートrunnerはこのZIP内 `.lab-output/sku-gate-tasks-20261010-v2/inputs/{cases,products}.jsonl` を読む。
+・Python 3.12以上を使用。ゲートrunnerのCLIは `python3 -B experiments/sku-matching/trial_nonllm_binary_gate_v1.py --output <新規出力先> --novel-dir .lab-output/sku-novel-cpu-gate-20261010-v2 --legacy-zip <20261010-sku-gate-tasks.zip>`。`CLAUDE_CODE` 環境変数を、チェックポイント内 `.lab-output/sku-nonllm-binary-gate-20261010-v4/code_snapshot/claude-gate` の展開先に設定する。`--output` は既存ディレクトリを拒否する。
+・実装はraw HTMLのAU説明文を検証するため、上記all-real archiveのcaptureも `.lab-output` 配下へ復元する必要がある。novel側 `prepare_novel_real_inputs_v2.py` はこのcheckoutの実験コードに必要。
+
+新規成果物
+・`experiments/sku-matching/results/20261010-sku-nonllm-improvement-checkpoint.zip` — 24,997,841 bytes、SHA-256 `847737c0b3237df01cbe542162011dcc46b5670c08b5adb8ffbd0cbcd326370c`。
+・`experiments/sku-matching/results/20261010-sku-nonllm-improvement-checkpoint.zip.sha256` — ZIP外部チェックサム。
+・このレポート — `experiments/sku-matching/nonllm-improvement-report-20261010.txt`。
+
+このZIPには今回の非LLM用Python 8ファイルとテスト4ファイルだけを新規ソースとして収録した。PRレビュー中の別checkoutや未レビューコードは参照していない。

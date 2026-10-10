@@ -1,0 +1,95 @@
+Claude PR #25 レビュー（2026-10-10）
+https://github.com/cushionA/Searching_Experiment/pull/25
+対象HEAD: 056390883d0d676de4d998014ab49948e7f907f3
+レビュー用checkout: /workspace/Searching_Experiment-pr25-review-20261010
+
+判定
+型付き属性、固定ページの商品名・原文引用、商品別の全AU SKU配列を使う構造は有望。
+ただし自動採用の条件に下記の穴がある。現状のまま自動運用へ取り込むことは推奨しない。
+最終出力は採用／除外の二択を維持し、未証明の条件・特定できない候補は自動除外すればよい。
+このレビューではPRへの書き込み・マージは行っていない。
+
+P1-1: AU側だけにある条件が未確認でも採用する
+experiments/sku-matching/sku_gates.py:1048、1055
+全supportの判定は楽天由来のrequirementsだけを見ている。au_only_atomsはconflictだけを
+拒否し、unverifiedやambiguousを受入れ判定から外している。
+再現: AU「カラー=青、数量=10本」、楽天の選択SKU「カラー=青」、楽天の商品情報に
+数量の根拠が無い場合、方式B/fullでもmatchedになる。AUの10本はunverified、evidence=[]。
+実データでもAU 337595272のパイル4行がau_only fabric=パイル/unverifiedのままmatchedになる。
+例case-2fe9466275602e12892d、case-6aa3ebc11ba7db27d853。
+この4件の機械ラベル自体はmatchedであり、実物が異なると確定したという指摘ではない。
+「AUにだけある仕様の裏付けがなくても通る」という判定条件の欠落である。
+修正: 必要な逆方向の条件もすべてsupportを要求し、未証明は除外する。
+
+P1-2: 記載が無いことを「なし」の証明として採用する
+experiments/sku-matching/sku_gates.py:956
+closed_worldはunknownでcomponent_presence=Falseなら、そのまま通す。
+再現: AU「カラー=青」のみ、楽天「カラー=青、オプション=なし」、楽天の選択肢は
+「なし／毛布セット」。AUに毛布の有無の根拠がなくてもforced_binary.closed_worldはmatched。
+open_worldも同じ例をmatchedにする。
+説明文があるというだけでは全付属品について列挙が完全とは限らず、個別商品の条件を
+証明していない。今回の目的では未証明を除外すれば二択の自動化を維持できる。
+
+P1-3: 複数候補を配列順で採用する
+experiments/sku-matching/sku_gates.py:970
+passing_rowsが2件以上でも、支持数、AU側条件の支持数、row indexで並べてmatchedを返す。
+再現: AU「青/5本」「青/10本」、楽天「青/オプションなし」で数量と付属品が未証明の場合、
+両policyが先頭の5本をmatchedにする。passing_rows=2、reason=*_tie_lowest_row_index。
+SKUを特定できた証明にはならず、AU配列の並び替えで採用先が変わる。
+修正: 同一SKUを一意に特定できない場合は除外する。
+
+P1-4: 原文引用必須のガードを二択変換が迂回する
+experiments/sku-matching/sku_gates.py:1098
+value_spanが無いselected requirementはunquoted_requirementとして基礎ゲートが止めるが、
+直後のforced_binaryが同じ候補をmatchedへ戻す。
+再現: AU/楽天ともカラー=青だけの一致例で、楽天axisのvalue_spanをNoneにする。
+方式Bはreview/unquoted_requirement、closed_world/open_worldはともにmatched。
+ラベル不要のinvariantsは基礎decisionだけを調べ、この二択結果を検査していない。
+修正: 引用不足は二択出力でも除外し、二択結果に対して不変条件を検査する。
+
+P2-1: jsonschemaの新規依存がCIのcoreテストに未導入
+tests/test_lab_sku_gates.py:16、experiments/sku-matching/run_sku_gates.py:23
+無条件importが追加されたが、CIの最初のtest_cloud_setupは依存導入前にlab全体のテストを呼ぶ。
+PRのvalidateログには追加テストのModuleNotFoundError: No module named 'jsonschema'がある。
+既存のraw成果物不足等のエラーとは別に、このPRが追加した依存の失敗である。
+外部依存を導入していない一時venvでtests.test_lab_sku_gatesを実行しても同じimport error。
+修正: coreに必要な依存を宣言して初回テスト前に導入するか、実験専用の依存をcoreから分離する。
+
+P2-2: family 970件は独立holdoutではない
+experiments/sku-matching/claude-next-steps-and-codex-advice-20261010.txt:173
+同文書156行付近で、family 104ペアの観測からv5を修正したと明記されている。
+ラベル未使用・予測を注釈者から隠すことは有用だが、同じ入力を開発に使った事実は消えない。
+表現は「ラベル未使用の追加評価セット」にし、独立holdoutは未使用の商品群で作る。
+family予測はこのレビューでも開いていない。
+
+評価数値の確認
+ZIP内v6/evaluation/summary.jsonとscore実装を確認。
+・A/full: matched435、unmatched910、内部review38。435件はすべて機械ラベルとAU行が一致。
+・A/full/closed_world: matched435、unmatched948。判定済み機械ラベル1,346件で正答1,346件。
+・A/au_side_only/closed_world: matched470、unmatched913。確認済みmatchedは435件。
+  増えた35件はラベル側の仕様未解決ケースで、435件の正答に上乗せしてはいけない。
+・1,383件のうち37件はラベル未確定。100%は全件・人手確定・本番精度ではない。
+・A/fullの内部review38件をすべて除外するだけでも、同じ1,346件上では100%となる。
+  この開発値を達成するために未証明条件や同点候補を自動採用する必要はない。
+
+検証
+・python3 -B -m unittest tests.test_lab_sku_gates: 原本復元前25実行/3skip、復元後28実行すべてpass。
+・上記4つの判定例はtests.test_lab_sku_gates.make_pairとrun('B', ..., 'full')で再現。
+  再現用の人工fixtureは実データのコーパスに加えていない。
+・全labテストを未復元checkoutで実行: 334 tests、failures1/errors12/skips20。
+  多くは既存成果物・既存bot依存の不足であり、全てをこのPR起因とはしていない。
+・PRのCIログは追加jsonschema import失敗を別途確認。
+・収集、原文offset、同じ行での色/サイズ照合については、別担当のソースレビューで
+  追加の再現可能な問題は見つからなかった。
+
+再現の要点（PR checkoutで実行）
+  import sys
+  sys.path.insert(0, 'tests')
+  from test_lab_sku_gates import make_pair, run
+  f,c = make_pair([[('カラー','青'),('数量','10本')]], [('カラー','青')], {'カラー':('青','赤')})
+  p = run('B', f, c)
+  # p['decision']=='matched'; p['rows'][0]['au_only_atoms'][0]['status']=='unverified'
+  f,c = make_pair([[('カラー','青')]], [('カラー','青')], {'カラー':('青','赤')})
+  c['rakuten_selected']['axes'][0]['value_span'] = None
+  p = run('B', f, c)
+  # p['reason']=='unquoted_requirement'; p['forced_binary']['closed_world']['decision']=='matched'
