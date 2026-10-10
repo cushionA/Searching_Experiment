@@ -1,0 +1,80 @@
+SKU条件を汎用モデルへ置き換える分担と今回の結果（2026-10-10）
+
+目的
+カテゴリ別の意味規則を増やさず、商品単位突合済みの固定AU URLと楽天1SKUを判定する。
+Claude: 値の対応（表記、寸法、選択肢）、および引用の行への適用範囲。
+Codex: 適用範囲が確認された原文による付属品の有無のNLI判定。
+最終システムは採用/除外のみ。不明は内部状態で、確認待ちの運用は作らない。
+
+接続するデータ
+1. 条件の自然文: 正の主張と負の主張を対で渡す。
+   例「この商品にはカバーが付いている。」「この商品にはカバーが付いていない。」
+   component IDやカテゴリ辞書をNLI側で解釈しない。
+2. 同じ固定AU行に適用される引用: 原文、rawファイルSHA、locator、offset、行キー。
+   引用の存在確認と、その引用が選択行に適用されるかは別の検査。
+3. 引用の適用範囲のモデル出力/根拠: Claude側から渡す。
+   このNLI試行は適用範囲を未確認と明記し、SKU採用を生成していない。
+4. NLI出力: support/conflict/unknown、全3クラスの値、モデルrevision、入力hash。
+   正の主張のsupportと負の主張のconflictの両方が閾値を超える場合だけpresence候補。
+   逆の両方が閾値を超える場合だけabsence候補。それ以外はunknown。
+   これは全カテゴリで同じ集約であり、商品ごとの有無規則ではない。
+5. 最終論理は同じAU行の全条件成立と競合候補の扱いを統一する。
+   モデルの同意だけでは引用の適用範囲・入力欠損の問題を解消できない。
+
+実装
+prepare_generic_model_sku_v1.py: 意味規則なしの入力変換。
+trial_generic_model_nli_v1.py: run_pairs API。価格・在庫を使わず、rawの自然文と引用を分類。
+trial_generic_presence_v1.py: 正負の主張の言い回しと文脈の比較。
+NLIは0x3/bert-base-japanese-v3_nli-jsnli-jnli-jsick、111,209,475 parameters、FP32 CPU。
+revision 21df45469d02809dc430e3ac5f5d6f67b63aabf3。閾値0.90。
+512token超過は切り捨てずunknown。入力同一hashで推論を再利用する。
+旧runnerから再利用するのはモデルload、tokenize、logit対応のみ。
+SKU atomizer、値の辞書、枚数合算、カーテン固有規則、行採用ゲートは呼ばない。
+
+AU全文の範囲
+共有入力v2には2,409ケース/137 dossier、894 AU行を元配列のまま保持。
+商品単位では132 AU原本。楽天のSKUキーと選択軸・複合値・属性はケースに保持。
+商品名とAPIのitemComment、extraItemComment、extraItemCommentWithVideo、detailComment、
+detailLinkNameの可視テキストを収録。購入案内・否定句・注意書きの意味フィルターはない。
+同じ行が重複する場合も全原文field参照を残す。派生可視テキストをliteral quoteと偽装しない。
+iframe URLは保持しているが、外部iframe本文・動画の内容は取得していない。
+価格は既存の楽天SKU単位sidecarを使う。この試行はCSVの在庫除外まで接続していない。
+
+今回の実測
+既存の原文引用21問い、18 case_id、18 distinct source spans、11 distinct quote strings。
+これは以前使った開発材料であり独立データではない。
+6種類の一般的な正負テンプレート x 3文脈 x 21問い x 正負 = 756入力。
+同一モデル入力は516。推論エラー0、超長入力0。SKUレコードは生成・変更していない。
+正負の追加主張は対照プローブであり、新しい実SKUや正解ラベルではない。
+
+文脈                   テンプレート          present absent unknown（各21問い）
+引用だけ               付いている/いない      15      0       6
+引用を一般文に包む     付いている/いない      13      2       6
+商品名+AU行+引用       付いている/いない       5      0      16
+
+一般文「この商品は『原文引用』です。」に包む形式では、2段/3段カバーなしをabsence候補にできた。
+バー付き・本棚・カバー付き等のpresence候補も得られたが、バーの同文引用には重複が多い。
+カバー専用の分岐は追加していない。語順・言い回しだけで出力が変わるため、校正済み確率と
+扱わない。今回の観測を見てテンプレートを選ぶ場合は開発上の選択であり、独立評価ではない。
+残り5テンプレート/3文脈の全結果はsummary.jsonとmodel-records.jsonlに保存。
+商品名と行を長く付け足した形式が改善するとは限らない。適用範囲モデルと内容検証を分ける。
+
+監査
+引用18 distinct spansはraw SHA、locator、offset、文字列を独立サブエージェントが全件照合。
+894 AU行は全137 dossierで元配列と同一。NLI前提に楽天の要求条件を混ぜていない。
+原文に当該単語がないだけではabsence候補にしない。
+引用だけの高いsupportを、実際にその選択SKUへ付属することの証明に使わない。
+テストの新worktreeは既存資料へのsymlinkを使うため、旧パッケージ用2テストがsymlink拒否で失敗。
+その検査を緩めず、元checkoutの既存suite488件（18skip）成功を確認。
+新API/adapter/集約の17テストも成功。併合検証の結果はモデル出力full-tests.logを参照。
+
+保存先と再現
+.lab-output/sku-generic-model-inputs-20261010-v2/{cases,products,manifest}.jsonl/JSON。
+.lab-output/sku-generic-presence-20261010-v2/: pairs、model-records、proposals、freeze、pins、summary。
+CPU実行:
+.deps/sku-gliner-venv/bin/python -B experiments/sku-matching/trial_generic_presence_v1.py \
+  --inputs .lab-output/sku-generic-model-inputs-20261010-v2 \
+  --output .lab-output/sku-generic-presence-reproduction --run
+元試行は入力v1（説明全文追加前）を参照するが、モデルにはその原文引用・title・全AU行を使用し、
+説明一覧は使用していない。説明全文v2をモデルが全行走査済みとは主張しない。
+scope担当からの接続後に、全件差分、既存機械ラベル診断、新しい商品群の独立評価へ進む。
