@@ -23,7 +23,7 @@ from sku_gate_atoms import (atomize, color_base_vocab, compact, code_crosswalk, 
                             fact_family, atom_value_key, title_facts, NAMED_SIZES, SIZE_CODES)
 import sku_gate_sources as src
 
-TASK_VERSION = "sku-gate-task-v5"
+TASK_VERSION = "sku-gate-task-v6"
 CURTAIN_COMPONENTS = ("drape", "lace")
 # Separately packed items a contents list can enumerate. Built-in features
 # (armrest, top board, bookshelf, handle) are never inferred from list absence.
@@ -38,6 +38,9 @@ SOURCE_CONFIGS = {
     "full": {"rakuten_title": True, "au_title": True, "descriptions": True, "closed_list": True, "derived": True},
     "full_no_closed_list": {"rakuten_title": True, "au_title": True, "descriptions": True, "closed_list": False, "derived": True},
     "full_no_derived_conflicts": {"rakuten_title": True, "au_title": True, "descriptions": True, "closed_list": True, "derived": False},
+    # Rakuten contributes only the selected SKU values; everything else comes from the fixed AU page.
+    "au_side_only": {"rakuten_title": False, "au_title": True, "descriptions": True, "closed_list": True, "derived": True,
+                     "rakuten_description": False, "rakuten_attributes": False},
 }
 PRIMARY_CONFIG = "full"
 NON_IDENTITY_FIELDS = ("price", "stock", "inventory", "shipping", "coupon", "promotion", "availability")
@@ -408,7 +411,7 @@ class Evaluator:
                                for a in selected], [[x["title"], x["value"]] for x in attributes or []]])
         if key not in self._rak_cache:
             facts = self.rakuten_product_facts(selected)
-            if self.cfg["derived"]:
+            if self.cfg["derived"] and self.cfg.get("rakuten_attributes", True):
                 facts = facts + attribute_facts(attributes)
             self._rak_cache[key] = _exceptions_override(facts)
         return self._rak_cache[key]
@@ -500,7 +503,7 @@ class Evaluator:
                 for atom in data["atoms"]:
                     out.append({"atom": atom, "source": "rakuten_title", "scope": "rakuten_title",
                                 "single_valued": data["single_valued"], "family": fam, "span": atom.get("span")})
-        if self.cfg["descriptions"]:
+        if self.cfg["descriptions"] and self.cfg.get("rakuten_description", True):
             out.extend(self._desc_facts(self.f.rak_desc, selected_atoms, "rakuten_description", out))
         return out
 

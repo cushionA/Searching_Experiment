@@ -341,6 +341,17 @@ class GateTests(unittest.TestCase):
         for policy in gates.FORCED_POLICIES:
             self.assertEqual(out["forced_binary"][policy]["decision"], "unmatched", policy)
 
+    def test_au_side_only_ignores_rakuten_description_and_attributes(self):
+        fam = {"カラー": ("赤", "青")}
+        facts, case = make_pair([[("カラー", "赤")], [("カラー", "青")]], [("カラー", "赤")], fam,
+                                rak_lines=["こちらのページは青です"])
+        case["rakuten_selected"]["variant_attributes"] = [{"title": "本体横幅", "value": "50", "value_span": None}]
+        ev = gates.make_evaluator("A", facts, "au_side_only")
+        reqs = gates.selected_atoms(case, facts)
+        self.assertEqual(ev.rak_facts_for(reqs, case["rakuten_selected"]["variant_attributes"]), [])
+        out = run("A", facts, case, "au_side_only")
+        self.assertEqual((out["decision"], out["top_row_key"]), ("matched", "au:1:9:0:0"))
+
     def test_price_and_stock_fields_do_not_change_decisions(self):
         facts, case = make_pair([[("カラー", "赤")], [("カラー", "青")]], [("カラー", "赤")], {"カラー": ("赤", "青")})
         before = run("A", facts, case)
