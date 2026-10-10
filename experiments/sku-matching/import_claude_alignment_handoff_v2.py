@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bind Claude's pinned flat v2/v3 handoff to frozen fixed-page SKU inputs.
+"""Bind Claude's pinned flat v2/v3/v4 handoff to frozen fixed-page SKU inputs.
 
 No labels, inference, source code execution, routing or final SKU adoption. Whole
 values survive partial correspondence; AU obligations stay in a separate direction.
@@ -14,6 +14,7 @@ import json
 import math
 from pathlib import Path, PurePosixPath
 import stat
+import unicodedata
 from zipfile import BadZipFile, ZipFile
 
 from import_claude_alignment_handoff_v1 import parse_json, sha256, unique_index, verify_source
@@ -28,11 +29,19 @@ UPSTREAM_HEAD = "c4c68342a9e23ada310c40761cae6c5cf84cfc8c"
 ARCHIVE_SHA = "81c0a3b6e72c907068183e2f70bd604d0a8c6932d203e42a6436a80928573efc"
 UPSTREAM_V3_HEAD = "86b5e3b7612f88185be639b86a88233a7c06f431"
 ARCHIVE_V3_SHA = "46388080b7ab0abfd56629760cb21871e376a6853b6b1e8de99009a70ae5d6d4"
+UPSTREAM_V4_HEAD = "2c2db5c52c328405e2f4249f424f2970b4ceca5a"
+ARCHIVE_V4_SHA = "7dd4a51cbd45fbe93502b69c06204a92cb66b6394c3cb32fca98e23c1c64e2d9"
 PINNED_RUNS = {
     UPSTREAM_HEAD: (RUN, ARCHIVE_SHA),
     UPSTREAM_V3_HEAD: (".lab-output/sku-align-20261011-v3", ARCHIVE_V3_SHA),
+    UPSTREAM_V4_HEAD: (".lab-output/sku-align-20261011-v4", ARCHIVE_V4_SHA),
 }
 STATES = {"aligned", "one_sided", "extra_in_value"}
+VERSION_STATES = {
+    UPSTREAM_HEAD: STATES,
+    UPSTREAM_V3_HEAD: STATES,
+    UPSTREAM_V4_HEAD: {"aligned", "one_sided", "model_candidate"},
+}
 
 
 def jsonl(data: bytes, source: str):
@@ -136,6 +145,8 @@ def prepare(archive: Path, input_dir: Path, output_dir: Path,
     if expected_head not in PINNED_RUNS:
         raise ValueError("upstream head is not a known pinned flat handoff version")
     run, default_sha = PINNED_RUNS[expected_head]
+    is_v4 = expected_head == UPSTREAM_V4_HEAD
+    allowed_states = VERSION_STATES[expected_head]
     expected_sha256 = expected_sha256 or default_sha
     handoff_members = tuple(f"{run}/{cohort}/align/handoff.jsonl" for cohort in COHORTS)
     archive_sha, checkpoint, payload = read_archive(archive, expected_sha256, handoff_members)
@@ -149,8 +160,10 @@ def prepare(archive: Path, input_dir: Path, output_dir: Path,
             raise ValueError(f"generic input differs from its frozen output SHA: {name}")
     cards, contexts, reverse = [], [], []
     counts, seen_rows, represented = Counter(), set(), set()
-    sources, omissions = [], {}
+    sources, omissions, cohort_counts = [], {}, {}
+    uncovered_au = Counter()
     for cohort, member in zip(COHORTS, handoff_members):
+        member_sha256 = sha256(payload[member])
         parent = PurePosixPath(member).parent
         summary_name, decisions_name = str(parent / "summary.json"), str(parent / "decisions.jsonl")
         metadata_name = f"{run}/{cohort}/similarities.json"
@@ -178,10 +191,12 @@ def prepare(archive: Path, input_dir: Path, output_dir: Path,
         omissions[cohort] = {"case_count": len(omitted), "case_ids": omitted,
                              "processed_by_this_importer": False, "source_member": decisions_name,
                              "sha256": sha256(payload[decisions_name])}
-        sources.append({"member": member, "sha256": sha256(payload[member]), "size_bytes": len(payload[member]),
+        sources.append({"member": member, "sha256": member_sha256, "size_bytes": len(payload[member]),
                         "producer_summary": summary, "similarities_metadata": metadata,
                         "producer_input_bytes_reverified": False})
         member_rows = 0
+        initial_cards, initial_reverse = len(cards), len(reverse)
+        cohort_cases = set()
         for number, handoff, original_line in jsonl(payload[member], member):
             member_rows += 1
             location = f"{member}:{number}"
@@ -204,6 +219,7 @@ def prepare(archive: Path, input_dir: Path, output_dir: Path,
                 raise ValueError(f"duplicate handoff case/row: {location}")
             seen_rows.add(identity)
             represented.add(case["case_id"])
+            cohort_cases.add(case["case_id"])
             sku = handoff["rakuten_sku"]
             for key in ("source_sku_key", "sku_record_key", "variant_id", "url"):
                 if not sku.get(key) or sku.get(key) != case["rakuten"].get(key):
@@ -227,7 +243,7 @@ def prepare(archive: Path, input_dir: Path, output_dir: Path,
                     if axis.get(field) is not None:
                         verify_source(axis[field], axis[field], registry, location)
             source_ref = {"archive": str(archive.resolve()), "archive_sha256": archive_sha,
-                          "member": member, "member_sha256": sha256(payload[member]),
+                          "member": member, "member_sha256": member_sha256,
                           "line": number, "line_sha256": sha256(original_line)}
             common = {"case_id": case["case_id"], "dossier_id": case["dossier_id"],
                       "au_product_id": case["au_product_id"], "au_row_key": row["row_key"],
@@ -243,8 +259,10 @@ def prepare(archive: Path, input_dir: Path, output_dir: Path,
             strict_json({**handoff, "conditions": conditions})
             for condition in conditions:
                 kind, status = condition.get("kind"), condition.get("status")
-                if kind not in ("rakuten", "au_only") or status not in STATES:
+                if kind not in ("rakuten", "au_only") or status not in allowed_states:
                     raise ValueError(f"unsupported condition kind/status: {location}:{kind}/{status}")
+                if is_v4 and "matched_by" in condition:
+                    raise ValueError(f"v4 condition uses retired matched_by field: {location}")
                 if expected_head == UPSTREAM_V3_HEAD:
                     method = condition.get("matched_by")
                     if ("matched_by" not in condition or
@@ -282,6 +300,9 @@ def prepare(archive: Path, input_dir: Path, output_dir: Path,
                         raise ValueError(f"multiple Rakuten axes map the same AU axis: {location}")
                     mapped.add(au_axis["axis_name"])
                 if status == "aligned":
+                    if is_v4 and ("".join(unicodedata.normalize("NFKC", axis["value"]).split()) !=
+                                  "".join(unicodedata.normalize("NFKC", au_axis["value"]).split())):
+                        raise ValueError(f"v4 aligned condition is not an identical whole-value link: {location}")
                     context["aligned_conditions"].append({"producer_condition": condition, "raw_condition": axis,
                                                           "mapped_au_condition": au_axis,
                                                           "status": "upstream_alignment_not_independent_proof"})
@@ -291,17 +312,35 @@ def prepare(archive: Path, input_dir: Path, output_dir: Path,
                         "selected_value": axis["value"], "option_values": axis["family_values"],
                         "raw_condition": axis, "source_refs": [axis.get("axis_label_span"), axis["value_span"]],
                         "producer_condition": condition, "producer_status": status}
-                if status == "extra_in_value":
+                if status in ("extra_in_value", "model_candidate"):
                     ref = {key: card[key] for key in ("case_id", "au_row_key", "condition_id")}
-                    reverse.append(reverse_condition(condition, au_axis, row, product, common, "extra_in_value", ref))
+                    reverse.append(reverse_condition(condition, au_axis, row, product, common, status, ref))
                     card["reverse_condition_ref"] = {"file": "reverse_conditions.jsonl", "line": len(reverse)}
+                if status == "model_candidate":
+                    card.update(model_alignment_is_proof=False, verification_required=True,
+                                automatic_adoption_allowed=False)
                 cards.append(card)
             if processed != set(axes) or only_au & mapped:
                 raise ValueError(f"condition axis coverage/overlap differs: {location}")
+            if is_v4:
+                # The producer exports AU-only axes only when they have several
+                # values. Record any absent whole AU axes, without inventing
+                # conditions or interpreting their values.
+                missing_axes = {axis["axis_name"] for axis in row["axes"]} - mapped - only_au
+                uncovered_au["handoff_rows_with_unrepresented_au_axes"] += bool(missing_axes)
+                for name in missing_axes:
+                    alternatives = {axis["value"] for candidate in product["au"]["rows"]
+                                    for axis in candidate["axes"] if axis["axis_name"] == name}
+                    uncovered_au["unrepresented_au_axis_occurrences"] += 1
+                    uncovered_au["single_valued_au_axis_occurrences" if len(alternatives) == 1 else
+                                 "multi_valued_au_axis_occurrences"] += 1
             counts["covered_rakuten_axes"] += len(processed)
             contexts.append(context)
         if summary.get("handoff_rows") != member_rows:
             raise ValueError(f"producer handoff row count differs: {member}")
+        cohort_counts[cohort] = {"handoff_row_count": member_rows, "handoff_case_count": len(cohort_cases),
+                                 "card_count": len(cards) - initial_cards,
+                                 "reverse_condition_count": len(reverse) - initial_reverse}
     if sha256(archive.read_bytes()) != archive_sha or any((input_dir / name).read_bytes() != body for name, body in inputs.items()):
         raise ValueError("archive or generic inputs changed during validation")
     encode = lambda rows: b"".join((strict_json(row) + "\n").encode("utf-8") for row in rows)
@@ -333,6 +372,35 @@ def prepare(archive: Path, input_dir: Path, output_dir: Path,
                 "input_cases_without_handoff": len(set(cases) - represented), "card_count": len(cards),
                 "reverse_condition_count": len(reverse), "condition_counts": dict(counts),
                 "output_sha256": {name: sha256(body) for name, body in outputs.items()}, "validation_only": validate_only}
+    if is_v4:
+        candidate_member = f"{run}/candidate/align/handoff.jsonl"
+        candidate_summary_member = f"{run}/candidate/align/summary.json"
+        candidate_summary = (parse_json(payload[candidate_summary_member], candidate_summary_member)
+                             if candidate_summary_member in payload else None)
+        manifest.update(
+            upstream_flat_version=4,
+            upstream_checkpoint_purpose=checkpoint.get("purpose"),
+            allowed_condition_states=sorted(allowed_states),
+            model_candidate_is_proof=False,
+            all_model_candidate_mapped_au_whole_values_require_reverse_verification=True,
+            received_cohorts=list(COHORTS), received_cohort_counts=cohort_counts,
+            upstream_label_informed_changes={cohort: source["producer_summary"].get("label_informed_changes")
+                                            for cohort, source in zip(COHORTS, sources)},
+            upstream_method_label_informed=any(source["producer_summary"].get("label_informed_changes") for source in sources),
+            unreceived_cohorts={"candidate": {
+                "handoff_member": candidate_member, "handoff_in_archive": candidate_member in payload,
+                "processed_by_this_importer": False,
+                "summary_member": candidate_summary_member if candidate_summary is not None else None,
+                "summary_sha256": sha256(payload[candidate_summary_member]) if candidate_summary is not None else None,
+                "declared_handoff_row_count": candidate_summary.get("handoff_rows") if candidate_summary is not None else None,
+                "summary_row_count_is_unverified_declaration": True}},
+            producer_au_only_export_limitation="AU-only export includes only axes with multiple values; singleton AU axes can be absent.",
+            unrepresented_au_axis_counts=dict(uncovered_au))
+        manifest["warnings"].extend([
+            "V4 is label-informed: the upstream method changed after its author read machine value references.",
+            "Model candidates are unresolved whole values in both directions, never correspondence proof.",
+            "Only legacy/family handoffs are received; the candidate cohort handoff is not imported.",
+            "The upstream AU-only export can omit singleton axes; absence is not proof that no AU obligation remains."])
     if not validate_only:
         output_dir.mkdir(parents=True, exist_ok=False)
         for name, body in outputs.items():

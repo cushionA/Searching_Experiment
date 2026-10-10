@@ -1,0 +1,231 @@
+Claude PR26 実データによるCPUタスク構造の追加比較
+
+まだ自動採用できる精度には到達していない。
+説明文を渡すGLiNERは開発用12条件で支持6件中4件を回収したが、
+引用の適用範囲は未証明で、商品SKU全体の正解率ではない。
+タイトルのみの別商品32条件では、支持3件に加えて誤支持1件が出た。
+検索上位5窓の説明文でも32条件は支持4件・誤支持1件で、自動採用には足りなかった。
+
+作業ブランチ: codex-sku-generic-model-gates-20261010
+参照PR: https://github.com/cushionA/Searching_Experiment/pull/26
+受領head: 86b5e3b7612f88185be639b86a88233a7c06f431
+元ZIP SHA256: 46388080b7ab0abfd56629760cb21871e376a6853b6b1e8de99009a70ae5d6d4
+前回報告: claude-pr26-v3-residual-trial-20261011.txt
+
+前提と入力
+商品単位で対応候補が見つかった後、楽天SKU1件から固定AU URLの候補行を調べる。
+別URLへ振り分けない。楽天のSKUごとの価格レコードの粒度は変更しない。
+対応しなかった原文の軸・値全体を確認対象にする。付属品への事前分類はしない。
+全選択肢、AU行の複合値、原文span・ID・引用元を保存する。
+AU側の余剰値107件の逆方向義務は、この楽天側の条件確認だけでは解消しない。
+上流alignedをこの検証で独立した証明へ昇格させない。
+
+受領母集団は2,078ケース、3,001未対応条件、77固定AU文書。
+今回のモデル試行は全3,001条件を採点したものではない。
+以前の12条件・11AU商品に、商品IDが重複しない16AU商品・32条件を追加した。
+追加分は商品IDのhash順で選び、各商品から最大2つの原文条件をhash順に採った。
+ケース・入力SHA・商品IDの選択記録をselection.jsonへ保存した。
+母集団を代表する無作為標本とも、最終の独立goldとも呼ばない。
+
+予測を見ないLunaが原本全文から別途32条件を注釈した。
+内訳はsupport9 / conflict21 / unknown2。以前の12条件は6 / 2 / 4。
+32注釈の引用33箇所、12注釈の引用18箇所と原文・固定AU行の対応を確認済み。
+引用の実在を確認した機械ラベルであり、人手確定goldではない。
+ラベルの変更、人工SKUの追加、評価による閾値の最適化は行っていない。
+新しいタスク形式をこのデータで比較するため、32条件も開発用評価として扱う。
+
+モデルと構成
+1. argos1111/modernbert-ja-310m-jev: 315,203,329 parameters、CPU FP32。
+   revision 07cda23579443e7a33c0f474114279fa032340d6。
+   公開の学習データ生成コードにあるJNLI質問・3ラベルの記述をそのまま使う。
+   公開コードは4047ac113ebc1446c5cfae06dd7d1de741d04f66に固定。
+   data.py SHA256 01c6df21fb01d7dad9bd477baf2c86a64fd5e3e7d5d6d0fa91da4b7fc558eab8。
+   モデルの実学習バイトを独立に復元できた、という主張ではない。
+   全選択肢それぞれを、軸文・商品キャプション・名詞句の汎用仮説にする。
+
+2. 0x3/bert-base-japanese-v3_nli-jsnli-jnli-jsick: 111,209,475 parameters、CPU FP32。
+   revision 21df45469d02809dc430e3ac5f5d6f67b63aabf3。
+   商品名と選択行の形式、および説明の原文引用だけの形式を比較する。
+   引用だけの形式は文の関係の診断であり、引用が現在のAU行へ適用される証明ではない。
+
+3. fastino/GLiNER2.5-multi-Decide: 287,355,159 parameters、CPU FP32。
+   revision e173bca1f0c4217d7a55b3b0c705d5ece8a0218d。
+   元の軸名・全選択値と不明を動的schemaへ渡し、一つを選ばせる。
+   商品名だけの場合も選択されたAU行全体は渡す。
+   説明文の場合は商品名・AU行・原文引用・HTML見出し/親リンク/表の行を渡す。
+   意味の正規化やカテゴリ別のSKU規則は追加しない。
+   GLiNERが拒否する予約文字は汎用の転送用escapeだけを行う。
+   全値に索引を付けたschemaから元の値全体へ一対一で戻す。
+
+4. hotchpotch/japanese-reranker-xsmall-v2: 36,771,585 parameters、INT8 ONNX CPU。
+   revision de99fd2f16c7b5df1df1bcc1d9ad2c16d88ce93a。
+   全選択肢を含む検索文と、軸名だけの検索文を比較した。
+   両方とも選択されたAU行全体を渡す。希望する楽天値だけを前提へ足さない。
+   passageは原文引用そのもの。検索スコアは関連度で、条件成立の確率ではない。
+   topKは1 / 3 / 5に固定し、後段の関係判定・分類を比較する。
+
+データ保持と実行
+取得済みAUの商品名・説明の全fieldを保持する。商用キーワードで行を削除しない。
+12条件の原文窓は276、追加32条件は678。重複を含めて保存した。
+追加32条件では全選択肢展開後の原文引用要求は3,298件。
+検索上位5窓の770件を後段へ渡し、非選択2,528件も原形のsidecarへ残す。
+検索を通しても全文を後段モデルが読んだとは呼ばない。
+選択窓・原文・全選択肢・固定AU行・モデルpin・コードを推論前にSHAで凍結する。
+再生採点では、完了出力と原本の対応を検証してから別ファイルのラベルを読む。
+入力長超過は切り詰めず未推論にする。空引用も消さずunknownとして残す。
+
+GLiNERの入力長判定の修正
+推定token数に余裕を加える旧判定は、実encoder入力長を過小評価していた。
+旧full-v1では276窓中266件を推論したが、うち33件は実512tokensを超えていた。
+旧結果を残し、strict上限を満たす推論結果としては除外した。
+compiled schemaと本文を実際のprocessorで組み立てた長さで判定するよう直した。
+新full-v2は276窓全保持、233推論、43長さ超過で未推論。最大長は668。
+本文もschemaも切り詰めていない。fresh CPU推論は358.689秒。
+タイトル12・32条件は追加推論せず実長を監査し、最大233・236で全件512以内だった。
+モデルの独立したファイルpinとの照合も追加した。
+
+ここまでの支持回収（機械ラベルに対する中間条件の診断）
+方式                                   条件数  confidence    支持回収  誤支持
+JEV 学習形式・商品名の軸文/キャプション  12      .5/.7/.9     0/6       0
+JEV 商品名の名詞句                       12      .5           2/6       0
+JEV 商品名の名詞句                       12      .7           1/6       0
+JEV 商品名の軸文                         32      .5           2/9       0
+JEV 商品名の軸文                         32      .7           1/9       0
+日本語NLI 原文全窓                       12      .5/.7/.9     0/6       0
+検索 + 日本語NLI                        12      .7           1/6       0
+検索 + 日本語NLI                        32      .5/.7/.9     0/9       0
+GLiNER 商品名                            12      .5           2/6       0
+GLiNER 商品名                            32      .5           3/9       1
+GLiNER 説明文の全提供窓・strict上限      12      .5           4/6       0
+GLiNER 説明文の全提供窓・strict上限      12      .7           1/6       0
+検索top1 + GLiNER                       12      .5           2/6       0
+検索top3/5 + GLiNER                     12      .5           3/6       0
+検索top1 + GLiNER                       32      .5           2/9       0
+検索top3/5 + GLiNER                     32      .5           4/9       1
+
+追加32条件の検索上位5窓GLiNERは、160窓のうち147推論、13が実長512超で未推論。
+fresh CPU推論181.278秒。元の全文と引用だけの入力を別に保存した。
+支持4 / 予測支持5 = precision80%、支持4 / 注釈支持9 = recall44.4%。
+この少数の機械ラベルに対する数字であり、運用のSKU精度には読み替えない。
+top1なら誤支持0でも回収は2/9だけ。評価結果を見てtop1を運用採用していない。
+検索topKによる12条件の再生は事後の開発診断である。
+追加32条件の最大top5の入力は検索・分類前に固定し、全非選択条件も保持した。
+
+JEV/NLIの主診断閾値は推論前に固定した.9。
+上表の.5/.7は比較用で、運用閾値を選んだものではない。
+GLiNERのgridも探索的な再生診断であり、推論freezeに運用閾値はない。
+全方式とも.9での支持回収は0だった。採用0の場合のprecisionは未定義。
+誤支持0だけを成功率や精度100%とは呼ばない。
+値選択の勝者だけでは矛盾を証明できない。他の値が選ばれたらunknown/dropにする。
+複数窓で異なる値が高confidenceとなった場合もunknown/dropにする。
+これは手動保留への振り分けではない。本番はaccept/dropの二値を維持する。
+今回の未証明の出力は、運用ゲートやCSVの採用へ接続していない。
+
+具体的に残る問題
+NLIは「レースカーテン2枚」の原文を取得しても「レースカーテンはありです」を
+contradiction 0.994とした。「こちらのページは幅78×高さ50cmです」に対しても
+高さ50の支持は0.032だった。根拠検索だけでは仮説の意味解釈を直せない。
+全窓NLIでは無関係な注意書きの誤矛盾が正しい支持を潰した。
+検索後にはフラットタイプ1件を回収したが、追加32条件では支持0/9だった。
+
+GLiNERの説明文で回収した4条件は、レースあり、フラットタイプ、ベージュ、高さ50cm。
+ベージュの確認だけではAU複合値「ベージュ（パイル）」の逆方向義務は解消しない。
+商品名のみ32条件の誤支持は、AU695047036 / サイズS / case-cf074888abb4ca7eda82。
+AU原文は「【XS限定】」であり、SKU選択行もXS。ラベルを変えて成功にしない。
+レースなしAUの関連度top1に、レース付き別商品の案内が来る例もある。
+HTMLの親リンク情報を入力しただけで、引用の所属が証明されたとは扱わない。
+
+費用・性能の扱い
+共有CPU上の開発実行時間であり、GCPの料金・本番スループットの実測ではない。
+新しいモデル重みのダウンロード、GPU/Kaggle/GCPジョブは今回行っていない。
+モデル重みはチェックポイントZIPに含めない。
+実データと人工データは混ぜていない。人工入力は明記した契約テストfixtureだけ。
+
+継続用の依存データ
+20261011-sku-claude-v3-cpu-probe.zip
+SHA256 fc3bebf6a5a1016a96b18a28dc83b4faf02bf6f8e67e6f28c38a7ef4a0d476ff
+20261010-sku-generic-residual-checkpoint.zip（実入力・収集原本）
+SHA256 17c79a8d01692e180322d5b59e749150337faeb8792c8c14ad1ca9c8b02a7f17
+20261011-sku-label-quality-audit.zip（追加10件の品質注意、原ラベルを保持）
+SHA256 386ddd10c5ab88d4c3cb7dec5be300017ba524b3548a7cc18a4f8857fdd98b62
+前回受領データの意味上の制限、未処理81対称軸ケース、family商品対応候補の扱いも維持する。
+
+作業中に受領したPR26 v4
+新head: 2c2db5c52c328405e2f4249f424f2970b4ceca5a
+新ZIP SHA256: 7dd4a51cbd45fbe93502b69c06204a92cb66b6394c3cb32fca98e23c1c64e2d9
+旧v3の実行中にv4へ更新されたため、上のCPU試行はv3の凍結条件の結果として保存する。
+v4で新しくSKU全体の精度を測定したとは呼ばない。
+完全一致ペアだけを確認済みとし、モデル対応はmodel_candidateへ戻している。
+軸の対称リンクにも完全一致だけを使う。包含専用のextra_in_valueはなくなった。
+条件ごとのmatched_byもなくなり、受け渡し状態のschemaが変わった。
+29確定商品ペアのAU候補行handoffは1,317→11,975、familyは761→873。
+商品レコードや独立したSKUの数が約9倍になった、という意味ではない。
+同じ入力の候補行をより多く説明確認へ回す、label-informedの方式変更である。
+raw値が変わったわけでも、モデル自体の性能が改善したわけでもない。
+モデル候補はAU値全体を含めて未証明とし、逆方向の義務も別に保持する。
+複数値がある未対応AU軸はau_onlyで回るが、1値だけの未対応軸の網羅は保証されない。
+候補商品群の大きなhandoffは今回のv4 ZIPに含まれず、その群の全件処理は行わない。
+上流コードを実行したり、現在のブランチへその判定器を自動採用したりしていない。
+
+v4の接続結果
+受領12,848候補行 / 2,128ケース。独立した楽天SKU数を候補行数とは混同しない。
+楽天側の未確認条件25,237: one_sided25,144 / model_candidate93。
+AU側の逆方向義務11,570: au_only11,477 / model_candidate93。
+モデル候補93件は、両方向とも自動採用不可として丸ごと保持した。
+追加の未表現AU軸が27行・27軸ある。全て1値の軸であり、警告として残した。
+原本の値全体・選択肢・ケース/SKU/固定AU行を27件の別sidecarにも保存した。
+これは新しい人工SKUや正解ラベルではなく、未確認の原本条件を構造上抽出したもの。
+上流reverseリスト11,570件は変更せず、この27義務も自動採用不可のままとした。
+この27件の仕様が確認済みになった、あるいは全AU義務が網羅できたとは呼ばない。
+上流のsymmetric_unresolvedで受け渡しから省かれた61ケースは未処理。
+candidate群52,843行は上流summaryの申告のみ。handoff原本がZIPにないため未処理。
+収録24payloadの全サイズ・SHA・CRC、固定AU/Rakuten SKU/全選択肢/spanを照合した。
+収集原本240ファイルのSHAも再計算し、変更なしを確認した。
+25,237条件を82固定AU文書の商品名・取得済み説明へ接続し、
+223,242条件×原文窓の入力参照を準備した。これらは未推論である。
+以前に選んだ44条件は全てv4にもあり、元の軸・値・選択肢・原文参照と
+ケース/固定AU行/SKUキー、および凍結商品の入力バイトが一致した。
+比較receiptを保存し、v4の候補集合・確認義務まで同じとは扱っていない。
+
+受領処理では、handoff全体のSHAを候補行ごとに重複計算していた問題を修正した。
+同じ不変のmemberのSHAを1回計算して再利用する。元バイトの検証は維持する。
+V2/V3/V4の状態schemaを分け、旧受領版のmatched_by検証も維持した。
+v4のalignedは正規化した値全体の完全一致を再確認し、モデル候補の昇格を拒否する。
+
+検証と継続
+新規111契約テスト成功。人工fixtureはtests内に分離。
+規約の全体検査は694件、18 skip、既存パッケージテスト2件がerror。
+原因は古いDecide出力不足と、このworktreeの.lab-output symlinkを旧packagerが拒否すること。
+tests/test_lab_luna_package.pyとpackage_luna_real_evaluation.pyは変更していない。
+新しいZIPの全メンバーCRC・サイズ・SHAは別に検証する。
+現在有望なのはGLiNERへ商品名・AU選択行・説明根拠を渡す構成だが、
+XS/Sや別ページ案内の誤支持が残り、支持回収とprecisionの両方が足りない。
+次の実験でもv4のモデル候補、他候補行の仕様、逆方向義務を確認済みにしない。
+
+主なCLI（新しい出力先を指定）
+python3 -B experiments/sku-matching/import_claude_alignment_handoff_v2.py \
+  --archive V4_ZIP --expected-head 2c2db5c52c328405e2f4249f424f2970b4ceca5a \
+  --output-dir NEW_V4_CARDS
+python3 -B experiments/sku-matching/prepare_generic_residual_evidence_v1.py \
+  --residual-cards NEW_V4_CARDS/cards.jsonl --output-dir NEW_V4_EVIDENCE
+python3 -B experiments/sku-matching/prepare_trained_relation_probe_v1.py \
+  --input-dir STRUCTURED_REQUESTS --output-dir NEW_RELATION_REQUESTS --scope all_windows
+python3 -B experiments/sku-matching/prepare_quote_relation_probe_v1.py \
+  --input-dir NEW_RELATION_REQUESTS --output-dir NEW_QUOTE_REQUESTS
+.deps/sku-matching-venv/bin/python -B experiments/sku-matching/trial_generic_evidence_reranker_v1.py \
+  --input-dir NEW_QUOTE_REQUESTS --output-dir NEW_RANKING --query-style axis_only
+python3 -B experiments/sku-matching/prepare_retrieved_relation_probe_v1.py \
+  --input-dir NEW_QUOTE_REQUESTS --ranking-dir NEW_RANKING --output-dir NEW_RETRIEVED_INPUT
+.deps/sku-gliner-venv/bin/python -B experiments/sku-matching/trial_generic_gliner_choice_v1.py \
+  --input-dir NEW_RETRIEVED_INPUT --output-dir NEW_GLINER_RUN \
+  --scope all_windows --text-source original_relation_premise --threads 1
+.deps/sku-gliner-venv/bin/python -B experiments/sku-matching/trial_trained_relation_probe_v1.py \
+  --input-dir NEW_RETRIEVED_INPUT --output-dir NEW_NLI_RUN --backend nli --threads 1
+python3 -B experiments/sku-matching/score_generic_gliner_choice_v1.py \
+  --run-dir NEW_GLINER_RUN --annotations MACHINE_LABELS --output NEW_SCORE
+python3 -B experiments/sku-matching/score_ranked_gliner_probe_v1.py \
+  --run-dir NEW_GLINER_RUN --ranking-dir NEW_RANKING \
+  --annotations MACHINE_LABELS --output NEW_RANKED_SCORE
+
+再実行に必要な原本・ケースは依存ZIP、今回の新規入力・凍結出力・注釈・検証receiptは
+20261011-sku-claude-task-improvement.zipと付属manifestへ保存する。
