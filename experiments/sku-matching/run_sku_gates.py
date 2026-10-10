@@ -20,8 +20,6 @@ import subprocess
 import sys
 import time
 
-import jsonschema
-
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import sku_gate_sources as src  # noqa: E402
@@ -30,7 +28,7 @@ import sku_gates as gates  # noqa: E402
 ROOT = HERE.parents[1]
 ANNOTATION = ".lab-output/sku-real-luna-annotation-inputs-20261010-v3"
 ARRAYS = ".lab-output/sku-observed-product-pairs-20261010-final-v4/au_product_sku_arrays.jsonl"
-DEFAULT_OUT = ".lab-output/sku-gate-tasks-20261010-v7"
+DEFAULT_OUT = ".lab-output/sku-gate-tasks-20261010-v8"
 CODE_FILES = ["experiments/sku-matching/sku_gate_sources.py", "experiments/sku-matching/sku_gate_atoms.py",
               "experiments/sku-matching/sku_gates.py", "experiments/sku-matching/run_sku_gates.py",
               "experiments/sku-matching/evaluate_sku_gates.py", "experiments/sku-matching/check_sku_gate_invariants.py",
@@ -43,8 +41,18 @@ LABEL_PATHS = (".lab-output/sku-real-luna-labels-20261010-v3",)
 
 
 def schema(name: str):
+    # jsonschema is an experiment dependency (requirements/sku-gates.txt), not a core one.
+    import jsonschema
     path = HERE / "schemas" / name
     return jsonschema.Draft202012Validator(json.loads(path.read_text(encoding="utf-8")))
+
+
+def _jsonschema_version():
+    from importlib import metadata
+    try:
+        return metadata.version("jsonschema")
+    except metadata.PackageNotFoundError:
+        return None
 
 
 def write_new(path: Path, text: str):
@@ -118,7 +126,7 @@ def freeze(out: Path, note: str, labels_seen: str | None = None):
     record = {"frozen_at_utc": datetime.now(timezone.utc).isoformat(), "task_version": gates.TASK_VERSION,
               "labels_read_before_freeze": bool(labels_seen), "label_informed_changes": labels_seen, "note": note,
               "git_head": _git("rev-parse", "HEAD"), "git_status_porcelain": _git("status", "--porcelain"),
-              "python": platform.python_version(), "jsonschema": jsonschema.__version__ if hasattr(jsonschema, "__version__") else None,
+              "python": platform.python_version(), "jsonschema": _jsonschema_version(),
               "methods": ["A", "B"], "source_configs": gates.SOURCE_CONFIGS, "primary_config": gates.PRIMARY_CONFIG,
               "sha256": frozen_hashes(out)}
     write_new(out / "freeze.json", json.dumps(record, ensure_ascii=False, indent=2) + "\n")
@@ -155,7 +163,7 @@ def predict(out: Path):
                 if config != gates.PRIMARY_CONFIG:
                     result = {k: result[k] for k in ("schema_version", "task_version", "method", "source_config", "case_id",
                                                      "dossier_id", "au_product_id", "decision", "top_row_key", "reason",
-                                                     "candidate_row_keys", "row_status_counts", "forced_binary")}
+                                                     "candidate_row_keys", "row_status_counts", "binary")}
                 rows.append(result)
             name = f"predictions/{method}-{config}.jsonl"
             write_jsonl_new(out / name, rows)

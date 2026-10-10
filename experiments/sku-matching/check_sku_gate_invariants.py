@@ -10,7 +10,11 @@ property the gates must hold regardless of any gold answer:
                        same row or review (more evidence may only withhold, never redirect)
   sibling_swap         replacing one selected value with a sibling option never re-accepts
                        the row accepted for the original SKU
-  unquoted_guard       dropping the source span of a selected value always yields review
+  unquoted_guard       dropping the source span of a selected value always yields review, and the
+                       adopt/exclude output excludes it with reason unquoted_requirement
+  binary_consistency   the adopt/exclude output adopts exactly the gate's matched row, else excludes
+  binary_proof         an adopted row has every requirement and every AU-only condition supported
+  binary_injectivity   one AU row is never adopted for two different Rakuten selections
 
 sibling_swap also compares each swap with the real case of the same fixed pair whose
 selection equals the swapped one (a "twin"). Variant attributes are dropped from swaps, so
@@ -151,7 +155,8 @@ def main():
             key = ci["dossier_id"]
             evaluators.setdefault(key, gates.make_evaluator(method, facts[key], primary))
             r = gates.run_method(method, ci, facts[key], primary, evaluators[key])
-            ok = (r["decision"], r["reason"]) == ("review", "unquoted_requirement")
+            ok = ((r["decision"], r["reason"]) == ("review", "unquoted_requirement")
+                  and r["binary"]["decision"] == "unmatched" and "unquoted_requirement" in r["binary"]["reason_codes"])
             outcome["review_unquoted" if ok else "decided_" + r["decision"]] += 1
             if not ok:
                 violations.append({"check": f"unquoted_guard_{method}", "case_id": cid, "decision": r["decision"]})
@@ -159,20 +164,25 @@ def main():
                                               "violations": sum(v for k, v in outcome.items() if k != "review_unquoted")}
 
     for method in ("A", "B"):
-        for policy in ("closed_world", "open_world"):
-            bad, by_row = [], defaultdict(set)
-            for cid, p in preds[f"{method}-{primary}"].items():
-                f = p["forced_binary"][policy]
-                if f["decision"] not in ("matched", "unmatched") or (
-                        p["decision"] != "review" and (f["decision"], f["top_row_key"]) != (p["decision"], p["top_row_key"])):
-                    bad.append(cid)
-                if f["decision"] == "matched":
-                    by_row[(p["dossier_id"], f["top_row_key"])].add(selection(cid))
-            shared = sum(len(v) > 1 for v in by_row.values())
-            checks[f"forced_{policy}_{method}"] = {
-                "forced_from_review": sum(p["decision"] == "review" for p in preds[f"{method}-{primary}"].values()),
-                "rows_accepted_for_several_selections_reported": shared, "violations": len(bad)}
-            violations += [{"check": f"forced_{policy}_{method}", "case_id": c} for c in bad]
+        inconsistent, unproven, by_row = [], [], defaultdict(set)
+        for cid, p in preds[f"{method}-{primary}"].items():
+            b = p["binary"]
+            expected = (p["decision"], p["top_row_key"]) if p["decision"] == "matched" else ("unmatched", None)
+            if (b["decision"], b["top_row_key"]) != expected:
+                inconsistent.append(cid)
+            if b["decision"] != "matched":
+                continue
+            by_row[(p["dossier_id"], b["top_row_key"])].add(selection(cid))
+            row = next(r for r in p["rows"] if r["row_key"] == b["top_row_key"])
+            if any(x["status"] != "support" for x in row["atom_results"]) or any(
+                    a["status"] != "support" for a in row["au_only_atoms"]):
+                unproven.append(cid)
+        shared = {k: sorted(v) for k, v in by_row.items() if len(v) > 1}
+        for name, bad in ((f"binary_consistency_{method}", inconsistent), (f"binary_proof_{method}", unproven)):
+            checks[name] = {"violations": len(bad)}
+            violations += [{"check": name, "case_id": c} for c in bad]
+        checks[f"binary_injectivity_{method}"] = {"adopted_rows": len(by_row), "violations": len(shared)}
+        violations += [{"check": f"binary_injectivity_{method}", "row": list(k), "selections": v} for k, v in shared.items()]
 
     summary = {"created_at_utc": datetime.now(timezone.utc).isoformat(), "labels_read": False,
                "freeze_sha256": src.sha256_file(out / "freeze.json"),

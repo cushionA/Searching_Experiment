@@ -20,7 +20,7 @@
     "rakuten_provenance",
     "au_provenance",
     "rows",
-    "forced_binary"
+    "binary"
   ],
   "properties": {
     "schema_version": {
@@ -53,7 +53,8 @@
         "page_specification_conflict_on_candidate_row",
         "ambiguous_or_conflicting_sources",
         "unresolved_requirement",
-        "unquoted_requirement"
+        "unquoted_requirement",
+        "au_only_condition_not_corroborated"
       ]
     },
     "candidate_row_keys": {
@@ -188,7 +189,8 @@
               "conflict",
               "partial",
               "ambiguous",
-              "derived_conflict"
+              "derived_conflict",
+              "au_only_unproven"
             ]
           },
           "atom_results": {
@@ -278,166 +280,72 @@
         }
       }
     },
-    "forced_binary": {
+    "binary": {
       "type": "object",
       "required": [
-        "closed_world",
-        "open_world"
+        "decision",
+        "top_row_key",
+        "reason_codes"
       ],
       "properties": {
-        "closed_world": {
-          "type": "object",
-          "required": [
-            "decision",
-            "top_row_key",
-            "reason",
-            "passing_rows",
-            "reason_codes"
-          ],
-          "properties": {
-            "decision": {
-              "enum": [
-                "matched",
-                "unmatched"
-              ]
-            },
-            "top_row_key": {
-              "type": [
-                "string",
-                "null"
-              ],
-              "pattern": "^au:\\d+:\\d+:\\d+:\\d+$"
-            },
-            "reason": {
-              "type": "string"
-            },
-            "passing_rows": {
-              "type": "integer",
-              "minimum": 0
-            },
-            "reason_codes": {
-              "type": "array",
-              "minItems": 1,
-              "items": {
-                "type": "string"
-              }
-            },
-            "notices": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": [
-                  "kind",
-                  "family",
-                  "au",
-                  "rakuten"
-                ]
-              }
-            }
-          },
-          "allOf": [
-            {
-              "if": {
-                "properties": {
-                  "decision": {
-                    "const": "matched"
-                  }
-                }
-              },
-              "then": {
-                "properties": {
-                  "top_row_key": {
-                    "type": "string"
-                  }
-                }
-              },
-              "else": {
-                "properties": {
-                  "top_row_key": {
-                    "type": "null"
-                  }
-                }
-              }
-            }
+        "decision": {
+          "enum": [
+            "matched",
+            "unmatched"
           ]
         },
-        "open_world": {
-          "type": "object",
-          "required": [
-            "decision",
-            "top_row_key",
-            "reason",
-            "passing_rows",
-            "reason_codes"
+        "top_row_key": {
+          "type": [
+            "string",
+            "null"
           ],
-          "properties": {
-            "decision": {
-              "enum": [
-                "matched",
-                "unmatched"
-              ]
-            },
-            "top_row_key": {
-              "type": [
-                "string",
-                "null"
-              ],
-              "pattern": "^au:\\d+:\\d+:\\d+:\\d+$"
-            },
-            "reason": {
-              "type": "string"
-            },
-            "passing_rows": {
-              "type": "integer",
-              "minimum": 0
-            },
-            "reason_codes": {
-              "type": "array",
-              "minItems": 1,
-              "items": {
-                "type": "string"
-              }
-            },
-            "notices": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": [
-                  "kind",
-                  "family",
-                  "au",
-                  "rakuten"
-                ]
+          "pattern": "^au:\\d+:\\d+:\\d+:\\d+$"
+        },
+        "reason_codes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "notices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "kind",
+              "family",
+              "au",
+              "rakuten"
+            ]
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "decision": {
+                "const": "matched"
               }
             }
           },
-          "allOf": [
-            {
-              "if": {
-                "properties": {
-                  "decision": {
-                    "const": "matched"
-                  }
-                }
-              },
-              "then": {
-                "properties": {
-                  "top_row_key": {
-                    "type": "string"
-                  }
-                }
-              },
-              "else": {
-                "properties": {
-                  "top_row_key": {
-                    "type": "null"
-                  }
-                }
+          "then": {
+            "properties": {
+              "top_row_key": {
+                "type": "string"
               }
             }
-          ]
+          },
+          "else": {
+            "properties": {
+              "top_row_key": {
+                "type": "null"
+              }
+            }
+          }
         }
-      }
+      ]
     }
   },
   "allOf": [

@@ -24,7 +24,7 @@ from sku_gate_atoms import (atomize, color_base_vocab, compact, code_crosswalk, 
                             fact_family, atom_value_key, title_facts, NAMED_SIZES, SIZE_CODES)
 import sku_gate_sources as src
 
-TASK_VERSION = "sku-gate-task-v7"
+TASK_VERSION = "sku-gate-task-v8"
 CURTAIN_COMPONENTS = ("drape", "lace")
 # Separately packed items a contents list can enumerate. Built-in features
 # (armrest, top board, bookshelf, handle) are never inferred from list absence.
@@ -39,11 +39,15 @@ SOURCE_CONFIGS = {
     "full": {"rakuten_title": True, "au_title": True, "descriptions": True, "closed_list": True, "derived": True},
     "full_no_closed_list": {"rakuten_title": True, "au_title": True, "descriptions": True, "closed_list": False, "derived": True},
     "full_no_derived_conflicts": {"rakuten_title": True, "au_title": True, "descriptions": True, "closed_list": True, "derived": False},
+    # Every source as in "full", but a page-specification difference against the Rakuten page is a
+    # notice on the adopted row, never a reason to hold or exclude it.
+    "full_spec_notice": {"rakuten_title": True, "au_title": True, "descriptions": True, "closed_list": True,
+                         "derived": True, "derived_decides": False},
     # Rakuten contributes only the selected SKU values; everything else comes from the fixed AU page.
     "au_side_only": {"rakuten_title": False, "au_title": True, "descriptions": True, "closed_list": True, "derived": True,
                      "rakuten_description": False, "rakuten_attributes": False},
 }
-PRIMARY_CONFIG = "au_side_only"
+PRIMARY_CONFIG = "full_spec_notice"
 NON_IDENTITY_FIELDS = ("price", "stock", "inventory", "shipping", "coupon", "promotion", "availability")
 
 
@@ -406,20 +410,6 @@ class Evaluator:
         self._au_cache: dict[str, list] = {}
         self._rak_cache: dict[str, list] = {}
         self._eval_cache: dict[tuple, dict] = {}
-        self._notice: Evaluator | None = None
-
-    def spec_notices(self, reqs: list[dict], attributes, row: dict) -> list[dict]:
-        """Page-specification differences against the Rakuten page, reported but never deciding.
-
-        Only for a config that leaves the Rakuten side out of the decision; otherwise these
-        differences already sit in the row's derived conflicts.
-        """
-        if self.cfg.get("rakuten_description", True) and self.cfg.get("rakuten_attributes", True):
-            return []
-        if self._notice is None:
-            self._notice = Evaluator(self.f, SOURCE_CONFIGS["full"], self.verified)
-        n = self._notice
-        return n.derived_conflicts(n.au_facts_for(row), n.rak_facts_for(reqs, attributes))
 
     def _align(self, req: dict, row_atoms: list[dict], row: dict) -> dict | None:
         """Resolve a different spelling through the two pages' own option lists (method A only)."""
@@ -994,91 +984,56 @@ def option_cores(values) -> dict:
     return cores
 
 
-FORCED_POLICIES = ("closed_world", "open_world")
 SOURCE_RANK = {"au_title": 0, "rakuten_title": 0, "au_purchase_option": 1, "au_description": 2,
                "rakuten_description": 2}
 
 
-def _row_check(policy: str, results: list[dict], by_id: dict, derived: list[dict]) -> tuple[bool, list[str]]:
-    """Whether a non-contradicted row passes a forced policy, with reason codes.
+_SPECIAL_REVIEW_CODES = {"unquoted_requirement": "unquoted_requirement",
+                         "multiple_rows_satisfy_all_requirements": "several_rows_fully_proven",
+                         "multiple_rows_satisfy_all_cards": "several_rows_fully_proven",
+                         "partial_decomposition": "partial_decomposition",
+                         "competing_row_not_excluded": "competing_row_not_excluded"}
 
-    Codes name what let the row pass (empty when every requirement is supported), or the
-    first item that failed it.
+
+def binary_decision(reqs: list[dict], rows: list[dict], row_status: dict, details: dict, decision: str,
+                    top: str | None, reason: str | None) -> dict:
+    """Adopt (matched) only a row the gate proved uniquely; exclude (unmatched) everything else.
+
+    Nothing unproven is adopted: no absence is assumed, no AU-only condition passes without
+    corroboration, and several candidate rows are never resolved by their order. Reason codes
+    say why a SKU was adopted or excluded.
     """
-    passed = []
-    for res in results:
-        status = res["status"]
-        if status == "support":
-            if res.get("note") == "aligned_by_option_lists":
-                passed.append("value_aligned_by_option_lists")
-            continue
-        req = by_id[res["requirement_id"]]
-        absence = req["type"] == "component_presence" and req["value"] is False
-        spelling = status == "unknown" and res.get("note") == "unresolved_spelling"
-        row_support = any(e.get("source") == "au_row" and e.get("relation") == "support" for e in res.get("evidence", []))
-        if policy == "open_world" and status == "ambiguous":
-            passed.append("mixed_sources_passed")
-            continue
-        if policy == "open_world" and status == "unknown" and not spelling:
-            passed.append("absence_assumed" if absence else "attribute_not_on_au_page_passed")
-            continue
-        if policy == "closed_world" and status == "unknown" and absence and not spelling:
-            passed.append("absence_assumed")
-            continue
-        if policy == "closed_world" and status == "ambiguous" and row_support:
-            passed.append("row_value_outranks_mixed_sources")
-            continue
-        return False, ["different_value_on_row_axis" if spelling else
-                       "mixed_sources" if status == "ambiguous" else "attribute_not_on_au_page"]
-    if derived:
-        if policy == "closed_world":
-            return False, ["page_spec_discrepancy"]
-        passed.append("page_spec_discrepancy_ignored")
-    return True, passed
-
-
-def forced_binary(policy: str, reqs: list[dict], rows: list[dict], row_status: dict, details: dict,
-                  decision: str, top: str | None) -> dict:
-    """Two-way decision for an automated pipeline without a review queue.
-
-    A gate decision (matched / unmatched) is kept. Only a review case is forced:
-    - closed_world: what the AU page does not state is not offered. An unknown requirement fails
-      unless it is an absence (なし); a page-specification conflict fails the row.
-    - open_world: a missing attribute and mixed sources pass; an explicit contradiction or a
-      different, unresolved value on the same row axis (ネイビー vs グリーン) fails the row.
-    Among passing rows the one with the most supported requirements wins, then the most
-    verified AU-only atoms, then the lowest row index (reported as a tie). Every decision
-    carries reason codes.
-    """
-    by_id = {r["requirement_id"]: r for r in reqs}
     if decision == "matched":
-        aligned = any(r.get("note") == "aligned_by_option_lists" for r in details[top][0])
-        return {"decision": decision, "top_row_key": top, "reason": "gate_decision", "passing_rows": 1,
-                "reason_codes": ["gate_all_requirements_supported"] + (["value_aligned_by_option_lists"] if aligned else [])}
+        results = details[top][0]
+        codes = ["proven_unique_row"]
+        if any(r.get("note") == "aligned_by_option_lists" for r in results):
+            codes.append("value_aligned_by_option_lists")
+        if any(e.get("scope") == "closed_contents_list" for r in results for e in r.get("evidence", [])):
+            codes.append("absence_by_closed_contents_list")
+        return {"decision": "matched", "top_row_key": top, "reason_codes": codes}
     if decision == "unmatched":
-        return {"decision": decision, "top_row_key": None, "reason": "gate_decision", "passing_rows": 0,
-                "reason_codes": ["gate_explicit_contradiction_on_every_row"]}
-    passing, failures = [], set()
-    for index, row in enumerate(rows):
-        key = row["row_key"]
-        if row_status[key] == "conflict":
+        return {"decision": "unmatched", "top_row_key": None, "reason_codes": ["explicit_contradiction_on_every_row"]}
+    codes = {_SPECIAL_REVIEW_CODES[reason]} if reason in _SPECIAL_REVIEW_CODES else set()
+    by_id = {r["requirement_id"]: r for r in reqs}
+    for row in rows:
+        status = row_status[row["row_key"]]
+        if status in ("conflict", "full"):
             continue
-        results, au_only, derived = details[key]
-        ok, codes = _row_check(policy, results, by_id, derived)
-        if ok:
-            passing.append((-sum(r["status"] == "support" for r in results),
-                            -sum(a.get("status") == "support" for a in au_only), index, key, codes))
+        results, _, _ = details[row["row_key"]]
+        failing = next((r for r in results if r["status"] != "support"), None)
+        if failing is None:
+            codes.add("au_only_condition_not_corroborated" if status == "au_only_unproven" else "page_spec_discrepancy")
+            continue
+        req = by_id[failing["requirement_id"]]
+        if failing["status"] == "ambiguous":
+            codes.add("mixed_sources")
+        elif failing.get("note") == "unresolved_spelling":
+            codes.add("different_value_on_row_axis")
+        elif req["type"] == "component_presence" and req["value"] is False:
+            codes.add("absence_not_proven")
         else:
-            failures.update(codes)
-    if not passing:
-        return {"decision": "unmatched", "top_row_key": None, "reason": f"{policy}_no_row_passes", "passing_rows": 0,
-                "reason_codes": sorted(failures) + ["other_rows_contradicted"]}
-    passing.sort(key=lambda x: x[:3])
-    tie = len(passing) > 1 and passing[0][:2] == passing[1][:2]
-    codes = list(dict.fromkeys(passing[0][4])) or ["all_requirements_supported"]
-    return {"decision": "matched", "top_row_key": passing[0][3],
-            "reason": f"{policy}_{'tie_lowest_row_index' if tie else 'best_supported_row'}", "passing_rows": len(passing),
-            "reason_codes": codes + (["tie_lowest_row_index"] if tie else [])}
+            codes.add("requirement_not_proven_on_au")
+    return {"decision": "unmatched", "top_row_key": None, "reason_codes": sorted(codes) or ["not_proven"]}
 
 
 def _row_summary(row_key, status, results, au_only, derived, detail):
@@ -1146,11 +1101,14 @@ def run_method(method: str, case_input: dict, facts: PairFacts, config_name: str
                     matched_types.add(id(a))
         au_only = []
         for a in row["atoms"]:
-            if id(a) in matched_types:
+            if id(a) in matched_types or a.get("alias"):
                 continue
             res = evaluator.evaluate_au_only(a, reqs, rak_facts, row)
             au_only.append({"type": a["type"], "value": a["value"], "quote": a["quote"], "span": a.get("span"), **res})
         derived = evaluator.derived_conflicts(au_facts, rak_facts)
+        deciding = derived if evaluator.cfg.get("derived_decides", True) else []
+        # A condition only the AU row states (10本, パイル) must be corroborated by the Rakuten side.
+        unproven = [a for a in au_only if a["status"] != "support"]
         statuses = [r["status"] for r in results]
         has_conflict = "conflict" in statuses or any(a["status"] == "conflict" for a in au_only)
         all_support = all(s == "support" for s in statuses) and statuses
@@ -1160,9 +1118,11 @@ def run_method(method: str, case_input: dict, facts: PairFacts, config_name: str
                 any(e.get("relation") == "conflict" for e in r.get("evidence", [])) for r in results if r["status"] == "ambiguous")
         if has_conflict:
             status = "conflict"
-        elif all_support and not derived:
+        elif all_support and not unproven and not deciding:
             status = "full"
-        elif all_support and derived:
+        elif all_support and unproven:
+            status = "au_only_unproven"
+        elif all_support and deciding:
             status = "derived_conflict"
         elif "ambiguous" in statuses:
             status = "ambiguous"
@@ -1203,14 +1163,10 @@ def run_method(method: str, case_input: dict, facts: PairFacts, config_name: str
     if decision != "review" and any(not r.get("span") for r in reqs):
         # A requirement whose selected value has no verified source span cannot decide either way.
         decision, top, reason = "review", None, "unquoted_requirement"
-    forced = {policy: forced_binary(policy, reqs, facts.rows, row_status, details, decision, top)
-              for policy in FORCED_POLICIES}
-    rows_by_key = {row["row_key"]: row for row in facts.rows}
-    for entry in forced.values():
-        # A difference from the Rakuten page never decides under an AU-side config; it is reported.
-        if entry["decision"] == "matched":
-            entry["notices"] = [{"kind": "page_spec_discrepancy", **n} for n in evaluator.spec_notices(
-                reqs, case_input["rakuten_selected"].get("variant_attributes"), rows_by_key[entry["top_row_key"]])]
+    binary = binary_decision(reqs, facts.rows, row_status, details, decision, top, reason)
+    if binary["decision"] == "matched" and not evaluator.cfg.get("derived_decides", True):
+        # A difference from the Rakuten page does not decide here; it is reported on the adopted row.
+        binary["notices"] = [{"kind": "page_spec_discrepancy", **n} for n in details[top][2]]
     focus = set(full_rows) | ({top} if top else set())
     if not focus:
         ranked = sorted(facts.rows, key=lambda r: (row_status[r["row_key"]] == "conflict",
@@ -1225,7 +1181,7 @@ def run_method(method: str, case_input: dict, facts: PairFacts, config_name: str
             "source_config": config_name, "case_id": case_input["case_id"], "dossier_id": case_input["dossier_id"],
             "au_product_id": case_input["au_product_id"], "decision": decision, "top_row_key": top,
             "reason": reason, "candidate_row_keys": full_rows, "row_status_counts": _counts(row_status),
-            "forced_binary": forced,
+            "binary": binary,
             "requirements": [_requirement_card(r) for r in reqs],
             "rakuten_provenance": {k: sel[k] for k in ("url", "raw_file", "sha256", "variant_id", "source_row_key",
                                                        "source_sku_key", "sku_record_key", "source_row_index")},
@@ -1246,6 +1202,8 @@ def _review_reason(row_status):
     values = set(row_status.values())
     if "derived_conflict" in values:
         return "page_specification_conflict_on_candidate_row"
+    if "au_only_unproven" in values:
+        return "au_only_condition_not_corroborated"
     if "ambiguous" in values:
         return "ambiguous_or_conflicting_sources"
     return "unresolved_requirement"

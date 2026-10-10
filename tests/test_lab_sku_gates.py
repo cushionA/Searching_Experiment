@@ -13,7 +13,10 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "experiments/sku-matching"))
-import jsonschema  # noqa: E402
+try:
+    import jsonschema  # experiment dependency: requirements/sku-gates.txt (not installed by core CI)
+except ImportError:  # pragma: no cover - exercised by core CI
+    jsonschema = None
 import sku_gate_sources as src  # noqa: E402
 import sku_gates as gates  # noqa: E402
 from sku_gate_atoms import atomize  # noqa: E402
@@ -22,7 +25,14 @@ ANNOTATION = ROOT / ".lab-output/sku-real-luna-annotation-inputs-20261010-v3"
 SCHEMAS = ROOT / "experiments/sku-matching/schemas"
 
 
+class _SchemaNotInstalled:
+    def validate(self, instance):
+        """Schema checks run in SchemaTests where jsonschema is installed; gate tests still run."""
+
+
 def validator(name):
+    if jsonschema is None:
+        return _SchemaNotInstalled()
     return jsonschema.Draft202012Validator(json.loads((SCHEMAS / name).read_text(encoding="utf-8")))
 
 
@@ -191,8 +201,9 @@ class GateTests(unittest.TestCase):
     def test_closed_contents_list_is_structural_in_a_but_not_a_quote_in_b(self):
         fam = {"サイズ": ("100×220cm",), "レースカーテン": ("あり", "なし")}
         lines = ["商 品 詳 細", "内容", "【幅100cm】", "遮光カーテン 2枚", "タッセル 2枚"]
+        # The Rakuten title corroborates the AU-only panel count (2枚).
         facts, case = make_pair([[("サイズ", "幅100×丈220cm(2枚)")]], [("サイズ", "100×220cm"), ("レースカーテン", "なし")],
-                                fam, au_lines=lines)
+                                fam, au_lines=lines, rak_title="遮光カーテン 2枚組")
         self.assertEqual(run("A", facts, case)["decision"], "matched")
         self.assertEqual(run("B", facts, case)["decision"], "review")
         self.assertEqual(run("A", facts, case, "full_no_closed_list")["decision"], "review")
@@ -201,10 +212,12 @@ class GateTests(unittest.TestCase):
         fam = {"サイズ": ("100×220cm", "150×200cm"), "レースカーテン": ("あり", "なし")}
         lines = ["商 品 詳 細", "内容", "【幅100cm】", "遮光カーテン 2枚", "【幅150cm】", "遮光カーテン 1枚", "レースカーテン 1枚"]
         rows = [[("サイズ", "幅100×丈220cm(2枚)")], [("サイズ", "幅150×丈200cm(2枚組)")]]
-        facts, case = make_pair(rows, [("サイズ", "150×200cm"), ("レースカーテン", "あり")], fam, au_lines=lines)
+        facts, case = make_pair(rows, [("サイズ", "150×200cm"), ("レースカーテン", "あり")], fam, au_lines=lines,
+                                rak_title="カーテン 2枚組")
         out = run("A", facts, case)
         self.assertEqual((out["decision"], out["top_row_key"]), ("matched", "au:1:9:1:0"))
-        facts, case = make_pair(rows, [("サイズ", "100×220cm"), ("レースカーテン", "あり")], fam, au_lines=lines)
+        facts, case = make_pair(rows, [("サイズ", "100×220cm"), ("レースカーテン", "あり")], fam, au_lines=lines,
+                                rak_title="カーテン 2枚組")
         self.assertEqual(run("A", facts, case)["decision"], "unmatched")
 
     def test_b_requires_competing_rows_to_be_excluded(self):
@@ -280,31 +293,56 @@ class GateTests(unittest.TestCase):
             self.assertEqual(out["decision"], "review", method)
             self.assertEqual(out["rows"][0]["atom_results"][0]["status"], "unknown")
 
-    def test_forced_binary_never_reviews_and_keeps_gate_decisions(self):
+    def test_binary_adopts_only_a_uniquely_proven_row(self):
         fam = {"カラー": ("赤", "青"), "オプション": ("なし", "毛布セット")}
         rows = [[("カラー", "赤")], [("カラー", "青")]]
-        # Unknown add-on (毛布セット): closed world drops the SKU, open world matches the colour row.
+        # An add-on the AU page never states is not proven, so the SKU is excluded.
         facts, case = make_pair(rows, [("カラー", "赤"), ("オプション", "毛布セット")], fam)
         for method in ("A", "B"):
             out = run(method, facts, case)
             self.assertEqual(out["decision"], "review")
-            self.assertEqual(out["forced_binary"]["closed_world"]["decision"], "unmatched")
-            self.assertEqual((out["forced_binary"]["open_world"]["decision"], out["forced_binary"]["open_world"]["top_row_key"]),
-                             ("matched", "au:1:9:0:0"))
-        # Unknown absence (なし) is the default state, so closed world keeps the row too.
+            self.assertEqual(out["binary"], {"decision": "unmatched", "top_row_key": None,
+                                             "reason_codes": ["requirement_not_proven_on_au"]})
+        # A missing statement is not proof of なし (review P1-2).
         facts, case = make_pair(rows, [("カラー", "赤"), ("オプション", "なし")], fam)
-        out = run("A", facts, case)
-        self.assertEqual(out["forced_binary"]["closed_world"]["top_row_key"], "au:1:9:0:0")
+        for method in ("A", "B"):
+            self.assertEqual(run(method, facts, case)["binary"]["reason_codes"], ["absence_not_proven"])
         # Gate decisions pass through unchanged.
         for selected, decision in (("赤", "matched"), ("緑", "unmatched")):
             facts, case = make_pair(rows, [("カラー", selected)], {"カラー": ("赤", "青", "緑")})
             for method in ("A", "B"):
                 out = run(method, facts, case)
                 validator(f"sku_gate_{method.lower()}_output.schema.json").validate(out)
-                self.assertEqual(out["decision"], decision)
-                for policy in gates.FORCED_POLICIES:
-                    self.assertEqual(out["forced_binary"][policy]["decision"], decision)
-                    self.assertEqual(out["forced_binary"][policy]["top_row_key"], out["top_row_key"])
+                self.assertEqual((out["binary"]["decision"], out["binary"]["top_row_key"]), (decision, out["top_row_key"]))
+
+    def test_au_only_condition_must_be_corroborated(self):
+        # Review P1-1: AU row 青 / 10本 against a Rakuten SKU that only says 青.
+        rows = [[("カラー", "青"), ("数量", "10本")]]
+        facts, case = make_pair(rows, [("カラー", "青")], {"カラー": ("青", "赤")})
+        for method in ("A", "B"):
+            for config in ("full", gates.PRIMARY_CONFIG):
+                out = run(method, facts, case, config)
+                self.assertNotEqual(out["decision"], "matched", (method, config))
+                self.assertEqual(out["rows"][0]["status"], "au_only_unproven")
+                self.assertEqual(out["binary"]["reason_codes"], ["au_only_condition_not_corroborated"])
+        # The same condition corroborated by the Rakuten page is adopted.
+        facts, case = make_pair(rows, [("カラー", "青")], {"カラー": ("青", "赤")}, rak_title="ハンガー 10本セット")
+        for method in ("A", "B"):
+            out = run(method, facts, case)
+            self.assertEqual((out["binary"]["decision"], out["binary"]["top_row_key"]), ("matched", "au:1:9:0:0"), method)
+
+    def test_several_candidate_rows_are_excluded_not_ordered(self):
+        # Review P1-3: AU 青/5本 and 青/10本 against Rakuten 青 / オプションなし.
+        fam = {"カラー": ("青", "赤"), "オプション": ("なし", "毛布セット")}
+        rows = [[("カラー", "青"), ("数量", "5本")], [("カラー", "青"), ("数量", "10本")]]
+        for ordered in (rows, rows[::-1]):
+            facts, case = make_pair(ordered, [("カラー", "青"), ("オプション", "なし")], fam)
+            for method in ("A", "B"):
+                self.assertEqual(run(method, facts, case)["binary"]["decision"], "unmatched")
+        # Two rows that both prove every requirement are excluded, whatever their order.
+        facts, case = make_pair([[("カラー", "青")], [("カラー", "青")]], [("カラー", "青")], {"カラー": ("青", "赤")})
+        out = run("A", facts, case)
+        self.assertEqual(out["binary"]["reason_codes"], ["several_rows_fully_proven"])
 
     def test_title_outranks_description_and_orientation_is_not_a_conflict(self):
         fam = {"カラー": ("ベージュ", "ブラウン"), "枚数": ("20枚", "40枚")}
@@ -333,13 +371,12 @@ class GateTests(unittest.TestCase):
                                 au_title="テーブル 120cm×60cm", au_lines=["こちらのページは60×120cmです"])
         self.assertEqual(run("A", facts, case)["decision"], "matched")
 
-    def test_open_world_fails_a_different_value_on_the_row_axis(self):
+    def test_binary_excludes_a_different_value_on_the_row_axis(self):
         fam = {"カラー選択": ("ネイビー", "コヨーテ")}
         facts, case = make_pair([[("カラー選択", "グリーン")], [("カラー選択", "ブルー")]], [("カラー選択", "ネイビー")], fam)
         out = run("A", facts, case)
         self.assertEqual(out["decision"], "review")
-        for policy in gates.FORCED_POLICIES:
-            self.assertEqual(out["forced_binary"][policy]["decision"], "unmatched", policy)
+        self.assertEqual(out["binary"]["reason_codes"], ["different_value_on_row_axis"])
 
     def test_au_side_only_ignores_rakuten_description_and_attributes(self):
         fam = {"カラー": ("赤", "青")}
@@ -368,19 +405,18 @@ class GateTests(unittest.TestCase):
             out = run("A", facts, case, "au_side_only")
             validator("sku_gate_a_output.schema.json").validate(out)
             self.assertEqual((out["decision"], out["top_row_key"]), ("matched", row_key))
-            self.assertIn("value_aligned_by_option_lists", out["forced_binary"]["closed_world"]["reason_codes"])
+            self.assertEqual(out["binary"]["reason_codes"], ["proven_unique_row", "value_aligned_by_option_lists"])
             b = run("B", facts, case, "au_side_only")
             self.assertEqual(b["decision"], "review")
-            self.assertEqual(b["forced_binary"]["closed_world"]["reason_codes"],
-                             ["different_value_on_row_axis", "other_rows_contradicted"])
+            self.assertEqual(b["binary"]["reason_codes"], ["different_value_on_row_axis"])
         # Shared colour words are not stripped: ダークブラウン never aligns with ダークグレー.
         facts, case = make_pair([[("カラー", "ダークグレー")], [("カラー", "ライトグレー")]], [("カラー", "ダークブラウン")],
                                 {"カラー": ("ダークブラウン", "ライトブラウン")})
         out = run("A", facts, case, "au_side_only")
         self.assertNotEqual(out["decision"], "matched")
-        self.assertEqual(out["forced_binary"]["closed_world"]["decision"], "unmatched")
+        self.assertEqual(out["binary"]["decision"], "unmatched")
 
-    def test_every_forced_decision_has_reason_codes(self):
+    def test_every_binary_decision_has_reason_codes(self):
         fam = {"カラー": ("赤", "青"), "オプション": ("なし", "毛布セット")}
         rows = [[("カラー", "赤")], [("カラー", "青")]]
         for selected in ([("カラー", "赤")], [("カラー", "緑")], [("カラー", "赤"), ("オプション", "毛布セット")],
@@ -389,10 +425,8 @@ class GateTests(unittest.TestCase):
             for method in ("A", "B"):
                 out = run(method, facts, case, "au_side_only")
                 validator(f"sku_gate_{method.lower()}_output.schema.json").validate(out)
-                for policy in gates.FORCED_POLICIES:
-                    self.assertTrue(out["forced_binary"][policy]["reason_codes"], (method, selected, policy))
-        out = run("A", facts, case, "au_side_only")
-        self.assertEqual(out["forced_binary"]["closed_world"]["reason_codes"], ["absence_assumed"])
+                self.assertTrue(out["binary"]["reason_codes"], (method, selected))
+                self.assertIn(out["binary"]["decision"], ("matched", "unmatched"))
 
     def test_price_and_stock_fields_do_not_change_decisions(self):
         facts, case = make_pair([[("カラー", "赤")], [("カラー", "青")]], [("カラー", "赤")], {"カラー": ("赤", "青")})
@@ -414,6 +448,9 @@ class GateTests(unittest.TestCase):
                 out = run(method, facts, case)
                 validator(f"sku_gate_{method.lower()}_output.schema.json").validate(out)
                 self.assertEqual((out["decision"], out["reason"]), ("review", "unquoted_requirement"), method)
+                # Review P1-4: the adopt/exclude output must not bring the unquoted SKU back.
+                self.assertEqual(out["binary"], {"decision": "unmatched", "top_row_key": None,
+                                                 "reason_codes": ["unquoted_requirement"]}, method)
 
     def test_outputs_keep_row_keys_and_provenance(self):
         facts, case = make_pair([[("カラー", "赤")], [("カラー", "青")]], [("カラー", "赤")], {"カラー": ("赤", "青")})
@@ -423,6 +460,18 @@ class GateTests(unittest.TestCase):
         self.assertEqual(out["rakuten_provenance"]["source_row_key"], "u#row")
         self.assertEqual(out["rakuten_provenance"]["sku_record_key"], "k")
         self.assertEqual(out["au_provenance"]["sha256"], "0" * 64)
+
+
+@unittest.skipUnless(jsonschema, "jsonschema is an experiment dependency: pip install -r requirements/sku-gates.txt")
+class SchemaTests(unittest.TestCase):
+    def test_outputs_validate_against_their_schemas(self):
+        fam = {"カラー": ("赤", "青", "緑"), "オプション": ("なし", "毛布セット")}
+        rows = [[("カラー", "赤")], [("カラー", "青")]]
+        for selected in ([("カラー", "赤")], [("カラー", "緑")], [("カラー", "赤"), ("オプション", "毛布セット")]):
+            facts, case = make_pair(rows, selected, fam)
+            for method in ("A", "B"):
+                for config in gates.SOURCE_CONFIGS:
+                    validator(f"sku_gate_{method.lower()}_output.schema.json").validate(run(method, facts, case, config))
 
 
 class SpanTests(unittest.TestCase):

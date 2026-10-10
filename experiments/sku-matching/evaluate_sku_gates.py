@@ -95,12 +95,10 @@ def load_predictions(out: Path, manifest: dict) -> dict[str, dict]:
         stem = Path(name).stem  # A-full
         rows = src.read_jsonl(path)
         systems[stem] = {r["case_id"]: r for r in rows}
-        for policy in ("closed_world", "open_world"):
-            if rows and "forced_binary" in rows[0]:
-                # Two-way variant for an automated pipeline: the gate decision, or the forced one on review.
-                systems[f"{stem}@{policy}"] = {r["case_id"]: {**r, **{k: r["forced_binary"][policy][k] for k in
-                                                                      ("decision", "top_row_key", "reason")}}
-                                               for r in rows}
+        if rows and "binary" in rows[0]:
+            # Adopt/exclude output of the automated pipeline: a uniquely proven row, else excluded.
+            systems[f"{stem}@binary"] = {r["case_id"]: {**r, "decision": r["binary"]["decision"],
+                                                        "top_row_key": r["binary"]["top_row_key"]} for r in rows}
     return systems
 
 
@@ -152,13 +150,12 @@ def main():
                              "baseline": baseline[cid]["decision"],
                              "A_primary": systems[a_primary][cid]["decision"], "B_primary": systems[b_primary][cid]["decision"],
                              "A_reason": systems[a_primary][cid]["reason"], "B_reason": systems[b_primary][cid]["reason"],
-                             "A_closed_world": systems[a_primary][cid]["forced_binary"]["closed_world"]["decision"],
-                             "A_closed_world_codes": systems[a_primary][cid]["forced_binary"]["closed_world"].get("reason_codes")})
+                             "A_binary": systems[a_primary][cid]["binary"]["decision"],
+                             "A_binary_codes": systems[a_primary][cid]["binary"]["reason_codes"]})
     disagreements = []
     for cid in sorted(cases):
         g = labels[cid]
-        for system in [s for s in (a_primary, b_primary, f"{a_primary}@closed_world", f"{a_primary}@open_world",
-                                   f"{b_primary}@closed_world", f"{b_primary}@open_world") if s in systems]:
+        for system in [s for s in (a_primary, b_primary, f"{a_primary}@binary", f"{b_primary}@binary") if s in systems]:
             p = systems[system][cid]
             wrong = (p["decision"] == "matched" and (g["decision"] != "matched" or p["top_row_key"] not in g["matching_au_row_keys"])) \
                 or (p["decision"] == "unmatched" and g["decision"] == "matched")
@@ -168,22 +165,21 @@ def main():
                                       "pred": p["decision"], "pred_row": p["top_row_key"], "reason": p["reason"],
                                       "gold": g["decision"], "gold_rows": g["matching_au_row_keys"],
                                       "gold_rationale": g.get("rationale")})
-    # Reason codes of the forced decisions: count and agreement with gold per code (all 1,383 rows).
+    # Reason codes of the adopt/exclude decisions: count and agreement with gold per code (all 1,383 rows).
     reason_codes = {}
     for system in (a_primary, b_primary):
-        for policy in ("closed_world", "open_world"):
-            table = defaultdict(Counter)
-            for cid, pred in systems[system].items():
-                f = pred["forced_binary"][policy]
-                g = labels[cid]
-                ok = ("gold_review" if g["decision"] == "review" else
-                      "correct" if (f["decision"] == g["decision"] and (f["decision"] == "unmatched"
-                                    or f["top_row_key"] in g["matching_au_row_keys"])) else "wrong")
-                for code in f.get("reason_codes") or []:
-                    table[f"{f['decision']}:{code}"][ok] += 1
-                if f.get("notices"):
-                    table[f"{f['decision']}:with_page_spec_notice"][ok] += 1
-            reason_codes[f"{system}@{policy}"] = {k: dict(v) for k, v in sorted(table.items())}
+        table = defaultdict(Counter)
+        for cid, pred in systems[system].items():
+            f = pred["binary"]
+            g = labels[cid]
+            ok = ("gold_review" if g["decision"] == "review" else
+                  "correct" if (f["decision"] == g["decision"] and (f["decision"] == "unmatched"
+                                or f["top_row_key"] in g["matching_au_row_keys"])) else "wrong")
+            for code in f["reason_codes"]:
+                table[f"{f['decision']}:{code}"][ok] += 1
+            if f.get("notices"):
+                table[f"{f['decision']}:with_page_spec_notice"][ok] += 1
+        reason_codes[f"{system}@binary"] = {k: dict(v) for k, v in sorted(table.items())}
     eval_dir = out / args.eval_dir
     invariants_path = out / "invariants" / "summary.json"
     invariants = None
@@ -211,9 +207,8 @@ def main():
                "gold_review_audit": review_audit}
     runner.write_new(eval_dir / "summary.json", json.dumps(summary, ensure_ascii=False, indent=2) + "\n")
     runner.write_jsonl_new(eval_dir / "disagreements.jsonl", disagreements)
-    for system in [s for s in ("baseline_v10_hybrid", "A-full", "A-full@closed_world", a_primary, b_primary,
-                               f"{a_primary}@closed_world", f"{a_primary}@open_world",
-                               f"{b_primary}@closed_world", f"{b_primary}@open_world") if s in results]:
+    for system in [s for s in ("baseline_v10_hybrid", "A-full", "A-full@binary", a_primary, b_primary,
+                               f"{a_primary}@binary", f"{b_primary}@binary", "A-au_side_only@binary") if s in results]:
         r = results[system]["all"]["row"]
         print(system, {k: r[k] for k in ("pred", "confirmed_true_accepts", "false_accepts_gold_unmatched",
                                          "unsafe_accepts_gold_review", "wrong_row_accepts", "false_deletes_gold_matched",
