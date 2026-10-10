@@ -23,7 +23,7 @@ def sha256(path: Path) -> str:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("runs", nargs="+", help="run directories relative to the repository root")
+    parser.add_argument("runs", nargs="+", help="run directories or single files relative to the repository root")
     parser.add_argument("--archive", required=True)
     parser.add_argument("--purpose", required=True)
     parser.add_argument("--label-content", required=True,
@@ -33,7 +33,10 @@ def main():
     for path in (archive, archive.with_suffix(".manifest.json"), Path(str(archive) + ".sha256")):
         if path.exists():
             raise FileExistsError(f"Refusing to overwrite {path}")
-    files = sorted(p for run in args.runs for p in (ROOT / run).rglob("*") if p.is_file())
+    files = sorted({p for run in args.runs
+                    for p in ([ROOT / run] if (ROOT / run).is_file() else (ROOT / run).rglob("*")) if p.is_file()})
+    if not files:
+        raise FileNotFoundError("Nothing to package")
     entries = {str(p.relative_to(ROOT)): {"size_bytes": p.stat().st_size, "sha256": sha256(p)} for p in files}
     embedded = {"schema_version": 1, "purpose": args.purpose, "created_at_utc": datetime.now(timezone.utc).isoformat(),
                 "extract_at": "repository root; preserve .lab-output relative paths; use unzip -n",

@@ -9,6 +9,7 @@
   - **B（引用付き要件ゲート）**: 同じ要件を、楽天原本HTML内の文字offset付き原子カード（quote・span・scope・軸provenance）にする。根拠は原本で解決できる逐語引用だけに限る。リスト中の不在は引用ではないため、支持にも矛盾にも数えない。acceptするのは、全カードが1行で支持され、他の全行が検証済みの矛盾で排除される場合だけ。
 - **v1（ラベルを開く前にfreeze）**: 1,383行ではA・Bとも gold unmatched への誤accept 0・誤行accept 0・誤delete 0。ただし両方式とも gold review の31行をacceptしたため、保守的accepted precisionは A 93.3%（435/466）、B 89.0%（251/282）で、baseline v10 hybrid の 100%（337/337）を下回った。行一致recallは A 100%（435/435）、B 57.7%、baseline 77.5%。
 - **v2（v1採点後、gold review 31行の根拠を読んで改訂 = label-informed）**: 同じ範囲の内容リストにある明示的な個数、単一値の本体寸法、楽天のSKU別構造化属性を「ページ仕様の矛盾 → review」として追加した。A: accept 435／確認済TP 435／未確認accept 0／誤delete 0／review 38（2.7%）。B: accept 251（全てTP）／review 226。**v2は同じ診断データで調整した結果であり、汎化・holdout性能は主張しない。**
+- **v2c（ラベル不要の検証を追加。判定ロジックはv2と同じ）**: 選択値に原本spanが無い要件は、A・Bともコード側でreviewにする（従来はschema検証頼み）。ラベルを使わない不変条件6種を、freeze済みのチェッカーで全件検査した。結果は違反0件（§8 末尾）。v2cの入力・16予測ファイルはv2とバイト一致し、採点結果もv2と同一。
 - 代表ケースは全て要件どおりに処理される（§7）。
 - 文字列の一致率、引用の原本一致、判定の意味的正しさは別々に扱っている。
 
@@ -27,11 +28,13 @@
 | `experiments/sku-matching/sku_gate_atoms.py` | NFKC＋offset写像付きの原子分解、タイトル事実（単一値のみ製品レベル）、説明の節・【条件】・ページ宣言・内容リスト・例外文の抽出 |
 | `experiments/sku-matching/sku_gates.py` | 入力カード構築、比較、方式A/B、source config（ablation） |
 | `experiments/sku-matching/run_sku_gates.py` | `prepare` → `freeze` → `predict`（全ステップで上書き拒否、freeze hash照合） |
-| `experiments/sku-matching/evaluate_sku_gates.py` | freeze・予測manifestを照合した後にラベルを開いて採点 |
+| `experiments/sku-matching/evaluate_sku_gates.py` | freeze・予測manifestを照合した後にラベルを開いて採点（v2c以降は不変条件の結果SHAも記録） |
+| `experiments/sku-matching/check_sku_gate_invariants.py` | ラベルを開かない不変条件チェック（§8 末尾）。freeze対象 |
 | `experiments/sku-matching/package_sku_gates.py` | 結果ZIP＋manifest＋sha256 |
 | `experiments/sku-matching/schemas/sku_gate_{product_context,case_input,a_output,b_output}.schema.json` | 入出力schema（JSON Schema 2020-12） |
-| `tests/test_lab_sku_gates.py` | source-preservation・判定安全性テスト（18件） |
+| `tests/test_lab_sku_gates.py` | source-preservation・判定安全性テスト（20件） |
 | `experiments/sku-matching/results/20261010-sku-gate-tasks.zip`（＋`.manifest.json`, `.zip.sha256`） | v1/v2の入力・freeze・予測・評価 |
+| `experiments/sku-matching/results/20261010-sku-gate-tasks-v2c.zip`（＋`.manifest.json`, `.zip.sha256`） | v2c（と廃止したv2b）のfreeze・manifest・不変条件・評価。入力・予測はv2とバイト一致のため含めず、上のZIPから複製する |
 
 ## 4. 方式の定義と主な規則
 
@@ -50,7 +53,7 @@ B: 原本spanで検証済みの根拠だけを使う。複数ソースが食い�
 
 ## 5. source-preservation tests
 
-`python3 -B -m unittest tests.test_lab_sku_gates -v` → **18 tests OK**（実データ検証を含む、約7秒）。
+`python3 -B -m unittest tests.test_lab_sku_gates -v` → **20 tests OK**（実データ検証を含む、約17秒）。
 
 - 引用は入力の部分文字列である（offset一致）。HTML・JSON・JSONLのspanは、SHA・offset・quoteのどれか1つを改ざんすると検証に失敗する。
 - 1,383ケース全ての選択値spanと楽天SKU属性spanは原本HTMLで解決し、quoteは選択値と一致する。29ペア全てのAU行値・AUタイトル・説明行spanも原本JSONで解決する。`source_row_key`・`sku_record_key`・ファイルSHAは保持される。入力・出力はschemaに適合する。
@@ -64,9 +67,11 @@ B: 原本spanで検証済みの根拠だけを使う。複数ソースが食い�
 - 派生矛盾はreviewにするだけでunmatchedにしない。
 - v2: 同じ範囲の個数矛盾（フック7 vs 9）、本体寸法、片側2値は矛盾にしない。
 - 価格・在庫フィールドを注入しても判定は不変。
+- v2c: 選択値のspanを外すと、本来matched／unmatchedになる要件でもA・Bともreview（`unquoted_requirement`）になる。出力schemaは、null spanをreviewのときだけ許す。
+- v2c: 兄弟値の入れ替え（実データ、29ペアのうちAがacceptした各ペア最大2ケース）。選択値の1軸を、楽天ページ自身の選択肢一覧 `variantSelectors[i].values` から引用した兄弟値に置き換える。その場合、元のSKUでacceptした行を再びacceptしない。
 - 代表ケース（§7）。
 
-全体の `python3 -B -m unittest discover -s tests -p 'test_lab*.py'` は 324 tests 中 failures=1 / errors=12 / skipped=17。error 12件は、チェックポイントZIPに含まれない `.lab-output` の既存成果物（v2注釈入力、Kaggle v5計画、Luna評価summary等）が無いことによる。failure 1件（`test_lab_bot_diagnostics` の robots redirect）は基準コミット `381f67b` の独立worktreeでも同じく失敗する。いずれも今回の変更とは無関係。
+全体の `python3 -B -m unittest discover -s tests -p 'test_lab*.py'` は 326 tests 中 failures=1 / errors=12 / skipped=17。error 12件は、チェックポイントZIPに含まれない `.lab-output` の既存成果物（v2注釈入力、Kaggle v5計画、Luna評価summary等）が無いことによる。failure 1件（`test_lab_bot_diagnostics` の robots redirect）は基準コミット `381f67b` の独立worktreeでも同じく失敗する。いずれも今回の変更とは無関係。
 
 ## 6. freeze manifest / hash
 
@@ -74,11 +79,15 @@ B: 原本spanで検証済みの根拠だけを使う。複数ソースが食い�
 |---|---|---|---|---|
 | v1 | `544ae090768b5e14a2dd3926135e39c7a2a31e14f8a76c1693fc854f0535ee7f` | false | `5c1bc28` | `b23f4618a525391331cd2292b2c95ba57194840020948cc37da9135d625c9e42` |
 | v2 | `cdb1315417f52735e3ed538e19b74fddc4768f0aef8fe6bcdf2e925da8550b77` | **true（label-informed、変更内容をfreezeに記録）** | `3dca08d` | `b453d5158da810f1bea6ac02ed06bdcadc7b71f96e49db43cf2586ca9016c645` |
+| v2b（廃止） | `6185fd2afb7ef4649cb538d64cafc92d1eeb89bc51e6521672b9e8a0527fb3a5` | true（v2の改訂を継承。追加のlabel-informed変更なし） | `74901a6` | 予測はv2とバイト一致。初版チェッカーがtwinを固定ペア無しで照合していたため廃止。ラベル採点はしていない |
+| v2c | `0ee3b37e434198561a36424ea6f21dd0289150233d1a8265aac38b94b8a23051` | true（同上） | `9688906` | `2e0d34204a9853c64d4fa8ad81d6bbf59249f49148de57b7624fd7a247068240` |
 
-- 入力: `inputs/products.jsonl` `bad2dee1…74b9`（v1=v2）。`inputs/cases.jsonl` は v1 `03369e5b…8e4a` → v2 `8ff9b8e0…1f18`（v2で楽天SKU属性を追加）。
-- freezeには、コード（sources/atoms/gates/runner、v2はevaluatorも）・schema・テスト・入力の各SHAが入る。predict時に照合し、不一致なら停止する。
+- v2c: 不変条件 `invariants/summary.json` `84c14a7e…51ac`（all_passed）、評価 `evaluation/summary.json` `38326cd5…f3fa`。`results` と `gold_review_audit`、`disagreements.jsonl` はv2と完全一致した。
+- 入力: `inputs/products.jsonl` `bad2dee1…74b9`（v1=v2=v2c）。`inputs/cases.jsonl` は v1 `03369e5b…8e4a` → v2 `8ff9b8e0…1f18`（v2で楽天SKU属性を追加。v2cもこれと同一）。
+- freezeには、コード（sources/atoms/gates/runner、v2はevaluatorも、v2cは不変条件チェッカーも）・schema・テスト・入力の各SHAが入る。predict時に照合し、不一致なら停止する。
 - 採点に使ったもの: labels `a4617174…ea28`（Luna機械注釈 435/911/37、人手未確認）、baseline `v10/hybrid/predictions.jsonl` `b2a7cbf0…df23`、196コホート `inputs.jsonl` `0b5e5c9c…8814`（カーテン32）。
 - 結果ZIP `experiments/sku-matching/results/20261010-sku-gate-tasks.zip`: SHA-256 `e173e71815d39fc71046f9159659bf049324b3915760fa28cdfdef43fb955c3f`、9,784,893 bytes、payload 46 files / 168,670,290 bytes。展開は `unzip -n … -d .`。生のlabels.jsonlは含まない。`evaluation/` には集計と、gold review 37行・不一致行のgold判定・根拠が入る（manifestに明記）。
+- 追加ZIP `experiments/sku-matching/results/20261010-sku-gate-tasks-v2c.zip`: SHA-256 `9cd72ad762998355d0d69fb8a0c76d3f1d906edcd45a837acfc7ae57b4a759cb`、32,027 bytes、payload 12 files / 369,126 bytes。v2cとv2bの freeze・入力manifest・予測manifest・不変条件、v2cの評価だけを含む。予測manifestに記したSHAは、上のZIPにあるv2の各ファイルと一致する。
 
 ## 7. 代表例（v2 full。spanは原本で検証済み）
 
@@ -223,6 +232,24 @@ ablationの読み方（v2、1,383行）:
 - 内容リストの閉包を外すとAはBと同値になる（accept 251）。
 - 派生矛盾を外すと、gold reviewのaccept 35件が戻る。
 
+### ラベル不要の不変条件（v2c、ラベル未使用）
+
+`check_sku_gate_invariants.py` は、freezeと予測manifestを照合したうえで、ラベルを開かずに次を全件検査する。結果は全て違反0（`all_passed: true`）。
+
+| 不変条件 | 内容 | A | B |
+|---|---|---|---|
+| 行の単射性 | 1つのAU行を、異なる楽天選択値の組に対して重ねてacceptしない | accept行 435、違反0 | accept行 251、違反0 |
+| B ⊆ A | Bのacceptは全て、Aでも同じ行のaccept | — | B accept 251、違反0 |
+| 逆判定なし | A・B間で matched と unmatched に割れない | 違反0 | 〃 |
+| config間で行が変わらない | どのsource configのacceptも、fullでは同じ行のacceptかreview（証拠を足すと保留にはなるが、別の行やunmatchedには移らない） | 全7 config 違反0 | 全7 config 違反0 |
+| 兄弟値の入れ替え | full acceptの各ケースで1軸を兄弟値（ページの選択肢一覧から引用）に置き換える。元の行を再acceptしない | 8,724件、違反0 | 4,578件、違反0 |
+| 実twinとの一致 | 入れ替え後の選択値と同じ選択値の実ケースが同じ固定ペアにあれば、判定と行がそのケースの予測と一致する（必要ならtwinをSKU属性無しで再実行して比較） | 8,344件すべて一致（twin無し380） | 4,198件すべて一致（twin無し380） |
+| 引用欠落ガード | 決定済み（matched/unmatched）の全ケースで選択値のspanを外すと、reviewになる | 1,345件すべてreview | 1,157件すべてreview |
+
+- 入れ替えの内訳（A）: 別行にaccept 7,360、unmatched 890、review 474。（B）: 別行にaccept 3,406、unmatched 698、review 474。
+- AとBの差（Aだけがacceptした184件）は、全て `レースカーテン=なし`（2ペア、153+27件）か `オプション=なし`（1ペア、4件）だった。差分はラベルを見ずに確認した。Bでは不在要件がunknownになり、`unresolved_requirement` でreviewになる。
+- 初版チェッカー（v2b）は、twinを楽天ページと選択値だけで照合していた。そのため、同じ楽天ページを持つ別の固定ペアのケースをtwinとして拾い、約半数で「不一致」と出た。固定ペアもキーに加えたv2cで解消し、v2bは採点前に廃止した。
+
 embeddingの寄与（実測）: 既存baselineのembedding top-1は、gold matched 435件中429件（98.6%、非カーテン96/102）で正しい行を指す。v2 Aの構造ゲートはembedding無しで435/435の行に一致した。既存bestのembedding改善は「確立」扱いせず、この差分だけを報告する。baselineの337 acceptでは、仕様ゲートがembedding top-1を上書きした件数は0。
 
 ## 9. gold review 37行の扱い（除外・二値化なし）
@@ -256,15 +283,24 @@ python3 -B experiments/sku-matching/run_sku_gates.py prepare
 python3 -B experiments/sku-matching/run_sku_gates.py freeze --note "..." --labels-seen "..."
 python3 -B experiments/sku-matching/run_sku_gates.py predict
 python3 -B experiments/sku-matching/evaluate_sku_gates.py
+# v2c（ガード＋不変条件、既定 --out は v2c）: commit 9688906 で
+python3 -B experiments/sku-matching/run_sku_gates.py prepare
+python3 -B experiments/sku-matching/run_sku_gates.py freeze --note "..." --labels-seen "..."
+python3 -B experiments/sku-matching/run_sku_gates.py predict
+python3 -B experiments/sku-matching/check_sku_gate_invariants.py      # ラベルを開かない
+python3 -B experiments/sku-matching/evaluate_sku_gates.py
+for f in inputs/products.jsonl inputs/cases.jsonl predictions/*.jsonl; do cmp .lab-output/sku-gate-tasks-20261010-v2/$f .lab-output/sku-gate-tasks-20261010-v2c/$f; done
 # 結果ZIP
 python3 -B experiments/sku-matching/package_sku_gates.py .lab-output/sku-gate-tasks-20261010-v1 .lab-output/sku-gate-tasks-20261010-v2 --archive experiments/sku-matching/results/20261010-sku-gate-tasks.zip --purpose "..." --label-content "..."
 ```
 
-実行時間（CPU 4コア）: predictは全16系列で約2.5分。入力構築は約1秒。Kaggle・GPU・GCP・外部API・商品データの追加取得・認証は使っていない。モデル重みも不要（取得・使用なし）。
+v2cの追加ZIPは、`package_sku_gates.py` にv2c/v2bの freeze.json・inputs/manifest.json・predictions/manifest.json・invariants/（v2cは evaluation/ も）を個別に渡して作った。
+
+実行時間（CPU 4コア）: predictは全16系列で約2.5分。不変条件チェックも約2.5分。入力構築は約1秒。Kaggle・GPU・GCP・外部API・商品データの追加取得・認証は使っていない。モデル重みも不要（取得・使用なし）。
 
 ## 11. 未測定・限界
 
-- 独立holdoutは無い。ラベルはLuna機械注釈で人手未確認。v1も、パーサ／語彙を同じ29ペアの原文を読んで作ったin-sampleの結果。v2はラベル（gold reviewの根拠）を読んだ後の調整結果。いずれも汎化性能・人手確定精度・日本Web全体の網羅率ではない。
+- 独立holdoutは無い。ラベルはLuna機械注釈で人手未確認。v1も、パーサ／語彙を同じ29ペアの原文を読んで作ったin-sampleの結果。v2cの不変条件はラベルを使わない内部整合性の検査であり、正解率の代わりにはならない。v2はラベル（gold reviewの根拠）を読んだ後の調整結果。いずれも汎化性能・人手確定精度・日本Web全体の網羅率ではない。
 - 新しいカテゴリ・別店舗への汎化: 未測定。語彙外の語はvariant/unknownになり、reviewへ倒れる設計だが、実測は無い。
 - 楽天タイトルの寄与: 今回の1,383行では判定差0（測定済み）。
 - 色の別名（例 ブラウン/カフェオレブラウン）の真偽: 未確定。明示対比のある場合だけ矛盾として扱った。
