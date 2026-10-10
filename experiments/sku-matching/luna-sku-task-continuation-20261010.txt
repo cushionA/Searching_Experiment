@@ -1,5 +1,11 @@
 Luna SKU APIエミュレーションの継続手順
 
+追加のラベル採点: results/20261010T171543Z-labeled-sku-accuracy/report.txt
+直近18件を既存の人手未検証Lunaラベルで採点。既知17件の正答率16/17=94.1%、
+採用SKU行一致率7/7=100%、拾い上げ率7/8=87.5%。reviewの1件は分母外。
+全1,439件中の予測18件のみを評価した値。残り1,421件は今回未評価。
+新規推論・ラベル変更・予測変更なし。再現は同runのreproduce.pyを参照。
+
 目的: 楽天の選択SKUと固定AU商品の個別選択を正しく対応させる。
 対象ブランチ: codex-sku-gemini-vertex-smoke-20261010
 最新証拠: results/20261010T160225Z-luna-task-improvement/report.txt

@@ -1,0 +1,106 @@
+{
+  "schema": "frozen-sku-label-accuracy-v1",
+  "created_utc": "2026-10-10T17:17:10.695201+00:00",
+  "metric_scope": "Agreement with frozen human-unverified Luna semantic labels, not independent human gold or all-dataset accuracy",
+  "prediction_scope": "Latest 18 frozen product/SKU cases: 14 legacy and 4 novel; selected development evaluation, not random representative sample",
+  "labelled_dataset_cases": 1439,
+  "prediction_cases": 18,
+  "not_evaluated_labelled_cases": 1421,
+  "known_label_cases": 17,
+  "unknown_label_cases": 1,
+  "pipeline": "Luna matching + local dimensions guard + semantic review",
+  "requested_model": "gpt-6-luna",
+  "modelVersion": null,
+  "usage": null,
+  "new_inference_calls": 0,
+  "grading_elapsed_seconds": 1.252423,
+  "final_counts": {
+    "adopt": 7,
+    "exclude": 9,
+    "pending": 2,
+    "not_evaluated": 0
+  },
+  "metrics": {
+    "known_case_accuracy": {
+      "numerator": 16,
+      "denominator": 17,
+      "rate": 0.9411764705882353
+    },
+    "known_decided_accuracy": {
+      "numerator": 16,
+      "denominator": 16,
+      "rate": 1.0
+    },
+    "accepted_known_row_precision": {
+      "numerator": 7,
+      "denominator": 7,
+      "rate": 1.0
+    },
+    "row_match_recall": {
+      "numerator": 7,
+      "denominator": 8,
+      "rate": 0.875
+    },
+    "known_coverage": {
+      "numerator": 16,
+      "denominator": 17,
+      "rate": 0.9411764705882353
+    },
+    "confusion_matrix": {
+      "matched": {
+        "adopt": 7,
+        "exclude": 0,
+        "not_evaluated": 0,
+        "pending": 1
+      },
+      "unmatched": {
+        "adopt": 0,
+        "exclude": 9,
+        "not_evaluated": 0,
+        "pending": 0
+      }
+    },
+    "known_false_accepts": 0,
+    "wrong_row_accepts": 0,
+    "missed_positive": 0,
+    "positive_abstentions": 1,
+    "unknown_truth_count": 1,
+    "unknown_truth_accepted": 0,
+    "unlabelled_count": 0,
+    "decision_counts": {
+      "adopt": 7,
+      "exclude": 9,
+      "not_evaluated": 0,
+      "pending": 2
+    }
+  },
+  "tests": {
+    "focused_passed": 55,
+    "full_run": 548,
+    "full_errors": 17,
+    "full_failures": 1,
+    "full_skipped": 37,
+    "full_failure_scope": "Existing missing frozen .lab-output fixtures, sku_gate_atoms module, and robots-parser dependency; same 18 failing tests as pre-change run"
+  },
+  "independent_grading_audit": {
+    "reviewer_route": "explicit gpt-6-luna subagent",
+    "method": "Independent Python aggregation; primary grader not used",
+    "result": "Same 16/17, 7/7, 7/8; full pools and labels join 18/18"
+  },
+  "missed_label_case": {
+    "case_id": "case-01f6fc36ae1d87a566c7",
+    "prediction": "pending",
+    "label": "matched",
+    "expected_row_key": "au:778818828:332504238:2:6",
+    "reason": "Lace absence proof insufficient under current task; labels and predictions unchanged"
+  },
+  "unknown_case": {
+    "case_id": "case-854f83898a6d8023f734",
+    "prediction": "pending",
+    "label": "review",
+    "excluded_from_known_accuracy": true
+  },
+  "case_results_are_derived_grading_outputs": true,
+  "source_archives_and_predictions_unchanged": true,
+  "new_label_files_saved_in_checkout": false
+}

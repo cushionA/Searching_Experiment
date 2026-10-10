@@ -1,0 +1,84 @@
+{
+  "labels": [
+    {
+      "tag": "legacy",
+      "archive": "20261010-claude-task-checkpoint.zip",
+      "archive_sha256": "89909023f95fa211f4b45b54749b9a464d08f8313186a1ae3e64df13608096d4",
+      "label_member": ".lab-output/sku-real-luna-labels-20261010-v3/labels.jsonl",
+      "label_sha256": "a461717495fea768d03e79d5d884c32e3a2eee4da6a7167795a1c57fcf38ea28",
+      "manifest_sha256": "6d280e6922da49fb70c2fd15873bf06df8b479ee0f28601655e02698073beb39",
+      "manifest_declared_label_sha256": "a461717495fea768d03e79d5d884c32e3a2eee4da6a7167795a1c57fcf38ea28",
+      "count": 1383,
+      "protocol": {
+        "model": "gpt-6-luna",
+        "kind": "machine-annotated labels revised from source-verified external audit proposals",
+        "human_verified": false,
+        "independent_external_gold": false,
+        "existing_model_predictions_used": false,
+        "synthetic_data_included": false,
+        "semantic_identity_separate_from_availability": true,
+        "revision_is_gold": false
+      },
+      "counts": {
+        "matched": 435,
+        "unmatched": 911,
+        "review": 37
+      },
+      "human_verified": false
+    },
+    {
+      "tag": "novel",
+      "archive": "20261010-sku-nonllm-v5-checkpoint.zip",
+      "archive_sha256": "1a7a2ec80c23ca5a08cb4280e12c84cb664eb0e55a9dc81eae81ee9a92eb631e",
+      "label_member": ".lab-output/sku-novel-luna-labels-20261010-v1/labels.jsonl",
+      "label_sha256": "df36865c774e51c90572ccd2094ef532ea4e44d910b4c12c7ee858c1792cf524",
+      "manifest_sha256": "3b73ee4a71b79132f9dee39da8936210c89924524622919c744763d3ea36f2d4",
+      "manifest_declared_label_sha256": null,
+      "count": 56,
+      "protocol": {
+        "model": "gpt-6-luna",
+        "blind_to_gate_and_model_predictions": true,
+        "label_basis": "Semantic source comparison by product across every selected Rakuten SKU against all AU rows on the same fixed AU product URL; only original source facts were used.",
+        "fixed_pair_contract": "No sibling rerouting. A matched case lists the matching AU row key(s). Unmatched requires an explicit variant conflict across the fixed AU listing. Uncertainty remains label_unresolved.",
+        "provenance_note": "The cases belong to the development-input set. Existing/reused labels are human-unverified and were not treated as independent gold. The prior source provenance was consulted only to understand source lineage; labels were reasoned independently from canonical cases/products and their original sources.",
+        "evidence_span_validation": {
+          "method": "Verify SHA-256 on original raw file, then exact quote slice using each span locator and offsets. This is transcription validation only, not automated label derivation.",
+          "checked_span_count": 1072,
+          "invalid_spans": 0
+        }
+      },
+      "counts": {
+        "matched": 13,
+        "unmatched": 43,
+        "label_unresolved": 0
+      },
+      "human_verified": false
+    }
+  ],
+  "frozen_prediction_inputs": {
+    "experiments/sku-matching/results/20261010T160225Z-luna-task-improvement/summary.json": "857c17e9528a815e7314e479118e2f699659e0f994a861693fe371bc61fccd67",
+    "experiments/sku-matching/results/20261010T160225Z-luna-task-improvement/links.jsonl": "5999c08a416c2202be4350847d311addc4f515b1c093af8eeb0110c67dfafd74",
+    "experiments/sku-matching/results/20261010T160225Z-luna-task-improvement/r00-baseline/evaluation.json": "6c16e7aefe148d5d57750dc2af5c0b3c8e81a6f1c0431ebfe87826031409120e",
+    "experiments/sku-matching/results/20261010T160225Z-luna-task-improvement/r00-baseline/inputs.json": "de25fe5695325bff148823b2c02c632d50b60882971883ab221cc60efaad123c",
+    "experiments/sku-matching/results/20261010T160225Z-luna-task-improvement/r02-reference-development/inputs.json": "371e472a6f6805ab9857b903366b00357cc938e07c18d4f0815f7613361b3010",
+    "experiments/sku-matching/results/20261010T160225Z-luna-task-improvement/r02-reference-development/evaluation.json": "f55907a100ca0a6b1a4c3fe8fdefe3952351bbc452385f4966c39e3468d3505c",
+    "experiments/sku-matching/results/20261010T160225Z-luna-task-improvement/r02-reference-development/reviewed-summary.json": "b90ef192baafd6fd35d9f2def305c66fbf66cd5326ec4a6b4f8ac4da7c251583",
+    "experiments/sku-matching/results/20261010T160225Z-luna-task-improvement/r02-reference-development/links.jsonl": "afa0713b291ebbe66917fb664c52bc59974dff9eaf76c56a821859d22d6831e6",
+    "experiments/sku-matching/results/20261010T160225Z-luna-task-improvement/r03-reference-holdout/inputs.json": "603f56997e35ac34a59b3e89c1c6a05c20004bb15bafe5af51dc603389e42798",
+    "experiments/sku-matching/results/20261010T160225Z-luna-task-improvement/r03-reference-holdout/evaluation.json": "21d1f624eea580953193c157d9e709f7b16e357b8c627ae2a8d46ca3b620c71a",
+    "experiments/sku-matching/results/20261010T160225Z-luna-task-improvement/r03-reference-holdout/reviewed-summary.json": "ba568ab9f6597278aeaae8a77bad5698de2ce53cfa38c94b169198d6c6777732",
+    "experiments/sku-matching/results/20261010T160225Z-luna-task-improvement/r03-reference-holdout/links.jsonl": "5cacc81e45c1e91869bf5b407cf66b9886ac70e8c2f47a53947a7d513bdc013a",
+    "experiments/sku-matching/results/20261010T154257Z-gemini-structured-values-vertex/summary.json": "e59c6774ac8cc8aa23fcf04c74c830a170b8fd7b082256f3e1c1dd59821f9c2b",
+    "experiments/sku-matching/results/20261010T154257Z-gemini-structured-values-vertex/review-summary.json": "5d08763d7e08ed09a3841f7811a9e2f6ff66b04dc1efb232b0771c227d5af7ef",
+    "experiments/sku-matching/results/20261010T154257Z-gemini-structured-values-vertex/inputs.json": "de25fe5695325bff148823b2c02c632d50b60882971883ab221cc60efaad123c"
+  },
+  "grader_sha256": "de67259b5f81729e3c8e5916d7752c3d4936ff2483a21cbe03ee8ff6de817d7f",
+  "evaluation_workspace": "/workspace/sku-labeled-evaluation-20261010T171017Z",
+  "prediction_base_commit": "e92295a8418945713570e08c8521d48078536eb8",
+  "labels_total": 1439,
+  "predicted_unique_cases": 18,
+  "not_evaluated_labelled_cases": 1421,
+  "no_new_inference": true,
+  "no_label_change": true,
+  "no_prediction_change": true
+}
