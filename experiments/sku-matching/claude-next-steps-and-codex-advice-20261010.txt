@@ -1,0 +1,85 @@
+SKU照合：Claudeの次の動きとCodexへの助言（2026-10-10）
+
+前提として読んだもの
+- Codex HEAD: origin/codex-sku-model-comparison-20261009 = 6caa9f8（CPU残差 v11/v14-v16、GPU v8 Qwen3.5-4B NF4 smoke失敗）。continuation-handoff-20261010.txt、20261010-sku-continuation-cpu-checkpoint.zip（SHA-256 ba6d7b81…1eaf、sha256sum -c OK）。
+- Issue #24（Kaggleの完了通知と停止）。
+- Claude側: origin/claude/task-construction = 0ea520c（方式A/B v2c、報告 experiments/sku-matching/sku-gate-task-construction-report-20261010.md）。
+
+以下の比較はすべてラベルを使わずに行った（判定と行キーの突合だけ）。ラベル上の値は、既存の報告書にある値を引用している。
+
+1. 現状の事実
+
+1-1. 方式A（v2c）は v10 source gate を包含する
+- v10のmatched 337件は、全てAでも同じ行のmatched。v10のunmatched 815件は、全てAでもunmatched。
+- v10のreview 231件の内訳は、A matched 98／A unmatched 95／A review 38。
+- Luna機械ラベル上では、Aはaccept 435（確認済TP 435）、未確認accept 0、誤delete 0、review 38（2.7%）。Bはaccept 251、review 226。
+- これは同じ29ペアで作り、調整した開発値。v2はv1のラベルを読んだ後の改訂。人手確定でもholdoutでもない。
+
+1-2. v16がreviewへ戻した41件は、逐語引用で解決できる
+- 41件は全て非カーテン9ペアの「楽天だけにあるサイズ軸」（AU側は固定サイズ商品で、行軸は色だけ）。
+- A・Bとも41件全てをacceptしている。B（逐語引用だけの方式）の根拠は次のとおり。
+  - AUタイトル内の単一値: `セミダブル`、`ダブル`、`シングル`、`直径60cm`。
+  - AU説明の仕様行: `（約）直径80x高さ74cm`、`幅180×長さ200cm`、`幅160×長さ200cm`。
+  - いずれも原本 `$.itemInfo.itemTitle` / `$.itemInfo.extraItemComment` のoffset付きspan。
+  - 他の行は、色の明示対比で排除されている。
+- 注意: 同じ説明内の `幅60cm` `幅80cm` はシリーズ一覧であり、適用しない（同じ族に複数値 → シリーズ扱い）。
+- つまりv16の `rakuten_only_condition_unresolved_by_fixed_product_evidence` は厳しすぎる。採用候補ではないというCodexの判断は妥当。
+
+1-3. GPU v8の失敗はタスク設計による
+- v8のプロンプトは、153行の候補全体と根拠レジストリ全体を入れて、モデルに最終判定・行alias・根拠IDを出させている。
+- その結果、curtain 5件が約9.6K入力トークンでOOMした。残り9件も、alias・根拠IDの形式不正で有効予測0件だった。
+- 同じ14件を方式Aで処理した結果:
+  - モデル無しで10件確定（matched 2、unmatched 8）。
+  - review 4件のうち、1件（4475d8e7）は未解決要件が無い「ページ仕様の矛盾」（フック数 7 vs 9）で、モデルに渡す必要が無い。
+  - 残り3件は、候補1行・未解決要件1〜2個だけ。
+- モデルに聞くべき残差は数百文字程度になる見込み（実測は下の Claude 1 で行う）。
+
+2. Codexへの助言（優先順）
+
+(1) 196件のGPU runは保留を続ける。v8型（全候補プール＋全体判定）のプロンプトでは再投入しない。量子化の比較もこの設計では意味が無い。
+
+(2) source gateとしては、claude/task-construction の方式A v2c を使う。
+- 判定ロジックとfreezeは `.lab-output/sku-gate-tasks-20261010-v2c/freeze.json`（SHA-256 0ee3b37e…3051）。入力・予測は `experiments/sku-matching/results/20261010-sku-gate-tasks.zip`（v2と同一）。
+- 再現手順は報告書の §10。
+- v2cのfreeze済みファイルは編集しない。ゲートを変える場合は、新しいrun dirで再freezeする。
+
+(3) モデルの役割は「要件×候補行の関係判定」に縮める。最終判定は出させない。
+- 入力: 未解決の要件カード（楽天quote）、焦点AU行（1〜2行）、その要件のスコープに入る根拠行（ID付き）。
+- 出力: requirement_id と row_key ごとに relation ∈ {support, conflict, unknown}、evidence_ids ⊆ 提示ID。
+- JSON schema／enumで制約付き生成にする（row_keyと証拠IDは列挙型にする）。
+- matched/unmatched/review は、ゲートの規則で決める。
+- モデルが変えてよいのは unknown だけ。検証済み矛盾とページ仕様の矛盾は上書きできない。
+- 根拠IDのspanが原本で再検証できない回答は無効（reviewのまま）。
+- 入力は数百〜2Kトークン以内に収まるので、T4のNF4 4Bで足りる見込み。
+
+(4) 最初の小規模GPU試験の対象は、B方式でreviewになった「不在要件」がよい。
+- 対象: `レースカーテン=なし` 2ペア（153+27件）、`オプション=なし` 1ペア（4件）。
+- 問い: 「この同一スコープの内容リストは、その付属品が含まれないことを示すか」。
+- 方式Aの閉じたリスト推論が、ラベル不要の対照になる。gold reviewのケースでモデルがsupportを出したら、unsafeとして数える。
+- 方式Aのreview 38件のうち36件はgold reviewなので、このデータでモデルが上積みできる余地はほぼ無い。正しく見るべき指標は「安全性（誤accept 0の維持）」と「形式適合率」。
+
+(5) Issue #24（完了通知・Kaggle停止）は、長時間ジョブを再開する前に片付ける。
+- job投入時にsession IDを保存し、ref/version/sessionを照合したうえで停止する。
+- 時間上限停止とユーザー停止を区別する。全reviewでも通知する。
+
+(6) 最大の欠落は独立holdout。
+- 別店舗・別カテゴリの固定ペアを新規に作る。
+- 方式A/B v2cは再freezeせず、そのまま適用する。
+- 人手で確認した標本で、誤accept・誤delete・review率を測る。
+- 新しい取得対象・予算はユーザー承認が必要（AGENTS.md）なので、具体案を出して判断を仰ぐ。
+
+3. Claudeの次の動き（CPUのみ、モデル推論なし、push先は claude/task-construction）
+
+Claude 1. 残差カードのexporter
+- 対象: v2cのA review 38件・B review 226件（とv8の14件）。
+- 出力: 上の(3)の形式の小さな入力JSONLと、回答schema。
+- サイズはcase単位の文字数・行数で実測する。
+
+Claude 2. 回答バリデータとゲートへの統合
+- モデル回答の根拠IDを原本spanで再検証し、unknownだけを埋めて、A/Bと同じ規則で再判定する。
+- 偽回答（ランダム・常にsupport・常にconflict）で、誤acceptが出ないことをテストする。
+
+Claude 3. holdout適用の入口
+- `run_sku_gates.py` に入力パス引数を足し、新しいペア集合へ判定ロジック無変更で適用できるようにする。
+
+モデル推論（Kaggle/GPU）はCodex側で行う。ClaudeはCodexのrun dir・freezeを編集しない。
