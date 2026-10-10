@@ -291,7 +291,8 @@
             "decision",
             "top_row_key",
             "reason",
-            "passing_rows"
+            "passing_rows",
+            "reason_codes"
           ],
           "properties": {
             "decision": {
@@ -313,6 +314,25 @@
             "passing_rows": {
               "type": "integer",
               "minimum": 0
+            },
+            "reason_codes": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              }
+            },
+            "notices": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "kind",
+                  "family",
+                  "au",
+                  "rakuten"
+                ]
+              }
             }
           },
           "allOf": [
@@ -347,7 +367,8 @@
             "decision",
             "top_row_key",
             "reason",
-            "passing_rows"
+            "passing_rows",
+            "reason_codes"
           ],
           "properties": {
             "decision": {
@@ -369,6 +390,25 @@
             "passing_rows": {
               "type": "integer",
               "minimum": 0
+            },
+            "reason_codes": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              }
+            },
+            "notices": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "kind",
+                  "family",
+                  "au",
+                  "rakuten"
+                ]
+              }
             }
           },
           "allOf": [

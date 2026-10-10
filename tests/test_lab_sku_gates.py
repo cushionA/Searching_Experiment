@@ -352,6 +352,48 @@ class GateTests(unittest.TestCase):
         out = run("A", facts, case, "au_side_only")
         self.assertEqual((out["decision"], out["top_row_key"]), ("matched", "au:1:9:0:0"))
 
+    def test_option_cores_strip_only_classifier_affixes(self):
+        self.assertEqual(gates.option_cores(("角型", "丸型")), {"角型": "角", "丸型": "丸"})
+        self.assertEqual(gates.option_cores(("Mサイズ", "Lサイズ")), {"Mサイズ": "M", "Lサイズ": "L"})
+        # Colour words are never a removable affix.
+        self.assertEqual(gates.option_cores(("ダークブラウン", "ライトブラウン")),
+                         {"ダークブラウン": "ダークブラウン", "ライトブラウン": "ライトブラウン"})
+        self.assertEqual(gates.option_cores(("タイダイ×グリーン",)), {"タイダイ×グリーン": "タイダイグリーン"})
+
+    def test_option_lists_align_spellings_in_a_but_not_in_b(self):
+        fam = {"タイプ": ("角型", "丸型")}
+        rows = [[("タイプ", "角形")], [("タイプ", "丸形")]]
+        for selected, row_key in (("角型", "au:1:9:0:0"), ("丸型", "au:1:9:1:0")):
+            facts, case = make_pair(rows, [("タイプ", selected)], fam)
+            out = run("A", facts, case, "au_side_only")
+            validator("sku_gate_a_output.schema.json").validate(out)
+            self.assertEqual((out["decision"], out["top_row_key"]), ("matched", row_key))
+            self.assertIn("value_aligned_by_option_lists", out["forced_binary"]["closed_world"]["reason_codes"])
+            b = run("B", facts, case, "au_side_only")
+            self.assertEqual(b["decision"], "review")
+            self.assertEqual(b["forced_binary"]["closed_world"]["reason_codes"],
+                             ["different_value_on_row_axis", "other_rows_contradicted"])
+        # Shared colour words are not stripped: ダークブラウン never aligns with ダークグレー.
+        facts, case = make_pair([[("カラー", "ダークグレー")], [("カラー", "ライトグレー")]], [("カラー", "ダークブラウン")],
+                                {"カラー": ("ダークブラウン", "ライトブラウン")})
+        out = run("A", facts, case, "au_side_only")
+        self.assertNotEqual(out["decision"], "matched")
+        self.assertEqual(out["forced_binary"]["closed_world"]["decision"], "unmatched")
+
+    def test_every_forced_decision_has_reason_codes(self):
+        fam = {"カラー": ("赤", "青"), "オプション": ("なし", "毛布セット")}
+        rows = [[("カラー", "赤")], [("カラー", "青")]]
+        for selected in ([("カラー", "赤")], [("カラー", "緑")], [("カラー", "赤"), ("オプション", "毛布セット")],
+                         [("カラー", "赤"), ("オプション", "なし")]):
+            facts, case = make_pair(rows, selected, {**fam, "カラー": ("赤", "青", "緑")})
+            for method in ("A", "B"):
+                out = run(method, facts, case, "au_side_only")
+                validator(f"sku_gate_{method.lower()}_output.schema.json").validate(out)
+                for policy in gates.FORCED_POLICIES:
+                    self.assertTrue(out["forced_binary"][policy]["reason_codes"], (method, selected, policy))
+        out = run("A", facts, case, "au_side_only")
+        self.assertEqual(out["forced_binary"]["closed_world"]["reason_codes"], ["absence_assumed"])
+
     def test_price_and_stock_fields_do_not_change_decisions(self):
         facts, case = make_pair([[("カラー", "赤")], [("カラー", "青")]], [("カラー", "赤")], {"カラー": ("赤", "青")})
         before = run("A", facts, case)

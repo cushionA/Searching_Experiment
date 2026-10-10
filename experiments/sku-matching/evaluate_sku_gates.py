@@ -20,6 +20,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import run_sku_gates as runner  # noqa: E402
 import sku_gate_sources as src  # noqa: E402
+import sku_gates as gates  # noqa: E402
 
 ROOT = runner.ROOT
 LABELS = ".lab-output/sku-real-luna-labels-20261010-v3/labels.jsonl"
@@ -141,19 +142,23 @@ def main():
                 by_product[cases[c]["dossier_id"]].append((labels[c], preds[c]))
             results[system][subset] = {"row": score(rows), "product_macro": macro(by_product)}
     # Per-example audit of gold-review rows (kept inside the benchmark).
+    primary = gates.PRIMARY_CONFIG
+    a_primary, b_primary = f"A-{primary}", f"B-{primary}"
     review_audit = []
     for cid in sorted(c for c, g in labels.items() if g["decision"] == "review"):
         review_audit.append({"case_id": cid, "dossier_id": cases[cid]["dossier_id"],
                              "selected": " / ".join(f"{a['axis_label']}={a['value']}" for a in cases[cid]["rakuten_selected"]["axes"]),
                              "gold_rationale": labels[cid].get("rationale"),
                              "baseline": baseline[cid]["decision"],
-                             "A_full": systems["A-full"][cid]["decision"], "B_full": systems["B-full"][cid]["decision"],
-                             "A_reason": systems["A-full"][cid]["reason"], "B_reason": systems["B-full"][cid]["reason"]})
+                             "A_primary": systems[a_primary][cid]["decision"], "B_primary": systems[b_primary][cid]["decision"],
+                             "A_reason": systems[a_primary][cid]["reason"], "B_reason": systems[b_primary][cid]["reason"],
+                             "A_closed_world": systems[a_primary][cid]["forced_binary"]["closed_world"]["decision"],
+                             "A_closed_world_codes": systems[a_primary][cid]["forced_binary"]["closed_world"].get("reason_codes")})
     disagreements = []
     for cid in sorted(cases):
         g = labels[cid]
-        for system in [s for s in ("A-full", "B-full", "A-full@closed_world", "A-full@open_world",
-                                   "B-full@closed_world", "B-full@open_world") if s in systems]:
+        for system in [s for s in (a_primary, b_primary, f"{a_primary}@closed_world", f"{a_primary}@open_world",
+                                   f"{b_primary}@closed_world", f"{b_primary}@open_world") if s in systems]:
             p = systems[system][cid]
             wrong = (p["decision"] == "matched" and (g["decision"] != "matched" or p["top_row_key"] not in g["matching_au_row_keys"])) \
                 or (p["decision"] == "unmatched" and g["decision"] == "matched")
@@ -163,6 +168,22 @@ def main():
                                       "pred": p["decision"], "pred_row": p["top_row_key"], "reason": p["reason"],
                                       "gold": g["decision"], "gold_rows": g["matching_au_row_keys"],
                                       "gold_rationale": g.get("rationale")})
+    # Reason codes of the forced decisions: count and agreement with gold per code (all 1,383 rows).
+    reason_codes = {}
+    for system in (a_primary, b_primary):
+        for policy in ("closed_world", "open_world"):
+            table = defaultdict(Counter)
+            for cid, pred in systems[system].items():
+                f = pred["forced_binary"][policy]
+                g = labels[cid]
+                ok = ("gold_review" if g["decision"] == "review" else
+                      "correct" if (f["decision"] == g["decision"] and (f["decision"] == "unmatched"
+                                    or f["top_row_key"] in g["matching_au_row_keys"])) else "wrong")
+                for code in f.get("reason_codes") or []:
+                    table[f"{f['decision']}:{code}"][ok] += 1
+                if f.get("notices"):
+                    table[f"{f['decision']}:with_page_spec_notice"][ok] += 1
+            reason_codes[f"{system}@{policy}"] = {k: dict(v) for k, v in sorted(table.items())}
     eval_dir = out / args.eval_dir
     invariants_path = out / "invariants" / "summary.json"
     invariants = None
@@ -186,11 +207,13 @@ def main():
                    "known_only_accepted_precision": "auxiliary: confirmed true accepts / accepts whose gold is not review",
                    "false_delete": "pred unmatched while gold matched",
                    "product_macro": "unweighted mean over the 29 fixed pairs where the metric is defined"},
-               "results": results, "gold_review_audit": review_audit}
+               "primary_config": primary, "results": results, "reason_codes": reason_codes,
+               "gold_review_audit": review_audit}
     runner.write_new(eval_dir / "summary.json", json.dumps(summary, ensure_ascii=False, indent=2) + "\n")
     runner.write_jsonl_new(eval_dir / "disagreements.jsonl", disagreements)
-    for system in [s for s in ("baseline_v10_hybrid", "A-full", "B-full", "A-full@closed_world", "A-full@open_world",
-                               "B-full@closed_world", "B-full@open_world") if s in results]:
+    for system in [s for s in ("baseline_v10_hybrid", "A-full", "A-full@closed_world", a_primary, b_primary,
+                               f"{a_primary}@closed_world", f"{a_primary}@open_world",
+                               f"{b_primary}@closed_world", f"{b_primary}@open_world") if s in results]:
         r = results[system]["all"]["row"]
         print(system, {k: r[k] for k in ("pred", "confirmed_true_accepts", "false_accepts_gold_unmatched",
                                          "unsafe_accepts_gold_review", "wrong_row_accepts", "false_deletes_gold_matched",

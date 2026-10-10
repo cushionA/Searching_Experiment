@@ -14,6 +14,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import os
 import re
 import unicodedata
 from pathlib import Path
@@ -23,7 +24,7 @@ from sku_gate_atoms import (atomize, color_base_vocab, compact, code_crosswalk, 
                             fact_family, atom_value_key, title_facts, NAMED_SIZES, SIZE_CODES)
 import sku_gate_sources as src
 
-TASK_VERSION = "sku-gate-task-v6"
+TASK_VERSION = "sku-gate-task-v7"
 CURTAIN_COMPONENTS = ("drape", "lace")
 # Separately packed items a contents list can enumerate. Built-in features
 # (armrest, top board, bookshelf, handle) are never inferred from list absence.
@@ -42,7 +43,7 @@ SOURCE_CONFIGS = {
     "au_side_only": {"rakuten_title": False, "au_title": True, "descriptions": True, "closed_list": True, "derived": True,
                      "rakuten_description": False, "rakuten_attributes": False},
 }
-PRIMARY_CONFIG = "full"
+PRIMARY_CONFIG = "au_side_only"
 NON_IDENTITY_FIELDS = ("price", "stock", "inventory", "shipping", "coupon", "promotion", "availability")
 
 
@@ -271,6 +272,11 @@ class PairFacts:
                     row_atoms.append({**atom, "source": "au_row", "axis_name": axis["axis_name"], "span": span,
                                       "row_key": row["row_key"]})
             self.rows.append({"row_key": row["row_key"], "atoms": row_atoms, "axes": row["axes"]})
+        self.au_axis_values = {}
+        for row in context["au_rows"]:
+            for axis in row["axes"]:
+                self.au_axis_values.setdefault(axis["axis_name"], set()).add(axis["value"])
+        self.au_axis_values = {k: tuple(sorted(v)) for k, v in self.au_axis_values.items()}
         self.row_families = {}
         for row in self.rows:
             for atom in row["atoms"]:
@@ -400,6 +406,42 @@ class Evaluator:
         self._au_cache: dict[str, list] = {}
         self._rak_cache: dict[str, list] = {}
         self._eval_cache: dict[tuple, dict] = {}
+        self._notice: Evaluator | None = None
+
+    def spec_notices(self, reqs: list[dict], attributes, row: dict) -> list[dict]:
+        """Page-specification differences against the Rakuten page, reported but never deciding.
+
+        Only for a config that leaves the Rakuten side out of the decision; otherwise these
+        differences already sit in the row's derived conflicts.
+        """
+        if self.cfg.get("rakuten_description", True) and self.cfg.get("rakuten_attributes", True):
+            return []
+        if self._notice is None:
+            self._notice = Evaluator(self.f, SOURCE_CONFIGS["full"], self.verified)
+        n = self._notice
+        return n.derived_conflicts(n.au_facts_for(row), n.rak_facts_for(reqs, attributes))
+
+    def _align(self, req: dict, row_atoms: list[dict], row: dict) -> dict | None:
+        """Resolve a different spelling through the two pages' own option lists (method A only)."""
+        if req["type"] not in ("color", "variant", "qualifier") or not req.get("family_values"):
+            return None
+        target = option_cores(tuple(req["family_values"]) + (req["axis_value"],)).get(req["axis_value"])
+        for atom in row_atoms:
+            name = atom.get("axis_name")
+            row_value = next((a["value"] for a in row["axes"] if a["axis_name"] == name), None)
+            if not target or row_value is None:
+                continue
+            cores = option_cores(self.f.au_axis_values.get(name, (row_value,)))
+            if cores.get(row_value) == target:
+                return {"status": "support", "note": "aligned_by_option_lists",
+                        "evidence": [_ev("au_row", atom, "support", atom.get("span"), "selected_au_row",
+                                         note=f"option core {target} = {cores[row_value]}")]}
+            other = next((v for v, c in cores.items() if c == target and v != row_value), None)
+            if other:
+                return {"status": "conflict", "note": "aligned_counterpart_on_other_row",
+                        "evidence": [_ev("au_row", atom, "conflict", atom.get("span"), "selected_au_row",
+                                         note=f"{req['axis_value']} corresponds to AU option {other}")]}
+        return None
 
     def au_facts_for(self, row) -> list[dict]:
         if row["row_key"] not in self._au_cache:
@@ -417,7 +459,8 @@ class Evaluator:
         return self._rak_cache[key]
 
     def evaluate_cached(self, req: dict, row: dict, facts: list[dict]) -> dict:
-        key = (canonical_json([req["type"], req.get("component"), req.get("role"), req.get("labels"), req["value"]]),
+        key = (canonical_json([req["type"], req.get("component"), req.get("role"), req.get("labels"), req["value"],
+                               req.get("unit"), req.get("kind"), req.get("axis_value"), req.get("family_values")]),
                row["row_key"])
         if key not in self._eval_cache:
             self._eval_cache[key] = self.evaluate(req, row, facts)
@@ -667,6 +710,10 @@ class Evaluator:
                 return {"status": "conflict", "evidence": evidence}
             if "support" in kinds and "conflict" in kinds:
                 return {"status": "ambiguous", "evidence": evidence, "note": "row_internal_disagreement"}
+            if not self.verified:
+                aligned = self._align(req, [a for rel, a in outcomes if rel == "unknown"], row)
+                if aligned:
+                    return aligned
             # Same-row qualifier missing while a sibling row carries it: explicit contrast.
             return {"status": "unknown", "evidence": evidence, "note": "unresolved_spelling"}
         if req["type"] in ("fabric", "seat_width", "qualifier"):
@@ -897,7 +944,8 @@ def selected_atoms(case_input: dict, facts: PairFacts) -> list[dict]:
                         "axis_label_quote": (axis.get("axis_label_span") or {}).get("quote"),
                         "axis_label_span": axis.get("axis_label_span"), "axis_value_quote": axis["value"],
                         "span": span, "decomposition": parsed["decomposition"], "residue": parsed["residue"],
-                        "scope": "rakuten_selected_sku_row"})
+                        "scope": "rakuten_selected_sku_row", "axis_value": axis["value"],
+                        "family_values": list(axis["family_values"])})
     return out
 
 
@@ -917,9 +965,76 @@ def _requirement_card(atom: dict) -> dict:
 # Methods
 # ---------------------------------------------------------------------------
 
+# Grammatical classifiers a page may attach to every option of an axis (角型/丸型, Mサイズ/Lサイズ).
+# Only these may be removed as a shared affix; colour words and numbers never are.
+CLASSIFIER_AFFIXES = ("タイプ", "サイズ", "モデル", "仕様", "型", "形", "用")
+
+
+def _norm_option(value: str) -> str:
+    return re.sub(r"[\s()（）\[\]【】×xX・/／\-]", "", unicodedata.normalize("NFKC", value))
+
+
+def option_cores(values) -> dict:
+    """Option value -> its discriminating core within its own option list.
+
+    A prefix or suffix shared by every option of the list is removed only when it is a
+    classifier in CLASSIFIER_AFFIXES; the cores are then compared across the two pages.
+    """
+    norm = {v: _norm_option(v) for v in values}
+    distinct = sorted(set(norm.values()))
+    if len(distinct) < 2:
+        return norm
+    prefix, suffix = os.path.commonprefix(distinct), os.path.commonprefix([v[::-1] for v in distinct])[::-1]
+    prefix = next((c for c in sorted(CLASSIFIER_AFFIXES, key=len, reverse=True) if prefix.startswith(c)), "")
+    suffix = next((c for c in sorted(CLASSIFIER_AFFIXES, key=len, reverse=True) if suffix.endswith(c)), "")
+    cores = {}
+    for value, n in norm.items():
+        core = n[len(prefix):len(n) - len(suffix)] if suffix else n[len(prefix):]
+        cores[value] = core or n
+    return cores
+
+
 FORCED_POLICIES = ("closed_world", "open_world")
 SOURCE_RANK = {"au_title": 0, "rakuten_title": 0, "au_purchase_option": 1, "au_description": 2,
                "rakuten_description": 2}
+
+
+def _row_check(policy: str, results: list[dict], by_id: dict, derived: list[dict]) -> tuple[bool, list[str]]:
+    """Whether a non-contradicted row passes a forced policy, with reason codes.
+
+    Codes name what let the row pass (empty when every requirement is supported), or the
+    first item that failed it.
+    """
+    passed = []
+    for res in results:
+        status = res["status"]
+        if status == "support":
+            if res.get("note") == "aligned_by_option_lists":
+                passed.append("value_aligned_by_option_lists")
+            continue
+        req = by_id[res["requirement_id"]]
+        absence = req["type"] == "component_presence" and req["value"] is False
+        spelling = status == "unknown" and res.get("note") == "unresolved_spelling"
+        row_support = any(e.get("source") == "au_row" and e.get("relation") == "support" for e in res.get("evidence", []))
+        if policy == "open_world" and status == "ambiguous":
+            passed.append("mixed_sources_passed")
+            continue
+        if policy == "open_world" and status == "unknown" and not spelling:
+            passed.append("absence_assumed" if absence else "attribute_not_on_au_page_passed")
+            continue
+        if policy == "closed_world" and status == "unknown" and absence and not spelling:
+            passed.append("absence_assumed")
+            continue
+        if policy == "closed_world" and status == "ambiguous" and row_support:
+            passed.append("row_value_outranks_mixed_sources")
+            continue
+        return False, ["different_value_on_row_axis" if spelling else
+                       "mixed_sources" if status == "ambiguous" else "attribute_not_on_au_page"]
+    if derived:
+        if policy == "closed_world":
+            return False, ["page_spec_discrepancy"]
+        passed.append("page_spec_discrepancy_ignored")
+    return True, passed
 
 
 def forced_binary(policy: str, reqs: list[dict], rows: list[dict], row_status: dict, details: dict,
@@ -932,45 +1047,38 @@ def forced_binary(policy: str, reqs: list[dict], rows: list[dict], row_status: d
     - open_world: a missing attribute and mixed sources pass; an explicit contradiction or a
       different, unresolved value on the same row axis (ネイビー vs グリーン) fails the row.
     Among passing rows the one with the most supported requirements wins, then the most
-    verified AU-only atoms, then the lowest row index (reported as a tie).
+    verified AU-only atoms, then the lowest row index (reported as a tie). Every decision
+    carries reason codes.
     """
-    if decision != "review":
-        return {"decision": decision, "top_row_key": top, "reason": "gate_decision", "passing_rows": int(bool(top))}
     by_id = {r["requirement_id"]: r for r in reqs}
-    passing = []
+    if decision == "matched":
+        aligned = any(r.get("note") == "aligned_by_option_lists" for r in details[top][0])
+        return {"decision": decision, "top_row_key": top, "reason": "gate_decision", "passing_rows": 1,
+                "reason_codes": ["gate_all_requirements_supported"] + (["value_aligned_by_option_lists"] if aligned else [])}
+    if decision == "unmatched":
+        return {"decision": decision, "top_row_key": None, "reason": "gate_decision", "passing_rows": 0,
+                "reason_codes": ["gate_explicit_contradiction_on_every_row"]}
+    passing, failures = [], set()
     for index, row in enumerate(rows):
         key = row["row_key"]
         if row_status[key] == "conflict":
             continue
         results, au_only, derived = details[key]
-        ok = True
-        for res in results:
-            status = res["status"]
-            if status == "support":
-                continue
-            req = by_id[res["requirement_id"]]
-            if policy == "open_world" and (status == "ambiguous" or (
-                    status == "unknown" and res.get("note") != "unresolved_spelling")):
-                continue  # a missing attribute passes; a different value on the same row axis does not
-            if policy == "closed_world":
-                if status == "unknown" and req["type"] == "component_presence" and req["value"] is False:
-                    continue
-                if status == "ambiguous" and any(e.get("source") == "au_row" and e.get("relation") == "support"
-                                                 for e in res.get("evidence", [])):
-                    continue
-            ok = False
-            break
-        if ok and policy == "closed_world" and derived:
-            ok = False
+        ok, codes = _row_check(policy, results, by_id, derived)
         if ok:
             passing.append((-sum(r["status"] == "support" for r in results),
-                            -sum(a.get("status") == "support" for a in au_only), index, key))
+                            -sum(a.get("status") == "support" for a in au_only), index, key, codes))
+        else:
+            failures.update(codes)
     if not passing:
-        return {"decision": "unmatched", "top_row_key": None, "reason": f"{policy}_no_row_passes", "passing_rows": 0}
-    passing.sort()
+        return {"decision": "unmatched", "top_row_key": None, "reason": f"{policy}_no_row_passes", "passing_rows": 0,
+                "reason_codes": sorted(failures) + ["other_rows_contradicted"]}
+    passing.sort(key=lambda x: x[:3])
     tie = len(passing) > 1 and passing[0][:2] == passing[1][:2]
+    codes = list(dict.fromkeys(passing[0][4])) or ["all_requirements_supported"]
     return {"decision": "matched", "top_row_key": passing[0][3],
-            "reason": f"{policy}_{'tie_lowest_row_index' if tie else 'best_supported_row'}", "passing_rows": len(passing)}
+            "reason": f"{policy}_{'tie_lowest_row_index' if tie else 'best_supported_row'}", "passing_rows": len(passing),
+            "reason_codes": codes + (["tie_lowest_row_index"] if tie else [])}
 
 
 def _row_summary(row_key, status, results, au_only, derived, detail):
@@ -1097,6 +1205,12 @@ def run_method(method: str, case_input: dict, facts: PairFacts, config_name: str
         decision, top, reason = "review", None, "unquoted_requirement"
     forced = {policy: forced_binary(policy, reqs, facts.rows, row_status, details, decision, top)
               for policy in FORCED_POLICIES}
+    rows_by_key = {row["row_key"]: row for row in facts.rows}
+    for entry in forced.values():
+        # A difference from the Rakuten page never decides under an AU-side config; it is reported.
+        if entry["decision"] == "matched":
+            entry["notices"] = [{"kind": "page_spec_discrepancy", **n} for n in evaluator.spec_notices(
+                reqs, case_input["rakuten_selected"].get("variant_attributes"), rows_by_key[entry["top_row_key"]])]
     focus = set(full_rows) | ({top} if top else set())
     if not focus:
         ranked = sorted(facts.rows, key=lambda r: (row_status[r["row_key"]] == "conflict",
