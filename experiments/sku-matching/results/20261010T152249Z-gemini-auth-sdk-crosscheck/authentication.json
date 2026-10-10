@@ -1,0 +1,59 @@
+{
+  "schema": "sku-smoke-auth-client-crosscheck-v1",
+  "source_commit": "023554e5aa5f5850267cc7685121f3fc7a433d5a",
+  "user_reported_probe": {
+    "http_status": 200,
+    "token_source": "subprocess_gcloud_auth_print_access_token_at_probe_time",
+    "transport": "http_client_HTTPSConnection",
+    "uses_GCP_ACCESS_TOKEN_environment_variable": false,
+    "same_token_as_codex_environment_verified": false,
+    "credential_value_requested_or_recorded": false
+  },
+  "probes": [
+    {
+      "checked_at_utc": "2026-10-10T15:22:49.176416+00:00",
+      "probe": "requests_tokeninfo_same_env",
+      "proxy_preserved": true,
+      "TLS_verification_enabled": true,
+      "http_status": 400,
+      "authenticated": false,
+      "reason": "invalid_token",
+      "elapsed_seconds": 0.215
+    },
+    {
+      "checked_at_utc": "2026-10-10T15:22:49.391742+00:00",
+      "probe": "trial_vertex_credentials_AuthorizedSession_read_only",
+      "project": "groundingsearch",
+      "quota_project": "groundingsearch",
+      "proxy_preserved": true,
+      "TLS_verification_enabled": true,
+      "model_inference_calls": 0,
+      "http_status": 401,
+      "authenticated": false,
+      "reason": "UNAUTHENTICATED",
+      "allowed_error_reasons": [],
+      "elapsed_seconds": 0.297
+    }
+  ],
+  "credential_format_flags": {
+    "present": true,
+    "surrounding_whitespace": false,
+    "internal_whitespace": false,
+    "outer_quotes": false,
+    "bearer_prefix_present": false,
+    "looks_like_shell_expression": false
+  },
+  "transport_flags": {
+    "HTTP_PROXY_present": true,
+    "HTTPS_PROXY_present": true,
+    "REQUESTS_CA_BUNDLE_present": true,
+    "SSL_CERT_FILE_present": true,
+    "manifest_configured": false
+  },
+  "model_inference_calls": 0,
+  "response_headers_recorded": false,
+  "response_body_recorded": false,
+  "credential_values_recorded": false,
+  "token_fingerprint_recorded": false,
+  "identity_recorded": false
+}

@@ -1,0 +1,44 @@
+ユーザー側HTTP200と実行環境invalid_tokenの食い違いを再確認
+
+日時: 2026-10-11 00:22:49 JST（2026-10-10 15:22:49 UTC）
+ユーザーは「例のコマンドはHTTP200」と報告。こちらの見落としを点検した。
+ユーザーに値や認証headerの共有は求めず、方法のみ質問した。
+返答されたコマンドはsubprocessでgcloud auth print-access-tokenを呼び、
+返ったtをhttp.client.HTTPSConnectionでtokeninfoへ渡すものである。
+このコマンドはos.environのGCP_ACCESS_TOKENを一切読まない。
+ユーザー側で検証した値とCodex環境設定値が同一かは引き続き未確認。
+
+project IDはgroundingsearch。試験コードのモデルURLも
+projects/groundingsearch/locations/globalを使い、quota projectもgroundingsearch。
+gemini-3.5-flash-lite、選択値のみ、status/source_ids、ローカルID/原文復元は維持。
+
+確認結果
+- 環境状態は同じspec2/observed2。これだけで設定値が古いとも有効とも断定しない。
+- token入力は存在。前後空白、内部空白、外側の引用符、Bearer接頭辞、
+  shellコマンド式の取り違えを示すフラグはすべてfalse。
+- non-loginプロセスを使用し、継承プロキシとCA trust、TLS検証を維持。
+- requestsのparamsによるaccess_tokenのURL encodingでtokeninfoを1回確認:
+  HTTP400 invalid_token（0.215秒）。先のurllib結果と一致。
+- 試験コードのvertex_credentialsをそのまま呼び、OAuth token経路であることを確認。
+  with_quota_project('groundingsearch')、AuthorizedSession(max_refresh_attempts=0)で
+  Vertex locationsを読み取り専用で1回確認: HTTP401 UNAUTHENTICATED（0.297秒）。
+  許可した追加ErrorInfo reasonは取得できなかった。
+- 推論0回。SKU判定応答や新しい構造化6ケース試験結果はない。
+
+解釈と未確定点
+urllibだけの問題、トークンの引用符/空白、SDKのquota projectの付け忘れを示す
+証拠は見つからなかった。SDKと直接HTTPで同じ認証失敗となった。
+tokeninfoはprojectを送らないため、project IDの違いはそのinvalid_tokenを説明しない。
+ただしモデルAPIの権限/課金/モデル利用可否は認証成功後に別途確認が必要。
+Cloud Shell側200はその時点でgcloudが返したトークンの有効性を示す。
+Codex側は環境変数GCP_ACCESS_TOKENを使用する。返答コマンドから、この2つの
+取得元が違うことは確認できたが、値そのものが違うとはまだ断定できない。
+Cloud Shellで200になった現行トークンと、この環境が読む値が同一かは未確認。
+発行時刻・有効期限、保存先、適用先の違いは原因候補であり、原因確定ではない。
+「設定更新が必要」だけでは原因特定にならず、同じ取得時点のトークンを
+Codex環境のGCP_ACCESS_TOKENに適用して、環境側で実API認証を確認する必要がある。
+値・fingerprint・認証header・tokeninfo URL・identity・認証応答本文は表示/保存しない。
+
+保存したprobe_auth.pyは、この2経路を再現する診断コードであり推論は行わない。
+プロキシ迂回、認証リフレッシュ、環境再起動、新しい商品取得は行っていない。
+6ケースは引き続き採用0・除外0・未評価6。modelVersion/usage/推論時間は未取得。

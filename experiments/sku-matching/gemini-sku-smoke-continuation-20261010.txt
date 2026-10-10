@@ -1,5 +1,16 @@
 別セッションへの継続メモ
 
+2026-10-11 00:22:49 JST 認証経路の再点検
+- ユーザー側HTTP200との食い違いを受け、requests tokeninfoと試験コードそのままの
+  vertex_credentials/AuthorizedSessionでも確認。各1回、400 invalid_token / 401
+  UNAUTHENTICATED。projectとquota projectはgroundingsearch、推論0回。
+- 値の空白/引用符/コマンド式、ログインシェル、quota projectの付け忘れを示す
+  証拠は見つからなかった。ユーザー返答の200コマンドはgcloud auth
+  print-access-tokenをその場で呼び、tokeninfoで確認していた。GCP_ACCESS_TOKENは
+  読まない。取得元の違いは確認したが、設定値と同一かは未確認。
+  最新診断: results/20261010T152249Z-gemini-auth-sdk-crosscheck/report.txt。
+  診断コードとallowlist状態JSONを同ディレクトリへ保存。秘密値・指紋は非保存。
+
 2026-10-11 JST 新セッションでの続行結果
 - 最新リモートacda4f9をcheckout。認証preflightはtokeninfo HTTP400 invalid_token、
   Vertex locations読み取りAPI HTTP401 UNAUTHENTICATED。環境spec2 ready/enforced
