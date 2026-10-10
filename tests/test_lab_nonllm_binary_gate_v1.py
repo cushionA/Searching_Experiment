@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 from pathlib import Path
 import sys
+import tempfile
 from types import SimpleNamespace
 import unittest
 
@@ -131,6 +133,75 @@ class FrozenGateExtensionTests(unittest.TestCase):
         self.assertEqual(self.gates.compare_atoms(req, atom, lambda *args: False), "support")
         req["value"] = [20.]
         self.assertEqual(self.gates.compare_atoms(req, atom, lambda *args: False), "conflict")
+
+
+@unittest.skipUnless(module.DEFAULT_GATE_CODE.exists(), "frozen comparison gate not restored")
+class SelectorFamilyProofTests(unittest.TestCase):
+    def setUp(self):
+        self.gates = module.load_gate()
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        root = Path(self.temp.name)
+        self.selected = "グレージュ"
+        self.sibling = "グレージュ(マイヤー生地)"
+        values = [self.selected, self.sibling]
+        document = {"variantSelectors": [{"key": "color", "label": "カラー",
+                                          "values": [{"value": value} for value in values]}],
+                    "sku": {"v": {"selectorValues": [self.selected]}}}
+        html = json.dumps(document, ensure_ascii=False, separators=(",", ":"))
+        (root / "r.html").write_text(html, encoding="utf-8")
+        (root / "a.json").write_text(json.dumps({"row": self.sibling}, ensure_ascii=False), encoding="utf-8")
+        self.store = self.gates.src.RawStore(root)
+        at = html.rfind(self.selected)
+        selected_span = self.gates.src.make_span(
+            self.store, "r.html", {"kind": "html_text", "encoding": "utf-8", "path": "sku[v].selectorValues[0]"},
+            at, at + len(self.selected), self.selected)
+        self.atom = {"type": "fabric", "value": "マイヤー", "quote": "(マイヤー生地)",
+                     "span": self.gates.src.json_leaf_span(self.store, "a.json", "$.row", "(マイヤー生地)")}
+        self.row = {"atoms": [{"type": "color", "value": self.selected}, self.atom]}
+        self.axis = {"value": self.selected, "value_span": selected_span, "axis_label": "カラー",
+                     "axis_index": 0, "axis_key": "color", "family_values": values}
+        self.case = {"rakuten_selected": {"raw_file": "r.html", "axes": [self.axis]}}
+        self.facts = SimpleNamespace(vocab=frozenset({self.selected}))
+        self.evaluator = SimpleNamespace(product_contrast=lambda *args: False)
+        self.result = {"status": "conflict", "note": "rakuten_sibling_value_carries_qualifier",
+                       "evidence": [{"source": "rakuten_selector_family", "quote": self.sibling, "relation": "conflict"}]}
+
+    def prove(self, attrs=()):
+        return module.attach_selector_family_proof(self.result, self.atom, self.row, self.case, self.facts,
+                                                  attrs, self.evaluator, self.store, self.gates)
+
+    def test_exact_distinct_sibling_option_has_literal_selected_and_row_proof(self):
+        result = self.prove()
+        self.assertEqual(result["status"], "conflict")
+        self.assertTrue(module.verified_evidence(result["evidence"], self.store, self.gates))
+        proof = result["evidence"][0]
+        self.assertEqual(proof["span"]["quote"], self.sibling)
+        self.assertEqual(proof["spans"][0]["quote"], self.selected)
+        self.assertEqual(proof["derivation"], "distinct_complete_options_on_selected_axis")
+
+    def test_missing_selected_quote_cannot_exclude_an_alternative_row(self):
+        self.axis["value_span"] = None
+        self.assertFalse(module.verified_evidence(self.prove()["evidence"], self.store, self.gates))
+
+    def test_option_list_must_contain_the_literal_sibling(self):
+        self.result["evidence"][0]["quote"] = "グレージュ(メッシュ)"
+        self.axis["family_values"].append("グレージュ(メッシュ)")
+        self.atom["value"] = "メッシュ"
+        self.assertFalse(module.verified_evidence(self.prove()["evidence"], self.store, self.gates))
+
+    def test_selected_matching_qualifier_is_never_excluded(self):
+        self.axis["value"] = self.sibling
+        self.assertFalse(module.verified_evidence(self.prove()["evidence"], self.store, self.gates))
+
+    def test_conflicting_selected_attribute_stays_ambiguous(self):
+        attr = {"source": "rakuten_variant_attributes", "single_valued": True,
+                "span": self.atom["span"], "atom": self.atom, "scope": "selected_sku_attributes"}
+        self.assertEqual(self.prove([attr])["status"], "ambiguous")
+
+    def test_a_color_alias_is_not_an_exact_option_family_contrast(self):
+        self.row["atoms"][0]["value"] = "ベージュ"
+        self.assertFalse(module.verified_evidence(self.prove()["evidence"], self.store, self.gates))
 
 
 if __name__ == "__main__":

@@ -37,12 +37,15 @@ def jsonlines(rows):
     return ("".join(json.dumps(r, ensure_ascii=False, separators=(",", ":")) + "\n" for r in rows)).encode()
 
 
-def load_inputs(novel_dir, old_zip):
+def load_inputs(novel_dir, old_zip, family_dir=None):
     novel = {name: (novel_dir / name).read_bytes() for name in ("cases.jsonl", "products.jsonl")}
     with zipfile.ZipFile(old_zip) as archive:
         prefix = ".lab-output/sku-gate-tasks-20261010-v2/inputs/"
         legacy = {name: archive.read(prefix + name) for name in novel}
-    return {"novel": novel, "legacy": legacy}
+    bundles = {"novel": novel, "legacy": legacy}
+    if family_dir is not None:
+        bundles["family"] = {name: (family_dir / name).read_bytes() for name in novel}
+    return bundles
 
 
 def run_bundle(raw, gates, store, restore):
@@ -73,16 +76,19 @@ def main():
     parser.add_argument("--output", type=Path, default=ROOT / ".lab-output/sku-nonllm-binary-gate-20261010-v1")
     parser.add_argument("--novel-dir", type=Path, default=ROOT / ".lab-output/sku-novel-cpu-gate-20261010-v2")
     parser.add_argument("--legacy-zip", type=Path, default=gate.DEFAULT_GATE_CODE / "results/20261010-sku-gate-tasks.zip")
+    parser.add_argument("--family-dir", type=Path, default=None,
+                        help="optional canonical inputs for unconfirmed family candidate stress cases")
     args = parser.parse_args()
     # Shared Claude code is experiments/sku-matching; archive is at repo results/.
     if not args.legacy_zip.exists():
         args.legacy_zip = gate.DEFAULT_GATE_CODE.parents[1] / "results/20261010-sku-gate-tasks.zip"
     if args.output.exists():
         raise FileExistsError(args.output)
-    bundles = load_inputs(args.novel_dir, args.legacy_zip)
+    bundles = load_inputs(args.novel_dir, args.legacy_zip, args.family_dir)
     gates = gate.load_gate(extensions=False)
     store = gates.src.RawStore(ROOT)
-    code = [Path(__file__), Path(gate.__file__), Path(gate.extension.__file__)] + [
+    code = [Path(__file__), Path(gate.__file__), Path(gate.extension.__file__),
+            Path(gate.__file__).parent / "prepare_novel_real_inputs_v2.py"] + [
         gate.DEFAULT_GATE_CODE / n for n in ("sku_gates.py", "sku_gate_atoms.py", "sku_gate_sources.py")]
     args.output.mkdir(parents=True)
     freeze = {"frozen_at_utc": datetime.now(timezone.utc).isoformat(), "labels_read": False,
@@ -91,7 +97,9 @@ def main():
               "code": {str(p): sha(p.read_bytes()) for p in code},
               "contract": "one selected Rakuten SKU vs complete fixed-URL AU pool; accept/drop; unknown auto-drop",
               "settings": {"all_other_rows_must_conflict": True, "au_only_conditions_mandatory": True,
-                           "literal_verified_evidence_required": True, "negative_from_missing_word": False}}
+                           "literal_verified_evidence_required": True, "negative_from_missing_word": False},
+              "bundle_status": {name: ("unconfirmed product-candidate stress; not an accuracy holdout"
+                                       if name == "family" else "reused development inputs") for name in bundles}}
     dump(args.output / "freeze.json", freeze)
     for path in code:
         namespace = "claude-gate" if path.parent == gate.DEFAULT_GATE_CODE else "runner"

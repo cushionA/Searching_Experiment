@@ -280,6 +280,63 @@ def attach_arithmetic_proof(result, facts):
     return result
 
 
+def attach_selector_family_proof(result, atom, row, case, facts, rak_facts, evaluator, store, gates):
+    """Cite a different complete option on the selected selector's own axis.
+
+    The frozen evaluator already recognizes this contrast, but omitted its
+    source span. Only literal selected/sibling values that share the same color
+    and explicitly distinguish this qualifier can supply the missing proof.
+    A mention elsewhere on the product page is not a selector option.
+    """
+    if result.get("note") != "rakuten_sibling_value_carries_qualifier" or result.get("status") != "conflict":
+        return result
+    if not atom.get("span") or not verify_span_cached(atom["span"], store, gates):
+        return result
+    colors = {a["value"] for a in row["atoms"] if a["type"] == "color"}
+    if len(colors) != 1:
+        return result
+    selected = case["rakuten_selected"]
+    for axis in selected["axes"]:
+        selected_span = axis.get("value_span")
+        if (not selected_span or selected_span.get("quote") != axis["value"]
+                or not verify_span_cached(selected_span, store, gates)):
+            continue
+        parsed = gates.atomize(axis["value"], axis["axis_label"], facts.vocab, tuple(axis["family_values"]))
+        selected_colors = {a["value"] for a in parsed["atoms"] if a["type"] == "color"}
+        if selected_colors != colors or any(
+                a["type"] == atom["type"] and a["value"] == atom["value"] for a in parsed["atoms"]):
+            continue
+        for ev in result.get("evidence", []):
+            sibling = ev.get("quote")
+            if ev.get("source") != "rakuten_selector_family" or sibling == axis["value"] or sibling not in axis["family_values"]:
+                continue
+            other = gates.atomize(sibling, axis["axis_label"], facts.vocab, tuple(axis["family_values"]))
+            if not ({a["value"] for a in other["atoms"] if a["type"] == "color"} == selected_colors
+                    and any(a["type"] == atom["type"] and a["value"] == atom["value"] for a in other["atoms"])):
+                continue
+            span = gates.src.rakuten_selector_value_span(
+                store, selected["raw_file"], selected_span["locator"].get("encoding", "utf-8"),
+                axis["axis_index"], axis["axis_key"], sibling)
+            if not span or not verify_span_cached(span, store, gates):
+                continue
+            ev.update(span=span, spans=[selected_span, atom["span"]],
+                      derivation="distinct_complete_options_on_selected_axis",
+                      scope="selected_selector_family", selected_value=axis["value"], axis_key=axis["axis_key"])
+            # Direct selected-variant evidence that contradicts the option
+            # distinction remains a disagreement, rather than being discarded.
+            supports = [f for f in rak_facts if f.get("source") == "rakuten_variant_attributes"
+                        and f.get("single_valued") and f.get("span")
+                        and gates.comparable(atom, f["atom"])
+                        and gates.compare_atoms(atom, f["atom"], evaluator.product_contrast) == "support"
+                        and verify_span_cached(f["span"], store, gates)]
+            if supports:
+                return {"status": "ambiguous", "note": "selected_attribute_disagrees_with_option_contrast",
+                        "evidence": [ev] + [{"source": f["source"], "relation": "support", "span": f["span"],
+                                              "quote": f["atom"].get("quote"), "scope": f["scope"]} for f in supports]}
+            return result
+    return result
+
+
 def add_declared_lace_absence(row, facts, gates):
     """Derive lace=0 from an explicit total and drape count, never word absence.
 
@@ -345,6 +402,8 @@ def strict_case(case, facts, gates, store):
                 continue
             result = evaluator.evaluate_au_only(atom, requirements, rak_facts, row)
             result = attach_arithmetic_proof(result, rak_facts)
+            if getattr(gates, "_nonllm_extension_installed", False):
+                result = attach_selector_family_proof(result, atom, row, case, facts, rak_facts, evaluator, store, gates)
             if result["status"] in ("support", "conflict") and not verified_evidence(result["evidence"], store, gates):
                 result = {"status": "unknown", "evidence": result["evidence"], "note": "unverified_reverse_evidence"}
             reverse.append({"condition": atom, **result})
