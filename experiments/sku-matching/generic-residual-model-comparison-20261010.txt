@@ -1,0 +1,119 @@
+調査結果を取り込んだ未対応条件のモデル比較（2026-10-10）
+
+対象
+商品単位突合は完了済み。楽天SKU単位の1レコードについて、固定AU商品の
+候補行に対応しなかった条件を、当該AU商品のタイトルと商品説明から確認する。
+別URLへの振り分けは行わない。条件の種類・付属品辞書による対象選別は行わない。
+複合値は分解済みと証明できるまで原文全体を残す。
+
+比較候補
+・argos1111/modernbert-ja-310m-jev
+  revision 07cda23579443e7a33c0f474114279fa032340d6
+  315,203,329 parameters / CC BY-SA 4.0 / 2026-09-19初登録。
+  固定3クラスのNLIヘッドではなく、質問+状況と各回答候補のペアを採点する
+  scalar cross-encoder。候補間softmaxの集中度は校正済みの正解率ではない。
+  CPU FP32の比較を追加した。安全な標準Transformers loaderを使用し、
+  remote codeを実行せず、全6ファイルのSHA256とprovenanceを照合する。
+・fastino/GLiNER2.5-multi-Decide
+  revision e173bca1f0c4217d7a55b3b0c705d5ece8a0218d / 約287M / Apache 2.0。
+  過去のSKU直接判定では成功していないため、汎用関係判定の対照として残す。
+・0x3/bert-base-japanese-v3_nli-jsnli-jnli-jsick
+  revision 21df45469d02809dc430e3ac5f5d6f67b63aabf3 / 111,209,475 parameters。
+  既存の日本語NLI対照。新しく旧世代モデルをダウンロードしてはいない。
+
+今回の実装
+1. 外部の残条件cardsを受け取り、case・SKU・固定AU商品・AU行を照合する。
+2. AUタイトルとAPI内説明の可視全文を300文字・75文字重複の窓で保存する。
+   全窓を保持する。キーワードや関連度上位だけに絞らない。
+   文字オフセットは凍結した可視テキスト上の位置。raw HTMLの位置とは呼ばない。
+   iframe参照は元データに保持されるが、その外部本文や動画は今回取得しない。
+3. 各窓で「条件を満たすか」と「選択行にこの記述が適用されるか」を別々に判定。
+   NLIへの汎用仮説形式は軸名と選択値の完全な原文だけを使い、
+   サイズ・色・付属品などに応じた仮説テンプレートは作らない。
+4. 窓ごとの全予測を保持し、適用が支持された矛盾を支持で上書きしない。
+   固定confidence 0.90による診断を保存する。SKU採用自体はここでは決定しない。
+5. 予測凍結後に、予測を見ずに作成した独立機械注釈を採点する。
+
+今回のデータは開発診断用
+旧規則処理のunknownフラグを、元の軸値全体へ戻して100cards/94casesを作った。
+旧component_presence等の種別で抽出を絞っていない。
+ただし前段の未対応抽出は旧規則のままで、Claudeのモデル版前段と統合した
+全件性能を測ったデータではない。旧規則が確認できた条件はこの集合にない。
+23固定AU商品・全89候補行・166窓・739条件×窓、2目的合計1,478モデル要求。
+SKU原文と全選択肢は100件すべて元ケースと一致。実SKUと人工SKUを混ぜていない。
+別途32条件のLuna機械注釈で後段を点検する。人手確認済みgoldとは扱わない。
+
+完了した比較結果
+3モデルとも100条件の集約はunknown 100件だった。
+32件の独立Luna機械注釈（support 17 / conflict 14 / unknown 1）に対し、
+supportを回収した数は全モデル0/17、誤support 0、support precisionは未定義。
+3クラス一致は1/32。この構成を採用候補とはしない。
+これは残条件後段だけの診断であり、2,409実SKUの最終一致率ではない。
+適用scope自体の独立ラベル評価も今回行っていない。
+
+窓ごとの内訳（条件 / scope）
+・ModernBERT: unknown 733・conflict 6 / unknown 739。
+・GLiNER Decide: unknown 739 / unknown 739。
+・既存日本語NLI: unknown 603・conflict 136 / unknown 700・conflict 39。
+支持を拾わず全件除外になることを、誤採用ゼロの成功として報告しない。
+
+最初のCPU FP32推論の実時間
+・ModernBERT: 2,673.16秒、4threads、batch 8。
+  1,130 unique requests、3,390 candidate pairs、424 batches。
+・GLiNER Decide: 2,320.06秒、1thread、batch 8。
+・既存日本語NLI: 837.91秒、1thread、batch 8。
+共有CPUで並行実行したため公平な速度順位ではない。GCP費用の実測でもない。
+ModernBERTのv2出力はv1の同一入力キャッシュ再生（約0.32秒）で、
+この時間をモデル推論速度と呼ばない。v1もcheckpointへ収録する。
+
+入力監査と次のタスク変更
+窓本文をJSON文字列としてさらにJSONへ入れた入力や、対象条件を特定しない
+抽象的なscope仮説には、学習済みNLIとの隔たりがある。
+全選択肢は受け渡しデータに保持されるが、最初のNLI比較の前提には含めていない。
+本文の可視全文を覆っていても、リンクhref・表の列/行・見出しの所属は
+フラット化で失われる。たとえば「このページは2段カバーなし」と、
+別リンクの2段/3段・カバー付き説明が同じページに並ぶケースがある。
+これらをカテゴリ辞書の追加で直さず、元HTMLの構造と原文位置を保持する。
+
+prepare_generic_html_scope_packets_v1.pyで、23商品・22原本・136 fieldsを
+凍結した。8,360 blocks・21,546 tokensの全文coverage、href、img alt、
+table/row/cell関係、原文spanを検証済み。
+これはモデル入力を修正するための準備で、初回比較にはまだ接続していない。
+属性のspanは開始タグ全体。HTMLParserの構造であり、CSS適用後のブラウザDOM
+ではない。iframe外部本文や画像内の文字の取得も今回未実施。
+
+小さなタスク形式の診断は、全件比較とは別に保存する。
+・商品名だけから元の選択肢を選ぶ16件: confidence 0.90以上の選択0件。
+・同じ16件の原文タイトルをNLI形式で聞く32要求: entailment 0.90以上0件。
+  商品名に条件が書かれていない場合も含み、モデルの故障の証明ではない。
+・元の全選択肢から選ぶ問いを説明の全窓へ広げた8条件・59要求:
+  206.35秒、confidence 0.90以上の選択0件。抽象scope仮説を外すだけでは
+  今回の入力・閾値で支持を回収できなかった。これは小さな開発追試で、
+  独立の最終評価とはしない。リンク/table構造はまだこの入力にも未接続。
+・モデルカードの請求先分類例: billing 0.9949。非SKUの動作対照として分離。
+  この初回対照のみ、空description候補salesを旧「sales — 」形式で採点。
+  現行backendはカードどおり空descriptionをlabel単独に修正済み。
+  全SKU要求はdescription非空で、修正前後の入力とcache keyは同一。
+
+再現（リポジトリルートで実行、出力ディレクトリは未作成のものを指定）
+python3 -B experiments/sku-matching/download_modernbert_jev_v1.py
+python3 -B experiments/sku-matching/export_legacy_residual_cards_v1.py
+python3 -B experiments/sku-matching/prepare_generic_residual_evidence_v1.py \
+  --residual-cards .lab-output/sku-generic-residual-cards-20261010-v1/cards.jsonl \
+  --output-dir .lab-output/sku-generic-residual-evidence-20261010-v2
+.deps/sku-gliner-venv/bin/python -B experiments/sku-matching/trial_generic_residual_evidence_v1.py \
+  --backend jev --output-dir .lab-output/sku-generic-residual-jev-replay
+--backend gliner / nli でも同じ条件・窓を比較できる。
+--cache-recordsはJev/NLIの同一入力・同一モデル出力のみ再利用する。
+初回のv1要求・コードと修正後のv2コードは別に保持した。
+checkpoint展開後の出力ディレクトリは既存なので、再実行時は新しい名前にする。
+重み・venvはcheckpointに含めない。モデル取得provenanceとauditは収録する。
+
+次に進める判断
+単に全条件が不明で除外された結果を成功とはしない。
+支持の正確さと、正しく支持できる条件の割合を併記する。
+汎用関係判定で足りなければ、GLiNER2.5-multi-v1の原文スパン抽出を比較する。
+追加の条件辞書より、引用範囲・タスク表現・学習済み入力形式を先に検証する。
+Claudeの新しい残条件出力を受領したら同じ全文exporterへ差し替える。
+最終採用/除外は同じAU行で全条件が確認できたときの単純な集約に限定する。
+性能が固まったあと、新しい商品群で独立評価し、GCP上で費用と速度を測る。
