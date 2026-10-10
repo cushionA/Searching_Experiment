@@ -11,6 +11,10 @@ property the gates must hold regardless of any gold answer:
   sibling_swap         replacing one selected value with a sibling option never re-accepts
                        the row accepted for the original SKU
   unquoted_guard       dropping the source span of a selected value always yields review
+
+sibling_swap also compares each swap with the real case of the same fixed pair whose
+selection equals the swapped one (a "twin"). Variant attributes are dropped from swaps, so
+the twin is re-run without its attributes and must then reach the same decision and row.
 """
 from __future__ import annotations
 
@@ -96,7 +100,7 @@ def main():
 
     real_index = {}
     for cid, c in cases.items():
-        real_index.setdefault((c["rakuten_selected"]["raw_file"], selection(cid)), cid)
+        real_index.setdefault((c["dossier_id"], c["rakuten_selected"]["raw_file"], selection(cid)), cid)
     for method in ("A", "B"):
         evaluators, outcome, real = {}, Counter(), Counter()
         original_preds = preds[f"{method}-{primary}"]
@@ -113,15 +117,29 @@ def main():
                 if r["decision"] == "matched" and same:
                     violations.append({"check": f"sibling_swap_{method}", "case_id": cid, "swap": swap,
                                        "row": r["top_row_key"]})
-                twin = real_index.get((ci["rakuten_selected"]["raw_file"],
+                twin = real_index.get((key, ci["rakuten_selected"]["raw_file"],
                                        tuple(x["value"] for x in swapped["rakuten_selected"]["axes"])))
-                if twin:
-                    t = original_preds[twin]
-                    real["agrees_with_real_case" if (t["decision"], t["top_row_key"]) == (r["decision"], r["top_row_key"])
-                         else "differs_from_real_case"] += 1
+                if not twin:
+                    real["no_twin"] += 1
+                    continue
+                got = (r["decision"], r["top_row_key"])
+                if got == (original_preds[twin]["decision"], original_preds[twin]["top_row_key"]):
+                    real["agrees_with_twin"] += 1
+                    continue
+                bare = copy.deepcopy(cases[twin])
+                bare["rakuten_selected"]["variant_attributes"] = []
+                t = gates.run_method(method, bare, facts[key], primary, evaluators[key])
+                if got == (t["decision"], t["top_row_key"]):
+                    real["differs_only_by_twin_attributes"] += 1
+                else:
+                    real["differs_from_twin_without_attributes"] += 1
+                    violations.append({"check": f"sibling_swap_twin_{method}", "case_id": cid, "twin": twin,
+                                       "swap": swap, "swap_result": list(got),
+                                       "twin_without_attributes": [t["decision"], t["top_row_key"]]})
         checks[f"sibling_swap_{method}"] = {"swaps": sum(outcome.values()), "outcomes": dict(outcome),
-                                            "real_case_comparison": dict(real),
-                                            "violations": outcome["matched_same_row"]}
+                                            "real_twin_comparison": dict(real),
+                                            "violations": outcome["matched_same_row"]
+                                            + real["differs_from_twin_without_attributes"]}
 
     for method in ("A", "B"):
         evaluators, outcome = {}, Counter()
