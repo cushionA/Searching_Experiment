@@ -21,17 +21,36 @@ Authentication observations are saved in results/20261010-gemini-api-auth-probes
 The configured GOOGLE_CSE_KEY is present but all tested Vertex key-auth routes
 returned 401 CREDENTIALS_MISSING. Vertex execution therefore uses ADC.
 Gemini Developer API returned 403 SERVICE_DISABLED for consumer project number
-363571044248. Its human-readable project name has not been verified. --project
+363571044248. A subsequent first-case request returned API_KEY_SERVICE_BLOCKED.
+The remaining five requests were stopped; no inference response was received.
+Its human-readable project name has not been verified. --project
 groundingsearch applies only to the Vertex backend, not to Developer API billing.
 No successful model inference or SKU evaluation has yet been obtained.
 
 Prepare without API calls
 python3 -B experiments/sku-matching/trial_gemini_sku_smoke_v2.py --backend gemini --prepare-only --output-dir .lab-output/gemini-sku-smoke-v2-new-prepared
 
-After enabling Gemini API for the API key's project
+Current credential setup (official documentation checked 2026-10-10)
+The user's console shows Custom Search API selected and Gemini API greyed out.
+The precise reason for the disabled UI item is not established by the screenshot.
+Do not reuse the Custom Search key by adding Gemini to a shared API restriction.
+The current official Gemini key creation process requires a service-account-bound
+authorization key. Create a dedicated key in Google AI Studio for groundingsearch
+(import the project if it is not listed) and configure it as GEMINI_API_KEY.
+AI Studio creates the service-account binding and Gemini restriction for new keys.
+References:
+https://ai.google.dev/gemini-api/docs/api-key
+https://docs.cloud.google.com/docs/authentication/api-keys
+Key creation:
+https://aistudio.google.com/api-keys
+
+After provisioning GEMINI_API_KEY in the execution environment
 python3 -B experiments/sku-matching/trial_gemini_sku_smoke_v2.py --backend gemini --output-dir .lab-output/gemini-sku-smoke-v2-new-run
 Activation page:
 https://console.developers.google.com/apis/api/generativelanguage.googleapis.com/overview?project=363571044248
+
+API key restrictions page:
+https://console.cloud.google.com/apis/credentials?project=363571044248
 
 With GCP ADC instead
 python3 -m pip install google-auth requests

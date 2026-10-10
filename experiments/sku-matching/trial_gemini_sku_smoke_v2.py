@@ -162,7 +162,7 @@ def main() -> int:
     ap.add_argument("--backend", choices=("vertex", "gemini"), default="vertex")
     ap.add_argument("--project", default="groundingsearch")
     ap.add_argument("--location", default="global")
-    ap.add_argument("--api-key-env", default="GOOGLE_CSE_KEY")
+    ap.add_argument("--api-key-env", default="GEMINI_API_KEY")
     ap.add_argument("--input-zip", type=Path, default=DEFAULT_ZIP)
     ap.add_argument("--output-dir", type=Path, required=True)
     ap.add_argument("--prepare-only", action="store_true")
