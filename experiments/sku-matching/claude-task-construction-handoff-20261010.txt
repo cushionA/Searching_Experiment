@@ -5,11 +5,11 @@ Claude Code 並列検証ハンドオフ — SKU判定タスク構築
 固定済みの商品ペアを前提に、楽天の1選択SKUを、同一AU URLの全SKU選択肢と商品ページ根拠に照らして判定するタスク構造を実装・検証する。優先は構築品質と実運用上の誤受理防止。SKU判定前の商品検索や別URLへの再ルーティングは行わない。提案書だけで終わらず、2方式以上をCPUで実装し、source-preservation testを通してから診断評価を行う。
 
 開始手順
-- handoff元ブランチは `codex/sku-model-comparison-20261009`、基準コミットは `8e10f14`。rootがこのブランチへpushした後、rootから共有されたURLでcloneして以下を実行する。
+- handoff元ブランチは `codex-sku-model-comparison-20261009`、基準コミットは `8e10f14`。rootがこのブランチへpushした後、rootから共有されたURLでcloneして以下を実行する。
   1. `git clone https://github.com/cushionA/Searching_Experiment.git Searching_Experiment`
   2. `cd Searching_Experiment`
-  3. `git fetch origin codex/sku-model-comparison-20261009`
-  4. `git worktree add ../Searching_Experiment-claude-task -b claude/task-construction origin/codex/sku-model-comparison-20261009`
+  3. `git fetch origin codex-sku-model-comparison-20261009`
+  4. `git worktree add ../Searching_Experiment-claude-task -b claude/task-construction origin/codex-sku-model-comparison-20261009`
   5. `cd ../Searching_Experiment-claude-task` とし、`git merge-base --is-ancestor 8e10f14 HEAD` が成功することを確認する。
 - rootが用意した `experiments/sku-matching/results/20261010-claude-task-checkpoint.zip` を、リポジトリルートへ展開する。ZIPは136 payload files / 142,123,313 uncompressed bytes / 11,397,724 archive bytes、SHA-256=`89909023f95fa211f4b45b54749b9a464d08f8313186a1ae3e64df13608096d4`。隣接する `20261010-claude-task-checkpoint.manifest.json`（SHA-256=`a273cc7fe471d9283ab1df4048ced90d6207ed80ea1f1cf1be7c39128044ac46`）のアーカイブSHA/サイズ/ファイル数を照合し、payload 136 files / 142,123,313 bytes、source code base commit `8e10f145574d86afd8c7682ba246db9327abc4a4` を確認する。ZIP側も `(cd experiments/sku-matching/results && sha256sum -c 20261010-claude-task-checkpoint.zip.sha256)` で確認する。ZIPを `unzip -n -q experiments/sku-matching/results/20261010-claude-task-checkpoint.zip -d .` で展開し、manifest内の136 payload各SHAとCRC検証状態を確認する。`.lab-output/` 以下の参照構造を保つ。既存ファイルを上書きしない。
 - CPU補足 `experiments/sku-matching/results/20261010-cpu-minimal-claims.zip`（127,320 bytes、SHA-256=`c5b184e734ee19cbe69b0a36c4b2867fd9d1cf2950571136d802a18e1cefd80a`）も隣接manifest/sha256と照合して同じルートへ展開する。125条件×2形式の250生出力、freeze、コード、入力、集計を含む。clone/worktree/manifest/ZIPが見つからなければ、既知の数値や別ファイルで代替して進めず、手順を報告する。AGENTS.mdを最初に読む。

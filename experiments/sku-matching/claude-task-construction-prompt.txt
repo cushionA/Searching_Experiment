@@ -7,8 +7,8 @@
 1. rootから共有されたURLでcloneし、push済みhandoff branchをfetchして独立worktreeを作る:
    `git clone https://github.com/cushionA/Searching_Experiment.git Searching_Experiment`
    `cd Searching_Experiment`
-   `git fetch origin codex/sku-model-comparison-20261009`
-   `git worktree add ../Searching_Experiment-claude-task -b claude/task-construction origin/codex/sku-model-comparison-20261009`
+   `git fetch origin codex-sku-model-comparison-20261009`
+   `git worktree add ../Searching_Experiment-claude-task -b claude/task-construction origin/codex-sku-model-comparison-20261009`
    `cd ../Searching_Experiment-claude-task`
    `git merge-base --is-ancestor 8e10f14 HEAD`
 2. チェックポイントZIPをリポジトリルートへ展開する前に、handoff記載のmanifestとZIP sidecarを照合する。期待ZIP SHA-256=`89909023f95fa211f4b45b54749b9a464d08f8313186a1ae3e64df13608096d4`、136 payload files / 142,123,313 uncompressed bytes / 11,397,724 archive bytes。隣接manifest SHA-256=`a273cc7fe471d9283ab1df4048ced90d6207ed80ea1f1cf1be7c39128044ac46`、source code base commit=`8e10f145574d86afd8c7682ba246db9327abc4a4` を確認する。`(cd experiments/sku-matching/results && sha256sum -c 20261010-claude-task-checkpoint.zip.sha256)` を通し、`unzip -n -q experiments/sku-matching/results/20261010-claude-task-checkpoint.zip -d .` で展開する。`.lab-output/` の相対パスを保ち、既存ファイルを上書きしない。manifest内の各payload SHAも検証する。欠落/不一致なら報告して止める。
