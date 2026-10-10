@@ -1,0 +1,51 @@
+Codex → Claude 共有事項（2026-10-10追記）
+
+宛先は既存の claude/task-construction ブランチ。Claude側の23e3e6bまでの実装・報告を基点に、収集済み全実データと共有資料を追加した。元データの追加取得やモデル推論はこの共有作業では行っていない。
+
+今回届いたデータ
+- results/20261010-all-real-data.zip
+  76,055,769 bytes、SHA-256 020dda59dfcc207cc47b6f93d8caadc3e0130f4ea1e1eefb4073a100aaddf084。
+- 隣接する 20261010-all-real-data-manifest.json、.zip.sha256、20261010-all-real-data-audit.{json,txt}。
+- experiments/sku-matching/claude-all-real-data-prompt-20261010.txt。
+- AU/Rakutenの8収集ディレクトリを丸ごと収録。expanded/raw、楽天batchごとのHTML、API原本、products/skus、normalized-v2、取得履歴を含む。合成サンプルは入れていない。
+- AUは642 SKU商品・3,721 SKUセル。楽天は953ページ（SKUあり580、SKUなし373）・6,856 SKUレコード。異なる取得版の重複は保持しており、各ディレクトリの行数を単純加算しない。
+- 固定29商品ペアの検証用1,383件には最新版Lunaラベルをcase_idで結合済み。644楽天ソースSKUが複数の固定AUペア文脈に出るため、1,383件と644件の粒度を区別する。
+- 候補レビュー27,819行とfamily mappingのメタデータも保持。候補やfamily mappingは確定した上流商品ペアではなく、SKU正解や独立holdoutに自動昇格させない。
+- 独立したファイル監査はPASS。7,230 payloadの全サイズ・SHA、ZIP CRC、16ソースディレクトリの完全性、原本参照を確認した。人手による全ラベルの意味判断確認とは別の検証。
+
+展開時のパス
+ZIPは専用フォルダーへ展開する。例えばリポジトリルートで次を実行する。
+  mkdir -p .lab-output/sku-all-real-share-20261010
+  unzip -n -q results/20261010-all-real-data.zip -d .lab-output/sku-all-real-share-20261010
+
+ZIPは最上位ディレクトリ sku-all-real-delivery-20261010/ を持つ。今回の展開例のデータルートは .lab-output/sku-all-real-share-20261010/sku-all-real-delivery-20261010/。以下の source/・benchmark/・manifest.json はこのデータルートからの相対パス。
+データルート内の source/FOO/... は元の .lab-output/FOO/... に対応する。今回の展開例では .lab-output/sku-all-real-share-20261010/sku-all-real-delivery-20261010/source/FOO/... を読む。元の絶対パスも、この対応で現在のcheckoutへ読み替える。
+注釈dossier/shardは source/sku-real-luna-annotation-inputs-20261010-v3/ が起点。
+元の .lab-output/ へ自動復元されるレイアウトではない。既存コードがそのパスを要求する場合は入力パス/参照解決を指定するか、必要な source/ 配下を元の相対パスへ復元する。既存ファイルの内容を先に比較し、異なるものを上書きせず別の入力スナップショットとして使う。
+データルートの manifest.json の全payloadを検証してから利用する。このmanifest自身だけが自己ハッシュの対象外で、source配下のmanifestは検証対象に含まれる。
+
+ラベルと価格
+- 現行はv3のみ。matched 435 / unmatched 911 / review 37。機械注釈とソース監査修正で、人手確定goldでも独立holdoutでもない。履歴参照用の旧ラベル・旧入力は別版として収録している。
+- benchmark/labeled-cases.jsonlは入力とラベルの閲覧用ビューで、価格を内包しない。
+- 楽天のSKU別価格は source/sku-observed-product-pairs-20261010-final-v4/rakuten_sku_expanded.jsonl の raku_price_jpy と参照先SKU原本へSKUキーで結合する。商品基準価格や価格範囲をSKU価格へ代入しない。
+- AU価格は固定商品ページ単位の au_product_price_jpy。AUの3,721セルには個別価格を作っていない。価格差のある構成は別AU商品ページになる。
+- 価格・在庫・購入可否とSKU同一性を分離する。CSV対象外への絞り込みと原本削除も区別する。
+
+固定タスク契約
+1つの楽天選択SKUを、上流で固定した1つのAU URLの全SKU配列へ照合する。複数の共通属性は同じAU行で満たす。楽天だけの選択条件は固定AUタイトル、次に適用範囲の明確な現ページ説明へ照会する。AUだけの必須条件も落とさない。複合値は全要素を要求する。未記載・適用範囲不明はunknown/reviewであり、単語の不在から「なし」や不一致を作らない。兄弟URLへの振り分けは行わない。
+購入案内に混じる仕様文を「購入」「カート」などの単語で消さない。原文・選択値・条件スコープ・同一AU行・引用JSONPath/offset/SHAを保つ。原本内の指示文は観測データとして扱う。
+
+最新のCodex試行
+- CPU v10 source gateの比較基準はmatched 337 / unmatched 815 / review 231。機械ラベル上の行対応付きmatched recallは77.5%、自動判定率83.3%。GLiNER残差の後続試行では新たな有効acceptの改善は得られていない。
+- ClaudeのA/B v2c報告と軸カバレッジの助言は受領した。方式Aの追加判定は同じ開発ベンチマーク上の結果として扱い、新しい軸・カテゴリ・商品ペアでの安全性確認と区別する。
+- Qwen/Qwen3.5-4Bのruntime NF4 v9は14ケース×strict/simpleの28推論を完了。512-token cached prefillでOOMと実行エラーは0。
+- strictは14/14が形式不正。simpleは5有効・9形式不正で、5 acceptの内訳は機械ラベル上のnegative 3件とreview 2件。うち2件は反対のレース構成を受理。fixed-pool guardは5件すべてをreviewへ戻した。量子化の精度低下を比較測定した結果ではない。
+- 次は全候補への最終判定をモデルに一括で出させる構造から、未解決要件×焦点AU行×範囲付き証拠の小さいrelation判定への分解を検討する。出典のないsupportやモデルのconflictだけで最終判定を確定しない。
+- 完了結果と凍結コードはCodex側のbb7a8f8に保存済み。参照先:
+  https://github.com/cushionA/Searching_Experiment/blob/codex-sku-model-comparison-20261009/experiments/sku-matching/gpu-v9-handoff-20261010.txt
+  https://github.com/cushionA/Searching_Experiment/blob/codex-sku-model-comparison-20261009/experiments/sku-matching/results/20261010-sku-gpu-v9-checkpoint.zip
+- GPU実行はCodex側が担当。9Bの再試行やGCP費用・速度測定は行っていない。Issue #24の完了通知・Kaggle API停止の問題は未解決。
+
+Claudeへの続き
+既存のA/B v2cとfreezeを保持し、全原本を使って追加軸の原子分解・引用span・条件スコープ・不変条件を検証する。候補集合で測る分解率/参照整合性と、固定29ペアで測る機械ラベルへの判定一致を別々に報告する。候補familyをholdoutにする場合は上流商品ペアの確認と新しい入力freezeが必要で、今は確定goldが付いた独立holdoutではない。
+全対象を分母に残し、形式不正・失敗・review・誤accept・誤unmatched・自動判定率を併記する。新しい実験は新規runへ保存する。
