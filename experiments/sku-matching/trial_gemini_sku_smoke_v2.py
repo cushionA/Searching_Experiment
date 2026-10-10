@@ -157,11 +157,17 @@ def safe_json(data: Any, secret: str) -> bytes:
     return (raw + "\n").encode("utf-8")
 
 
-def vertex_credentials(secret_env: str) -> tuple[Any, str]:
+def vertex_credentials(secret_env: str, token_env: str = "GCP_ACCESS_TOKEN") -> tuple[Any, str]:
     import google.auth
+    from google.oauth2 import credentials as oauth_credentials
     from google.oauth2 import service_account
 
     scopes = ["https://www.googleapis.com/auth/cloud-platform"]
+    token = os.environ.get(token_env, "").strip()
+    if token:
+        if any(c.isspace() for c in token):
+            raise ValueError(f"{token_env} must contain only the access token; credential details suppressed")
+        return oauth_credentials.Credentials(token=token), "oauth_access_token_secret_environment"
     raw = os.environ.get(secret_env, "")
     if raw:
         try:
@@ -183,6 +189,7 @@ def main() -> int:
     ap.add_argument("--location", default="global")
     ap.add_argument("--api-key-env", default="GEMINI_API_KEY")
     ap.add_argument("--service-account-json-env", default="GCP_SERVICE_ACCOUNT_JSON")
+    ap.add_argument("--access-token-env", default="GCP_ACCESS_TOKEN")
     ap.add_argument("--input-zip", type=Path, default=DEFAULT_ZIP)
     ap.add_argument("--output-dir", type=Path, required=True)
     ap.add_argument("--prepare-only", action="store_true")
@@ -216,8 +223,11 @@ def main() -> int:
                 import google.auth.transport.requests
             except ImportError:
                 raise ValueError("Vertex backend needs google-auth and requests installed") from None
-            credentials, credential_source = vertex_credentials(args.service_account_json_env)
+            credentials, credential_source = vertex_credentials(args.service_account_json_env, args.access_token_env)
             manifest["vertex_credential_source"] = credential_source
+            if credential_source == "oauth_access_token_secret_environment":
+                credentials = credentials.with_quota_project(args.project)
+                secret = os.environ.get(args.access_token_env, "").strip()
             session = google.auth.transport.requests.AuthorizedSession(credentials, max_refresh_attempts=0)
             base = "https://aiplatform.googleapis.com" if args.location == "global" else f"https://{args.location}-aiplatform.googleapis.com"
             endpoint = f"{base}/v1/projects/{args.project}/locations/{args.location}/publishers/google/models/{MODEL}:generateContent"

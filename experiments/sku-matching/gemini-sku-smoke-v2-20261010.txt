@@ -3,8 +3,9 @@ Gemini SKU smoke: 1 request per case
 Base: codex-sku-generic-model-gates-20261010 / 696adc4.
 Work branch: codex-sku-gemini-vertex-smoke-20261010.
 Model requested: gemini-3.5-flash-lite (user confirmed).
-Current proposed route: service-account authentication -> Vertex model API,
-project groundingsearch, location global. Execution credentials are still missing.
+Vertex route: service-account authentication, user ADC, or a temporary OAuth token
+-> Vertex model API, project groundingsearch, location global.
+Execution credentials are still missing.
 
 The user authorized combining the previously separate model tasks for efficiency.
 The model receives the selected Rakuten SKU, all fixed AU SKU rows, and complete
@@ -74,6 +75,24 @@ The Vertex inputs have also been prepared without API calls. Offline credential
 controls passed: valid service-account parsing and signing; malformed JSON,
 invalid PEM, and wrong credential type rejected without secret disclosure; ADC
 fallback when the secret variable is empty. No live credential was used.
+
+OAuth alternative without a service account
+In Cloud Shell signed in as the user's Google account, obtain a short-lived token:
+gcloud auth print-access-token
+Configure only the returned token as the GCP_ACCESS_TOKEN environment secret.
+The runner uses it as a Bearer credential for Vertex, redacts its value from
+artifacts, and cannot refresh it. Default token lifetime is about one hour.
+For this token route, the quota-project header is set to the requested project.
+Selection order is explicit token -> service-account JSON -> existing ADC.
+For a local environment, user ADC can instead be configured with:
+gcloud auth application-default login
+gcloud auth application-default set-quota-project groundingsearch
+The user's identity must have permission to invoke the Vertex model in the
+groundingsearch project. No Agent Engine deployment or new account is needed.
+https://docs.cloud.google.com/docs/authentication/rest
+https://docs.cloud.google.com/docs/authentication/set-up-adc-local-dev-environment
+Offline OAuth controls passed: Bearer header, secret redaction, multiline-token
+rejection, and ADC fallback. No live token or model inference was used.
 
 Six inference requests at most; no automatic retries. HTTP errors stop subsequent
 requests. Failed/unrequested cases are not_evaluated, not model exclusions.
