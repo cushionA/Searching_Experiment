@@ -1,0 +1,79 @@
+2026-10-10 SKU condition task checkpoint
+
+Task contract
+Product pairing is upstream. One case is one selected Rakuten SKU, including its
+SKU price, versus the complete AU SKU array of one fixed AU URL. No sibling URL
+rerouting. All conditions must hold on one row, including AU-only conditions.
+Identity, price, availability and CSV eligibility are separate.
+
+Operational tasks
+1. Verify Rakuten-only conditions against the fixed AU title/current description;
+   exclude an incompatible Rakuten SKU record, rather than deleting its axis.
+2. Match the remaining selected SKU to one AU row using shared conditions.
+The diagnostic implementation binds a partial row with shared axes first, then
+checks missing/reverse conditions. A partial candidate is not a proved match.
+
+Qwen3.5-4B NF4 condition trial
+Private Kaggle ref superbigzabuton/sku-qwen35-4b-nf4-condition-v1, version 1.
+Model revision 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a.
+Source input: 14 previously used real diagnostic cases, all 798 AU row references.
+Prepared v1 had six incorrect frozen-JSONL leaf offsets and failed preflight; it
+was not uploaded. The corrected v2 preserved that failed local snapshot.
+v2 has 27 condition packets; all 97 quotes and requirement source spans verified.
+Actual pinned-tokenizer maximum prompt: 1,293 tokens, no truncation, limit 2,048.
+Runtime uses cached chunked prefill, three cyclic digit-label permutations and
+last-token logits. Model output supplies relation proposals, not IDs/citations.
+
+Execution passed: 27/27 packets, 81/81 classifications, zero runtime errors or
+OOM. CUDA: two Tesla T4 devices; runtime NF4 verified, 346 quantized linear
+modules, logical parameter coverage 85.88% (embeddings/other parameters are not
+all quantized). This is not a single-GPU or Google Cloud performance measurement.
+All artifact hashes and 81 prompt hashes/rendered hashes/token lengths match
+the frozen preflight.
+Raw consensus: support 11, conflict 0, unknown 16. Eight of the unknowns have
+answer-symbol permutation disagreement. No calibrated confidence claim.
+Final host decisions: review 14/14, auto-match 0, auto-decision coverage 0.
+Eleven cases have host blockers (7 no unique partial candidate, 4 unresolved
+conditional applicability); the other three have mandatory unknown conditions.
+This is not an accuracy success, and zero false accepts at zero coverage is not
+evidence that the goal has been met. No new GPU trial was submitted afterward.
+
+CPU/source work
+Claude v2c A/B gate outputs were reproduced byte for byte on 1,383 cases. A full
+is 435 matched / 910 unmatched / 38 review; B is 251 / 906 / 226. These remain
+reused machine-label development diagnostics, not independently confirmed gold.
+The 98 A accepts added over v10 have complete requirements and 1,189 verified
+source spans. Six AU pile-fabric conditions can be reconciled against exact
+selected Rakuten variant fabric attributes; the frozen gate's attribute parser
+only handled dimensions and omitted that evidence path.
+
+Novel real source bundle
+Four family candidates: HG020 hangers, FCA2160 mats, MBC005 wagon top,
+QAA0100 steps. 56 actual Rakuten SKUs (35/6/6/9), 13 distinct AU rows, 229 row
+references over the cases. Fixed AU arrays, stock, item prices and Rakuten
+selected variant prices are retained. Exact raw variants/options/price/attributes
+and all 6,746 evidence spans independently verified. No labels generated.
+Canonical source v2 final hashes:
+inputs.jsonl 8caf26cd8e916454db3fcaf15c6c783c50320721349272b04e651b03a7bd55c5
+source-cases.jsonl ae7fbb2e02bb19d09bb9745645cce199bb8c0c04ebcc71277124858b2999454e
+A source family audit is not proof of a SKU counterpart or human holdout gold.
+The unmodified condition-task adapter emitted 162 packets, but all 56 cases have
+review blockers. That bundle was not uploaded or inferred. Parser coverage,
+evidence scope and quantity/conditional modeling need improvement first.
+
+Next investigation
+The user requested a Deep Research prompt focused on non-generative models.
+See non-llm-deep-research-prompt-20261010.txt: extraction, NLI, bi-/cross-encoders,
+typed matching, real hard negatives, independent family splits and coverage.
+Next work is to improve the attribute and scope inventories before more inference.
+
+Reproduction and restore
+condition checkpoint ZIP uses input/, runner/, runtime/, evaluation/, audit/,
+novel/, design/ namespaces. They are portable archive namespaces, not original
+repository paths. Read the included manifests before placing files.
+The preparer imports the frozen Claude gate sources. Set CLAUDE_CODE
+to the extracted runner/claude-gate directory; the checkpoint includes exact
+source snapshots and hashes. Raw source references resolve against the original
+repository checkout and the earlier all-real archive; this checkpoint does not
+duplicate all raw captures. Do not mistake restore namespaces for raw paths.
+Kaggle job is complete; do not resubmit it to retrieve results.
