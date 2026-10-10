@@ -1,0 +1,206 @@
+{
+  "schema": "luna-sku-round-v1",
+  "task_version": "selected-sku-scoped-bidirectional-v1",
+  "mode": "scoped",
+  "created_utc": "2026-10-10T16:11:37.376101+00:00",
+  "backend": "collaboration_subagent_api_emulation",
+  "model_requested": "gpt-6-luna",
+  "served_model_id": null,
+  "model_runtime_verified": false,
+  "usage": null,
+  "routing_evidence": "explicit model override recorded separately in dispatch.json",
+  "source_input_hashes": {
+    "zip_sha256": "c69bb28d88968cc48e1a8f6d825c4794cd1d44d0cedd0e685f141a186e9c683a",
+    "cases_jsonl_sha256": "1b758132e051d96f7672476236d3cdfc49ab689984fe78de91e3c517fbdf39e3",
+    "products_jsonl_sha256": "7ed4e6896fba2a47fb262aa855c6cb335b4e5a64ff7713c4cbf6f44a85837acf"
+  },
+  "selection": {
+    "selection_rule": "cohort in {legacy,novel}; 2-15 AU rows; exclude development AU product IDs and Rakuten URLs; unique Rakuten URL, AU product, dossier, source_sku_key; SHA256(case_id) order; prioritize distinct Rakuten source document",
+    "requested_count": 12,
+    "selected_count": 12,
+    "shortfall": 0,
+    "development_case_ids": [
+      "case-01f6fc36ae1d87a566c7",
+      "case-00b9d1779fa191acf665",
+      "case-00dea3bdb495becd1dd4",
+      "case-03eb5704d3bb159f757b",
+      "case-0a4bfea40c723b989ecc",
+      "case-4c8b1efa512c2a2c76e0"
+    ],
+    "excluded_development_au_product_ids": [
+      "337595272",
+      "597651839",
+      "653618158",
+      "695394169",
+      "764777172",
+      "778818828"
+    ],
+    "excluded_development_rakuten_urls": [
+      "https://item.rakuten.co.jp/weimall/ctk/",
+      "https://item.rakuten.co.jp/weimall/fca2160/",
+      "https://item.rakuten.co.jp/weimall/feb002/",
+      "https://item.rakuten.co.jp/weimall/fia6080/",
+      "https://item.rakuten.co.jp/weimall/pc013/",
+      "https://item.rakuten.co.jp/weimall/stp01/"
+    ],
+    "selected_case_ids": [
+      "case-aab02eae648f680d29b3",
+      "case-d7df86a192e4d9d8ae22",
+      "case-f65150b5dc310c69f809",
+      "case-531832427225b2ceca6a",
+      "case-0b8f48a174e50f5d9bf9",
+      "case-70d52fe3904a87140a21",
+      "case-854f83898a6d8023f734",
+      "case-88d26222c9665771ab65",
+      "case-6d0e42e63c2cf9ef1298",
+      "case-4a9f6fc8e92c39935f3c",
+      "case-bcfab52a0b502eb3780e",
+      "case-8adeff600efd6e8c77b5"
+    ],
+    "selected_au_product_ids": [
+      "704284693",
+      "703280256",
+      "763454500",
+      "724257905",
+      "509691375",
+      "483077897",
+      "688640726",
+      "398508173",
+      "309329265",
+      "537246358",
+      "772334211",
+      "469850986"
+    ],
+    "selected_rakuten_urls": [
+      "https://item.rakuten.co.jp/weimall/fek002/",
+      "https://item.rakuten.co.jp/weimall/fel001/",
+      "https://item.rakuten.co.jp/weimall/mbc005/",
+      "https://item.rakuten.co.jp/weimall/hg020/",
+      "https://item.rakuten.co.jp/weimall/fgc005/",
+      "https://item.rakuten.co.jp/weimall/fef008/",
+      "https://item.rakuten.co.jp/weimall/fgc010/",
+      "https://item.rakuten.co.jp/weimall/qaa0100/",
+      "https://item.rakuten.co.jp/weimall/a19e/",
+      "https://item.rakuten.co.jp/weimall/pt0033/",
+      "https://item.rakuten.co.jp/weimall/pt0038/",
+      "https://item.rakuten.co.jp/weimall/faa006/"
+    ],
+    "selected_source_documents": [
+      ".lab-output/sku-real-rakuten-20261010/known20/fek002-521abeac.html",
+      ".lab-output/sku-real-rakuten-20261010/same-store-linked/fel001-53aeadb3.html",
+      ".lab-output/sku-real-rakuten-20261010-expanded/batch003/raw/mbc005-43f3f763.html",
+      ".lab-output/sku-real-rakuten-20261010-expanded/batch001/raw/hg020-7970de1c.html",
+      ".lab-output/sku-real-rakuten-20261010/known20/fgc005-37a5b2bf.html",
+      ".lab-output/sku-real-rakuten-20261010/same-store-linked/fef008-45580d61.html",
+      ".lab-output/sku-real-rakuten-20261010/same-store-linked/fgc010-c2f2cf87.html",
+      ".lab-output/sku-real-rakuten-20261010/known20/qaa0100-cecfb803.html",
+      ".lab-output/sku-real-rakuten-20261010/same-store-linked/a19e-5da2c9a3.html",
+      ".lab-output/sku-real-rakuten-20261010/known20/pt0033-e761e230.html",
+      ".lab-output/sku-real-rakuten-20261010/known20/pt0038-1cf7cdcd.html",
+      ".lab-output/sku-real-rakuten-20261010/known20/faa006-84a056e1.html"
+    ],
+    "selected_source_sku_keys": [
+      "https://item.rakuten.co.jp/weimall/fek002/#FEK004DGY:39",
+      "https://item.rakuten.co.jp/weimall/fel001/#FEL001DAB:1",
+      "https://item.rakuten.co.jp/weimall/mbc005/#mbc005wh:2",
+      "https://item.rakuten.co.jp/weimall/hg020/#hg020gy4:18",
+      "https://item.rakuten.co.jp/weimall/fgc005/#FGC014IG:23",
+      "https://item.rakuten.co.jp/weimall/fef008/#FEF004BRFEF007BR:8",
+      "https://item.rakuten.co.jp/weimall/fgc010/#FGC010DG:3",
+      "https://item.rakuten.co.jp/weimall/qaa0100/#QAA0200B:0",
+      "https://item.rakuten.co.jp/weimall/a19e/#A19GBE_:4",
+      "https://item.rakuten.co.jp/weimall/pt0033/#30621:6",
+      "https://item.rakuten.co.jp/weimall/pt0038/#PT0038OL:0",
+      "https://item.rakuten.co.jp/weimall/faa006/#36662:1"
+    ],
+    "unique_au_products": 12,
+    "unique_rakuten_urls": 12,
+    "unique_rakuten_source_documents": 12,
+    "unique_source_sku_keys": 12,
+    "input_hashes": {
+      "zip_sha256": "c69bb28d88968cc48e1a8f6d825c4794cd1d44d0cedd0e685f141a186e9c683a",
+      "cases_jsonl_sha256": "1b758132e051d96f7672476236d3cdfc49ab689984fe78de91e3c517fbdf39e3",
+      "products_jsonl_sha256": "7ed4e6896fba2a47fb262aa855c6cb335b4e5a64ff7713c4cbf6f44a85837acf"
+    }
+  },
+  "planned_calls": 12,
+  "inputs_sha256": "603f56997e35ac34a59b3e89c1c6a05c20004bb15bafe5af51dc603389e42798",
+  "source_contexts_sha256": "1fea0c8405f38124dc5137e6c7997f34d0e00699a6fea9f221941b45c5fc3251",
+  "labels_read": false,
+  "independent_gold_used": false,
+  "new_web_fetches": 0,
+  "entries": [
+    {
+      "case_id": "case-aab02eae648f680d29b3",
+      "request": "requests/01.json",
+      "answer": "answers/01.json",
+      "request_sha256": "536cdbbc7f8ba8e9e048473ff9a18871889d9c7f67760b31f30b125c64beb460"
+    },
+    {
+      "case_id": "case-d7df86a192e4d9d8ae22",
+      "request": "requests/02.json",
+      "answer": "answers/02.json",
+      "request_sha256": "0242cc7e19bd58f35ae07e0c3fd529d73f8e8c5476f07356b1989411b7c2536b"
+    },
+    {
+      "case_id": "case-f65150b5dc310c69f809",
+      "request": "requests/03.json",
+      "answer": "answers/03.json",
+      "request_sha256": "93f5eda13ceba34ade8b1ca0e27d617bd2dec782885934423b15e921d93ff795"
+    },
+    {
+      "case_id": "case-531832427225b2ceca6a",
+      "request": "requests/04.json",
+      "answer": "answers/04.json",
+      "request_sha256": "e3a5468a0303d55ac650da6e71eb033cdfc0d59401a949032fffada30d97c5cd"
+    },
+    {
+      "case_id": "case-0b8f48a174e50f5d9bf9",
+      "request": "requests/05.json",
+      "answer": "answers/05.json",
+      "request_sha256": "4ff1803d47f71d4269d968cd7f4c3f3dbb2b09aef116f7bd416c208e26e93317"
+    },
+    {
+      "case_id": "case-70d52fe3904a87140a21",
+      "request": "requests/06.json",
+      "answer": "answers/06.json",
+      "request_sha256": "14ff73ddb2c939ac0be4a58f7b8b42a1d4d56834c78b235f2a2f7c3e547c1c25"
+    },
+    {
+      "case_id": "case-854f83898a6d8023f734",
+      "request": "requests/07.json",
+      "answer": "answers/07.json",
+      "request_sha256": "8dfbafd734a347c97ad1132cd99cccbf61f177a1d021d3f41cb453ecf6a6a155"
+    },
+    {
+      "case_id": "case-88d26222c9665771ab65",
+      "request": "requests/08.json",
+      "answer": "answers/08.json",
+      "request_sha256": "e80e549a2dc134352e3840385796ca52575ae02e2cb3a602d385927d08836357"
+    },
+    {
+      "case_id": "case-6d0e42e63c2cf9ef1298",
+      "request": "requests/09.json",
+      "answer": "answers/09.json",
+      "request_sha256": "8ee9b326589bad09ce9d97280ed1787aba16da3e749d01d20d536fe67f52f689"
+    },
+    {
+      "case_id": "case-4a9f6fc8e92c39935f3c",
+      "request": "requests/10.json",
+      "answer": "answers/10.json",
+      "request_sha256": "cd69a1baca548840375d49c0f3bbb492a2ba8170cbd848bae235eece653eae5a"
+    },
+    {
+      "case_id": "case-bcfab52a0b502eb3780e",
+      "request": "requests/11.json",
+      "answer": "answers/11.json",
+      "request_sha256": "1c641d8998f3a4ddd1303541d273b5c9652260a7ccc04dfef8a2f34e9b46645e"
+    },
+    {
+      "case_id": "case-8adeff600efd6e8c77b5",
+      "request": "requests/12.json",
+      "answer": "answers/12.json",
+      "request_sha256": "20475b4197e0f03fb4329d09ac5982d80b9c947fd194ebcd9694011c972fa57a"
+    }
+  ]
+}

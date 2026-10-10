@@ -1,0 +1,240 @@
+[
+  {
+    "case_id": "case-01f6fc36ae1d87a566c7",
+    "verdict": "unresolved",
+    "row_key": null,
+    "reason": "色・150×135cmは一致する候補があるが、固定AU商品にレースカーテンなしを確認する根拠が足りないため保留。記述欠如からなしを推測しない。",
+    "issues": [
+      {
+        "row_index": 2,
+        "side": "au",
+        "condition_index": 0,
+        "reason": "応答はAU行自身のカラー値を同じ行のau_checksでsupport根拠にしており、AU行の自己存在supportです。",
+        "source_ids": [
+          "A:au:778818828:332504238:2:6:0"
+        ]
+      },
+      {
+        "row_index": 2,
+        "side": "au",
+        "condition_index": 1,
+        "reason": "応答はAU行自身のサイズ値を同じ行のau_checksでsupport根拠にしており、AU行の自己存在supportです。",
+        "source_ids": [
+          "A:au:778818828:332504238:2:6:1"
+        ]
+      }
+    ],
+    "review_evidence_ids": [
+      "S42",
+      "S50",
+      "A:au:778818828:332504238:2:6:0",
+      "A:au:778818828:332504238:2:6:1",
+      "R2"
+    ],
+    "independent_review_sha256": "871efcde877e535ebeef9cf3bce15c5aac20216252b2449c4f1a8be33fc960c0",
+    "review_method": "separate Luna source review plus parent verification of AU/Rakuten source ownership; not independent gold",
+    "raw_reviewer_verdict": "unresolved",
+    "parent_correction": "S sources are fixed AU text, selected_attributes are selected Rakuten SKU; raw reviewer text was retained separately."
+  },
+  {
+    "case_id": "case-00b9d1779fa191acf665",
+    "verdict": "reject",
+    "row_key": null,
+    "reason": "選択楽天SKUは4段。固定AU説明S46は3段タイプで、4段リンクS5は別商品。白の一致で段数矛盾を覆せない。",
+    "issues": [
+      {
+        "row_index": 4,
+        "side": "rakuten",
+        "condition_index": 0,
+        "reason": "選択値4段が、楽天商品仕様の「3段タイプ」と矛盾します。色が一致するAU白行をこの段数の選択SKUに対応づけられません。",
+        "source_ids": [
+          "S46",
+          "A:au:597651839:168445336:4:0:0"
+        ]
+      },
+      {
+        "row_index": 4,
+        "side": "au",
+        "condition_index": 0,
+        "reason": "応答はAU行自身のホワイト値を同じ行のau_checksでsupport根拠にしており、自己存在supportです。さらにその色の一致は段数の不一致を解消しません。",
+        "source_ids": [
+          "A:au:597651839:168445336:4:0:0"
+        ]
+      }
+    ],
+    "review_evidence_ids": [
+      "S46",
+      "S34",
+      "A:au:597651839:168445336:4:0:0",
+      "R0"
+    ],
+    "independent_review_sha256": "48d8f1db32ef3b7c05c991f5921f0a41dcc8ddb9cff39d134cffb3a9fa7d066f",
+    "review_method": "separate Luna source review plus parent verification of AU/Rakuten source ownership; not independent gold",
+    "raw_reviewer_verdict": "reject",
+    "parent_correction": "S sources are fixed AU text, selected_attributes are selected Rakuten SKU; raw reviewer text was retained separately."
+  },
+  {
+    "case_id": "case-00dea3bdb495becd1dd4",
+    "verdict": "reject",
+    "row_key": null,
+    "reason": "選択楽天SKUはセミダブル（幅120cm）、固定AU本文S3はシングル、寸法も幅97cm。サイズ不一致で除外。フラット形状と三つ折り構造だけを相互矛盾とした予測は過剰。",
+    "issues": [
+      {
+        "row_index": 1,
+        "side": "rakuten",
+        "condition_index": 1,
+        "reason": "セミダブルの選択値が、選択SKUの商品説明「こちらのページはシングルサイズです」およびシングル寸法と矛盾します。",
+        "source_ids": [
+          "S3",
+          "S31",
+          "S44",
+          "A:au:337595272:326826849:1:0:0"
+        ]
+      },
+      {
+        "row_index": 1,
+        "side": "rakuten",
+        "condition_index": 0,
+        "reason": "フラットタイプは三つ折り商品と両立し得ます。「三つ折りタイプ」という記載だけを根拠にタイプ条件をcontradictionとした応答は過剰です。",
+        "source_ids": [
+          "S19",
+          "S33"
+        ]
+      },
+      {
+        "row_index": 1,
+        "side": "au",
+        "condition_index": 0,
+        "reason": "応答はAU行自身のベージュ（パイル）値を同じ行のau_checksでsupport根拠にしており、自己存在supportです。",
+        "source_ids": [
+          "A:au:337595272:326826849:1:0:0"
+        ]
+      }
+    ],
+    "review_evidence_ids": [
+      "S3",
+      "S19",
+      "S31",
+      "S33",
+      "S44",
+      "A:au:337595272:326826849:1:0:0",
+      "R0",
+      "R1"
+    ],
+    "independent_review_sha256": "d7847118d07892a6414d26b217b405748e83f666bd110f5e3f8f6aa25cb73d8c",
+    "review_method": "separate Luna source review plus parent verification of AU/Rakuten source ownership; not independent gold",
+    "raw_reviewer_verdict": "reject",
+    "parent_correction": "S sources are fixed AU text, selected_attributes are selected Rakuten SKU; raw reviewer text was retained separately."
+  },
+  {
+    "case_id": "case-03eb5704d3bb159f757b",
+    "verdict": "reject",
+    "row_key": null,
+    "reason": "選択楽天SKUは70×50cm・21枚（パネル20＋ドア1）。固定AU商品は50×50cm・13枚（12＋1）で除外。",
+    "issues": [
+      {
+        "row_index": 0,
+        "side": "au",
+        "condition_index": 0,
+        "reason": "AU固定ページは13枚セット、楽天SKUは21枚セット。",
+        "source_ids": [
+          "S0",
+          "S3",
+          "S27",
+          "S28"
+        ]
+      },
+      {
+        "row_index": 0,
+        "side": "au",
+        "condition_index": 1,
+        "reason": "AU固定ページは50×50cm、楽天SKUは70×50cm。",
+        "source_ids": [
+          "S0",
+          "S3",
+          "S38",
+          "S41"
+        ]
+      },
+      {
+        "row_index": 1,
+        "side": "au",
+        "condition_index": 0,
+        "reason": "AU固定ページは13枚セット、楽天SKUは21枚セット。",
+        "source_ids": [
+          "S0",
+          "S3",
+          "S27",
+          "S28"
+        ]
+      },
+      {
+        "row_index": 1,
+        "side": "au",
+        "condition_index": 1,
+        "reason": "AU固定ページは50×50cm、楽天SKUは70×50cm。",
+        "source_ids": [
+          "S0",
+          "S3",
+          "S38",
+          "S41"
+        ]
+      },
+      {
+        "row_index": 1,
+        "side": "au",
+        "condition_index": 2,
+        "reason": "AU行1は透明で、楽天SKU条件の半透明と異なる。",
+        "source_ids": [
+          "A:au:653618158:319149609:1:0:0"
+        ]
+      }
+    ],
+    "review_evidence_ids": [
+      "S0",
+      "S3",
+      "S27",
+      "S28",
+      "S38",
+      "S41",
+      "A:au:653618158:319149609:0:0:0",
+      "A:au:653618158:319149609:1:0:0"
+    ],
+    "independent_review_sha256": "e1f05ecc99f6665447cbf96c99fff65847d62f093265deb098efdf1c74d51360",
+    "review_method": "separate Luna source review plus parent verification of AU/Rakuten source ownership; not independent gold",
+    "raw_reviewer_verdict": "reject",
+    "parent_correction": "S sources are fixed AU text, selected_attributes are selected Rakuten SKU; raw reviewer text was retained separately."
+  },
+  {
+    "case_id": "case-0a4bfea40c723b989ecc",
+    "verdict": "confirm",
+    "row_key": "au:695394169:305587038:2:0",
+    "reason": "楽天マーブルホワイト・直径80cmとAU行2の色、固定AU本文S21の直径80×高さ74cmが一致。選択属性80×80×74cmも一致。",
+    "issues": [],
+    "review_evidence_ids": [
+      "A0",
+      "S21"
+    ],
+    "independent_review_sha256": "cfaa8588a3d8af46ba84b3a29421aff74f9f86d1a19e9df1b5488b1384d903c9",
+    "review_method": "separate Luna source review plus parent verification of AU/Rakuten source ownership; not independent gold",
+    "raw_reviewer_verdict": "confirm",
+    "parent_correction": "S sources are fixed AU text, selected_attributes are selected Rakuten SKU; raw reviewer text was retained separately."
+  },
+  {
+    "case_id": "case-4c8b1efa512c2a2c76e0",
+    "verdict": "confirm",
+    "row_key": "au:764777172:327558278:0:0",
+    "reason": "楽天ナチュラル・64枚12畳とAU行0、固定AU本文S3/S31の64枚、S38の1枚60×60×厚さ1cmが一致。",
+    "issues": [],
+    "review_evidence_ids": [
+      "A0",
+      "S3",
+      "S31",
+      "S38"
+    ],
+    "independent_review_sha256": "44a187cb778ab2898574668be9ab754cc355f2e157f242ec7de0d19cb2073fa0",
+    "review_method": "separate Luna source review plus parent verification of AU/Rakuten source ownership; not independent gold",
+    "raw_reviewer_verdict": "confirm",
+    "parent_correction": "S sources are fixed AU text, selected_attributes are selected Rakuten SKU; raw reviewer text was retained separately."
+  }
+]

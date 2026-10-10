@@ -1,0 +1,43 @@
+Luna SKU APIエミュレーションの継続手順
+
+目的: 楽天の選択SKUと固定AU商品の個別選択を正しく対応させる。
+対象ブランチ: codex-sku-gemini-vertex-smoke-20261010
+最新証拠: results/20261010T160225Z-luna-task-improvement/report.txt
+採用7 / 除外9 / 保留2 / 未評価0。最新links.jsonlは同run直下。
+モデルは明示指定gpt-6-luna。実modelVersion/usageはsubagentツールで未提供。
+
+今回の変更は元Gemini runnerを変更しない。GCP tokenの値・headerは保存しない。
+既存ZIPは読み取り専用。新たなZIP、Web取得、Vertex推論は今回行っていない。
+
+入口: python3 -B experiments/sku-matching/trial_luna_sku_matching.py
+1 新しいrunを用意する（上書き不可）。固定6件はprepareのデフォルト。
+  prepare --round-dir NEW_UNIQUE_DIRECTORY
+  次の未見商品12件は、既評価の商品URL/ID/原文を除外する:
+  prepare --holdout --exclude-case-ids experiments/sku-matching/results/20261010T160225Z-luna-task-improvement/used-case-ids.json --round-dir NEW_UNIQUE_DIRECTORY
+2 各requests/NN.jsonを1件ずつ、fork_turns=none, model=gpt-6-lunaのsubagentへ渡す。
+  request以外・履歴・過去予測・gold・env・ネットワークを読ませない。
+  status/source_idsだけのJSONをanswers/NN.jsonへ1回保存する。起動toolの指定と
+  task_name/request SHA/配達時刻をdispatch.jsonへ記録。自己申告modelは検証に使わない。
+3 evaluate --round-dir DIR
+  raw回答の変更は拒否。同じ失敗の修正は入力/タスクを直し別runで評価する。
+4 prepare-signature --signature-stage signature-v2 --round-dir DIR
+  signature-v2-requests/NN.jsonのみ別の新規Lunaへ渡し、signature-v2-answersへ保存。
+  evaluate-signature --signature-stage signature-v2 --round-dir DIR
+5 別のLunaと親が選択条件・追加属性・固定AU原文をレビューする。
+  全caseを{case_id,verdict:confirm/reject/unresolved,row_key,reason,review_evidence_ids}で
+  DIR/final-reviews.jsonへ保存。非candidateをconfirmしてもリンクへ昇格しない。
+  色一致でも物理仕様が食い違うものは保留/除外。AU/Rakutenの原文所有者を混同しない。
+6 export --signature-stage signature-v2 --round-dir DIR --reviews DIR/final-reviews.json
+  唯一全support候補 + 非空寸法pass + 別レビューconfirmの一致行だけlinks.jsonlへ。
+  AUのskuInfo.skuIdはグリッドIDなので、個別SKUの識別には行/列座標を必ず使う。
+7 verify --round-dir DIR
+  unittest新規基盤を検証し、結果、要求/回答、レビュー、continuationを同branchへcommit/push。
+  python3 -B -m unittest discover -s tests -p 'test_lab*.py'
+
+API役に渡すのは1 requestだけ。親がgold/元証拠/他runを混ぜて採点しない。
+今回は12件の初見結果を寸法タスク改善にも使ったため、最終精度の独立holdoutと呼ばない。
+今後改善を評価するには、既使用商品を除外した未見集合、または別環境のgoldを使う。
+今回runの論理推論要求は46件で終了済み。バックグラウンド自動実行は設定していない。
+
+優先改善: 条件のfacet（表面と折構造等）の分離、否定/なしの原文確認、選択属性の
+単位不整合の検出、無ラベル寸法の部位判別。不足根拠で採用数だけ増やさない。

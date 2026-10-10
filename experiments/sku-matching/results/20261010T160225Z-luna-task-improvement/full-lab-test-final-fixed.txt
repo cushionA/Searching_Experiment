@@ -1,0 +1,366 @@
+...................................EE..EEE...E...F.....ssss..........................................................s..s........................................................................................s.....s.E..........................................s........s.s.s..ssssssssss............E...EE.E...................EEE...........................................................sssssssssssss.................EEE......checkpoint 0/3 failures=0
+checkpoint 3/3 failures=1
+.checkpoint 0/3 failures=0
+checkpoint 2/3 failures=0
+checkpoint 2/3 failures=0
+checkpoint 3/3 failures=0
+..checkpoint 0/3 failures=0
+checkpoint 3/3 failures=0
+......s.s............................................................................................
+======================================================================
+ERROR: test_execute_flushes_failures_and_writes_complete_manifest (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_execute_flushes_failures_and_writes_complete_manifest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_bonsai_sku_runner.py", line 193, in test_execute_flushes_failures_and_writes_complete_manifest
+    bundle = bonsai.preflight(FROZEN_DIR, PLAN)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Searching_Experiment/experiments/sku-matching/kaggle_bonsai_sku_runner.py", line 242, in preflight
+    plan = read_json(plan_path)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Searching_Experiment/experiments/sku-matching/kaggle_bonsai_sku_runner.py", line 61, in read_json
+    value = json.loads(path.read_text(encoding="utf-8"))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/Searching_Experiment/.lab-output/sku-kaggle-gpu-20261010-v5/bonsai2-t4-test-plan.json'
+
+======================================================================
+ERROR: test_frozen_validator_requires_literal_quotes_from_both_sides (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_frozen_validator_requires_literal_quotes_from_both_sides)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_bonsai_sku_runner.py", line 181, in test_frozen_validator_requires_literal_quotes_from_both_sides
+    bundle = bonsai.preflight(FROZEN_DIR, PLAN)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Searching_Experiment/experiments/sku-matching/kaggle_bonsai_sku_runner.py", line 242, in preflight
+    plan = read_json(plan_path)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Searching_Experiment/experiments/sku-matching/kaggle_bonsai_sku_runner.py", line 61, in read_json
+    value = json.loads(path.read_text(encoding="utf-8"))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/Searching_Experiment/.lab-output/sku-kaggle-gpu-20261010-v5/bonsai2-t4-test-plan.json'
+
+======================================================================
+ERROR: test_plan_and_frozen_bundle_pins (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_plan_and_frozen_bundle_pins)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_bonsai_sku_runner.py", line 63, in test_plan_and_frozen_bundle_pins
+    plan = bonsai.read_json(PLAN)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Searching_Experiment/experiments/sku-matching/kaggle_bonsai_sku_runner.py", line 61, in read_json
+    value = json.loads(path.read_text(encoding="utf-8"))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/Searching_Experiment/.lab-output/sku-kaggle-gpu-20261010-v5/bonsai2-t4-test-plan.json'
+
+======================================================================
+ERROR: test_plan_rejects_unpinned_model_or_fork (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_plan_rejects_unpinned_model_or_fork)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_bonsai_sku_runner.py", line 74, in test_plan_rejects_unpinned_model_or_fork
+    plan = bonsai.read_json(PLAN)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Searching_Experiment/experiments/sku-matching/kaggle_bonsai_sku_runner.py", line 61, in read_json
+    value = json.loads(path.read_text(encoding="utf-8"))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/Searching_Experiment/.lab-output/sku-kaggle-gpu-20261010-v5/bonsai2-t4-test-plan.json'
+
+======================================================================
+ERROR: test_preflight_rejects_modified_frozen_config (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_preflight_rejects_modified_frozen_config)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_bonsai_sku_runner.py", line 88, in test_preflight_rejects_modified_frozen_config
+    shutil.copy2(FROZEN_DIR / name, copied / name)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/shutil.py", line 475, in copy2
+    copyfile(src, dst, follow_symlinks=follow_symlinks)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/shutil.py", line 260, in copyfile
+    with open(src, 'rb') as fsrc:
+         ^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/Searching_Experiment/.lab-output/sku-kaggle-gpu-20261010-v2/dataset-upload/inputs.jsonl'
+
+======================================================================
+ERROR: test_strict_parser_uses_existing_validator_and_preserves_server_body (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_strict_parser_uses_existing_validator_and_preserves_server_body)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_bonsai_sku_runner.py", line 169, in test_strict_parser_uses_existing_validator_and_preserves_server_body
+    bundle = bonsai.preflight(FROZEN_DIR, PLAN)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Searching_Experiment/experiments/sku-matching/kaggle_bonsai_sku_runner.py", line 242, in preflight
+    plan = read_json(plan_path)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Searching_Experiment/experiments/sku-matching/kaggle_bonsai_sku_runner.py", line 61, in read_json
+    value = json.loads(path.read_text(encoding="utf-8"))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/Searching_Experiment/.lab-output/sku-kaggle-gpu-20261010-v5/bonsai2-t4-test-plan.json'
+
+======================================================================
+ERROR: test_lab_gpu_condition_tasks_v1 (unittest.loader._FailedTest.test_lab_gpu_condition_tasks_v1)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_lab_gpu_condition_tasks_v1
+Traceback (most recent call last):
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/workspace/Searching_Experiment/tests/test_lab_gpu_condition_tasks_v1.py", line 11, in <module>
+    SPEC.loader.exec_module(prep)
+  File "/workspace/Searching_Experiment/experiments/sku-matching/prepare_gpu_condition_tasks_v1.py", line 23, in <module>
+    from sku_gate_atoms import atomize, compact  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'sku_gate_atoms'
+
+
+======================================================================
+ERROR: test_existing_source_bundles_are_read_only (test_lab_integrated_sku_inputs_v1.IntegratedSkuInputsV1Tests.test_existing_source_bundles_are_read_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_integrated_sku_inputs_v1.py", line 58, in test_existing_source_bundles_are_read_only
+    before = [hashlib.sha256(p.read_bytes()).hexdigest() for p in paths]
+                             ^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1019, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/Searching_Experiment/.lab-output/sku-nonllm-binary-gate-20261010-v5/input/legacy/cases.jsonl'
+
+======================================================================
+ERROR: test_blind_cases_have_resolved_dossiers_and_stable_ids (test_lab_luna_annotation.LunaAnnotationInputTests.test_blind_cases_have_resolved_dossiers_and_stable_ids)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_luna_annotation.py", line 79, in test_blind_cases_have_resolved_dossiers_and_stable_ids
+    cases = read_jsonl(OUTPUT / "cases.jsonl")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Searching_Experiment/tests/test_lab_luna_annotation.py", line 13, in read_jsonl
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/Searching_Experiment/.lab-output/sku-real-luna-annotation-inputs-20261010-v2/cases.jsonl'
+
+======================================================================
+ERROR: test_blind_inputs_exclude_commercial_and_label_fields (test_lab_luna_annotation.LunaAnnotationInputTests.test_blind_inputs_exclude_commercial_and_label_fields)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_luna_annotation.py", line 101, in test_blind_inputs_exclude_commercial_and_label_fields
+    manifest = json.loads((OUTPUT / "manifest.json").read_text(encoding="utf-8"))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/Searching_Experiment/.lab-output/sku-real-luna-annotation-inputs-20261010-v2/manifest.json'
+
+======================================================================
+ERROR: test_group_split_and_shard_membership_are_atomic (test_lab_luna_annotation.LunaAnnotationInputTests.test_group_split_and_shard_membership_are_atomic)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_luna_annotation.py", line 123, in test_group_split_and_shard_membership_are_atomic
+    cases = read_jsonl(OUTPUT / "cases.jsonl")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Searching_Experiment/tests/test_lab_luna_annotation.py", line 13, in read_jsonl
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/Searching_Experiment/.lab-output/sku-real-luna-annotation-inputs-20261010-v2/cases.jsonl'
+
+======================================================================
+ERROR: test_case_and_unique_sku_counts_are_not_conflated (test_lab_luna_package.LunaRealPackageTests.test_case_and_unique_sku_counts_are_not_conflated)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_luna_package.py", line 16, in test_case_and_unique_sku_counts_are_not_conflated
+    cases = package.read_jsonl(package.INPUTS / "cases.jsonl")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Searching_Experiment/experiments/sku-matching/package_luna_real_evaluation.py", line 87, in read_jsonl
+    with path.open(encoding="utf-8") as stream:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/Searching_Experiment/.lab-output/sku-real-luna-annotation-inputs-20261010-v2/cases.jsonl'
+
+======================================================================
+ERROR: test_decide_and_derived_reports_are_frozen_and_source_pinned (test_lab_luna_package.LunaRealPackageTests.test_decide_and_derived_reports_are_frozen_and_source_pinned)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_luna_package.py", line 58, in test_decide_and_derived_reports_are_frozen_and_source_pinned
+    decide_payloads, decide = package.collect_decide_outputs(package.DECIDE_EXCLUSIVE_DIR)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Searching_Experiment/experiments/sku-matching/package_luna_real_evaluation.py", line 421, in collect_decide_outputs
+    checked_add(payloads, summary_path)
+  File "/workspace/Searching_Experiment/experiments/sku-matching/package_luna_real_evaluation.py", line 196, in checked_add
+    add_payload(payloads, path)
+  File "/workspace/Searching_Experiment/experiments/sku-matching/package_luna_real_evaluation.py", line 137, in add_payload
+    raise ValueError(f"Missing, symlinked, or out-of-repository source: {source}")
+ValueError: Missing, symlinked, or out-of-repository source: /workspace/Searching_Experiment/.lab-output/sku-real-luna-decide-evaluation-20261010-v1/newexclusive/summary.json
+
+======================================================================
+ERROR: test_model_outputs_pin_current_code_and_manifest_hashes (test_lab_luna_package.LunaRealPackageTests.test_model_outputs_pin_current_code_and_manifest_hashes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_luna_package.py", line 53, in test_model_outputs_pin_current_code_and_manifest_hashes
+    payloads, summaries = package.collect_model_outputs()
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Searching_Experiment/experiments/sku-matching/package_luna_real_evaluation.py", line 387, in collect_model_outputs
+    checked_add(payloads, path)
+  File "/workspace/Searching_Experiment/experiments/sku-matching/package_luna_real_evaluation.py", line 196, in checked_add
+    add_payload(payloads, path)
+  File "/workspace/Searching_Experiment/experiments/sku-matching/package_luna_real_evaluation.py", line 137, in add_payload
+    raise ValueError(f"Missing, symlinked, or out-of-repository source: {source}")
+ValueError: Missing, symlinked, or out-of-repository source: /workspace/Searching_Experiment/.lab-output/sku-real-luna-model-evaluation-20261010-v1/minilm/summary.json
+
+======================================================================
+ERROR: test_builds_all_56_rows_without_labels (test_lab_novel_real_inputs_v1.NovelRealInputTests.test_builds_all_56_rows_without_labels)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_novel_real_inputs_v1.py", line 19, in test_builds_all_56_rows_without_labels
+    manifest = prep.prepare(out)
+               ^^^^^^^^^^^^^^^^^
+  File "/workspace/Searching_Experiment/experiments/sku-matching/prepare_novel_real_inputs_v1.py", line 271, in prepare
+    audit = json.loads(AUDIT.read_text(encoding="utf-8"))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/Searching_Experiment/.lab-output/sku-novel-pair-source-audit-20261010-v1/report.json'
+
+======================================================================
+ERROR: test_exact_source_spans_and_series_links_are_scoped_out (test_lab_novel_real_inputs_v1.NovelRealInputTests.test_exact_source_spans_and_series_links_are_scoped_out)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_novel_real_inputs_v1.py", line 40, in test_exact_source_spans_and_series_links_are_scoped_out
+    prep.prepare(out)
+  File "/workspace/Searching_Experiment/experiments/sku-matching/prepare_novel_real_inputs_v1.py", line 271, in prepare
+    audit = json.loads(AUDIT.read_text(encoding="utf-8"))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/Searching_Experiment/.lab-output/sku-novel-pair-source-audit-20261010-v1/report.json'
+
+======================================================================
+ERROR: test_source_arrays_and_counts_are_complete (test_lab_novel_real_inputs_v1.NovelRealInputTests.test_source_arrays_and_counts_are_complete)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_novel_real_inputs_v1.py", line 71, in test_source_arrays_and_counts_are_complete
+    prep.prepare(out)
+  File "/workspace/Searching_Experiment/experiments/sku-matching/prepare_novel_real_inputs_v1.py", line 271, in prepare
+    audit = json.loads(AUDIT.read_text(encoding="utf-8"))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/Searching_Experiment/.lab-output/sku-novel-pair-source-audit-20261010-v1/report.json'
+
+======================================================================
+FAIL: test_offline_diagnostics_guards (test_lab_bot_diagnostics.BotDiagnosticsTests.test_offline_diagnostics_guards)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_bot_diagnostics.py", line 95, in test_offline_diagnostics_guards
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 1 != 0 : ✔ HTTP 202 AWS challenge is not a successful content response (3.757506ms)
+✔ security-check response retains concrete Cloudflare evidence (0.673131ms)
+✔ HTTP 200 visible human verification text is classified as a challenge (0.97734ms)
+✔ explicit bot-abuse IQ-test challenge is detected without matching general IQ-test text (0.314662ms)
+✔ shop pages mentioning robots, confirmation, and CAPTCHA scripts are not challenges (0.197788ms)
+✔ Shift_JIS content is decoded before classifying and extracting the title (0.511757ms)
+✔ errors remain charged on resume; exhausted budgets cannot be reset (8.917137ms)
+✔ verification finds a corrupted response body (3.593457ms)
+✖ robots redirects are charged to one key and follow only explicitly allowed origins (16.753672ms)
+✔ robots cross-origin redirects outside the allowlist make no request to that origin (5.008819ms)
+✔ robots unavailable probe admits only configured unavailable cases, never explicit denial (0.324065ms)
+✔ HTTP sites remain fail-closed when robots is unavailable (6.080355ms)
+✔ 4play saves captured response bodies and DOM and classifies only an observed document response (3.594461ms)
+✔ 4play DOM without a captured document response remains navigation_unverified (0.767503ms)
+✔ 4play preserves the captured HTTP status and classifies a challenge visible only in the rendered DOM (2.518414ms)
+✔ 4play reports detector fixture controls as unsupported without opening a browser (2.723403ms)
+✔ Camoufox fourplay records native context events and real response status (5.619622ms)
+✔ browser observation HTTP path skips robots and records cross-origin redirect hops on the same key (4.413429ms)
+✔ browser observation admits cross-origin POST assets and redirects without diagnostic UA suffix (0.250254ms)
+✔ legacy browser profile keeps same-origin GET, resource, robots, and redirect gates (0.307008ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 19
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5079.078731
+
+✖ failing tests:
+
+test at experiments/bot-diagnostics/runner.test.mjs:66:1
+✖ robots redirects are charged to one key and follow only explicitly allowed origins (16.753672ms)
+  Error: Cannot find module 'robots-parser'
+  Require stack:
+  - /workspace/Searching_Experiment/.deps/bot-diagnostics/package.json
+      at Module._resolveFilename (node:internal/modules/cjs/loader:1517:15)
+      at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+      at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+      at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+      at Module._load (node:internal/modules/cjs/loader:1294:5)
+      at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+      at Module.require (node:internal/modules/cjs/loader:1617:12)
+      at require (node:internal/modules/helpers:153:16)
+      at robots (file:///workspace/Searching_Experiment/experiments/bot-diagnostics/runner.mjs:106:18)
+      at async TestContext.<anonymous> (file:///workspace/Searching_Experiment/experiments/bot-diagnostics/runner.test.mjs:79:18) {
+    code: 'MODULE_NOT_FOUND',
+    requireStack: [ '/workspace/Searching_Experiment/.deps/bot-diagnostics/package.json' ]
+  }
+
+
+----------------------------------------------------------------------
+Ran 530 tests in 18.294s
+
+FAILED (failures=1, errors=17, skipped=37)
+attempted 1 bounded case requests; scope=smoke only
+attempted 1 bounded case requests; scope=smoke only
+Wrote /tmp/tmpyavaj_nm/legacy.ipynb (58,845 bytes; 1 manifest image references)

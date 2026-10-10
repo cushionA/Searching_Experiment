@@ -1,0 +1,78 @@
+[
+  {
+    "case_id": "case-01f6fc36ae1d87a566c7",
+    "verdict": "unresolved",
+    "row_key": null,
+    "reason": "AU row_index 2・column_index 6 はユーカリグリーンと幅150×丈135cm(1枚)で楽天の選択色・寸法に一意に合います。ただし候補が未指定なので昇格せず、また「レースカーテンなし」はAU側の行条件に存在せず照合できません。",
+    "issues": [
+      {
+        "row_index": 2,
+        "side": "au",
+        "condition_index": 0,
+        "reason": "応答はAU行自身のカラー値を同じ行のau_checksでsupport根拠にしており、AU行の自己存在supportです。",
+        "source_ids": ["A:au:778818828:332504238:2:6:0"]
+      },
+      {
+        "row_index": 2,
+        "side": "au",
+        "condition_index": 1,
+        "reason": "応答はAU行自身のサイズ値を同じ行のau_checksでsupport根拠にしており、AU行の自己存在supportです。",
+        "source_ids": ["A:au:778818828:332504238:2:6:1"]
+      }
+    ],
+    "review_evidence_ids": ["S42", "S50", "A:au:778818828:332504238:2:6:0", "A:au:778818828:332504238:2:6:1", "R2"]
+  },
+  {
+    "case_id": "case-00b9d1779fa191acf665",
+    "verdict": "reject",
+    "row_key": null,
+    "reason": "楽天の選択条件は4段だが、選択SKUの物理仕様は3段タイプで、段数属性4とも食い違います。AUで色が合う白行も3段の商品仕様に属し、4段の選択SKUと同一商品とは認められません。",
+    "issues": [
+      {
+        "row_index": 4,
+        "side": "rakuten",
+        "condition_index": 0,
+        "reason": "選択値4段が、楽天商品仕様の「3段タイプ」と矛盾します。色が一致するAU白行をこの段数の選択SKUに対応づけられません。",
+        "source_ids": ["S46", "A:au:597651839:168445336:4:0:0"]
+      },
+      {
+        "row_index": 4,
+        "side": "au",
+        "condition_index": 0,
+        "reason": "応答はAU行自身のホワイト値を同じ行のau_checksでsupport根拠にしており、自己存在supportです。さらにその色の一致は段数の不一致を解消しません。",
+        "source_ids": ["A:au:597651839:168445336:4:0:0"]
+      }
+    ],
+    "review_evidence_ids": ["S46", "S34", "A:au:597651839:168445336:4:0:0", "R0"]
+  },
+  {
+    "case_id": "case-00dea3bdb495becd1dd4",
+    "verdict": "reject",
+    "row_key": null,
+    "reason": "選択条件・属性はセミダブルですが、楽天の選択SKUに紐づく商品説明と寸法はシングルです。AU行1のベージュ（パイル）は色・生地の候補としても、選択されたセミダブルSKUとのサイズ矛盾を解消できません。",
+    "issues": [
+      {
+        "row_index": 1,
+        "side": "rakuten",
+        "condition_index": 1,
+        "reason": "セミダブルの選択値が、選択SKUの商品説明「こちらのページはシングルサイズです」およびシングル寸法と矛盾します。",
+        "source_ids": ["S3", "S31", "S44", "A:au:337595272:326826849:1:0:0"]
+      },
+      {
+        "row_index": 1,
+        "side": "rakuten",
+        "condition_index": 0,
+        "reason": "フラットタイプは三つ折り商品と両立し得ます。「三つ折りタイプ」という記載だけを根拠にタイプ条件をcontradictionとした応答は過剰です。",
+        "source_ids": ["S19", "S33"]
+      },
+      {
+        "row_index": 1,
+        "side": "au",
+        "condition_index": 0,
+        "reason": "応答はAU行自身のベージュ（パイル）値を同じ行のau_checksでsupport根拠にしており、自己存在supportです。",
+        "source_ids": ["A:au:337595272:326826849:1:0:0"]
+      }
+    ],
+    "review_evidence_ids": ["S3", "S19", "S31", "S33", "S44", "A:au:337595272:326826849:1:0:0", "R0", "R1"]
+  }
+]
