@@ -261,6 +261,32 @@ class GateTests(unittest.TestCase):
             self.assertEqual(out["decision"], "review", method)
             self.assertEqual(out["rows"][0]["atom_results"][0]["status"], "unknown")
 
+    def test_forced_binary_never_reviews_and_keeps_gate_decisions(self):
+        fam = {"カラー": ("赤", "青"), "オプション": ("なし", "毛布セット")}
+        rows = [[("カラー", "赤")], [("カラー", "青")]]
+        # Unknown add-on (毛布セット): closed world drops the SKU, open world matches the colour row.
+        facts, case = make_pair(rows, [("カラー", "赤"), ("オプション", "毛布セット")], fam)
+        for method in ("A", "B"):
+            out = run(method, facts, case)
+            self.assertEqual(out["decision"], "review")
+            self.assertEqual(out["forced_binary"]["closed_world"]["decision"], "unmatched")
+            self.assertEqual((out["forced_binary"]["open_world"]["decision"], out["forced_binary"]["open_world"]["top_row_key"]),
+                             ("matched", "au:1:9:0:0"))
+        # Unknown absence (なし) is the default state, so closed world keeps the row too.
+        facts, case = make_pair(rows, [("カラー", "赤"), ("オプション", "なし")], fam)
+        out = run("A", facts, case)
+        self.assertEqual(out["forced_binary"]["closed_world"]["top_row_key"], "au:1:9:0:0")
+        # Gate decisions pass through unchanged.
+        for selected, decision in (("赤", "matched"), ("緑", "unmatched")):
+            facts, case = make_pair(rows, [("カラー", selected)], {"カラー": ("赤", "青", "緑")})
+            for method in ("A", "B"):
+                out = run(method, facts, case)
+                validator(f"sku_gate_{method.lower()}_output.schema.json").validate(out)
+                self.assertEqual(out["decision"], decision)
+                for policy in gates.FORCED_POLICIES:
+                    self.assertEqual(out["forced_binary"][policy]["decision"], decision)
+                    self.assertEqual(out["forced_binary"][policy]["top_row_key"], out["top_row_key"])
+
     def test_price_and_stock_fields_do_not_change_decisions(self):
         facts, case = make_pair([[("カラー", "赤")], [("カラー", "青")]], [("カラー", "赤")], {"カラー": ("赤", "青")})
         before = run("A", facts, case)

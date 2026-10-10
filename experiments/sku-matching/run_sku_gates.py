@@ -30,11 +30,11 @@ import sku_gates as gates  # noqa: E402
 ROOT = HERE.parents[1]
 ANNOTATION = ".lab-output/sku-real-luna-annotation-inputs-20261010-v3"
 ARRAYS = ".lab-output/sku-observed-product-pairs-20261010-final-v4/au_product_sku_arrays.jsonl"
-DEFAULT_OUT = ".lab-output/sku-gate-tasks-20261010-v3"
+DEFAULT_OUT = ".lab-output/sku-gate-tasks-20261010-v4"
 CODE_FILES = ["experiments/sku-matching/sku_gate_sources.py", "experiments/sku-matching/sku_gate_atoms.py",
               "experiments/sku-matching/sku_gates.py", "experiments/sku-matching/run_sku_gates.py",
               "experiments/sku-matching/evaluate_sku_gates.py", "experiments/sku-matching/check_sku_gate_invariants.py",
-              "tests/test_lab_sku_gates.py"]
+              "experiments/sku-matching/build_raw_pair_inputs.py", "tests/test_lab_sku_gates.py"]
 SCHEMA_FILES = ["experiments/sku-matching/schemas/sku_gate_product_context.schema.json",
                 "experiments/sku-matching/schemas/sku_gate_case_input.schema.json",
                 "experiments/sku-matching/schemas/sku_gate_a_output.schema.json",
@@ -155,7 +155,7 @@ def predict(out: Path):
                 if config != gates.PRIMARY_CONFIG:
                     result = {k: result[k] for k in ("schema_version", "task_version", "method", "source_config", "case_id",
                                                      "dossier_id", "au_product_id", "decision", "top_row_key", "reason",
-                                                     "candidate_row_keys", "row_status_counts")}
+                                                     "candidate_row_keys", "row_status_counts", "forced_binary")}
                 rows.append(result)
             name = f"predictions/{method}-{config}.jsonl"
             write_jsonl_new(out / name, rows)

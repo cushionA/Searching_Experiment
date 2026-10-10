@@ -23,7 +23,7 @@ from sku_gate_atoms import (atomize, color_base_vocab, compact, code_crosswalk, 
                             fact_family, atom_value_key, title_facts, NAMED_SIZES, SIZE_CODES)
 import sku_gate_sources as src
 
-TASK_VERSION = "sku-gate-task-v3"
+TASK_VERSION = "sku-gate-task-v4"
 CURTAIN_COMPONENTS = ("drape", "lace")
 # Separately packed items a contents list can enumerate. Built-in features
 # (armrest, top board, bookshelf, handle) are never inferred from list absence.
@@ -893,6 +893,58 @@ def _requirement_card(atom: dict) -> dict:
 # Methods
 # ---------------------------------------------------------------------------
 
+FORCED_POLICIES = ("closed_world", "open_world")
+
+
+def forced_binary(policy: str, reqs: list[dict], rows: list[dict], row_status: dict, details: dict,
+                  decision: str, top: str | None) -> dict:
+    """Two-way decision for an automated pipeline without a review queue.
+
+    A gate decision (matched / unmatched) is kept. Only a review case is forced:
+    - closed_world: what the AU page does not state is not offered. An unknown requirement fails
+      unless it is an absence (なし); a page-specification conflict fails the row.
+    - open_world: only an explicit contradiction fails a row; unknown and mixed sources pass.
+    Among passing rows the one with the most supported requirements wins, then the most
+    verified AU-only atoms, then the lowest row index (reported as a tie).
+    """
+    if decision != "review":
+        return {"decision": decision, "top_row_key": top, "reason": "gate_decision", "passing_rows": int(bool(top))}
+    by_id = {r["requirement_id"]: r for r in reqs}
+    passing = []
+    for index, row in enumerate(rows):
+        key = row["row_key"]
+        if row_status[key] == "conflict":
+            continue
+        results, au_only, derived = details[key]
+        ok = True
+        for res in results:
+            status = res["status"]
+            if status == "support":
+                continue
+            req = by_id[res["requirement_id"]]
+            if policy == "open_world" and status in ("unknown", "ambiguous"):
+                continue
+            if policy == "closed_world":
+                if status == "unknown" and req["type"] == "component_presence" and req["value"] is False:
+                    continue
+                if status == "ambiguous" and any(e.get("source") == "au_row" and e.get("relation") == "support"
+                                                 for e in res.get("evidence", [])):
+                    continue
+            ok = False
+            break
+        if ok and policy == "closed_world" and derived:
+            ok = False
+        if ok:
+            passing.append((-sum(r["status"] == "support" for r in results),
+                            -sum(a.get("status") == "support" for a in au_only), index, key))
+    if not passing:
+        return {"decision": "unmatched", "top_row_key": None, "reason": f"{policy}_no_row_passes", "passing_rows": 0}
+    passing.sort()
+    tie = len(passing) > 1 and passing[0][:2] == passing[1][:2]
+    return {"decision": "matched", "top_row_key": passing[0][3],
+            "reason": f"{policy}_{'tie_lowest_row_index' if tie else 'best_supported_row'}", "passing_rows": len(passing)}
+
+
 def _row_summary(row_key, status, results, au_only, derived, detail):
     first_block = None
     for res in results:
@@ -1015,6 +1067,8 @@ def run_method(method: str, case_input: dict, facts: PairFacts, config_name: str
     if decision != "review" and any(not r.get("span") for r in reqs):
         # A requirement whose selected value has no verified source span cannot decide either way.
         decision, top, reason = "review", None, "unquoted_requirement"
+    forced = {policy: forced_binary(policy, reqs, facts.rows, row_status, details, decision, top)
+              for policy in FORCED_POLICIES}
     focus = set(full_rows) | ({top} if top else set())
     if not focus:
         ranked = sorted(facts.rows, key=lambda r: (row_status[r["row_key"]] == "conflict",
@@ -1029,6 +1083,7 @@ def run_method(method: str, case_input: dict, facts: PairFacts, config_name: str
             "source_config": config_name, "case_id": case_input["case_id"], "dossier_id": case_input["dossier_id"],
             "au_product_id": case_input["au_product_id"], "decision": decision, "top_row_key": top,
             "reason": reason, "candidate_row_keys": full_rows, "row_status_counts": _counts(row_status),
+            "forced_binary": forced,
             "requirements": [_requirement_card(r) for r in reqs],
             "rakuten_provenance": {k: sel[k] for k in ("url", "raw_file", "sha256", "variant_id", "source_row_key",
                                                        "source_sku_key", "sku_record_key", "source_row_index")},

@@ -158,6 +158,22 @@ def main():
         checks[f"unquoted_guard_{method}"] = {"decided_cases": sum(outcome.values()), "outcomes": dict(outcome),
                                               "violations": sum(v for k, v in outcome.items() if k != "review_unquoted")}
 
+    for method in ("A", "B"):
+        for policy in ("closed_world", "open_world"):
+            bad, by_row = [], defaultdict(set)
+            for cid, p in preds[f"{method}-{primary}"].items():
+                f = p["forced_binary"][policy]
+                if f["decision"] not in ("matched", "unmatched") or (
+                        p["decision"] != "review" and (f["decision"], f["top_row_key"]) != (p["decision"], p["top_row_key"])):
+                    bad.append(cid)
+                if f["decision"] == "matched":
+                    by_row[(p["dossier_id"], f["top_row_key"])].add(selection(cid))
+            shared = sum(len(v) > 1 for v in by_row.values())
+            checks[f"forced_{policy}_{method}"] = {
+                "forced_from_review": sum(p["decision"] == "review" for p in preds[f"{method}-{primary}"].values()),
+                "rows_accepted_for_several_selections_reported": shared, "violations": len(bad)}
+            violations += [{"check": f"forced_{policy}_{method}", "case_id": c} for c in bad]
+
     summary = {"created_at_utc": datetime.now(timezone.utc).isoformat(), "labels_read": False,
                "freeze_sha256": src.sha256_file(out / "freeze.json"),
                "prediction_manifest_sha256": src.sha256_file(out / "predictions" / "manifest.json"),

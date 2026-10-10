@@ -49,6 +49,9 @@ def score(rows: list[tuple[dict, dict]]) -> dict:
     true_delete = sum(g["decision"] == "unmatched" for g, _ in deletes)
     review = pred["review"]
     gold_review_rows = [(g, p) for g, p in rows if g["decision"] == "review"]
+    decided_gold = [(g, p) for g, p in rows if g["decision"] != "review"]
+    correct = sum((g["decision"] == "matched" and p["decision"] == "matched" and p["top_row_key"] in g["matching_au_row_keys"])
+                  or (g["decision"] == "unmatched" and p["decision"] == "unmatched") for g, p in decided_gold)
     return {
         "n": n, "gold": dict(gold), "pred": dict(pred),
         "accepts": len(accepts), "confirmed_true_accepts": tp, "wrong_row_accepts": wrong_row,
@@ -64,6 +67,8 @@ def score(rows: list[tuple[dict, dict]]) -> dict:
         "unmatched_recall": ratio(true_delete, gold["unmatched"]),
         "review_rate": ratio(review, n), "coverage_auto_decision_rate": ratio(n - review, n),
         "gold_review_handling": dict(Counter(p["decision"] for _, p in gold_review_rows)),
+        "gold_decided_rows": len(decided_gold), "correct_on_gold_decided": correct,
+        "accuracy_on_gold_decided_review_counts_wrong": ratio(correct, len(decided_gold)),
     }
 
 
@@ -87,7 +92,14 @@ def load_predictions(out: Path, manifest: dict) -> dict[str, dict]:
         if src.sha256_file(path) != meta["sha256"]:
             raise RuntimeError(f"Prediction file changed: {name}")
         stem = Path(name).stem  # A-full
-        systems[stem] = {r["case_id"]: r for r in src.read_jsonl(path)}
+        rows = src.read_jsonl(path)
+        systems[stem] = {r["case_id"]: r for r in rows}
+        for policy in ("closed_world", "open_world"):
+            if rows and "forced_binary" in rows[0]:
+                # Two-way variant for an automated pipeline: the gate decision, or the forced one on review.
+                systems[f"{stem}@{policy}"] = {r["case_id"]: {**r, **{k: r["forced_binary"][policy][k] for k in
+                                                                      ("decision", "top_row_key", "reason")}}
+                                               for r in rows}
     return systems
 
 
@@ -140,7 +152,8 @@ def main():
     disagreements = []
     for cid in sorted(cases):
         g = labels[cid]
-        for system in ("A-full", "B-full"):
+        for system in [s for s in ("A-full", "B-full", "A-full@closed_world", "A-full@open_world",
+                                   "B-full@closed_world", "B-full@open_world") if s in systems]:
             p = systems[system][cid]
             wrong = (p["decision"] == "matched" and (g["decision"] != "matched" or p["top_row_key"] not in g["matching_au_row_keys"])) \
                 or (p["decision"] == "unmatched" and g["decision"] == "matched")
@@ -176,11 +189,13 @@ def main():
                "results": results, "gold_review_audit": review_audit}
     runner.write_new(eval_dir / "summary.json", json.dumps(summary, ensure_ascii=False, indent=2) + "\n")
     runner.write_jsonl_new(eval_dir / "disagreements.jsonl", disagreements)
-    for system in ("baseline_v10_hybrid", "A-full", "B-full"):
+    for system in [s for s in ("baseline_v10_hybrid", "A-full", "B-full", "A-full@closed_world", "A-full@open_world",
+                               "B-full@closed_world", "B-full@open_world") if s in results]:
         r = results[system]["all"]["row"]
         print(system, {k: r[k] for k in ("pred", "confirmed_true_accepts", "false_accepts_gold_unmatched",
                                          "unsafe_accepts_gold_review", "wrong_row_accepts", "false_deletes_gold_matched",
-                                         "conservative_accepted_precision", "matched_recall_row_correct", "review_rate")})
+                                         "accuracy_on_gold_decided_review_counts_wrong", "gold_review_handling",
+                                         "review_rate")})
 
 
 if __name__ == "__main__":

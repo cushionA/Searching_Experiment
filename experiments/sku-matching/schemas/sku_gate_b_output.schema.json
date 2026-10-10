@@ -19,7 +19,8 @@
     "requirements",
     "rakuten_provenance",
     "au_provenance",
-    "rows"
+    "rows",
+    "forced_binary"
   ],
   "properties": {
     "schema_version": {
@@ -274,6 +275,127 @@
           "derived_conflicts": {
             "type": "array"
           }
+        }
+      }
+    },
+    "forced_binary": {
+      "type": "object",
+      "required": [
+        "closed_world",
+        "open_world"
+      ],
+      "properties": {
+        "closed_world": {
+          "type": "object",
+          "required": [
+            "decision",
+            "top_row_key",
+            "reason",
+            "passing_rows"
+          ],
+          "properties": {
+            "decision": {
+              "enum": [
+                "matched",
+                "unmatched"
+              ]
+            },
+            "top_row_key": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^au:\\d+:\\d+:\\d+:\\d+$"
+            },
+            "reason": {
+              "type": "string"
+            },
+            "passing_rows": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "decision": {
+                    "const": "matched"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "top_row_key": {
+                    "type": "string"
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "top_row_key": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "open_world": {
+          "type": "object",
+          "required": [
+            "decision",
+            "top_row_key",
+            "reason",
+            "passing_rows"
+          ],
+          "properties": {
+            "decision": {
+              "enum": [
+                "matched",
+                "unmatched"
+              ]
+            },
+            "top_row_key": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^au:\\d+:\\d+:\\d+:\\d+$"
+            },
+            "reason": {
+              "type": "string"
+            },
+            "passing_rows": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "decision": {
+                    "const": "matched"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "top_row_key": {
+                    "type": "string"
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "top_row_key": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          ]
         }
       }
     }
