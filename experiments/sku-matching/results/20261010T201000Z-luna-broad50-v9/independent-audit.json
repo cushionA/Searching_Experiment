@@ -1,0 +1,493 @@
+{
+  "run": "20261010T201000Z-luna-broad50-v9",
+  "regrade": {
+    "fresh_external_dir": "/workspace/sku-broad50-v9-independent-audit-final-20261010T210100Z",
+    "five_output_files_equal_saved_and_prior_independent": true,
+    "byte_comparison": {
+      "comparisons.json": true,
+      "broad50_v9/summary.json": true,
+      "broad50_v9/case-results.jsonl": true,
+      "cumulative_250_v9/summary.json": true,
+      "cumulative_250_v9/case-results.jsonl": true
+    },
+    "freeze_entries": 410,
+    "all_freeze_hashes_match": true
+  },
+  "metrics": {
+    "known_case_accuracy": {
+      "numerator": 38,
+      "denominator": 48,
+      "rate": 0.7916666666666666
+    },
+    "known_decided_accuracy": {
+      "numerator": 38,
+      "denominator": 39,
+      "rate": 0.9743589743589743
+    },
+    "accepted_known_row_precision": {
+      "numerator": 7,
+      "denominator": 7,
+      "rate": 1.0
+    },
+    "row_match_recall": {
+      "numerator": 7,
+      "denominator": 14,
+      "rate": 0.5
+    },
+    "known_coverage": {
+      "numerator": 39,
+      "denominator": 48,
+      "rate": 0.8125
+    },
+    "confusion_matrix": {
+      "matched": {
+        "adopt": 7,
+        "exclude": 1,
+        "not_evaluated": 0,
+        "pending": 6
+      },
+      "unmatched": {
+        "adopt": 0,
+        "exclude": 31,
+        "not_evaluated": 0,
+        "pending": 3
+      }
+    },
+    "known_false_accepts": 0,
+    "wrong_row_accepts": 0,
+    "missed_positive": 1,
+    "positive_abstentions": 6,
+    "unknown_truth_count": 2,
+    "unknown_truth_accepted": 0,
+    "unlabelled_count": 0,
+    "decision_counts": {
+      "adopt": 7,
+      "exclude": 33,
+      "not_evaluated": 0,
+      "pending": 10
+    }
+  },
+  "decision_counts": {
+    "adopt": 7,
+    "exclude": 33,
+    "not_evaluated": 0,
+    "pending": 10
+  },
+  "case_count": 50,
+  "human_verified": false,
+  "cumulative_metrics": {
+    "known_case_accuracy": {
+      "numerator": 213,
+      "denominator": 241,
+      "rate": 0.8838174273858921
+    },
+    "known_decided_accuracy": {
+      "numerator": 213,
+      "denominator": 215,
+      "rate": 0.9906976744186047
+    },
+    "accepted_known_row_precision": {
+      "numerator": 71,
+      "denominator": 71,
+      "rate": 1.0
+    },
+    "row_match_recall": {
+      "numerator": 71,
+      "denominator": 87,
+      "rate": 0.8160919540229885
+    },
+    "known_coverage": {
+      "numerator": 215,
+      "denominator": 241,
+      "rate": 0.8921161825726142
+    },
+    "confusion_matrix": {
+      "matched": {
+        "adopt": 71,
+        "exclude": 2,
+        "not_evaluated": 1,
+        "pending": 13
+      },
+      "unmatched": {
+        "adopt": 0,
+        "exclude": 142,
+        "not_evaluated": 0,
+        "pending": 12
+      }
+    },
+    "known_false_accepts": 0,
+    "wrong_row_accepts": 0,
+    "missed_positive": 2,
+    "positive_abstentions": 14,
+    "unknown_truth_count": 9,
+    "unknown_truth_accepted": 0,
+    "unlabelled_count": 0,
+    "decision_counts": {
+      "adopt": 71,
+      "exclude": 147,
+      "not_evaluated": 1,
+      "pending": 31
+    }
+  },
+  "cumulative_decision_counts": {
+    "adopt": 71,
+    "exclude": 147,
+    "not_evaluated": 1,
+    "pending": 31
+  },
+  "cumulative_cases": 250,
+  "full_tests": {
+    "run": 599,
+    "elapsed_seconds": 17.486,
+    "exit_code": 1,
+    "failure_count": 18,
+    "error_count": 17,
+    "skip_count": 37,
+    "failure_ids": [
+      "test_blind_cases_have_resolved_dossiers_and_stable_ids (test_lab_luna_annotation.LunaAnnotationInputTests.test_blind_cases_have_resolved_dossiers_and_stable_ids)",
+      "test_blind_inputs_exclude_commercial_and_label_fields (test_lab_luna_annotation.LunaAnnotationInputTests.test_blind_inputs_exclude_commercial_and_label_fields)",
+      "test_builds_all_56_rows_without_labels (test_lab_novel_real_inputs_v1.NovelRealInputTests.test_builds_all_56_rows_without_labels)",
+      "test_case_and_unique_sku_counts_are_not_conflated (test_lab_luna_package.LunaRealPackageTests.test_case_and_unique_sku_counts_are_not_conflated)",
+      "test_decide_and_derived_reports_are_frozen_and_source_pinned (test_lab_luna_package.LunaRealPackageTests.test_decide_and_derived_reports_are_frozen_and_source_pinned)",
+      "test_exact_source_spans_and_series_links_are_scoped_out (test_lab_novel_real_inputs_v1.NovelRealInputTests.test_exact_source_spans_and_series_links_are_scoped_out)",
+      "test_execute_flushes_failures_and_writes_complete_manifest (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_execute_flushes_failures_and_writes_complete_manifest)",
+      "test_existing_source_bundles_are_read_only (test_lab_integrated_sku_inputs_v1.IntegratedSkuInputsV1Tests.test_existing_source_bundles_are_read_only)",
+      "test_frozen_validator_requires_literal_quotes_from_both_sides (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_frozen_validator_requires_literal_quotes_from_both_sides)",
+      "test_group_split_and_shard_membership_are_atomic (test_lab_luna_annotation.LunaAnnotationInputTests.test_group_split_and_shard_membership_are_atomic)",
+      "test_lab_gpu_condition_tasks_v1 (unittest.loader._FailedTest.test_lab_gpu_condition_tasks_v1)",
+      "test_model_outputs_pin_current_code_and_manifest_hashes (test_lab_luna_package.LunaRealPackageTests.test_model_outputs_pin_current_code_and_manifest_hashes)",
+      "test_offline_diagnostics_guards (test_lab_bot_diagnostics.BotDiagnosticsTests.test_offline_diagnostics_guards)",
+      "test_plan_and_frozen_bundle_pins (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_plan_and_frozen_bundle_pins)",
+      "test_plan_rejects_unpinned_model_or_fork (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_plan_rejects_unpinned_model_or_fork)",
+      "test_preflight_rejects_modified_frozen_config (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_preflight_rejects_modified_frozen_config)",
+      "test_source_arrays_and_counts_are_complete (test_lab_novel_real_inputs_v1.NovelRealInputTests.test_source_arrays_and_counts_are_complete)",
+      "test_strict_parser_uses_existing_validator_and_preserves_server_body (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_strict_parser_uses_existing_validator_and_preserves_server_body)"
+    ],
+    "error_ids": []
+  },
+  "model_version_usage": null,
+  "measurement_caveat": "served model version and usage are null; dispatch/coordinator times are metadata, not provider-observed duration.",
+  "scope": {
+    "fresh_cases": 50,
+    "matching": {
+      "task_count": 70,
+      "validation_pass": 70,
+      "case_count": 50,
+      "row_count": 934,
+      "cases_valid": 50,
+      "counts": {
+        "candidate": 15,
+        "exclude": 34,
+        "pending": 1
+      }
+    },
+    "request_bytes": {
+      "full_contract_scoped_bytes": 3409676,
+      "full_contract_compact_bytes": 2151946,
+      "full_contracts_dispatched": false,
+      "actual_chunk_request_file_bytes": 2876412,
+      "actual_chunk_tasks": 70,
+      "note": "request-file UTF8 byte sizes; not provider token usage; repeated source context per chunk remains"
+    },
+    "request_scope": {
+      "cases": [
+        {
+          "case_id": "case-5b8778395d3d07c5e986",
+          "original_scoped_bytes": 69314,
+          "compact_bytes": 36481
+        },
+        {
+          "case_id": "case-1bcb259507fd5fb96c90",
+          "original_scoped_bytes": 50264,
+          "compact_bytes": 30323
+        },
+        {
+          "case_id": "case-f38a23425572f008c3be",
+          "original_scoped_bytes": 69299,
+          "compact_bytes": 36466
+        },
+        {
+          "case_id": "case-04a68396ffb8ec49fae2",
+          "original_scoped_bytes": 158246,
+          "compact_bytes": 136628
+        },
+        {
+          "case_id": "case-74f7cb07e510ea6c8310",
+          "original_scoped_bytes": 69332,
+          "compact_bytes": 36505
+        },
+        {
+          "case_id": "case-105af0d9f0b13877f3c1",
+          "original_scoped_bytes": 153684,
+          "compact_bytes": 135856
+        },
+        {
+          "case_id": "case-0758fe1da6412dd9e02c",
+          "original_scoped_bytes": 152755,
+          "compact_bytes": 134927
+        },
+        {
+          "case_id": "case-aef841c600881fb29a99",
+          "original_scoped_bytes": 158243,
+          "compact_bytes": 136625
+        },
+        {
+          "case_id": "case-8c12c6dc7a575b9ac8b3",
+          "original_scoped_bytes": 70368,
+          "compact_bytes": 37259
+        },
+        {
+          "case_id": "case-31f78ff882a8affd1e32",
+          "original_scoped_bytes": 61311,
+          "compact_bytes": 37992
+        },
+        {
+          "case_id": "case-b9cbdbdfee2540b77b60",
+          "original_scoped_bytes": 61396,
+          "compact_bytes": 38077
+        },
+        {
+          "case_id": "case-d17c11f8557242ae3b83",
+          "original_scoped_bytes": 82052,
+          "compact_bytes": 51795
+        },
+        {
+          "case_id": "case-3f1ffbe1b649a9f90cad",
+          "original_scoped_bytes": 61242,
+          "compact_bytes": 37923
+        },
+        {
+          "case_id": "case-87d02eee08500f5962aa",
+          "original_scoped_bytes": 81880,
+          "compact_bytes": 51623
+        },
+        {
+          "case_id": "case-57c1be06e4b0870bacbb",
+          "original_scoped_bytes": 54287,
+          "compact_bytes": 33539
+        },
+        {
+          "case_id": "case-49c7d5a7b36f3f21641f",
+          "original_scoped_bytes": 81880,
+          "compact_bytes": 51623
+        },
+        {
+          "case_id": "case-6ec0791c56c4d01d49f5",
+          "original_scoped_bytes": 82199,
+          "compact_bytes": 51942
+        },
+        {
+          "case_id": "case-74502f3d28388318c4f8",
+          "original_scoped_bytes": 67251,
+          "compact_bytes": 37029
+        },
+        {
+          "case_id": "case-b4338c025fd43dd6de53",
+          "original_scoped_bytes": 67213,
+          "compact_bytes": 37108
+        },
+        {
+          "case_id": "case-47fb05af18daaf361a87",
+          "original_scoped_bytes": 45611,
+          "compact_bytes": 30657
+        },
+        {
+          "case_id": "case-954d3f0fe131e8c2a407",
+          "original_scoped_bytes": 67324,
+          "compact_bytes": 37102
+        },
+        {
+          "case_id": "case-9939d696222c64d786b1",
+          "original_scoped_bytes": 61947,
+          "compact_bytes": 33787
+        },
+        {
+          "case_id": "case-80bf0eca24e8d22e477e",
+          "original_scoped_bytes": 45934,
+          "compact_bytes": 30980
+        },
+        {
+          "case_id": "case-615b639a7601d767385e",
+          "original_scoped_bytes": 61971,
+          "compact_bytes": 33811
+        },
+        {
+          "case_id": "case-5e021b49fbcbeda28660",
+          "original_scoped_bytes": 67213,
+          "compact_bytes": 37108
+        },
+        {
+          "case_id": "case-6d67154fb6ee81e7146e",
+          "original_scoped_bytes": 70368,
+          "compact_bytes": 37259
+        },
+        {
+          "case_id": "case-f7e96ddd7d4715be75df",
+          "original_scoped_bytes": 70371,
+          "compact_bytes": 37262
+        },
+        {
+          "case_id": "case-4ca24ed09d0905f525a3",
+          "original_scoped_bytes": 45731,
+          "compact_bytes": 30777
+        },
+        {
+          "case_id": "case-d4a04f75e21afd932939",
+          "original_scoped_bytes": 70305,
+          "compact_bytes": 37196
+        },
+        {
+          "case_id": "case-9d44724dbbedb8420491",
+          "original_scoped_bytes": 55636,
+          "compact_bytes": 30987
+        },
+        {
+          "case_id": "case-7040443508479b4b8690",
+          "original_scoped_bytes": 45743,
+          "compact_bytes": 30789
+        },
+        {
+          "case_id": "case-c7668986ffcc5ef6cedc",
+          "original_scoped_bytes": 38129,
+          "compact_bytes": 26417
+        },
+        {
+          "case_id": "case-103636fa17ca1d28173e",
+          "original_scoped_bytes": 55640,
+          "compact_bytes": 30991
+        },
+        {
+          "case_id": "case-9806fd9a636596880024",
+          "original_scoped_bytes": 61971,
+          "compact_bytes": 33811
+        },
+        {
+          "case_id": "case-fcc65b2f201891cde7eb",
+          "original_scoped_bytes": 61912,
+          "compact_bytes": 33752
+        },
+        {
+          "case_id": "case-80fe48e8611abceef173",
+          "original_scoped_bytes": 45126,
+          "compact_bytes": 30447
+        },
+        {
+          "case_id": "case-503f2e63c8f6fde939ce",
+          "original_scoped_bytes": 61898,
+          "compact_bytes": 38117
+        },
+        {
+          "case_id": "case-84b843f8c1ceb0131a51",
+          "original_scoped_bytes": 38144,
+          "compact_bytes": 26432
+        },
+        {
+          "case_id": "case-3ce2d8e67d5a70c768f3",
+          "original_scoped_bytes": 48154,
+          "compact_bytes": 30279
+        },
+        {
+          "case_id": "case-dc71ab6dd1a2c284318e",
+          "original_scoped_bytes": 38126,
+          "compact_bytes": 26413
+        },
+        {
+          "case_id": "case-30a21e40951444313016",
+          "original_scoped_bytes": 70767,
+          "compact_bytes": 35489
+        },
+        {
+          "case_id": "case-1f9603ecaf6e0c1aa9c1",
+          "original_scoped_bytes": 48643,
+          "compact_bytes": 29933
+        },
+        {
+          "case_id": "case-14a7742be34785231359",
+          "original_scoped_bytes": 48619,
+          "compact_bytes": 29909
+        },
+        {
+          "case_id": "case-111d0102cf7418c9b4d9",
+          "original_scoped_bytes": 48643,
+          "compact_bytes": 29933
+        },
+        {
+          "case_id": "case-f50e7e9ac8ebe7c49f4f",
+          "original_scoped_bytes": 70240,
+          "compact_bytes": 32842
+        },
+        {
+          "case_id": "case-da0cc9b2bc5c586a70d6",
+          "original_scoped_bytes": 48636,
+          "compact_bytes": 29926
+        },
+        {
+          "case_id": "case-e7f3ea534fed639ff188",
+          "original_scoped_bytes": 70240,
+          "compact_bytes": 32842
+        },
+        {
+          "case_id": "case-ecacaf7cd2fc847ddea0",
+          "original_scoped_bytes": 53939,
+          "compact_bytes": 31294
+        },
+        {
+          "case_id": "case-18bf5f869978387d182f",
+          "original_scoped_bytes": 70241,
+          "compact_bytes": 32843
+        },
+        {
+          "case_id": "case-a8388baa66ea1a5150f3",
+          "original_scoped_bytes": 70238,
+          "compact_bytes": 32840
+        }
+      ],
+      "lossless_contexts": true
+    },
+    "unused_full_contract_bytes_reduction_pct": 36.89,
+    "cumulative_manifest": {
+      "case_count": 250,
+      "rakuten_sku_count": 207,
+      "au_product_count": 33,
+      "candidate_row_count": 3606,
+      "exported_links": 71,
+      "linked_rakuten_sku_count": 69,
+      "decisions": {
+        "pending": 31,
+        "exclude": 147,
+        "adopt": 71,
+        "not_evaluated": 1
+      },
+      "human_verified": false
+    },
+    "dispatch": {
+      "matching-dispatch.json": {
+        "stage": "v9-broad50-matching-chunks",
+        "model_requested": "gpt-6-luna",
+        "actual_modelVersion": null,
+        "usage": null,
+        "startedUTC": "2026-10-10T20:19:22.786287+00:00",
+        "completedUTC": "2026-10-10T20:35:58Z",
+        "planned_calls": 70
+      },
+      "signature-dispatch.json": {
+        "stage": "v9-current-row-scope-explicit-signature",
+        "model_requested": "gpt-6-luna",
+        "actual_modelVersion": null,
+        "usage": null,
+        "startedUTC": "2026-10-10T20:37:13.227114+00:00",
+        "completedUTC": "2026-10-10T20:39:52Z",
+        "planned_calls": 14
+      },
+      "review-dispatch.json": {
+        "stage": "v9-single-case-review",
+        "model_requested": "gpt-6-luna",
+        "actual_modelVersion": null,
+        "usage": null,
+        "startedUTC": "2026-10-10T20:40:57.088225+00:00",
+        "completedUTC": "2026-10-10T20:50:24Z",
+        "planned_calls": 50
+      }
+    }
+  }
+}

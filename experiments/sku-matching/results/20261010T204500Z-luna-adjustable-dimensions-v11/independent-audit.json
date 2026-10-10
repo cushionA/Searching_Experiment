@@ -1,0 +1,404 @@
+{
+  "run": "20261010T204500Z-luna-adjustable-dimensions-v11",
+  "regrade": {
+    "fresh_external_dir": "/workspace/sku-adjustable-v11-independent-audit-final-20261010T210100Z",
+    "five_output_files_equal_saved_and_prior_independent": true,
+    "byte_comparison": {
+      "comparisons.json": true,
+      "broad50_v11/summary.json": true,
+      "broad50_v11/case-results.jsonl": true,
+      "cumulative_250_v11/summary.json": true,
+      "cumulative_250_v11/case-results.jsonl": true
+    },
+    "freeze_entries": 267,
+    "all_freeze_hashes_match": true
+  },
+  "metrics": {
+    "known_case_accuracy": {
+      "numerator": 39,
+      "denominator": 48,
+      "rate": 0.8125
+    },
+    "known_decided_accuracy": {
+      "numerator": 39,
+      "denominator": 41,
+      "rate": 0.9512195121951219
+    },
+    "accepted_known_row_precision": {
+      "numerator": 8,
+      "denominator": 8,
+      "rate": 1.0
+    },
+    "row_match_recall": {
+      "numerator": 8,
+      "denominator": 14,
+      "rate": 0.5714285714285714
+    },
+    "known_coverage": {
+      "numerator": 41,
+      "denominator": 48,
+      "rate": 0.8541666666666666
+    },
+    "confusion_matrix": {
+      "matched": {
+        "adopt": 8,
+        "exclude": 2,
+        "not_evaluated": 0,
+        "pending": 4
+      },
+      "unmatched": {
+        "adopt": 0,
+        "exclude": 31,
+        "not_evaluated": 0,
+        "pending": 3
+      }
+    },
+    "known_false_accepts": 0,
+    "wrong_row_accepts": 0,
+    "missed_positive": 2,
+    "positive_abstentions": 4,
+    "unknown_truth_count": 2,
+    "unknown_truth_accepted": 0,
+    "unlabelled_count": 0,
+    "decision_counts": {
+      "adopt": 8,
+      "exclude": 34,
+      "not_evaluated": 0,
+      "pending": 8
+    }
+  },
+  "decision_counts": {
+    "adopt": 8,
+    "exclude": 34,
+    "not_evaluated": 0,
+    "pending": 8
+  },
+  "case_count": 50,
+  "human_verified": false,
+  "cumulative_metrics": {
+    "known_case_accuracy": {
+      "numerator": 214,
+      "denominator": 241,
+      "rate": 0.8879668049792531
+    },
+    "known_decided_accuracy": {
+      "numerator": 214,
+      "denominator": 217,
+      "rate": 0.9861751152073732
+    },
+    "accepted_known_row_precision": {
+      "numerator": 72,
+      "denominator": 72,
+      "rate": 1.0
+    },
+    "row_match_recall": {
+      "numerator": 72,
+      "denominator": 87,
+      "rate": 0.8275862068965517
+    },
+    "known_coverage": {
+      "numerator": 217,
+      "denominator": 241,
+      "rate": 0.9004149377593361
+    },
+    "confusion_matrix": {
+      "matched": {
+        "adopt": 72,
+        "exclude": 3,
+        "not_evaluated": 1,
+        "pending": 11
+      },
+      "unmatched": {
+        "adopt": 0,
+        "exclude": 142,
+        "not_evaluated": 0,
+        "pending": 12
+      }
+    },
+    "known_false_accepts": 0,
+    "wrong_row_accepts": 0,
+    "missed_positive": 3,
+    "positive_abstentions": 12,
+    "unknown_truth_count": 9,
+    "unknown_truth_accepted": 0,
+    "unlabelled_count": 0,
+    "decision_counts": {
+      "adopt": 72,
+      "exclude": 148,
+      "not_evaluated": 1,
+      "pending": 29
+    }
+  },
+  "cumulative_decision_counts": {
+    "adopt": 72,
+    "exclude": 148,
+    "not_evaluated": 1,
+    "pending": 29
+  },
+  "cumulative_cases": 250,
+  "full_tests": {
+    "run": 599,
+    "elapsed_seconds": 17.486,
+    "exit_code": 1,
+    "failure_count": 18,
+    "error_count": 17,
+    "skip_count": 37,
+    "failure_ids": [
+      "test_blind_cases_have_resolved_dossiers_and_stable_ids (test_lab_luna_annotation.LunaAnnotationInputTests.test_blind_cases_have_resolved_dossiers_and_stable_ids)",
+      "test_blind_inputs_exclude_commercial_and_label_fields (test_lab_luna_annotation.LunaAnnotationInputTests.test_blind_inputs_exclude_commercial_and_label_fields)",
+      "test_builds_all_56_rows_without_labels (test_lab_novel_real_inputs_v1.NovelRealInputTests.test_builds_all_56_rows_without_labels)",
+      "test_case_and_unique_sku_counts_are_not_conflated (test_lab_luna_package.LunaRealPackageTests.test_case_and_unique_sku_counts_are_not_conflated)",
+      "test_decide_and_derived_reports_are_frozen_and_source_pinned (test_lab_luna_package.LunaRealPackageTests.test_decide_and_derived_reports_are_frozen_and_source_pinned)",
+      "test_exact_source_spans_and_series_links_are_scoped_out (test_lab_novel_real_inputs_v1.NovelRealInputTests.test_exact_source_spans_and_series_links_are_scoped_out)",
+      "test_execute_flushes_failures_and_writes_complete_manifest (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_execute_flushes_failures_and_writes_complete_manifest)",
+      "test_existing_source_bundles_are_read_only (test_lab_integrated_sku_inputs_v1.IntegratedSkuInputsV1Tests.test_existing_source_bundles_are_read_only)",
+      "test_frozen_validator_requires_literal_quotes_from_both_sides (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_frozen_validator_requires_literal_quotes_from_both_sides)",
+      "test_group_split_and_shard_membership_are_atomic (test_lab_luna_annotation.LunaAnnotationInputTests.test_group_split_and_shard_membership_are_atomic)",
+      "test_lab_gpu_condition_tasks_v1 (unittest.loader._FailedTest.test_lab_gpu_condition_tasks_v1)",
+      "test_model_outputs_pin_current_code_and_manifest_hashes (test_lab_luna_package.LunaRealPackageTests.test_model_outputs_pin_current_code_and_manifest_hashes)",
+      "test_offline_diagnostics_guards (test_lab_bot_diagnostics.BotDiagnosticsTests.test_offline_diagnostics_guards)",
+      "test_plan_and_frozen_bundle_pins (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_plan_and_frozen_bundle_pins)",
+      "test_plan_rejects_unpinned_model_or_fork (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_plan_rejects_unpinned_model_or_fork)",
+      "test_preflight_rejects_modified_frozen_config (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_preflight_rejects_modified_frozen_config)",
+      "test_source_arrays_and_counts_are_complete (test_lab_novel_real_inputs_v1.NovelRealInputTests.test_source_arrays_and_counts_are_complete)",
+      "test_strict_parser_uses_existing_validator_and_preserves_server_body (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_strict_parser_uses_existing_validator_and_preserves_server_body)"
+    ],
+    "error_ids": []
+  },
+  "model_version_usage": null,
+  "measurement_caveat": "served model version and usage are null; dispatch/coordinator times are metadata, not provider-observed duration.",
+  "stage_diagnostics": {
+    "exact_match_to_saved_and_independent": true,
+    "metrics": {
+      "matching_v9": {
+        "metrics": {
+          "known_case_accuracy": {
+            "numerator": 46,
+            "denominator": 48,
+            "rate": 0.9583333333333334
+          },
+          "known_decided_accuracy": {
+            "numerator": 46,
+            "denominator": 47,
+            "rate": 0.9787234042553191
+          },
+          "accepted_known_row_precision": {
+            "numerator": 13,
+            "denominator": 14,
+            "rate": 0.9285714285714286
+          },
+          "row_match_recall": {
+            "numerator": 13,
+            "denominator": 14,
+            "rate": 0.9285714285714286
+          },
+          "known_coverage": {
+            "numerator": 47,
+            "denominator": 48,
+            "rate": 0.9791666666666666
+          },
+          "confusion_matrix": {
+            "matched": {
+              "adopt": 13,
+              "exclude": 0,
+              "not_evaluated": 0,
+              "pending": 1
+            },
+            "unmatched": {
+              "adopt": 1,
+              "exclude": 33,
+              "not_evaluated": 0,
+              "pending": 0
+            }
+          },
+          "known_false_accepts": 1,
+          "wrong_row_accepts": 0,
+          "missed_positive": 0,
+          "positive_abstentions": 1,
+          "unknown_truth_count": 2,
+          "unknown_truth_accepted": 1,
+          "unlabelled_count": 0,
+          "decision_counts": {
+            "adopt": 15,
+            "exclude": 34,
+            "not_evaluated": 0,
+            "pending": 1
+          }
+        },
+        "hypothetical_stage_only": true,
+        "not_exported_as_links": true
+      },
+      "dimensions_v9": {
+        "metrics": {
+          "known_case_accuracy": {
+            "numerator": 43,
+            "denominator": 48,
+            "rate": 0.8958333333333334
+          },
+          "known_decided_accuracy": {
+            "numerator": 43,
+            "denominator": 43,
+            "rate": 1.0
+          },
+          "accepted_known_row_precision": {
+            "numerator": 10,
+            "denominator": 10,
+            "rate": 1.0
+          },
+          "row_match_recall": {
+            "numerator": 10,
+            "denominator": 14,
+            "rate": 0.7142857142857143
+          },
+          "known_coverage": {
+            "numerator": 43,
+            "denominator": 48,
+            "rate": 0.8958333333333334
+          },
+          "confusion_matrix": {
+            "matched": {
+              "adopt": 10,
+              "exclude": 0,
+              "not_evaluated": 0,
+              "pending": 4
+            },
+            "unmatched": {
+              "adopt": 0,
+              "exclude": 33,
+              "not_evaluated": 0,
+              "pending": 1
+            }
+          },
+          "known_false_accepts": 0,
+          "wrong_row_accepts": 0,
+          "missed_positive": 0,
+          "positive_abstentions": 4,
+          "unknown_truth_count": 2,
+          "unknown_truth_accepted": 0,
+          "unlabelled_count": 0,
+          "decision_counts": {
+            "adopt": 10,
+            "exclude": 34,
+            "not_evaluated": 0,
+            "pending": 6
+          }
+        },
+        "hypothetical_stage_only": true,
+        "not_exported_as_links": true
+      },
+      "dimensions_v11": {
+        "metrics": {
+          "known_case_accuracy": {
+            "numerator": 46,
+            "denominator": 48,
+            "rate": 0.9583333333333334
+          },
+          "known_decided_accuracy": {
+            "numerator": 46,
+            "denominator": 46,
+            "rate": 1.0
+          },
+          "accepted_known_row_precision": {
+            "numerator": 13,
+            "denominator": 13,
+            "rate": 1.0
+          },
+          "row_match_recall": {
+            "numerator": 13,
+            "denominator": 14,
+            "rate": 0.9285714285714286
+          },
+          "known_coverage": {
+            "numerator": 46,
+            "denominator": 48,
+            "rate": 0.9583333333333334
+          },
+          "confusion_matrix": {
+            "matched": {
+              "adopt": 13,
+              "exclude": 0,
+              "not_evaluated": 0,
+              "pending": 1
+            },
+            "unmatched": {
+              "adopt": 0,
+              "exclude": 33,
+              "not_evaluated": 0,
+              "pending": 1
+            }
+          },
+          "known_false_accepts": 0,
+          "wrong_row_accepts": 0,
+          "missed_positive": 0,
+          "positive_abstentions": 1,
+          "unknown_truth_count": 2,
+          "unknown_truth_accepted": 0,
+          "unlabelled_count": 0,
+          "decision_counts": {
+            "adopt": 13,
+            "exclude": 34,
+            "not_evaluated": 0,
+            "pending": 3
+          }
+        },
+        "hypothetical_stage_only": true,
+        "not_exported_as_links": true
+      }
+    },
+    "hypothetical_not_exported": true
+  },
+  "dimension_source_proof": {
+    "fresh_cases": 3,
+    "unchanged_signature_count": 12,
+    "semantic_fields_unchanged": true,
+    "source_quotes_responses_unchanged": true
+  },
+  "dispatch": {
+    "signature-dispatch.json": {
+      "stage": null,
+      "model_requested": null,
+      "actual_modelVersion": null,
+      "modelVersion": null,
+      "usage": null,
+      "startedUTC": null,
+      "completedUTC": null,
+      "planned_calls": null,
+      "logical_tasks": 3,
+      "actual_provider_calls": null
+    },
+    "review-dispatch.json": {
+      "stage": "v11-source-only-review",
+      "model_requested": "gpt-6-luna",
+      "actual_modelVersion": null,
+      "modelVersion": null,
+      "usage": null,
+      "startedUTC": "2026-10-10T20:51:47.493584+00:00",
+      "completedUTC": "2026-10-10T20:52:37Z",
+      "planned_calls": 3,
+      "logical_tasks": null,
+      "actual_provider_calls": null
+    }
+  },
+  "pipeline_issue": {
+    "issues": [
+      {
+        "stage": "export-cumulative",
+        "reason": "export invoked while collector process completion had not yet been polled",
+        "recovery": "waited for successful collector exit; reverified all cumulative source hashes against completed final output",
+        "source_hashes_identical": true,
+        "inference_retries": 0
+      }
+    ],
+    "guard_composition_note": "run_v2 supplemental freeze retains original curtain guard for unchanged cases"
+  },
+  "review_semantics": {
+    "case-74502f3d28388318c4f8": "confirm based on selected row and 150×210 cm bedding source quote",
+    "case-f50e7e9ac8ebe7c49f4f": "reject: selected 2.1kg conflicts with fixed AU product ~2.5kg",
+    "case-e7f3ea534fed639ff188": "reject: Rakuten 300kg conflicts with fixed AU product ~100kg",
+    "archive_source_check": "source ZIP member hash verified; AU comment contains ~2.5kg and ~100kg; original sources unchanged"
+  },
+  "suite_comparison": {
+    "same_count_and_failure_ids_as_v9": true,
+    "focused_tests_passed": 12
+  }
+}

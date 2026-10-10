@@ -1,0 +1,145 @@
+{
+  "audit_type": "pre-inference protocol audit with post-collect provenance update",
+  "createdUTC": "2026-10-10",
+  "scope": {
+    "answers_semantic_content_read": false,
+    "gold_or_grading_labels_read": false,
+    "environment_credentials_network_read": false,
+    "fresh_review_answers_read": false,
+    "m012_answer_body_read": false
+  },
+  "selection": {
+    "cases": [
+      {
+        "case_id": "case-04a68396ffb8ec49fae2",
+        "row_key": "au:704502086:331810175:8:4",
+        "eligible_basis": "V12 pending flag + unique selected color/width/length row + bounded fixed-product contents"
+      },
+      {
+        "case_id": "case-105af0d9f0b13877f3c1",
+        "row_key": "au:704500131:331814079:6:14",
+        "eligible_basis": "V12 pending flag + unique selected color/width/length row + bounded fixed-product contents"
+      },
+      {
+        "case_id": "case-aef841c600881fb29a99",
+        "row_key": "au:704502086:331810175:3:14",
+        "eligible_basis": "V12 pending flag + unique selected color/width/length row + bounded fixed-product contents"
+      },
+      {
+        "case_id": "case-87d02eee08500f5962aa",
+        "row_key": "au:778818828:332504238:1:7",
+        "eligible_basis": "V12 pending flag + unique selected color/width/length row + bounded fixed-product contents"
+      },
+      {
+        "case_id": "case-49c7d5a7b36f3f21641f",
+        "row_key": "au:778818828:332504238:1:1",
+        "eligible_basis": "V12 pending flag + unique selected color/width/length row + bounded fixed-product contents"
+      }
+    ],
+    "gold_used_for_selection": false,
+    "qualification_note": "Selection uses V12 reviewed-summary pending status as eligibility, then source row and bounded-contents checks. It is gold-free, but not a source-only cohort filter if that term excludes prior review state."
+  },
+  "dispatch": {
+    "actual_dispatch_manifest": "matching-dispatch-manifest.json",
+    "actual_chunk_request_count": 20,
+    "full_row_contract_requests_dispatched": 0,
+    "original_au_rows": 513,
+    "coverage_order_no_gaps_or_duplicates": true,
+    "max_chunk_rows": 27,
+    "chunk_sizes_by_case": {
+      "case-04a68396ffb8ec49fae2": [
+        27,
+        27,
+        27,
+        27,
+        27,
+        18
+      ],
+      "case-105af0d9f0b13877f3c1": [
+        27,
+        27,
+        27,
+        27,
+        27,
+        18
+      ],
+      "case-aef841c600881fb29a99": [
+        27,
+        27,
+        27,
+        27,
+        27,
+        18
+      ],
+      "case-87d02eee08500f5962aa": [
+        27
+      ],
+      "case-49c7d5a7b36f3f21641f": [
+        27
+      ]
+    },
+    "request_hashes_match_manifest": true,
+    "response_schema_checks": {
+      "all_20_pass": true,
+      "status_enum": [
+        "support",
+        "contradiction",
+        "unknown"
+      ],
+      "source_ids_enumerated": true,
+      "check_object_properties": [
+        "status",
+        "source_ids"
+      ],
+      "rakuten_check_count_matches_conditions": true,
+      "au_check_count_matches_row_conditions": true,
+      "row_min_max_matches_chunk_size": true
+    },
+    "selected_choice_lists_absent": true,
+    "source_text_scope_and_context_refs_lossless_vs_V12_contexts": true,
+    "bounded_contents_html_row_and_next_section_match_cited_archive_member": true
+  },
+  "reuse": {
+    "v12_matching_requests_unchanged": 45,
+    "v12_signature_manifest_entries_unchanged": 15,
+    "v13_initial_protocol_hashes_checked": 156,
+    "matching_collector_freeze_hashes_checked": 35,
+    "signature_freeze_hashes_checked": 87,
+    "all_checked_hashes_match": true
+  },
+  "collect_status": {
+    "chunk_validation_pass": 19,
+    "chunk_total": 20,
+    "fresh_complete_cases": 4,
+    "fallback_case": "case-105af0d9f0b13877f3c1",
+    "fallback_method": "V12 complete request/answer raw byte reuse; no repeat inference; new attempt counted unsuccessful",
+    "fallback_request_sha256": "645aa3eff787a81b68ade4b0668ac6c3bf171900521b0c79f350a6cbb3a0f114",
+    "fallback_answer_sha256": "6923c12d0e4c7d4e9984d3f00e2d5a780c0c764b3e25a964891da2248c13d354",
+    "failed_chunk": "matching-chunk-requests/012.json",
+    "failed_chunk_answer_body_read": false,
+    "failed_chunk_answer_sha256": "1633902c6cbba5e7770dbed172df754a25078bb76efe1f23474edc87f1a47655",
+    "failed_chunk_validation_reason": "row_coverage_or_duplicate_error",
+    "structural_case_results": {
+      "candidate": 17,
+      "exclude": 33
+    }
+  },
+  "subsequent_stage": {
+    "signature_prepare_observed": true,
+    "fresh_signatures": 2,
+    "total_signature_entries": 17,
+    "dispatch_in_progress_at_audit_close": true,
+    "fresh_signature_answer_content_read": false
+  },
+  "protocol_findings": [
+    {
+      "severity": "review",
+      "finding": "collect_v2.py creates matching-collector-freeze.json, but the existing signature_prepare/reviews_prepare/reviews_collect gates in frozen run.py do not verify it. The resulting manifest and completed matching answers are subsequently bound by signature-freeze.json; the raw failed chunk/recovery ledger and matching-chunk-evaluation.json are not explicitly required by a later gate."
+    },
+    {
+      "severity": "review",
+      "finding": "reviews_prepare imports the V11 composed guard through run.py install_guard. The V11 run_v2.py, its run.py/selection.json and the curtain/adjustable guard modules are not in V13 frozen-protocol.json hash inputs. Bind these dependencies or record their governing freeze before relying on the guard in the review stage."
+    }
+  ],
+  "answer_semantics": "Not audited. Current matching structure/counts and source lineage only; no semantic judgment about generated matching or signature answers."
+}

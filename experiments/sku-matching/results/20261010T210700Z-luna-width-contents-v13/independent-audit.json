@@ -1,0 +1,418 @@
+{
+  "run": "20261010T210700Z-luna-width-contents-v13",
+  "independent_grade": {
+    "external_evaluation_dir": "/workspace/sku-width-contents-v13-independent-audit-20261010T212000Z",
+    "five_grading_files_byte_equal": {
+      "comparisons.json": true,
+      "broad50_v13/summary.json": true,
+      "broad50_v13/case-results.jsonl": true,
+      "cumulative_250_v13/summary.json": true,
+      "cumulative_250_v13/case-results.jsonl": true
+    },
+    "freeze_entries": 985,
+    "all_freeze_hashes_match": true,
+    "labels_read_by_audit_script": false
+  },
+  "lineage_gate": {
+    "verify_lineage_v2_rerun_verify_only": true,
+    "recursive_unique_bound_files": 950,
+    "all_parent_current_hashes_match": true,
+    "initial_verify_lineage_failed_before_writes_or_inference": true,
+    "issue_logged": true
+  },
+  "fresh_matching": {
+    "cases": 5,
+    "total_au_rows": 513,
+    "logical_chunk_tasks": 20,
+    "chunks_validation_pass": 19,
+    "invalid_chunks": 1,
+    "invalid_task": "case-105af0d9f0b13877f3c1:rows:135:153",
+    "invalid_rows_generated": 0,
+    "coverage_by_case": {
+      "case-04a68396ffb8ec49fae2": {
+        "rows": 153,
+        "chunk_rows": [
+          27,
+          27,
+          27,
+          27,
+          27,
+          18
+        ]
+      },
+      "case-105af0d9f0b13877f3c1": {
+        "rows": 153,
+        "chunk_rows": [
+          27,
+          27,
+          27,
+          27,
+          27,
+          18
+        ]
+      },
+      "case-aef841c600881fb29a99": {
+        "rows": 153,
+        "chunk_rows": [
+          27,
+          27,
+          27,
+          27,
+          27,
+          18
+        ]
+      },
+      "case-87d02eee08500f5962aa": {
+        "rows": 27,
+        "chunk_rows": [
+          27
+        ]
+      },
+      "case-49c7d5a7b36f3f21641f": {
+        "rows": 27,
+        "chunk_rows": [
+          27
+        ]
+      }
+    },
+    "whole_case_fresh_compositions": 4,
+    "four_compositions_reproduced_exactly": true,
+    "failed_case_fallback": "V12 complete request and answer exact byte reuse; no new inference; request/answer matched byte for byte",
+    "failed_chunk_save_only_followup": "logged as save-only recovery with no new inference, provider call count unknown",
+    "original_failed_artifacts_preserved": true
+  },
+  "matching_reuse": {
+    "total_cases_raw_reused": 46,
+    "unaffected_cases_unchanged": 45,
+    "one_failed_fresh_case_fallback": true
+  },
+  "dimensions": {
+    "signature_cases_total": 17,
+    "reused_from_v12": 15,
+    "reused_response_hashes_and_candidate_hashes_match": true,
+    "fresh_signature_tasks": 2,
+    "passed": 15,
+    "failed_existing_chair_cases": [
+      "case-80bf0eca24e8d22e477e",
+      "case-80fe48e8611abceef173"
+    ],
+    "row_targets_are_current_rows": true
+  },
+  "reviews": {
+    "coverage": 50,
+    "fresh": 5,
+    "reused_v12_exact_bytes": 45,
+    "fresh_verdicts": {
+      "reject": 3,
+      "unresolved": 2,
+      "confirm": 0
+    },
+    "fresh_case_outcomes": [
+      {
+        "case_id": "case-04a68396ffb8ec49fae2",
+        "verdict": "unresolved",
+        "row_key": null,
+        "reason": "候補行はカフェブラウンと幅100×丈120cmで選択条件に合い、幅100cm用に遮光2枚・レース2枚が記載されています。一方、選択属性のメーカー型番CT01120BRをAU原文で確認できず、全属性の一致を確定できません。",
+        "review_evidence_ids": [
+          "A:au:704502086:331810175:8:4:0",
+          "A:au:704502086:331810175:8:4:1",
+          "S34",
+          "S54",
+          "S60"
+        ]
+      },
+      {
+        "case_id": "case-105af0d9f0b13877f3c1",
+        "verdict": "reject",
+        "row_key": null,
+        "reason": "幅150cmの完結した内容一覧は遮光カーテン1枚・タッセル1枚・フック9個で、選択条件のレースカーテン「あり」と矛盾します。対象色・サイズ行は幅150×丈135cmです。",
+        "review_evidence_ids": [
+          "S33",
+          "A:au:704500131:331814079:6:14:0",
+          "A:au:704500131:331814079:6:14:1"
+        ]
+      },
+      {
+        "case_id": "case-aef841c600881fb29a99",
+        "verdict": "unresolved",
+        "row_key": null,
+        "reason": "現行行はスモークグレー・幅150×丈135cmで選択条件に一致し、幅150cmの内容にレース1枚がある一方、メーカー型番と原産国はAU原文で確認できず、全属性の一致を確定できない。",
+        "review_evidence_ids": [
+          "A:au:704502086:331810175:3:14:0",
+          "A:au:704502086:331810175:3:14:1",
+          "S42",
+          "S47"
+        ]
+      },
+      {
+        "case_id": "case-87d02eee08500f5962aa",
+        "verdict": "reject",
+        "row_key": null,
+        "reason": "候補全行は色またはサイズが選択条件と不一致。唯一色・寸法が合う幅150×丈178のベージュも、内容欄の完結した幅150cm構成にレースがなく、選択「あり」と矛盾します。",
+        "review_evidence_ids": [
+          "A:au:778818828:332504238:0:0:0",
+          "A:au:778818828:332504238:0:1:0",
+          "A:au:778818828:332504238:0:2:0",
+          "A:au:778818828:332504238:0:3:0",
+          "A:au:778818828:332504238:0:4:0",
+          "A:au:778818828:332504238:0:5:0",
+          "A:au:778818828:332504238:0:6:0",
+          "A:au:778818828:332504238:0:7:0",
+          "A:au:778818828:332504238:0:8:0",
+          "A:au:778818828:332504238:1:0:1",
+          "A:au:778818828:332504238:1:1:1",
+          "A:au:778818828:332504238:1:2:1",
+          "A:au:778818828:332504238:1:3:1",
+          "A:au:778818828:332504238:1:4:1",
+          "A:au:778818828:332504238:1:5:1",
+          "A:au:778818828:332504238:1:6:1",
+          "S30",
+          "A:au:778818828:332504238:1:8:1",
+          "A:au:778818828:332504238:2:0:0",
+          "A:au:778818828:332504238:2:1:0",
+          "A:au:778818828:332504238:2:2:0",
+          "A:au:778818828:332504238:2:3:0",
+          "A:au:778818828:332504238:2:4:0",
+          "A:au:778818828:332504238:2:5:0",
+          "A:au:778818828:332504238:2:6:0",
+          "A:au:778818828:332504238:2:7:0",
+          "A:au:778818828:332504238:2:8:0"
+        ]
+      },
+      {
+        "case_id": "case-49c7d5a7b36f3f21641f",
+        "verdict": "reject",
+        "row_key": null,
+        "reason": "幅100cmの内容は遮光カーテン2枚・タッセル2枚・フックの完結した列挙で、レースを含まず、選択条件「レースカーテンあり」と矛盾します。",
+        "review_evidence_ids": [
+          "S30"
+        ]
+      }
+    ],
+    "preexisting_ladder_waterproof_case": "case-615b639a7601d767385e remains pending: waterproof status unresolved in AU source"
+  },
+  "contents_proof": {
+    "proven_links": 3,
+    "rows": [
+      {
+        "case_id": "case-0758fe1da6412dd9e02c",
+        "row_key": "au:704500131:331814079:8:11",
+        "cumulative_link_match": true,
+        "latest50_link_match": true
+      },
+      {
+        "case_id": "case-d17c11f8557242ae3b83",
+        "row_key": "au:778818828:332504238:0:8",
+        "cumulative_link_match": true,
+        "latest50_link_match": true
+      },
+      {
+        "case_id": "case-6ec0791c56c4d01d49f5",
+        "row_key": "au:778818828:332504238:2:0",
+        "cumulative_link_match": true,
+        "latest50_link_match": true
+      }
+    ],
+    "notes": "Proof is a local evidence sidecar, not provider output. All component lines bind to the bounded raw contents cell; no completeness claim beyond the recorded semantic review.",
+    "latest50_export_links": 10,
+    "proof_hash_matches_latest50_links": true,
+    "bounded_raw_source_rechecked": [
+      {
+        "case_id": "case-d17c11f8557242ae3b83",
+        "archive_hash_and_field_binding_verified": true
+      },
+      {
+        "case_id": "case-6ec0791c56c4d01d49f5",
+        "archive_hash_and_field_binding_verified": true
+      }
+    ],
+    "additional_export_links_since_v12": 0
+  },
+  "metrics": {
+    "known_case_accuracy": {
+      "numerator": 44,
+      "denominator": 48,
+      "rate": 0.9166666666666666
+    },
+    "known_decided_accuracy": {
+      "numerator": 44,
+      "denominator": 46,
+      "rate": 0.9565217391304348
+    },
+    "accepted_known_row_precision": {
+      "numerator": 10,
+      "denominator": 10,
+      "rate": 1.0
+    },
+    "row_match_recall": {
+      "numerator": 10,
+      "denominator": 14,
+      "rate": 0.7142857142857143
+    },
+    "known_coverage": {
+      "numerator": 46,
+      "denominator": 48,
+      "rate": 0.9583333333333334
+    },
+    "confusion_matrix": {
+      "matched": {
+        "adopt": 10,
+        "exclude": 2,
+        "not_evaluated": 0,
+        "pending": 2
+      },
+      "unmatched": {
+        "adopt": 0,
+        "exclude": 34,
+        "not_evaluated": 0,
+        "pending": 0
+      }
+    },
+    "known_false_accepts": 0,
+    "wrong_row_accepts": 0,
+    "missed_positive": 2,
+    "positive_abstentions": 2,
+    "unknown_truth_count": 2,
+    "unknown_truth_accepted": 0,
+    "unlabelled_count": 0,
+    "decision_counts": {
+      "adopt": 10,
+      "exclude": 37,
+      "not_evaluated": 0,
+      "pending": 3
+    }
+  },
+  "decision_counts": {
+    "adopt": 10,
+    "exclude": 37,
+    "not_evaluated": 0,
+    "pending": 3
+  },
+  "human_verified": false,
+  "cumulative_metrics": {
+    "known_case_accuracy": {
+      "numerator": 219,
+      "denominator": 241,
+      "rate": 0.9087136929460581
+    },
+    "known_decided_accuracy": {
+      "numerator": 219,
+      "denominator": 222,
+      "rate": 0.9864864864864865
+    },
+    "accepted_known_row_precision": {
+      "numerator": 74,
+      "denominator": 74,
+      "rate": 1.0
+    },
+    "row_match_recall": {
+      "numerator": 74,
+      "denominator": 87,
+      "rate": 0.8505747126436781
+    },
+    "known_coverage": {
+      "numerator": 222,
+      "denominator": 241,
+      "rate": 0.921161825726141
+    },
+    "confusion_matrix": {
+      "matched": {
+        "adopt": 74,
+        "exclude": 3,
+        "not_evaluated": 1,
+        "pending": 9
+      },
+      "unmatched": {
+        "adopt": 0,
+        "exclude": 145,
+        "not_evaluated": 0,
+        "pending": 9
+      }
+    },
+    "known_false_accepts": 0,
+    "wrong_row_accepts": 0,
+    "missed_positive": 3,
+    "positive_abstentions": 10,
+    "unknown_truth_count": 9,
+    "unknown_truth_accepted": 0,
+    "unlabelled_count": 0,
+    "decision_counts": {
+      "adopt": 74,
+      "exclude": 151,
+      "not_evaluated": 1,
+      "pending": 24
+    }
+  },
+  "cumulative_decision_counts": {
+    "adopt": 74,
+    "exclude": 151,
+    "not_evaluated": 1,
+    "pending": 24
+  },
+  "cumulative_link_manifest": {
+    "case_count": 250,
+    "rakuten_sku_count": 207,
+    "au_product_count": 33,
+    "candidate_row_count": 3606,
+    "exported_links": 74,
+    "linked_rakuten_sku_count": 72,
+    "decisions": {
+      "pending": 24,
+      "exclude": 151,
+      "adopt": 74,
+      "not_evaluated": 1
+    },
+    "human_verified": false
+  },
+  "dispatch": {
+    "matching-dispatch.json": {
+      "stage": "v13-width-contents-matching-chunks",
+      "startedUTC": "2026-10-10T21:06:45.156588+00:00",
+      "completedUTC": "2026-10-10T21:11:19Z",
+      "local_dispatch_interval_seconds": 273.843,
+      "planned_logical_calls": 20,
+      "model_requested": "gpt-6-luna",
+      "actual_modelVersion": null,
+      "usage": null,
+      "provider_calls": null
+    },
+    "signature-dispatch.json": {
+      "stage": "v13-derived-signature",
+      "startedUTC": "2026-10-10T21:11:54.307363+00:00",
+      "completedUTC": "2026-10-10T21:12:15Z",
+      "local_dispatch_interval_seconds": 20.693,
+      "planned_logical_calls": 2,
+      "model_requested": "gpt-6-luna",
+      "actual_modelVersion": null,
+      "usage": null,
+      "provider_calls": null
+    },
+    "review-dispatch.json": {
+      "stage": "v13-fresh-single-case-reviews",
+      "startedUTC": "2026-10-10T21:12:43.593049+00:00",
+      "completedUTC": "2026-10-10T21:14:09.225472Z",
+      "local_dispatch_interval_seconds": 85.632,
+      "planned_logical_calls": 5,
+      "model_requested": "gpt-6-luna",
+      "actual_modelVersion": null,
+      "usage": null,
+      "provider_calls": null
+    }
+  },
+  "tests_final": {
+    "run": 599,
+    "failures": 1,
+    "errors": 17,
+    "skipped": 37,
+    "same_18_failure_ids_as_inherited_v11": true,
+    "focused_current_row_dimension_passed": true,
+    "focused_adjustable_dimension_passed": true
+  },
+  "limitations": [
+    "Prior metrics and V12 pending status informed eligibility; no gold labels were used for selection. This is not a source-group holdout.",
+    "Cumulative metrics include all prior completed rounds, including V6; the new V13 result covers this repaired five-case subset within the existing paired50.",
+    "human_verified=false; final grade reports machine-label agreement, not human product verification.",
+    "Actual served model version, usage and actual provider call count are null/unknown; dispatcher elapsed seconds are local metadata, not provider wall time.",
+    "The semantic “no lace” conclusion depends on review interpretation of a complete bounded contents list."
+  ]
+}

@@ -1,0 +1,9 @@
+# V10 独立監査報告
+
+外部評価ディレクトリで `grade.py` を再実行し、保存済みの比較表、V10/cumulative各summary・case-resultsの5ファイルすべてが完全一致しました。grading freezeに含まれる531個のSHAもすべて一致しています。V10は同一62ケース中62件正答、30採用・32除外・保留0、採用precision/row-match recallとも30/30でした。累計200件では既知193件中175件正答です。
+
+V8由来の入力・source contexts・62件のmatching answer bytesは同一でした。V8でpassedした署名28件を再利用し、V8のdimension unknownだった2件だけcurrent-row scopedな寸法タスクと個別reviewを追加、残る60件のreview bytesを再利用しています。links-v8とlinks-v10はbyte一致し、30採用リンクのlocal contents provenance proofは全件通過しました。累計リンクは64件、リンク先Rakuten SKUは62件です。
+
+4件の論理worker taskについてrequest/answerのhashは記録と一致しましたが、verified provider call数・workerのfinished_atは記録されていません。保存mtimeはファイル保存メタデータとしてのみ扱っています。requested `gpt-6-luna` に対するactual modelVersionとusageはnullで、実モデル・usageの確認済み主張はできません。結果は機械採点でhuman-verifiedではなく、同一62ケースの開発比較で新規holdoutではありません。
+
+全体テストは591件実行、失敗ID群はV8記録と同じです。テスト状態と採点の完全一致は別の検証結果です。詳細は `independent-audit.json` を参照してください。

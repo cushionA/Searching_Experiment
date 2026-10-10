@@ -1,0 +1,27 @@
+{
+  "issues": [
+    {
+      "recorded_at": "2026-10-10T21:09:19Z",
+      "task_name": "v13_m012",
+      "case_id": "case-105af0d9f0b13877f3c1:rows:135:153",
+      "request": "matching-chunk-requests/012.json",
+      "answer": "matching-chunk-answers/012.json",
+      "issue": "Worker reported saved artifact had 0 extracted rows during its own validation; output left unchanged; no retry or overwrite.",
+      "recovery_attempted": true,
+      "recovery_status": "unrecoverable_no_generated_payload_in_worker_history",
+      "recovery_method": "save-only followup; no request reread, reevaluation, or new inference; artifact unchanged",
+      "inference_runs": 1,
+      "recovery_recorded_at": "2026-10-10T21:09:48Z"
+    },
+    {
+      "issue": "Initial stage gates omitted recursive collector and inherited guard verification",
+      "resolution": "verify_lineage_v2.py verifies all parent/current freeze hashes and all inherited guard code before grading; no hashes changed",
+      "stage": "post-review; not claimed pre-inference"
+    },
+    {
+      "issue": "Initial verify_lineage.py required transitive guard modules without loading their earlier freeze indexes",
+      "result": "ValueError before any output write, inference0",
+      "resolution": "initial helper preserved; additive verify_lineage_v2.py verifies V11 guard composition and V9 protocol, all950 unique bound files matched"
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "audit": "V12 prepare audit; supplemental metadata check after the two fresh responses were generated; response bodies not read",
+  "run_id": "20261010T205900Z-luna-closed-review-v12",
+  "labels_read": false,
+  "gold_used_for_selection": false,
+  "prior_metrics_observed_for_selection": true,
+  "fresh_answer_bodies_read": false,
+  "protocol_freeze": {
+    "entries": 241,
+    "verified": 241,
+    "unlisted_fresh_answers": 0,
+    "verified_hashes_all_match": true
+  },
+  "matching_and_signature_raw_unchanged_vs_v11": {
+    "derived/inputs.json": true,
+    "derived/source-contexts.json": true,
+    "derived/manifest.json": true,
+    "derived/evaluation.json": true,
+    "derived/requests": true,
+    "derived/answers": true,
+    "derived/signature-v3-manifest.json": true,
+    "derived/signature-v3-evaluation.json": true,
+    "derived/signature-v3-requests": true,
+    "derived/signature-v3-answers": true
+  },
+  "review_coverage": {
+    "total": 50,
+    "fresh": 2,
+    "exact_reused": 48,
+    "fresh_requests": [
+      {
+        "case_id": "case-d17c11f8557242ae3b83",
+        "request_sha256": "c69fe6a3b85770316c81e6a66f39102d6fff3433cb8473febf012b7493c41cfd",
+        "base_case_payload_equal_v11": true,
+        "addition_exact": true,
+        "passed_dimension_and_lace_absent": true,
+        "bounded_source_id": "S30",
+        "bounded_scope": "fixed_product",
+        "next_section_label": "カラー",
+        "no_review_answer_fields_in_case_payload": true
+      },
+      {
+        "case_id": "case-6ec0791c56c4d01d49f5",
+        "request_sha256": "a8a7578e2885444e20a66c67a8ffff8889ef00d1cf5a8a4fbe575c8a1bfc2aec",
+        "base_case_payload_equal_v11": true,
+        "addition_exact": true,
+        "passed_dimension_and_lace_absent": true,
+        "bounded_source_id": "S30",
+        "bounded_scope": "fixed_product",
+        "next_section_label": "カラー",
+        "no_review_answer_fields_in_case_payload": true
+      }
+    ]
+  },
+  "bounded_source": {
+    "source_archive_sha256": "c69bb28d88968cc48e1a8f6d825c4794cd1d44d0cedd0e685f141a186e9c683a",
+    "selected_raw_members": {
+      "case-d17c11f8557242ae3b83": {
+        "member": ".lab-output/sku-real-au-20261010-expanded/raw/778818828-item.json",
+        "sha256": "b1956598c5f3191e3c3d39e200766031baf589321d570e36ceeaf6e8f349a716",
+        "raw_member_hash_verified": true,
+        "bounded_html_row_is_exact_substring": true,
+        "current_au_width_section": "150cm",
+        "selected_rakuten_lace": "なし",
+        "bounded_scope": "fixed_product"
+      },
+      "case-6ec0791c56c4d01d49f5": {
+        "member": ".lab-output/sku-real-au-20261010-expanded/raw/778818828-item.json",
+        "sha256": "b1956598c5f3191e3c3d39e200766031baf589321d570e36ceeaf6e8f349a716",
+        "raw_member_hash_verified": true,
+        "bounded_html_row_is_exact_substring": true,
+        "current_au_width_section": "100cm",
+        "selected_rakuten_lace": "なし",
+        "bounded_scope": "fixed_product"
+      }
+    },
+    "new_request_case_payload_identical_to_v11": true,
+    "additional_policy_is_only_instruction_text": true,
+    "no_original_review_answer_in_model_requests": true
+  },
+  "dispatch_status": {
+    "stage": "v12-closed-review-supplement",
+    "model_requested": "gpt-6-luna",
+    "actual_modelVersion": null,
+    "usage": null,
+    "backend": "collaboration_subagent_api_emulation",
+    "startedUTC": "2026-10-10T20:58:56.341221+00:00",
+    "completedUTC": "2026-10-10T20:59:29Z",
+    "planned_calls": 2,
+    "calls": [
+      {
+        "case_id": "case-d17c11f8557242ae3b83",
+        "request": "review-requests/12.json",
+        "answer": "review-answers/12.json",
+        "request_sha256": "c69fe6a3b85770316c81e6a66f39102d6fff3433cb8473febf012b7493c41cfd",
+        "task_name": "v12_r001",
+        "spawned_at": "2026-10-10T20:59:05Z",
+        "finished_at": "2026-10-10T20:59:29Z",
+        "answer_sha256": "4ce070c2c4ed08e30b93548f56c68355878ed00598f8358e5423f39e98a6a398",
+        "delivery_status": "delivered"
+      },
+      {
+        "case_id": "case-6ec0791c56c4d01d49f5",
+        "request": "review-requests/17.json",
+        "answer": "review-answers/17.json",
+        "request_sha256": "a8a7578e2885444e20a66c67a8ffff8889ef00d1cf5a8a4fbe575c8a1bfc2aec",
+        "task_name": "v12_r002",
+        "spawned_at": "2026-10-10T20:59:05Z",
+        "finished_at": "2026-10-10T20:59:29Z",
+        "answer_sha256": "f910808c35f56863e61391945e54886461bbee54cf84574032da709e9d56c67a",
+        "delivery_status": "delivered"
+      }
+    ]
+  },
+  "limitations": [
+    "Two response files exist and dispatch metadata reports completion; their bodies were deliberately not opened, so this is not a semantic review audit.",
+    "Selection observed prior metrics but did not use gold labels.",
+    "actual_modelVersion and usage are null; dispatch timestamps are coordinator metadata."
+  ],
+  "post_dispatch_metadata_check": {
+    "collection_complete": true,
+    "fresh_response_files_present": 2,
+    "fresh_response_bodies_opened": false,
+    "fresh_response_content_or_verdict_assessed": false,
+    "dispatch_metadata_completedUTC": "2026-10-10T20:59:29Z",
+    "actual_modelVersion": null,
+    "usage": null
+  }
+}

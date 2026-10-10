@@ -6,12 +6,19 @@ AGENTS.mdを先に読む。ZIP追加不要。既存の索引、ZIP、生デー�
 Gemini固定6件は完了済み。元trial_gemini_sku_smoke_v2.pyと認証値は変更しない。
 追加Vertex推論なし。秘密値・認証headerはチャット/ログ/ファイルに出さない。
 
-現時点の最新完了結果: results/20261010T193100Z-luna-curtain-facet-v7/report.md
-新62組: 正答29/62=46.77%、採用14/除外15/保留33/未評価0。
-累計200組: 正答142/193=73.58%、採用行一致48/48、拾い上げ48/73=65.75%。
-200はSKU×AU商品ペア数であり、楽天SKU168件、AU商品33件、候補行延べ2672。
-既存ラベル1439件はLuna作成・人手未確認。review7件は累計正答率分母から除外。
-採用行一致率だけで成功と扱わず、既知の保留を誤答として正答率/拾い上げ率も報告する。
+現時点の最新完了結果: results/20261010T210700Z-luna-width-contents-v13/report.md
+累計250組: 正答219/241=90.87%、採用行一致74/74、拾い上げ74/87=85.06%。
+採用74/除外151/保留24/未評価1。楽天SKU207件、AU商品33件、候補行延べ3606。
+74リンクは楽天SKU72件。AU skuInfo.skuIdはgrid IDなのでrow/columnを保持する。
+新50組のpaired改善: v9 38/48→v11 39/48→v12 41/48→v13 44/48=91.67%。
+新50組の採用10/除外37/保留3/未評価0。残る2正例保留はメーカー型番等の原文不足、
+2正例除外は重量/耐荷重原文とラベルの不一致。梯子は防水情報が不明で保留。
+既存ラベル1439件はLuna作成・人手未確認。review9件は正答率分母から除外。
+既知ラベルの保留・未評価は誤答として正答率/拾い上げ率に計上する。
+全1439のAU/URL/R原文groupは既使用で、新商品/新原文holdoutはない。
+v13 matching20各1回:19/20構造成功、4/5全case新規照合、失敗1は旧V12 raw fallback。
+新2寸法と新5単独reviewも各1回。元API役はLuna指定、実provider modelVersion/usage/callsはnull。
+次回継続はlatest used-case ledger（250）で次集合のcase/pair/variant重複を除く。
 
 改善履歴（全て原出力保存、採点用rawラベルはcheckout外）:
 - 旧18: results/20261010T160225Z-luna-task-improvement/、既知16/17。
@@ -36,21 +43,62 @@ Gemini固定6件は完了済み。元trial_gemini_sku_smoke_v2.pyと認証値は
   回答を他の色/サイズ/AU checksを変更せずレースcheckだけへローカル展開する。
   寸法新1+既pass13reuse→14/14pass、意味レビュー全62件を1件ずつ。
   case-08a49...の候補取り違えを解消、正答29/62。independent-auditで再採点一致。
-- v8 閉じた内容表: results/20261010T195200Z-luna-closed-contents-v8/（推論進行）。
-  原HTMLの内容行と次のカラー行の境界を渡すfacet新2+v7raw2reuse。
-  derived/はcontrol23候補（9新寸法requestは未dispatch）。source上同一のサイズ/色/
-  レースを持つ非候補7だけfresh compactwholematchingしrepaired/にraw保存。
-  repaired/はcandidate30/exclude32、寸法新16+raw14reuseで30pass。レビュー新33+
-  raw29reuse（input/context/予測/照合SHA/寸法gate同一証明付き）、collectは未完了。
-  source selectorが『枚組』だけだった初期2を保存し、『枚』も許すadditive supplement5
-  を推論前にfreeze。repair.pyとrepair_v2.pyを混同しない。
-  negative-lace根拠はS30『内容』ラベルだけにせずexport_contents_proof.pyで全item行・
-  source/context SHA・Unicode span・カラー境界・リンクSHAまでlocal復元する。
-- v9 broad50: results/20261010T201000Z-luna-broad50-v9/（準備完了、次推論）。
+- v8 閉じた内容表: results/20261010T195200Z-luna-closed-contents-v8/（完了）。
+  facet新2+raw2reuse、matching新7、寸法新16+raw14reuseで28/30pass。
+  30全passとした途中説明は誤りで訂正済み。2unknownはpendingを維持。
+  review新33+raw29reuse、60/62、採用28/除外32/保留2。独立再採点一致。
+  control derived/の新9寸法requestは未dispatchで呼出件数に含めない。
+  『枚組』だけを許す初期repair.py/2要求を残し、枚も許すrepair_v2.py/5要求を追加。
+  negative-laceのlocal原文復元はexport_contents_proof_v3.pyが最終成功版。
+  v1/v2のアンカー限定による失敗も保存。原文/SHA/span/カラー境界/linkを28全件照合。
+  review receipt5件欠損はSHA+mtime照合、finished_at null、完了時刻を捏造しない。
+- v10 現在行寸法scope: results/20261010T203800Z-luna-current-row-dimensions-v10/（完了）。
+  v8 failed dimension gate2をsource/機械検証結果だけから選択（新規ペア0）。
+  A条件にfixed_product/sku_condition/current_rowを明示し、titleは原source一致を検証。
+  寸法新2+意味review新2。他matching62、寸法28、review60は完全raw再利用。
+  30/30寸法pass、正答62/62。独立再採点一致、contents proof30件、累計64リンク。
+  初期prepareのtarget provenance混入で失敗（推論0）。元script/partial copyを残し、
+  selected axis/value/unitだけのprojectionへ修正してから推論前freezeした。
+- v9 broad50: results/20261010T201000Z-luna-broad50-v9/（完了）。
   200とcase/pair/variant非重複の50、legacy40/novel10、23AU商品・17RURL/原文、934行。
-  元1439の全AU/URL/R原文は既に使用済みで独立の新商品holdoutは作れない。
-  最大153行の4caseを含み、全候補を27行以下に分割して70chunkを各1回推論し
-  純粋に行配列をlocal結合する。raw保存、同じ全caseで唯一候補/寸法/単独reviewをgate。
+  最大153行の4caseを含む。27行以下の70chunkを各1回、70/70構造pass、50caseへlocal結合。
+  full50契約は未dispatch。唯一候補15/除外34/保留1、新14寸法+local N/A1、10/15pass。
+  fresh単独review50で7採用33除外10保留、38/48。独立再採点/原文hash一致。
+  累計250は213/241。元v8-baseline helperは保存し、採点累計200には最新v10を使う。
+  scoped3,409,676B→compact2,151,946Bは未dispatch全契約比較。実70chunkは2,876,412B。
+  context反復があるため単純37%の実通信削減とは報告しない。bytesとtoken usageは別。
+- v11 単位引用/調節高さ: results/20261010T204500Z-luna-adjustable-dimensions-v11/（完了）。
+  v9 guard不通過5のうち単位なしtitle引用と明示高さ10/15cm・2段階調節の3をsource-only選定。
+  原文/SHA/current rowを確認し、現在SKUが別固定高さを指定しない同部位調節設定だけalias。
+  新3寸法+新3単独review、残り12寸法/47reviewとmatching50は完全raw再利用。
+  run_v2.pyで未変更12件のカーテンguardと選定3件の新guardを合成する。元run.pyも保持。
+  13/15寸法pass、8採用34除外8保留、39/48。累計214/241。独立採点/段階診断一致。
+  2踏み台は重量/耐荷重の原文が矛盾しreviewがreject。ラベルがmatchedでも値を変更しない。
+  matching仮採用段階46/48だが既知誤採用1があり最終リンクには使わない。
+  寸法gate段階46/48、precision13/13。最終reviewの保守的判断で39/48。
+  collector終了pollより前に累積exportを呼んだ事故はpipeline-issuesへ保存。exit0後に全SHA照合。
+- v12 閉じた内容表review: results/20261010T205900Z-luna-closed-review-v12/（完了）。
+  sig passed+review unresolved+選択レースなし+bounded contentsの2をsource-onlyで選定。
+  v8で検証した内容表全体による不存在判定手順をreviewへ追加。新2review/48rawreuse。
+  全50matching/15寸法も完全rawreuse。10採用34除外6保留、41/48。累計216/241。
+  grading-freeze525hash/5採点ファイルを独立検証一致。contents原文proof3/10links。
+  prepare auditは回答生成後だが答案本文は未読、推論前監査と誤記しない。
+- v13 幅別内容表matching: results/20261010T210700Z-luna-width-contents-v13/（完了）。
+  prior review pending+レース選択+唯一色/幅/丈の行+SHA検証した内容表を持つ5を選定。
+  goldによる選定はしないが既存review状態は使う。source-onlyは「過去判定未使用」ではない。
+  タイトル全体の枚数を現在幅へ流用せず、主/レース/付属品を別に比較するtaskを追加。
+  元全513行を20chunkで各1回。m012は0row保存失敗、生成済みJSONが無くsave-only復元不可。
+  新しい推論で埋めず原失敗を保持。collect_v2.pyは全chunk成功4caseだけ新全行結果を使い、
+  case-105af...は旧V12完全request/answerをbyte fallback。他45と合わせ46matching rawreuse。
+  new20chunkの構造は19/20であり、fallback込み最終50case構造成功と区別する。
+  新2寸法/既15rawreuseで15/17pass（旧2座椅子の矛盾維持）、新5単独review/45rawreuse。
+  内容表不足の3をreject、残る2はメーカー型番/原産国がAU原文に無くunresolved。
+  新50は44/48、累計219/241。採用数はv12と同じ74。ラベル上の誤採用/誤行は0。
+  初期stagegateでcollector/guard依存の再帰verifyが不足した。verify_lineage_v2.pyを追加し、
+  旧V9/V11/V12と新freezeの950unique hashを全照合し、grade必須gateにした。
+  元verify_lineage.pyのtransitive未読ValueError（推論0）も保持、pipeline-issuesへ記録。
+  最終grading-freeze985filesと再帰950hash/採点5filesを独立照合一致。
+  contents proof3/10採用links（V13追加link0）。原文/失敗/旧code不変。
 
 維持すべき仕様:
 - モデルには選択済み値、現在固定AU本文、候補行だけを渡す。楽天choicesを渡さない。
@@ -77,14 +125,18 @@ Gemini固定6件は完了済み。元trial_gemini_sku_smoke_v2.pyと認証値は
 
 再現/次回:
 - 各runのgrade.py/independent-audit.json/frozen-protocol.jsonを参照。
-- 重複除外集合: results/20261010T185500Z-luna-multirow62/used-case-ids.json（200）。
+- 重複除外集合: results/20261010T210700Z-luna-width-contents-v13/used-case-ids.json（250）。
   選択はsource metadata+固定seedで行い、予測/ラベルで評価集合を選ばない。
-- 残り未処理ラベルペア1239。次の拡大は新しいAU商品と楽天原文/URLを優先する。
+- 残り未処理ラベルペア1189。既存1439内には未使用AU商品/原文groupがない。
+  次の新ペアもcase/pair/variant重複を除くが、未見商品holdoutの精度とは報告しない。
   同じ2商品/同じURL内のSKUを独立標本とみなさない。人手正解確認も別途必要。
-- 追加改善: 同梱なしの証明と完全な内容表の判別、複合サイズ/枚数facet分離、
+- 追加改善: SKU識別条件とメーカー登録metadataの役割を原文から区別する。
+  型番/原産国の未記載だけで保留するreviewは拾い上げを落とすが、根拠なく一致扱いにしない。
+  重量/耐荷重とラベルが矛盾する2件は人手で原カタログ/ラベルを裁定する。
+  同梱なしの証明と完全な内容表の判別、複合サイズ/枚数facet分離、
   ケース取り違え検出、選択属性の部位/単位矛盾。不足根拠で採用数だけ増やさない。
 - 検証: python3 -B -m unittest discover -s tests -p 'test_lab*.py'
-  最新587件で既存18失敗ID（errors17/failures1）、skips37は前回と同じ。
-  新しいalias8/facet9/closed6/compact3/general4のfocused testは全成功。詳細各run/tests.json。
+  最新599件で既存18失敗ID（errors17/failures1）、skips37は前回と同じ。
+  新しいalias8/facet9/closed6/compact3/general4/current-row4/adjustable8のfocused testは全成功。詳細各run/tests.json。
 - 必要コード/原要求/原回答/復元根拠/レビュー/評価メモを同branchへcommit/push。
   このメモの保存だけでバックグラウンド自動実行は開始されない。
