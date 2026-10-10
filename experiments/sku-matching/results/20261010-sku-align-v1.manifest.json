@@ -1,0 +1,21 @@
+{
+  "archive": "20261010-sku-align-v1.zip",
+  "size_bytes": 1309996,
+  "sha256": "b1455573e0eac04844718ad827f67654e49142442274aef14b9f39aa6b968317",
+  "embedded_manifest": "SKU_GATE_CHECKPOINT.json",
+  "embedded_manifest_sha256": "5e4b811130296248c9a75a58e0ba215087ae4bbb5471bb85a9e4c3969644019b",
+  "payload_file_count": 133,
+  "uncompressed_payload_bytes": 18575098,
+  "crc_and_all_payload_sha256_verified": true,
+  "checkpoint": {
+    "schema_version": 1,
+    "purpose": "SKU condition alignment, Claude part of the 2026-10-10 split. Selected arm: japanese-reranker-small-v2 with exact-first, mutual best match over all Rakuten axes and explicit symmetric/one-sided axis split (align-...-reverse-all-v4axes: axes.jsonl, decisions, diff vs rule gate v10, handoff.jsonl for the Codex description check, score-axes). Also: questions, raw answers and align summaries/scores of the compared arms (Qwen3.5 2B/4B-int8, ModernBERT-Ja-310m-jev, Ruri v3 Reranker, exact-string only), the manual axis reference for the 29 pairs, and the earlier Qwen3.5 relation probes. conditions.jsonl is omitted (about 300 MB); regenerate with align_sku_conditions.py align.",
+    "created_at_utc": "2026-10-10T14:36:56.011087+00:00",
+    "extract_at": "repository root; preserve .lab-output relative paths; use unzip -n",
+    "raw_label_files_included": false,
+    "label_derived_content": "score-*.json hold aggregate counts against the Luna v3 machine labels of the 29 confirmed pairs and against Claude's manual axis reference (reference/axis-correspondence-legacy.json, made after rule-gate and label scores were seen). No raw labels; family has no labels. The method was revised after reading these scores (label-informed development).",
+    "weights_venvs_credentials_included": false,
+    "payload_file_count": 133,
+    "uncompressed_payload_bytes": 18575098
+  }
+}
