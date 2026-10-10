@@ -1,0 +1,28 @@
+{
+  "createdUTC": "2026-10-10T18:16:38.863232+00:00",
+  "task_versions": {
+    "baseline": "selected-sku-scoped-bidirectional-v2",
+    "improved": "selected-sku-scoped-bidirectional-v3"
+  },
+  "v2_requests_equal_to_frozen_prior50": true,
+  "selected_fresh_sku_pairs": 50,
+  "selection_uses_labels": false,
+  "parent_development_gold_feedback": "prior18 + expanded50; fresh50 predictions/reviews not scored until frozen",
+  "model_requested": "gpt-6-luna",
+  "actual_modelVersion": null,
+  "usage": null,
+  "code_sha256": {
+    "trial_luna_sku_matching.py": "b3e27398ee82f810bc6eac76d1342629af113837b947c7519fbc1c983c050db7",
+    "sku_luna_task_policy.py": "5e16ec394e3841dd17a48d374c604d52abe34f33737de783c75b0ac45c849ad4",
+    "sku_luna_inputs.py": "a3f0b7bfdb926c496f7a74155aac6b57d4aa4ab45856a3c902336b642444a2f4",
+    "sku_luna_source_context.py": "b49ecea674e22c3fb60d01332632dae2e6cb87680d23c73f94d77aa6e4d4f50c",
+    "sku_luna_dimension_guard.py": "710d6d8d0acd7c589dab501fd17ad11ff528e8d67e886ecc592de465fd53309c",
+    "evaluate_frozen_sku_accuracy.py": "de67259b5f81729e3c8e5916d7752c3d4936ff2483a21cbe03ee8ff6de817d7f"
+  },
+  "selection_sha256": "b54e6515e0190f623fcbabad975777dbca5e514362fb36a98d0b6822af0d668f",
+  "pairing": "same fifty SKU/product pairs, independent fresh stateless workers for each arm; v2 signature/review versus v3 signature/review; one call per matching request",
+  "artifact_scripts_sha256": {
+    "prepare.py": "829ce52b2e8c7e331d42bb15ea1c8a7136d641b2867bb60a231ee350a2cea700",
+    "reviews.py": "565b91ab5a31c1f88e39f6692f185f5067f2730412bbe63ad4c0772dcbd52d51"
+  }
+}

@@ -1,0 +1,197 @@
+{
+  "audit": "independent V7 audit",
+  "run_id": "20261010T193100Z-luna-curtain-facet-v7",
+  "external_evaluation_dir": "/workspace/sku-curtain-v7-independent-audit-20261010T200000Z",
+  "labels_materialized_in_repo": false,
+  "checks": {
+    "grading_summaries_cases_and_comparisons_exact": true,
+    "frozen_source_hashes_match": true,
+    "source_freeze_count": 295,
+    "case_count_inputs_evaluation_summary": true,
+    "structural_pass_62": true,
+    "signature_pass_14_of_14": true,
+    "review_manifest_62_and_labels_unread": true,
+    "review_unique_coverage_62": true,
+    "review_answers_hash_and_shape_clean": true,
+    "review_dispatch_delivery_62": true,
+    "final_reviews_equal_manifest_answers": true,
+    "reviewed_summary_hashes_match": true,
+    "review_counts": {
+      "adopt": 14,
+      "pending": 33,
+      "exclude": 15
+    },
+    "adopt_review_signature_dimension_gate_and_citations": true,
+    "adopt_count": 14,
+    "reject_count": 15,
+    "pending_count": 33,
+    "exported_links_14_and_equal": true,
+    "export_link_bindings_valid": true,
+    "export_dimension_evidence_all_support": true,
+    "dispatch_metadata": {
+      "model_requested": "gpt-6-luna",
+      "actual_modelVersion": null,
+      "usage": null,
+      "startedUTC": "2026-10-10T19:46:13.397250+00:00",
+      "completedUTC": "2026-10-10T19:59:54.024629+00:00",
+      "planned_calls": 62
+    },
+    "signature_dispatch": {
+      "model_requested": "gpt-6-luna",
+      "actual_modelVersion": null,
+      "usage": null,
+      "startedUTC": "2026-10-10T19:44:34.743673+00:00",
+      "completedUTC": "2026-10-10T19:44:56.196205+00:00",
+      "planned_calls": 1
+    },
+    "facet_dispatch": {
+      "requested_model": "gpt-6-luna",
+      "provider_call_count_independently_verified": false,
+      "stage_start_utc": "2026-10-10T19:40:38+00:00",
+      "stage_end_utc_from_last_answer_mtime": "2026-10-10T19:41:20.062963+00:00",
+      "logical_tasks_created": 4
+    },
+    "independent_metrics": {
+      "v7_62": {
+        "known_case_accuracy": {
+          "numerator": 29,
+          "denominator": 62,
+          "rate": 0.46774193548387094
+        },
+        "known_decided_accuracy": {
+          "numerator": 29,
+          "denominator": 29,
+          "rate": 1.0
+        },
+        "accepted_known_row_precision": {
+          "numerator": 14,
+          "denominator": 14,
+          "rate": 1.0
+        },
+        "row_match_recall": {
+          "numerator": 14,
+          "denominator": 30,
+          "rate": 0.4666666666666667
+        },
+        "known_coverage": {
+          "numerator": 29,
+          "denominator": 62,
+          "rate": 0.46774193548387094
+        },
+        "confusion_matrix": {
+          "matched": {
+            "adopt": 14,
+            "exclude": 0,
+            "not_evaluated": 0,
+            "pending": 16
+          },
+          "unmatched": {
+            "adopt": 0,
+            "exclude": 15,
+            "not_evaluated": 0,
+            "pending": 17
+          }
+        },
+        "known_false_accepts": 0,
+        "wrong_row_accepts": 0,
+        "missed_positive": 0,
+        "positive_abstentions": 16,
+        "unknown_truth_count": 0,
+        "unknown_truth_accepted": 0,
+        "unlabelled_count": 0,
+        "decision_counts": {
+          "adopt": 14,
+          "exclude": 15,
+          "not_evaluated": 0,
+          "pending": 33
+        }
+      },
+      "cumulative_200_v7": {
+        "known_case_accuracy": {
+          "numerator": 142,
+          "denominator": 193,
+          "rate": 0.7357512953367875
+        },
+        "known_decided_accuracy": {
+          "numerator": 142,
+          "denominator": 143,
+          "rate": 0.993006993006993
+        },
+        "accepted_known_row_precision": {
+          "numerator": 48,
+          "denominator": 48,
+          "rate": 1.0
+        },
+        "row_match_recall": {
+          "numerator": 48,
+          "denominator": 73,
+          "rate": 0.6575342465753424
+        },
+        "known_coverage": {
+          "numerator": 143,
+          "denominator": 193,
+          "rate": 0.7409326424870466
+        },
+        "confusion_matrix": {
+          "matched": {
+            "adopt": 48,
+            "exclude": 1,
+            "not_evaluated": 1,
+            "pending": 23
+          },
+          "unmatched": {
+            "adopt": 0,
+            "exclude": 94,
+            "not_evaluated": 0,
+            "pending": 26
+          }
+        },
+        "known_false_accepts": 0,
+        "wrong_row_accepts": 0,
+        "missed_positive": 1,
+        "positive_abstentions": 24,
+        "unknown_truth_count": 7,
+        "unknown_truth_accepted": 0,
+        "unlabelled_count": 0,
+        "decision_counts": {
+          "adopt": 48,
+          "exclude": 97,
+          "not_evaluated": 1,
+          "pending": 54
+        }
+      }
+    },
+    "comparison_matches_run": true,
+    "tests_recorded": {
+      "command": "python3 -B -m unittest discover -s tests -p 'test_lab*.py'",
+      "run": 574,
+      "skipped": 37,
+      "errors": 17,
+      "failures": 1,
+      "same_failure_ids_as_v3": true,
+      "failure_ids": [
+        "test_execute_flushes_failures_and_writes_complete_manifest (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_execute_flushes_failures_and_writes_complete_manifest)",
+        "test_frozen_validator_requires_literal_quotes_from_both_sides (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_frozen_validator_requires_literal_quotes_from_both_sides)",
+        "test_plan_and_frozen_bundle_pins (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_plan_and_frozen_bundle_pins)",
+        "test_plan_rejects_unpinned_model_or_fork (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_plan_rejects_unpinned_model_or_fork)",
+        "test_preflight_rejects_modified_frozen_config (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_preflight_rejects_modified_frozen_config)",
+        "test_strict_parser_uses_existing_validator_and_preserves_server_body (test_lab_bonsai_sku_runner.BonsaiRunnerTests.test_strict_parser_uses_existing_validator_and_preserves_server_body)",
+        "test_lab_gpu_condition_tasks_v1 (unittest.loader._FailedTest.test_lab_gpu_condition_tasks_v1)",
+        "test_existing_source_bundles_are_read_only (test_lab_integrated_sku_inputs_v1.IntegratedSkuInputsV1Tests.test_existing_source_bundles_are_read_only)",
+        "test_blind_cases_have_resolved_dossiers_and_stable_ids (test_lab_luna_annotation.LunaAnnotationInputTests.test_blind_cases_have_resolved_dossiers_and_stable_ids)",
+        "test_blind_inputs_exclude_commercial_and_label_fields (test_lab_luna_annotation.LunaAnnotationInputTests.test_blind_inputs_exclude_commercial_and_label_fields)",
+        "test_group_split_and_shard_membership_are_atomic (test_lab_luna_annotation.LunaAnnotationInputTests.test_group_split_and_shard_membership_are_atomic)",
+        "test_case_and_unique_sku_counts_are_not_conflated (test_lab_luna_package.LunaRealPackageTests.test_case_and_unique_sku_counts_are_not_conflated)",
+        "test_decide_and_derived_reports_are_frozen_and_source_pinned (test_lab_luna_package.LunaRealPackageTests.test_decide_and_derived_reports_are_frozen_and_source_pinned)",
+        "test_model_outputs_pin_current_code_and_manifest_hashes (test_lab_luna_package.LunaRealPackageTests.test_model_outputs_pin_current_code_and_manifest_hashes)",
+        "test_builds_all_56_rows_without_labels (test_lab_novel_real_inputs_v1.NovelRealInputTests.test_builds_all_56_rows_without_labels)",
+        "test_exact_source_spans_and_series_links_are_scoped_out (test_lab_novel_real_inputs_v1.NovelRealInputTests.test_exact_source_spans_and_series_links_are_scoped_out)",
+        "test_source_arrays_and_counts_are_complete (test_lab_novel_real_inputs_v1.NovelRealInputTests.test_source_arrays_and_counts_are_complete)",
+        "test_offline_diagnostics_guards (test_lab_bot_diagnostics.BotDiagnosticsTests.test_offline_diagnostics_guards)"
+      ],
+      "log_external": "/workspace/sku-curtain-v7-full-tests.txt",
+      "same_failure_ids_as_v4": true
+    },
+    "review_anomalies": []
+  }
+}

@@ -1,0 +1,316 @@
+{
+  "gold_files": {
+    "novel-labels.jsonl": "df36865c774e51c90572ccd2094ef532ea4e44d910b4c12c7ee858c1792cf524",
+    "legacy-labels.jsonl": "a461717495fea768d03e79d5d884c32e3a2eee4da6a7167795a1c57fcf38ea28"
+  },
+  "external_grade_run": {
+    "comparisons_match_saved": true,
+    "summary_files_match_saved": {
+      "baseline": true,
+      "improved": true,
+      "baseline_matching": true,
+      "improved_matching": true,
+      "cumulative_118": true
+    },
+    "case_results_match_saved": {
+      "baseline": true,
+      "improved": true,
+      "baseline_matching": true,
+      "improved_matching": true,
+      "cumulative_118": true
+    },
+    "all_match": true
+  },
+  "pairing": {
+    "fresh_cases": 50,
+    "inputs_identical": true,
+    "fresh_case_ids_unique": true,
+    "fresh_sku_product_pairs_unique": true,
+    "prior_case_id_overlap": 0,
+    "prior_sku_product_pair_overlap": 0,
+    "selected_au_products": 27,
+    "candidate_rows": 249,
+    "selection_prior_exclusion_records": {
+      "r02_r03_input_count": 18,
+      "expanded50_input_count": 50,
+      "case_id_count": 68,
+      "sku_au_pair_count": 68,
+      "input_paths": [
+        "experiments/sku-matching/results/20261010T160225Z-luna-task-improvement/r02-reference-development/inputs.json",
+        "experiments/sku-matching/results/20261010T160225Z-luna-task-improvement/r03-reference-holdout/inputs.json",
+        "experiments/sku-matching/results/20261010T174640Z-luna-expanded50/inputs.json"
+      ]
+    },
+    "variant_identity_audit": {
+      "case_count": 118,
+      "unique_au_url_variant_tuples": 118,
+      "prior68_and_fresh50_disjoint": true,
+      "unique_source_sku_au_pairs": 118
+    }
+  },
+  "v2_request_compatibility": {
+    "task_policy_and_schema_template_match_prior50": true,
+    "checked": 50
+  },
+  "core_scoped_request_byte_reproduction": {
+    "all_saved_old50_requests_reproduced": true,
+    "checked": 50,
+    "serializer": "core.save JSON indent=2, ensure_ascii=False, trailing newline"
+  },
+  "frozen_code_sha256_matches": {
+    "trial_luna_sku_matching.py": true,
+    "sku_luna_task_policy.py": true,
+    "sku_luna_inputs.py": true,
+    "sku_luna_source_context.py": true,
+    "sku_luna_dimension_guard.py": true,
+    "evaluate_frozen_sku_accuracy.py": true
+  },
+  "dispatch_integrity": {
+    "matching": {
+      "manifest_entries": 100,
+      "dispatch_calls": 100,
+      "request_hashes_match": true,
+      "answer_hashes_match": true,
+      "request_check_count": 100,
+      "answer_check_count": 100,
+      "dispatch_model_requested": "gpt-6-luna",
+      "actual_modelVersion": null,
+      "usage": null
+    },
+    "signature": {
+      "manifest_entries": 28,
+      "dispatch_calls": 28,
+      "request_hashes_match": true,
+      "answer_hashes_match": true,
+      "request_check_count": 28,
+      "answer_check_count": 28,
+      "dispatch_model_requested": "gpt-6-luna",
+      "actual_modelVersion": null,
+      "usage": null
+    },
+    "review": {
+      "manifest_entries": 10,
+      "dispatch_calls": 10,
+      "request_hashes_match": true,
+      "answer_hashes_match": true,
+      "request_check_count": 10,
+      "answer_check_count": 10,
+      "dispatch_model_requested": "gpt-6-luna",
+      "actual_modelVersion": null,
+      "usage": null
+    }
+  },
+  "routing_history": {
+    "pre_correction_snapshot_saved": false,
+    "audit_note": "worker task numbering/request assignment shifted by one starting at v3_m070; worker outputs were saved to the explicitly assigned request paths, so answer files remain correctly associated by path.",
+    "correction_basis": "explicit worker task/request/answer assignments and file-path metadata",
+    "raw_answer_files_modified": false,
+    "capacity_events": [
+      {
+        "occurred_at": "2026-10-10T18:31:50.987293+00:00",
+        "call_id": "baseline-36",
+        "task_name": "v3_m070",
+        "event": "spawn_failed_then_retry_succeeded",
+        "tool_error": "collaboration.spawn_agent returned agent thread limit reached on first attempt",
+        "first_attempt_counted_as_api_call": false,
+        "retry": "fresh fork_none gpt-6-luna worker spawned successfully after two worker completions"
+      },
+      {
+        "occurred_at": "2026-10-10T18:33:58.786182+00:00",
+        "event": "request_sequence_mapping_error",
+        "task_name": "v3_m070",
+        "assigned_request": "baseline/requests/36.json",
+        "manifest_call_id": "baseline-36",
+        "expected_manifest_call_id": "improved-35",
+        "note": "The worker correctly answered its assigned request; dispatch mapping was one call ahead from this point. Existing baseline36 answer is associated with its matching manifest entry. Missing improved35 and improved50 will be dispatched once each with unused fresh worker names."
+      }
+    ]
+  },
+  "signature_checks": {
+    "baseline": {
+      "manifest_entries": 15,
+      "evaluation_entries": 15,
+      "passed": 11,
+      "target_count": 39
+    },
+    "improved": {
+      "manifest_entries": 14,
+      "evaluation_entries": 14,
+      "passed": 13,
+      "target_count": 36
+    },
+    "local_NA_results": [
+      {
+        "case_id": "case-db8a5a00e97c3cbbc1a6",
+        "row_key": "au:597651839:168445336:2:0",
+        "targets": [],
+        "candidate_answer_sha256": "1563a5d609a876773cb8d0a3ab7e22536cfc3b80e10c6859b13efc49872fc152",
+        "request": "improved/signature-v3-requests/03.json",
+        "answer": "improved/signature-v3-answers/03.json",
+        "request_sha256": "5c8661033780493d6ef19d23006279ec45039c9e24c86a28a985e01107a8def4",
+        "inference_required": false,
+        "arm": "improved"
+      }
+    ],
+    "dispatch_call_count": 28
+  },
+  "reviews": {
+    "coverage_per_arm": {
+      "baseline": {
+        "review_count": 50,
+        "review_ids_match_inputs": true,
+        "summary_case_ids_match_inputs": true
+      },
+      "improved": {
+        "review_count": 50,
+        "review_ids_match_inputs": true,
+        "summary_case_ids_match_inputs": true
+      }
+    },
+    "final_counts": {
+      "baseline": {
+        "exclude": 30,
+        "pending": 10,
+        "adopt": 10
+      },
+      "improved": {
+        "exclude": 28,
+        "pending": 8,
+        "not_evaluated": 1,
+        "adopt": 13
+      }
+    },
+    "citation_scope_all_valid": true,
+    "review_dispatch_failures_and_recovery": [
+      {
+        "task": "v3_r002",
+        "reported_generation_error": true,
+        "final_answer_exists": true,
+        "final_answer_hash_matches_dispatch": true,
+        "persistence_retry_outcome": "saved_original_precomputed_json_without_reread_or_inference"
+      },
+      {
+        "task": "v3_r006",
+        "reported_read_zero": true,
+        "wrong_assigned_request_exists": false,
+        "wrong_assigned_answer_exists": false,
+        "recovery_note": "fresh correctly mapped worker to be dispatched",
+        "replacement_delivery_task_name": "v3_r011"
+      }
+    ]
+  },
+  "links": {
+    "baseline": 10,
+    "improved": 13,
+    "all_candidate_coordinates_decision_refs_and_quotes_valid": true
+  },
+  "structural_issues": {
+    "baseline_pass": 50,
+    "improved_pass": 48,
+    "raw_failures": [
+      {
+        "case_id": "case-293a635dec426ed5ac0f",
+        "reason": "condition_coverage_error:au:653618158:319149609:0:0:au_checks"
+      },
+      {
+        "case_id": "case-10dbf7384c6775340da7",
+        "reason": "condition_coverage_error:au:700957229:307281860:0:0:au_checks"
+      }
+    ],
+    "case_outcomes": {
+      "case-293a635dec426ed5ac0f": {
+        "baseline": {
+          "raw_validation_reason": "ok",
+          "raw_decision": "candidate",
+          "review_verdict": "confirm",
+          "final_decision": "adopt",
+          "final_row_key": "au:653618158:319149609:1:0"
+        },
+        "improved": {
+          "raw_validation_reason": "condition_coverage_error:au:653618158:319149609:0:0:au_checks",
+          "raw_decision": "not_evaluated",
+          "review_verdict": "unresolved",
+          "final_decision": "not_evaluated",
+          "final_row_key": null
+        }
+      },
+      "case-10dbf7384c6775340da7": {
+        "baseline": {
+          "raw_validation_reason": "ok",
+          "raw_decision": "exclude",
+          "review_verdict": "reject",
+          "final_decision": "exclude",
+          "final_row_key": null
+        },
+        "improved": {
+          "raw_validation_reason": "condition_coverage_error:au:700957229:307281860:0:0:au_checks",
+          "raw_decision": "not_evaluated",
+          "review_verdict": "reject",
+          "final_decision": "exclude",
+          "final_row_key": null
+        }
+      }
+    },
+    "source_text_corrected": false
+  },
+  "grading": {
+    "primary": {
+      "baseline": {
+        "known_case_accuracy": {
+          "numerator": 39,
+          "denominator": 48,
+          "rate": 0.8125
+        },
+        "accepted_known_row_precision": {
+          "numerator": 10,
+          "denominator": 10,
+          "rate": 1.0
+        },
+        "decision_counts": {
+          "adopt": 10,
+          "exclude": 30,
+          "not_evaluated": 0,
+          "pending": 10
+        }
+      },
+      "improved": {
+        "known_case_accuracy": {
+          "numerator": 41,
+          "denominator": 48,
+          "rate": 0.8541666666666666
+        },
+        "accepted_known_row_precision": {
+          "numerator": 13,
+          "denominator": 13,
+          "rate": 1.0
+        },
+        "decision_counts": {
+          "adopt": 13,
+          "exclude": 28,
+          "not_evaluated": 1,
+          "pending": 8
+        }
+      }
+    },
+    "paired_gain_loss": {
+      "gains": 5,
+      "losses": 3,
+      "known_count": 48,
+      "p_exploratory": 0.7265625
+    },
+    "external_comparison_hash": "479b99919952fbbde154e84e4ad46a583a93bd32035014d1c8bd3e690f042568"
+  },
+  "model_metadata": {
+    "requested": "gpt-6-luna",
+    "actual_modelVersion": null,
+    "usage": null,
+    "matching_actual_modelVersion": null,
+    "signature_actual_modelVersion": null,
+    "review_actual_modelVersion": null,
+    "calls_as_recorded_metadata_only": [
+      100,
+      28,
+      10
+    ]
+  }
+}

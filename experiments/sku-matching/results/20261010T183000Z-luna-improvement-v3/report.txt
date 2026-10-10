@@ -1,0 +1,79 @@
+Luna SKU 継続改善 v3：新規50 SKUの対応比較（2026-10-10）
+
+結論：レビュー後の既知ラベル正答率は従来版39/48=81.25%、改善版41/48=85.42%。採用精度は従来10/10、改善13/13で、既知正例の再現率は10/15=66.67%から13/15=86.67%に増えた。改善5件・悪化3件。単回比較で有意な改善の証明には至らない（探索的McNemar p=0.7266、同一商品内のSKU相関もある）。
+改善版の最終判定：採用13、除外28、保留8、未評価1。既知matched15/unmatched33、ラベルreview2は正答率の分母から除外。保留・未評価は既知ラベルに対する不正答として数える。ラベル自体は既存Luna機械ラベルで、人手正答率ではない。
+
+比較仕様：baseline=scoped v2/signature-v2/旧レビュー、improved=scoped-v3/signature-v3/v3レビュー。同一の選択済み値と固定AU商品原文を両版へ渡す。チェック応答はstatus/source_idsのみ、IDと根拠原文をローカル復元。選択肢全体をモデルに渡さない。原Geminiの固定6件とVertex runnerは再実行・変更していない。
+変更は同facet属性の照合優先、広い分類タグによる誤除外の抑制、登録された単位付き寸法0件を適用対象なしとして扱うこと、同部位で明示的な円形の直径と横幅/奥行の対応。単位訂正や不明寸法の推測は行わない。
+新規50 SKU×AU組、27 AU商品、候補249行。過去68件とのcase ID・SKU×AU組・AU+楽天URL+variantの重複なし。全50件は既存の楽天原文18ファイルを共有し、未知商品/未知原文の独立holdoutではない。選択にラベルを使わず、旧50件の誤りは改善設計に使用した。予測とレビューを凍結後、ラベルをcheckout外だけに展開して採点した。
+
+構造検証：baseline50/50、improved48/50。改善版2件（case-293a635dec426ed5ac0f、case-10dbf7384c6775340da7）は楽天チェック数をAUチェックへ複製したためcondition_coverage_error。原回答を修正・再推論していない。前者は最終未評価、後者は独立意味レビューで明示不一致を確認し最終除外。次のv4は別の新規20件で配列件数制約を検証する。
+候補寸法検証：baseline15件（モデル15、構造15/15、pass11）、improved14件（モデル13、ローカルN/A1、構造14/14、pass13）。N/Aは適用すべき登録寸法集合が空である意味で、寸法一致を証明した意味ではない。case-db8a5a00e97c3cbbc1a6が該当。linksのselected_dimensions_passedもこの場合の適用なしを含むため、signature-v3-evaluation.jsonのapplicable=falseと併読する。
+
+意味レビュー：採用は同じ候補行・固定商品範囲の根拠・必要な寸法検証・confirmが揃ったものに限定。犬種の広い分類、3段踏み台の寸法N/A、円形80cmの対応で取りこぼしを減らした。毛布セットの中材矛盾と肘掛けなし座椅子の明示寸法差は改善版レビューで保留に退行した。レビューごとの判断揺れも残り、出力件数対策だけでは解決しない。150×210cm毛布の寸法確認は単回推論の揺れを含み、v3規則が原因と断定しない。
+累積118組：正答96/112=85.71%、既知採用32/32、正例再現32/40=80.00%。最終採用32/除外66/保留19/未評価1、誤採用0・誤AU行採用0・誤除外1、ラベルreview6。残り未処理ラベル1321。異なる各版の履歴を合算した累積値で、全件をv3で再処理した成績ではない。
+
+モデル：requested gpt-6-luna、subagent API見立て。実モデルのmodelVersionとusageは取得できずnull。Vertex modelのversion/token usageとは区別する。論理タスク配送は照合100＋寸法28＋レビュー10=138、ローカルN/A1。レビューworkerは11体（誤パス1体はリクエスト未読）、事前計算済み回答の保存復旧followup1回。provider呼出し数を独立確認した値ではない。
+運用問題：途中のthread capacity不足と照合worker番号の対応ずれを記録し、元回答は改変せずmanifestとのSHA対応を検証して補完した。レビューr006は存在しない誤パスを指定され未読・未回答、fresh r011で正パスを配送。r002は保存失敗後、同じ事前計算済みJSONだけを保存復旧した。分類再試行ではない。routingの修正前snapshotは残っておらず履歴完全再構成はできない。
+
+実行時間（UTC、モデル処理に加えworker配送・保存待ちを含む）：
+照合: 2026-10-10T18:17:05.922647+00:00 ～ 2026-10-10T18:34:50.970407+00:00、1065.0秒
+寸法: 2026-10-10T18:36:53.813049+00:00 ～ 2026-10-10T18:41:26.402322+00:00、272.6秒
+意味レビュー: 2026-10-10T18:42:24.219444+00:00 ～ 2026-10-10T18:47:46.113557Z、321.9秒
+入力選択のcreated_utc=2026-10-10T18:13:04.968120Z。ディレクトリ名の18:30は予約名で、実開始時刻ではない。
+
+検証：凍結コード6ファイルSHA・両版入力/原文/リクエスト/回答SHA・source spanと行範囲・全レビューcoverage検証済み。旧v2 request50件とのbyte互換確認済み。focused20 tests成功、関連helper37 tests成功。必須全体553 testsは既存の17 errors/1 failure/37 skipsで、前の50件時点と失敗ID一致。新v4追加後の全体557 testsも同じ18失敗（詳細v4/tests.json）。独立再採点監査はindependent-audit.jsonを参照。
+
+再現：python3 -B experiments/sku-matching/results/20261010T183000Z-luna-improvement-v3/grade.py --evaluation-dir /workspace/NEW-UNUSED-EXTERNAL-DIR。raw labelは外部のみ、repo内gradingは集計と派生case比較だけ。
+
+ケース別（baseline → improved、reviewラベルは分母外）：
+case-0a8a63c5d4ebff5f2cfd  exclude → exclude  label=unmatched  correct=True→True
+case-9c77ad2ed25be9294fd5  exclude → pending  label=unmatched  correct=True→False
+case-55f8a515cb0ac4749e06  exclude → exclude  label=unmatched  correct=True→True
+case-a89d4c008275d1336f03  exclude → exclude  label=unmatched  correct=True→True
+case-99fbd1d7c8a23d32d917  pending → pending  label=unmatched  correct=False→False
+case-4530f9d8b1ab2f427659  pending → pending  label=unmatched  correct=False→False
+case-30019a8030f51dd62329  exclude → pending  label=unmatched  correct=True→False
+case-fbe763d089c8ef20f320  exclude → exclude  label=unmatched  correct=True→True
+case-a7e174b88f5299a0a9ae  exclude → exclude  label=unmatched  correct=True→True
+case-6dde94ac474bdcdcbfb2  exclude → exclude  label=unmatched  correct=True→True
+case-293a635dec426ed5ac0f  adopt → not_evaluated  label=matched  correct=True→False
+case-d9667d49758678a4d527  adopt → adopt  label=matched  correct=True→True
+case-ac39a44bd9d3bbcc1c10  exclude → exclude  label=unmatched  correct=True→True
+case-1b3e15fff7deef208800  exclude → exclude  label=unmatched  correct=True→True
+case-7ce7cec932ce93be5a0e  exclude → exclude  label=unmatched  correct=True→True
+case-a9c73f88db0641510b90  adopt → adopt  label=matched  correct=True→True
+case-0dd17b53253438ae3379  exclude → exclude  label=unmatched  correct=True→True
+case-35e555261edb897d9958  exclude → exclude  label=unmatched  correct=True→True
+case-cebfea2231966774cc9c  exclude → exclude  label=unmatched  correct=True→True
+case-86af1cd464d50a6a990a  exclude → exclude  label=unmatched  correct=True→True
+case-db8a5a00e97c3cbbc1a6  pending → adopt  label=matched  correct=False→True
+case-9725e5bb7b008002e836  exclude → exclude  label=unmatched  correct=True→True
+case-435d2cb6cf94c6d02c05  adopt → adopt  label=matched  correct=True→True
+case-7365ed2a3b4860afd148  pending → adopt  label=matched  correct=False→True
+case-0722ef51b816b9837580  pending → pending  label=review  correct=None→None
+case-7f9e4a323208c9b87e3c  adopt → adopt  label=matched  correct=True→True
+case-8c9ed23d10e9e6bff736  exclude → pending  label=review  correct=None→None
+case-efc9553140a1ea39dae9  pending → pending  label=unmatched  correct=False→False
+case-efac80e57eeda8380a6d  pending → pending  label=matched  correct=False→False
+case-10dbf7384c6775340da7  exclude → exclude  label=unmatched  correct=True→True
+case-a531d171d0b4ae98a554  exclude → exclude  label=unmatched  correct=True→True
+case-ec5777af356f44fcde53  adopt → adopt  label=matched  correct=True→True
+case-830a8221178b097cb5f9  exclude → exclude  label=unmatched  correct=True→True
+case-15e88e6ea7b5ce53b833  adopt → adopt  label=matched  correct=True→True
+case-9d489b3ccc852b2a1243  exclude → exclude  label=unmatched  correct=True→True
+case-58a4e27982f490ccb62c  exclude → exclude  label=unmatched  correct=True→True
+case-47218de32d03117df572  exclude → exclude  label=unmatched  correct=True→True
+case-b81cb8330952dc9b9bbf  exclude → exclude  label=unmatched  correct=True→True
+case-b48b22bf34eddb41c328  adopt → adopt  label=matched  correct=True→True
+case-95981874c7bddb305fcc  pending → adopt  label=matched  correct=False→True
+case-39322da8d6e81cadb4ca  exclude → exclude  label=unmatched  correct=True→True
+case-cab5cf5a8aa414856a7b  exclude → exclude  label=unmatched  correct=True→True
+case-ee2e1e7bcbd8230436a0  pending → adopt  label=matched  correct=False→True
+case-e507c3959e6a6f58925e  exclude → exclude  label=unmatched  correct=True→True
+case-890438460aa0d8e0999b  exclude → exclude  label=unmatched  correct=True→True
+case-ae9b5ab865c157f7f716  exclude → exclude  label=unmatched  correct=True→True
+case-bde953066a4e2a2bd2c9  exclude → exclude  label=unmatched  correct=True→True
+case-569a1359acc13b3c0cf3  pending → exclude  label=unmatched  correct=False→True
+case-893c5f931d49a951a41b  adopt → adopt  label=matched  correct=True→True
+case-94f4d17e25dc67ad2d5d  adopt → adopt  label=matched  correct=True→True

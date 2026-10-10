@@ -1,0 +1,55 @@
+{
+  "audit_type": "read-only static preparation/review audit; no inference answers or gold read",
+  "syntax": {
+    "prepare.py": "pass",
+    "reviews.py": "pass",
+    "grade.py": "pass"
+  },
+  "prepared_requests": {
+    "count": 62,
+    "reconstructed_with_current_core_and_v4_shape_then_strict_instruction": true,
+    "byte_and_manifest_sha256_match": true,
+    "strict_instruction_sha_matches_frozen_protocol": true
+  },
+  "input_scope": {
+    "cases": 62,
+    "prior_cases_declared": 138,
+    "selected_products": 2,
+    "candidate_rows": 1674,
+    "row_counts": {
+      "27": 62
+    },
+    "rakuten_checks_per_case": 3,
+    "au_checks_per_row": 2
+  },
+  "review_static_checks": {
+    "confirm_requires_candidate_signature_pass_and_same_row": true,
+    "confirm_signature_candidate_answer_sha_matches_evaluation_answer_sha": true,
+    "confirm_requires_evidence": true,
+    "reject_requires_evidence": true,
+    "review_evidence_ids_source_scope_checked": true,
+    "matching_trace_not_truth_and_source_quote_via_contexts": true,
+    "missing_or_other_part_unresolved_and_NA_not_proof": true,
+    "batches": [
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      2
+    ],
+    "manifest_relative_paths_resolve_from_run_root": true
+  },
+  "model_metadata": {
+    "requested": "gpt-6-luna",
+    "served_model_id": null,
+    "model_runtime_verified": false,
+    "usage": null
+  },
+  "limitations": [
+    "Semantic truth of a physical contradiction requires later evidence review; static audit does not classify it.",
+    "Observed novelty is concentrated: two AU products, while source/URL overlap details are in novelty-audit.json."
+  ],
+  "inference_or_gold_read": false
+}

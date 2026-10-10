@@ -1,0 +1,17 @@
+SKU照合 multirow62 baseline（v5 strict-fields）監査・評価
+
+評価結果：正式レビュー後は正解21/62 = 33.87%。内訳は採用6、除外15、保留41。レビュー前の生照合は31/62 = 50.00%。生出力の採用14件中、寸法条件を通過したのは7件、最終リンクへ出力されたのは6件。正解ラベル上の採用精度は6/6 = 100%、正例行再現率は6/30 = 20.00%。これは既存Luna機械ラベルに対する値で、人手検証済み正解率ではない。
+
+62件すべてで出力構造が有効：rows 27件、各行rakuten_checks 3件・au_checks 2件。raw回答と照合評価のrequest/answer SHAはdispatch記録に一致。寸法検証は14候補で実施し、7件pass、local N/Aは0。7つのレビュー回答本文を確認し、batchは10件×6＋2件、62 caseを重複なくカバーし、final-reviews.jsonと回答列の結合が一致することを確認した。最終6採用リンクについて候補行、照合回答hash、寸法回答hash、レビュー証拠を照合した。
+
+レビュー上の重要な不整合：case-08a49ff8b3253e3dcc82の凍結済み照合はcandidate、寸法検証も同じ候補行・同じ照合回答SHAでpassしている。一方、レビュー依頼本文にもこれらの値が渡っているのに、保存済みレビューは「予測はpendingで寸法検証も未完了」と述べunresolvedにした。rawレビューは修正せず、最終集計では保留として維持した。このケースはレビュー工程のprediction参照不整合を示すため、採用・保留の説明を個別確認する際に注意が必要。
+
+選択集合は過去138件と異なる62組で、AU商品2件・楽天SKUキー46件・候補行1674件。全62件が同じ既出楽天URLと既出raw sourceを使い、31ケースでAU商品IDは過去未使用。したがってSKU単位の独立標本や母集団無作為標本ではなく、2商品内に強く相関した構造チャレンジ集合である。累計200件では168楽天SKUキー、33 AU商品、2672候補行。機械ラベル評価の累計正解率は134/193 = 69.43%、採用精度40/40、正例行再現率40/73。
+
+寸法dispatch記録では14論理タスクのうち1件がdelivery failure、その後のm62_s002保存再試行はmetadata上「既存precomputed JSONを変更せず保存」。これは再推論として数えていない。論理配送タスク数は照合62＋寸法14＋レビュー7＝83。requested modelはgpt-6-lunaだが、actual modelVersionとusageはnullで、実際のprovider呼出数や実model版は独立確認できない。
+
+dispatch metadataの時刻（UTC）：照合 19:01:16.582804–19:16:45.296880、寸法 19:17:33.885708–19:20:25.693180、レビュー 19:21:12.414250–19:25:18.823413。これらは配送記録時刻で、provider実行時間の独立測定ではない。
+
+独立再採点では外部評価ディレクトリの派生結果とgrading配下のcomparisons・全summary・全case-resultsが完全一致。raw goldは外部評価先に留め、checkoutへコピーしていない。凍結された7ソースコードhash、補助script hash、strict-fields policy hashを照合した。詳細はindependent-audit.json。
+
+共有全体テストの観測スナップショットはtests.jsonに記録。565件のPythonテストは17 errors・1 failure・37 skipped、Node診断は20件中19 pass・1 failure（robots-parser依存が見つからない）。この失敗群は凍結baselineの再採点とは別の全体suite状態であり、root側の後続テスト結果で更新される可能性がある。

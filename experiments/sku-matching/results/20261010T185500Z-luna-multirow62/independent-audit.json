@@ -1,0 +1,164 @@
+{
+  "audit_type": "independent baseline grading reproduction; raw gold read only by frozen grade.py, labels never copied into checkout or emitted",
+  "reproduction": {
+    "external_directory": "/workspace/sku-multirow62-independent-audit-20261010",
+    "exact_derived_file_match": true,
+    "files": [
+      "comparisons.json",
+      "multirow62/{summary.json,case-results.jsonl}",
+      "matching62/{summary.json,case-results.jsonl}",
+      "cumulative_200/{summary.json,case-results.jsonl}"
+    ]
+  },
+  "multirow62": {
+    "known_case_accuracy": "21/62",
+    "rate": 0.3387096774193548,
+    "adopt": 6,
+    "exclude": 15,
+    "pending": 41,
+    "accepted_known_row_precision": "6/6",
+    "row_match_recall": "6/30"
+  },
+  "matching62_raw": {
+    "known_case_accuracy": "31/62",
+    "rate": 0.5,
+    "candidate": 14,
+    "exclude": 20,
+    "pending": 28,
+    "precision": "14/14",
+    "recall": "14/30"
+  },
+  "cumulative_200": {
+    "known_case_accuracy": "134/193",
+    "rate": 0.694300518134715,
+    "precision": "40/40",
+    "recall": "40/73",
+    "cases": 200,
+    "unique_rakuten_sku_keys": 168,
+    "unique_au_products": 33,
+    "candidate_rows": 2672
+  },
+  "fresh_scope": {
+    "cases": 62,
+    "unique_rakuten_sku_keys": 46,
+    "unique_au_products": 2,
+    "candidate_rows": 1674
+  },
+  "novelty": {
+    "unique_selected_urls": 1,
+    "url_unseen_count": 0,
+    "unique_selected_au_products": 2,
+    "au_product_unseen_count": 31,
+    "raw_source_files_unseen_count": 0,
+    "all_three_dimensions_unseen_count": 0
+  },
+  "matching_integrity": {
+    "cases": 62,
+    "structural_valid": 62,
+    "strict_rows_each": 27,
+    "rakuten_checks_each": 3,
+    "au_checks_per_row": 2,
+    "request_answer_sha_verified": true
+  },
+  "signature": {
+    "evaluated": 14,
+    "passed": 7,
+    "local_na": 0,
+    "exported_links": 6,
+    "row_and_answer_hash_verified": true
+  },
+  "review_discrepancy": {
+    "case_id": "case-08a49ff8b3253e3dcc82",
+    "raw_review_verdict": "unresolved",
+    "raw_review_text_describes": "pending prediction and incomplete dimension check",
+    "frozen_prediction": "candidate",
+    "frozen_signature_passed": true,
+    "raw_review_preserved": true,
+    "effect": "reviewed-summary keeps this case pending"
+  },
+  "reviews": {
+    "delivered_bodies": 7,
+    "actual_case_coverage": 62,
+    "batch_sizes": [
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      2
+    ],
+    "final_reviews_equal_answer_bodies": true,
+    "scope_candidate_row_signature_hash_validated": true
+  },
+  "frozen_hashes": {
+    "seven_source_code_hashes_verified": true,
+    "artifact_script_hashes_verified": true,
+    "strict_policy_hash_verified": true
+  },
+  "dispatch_metadata": {
+    "matching": {
+      "start": "2026-10-10T19:01:16.582804Z",
+      "end": "2026-10-10T19:16:45.296880Z",
+      "logical_tasks": 62
+    },
+    "signature": {
+      "start": "2026-10-10T19:17:33.885708Z",
+      "end": "2026-10-10T19:20:25.693180Z",
+      "logical_tasks": 14,
+      "delivery_failures_metadata": [
+        {
+          "call": 2,
+          "task_name": "m62_s002",
+          "reason": "worker save command failed before answer file creation; no retry or repair",
+          "recorded_at_utc": "2026-10-10T19:18:19.360049Z"
+        }
+      ],
+      "persistence_recoveries_metadata": [
+        {
+          "call": 2,
+          "task_name": "m62_s002",
+          "started_at_utc": "2026-10-10T19:18:55.000819Z",
+          "mode": "save_only_precomputed_json_no_request_read_no_inference",
+          "finished_at_utc": "2026-10-10T19:18:58.127127Z",
+          "outcome": "saved_original_precomputed_json_unchanged",
+          "answer_sha256": "e183390430429a19fef1165ea731464c9296802a9577f857a2d7e4f3ea650b81"
+        }
+      ],
+      "s002_recovery": "saved original precomputed JSON unchanged"
+    },
+    "review": {
+      "start": "2026-10-10T19:21:12.414250Z",
+      "end": "2026-10-10T19:25:18.823413Z",
+      "logical_tasks": 7
+    },
+    "logical_task_total": 83,
+    "provider_call_count_independently_verified": false,
+    "requested_model": "gpt-6-luna",
+    "actual_modelVersion": null,
+    "usage": null
+  },
+  "tests_snapshot": {
+    "source": "/workspace/sku-curtain-v6-full-tests.txt",
+    "python_unittest": {
+      "tests": 565,
+      "duration_seconds": 15.404,
+      "failures": 1,
+      "errors": 17,
+      "skipped": 37,
+      "result": "FAILED"
+    },
+    "node_diagnostics": {
+      "tests": 20,
+      "passed": 19,
+      "failed": 1,
+      "failure": "Cannot find module robots-parser"
+    },
+    "scope_note": "shared suite output observed during this audit; unrelated to frozen SKU baseline scoring"
+  },
+  "limitations": [
+    "Machine-generated Luna evaluation labels are not human-verified.",
+    "62 cases are correlated over two AU products and 46 Rakuten SKU keys; all selected records reuse prior URL/source references.",
+    "Labels remain in the external evaluation directory only; they are not included or reproduced in this audit artifact."
+  ]
+}

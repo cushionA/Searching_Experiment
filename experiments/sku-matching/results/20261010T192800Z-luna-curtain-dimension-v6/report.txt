@@ -1,0 +1,15 @@
+SKU照合 curtain dimension alias v6 派生評価
+
+結果：凍結済みmultirow62照合・寸法回答を再利用し、候補62件のうち寸法gateが変わった6件だけを単件レビューした。採用12、除外15、保留35。既存Luna機械ラベル上の正解率は27/62 = 43.55%、採用精度12/12 = 100%、正例行再現率12/30 = 40.00%。v5 baselineは21/62、採用精度6/6、再現率6/30。累計200件の派生値は140/193 = 72.54%、採用精度46/46、正例行再現率46/73。人手検証済み正解率ではない。
+
+変更範囲：v5のmatching 62回答、signature 14回答、request、inputs、source-contexts、manifestはbyte一致で再利用し、新しいmatching/dimension推論は行っていない。v5寸法pass 7件からv6は13件へ増え、passが変わった6件を新規単件レビュー。レビューは6/6件がconfirmとなり、既存6リンクを含む合計12リンクを出力した。v5の残る56件のレビューは保存済み回答をそのまま維持。
+
+別名規則は、固定商品スコープのAU curtain titleを確認したcaseに限り、現在rowでsupportとして引用された「幅×丈」形式の寸法quoteを一時コピー上で既存guardへ渡す。targets＋そのcaseのrow-specific source map＋row conditionsをキーにした14件のscoped registryを検査し、別case/別rowの根拠へ交差しないことを確認した。元データ、署名回答、出典quoteは変更されず、新規6リンクにも原文の「丈」が残る。修正対象は物理寸法の用語対応だけであり、SKU正解を独立に証明するものではない。
+
+レビュー範囲はgate変更6件のみ。baselineで確認されたcase-08a49ff8b3253e3dcc82の「pending・寸法未完了」とする保存済みレビュー文は、candidateかつ寸法passのrequest内容と矛盾したまま残る。このケースはv6のgate変更対象外で、rawレビューは修正していない。
+
+採点は新しい外部評価先で再実行し、comparisons、各summary、全case-resultsをgrading配下へbyte一致でコピーした。raw goldは外部評価先だけに置き、checkoutへコピーしていない。v5の凍結source hash、v6 protocolに記録されたbaseline全JSON/links/code/helper hashおよびv6 grading freezeを検証した。詳細はindependent-audit.json。
+
+requested modelはgpt-6-luna。actual modelVersionとusageはnull。v6の6単件レビューはdispatch metadata上の配送数で、provider呼出数を独立確認した値ではない。実行時間のmetadataはreview dispatch 2026-10-10 19:28:59.475616Z〜19:30:25.169167Z。
+
+検証：curtain alias専用テスト8件すべて成功。共有全体suiteは565件中17 errors・1 failure・37 skippedで、既知の同一18失敗ID。これは別途進行中の全体suite状態であり、この派生評価の採点とは区別する。

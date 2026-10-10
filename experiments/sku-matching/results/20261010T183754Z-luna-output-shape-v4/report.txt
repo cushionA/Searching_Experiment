@@ -1,0 +1,47 @@
+Luna SKU 出力件数v4：新規20組のv3/v4比較（2026-10-10）
+
+結論：両版とも正式レビュー後17/19=89.47%。採用2/2、正例再現2/3=66.67%。改善1件・悪化1件、精度差なし。構造はbaseline20/20、improved19/20で、件数制約の改善は実証できていない。
+最終baseline採用2/除外15/保留3/未評価0、improved採用2/除外16/保留2/未評価0。既知matched3/unmatched16、reviewラベル1は分母外。保留/未評価は既知ラベルで不正答。既存Luna機械ラベルで、人手正答率ではない。
+
+新規20 SKU×AU組、20 AU商品、候補106行。過去118組とcase ID・source_sku_key×AU・AU+楽天URL+variantの重複なし。全20件は既存AU商品・楽天URL・原文を共有。楽天条件数がAU条件数より多い構造挑戦集合で、母集団の無作為sampleではない。選択にはラベルを使わない。
+baseline=scoped-v3、improved=v4-output-shape。同じ選択済み値・全AU行・原文、異なるのはrows/Rchecks/AUchecksのminItems/maxItemsと明示件数。両版のsignature-v3と意味レビューv3は同じ。チェック応答status/source_idsのみ、IDと引用をローカル復元。API見立てであり、Vertex native decoderの動作証明ではない。原Gemini runnerと固定6件は変更・再実行していない。
+
+改善版case-742632114751258761e6のrawには禁止のrow_indexが混入し、matching未評価。原回答を直さず、意味レビューで不一致を確認し最終除外。次の新規62件では許可fieldsを明記するv5を凍結して試す。
+寸法は各版3candidate、各3モデルtask、構造3/3でpass2。local N/A0。
+
+元4review batchのbaseline01は10要求に1件しか返却せずcollectは拒否。配送metadataの20 coverageはmanifest予定数で、実返却baseline11/improved20。この誤解をcoverage_verified_from_manifest_onlyへ訂正した。元1件を保存し、未返却9件だけをfresh Lunaで補完（review 5task目）。complete_reviews.pyは元raw SHAを検証し、メモリ上で結合して元の凍結validatorへ渡す。rawは上書きしない。最終各版20case、結合対応はreview-completion-derived.json。
+collect失敗後にgradeも起動した手順ミスをpipeline-issues.jsonに記録。子プロセスはlabel bytesを読んだ後、reviewed-summary未生成で停止。score・外部dir作成・label出力/保存は0。ケース別ラベルは親モデル/推論workerへ提示されていない。補完requestは元requestと不足IDのみから生成。正式採点は補完・検証後に新external dirで実行した。
+
+累積138組：113/131=86.26%、採用34/34、正例再現34/43=79.07%。採用34/除外82/保留21/未評価1。誤採用0・誤AU行0・誤除外1、reviewラベル7、未処理1301。異なる過去task versionを合算した履歴成績で、全件をv4で再実行した値ではない。
+requested model=gpt-6-luna、実modelVersion/usage=null。論理配送はmatching40+signature6+review4+不足9補完1=51。provider呼出し数の独立検証値ではない。matchingのthread limit failed-spawn1は未割当起動の再試行として別記録。分類回答の修正再試行はない。
+
+実行時間（UTC、配送と保存待ちを含む）：
+照合: 2026-10-10T18:43:26Z ～ 2026-10-10T18:58:15Z、889.0秒
+寸法: 2026-10-10T19:00:03Z ～ 2026-10-10T19:02:38Z、155.0秒
+元4レビュー: 2026-10-10T19:03:10Z ～ 2026-10-10T19:06:31Z、201.0秒
+不足9補完: 2026-10-10T19:08:50.684597+00:00 ～ 2026-10-10T19:08:49.452447+00:00（spawn時刻は親の事後記録）。
+
+検証：両版inputs/context/request/answer integrity、reviewのID・scope・候補行・寸法passを検証。関連24 tests成功。必須557 testsは既存17 errors/1 failure/37 skipsでv3の失敗18IDと一致。独立再採点はindependent-audit.json参照。
+再現: grade.py --evaluation-dir /workspace/NEW-UNUSED-EXTERNAL-DIR。raw goldは外部のみ、gradingは派生比較。directoryの時刻は予約名、実時刻はmetadataによる。
+
+ケース別（baseline → improved）：
+case-baceb65c7109f8e25a0d  pending → pending  label=matched  correct=False→False
+case-9cd4ce2bfb524fc0646c  adopt → adopt  label=matched  correct=True→True
+case-4e20e9c46ac06bbd0a4f  exclude → exclude  label=unmatched  correct=True→True
+case-9443b42e62ffcc2af9f1  exclude → exclude  label=unmatched  correct=True→True
+case-9f06706fc1bd7e973043  exclude → exclude  label=unmatched  correct=True→True
+case-744f6549c530abde617a  exclude → exclude  label=unmatched  correct=True→True
+case-3d40e130e84384174986  exclude → pending  label=unmatched  correct=True→False
+case-cd597b4e21c35782bbe2  exclude → exclude  label=unmatched  correct=True→True
+case-38d3d47997e94cad3396  exclude → exclude  label=unmatched  correct=True→True
+case-f4b5834c140424a2b8f8  exclude → exclude  label=unmatched  correct=True→True
+case-7991886918f26d1d12f2  exclude → exclude  label=unmatched  correct=True→True
+case-742632114751258761e6  exclude → exclude  label=unmatched  correct=True→True
+case-2ff374ac5998198bddc2  exclude → exclude  label=unmatched  correct=True→True
+case-afe61c48bd095ddfdec1  adopt → adopt  label=matched  correct=True→True
+case-90ca22e0668b761dffec  exclude → exclude  label=unmatched  correct=True→True
+case-dabbacb8192c1f4e5657  pending → exclude  label=unmatched  correct=False→True
+case-aa714bcdbb56aa564583  exclude → exclude  label=unmatched  correct=True→True
+case-f33356dfb663e8f3bc09  exclude → exclude  label=unmatched  correct=True→True
+case-9ee7f4c46f8a4ec8a78c  pending → exclude  label=review  correct=None→None
+case-25131b0fe9ac11e6222e  exclude → exclude  label=unmatched  correct=True→True

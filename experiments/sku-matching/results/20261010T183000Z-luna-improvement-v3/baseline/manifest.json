@@ -1,0 +1,909 @@
+{
+  "schema": "luna-sku-round-v1",
+  "task_version": "selected-sku-scoped-bidirectional-v2",
+  "mode": "scoped",
+  "created_utc": "2026-10-10T18:15:45.390209+00:00",
+  "backend": "collaboration_subagent_api_emulation",
+  "model_requested": "gpt-6-luna",
+  "served_model_id": null,
+  "model_runtime_verified": false,
+  "usage": null,
+  "routing_evidence": "explicit model override recorded separately in dispatch.json",
+  "source_input_hashes": {
+    "zip_sha256": "c69bb28d88968cc48e1a8f6d825c4794cd1d44d0cedd0e685f141a186e9c683a",
+    "cases_jsonl_sha256": "1b758132e051d96f7672476236d3cdfc49ab689984fe78de91e3c517fbdf39e3",
+    "products_jsonl_sha256": "7ed4e6896fba2a47fb262aa855c6cb335b4e5a64ff7713c4cbf6f44a85837acf"
+  },
+  "selection": {
+    "schema": "luna-fresh-sku-selection-v3",
+    "round_id": "20261010T183000Z-luna-improvement-v3",
+    "created_utc": "2026-10-10T18:13:04.968120Z",
+    "requested_count": 50,
+    "selected_count": 50,
+    "selection_rule": "sha256('v3-fresh50-20261010|' + case_id); round robin across AU products absent from old68, then across AU products present in old68 using distinct Rakuten SKU pairs",
+    "scope": {
+      "cohorts": [
+        "legacy",
+        "novel"
+      ],
+      "au_rows_inclusive": [
+        1,
+        15
+      ],
+      "selection_uses_labels_or_prior_decisions": false
+    },
+    "excluded_prior": {
+      "r02_r03_input_count": 18,
+      "expanded50_input_count": 50,
+      "case_id_count": 68,
+      "sku_au_pair_count": 68,
+      "input_paths": [
+        "experiments/sku-matching/results/20261010T160225Z-luna-task-improvement/r02-reference-development/inputs.json",
+        "experiments/sku-matching/results/20261010T160225Z-luna-task-improvement/r03-reference-holdout/inputs.json",
+        "experiments/sku-matching/results/20261010T174640Z-luna-expanded50/inputs.json"
+      ]
+    },
+    "eligible_count_after_exclusions": 654,
+    "selected_au_product_count": 27,
+    "selected_product_case_counts": {
+      "309329265": 2,
+      "337595272": 2,
+      "398508173": 2,
+      "483077897": 2,
+      "509691375": 2,
+      "524251610": 1,
+      "537246358": 2,
+      "597651839": 2,
+      "653618158": 2,
+      "662585498": 1,
+      "688640726": 1,
+      "695392874": 2,
+      "695394169": 2,
+      "700957229": 2,
+      "703279419": 2,
+      "703280256": 2,
+      "704280046": 2,
+      "704282431": 2,
+      "704284693": 2,
+      "704285114": 2,
+      "724257905": 2,
+      "753670518": 2,
+      "763158008": 2,
+      "763454500": 2,
+      "764777172": 2,
+      "765496131": 2,
+      "772334211": 1
+    },
+    "selected_candidate_au_row_count": 249,
+    "selected_case_ids_unique": true,
+    "selected_sku_au_pairs_unique": true,
+    "source_validation": {
+      "method": "sku_luna_inputs.load_cases; all selected Rakuten/AU value spans verified against raw members",
+      "verified_case_count": 50,
+      "all_selected_cases_verified": true
+    },
+    "old68_source_sharing": {
+      "old_input_count": 68,
+      "selected_cases_sharing_rakuten_source_file_count": 50,
+      "selected_cases_sharing_rakuten_source_file_ids": [
+        "case-0a8a63c5d4ebff5f2cfd",
+        "case-9c77ad2ed25be9294fd5",
+        "case-55f8a515cb0ac4749e06",
+        "case-a89d4c008275d1336f03",
+        "case-99fbd1d7c8a23d32d917",
+        "case-4530f9d8b1ab2f427659",
+        "case-30019a8030f51dd62329",
+        "case-fbe763d089c8ef20f320",
+        "case-a7e174b88f5299a0a9ae",
+        "case-6dde94ac474bdcdcbfb2",
+        "case-293a635dec426ed5ac0f",
+        "case-d9667d49758678a4d527",
+        "case-ac39a44bd9d3bbcc1c10",
+        "case-1b3e15fff7deef208800",
+        "case-7ce7cec932ce93be5a0e",
+        "case-a9c73f88db0641510b90",
+        "case-0dd17b53253438ae3379",
+        "case-35e555261edb897d9958",
+        "case-cebfea2231966774cc9c",
+        "case-86af1cd464d50a6a990a",
+        "case-db8a5a00e97c3cbbc1a6",
+        "case-9725e5bb7b008002e836",
+        "case-435d2cb6cf94c6d02c05",
+        "case-7365ed2a3b4860afd148",
+        "case-0722ef51b816b9837580",
+        "case-7f9e4a323208c9b87e3c",
+        "case-8c9ed23d10e9e6bff736",
+        "case-efc9553140a1ea39dae9",
+        "case-efac80e57eeda8380a6d",
+        "case-10dbf7384c6775340da7",
+        "case-a531d171d0b4ae98a554",
+        "case-ec5777af356f44fcde53",
+        "case-830a8221178b097cb5f9",
+        "case-15e88e6ea7b5ce53b833",
+        "case-9d489b3ccc852b2a1243",
+        "case-58a4e27982f490ccb62c",
+        "case-47218de32d03117df572",
+        "case-b81cb8330952dc9b9bbf",
+        "case-b48b22bf34eddb41c328",
+        "case-95981874c7bddb305fcc",
+        "case-39322da8d6e81cadb4ca",
+        "case-cab5cf5a8aa414856a7b",
+        "case-ee2e1e7bcbd8230436a0",
+        "case-e507c3959e6a6f58925e",
+        "case-890438460aa0d8e0999b",
+        "case-ae9b5ab865c157f7f716",
+        "case-bde953066a4e2a2bd2c9",
+        "case-569a1359acc13b3c0cf3",
+        "case-893c5f931d49a951a41b",
+        "case-94f4d17e25dc67ad2d5d"
+      ],
+      "shared_rakuten_raw_file_count": 18
+    },
+    "source_hashes": {
+      "zip_sha256": "c69bb28d88968cc48e1a8f6d825c4794cd1d44d0cedd0e685f141a186e9c683a",
+      "cases_jsonl_sha256": "1b758132e051d96f7672476236d3cdfc49ab689984fe78de91e3c517fbdf39e3",
+      "products_jsonl_sha256": "7ed4e6896fba2a47fb262aa855c6cb335b4e5a64ff7713c4cbf6f44a85837acf",
+      "checkpoint_zip_sha256": "c69bb28d88968cc48e1a8f6d825c4794cd1d44d0cedd0e685f141a186e9c683a"
+    },
+    "selected": [
+      {
+        "case_id": "case-0a8a63c5d4ebff5f2cfd",
+        "dossier_id": "pair-83402acdae97cc2c",
+        "cohort": "legacy",
+        "au_product_id": "765496131",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fek002/#FEK002DBR:43",
+        "candidate_rows": 6,
+        "priority": "0081d1d4420bccb11ce94e36685b01ca054a5280f5d7c2210be31c5589d24c9b"
+      },
+      {
+        "case_id": "case-9c77ad2ed25be9294fd5",
+        "dossier_id": "pair-568fa1288eeb395d",
+        "cohort": "legacy",
+        "au_product_id": "483077897",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fef008/#FEF005MGFEF008MG:9",
+        "candidate_rows": 4,
+        "priority": "00a8355c32c3618394270171dfec25ff5dcd4ae9300d65b008818b5bd4d40491"
+      },
+      {
+        "case_id": "case-55f8a515cb0ac4749e06",
+        "dossier_id": "pair-9b6887406ebac79f",
+        "cohort": "legacy",
+        "au_product_id": "700957229",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/feb002/#FEB030BR:68",
+        "candidate_rows": 6,
+        "priority": "017f0fdbc51f7a45f0bdf78a488427898f2e5448d9df9e5573632a240a4e8580"
+      },
+      {
+        "case_id": "case-a89d4c008275d1336f03",
+        "dossier_id": "pair-d52308682f40f75e",
+        "cohort": "legacy",
+        "au_product_id": "337595272",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/feb002/#FEB032WG:62",
+        "candidate_rows": 10,
+        "priority": "02a121922b46295d6f8eff0717e93b9b6f06b1f8be6876259f8502d64b23347a"
+      },
+      {
+        "case_id": "case-99fbd1d7c8a23d32d917",
+        "dossier_id": "pair-f946b0390127a39d",
+        "cohort": "legacy",
+        "au_product_id": "704285114",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fek002/#FEN04BE:12",
+        "candidate_rows": 6,
+        "priority": "02e381a98510004a605d05bf96da91feeec881b95bdcc5d9f56f93d969d94cd5"
+      },
+      {
+        "case_id": "case-4530f9d8b1ab2f427659",
+        "dossier_id": "pair-e5aa0cf98bc5f20e",
+        "cohort": "legacy",
+        "au_product_id": "704284693",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fek002/#FEK004SDWH:17",
+        "candidate_rows": 6,
+        "priority": "03bf2cc791973737cf4edca16decdf872266ed46c66bce8db037b8a25a25d44f"
+      },
+      {
+        "case_id": "case-30019a8030f51dd62329",
+        "dossier_id": "pair-27f740543096bdc8",
+        "cohort": "legacy",
+        "au_product_id": "509691375",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fgc005/#FGC013MGY:7",
+        "candidate_rows": 8,
+        "priority": "0642997ff4f0486695bdc0c4ab8346d3609060f38f0f1a4c0739654f09680ba7"
+      },
+      {
+        "case_id": "case-fbe763d089c8ef20f320",
+        "dossier_id": "pair-5c421ae81e22a471",
+        "cohort": "legacy",
+        "au_product_id": "703279419",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fel001/#FEL001DPK:17",
+        "candidate_rows": 6,
+        "priority": "08bf8b0be86e8174fb7d17b59c9b315f51904f1408be1285a44259f3ce0830ff"
+      },
+      {
+        "case_id": "case-a7e174b88f5299a0a9ae",
+        "dossier_id": "pair-f3897096d117d821",
+        "cohort": "legacy",
+        "au_product_id": "703280256",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fel001/#FEL001SAB:13",
+        "candidate_rows": 6,
+        "priority": "0b40d3cd7b0734977eac731c9e3316782008355e3fefdbd990af0b9819de9f37"
+      },
+      {
+        "case_id": "case-6dde94ac474bdcdcbfb2",
+        "dossier_id": "novel-pair-ae3d0b07dc3a077d",
+        "cohort": "novel",
+        "au_product_id": "398508173",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/qaa0100/#QAA0300A:4",
+        "candidate_rows": 2,
+        "priority": "0b671ffaa2804282cd872dcd0ced643d174654ff019b6a47b007be8b230851e4"
+      },
+      {
+        "case_id": "case-293a635dec426ed5ac0f",
+        "dossier_id": "pair-e4ce6dafcff3b3c1",
+        "cohort": "legacy",
+        "au_product_id": "653618158",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/pc013/#PC013CR:3",
+        "candidate_rows": 2,
+        "priority": "0caabc54a41fe22474ffc2fd292596c45716353cd78fe4598728a6e5bea0e6a7"
+      },
+      {
+        "case_id": "case-d9667d49758678a4d527",
+        "dossier_id": "pair-7ef19fdb139adda3",
+        "cohort": "legacy",
+        "au_product_id": "537246358",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/pt0033/#38238:4",
+        "candidate_rows": 7,
+        "priority": "0d4b329beb97fa59a60c03b362953a264e4cf497dace067ac20d9cfa22fcb1f8"
+      },
+      {
+        "case_id": "case-ac39a44bd9d3bbcc1c10",
+        "dossier_id": "pair-bb5b9f3f3bd988f6",
+        "cohort": "legacy",
+        "au_product_id": "695394169",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fia6080/#FIA60MB:4",
+        "candidate_rows": 3,
+        "priority": "0d568590b20781f4c456285886fefe23c8ad626eba78a7c451483d7d72442062"
+      },
+      {
+        "case_id": "case-1b3e15fff7deef208800",
+        "dossier_id": "novel-pair-91fb4595d0641c02",
+        "cohort": "novel",
+        "au_product_id": "724257905",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/hg020/#hg020wh10:0",
+        "candidate_rows": 5,
+        "priority": "0dc10fd6979eeba94f6907c24c19717479f0c82a0ce4291cfb1bfb41d37e436a"
+      },
+      {
+        "case_id": "case-7ce7cec932ce93be5a0e",
+        "dossier_id": "pair-62a83132e3db8584",
+        "cohort": "legacy",
+        "au_product_id": "704282431",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fek002/#FEK002DWH:40",
+        "candidate_rows": 6,
+        "priority": "0e44960246d5fbf0f8c2cc3dee47c10bfe99a3eab713eeb9f17ddb7bf925af66"
+      },
+      {
+        "case_id": "case-a9c73f88db0641510b90",
+        "dossier_id": "pair-f62f62e6f94f1d24",
+        "cohort": "legacy",
+        "au_product_id": "753670518",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fel001/#FEL001SWh:3",
+        "candidate_rows": 6,
+        "priority": "0eb94d693a522d51b8054d230452e48617b6013db980f8b3bd76cb808651f3ba"
+      },
+      {
+        "case_id": "case-0dd17b53253438ae3379",
+        "dossier_id": "pair-2731f3cede6c0af8",
+        "cohort": "legacy",
+        "au_product_id": "309329265",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/a19e/#A19GBK_:9",
+        "candidate_rows": 4,
+        "priority": "11a35a5f646569acda0ed3f513fc44826b8591666a64980d2a396fa76c20e690"
+      },
+      {
+        "case_id": "case-35e555261edb897d9958",
+        "dossier_id": "pair-cf985ab4f6713acb",
+        "cohort": "legacy",
+        "au_product_id": "695392874",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fia6080/#FIA80MB:5",
+        "candidate_rows": 3,
+        "priority": "1a85183bc7c8f8e8c56d54bc4a00353f5a7873276f5312325eafa5f04c9c479f"
+      },
+      {
+        "case_id": "case-cebfea2231966774cc9c",
+        "dossier_id": "pair-4a6e80e8c5551ac7",
+        "cohort": "legacy",
+        "au_product_id": "704280046",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fek002/#FEK004SBE:2",
+        "candidate_rows": 6,
+        "priority": "1b6a03019c3c54fdb2bb7d951505b89ae032adee35760093b84a3bf6878f8d62"
+      },
+      {
+        "case_id": "case-86af1cd464d50a6a990a",
+        "dossier_id": "pair-a83c42738f9bfaf6",
+        "cohort": "legacy",
+        "au_product_id": "763158008",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fek002/#FEK004XSGY:38",
+        "candidate_rows": 6,
+        "priority": "1ce27661460773d14e22c2bcf0af4127fb3ae09231705c53f47304763a746927"
+      },
+      {
+        "case_id": "case-db8a5a00e97c3cbbc1a6",
+        "dossier_id": "pair-f7168991efbedd25",
+        "cohort": "legacy",
+        "au_product_id": "597651839",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/stp01/#STP01GY:8",
+        "candidate_rows": 5,
+        "priority": "3813550d3295c7f088acba180c74c86c8a0d90668978eb5526d5d0169c1cb31c"
+      },
+      {
+        "case_id": "case-9725e5bb7b008002e836",
+        "dossier_id": "novel-pair-440bf9c6eb61d2fa",
+        "cohort": "novel",
+        "au_product_id": "764777172",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fca2160/#FCA2160GY:2",
+        "candidate_rows": 3,
+        "priority": "3e57d2e83407801295e4c863add89b8d9fa6d65004dcd755a607c13cd8856f08"
+      },
+      {
+        "case_id": "case-435d2cb6cf94c6d02c05",
+        "dossier_id": "novel-pair-4e66a47fb57fc4f3",
+        "cohort": "novel",
+        "au_product_id": "763454500",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/mbc005/#mbc005bk:4",
+        "candidate_rows": 3,
+        "priority": "48b9323bf1e6fdf92f8b6ef72177b81c6b8af394cb2e5140af3b635cb203b5d1"
+      },
+      {
+        "case_id": "case-7365ed2a3b4860afd148",
+        "dossier_id": "pair-dbfc4eee30fecdb9",
+        "cohort": "legacy",
+        "au_product_id": "772334211",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/pt0038/#PT0038BE:1",
+        "candidate_rows": 4,
+        "priority": "4f9e7c931310ba6649b3824b8322d07a73eefb535b8650ccc833d12d310b59dd"
+      },
+      {
+        "case_id": "case-0722ef51b816b9837580",
+        "dossier_id": "pair-acad8f7195cf2571",
+        "cohort": "legacy",
+        "au_product_id": "524251610",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/gad100/#GAD100gy:0",
+        "candidate_rows": 1,
+        "priority": "9b9136d0227e85ea9ad37e4686d2ca43680b330f7755b2a1fe11cb12ff4f2aad"
+      },
+      {
+        "case_id": "case-7f9e4a323208c9b87e3c",
+        "dossier_id": "pair-4da15ed2be5f6397",
+        "cohort": "legacy",
+        "au_product_id": "662585498",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/faa006/#36662:1",
+        "candidate_rows": 2,
+        "priority": "9bf2c81041c182f4184e9cd73f663000f4bd64fb05e1829044f8127efa12d68d"
+      },
+      {
+        "case_id": "case-8c9ed23d10e9e6bff736",
+        "dossier_id": "pair-f67866cde828705b",
+        "cohort": "legacy",
+        "au_product_id": "688640726",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fgc010/#FGC010LT:1",
+        "candidate_rows": 4,
+        "priority": "d02e44c82b1a26acbfb37f12cec50ee7481ae44a7bd2431163bded817db5366f"
+      },
+      {
+        "case_id": "case-efc9553140a1ea39dae9",
+        "dossier_id": "pair-83402acdae97cc2c",
+        "cohort": "legacy",
+        "au_product_id": "765496131",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fek002/#FEN02BE:11",
+        "candidate_rows": 6,
+        "priority": "0b2508f62582de89206b6e0bbf0f9559226a88f1e05f6e97edfbd9e3766825a5"
+      },
+      {
+        "case_id": "case-efac80e57eeda8380a6d",
+        "dossier_id": "pair-568fa1288eeb395d",
+        "cohort": "legacy",
+        "au_product_id": "483077897",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fef008/#FEF008gy:15",
+        "candidate_rows": 4,
+        "priority": "1781988a5186064b5e9621db2d60959891ecd2241c3d767e2e0b70ef476f7f61"
+      },
+      {
+        "case_id": "case-10dbf7384c6775340da7",
+        "dossier_id": "pair-9b6887406ebac79f",
+        "cohort": "legacy",
+        "au_product_id": "700957229",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/feb002/#FEB047BR:37",
+        "candidate_rows": 6,
+        "priority": "01a7c593f98c2e4e44d4c860098cc104bd0eee7a379d950b0133ec850388814b"
+      },
+      {
+        "case_id": "case-a531d171d0b4ae98a554",
+        "dossier_id": "pair-d52308682f40f75e",
+        "cohort": "legacy",
+        "au_product_id": "337595272",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/feb002/#FEB045GG:29",
+        "candidate_rows": 10,
+        "priority": "02d7e22bce935515100f2f823f841023befcc19c5a724a80d0ee1529e96e486a"
+      },
+      {
+        "case_id": "case-ec5777af356f44fcde53",
+        "dossier_id": "pair-f946b0390127a39d",
+        "cohort": "legacy",
+        "au_product_id": "704285114",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fek002/#FEK002DCB:36",
+        "candidate_rows": 6,
+        "priority": "05999a943c8227d0c2cb414702dde0d8a40396267ca56d22697e9ed5aadaee7f"
+      },
+      {
+        "case_id": "case-830a8221178b097cb5f9",
+        "dossier_id": "pair-e5aa0cf98bc5f20e",
+        "cohort": "legacy",
+        "au_product_id": "704284693",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fek002/#FEK002DBR:43",
+        "candidate_rows": 6,
+        "priority": "099f870d6029c006459a7322464856c33c33239fd101887b27f064571acf4829"
+      },
+      {
+        "case_id": "case-15e88e6ea7b5ce53b833",
+        "dossier_id": "pair-27f740543096bdc8",
+        "cohort": "legacy",
+        "au_product_id": "509691375",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fgc005/#FGC005GBE:4",
+        "candidate_rows": 8,
+        "priority": "144febce87cbfa995b1b7332c5d9d1787d673e1687d79dc949b336cd7136b1db"
+      },
+      {
+        "case_id": "case-9d489b3ccc852b2a1243",
+        "dossier_id": "pair-5c421ae81e22a471",
+        "cohort": "legacy",
+        "au_product_id": "703279419",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fel001/#FEL001DNV:7",
+        "candidate_rows": 6,
+        "priority": "1b1cec296995a8d53e33b3e1bee38c8b8552be6ef08df34438dbe61251f9e183"
+      },
+      {
+        "case_id": "case-58a4e27982f490ccb62c",
+        "dossier_id": "pair-f3897096d117d821",
+        "cohort": "legacy",
+        "au_product_id": "703280256",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fel001/#FEL001SWh:3",
+        "candidate_rows": 6,
+        "priority": "0ce386821eab7085e591a06c815b4413395c48e0f2c445caed1c0e45edcdee79"
+      },
+      {
+        "case_id": "case-47218de32d03117df572",
+        "dossier_id": "novel-pair-ae3d0b07dc3a077d",
+        "cohort": "novel",
+        "au_product_id": "398508173",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/qaa0100/#QAA0100A1:5",
+        "candidate_rows": 2,
+        "priority": "4127cc2e0697c00a07a7d8fa2ba498564c0eefed6b4c9037765959be1bb482a8"
+      },
+      {
+        "case_id": "case-b81cb8330952dc9b9bbf",
+        "dossier_id": "pair-e4ce6dafcff3b3c1",
+        "cohort": "legacy",
+        "au_product_id": "653618158",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/pc013/#PC0138WH:9",
+        "candidate_rows": 2,
+        "priority": "14e0d0bab2e9f31ea5bca0ab38b3f41a415750d23edef806bbd2f5e1291ebd4a"
+      },
+      {
+        "case_id": "case-b48b22bf34eddb41c328",
+        "dossier_id": "pair-7ef19fdb139adda3",
+        "cohort": "legacy",
+        "au_product_id": "537246358",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/pt0033/#PT0033LG:1",
+        "candidate_rows": 7,
+        "priority": "36f83e344ea7147640cfcd0875eee8a49648eea40755edaf69c4916da2931880"
+      },
+      {
+        "case_id": "case-95981874c7bddb305fcc",
+        "dossier_id": "pair-bb5b9f3f3bd988f6",
+        "cohort": "legacy",
+        "au_product_id": "695394169",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fia6080/#FIA80NT:1",
+        "candidate_rows": 3,
+        "priority": "4221f237b57411c584df9e9b5dafb9609dcb1e702fd0a473d3752edd732cc79d"
+      },
+      {
+        "case_id": "case-39322da8d6e81cadb4ca",
+        "dossier_id": "novel-pair-91fb4595d0641c02",
+        "cohort": "novel",
+        "au_product_id": "724257905",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/hg020/#hg020wh4:10",
+        "candidate_rows": 5,
+        "priority": "1839f9ceaef76cecf85df70c149b32db267172d01339fcf8dc7b09b6062d6321"
+      },
+      {
+        "case_id": "case-cab5cf5a8aa414856a7b",
+        "dossier_id": "pair-62a83132e3db8584",
+        "cohort": "legacy",
+        "au_product_id": "704282431",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fek002/#FEK004SDBE:1",
+        "candidate_rows": 6,
+        "priority": "102a2ad66fe1f7ebeed37282effb6eec40f12d979fea7185c4cf9423a1e99f65"
+      },
+      {
+        "case_id": "case-ee2e1e7bcbd8230436a0",
+        "dossier_id": "pair-f62f62e6f94f1d24",
+        "cohort": "legacy",
+        "au_product_id": "753670518",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fel001/#FEL001SNV:10",
+        "candidate_rows": 6,
+        "priority": "2015f8c4634954cae87097def83cbd9e1dab91acba4cce5c6c9461710a47e7bf"
+      },
+      {
+        "case_id": "case-e507c3959e6a6f58925e",
+        "dossier_id": "pair-2731f3cede6c0af8",
+        "cohort": "legacy",
+        "au_product_id": "309329265",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/a19e/#A19GSV_:5",
+        "candidate_rows": 4,
+        "priority": "1c1e631df64770f6f4c45cac280f86b5ec72faca10edb9941bf82aa8ae5db1be"
+      },
+      {
+        "case_id": "case-890438460aa0d8e0999b",
+        "dossier_id": "pair-cf985ab4f6713acb",
+        "cohort": "legacy",
+        "au_product_id": "695392874",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fia6080/#FIA80NT:1",
+        "candidate_rows": 3,
+        "priority": "3ed5cb9390db70fb95a2eac911c82fad2c8474eaa52d923d9f80fee87cf1ed5b"
+      },
+      {
+        "case_id": "case-ae9b5ab865c157f7f716",
+        "dossier_id": "pair-4a6e80e8c5551ac7",
+        "cohort": "legacy",
+        "au_product_id": "704280046",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fek002/#FEN04WH:25",
+        "candidate_rows": 6,
+        "priority": "246a60479c920eee2e8bd83e144dff557a946abd9dcfba6db7f8bb87304a9ff7"
+      },
+      {
+        "case_id": "case-bde953066a4e2a2bd2c9",
+        "dossier_id": "pair-a83c42738f9bfaf6",
+        "cohort": "legacy",
+        "au_product_id": "763158008",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fek002/#FEK002DLG:20",
+        "candidate_rows": 6,
+        "priority": "4ff3edb666ab29a1f82899ffa20ed10facbbbaf8963dc47b26f1bcec9464ebe7"
+      },
+      {
+        "case_id": "case-569a1359acc13b3c0cf3",
+        "dossier_id": "pair-f7168991efbedd25",
+        "cohort": "legacy",
+        "au_product_id": "597651839",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/stp01/#STP02BE:5",
+        "candidate_rows": 5,
+        "priority": "3e035cbafc078f7fa20cbe642efe8b6101bef94f2807ab39d1f7814dbae3e97a"
+      },
+      {
+        "case_id": "case-893c5f931d49a951a41b",
+        "dossier_id": "novel-pair-440bf9c6eb61d2fa",
+        "cohort": "novel",
+        "au_product_id": "764777172",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/fca2160/#FCA2160GY2:5",
+        "candidate_rows": 3,
+        "priority": "697ee7fd438aadf508e3954750d140b2ac9c817132063b3827e3db09d01b1b1b"
+      },
+      {
+        "case_id": "case-94f4d17e25dc67ad2d5d",
+        "dossier_id": "novel-pair-4e66a47fb57fc4f3",
+        "cohort": "novel",
+        "au_product_id": "763454500",
+        "rakuten_sku_key": "https://item.rakuten.co.jp/weimall/mbc005/#mbc005gy:1",
+        "candidate_rows": 3,
+        "priority": "67aaa4d4e68dd391da26cceb22fe19052ed53a4ce4e2c835388a3087cf698ad2"
+      }
+    ]
+  },
+  "planned_calls": 50,
+  "inputs_sha256": "a23d9e47bd0acab6e620cbe5cfeca9c88f7a3b697855b5e8a53fb3cfa9696ddd",
+  "source_contexts_sha256": "ba0414b554ad3bb4d542b7aa63c6cedabf4789ab173390415498c2580581f47d",
+  "labels_read": false,
+  "independent_gold_used": false,
+  "new_web_fetches": 0,
+  "entries": [
+    {
+      "case_id": "case-0a8a63c5d4ebff5f2cfd",
+      "request": "requests/01.json",
+      "answer": "answers/01.json",
+      "request_sha256": "3f87d5e0e686216424d8409890594f75b9cc8e31988b621bc0f4f840c2b5ce9c"
+    },
+    {
+      "case_id": "case-9c77ad2ed25be9294fd5",
+      "request": "requests/02.json",
+      "answer": "answers/02.json",
+      "request_sha256": "49cf4dcda11b0da7b2b04fcb3cf8b6bc0365e1a91cac5c0cf770b5c3df52272f"
+    },
+    {
+      "case_id": "case-55f8a515cb0ac4749e06",
+      "request": "requests/03.json",
+      "answer": "answers/03.json",
+      "request_sha256": "ee63f954111aef9febc6aa751936325d24a8a3dd465b1b6ac77756b93bf0bba2"
+    },
+    {
+      "case_id": "case-a89d4c008275d1336f03",
+      "request": "requests/04.json",
+      "answer": "answers/04.json",
+      "request_sha256": "151111a4328edce720da532df027e084bf9537039225e8f1b36527cd29f945e0"
+    },
+    {
+      "case_id": "case-99fbd1d7c8a23d32d917",
+      "request": "requests/05.json",
+      "answer": "answers/05.json",
+      "request_sha256": "951d2ab59959bb71e06cb78b96e054b2bb651e16641f5bb2fc559b1fac27a216"
+    },
+    {
+      "case_id": "case-4530f9d8b1ab2f427659",
+      "request": "requests/06.json",
+      "answer": "answers/06.json",
+      "request_sha256": "7cf82fb7f38a9a859c1715302fb7b7b36e64eaa038fd7b8bec3df37d466c3ef8"
+    },
+    {
+      "case_id": "case-30019a8030f51dd62329",
+      "request": "requests/07.json",
+      "answer": "answers/07.json",
+      "request_sha256": "778602ad20c3371a9cefac253d0abf43b49210535741748aed90686ae81fa700"
+    },
+    {
+      "case_id": "case-fbe763d089c8ef20f320",
+      "request": "requests/08.json",
+      "answer": "answers/08.json",
+      "request_sha256": "76ceb8c705f641ed3ae2df573cf5faa96e46e14c2687463719863f3ff011e4bd"
+    },
+    {
+      "case_id": "case-a7e174b88f5299a0a9ae",
+      "request": "requests/09.json",
+      "answer": "answers/09.json",
+      "request_sha256": "495a7d0f1eba676a3dd577a11a40ac26bd733ce719b243e970580754971514f3"
+    },
+    {
+      "case_id": "case-6dde94ac474bdcdcbfb2",
+      "request": "requests/10.json",
+      "answer": "answers/10.json",
+      "request_sha256": "34e0cda30e66f976205e7c63601e34dd8c01181a9379b9f743506a12614928d3"
+    },
+    {
+      "case_id": "case-293a635dec426ed5ac0f",
+      "request": "requests/11.json",
+      "answer": "answers/11.json",
+      "request_sha256": "dda112ee5602b15c35ea1e1fff174a0a373e85253460e16072338fde85cd72dc"
+    },
+    {
+      "case_id": "case-d9667d49758678a4d527",
+      "request": "requests/12.json",
+      "answer": "answers/12.json",
+      "request_sha256": "9f7db791c896a5d41e6e89d55290c76a1e930d249eeaa6b2376ea3018b3598ea"
+    },
+    {
+      "case_id": "case-ac39a44bd9d3bbcc1c10",
+      "request": "requests/13.json",
+      "answer": "answers/13.json",
+      "request_sha256": "c80e39a1c9482885e0e95dba2c3e79a1adabdecc621188c4674000fed682374e"
+    },
+    {
+      "case_id": "case-1b3e15fff7deef208800",
+      "request": "requests/14.json",
+      "answer": "answers/14.json",
+      "request_sha256": "4b9a093aafa949f8d9c97c746eb6d893bf6479bf2c5672f8a0b477c1a8e3f07a"
+    },
+    {
+      "case_id": "case-7ce7cec932ce93be5a0e",
+      "request": "requests/15.json",
+      "answer": "answers/15.json",
+      "request_sha256": "08baffde25da2ecc2183440b161c0738951a82dfb54f4d44d7c137071fe54193"
+    },
+    {
+      "case_id": "case-a9c73f88db0641510b90",
+      "request": "requests/16.json",
+      "answer": "answers/16.json",
+      "request_sha256": "7e56d0406545f6d4133ded382af14a126df2c3b8c61ca174cbde172686350c2c"
+    },
+    {
+      "case_id": "case-0dd17b53253438ae3379",
+      "request": "requests/17.json",
+      "answer": "answers/17.json",
+      "request_sha256": "20a68a0ce643ee39373b2485f071abafbce06ba01a6214684192289e7ec65ef4"
+    },
+    {
+      "case_id": "case-35e555261edb897d9958",
+      "request": "requests/18.json",
+      "answer": "answers/18.json",
+      "request_sha256": "39fecbe3c1cd367c7e36539e54e0ae66264991f9041e53b090b63d8604b00d95"
+    },
+    {
+      "case_id": "case-cebfea2231966774cc9c",
+      "request": "requests/19.json",
+      "answer": "answers/19.json",
+      "request_sha256": "41705e75ec1e22d25996c814c4cc0902b73c799acddb2bb9476742fa1b732f10"
+    },
+    {
+      "case_id": "case-86af1cd464d50a6a990a",
+      "request": "requests/20.json",
+      "answer": "answers/20.json",
+      "request_sha256": "537ddb810a9e81facbdac23cf0d067551f067459a9fc1e17a92e7575225299f4"
+    },
+    {
+      "case_id": "case-db8a5a00e97c3cbbc1a6",
+      "request": "requests/21.json",
+      "answer": "answers/21.json",
+      "request_sha256": "8afb25dd144d38ec6240b6201da1305c1b59a125d5d2f500e7965cbcc2b2e5a7"
+    },
+    {
+      "case_id": "case-9725e5bb7b008002e836",
+      "request": "requests/22.json",
+      "answer": "answers/22.json",
+      "request_sha256": "9d03d87d6235eb20ed31b7016821ca90247a40202ffbd1f510526b422da39caa"
+    },
+    {
+      "case_id": "case-435d2cb6cf94c6d02c05",
+      "request": "requests/23.json",
+      "answer": "answers/23.json",
+      "request_sha256": "8476347c6f52cd2828da16cb6dae4cefd7f1bbe040a8421377a339625f11eefc"
+    },
+    {
+      "case_id": "case-7365ed2a3b4860afd148",
+      "request": "requests/24.json",
+      "answer": "answers/24.json",
+      "request_sha256": "c0d23c088b64dd732e346074281c438667e7fb28cf03edc88d25159e9d3f8d66"
+    },
+    {
+      "case_id": "case-0722ef51b816b9837580",
+      "request": "requests/25.json",
+      "answer": "answers/25.json",
+      "request_sha256": "ba7a4f55d446a6f99d6e392a007ef81335142969fa85f3169afc73bd28799f62"
+    },
+    {
+      "case_id": "case-7f9e4a323208c9b87e3c",
+      "request": "requests/26.json",
+      "answer": "answers/26.json",
+      "request_sha256": "5a1aafbfc576397f10a813d46b925d46e302be1213c445fa990200c6b97231f6"
+    },
+    {
+      "case_id": "case-8c9ed23d10e9e6bff736",
+      "request": "requests/27.json",
+      "answer": "answers/27.json",
+      "request_sha256": "755232a5e8c2c649e858e78bd7c538337c45bcd3a62d06c3bb516a95d4aa8fbb"
+    },
+    {
+      "case_id": "case-efc9553140a1ea39dae9",
+      "request": "requests/28.json",
+      "answer": "answers/28.json",
+      "request_sha256": "199f8cf96cf3d9bb43e3cfde7ebdb4bc9f6ea1e1e653f3301001439cdff7109f"
+    },
+    {
+      "case_id": "case-efac80e57eeda8380a6d",
+      "request": "requests/29.json",
+      "answer": "answers/29.json",
+      "request_sha256": "109330506278d9fda1399a0fad3f06de7b24f5ff80e906f5db0b15a2ff54aa9c"
+    },
+    {
+      "case_id": "case-10dbf7384c6775340da7",
+      "request": "requests/30.json",
+      "answer": "answers/30.json",
+      "request_sha256": "be1f9919cd2f97f1f0fd9ede5df8810efd3a93482cf3a5733c010fa9dca90e17"
+    },
+    {
+      "case_id": "case-a531d171d0b4ae98a554",
+      "request": "requests/31.json",
+      "answer": "answers/31.json",
+      "request_sha256": "c6220248b3d8bbfe622d9d3825c2c045846661cebfd5ff882990748c2d34c359"
+    },
+    {
+      "case_id": "case-ec5777af356f44fcde53",
+      "request": "requests/32.json",
+      "answer": "answers/32.json",
+      "request_sha256": "cca31c0e514fd5df1055c1be4cc80396a2a0d57ae82622d18a726fe9fc019230"
+    },
+    {
+      "case_id": "case-830a8221178b097cb5f9",
+      "request": "requests/33.json",
+      "answer": "answers/33.json",
+      "request_sha256": "3b112407288ba2252ac38fe0562b8982887dc48efdcd74905e26dc5fe577f09a"
+    },
+    {
+      "case_id": "case-15e88e6ea7b5ce53b833",
+      "request": "requests/34.json",
+      "answer": "answers/34.json",
+      "request_sha256": "4a581f244478ca0d944a45b2b7ffc11bc142211d3b3dad61f9b7d91eab45c8d8"
+    },
+    {
+      "case_id": "case-9d489b3ccc852b2a1243",
+      "request": "requests/35.json",
+      "answer": "answers/35.json",
+      "request_sha256": "f5eacf321d617a06eac421c0aceec31ab158b10fb5b37519919949f425fd46e6"
+    },
+    {
+      "case_id": "case-58a4e27982f490ccb62c",
+      "request": "requests/36.json",
+      "answer": "answers/36.json",
+      "request_sha256": "add4118f1f93322f4d23c4a51e1d3338ca43e23dcb40e27a647406164d84838c"
+    },
+    {
+      "case_id": "case-47218de32d03117df572",
+      "request": "requests/37.json",
+      "answer": "answers/37.json",
+      "request_sha256": "de21ccd1b1bb90ff005f8d71f76de8651a21adfda8849c63066839b0c62bb9a8"
+    },
+    {
+      "case_id": "case-b81cb8330952dc9b9bbf",
+      "request": "requests/38.json",
+      "answer": "answers/38.json",
+      "request_sha256": "fcc05a43ac3e1066419814aa9f387e816b6d499b1022e728c0c0549381c4d6ff"
+    },
+    {
+      "case_id": "case-b48b22bf34eddb41c328",
+      "request": "requests/39.json",
+      "answer": "answers/39.json",
+      "request_sha256": "7649943df2413a2580e0d5e5cd75968530a497c642f24725fffad97e5e27b9c0"
+    },
+    {
+      "case_id": "case-95981874c7bddb305fcc",
+      "request": "requests/40.json",
+      "answer": "answers/40.json",
+      "request_sha256": "00c680d63b80d3e1dc4ae3dda4c105b9d1400b019b935247c30506e1dd1adbca"
+    },
+    {
+      "case_id": "case-39322da8d6e81cadb4ca",
+      "request": "requests/41.json",
+      "answer": "answers/41.json",
+      "request_sha256": "2962bd030bfe8d7a3b56a20cae6200ab7e03ac9908b84ca7e8ab7f98a1d29331"
+    },
+    {
+      "case_id": "case-cab5cf5a8aa414856a7b",
+      "request": "requests/42.json",
+      "answer": "answers/42.json",
+      "request_sha256": "d335fbe7904db3315eac8ec44986f3486fc26b52e3c37bb9a2b563560402fda1"
+    },
+    {
+      "case_id": "case-ee2e1e7bcbd8230436a0",
+      "request": "requests/43.json",
+      "answer": "answers/43.json",
+      "request_sha256": "261b30f15334e325d5dec1ce1c5c4c1863a6a28cfa5b8f0014e678df6ef2f1cc"
+    },
+    {
+      "case_id": "case-e507c3959e6a6f58925e",
+      "request": "requests/44.json",
+      "answer": "answers/44.json",
+      "request_sha256": "3cf971a16872ad461ab363787be8d627601f036a6ff6fa283eb35f4a4905d7cd"
+    },
+    {
+      "case_id": "case-890438460aa0d8e0999b",
+      "request": "requests/45.json",
+      "answer": "answers/45.json",
+      "request_sha256": "d32df1f1642c7c26426d749161dae41c837dc4b904ba46424ae7fa2fcf881c60"
+    },
+    {
+      "case_id": "case-ae9b5ab865c157f7f716",
+      "request": "requests/46.json",
+      "answer": "answers/46.json",
+      "request_sha256": "e70a5bcfb39d07e4f638e06a1f73733babc64e0d075c1eb9f7fd01b2bed248c0"
+    },
+    {
+      "case_id": "case-bde953066a4e2a2bd2c9",
+      "request": "requests/47.json",
+      "answer": "answers/47.json",
+      "request_sha256": "a6f7afbe9497182492969395760c293e4d57f89db3d1c587e88a79a01967c673"
+    },
+    {
+      "case_id": "case-569a1359acc13b3c0cf3",
+      "request": "requests/48.json",
+      "answer": "answers/48.json",
+      "request_sha256": "fd98f3d00ebe823a9e399705437d137b31ddb7aa301aed32ab21024eda10be69"
+    },
+    {
+      "case_id": "case-893c5f931d49a951a41b",
+      "request": "requests/49.json",
+      "answer": "answers/49.json",
+      "request_sha256": "37dc8d649d3a1bf21cc66f60224e081a3aaeadc50974bcaa361910bed15b5b53"
+    },
+    {
+      "case_id": "case-94f4d17e25dc67ad2d5d",
+      "request": "requests/50.json",
+      "answer": "answers/50.json",
+      "request_sha256": "1eefb77e1e2bbcfa9a7fbe6ff2ab643f17b6165e3d457b30c7374d25407f3517"
+    }
+  ]
+}

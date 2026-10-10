@@ -1,0 +1,90 @@
+{
+  "audit_type": "v7 pre-review-inference static audit; no labels/gold read; no review answers read; no inference or grader run",
+  "initial_failure": {
+    "recorded": true,
+    "original_facet_answers_preserved": true,
+    "recovery_uses_v2_helper": true,
+    "inference_retries": 0
+  },
+  "facet_tasks": {
+    "calls": 4,
+    "case_coverage": 62,
+    "overlap": false,
+    "row_count_each": 27,
+    "response_validation": "all four pass",
+    "patterns": [
+      {
+        "product": "778809347",
+        "あり": {
+          "support": 27,
+          "contradiction": 0,
+          "unknown": 0
+        },
+        "なし": {
+          "support": 0,
+          "contradiction": 27,
+          "unknown": 0
+        }
+      },
+      {
+        "product": "778818828",
+        "あり": {
+          "support": 0,
+          "contradiction": 0,
+          "unknown": 27
+        },
+        "なし": {
+          "support": 0,
+          "contradiction": 0,
+          "unknown": 27
+        }
+      }
+    ],
+    "request_selects_only_lace_value_and_carries_no_case_or_sku_ids": true
+  },
+  "composition": {
+    "derived_cases": 62,
+    "rows_per_case": 27,
+    "only_rakuten_lace_check_changed": true,
+    "all_other_rakuten_and_all_au_checks_equal_original": true,
+    "inputs_and_source_contexts_byte_identical": true,
+    "per_case_output_origin_hashes_verified": true,
+    "new_whole_matching_calls": 0
+  },
+  "signatures": {
+    "total": 14,
+    "passed": 14,
+    "reused_v6_same_row_raw_request_answer_bytes": 13,
+    "fresh_width_length_rule_task": "case-182c1165944d3dcbe34e",
+    "fresh_answer_sha_verified": true,
+    "candidate_answer_sha_rebound": true
+  },
+  "review_preparation": {
+    "frozen_requests": 62,
+    "actual_coverage": 62,
+    "single_case_each": true,
+    "case_conditions_and_source_contexts_exact": true,
+    "prediction_and_dimension_from_derived_evaluation": true,
+    "expanded_trace_row_keys_condition_ids_status_evidence_ids_exact": true,
+    "prior_verdict_or_gold_in_request": false,
+    "confirm_candidate_signature_same_row_answer_hash_gate_present": true,
+    "reject_evidence_and_fixed_product_scope_gates_present": true,
+    "row_condition_evidence_gate_present": true,
+    "review_answers_opened": false
+  },
+  "freeze_integrity": {
+    "initial_prepare_freeze_preserved": true,
+    "v2_prepare_freeze_matches_current_driver": true,
+    "all_v2_source_hashes_match": true,
+    "final_hash_recheck_pass": true
+  },
+  "future_grade_blocker": {
+    "grade_py_requires_grading_freeze_json_currently_missing": true
+  },
+  "model_metadata": {
+    "requested": "gpt-6-luna",
+    "actual_modelVersion": null,
+    "usage": null,
+    "provider_call_count_independently_verified": false
+  }
+}
