@@ -1,0 +1,87 @@
+{
+  "type": "OBJECT",
+  "properties": {
+    "rows": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "rakuten_checks": {
+            "type": "ARRAY",
+            "items": {
+              "type": "OBJECT",
+              "properties": {
+                "status": {
+                  "type": "STRING",
+                  "enum": [
+                    "support",
+                    "contradiction",
+                    "unknown"
+                  ]
+                },
+                "source_ids": {
+                  "type": "ARRAY",
+                  "items": {
+                    "type": "STRING"
+                  }
+                }
+              },
+              "required": [
+                "status",
+                "source_ids"
+              ],
+              "propertyOrdering": [
+                "status",
+                "source_ids"
+              ]
+            }
+          },
+          "au_checks": {
+            "type": "ARRAY",
+            "items": {
+              "type": "OBJECT",
+              "properties": {
+                "status": {
+                  "type": "STRING",
+                  "enum": [
+                    "support",
+                    "contradiction",
+                    "unknown"
+                  ]
+                },
+                "source_ids": {
+                  "type": "ARRAY",
+                  "items": {
+                    "type": "STRING"
+                  }
+                }
+              },
+              "required": [
+                "status",
+                "source_ids"
+              ],
+              "propertyOrdering": [
+                "status",
+                "source_ids"
+              ]
+            }
+          }
+        },
+        "required": [
+          "rakuten_checks",
+          "au_checks"
+        ],
+        "propertyOrdering": [
+          "rakuten_checks",
+          "au_checks"
+        ]
+      }
+    }
+  },
+  "required": [
+    "rows"
+  ],
+  "propertyOrdering": [
+    "rows"
+  ]
+}

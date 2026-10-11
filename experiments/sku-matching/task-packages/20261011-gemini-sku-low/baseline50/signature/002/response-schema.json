@@ -1,0 +1,41 @@
+{
+  "type": "OBJECT",
+  "properties": {
+    "checks": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "status": {
+            "type": "STRING",
+            "enum": [
+              "support",
+              "contradiction",
+              "unknown"
+            ]
+          },
+          "source_ids": {
+            "type": "ARRAY",
+            "items": {
+              "type": "STRING"
+            }
+          }
+        },
+        "required": [
+          "status",
+          "source_ids"
+        ],
+        "propertyOrdering": [
+          "status",
+          "source_ids"
+        ]
+      }
+    }
+  },
+  "required": [
+    "checks"
+  ],
+  "propertyOrdering": [
+    "checks"
+  ]
+}

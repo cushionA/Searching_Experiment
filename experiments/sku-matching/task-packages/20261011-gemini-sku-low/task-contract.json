@@ -1,0 +1,254 @@
+{
+  "purpose": "Gemini SKU matching, signature verification, and independent semantic review",
+  "provider_request": {
+    "project": "groundingsearch",
+    "location": "global",
+    "model": "gemini-3.5-flash-lite",
+    "operation": "generateContent",
+    "method": "POST"
+  },
+  "response_schemas": {
+    "matching": {
+      "type": "OBJECT",
+      "properties": {
+        "rows": {
+          "type": "ARRAY",
+          "items": {
+            "type": "OBJECT",
+            "properties": {
+              "rakuten_checks": {
+                "type": "ARRAY",
+                "items": {
+                  "type": "OBJECT",
+                  "properties": {
+                    "status": {
+                      "type": "STRING",
+                      "enum": [
+                        "support",
+                        "contradiction",
+                        "unknown"
+                      ]
+                    },
+                    "source_ids": {
+                      "type": "ARRAY",
+                      "items": {
+                        "type": "STRING"
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "source_ids"
+                  ],
+                  "propertyOrdering": [
+                    "status",
+                    "source_ids"
+                  ]
+                }
+              },
+              "au_checks": {
+                "type": "ARRAY",
+                "items": {
+                  "type": "OBJECT",
+                  "properties": {
+                    "status": {
+                      "type": "STRING",
+                      "enum": [
+                        "support",
+                        "contradiction",
+                        "unknown"
+                      ]
+                    },
+                    "source_ids": {
+                      "type": "ARRAY",
+                      "items": {
+                        "type": "STRING"
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "source_ids"
+                  ],
+                  "propertyOrdering": [
+                    "status",
+                    "source_ids"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "rakuten_checks",
+              "au_checks"
+            ],
+            "propertyOrdering": [
+              "rakuten_checks",
+              "au_checks"
+            ]
+          }
+        }
+      },
+      "required": [
+        "rows"
+      ],
+      "propertyOrdering": [
+        "rows"
+      ]
+    },
+    "signature": {
+      "type": "OBJECT",
+      "properties": {
+        "checks": {
+          "type": "ARRAY",
+          "items": {
+            "type": "OBJECT",
+            "properties": {
+              "status": {
+                "type": "STRING",
+                "enum": [
+                  "support",
+                  "contradiction",
+                  "unknown"
+                ]
+              },
+              "source_ids": {
+                "type": "ARRAY",
+                "items": {
+                  "type": "STRING"
+                }
+              }
+            },
+            "required": [
+              "status",
+              "source_ids"
+            ],
+            "propertyOrdering": [
+              "status",
+              "source_ids"
+            ]
+          }
+        }
+      },
+      "required": [
+        "checks"
+      ],
+      "propertyOrdering": [
+        "checks"
+      ]
+    },
+    "review": {
+      "type": "ARRAY",
+      "minItems": 1,
+      "maxItems": 1,
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "case_id": {
+            "type": "STRING"
+          },
+          "verdict": {
+            "type": "STRING",
+            "enum": [
+              "confirm",
+              "reject",
+              "unresolved"
+            ]
+          },
+          "row_key": {
+            "type": "STRING",
+            "nullable": true
+          },
+          "reason": {
+            "type": "STRING"
+          },
+          "review_evidence_ids": {
+            "type": "ARRAY",
+            "items": {
+              "type": "STRING"
+            }
+          }
+        },
+        "required": [
+          "case_id",
+          "verdict",
+          "row_key",
+          "reason",
+          "review_evidence_ids"
+        ],
+        "propertyOrdering": [
+          "case_id",
+          "verdict",
+          "row_key",
+          "reason",
+          "review_evidence_ids"
+        ]
+      }
+    }
+  },
+  "statuses": {
+    "matching": [
+      "support",
+      "contradiction",
+      "unknown"
+    ],
+    "review": [
+      "confirm",
+      "reject",
+      "unresolved"
+    ]
+  },
+  "required_fields": {
+    "matching": {
+      "root": "object",
+      "rows": "array",
+      "row_item": {
+        "rakuten_checks": "array",
+        "au_checks": "array"
+      },
+      "check_item": {
+        "status": "support|contradiction|unknown",
+        "source_ids": "array"
+      }
+    },
+    "signature": {
+      "root": "object",
+      "required": [
+        "checks"
+      ],
+      "checks": "array",
+      "check_item": {
+        "status": "support|contradiction|unknown",
+        "source_ids": "array"
+      }
+    },
+    "review": {
+      "root": "array",
+      "min_items": 1,
+      "max_items": 1,
+      "item": {
+        "case_id": "string",
+        "verdict": "confirm|reject|unresolved",
+        "row_key": "string|null",
+        "reason": "string",
+        "review_evidence_ids": "array"
+      }
+    }
+  },
+  "array_order": {
+    "matching.rows": "au_rows input order",
+    "matching.row_item.rakuten_checks": "rakuten conditions order",
+    "matching.row_item.au_checks": "current AU row conditions order",
+    "signature.checks": "selected_dimensions or targets input order",
+    "review": "exactly one object"
+  },
+  "row_scope": "Current AU candidate row compared with selected Rakuten SKU; review is one case only.",
+  "local_gate": {
+    "confirm": "Nonempty valid evidence IDs; matching decision must be candidate; dimensions must pass; review row must equal matching and dimension row; dimension candidate-answer hash must equal the current matching answer hash; AU condition evidence must belong to this row.",
+    "reject": "Valid review with row_key null and nonempty allowed fixed-product evidence IDs leads to exclude. The local validator does not independently prove that every AU row is contradicted; the reviewer is responsible for that semantic conclusion.",
+    "unresolved": "A valid unresolved review leads to pending unless matching is already not_evaluated.",
+    "invalid_review": "Missing or invalid review, including confirm_gate_failed, leads to not_evaluated; never silently counts as exclude or correct.",
+    "meaning": "These are actual local gates; schema-valid evidence can still be semantically wrong."
+  },
+  "source_scope": "Only fixed_product source content can support or contradict; linked products and search-term lists cannot establish identity.",
+  "semantic_caveat": "Schema-valid structured output does not establish semantic correctness."
+}

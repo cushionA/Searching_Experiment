@@ -1,0 +1,332 @@
+{
+  "audit_type": "semantic-independent-audit",
+  "scope": {
+    "source": "derived/inputs.json + derived/source-contexts.json + matching raw answers/evaluation + review raw answers + derived/final-reviews.json and reviewed-summary.json",
+    "selected_case_ids": [
+      "case-49c7d5a7b36f3f21641f",
+      "case-04a68396ffb8ec49fae2",
+      "case-74f7cb07e510ea6c8310",
+      "case-8c12c6dc7a575b9ac8b3"
+    ],
+    "excluded_sources": [
+      "labels",
+      "grading/*",
+      "source oldgrading"
+    ],
+    "additional_api_calls": 0
+  },
+  "model_route": {
+    "actual_route": "gpt-6-luna (specified)",
+    "served_model_version": "not provided"
+  },
+  "cases": [
+    {
+      "case_id": "case-49c7d5a7b36f3f21641f",
+      "product": "Rakuten ctk / AU 778818828",
+      "selected": {
+        "rakuten": [
+          "サイズ=100×110cm",
+          "カラー=ベージュ",
+          "レースカーテン=あり"
+        ],
+        "au_candidate": "au:778818828:332504238:1:1; カラー=ベージュ, サイズ=幅100×丈110cm(2枚)"
+      },
+      "source_findings": [
+        {
+          "id": "R-title",
+          "quote": "...カーテン 4枚セット 2枚セット...ミラーレースセット...",
+          "scope": "Rakuten title; proves product offers both bundle types, but does not specify current width row contents"
+        },
+        {
+          "id": "S30",
+          "quote": "内容 / 完全遮光カーテン / 【幅100cm】遮光カーテン 2枚・タッセル 2枚・カーテンフック / 【幅150cm】遮光カーテン 1枚・タッセル 1枚・カーテンフック",
+          "scope": "fixed_product bounded HTML row; recovered via existing ZIP; sha256 b1956598c5f3191e3c3d39e200766031baf589321d570e36ceeaf6e8f349a716; next table section is カラー"
+        },
+        {
+          "id": "A-size",
+          "quote": "幅100×丈110cm(2枚)",
+          "scope": "current AU row condition; confirms main-curtain size/count only"
+        }
+      ],
+      "semantic_finding": "Current width-100 package contents explicitly enumerate two blackout curtains, tassels and hooks, with no lace curtain; bounded contents section ends before the color section and is a width-specific contents list. Rakuten selected lace=あり is therefore unsupported and contradicted by the current fixed package contents, even though color and dimensions align. Generic keyword S2 mentions lace and is not composition evidence.",
+      "matching_stage": {
+        "record": "derived/evaluation.json: decision=pending, candidate_row_key=null, validation_ok=true; composed answers/01.json has rows=27 and no chunk_errors",
+        "raw_matcher_format": "Raw matching output contains ordered checks with status/source_ids only, no row_key or candidate field.",
+        "locally_restored_row_checks": {
+          "row_key": "au:778818828:332504238:1:1",
+          "rakuten_checks": [
+            "support",
+            "support",
+            "unknown"
+          ],
+          "au_checks": [
+            "support",
+            "support"
+          ]
+        },
+        "interpretation": "The locally restored row supports size and color but leaves lace inclusion unknown, so it does not become an adoptable candidate."
+      },
+      "final_review": {
+        "raw_review": "review-answers/01.json said confirm for same row, citing row color/size evidence",
+        "final": "derived/final-reviews.json unresolved; reviewed-summary not_evaluated (review response unavailable or invalid)"
+      },
+      "independent_assessment": "Do not adopt: the selected lace option does not match the bounded current package contents. The not_evaluated final record is distinct from this source-based assessment.",
+      "dimension_stage": {
+        "source": "derived/signature-v3-evaluation.json",
+        "applicable": false,
+        "note": "No case entry exists in this artifact; no independent dimension pass inferred."
+      }
+    },
+    {
+      "case_id": "case-04a68396ffb8ec49fae2",
+      "product": "Rakuten ct0 / AU 704502086",
+      "selected": {
+        "rakuten": [
+          "サイズ=100×120cm",
+          "カラー=カフェブラウン",
+          "レースカーテン=あり"
+        ],
+        "au_candidate": "au:704502086:331810175:8:4; カラー=カフェブラウン, サイズ=幅100×丈120cm(4枚組)"
+      },
+      "source_findings": [
+        {
+          "id": "S34",
+          "quote": "内容 / 【幅100cm】遮光カーテン 2枚・レースカーテン 2枚・タッセル 2枚・カーテンフック 14個 / 【幅150cm】遮光カーテン 1枚・レースカーテン 1枚・タッセル 1枚・カーテンフック 7個",
+          "scope": "fixed_product bounded HTML row; recovered via existing ZIP; sha256 422ee67a2496ab1740e88fdaa8ba8c42f3fa98766447e3a89be94c35f0302ad7; next table section is カラー"
+        },
+        {
+          "id": "A-row",
+          "quote": "カフェブラウン / 幅100×丈120cm(4枚組)",
+          "scope": "current AU row condition"
+        },
+        {
+          "id": "S37",
+          "quote": "レースカーテン 2枚",
+          "scope": "fixed_product contents component"
+        }
+      ],
+      "semantic_finding": "For width 100, the bounded contents row supports two main curtains plus two lace curtains; for width 150, it lists one main curtain plus one lace curtain. The candidate width-100, 4-piece AU row matches Rakuten selected color and dimensions and the contents support the lace-set option. This semantic conclusion is limited to the selected SKU’s color, size, and lace-set composition; it does not establish every selected Rakuten attribute as an AU-side match.",
+      "matching_stage": {
+        "record": "derived/evaluation.json decision=candidate; candidate_row_key=au:704502086:331810175:8:4; validation_ok=true",
+        "note": "For the selected candidate row, the expanded candidate response has Rakuten checks [support, support, support] and AU checks [support, support]. Contradictions recorded for other rows must not be attributed to this selected row. Candidate-stage evaluation remains distinct from final review/adoption."
+      },
+      "final_review": {
+        "raw_review": "review-answers/02.json confirm; cites current AU row conditions and S37",
+        "final": "derived/final-reviews.json confirm, same row; reviewed-summary adopt; selected_dimensions_passed=true"
+      },
+      "independent_assessment": "Adopt is source-supported.",
+      "dimension_stage": {
+        "source": "derived/signature-v3-evaluation.json",
+        "applicable": true,
+        "passed": true,
+        "validation_ok": true,
+        "checked_dimensions": [
+          "本体横幅 100cm",
+          "本体高さ 120cm"
+        ],
+        "evidence": "AU row 幅100×丈120cm(4枚組) and Rakuten selected attributes width 100 / height 120"
+      },
+      "selected_attribute_audit": {
+        "rakuten_selected_attributes_count": 12,
+        "assessment": "Read-only check of derived/source-contexts: several selected Rakuten attributes lack corresponding explicit AU fixed-product evidence and are not verified as cross-site attributes by this audit.",
+        "supported_or_close_fixed_product_evidence": [
+          {
+            "axis": "カラー / 代表カラー",
+            "selected": "カフェブラウン / ブラウン",
+            "source_ids": [
+              "S54"
+            ],
+            "quote": "カフェブラウン（1級遮光）≪NEW≫"
+          },
+          {
+            "axis": "カーテンの遮光タイプ",
+            "selected": "遮光1級",
+            "source_ids": [
+              "S54"
+            ],
+            "quote": "カフェブラウン（1級遮光）≪NEW≫"
+          },
+          {
+            "axis": "本体横幅 / 本体高さ",
+            "selected": "100cm / 120cm",
+            "source_ids": [
+              "S60",
+              "A:au:704502086:331810175:8:4:1"
+            ],
+            "quote": "100×120cm / 幅100×丈120cm(4枚組)"
+          },
+          {
+            "axis": "柄",
+            "selected": "無地",
+            "source_ids": [
+              "S0"
+            ],
+            "quote": "...カーテン4枚組... 無地 ..."
+          },
+          {
+            "axis": "洗濯表示",
+            "selected": "洗濯機OK",
+            "source_ids": [
+              "S25"
+            ],
+            "quote": "洗濯機で洗濯OK！"
+          }
+        ],
+        "unverified_on_AU_fixed_product_context": [
+          {
+            "axis": "メーカー型番",
+            "selected": "CT01120BR",
+            "note": "Exact value absent from AU source-contexts."
+          },
+          {
+            "axis": "原産国／製造国",
+            "selected": "中国",
+            "note": "Exact value absent from AU source-contexts."
+          },
+          {
+            "axis": "ブランド名 / ブランド名（カナ）",
+            "selected": "WEIMALL / ウェイモール",
+            "note": "Occurrences are only in generic search-word text, which is excluded as product evidence."
+          },
+          {
+            "axis": "遮光",
+            "selected": "有",
+            "note": "No explicit selected boolean attribute counterpart identified; product text describes遮光/1級遮光."
+          }
+        ],
+        "remaining_selected_values": "Exact fixed-product AU support for every other selected attribute was not verified."
+      }
+    },
+    {
+      "case_id": "case-74f7cb07e510ea6c8310",
+      "product": "Rakuten fek002 / AU 704285114",
+      "selected": {
+        "rakuten": [
+          "タイプ=もことろん電気毛布",
+          "サイズ=シングル(140×200cm)",
+          "カラー=グレー"
+        ],
+        "au_candidate": "au:704285114:337167678:2:0; カラー=グレー"
+      },
+      "source_findings": [
+        {
+          "id": "R-size",
+          "quote": "シングル(140×200cm)",
+          "scope": "selected Rakuten variant condition"
+        },
+        {
+          "id": "S0",
+          "quote": "毛布 ダブル 毛布2枚合わせ...",
+          "scope": "fixed AU product title"
+        },
+        {
+          "id": "S3",
+          "quote": "こちらのページは【Dサイズ】です",
+          "scope": "fixed AU product description"
+        },
+        {
+          "id": "S31/S32",
+          "quote": "内容 / もことろん毛布2枚合わせ ダブル ×1 / 収納袋 ×1",
+          "scope": "fixed AU bounded contents row; recovered via existing ZIP; sha256 deeaf3044d2203a10461e5fd80d9acf435d29296e3c38b1b7264c4aad15dc891"
+        },
+        {
+          "id": "A-color",
+          "quote": "グレー",
+          "scope": "current AU row; only color is represented in candidate SKU row"
+        }
+      ],
+      "semantic_finding": "Color agrees, but current AU fixed page and contents identify a D/double blanket while Rakuten selects single 140×200cm and a type option labelled electric blanket. The review raw answer's statement that size also agrees is unsupported and contrary to the fixed-page size evidence. Contents identify one double blanket; they do not establish a compatible single/electric-blanket option.",
+      "matching_stage": {
+        "record": "matching chunk 007 reports assertion_without_evidence; derived/evaluation.json decision=not_evaluated, validation_ok=false, invalid_response_fields"
+      },
+      "final_review": {
+        "raw_review": "review-answers/03.json says confirm, citing gray and claiming double size agrees",
+        "final": "derived/final-reviews.json unresolved; reviewed-summary not_evaluated because review response unavailable or invalid"
+      },
+      "independent_assessment": "Do not adopt: selected size/type are not supported by the AU fixed-page evidence, and size is contradicted. This is an unresolved final outcome, not an exclude verdict.",
+      "dimension_stage": {
+        "source": "derived/signature-v3-evaluation.json",
+        "applicable": false,
+        "note": "No case entry exists in this artifact; no independent dimension pass inferred."
+      }
+    },
+    {
+      "case_id": "case-8c12c6dc7a575b9ac8b3",
+      "product": "Rakuten fef008 / AU 483077897",
+      "selected": {
+        "rakuten": [
+          "サイズ=シングル",
+          "カラー=アッシュグレー",
+          "オプション=毛布セット"
+        ],
+        "au_candidate": "AU product 483077897; SKU color row is アッシュグレー"
+      },
+      "source_findings": [
+        {
+          "id": "R-size-option",
+          "quote": "シングル / オプション=毛布セット",
+          "scope": "selected Rakuten variant conditions"
+        },
+        {
+          "id": "S0",
+          "quote": "敷きパッド ダブル ... 140×205cm",
+          "scope": "fixed AU product title"
+        },
+        {
+          "id": "S3",
+          "quote": "こちらのページはダブルサイズです",
+          "scope": "fixed AU product description"
+        },
+        {
+          "id": "S39/S40/S53",
+          "quote": "内容 / 吸湿発熱敷きパッド ダブル × 1 / （約）幅140cm×長さ205cm（ダブルサイズ）",
+          "scope": "fixed AU product contents/size details"
+        },
+        {
+          "id": "A-color",
+          "quote": "アッシュグレー",
+          "scope": "current AU SKU row; color only"
+        }
+      ],
+      "semantic_finding": "The AU item is a double-size heated mattress pad. Its current SKU row provides color only and the fixed-page contents list one double pad; no blanket bundle is established in this contents list. Selected single size conflicts with fixed-page double size. The page-wide generic search keywords mentioning single/double are not specific variant evidence.",
+      "matching_stage": {
+        "record": "derived/evaluation.json decision=pending; candidate_row_key=null; validation_ok=true; guard issues removed Rakuten check relying on ambiguous S5"
+      },
+      "final_review": {
+        "raw_review": "review-answers/04.json reject due single vs fixed double",
+        "final": "derived/final-reviews.json reject; reviewed-summary exclude"
+      },
+      "independent_assessment": "Exclude is source-supported on size mismatch; the separate 毛布セット option is not independently proven by the AU contents and should not be described as matching.",
+      "dimension_stage": {
+        "source": "derived/signature-v3-evaluation.json",
+        "applicable": false,
+        "note": "No case entry exists in this artifact; no independent dimension pass inferred."
+      }
+    }
+  ],
+  "coverage": {
+    "selected_cases": 4,
+    "cases_with_input_and_context_reviewed": 4,
+    "cases_with_raw_match_answers_and_stage_records_reviewed": 4,
+    "cases_with_raw_review_answers_and_final_review_summary_reviewed": 4,
+    "cases_with_fixed_contents_html_recovered": 3,
+    "case_8c12_contents_html": "helper could not recover a bounded 内容 row with expected following カラー section; used the preserved source-context quotations and hash-linked sources for size/content instead",
+    "final_counts_from_derived_reviewed_summary": {
+      "not_evaluated": 2,
+      "adopt": 1,
+      "exclude": 1
+    },
+    "not_evaluated_cases": [
+      "case-49c7d5a7b36f3f21641f",
+      "case-74f7cb07e510ea6c8310"
+    ],
+    "signature_dimension_evaluation_cases": [
+      "case-04a68396ffb8ec49fae2"
+    ]
+  },
+  "provenance_note": "Semantic findings independently checked against the supplied derived inputs/source contexts, matching answers/evaluation, raw review answers, and final derived review artifacts. Model grading labels and grading/oldgrading materials were not opened. No additional API calls were made.",
+  "coordinator_correction": {
+    "case_id": "case-49c7d5a7b36f3f21641f",
+    "correction": "Audit initially mixed the failed electric-blanket response into the curtain case. Verified curtain composed answer has 27 rows, valid structure, and unknown lace check; the assertion_without_evidence failure belongs to case-74f7cb07e510ea6c8310. Source-only contents findings and final decisions are unchanged."
+  }
+}

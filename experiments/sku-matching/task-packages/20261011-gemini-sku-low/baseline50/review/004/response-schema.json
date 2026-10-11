@@ -1,0 +1,48 @@
+{
+  "type": "ARRAY",
+  "minItems": 1,
+  "maxItems": 1,
+  "items": {
+    "type": "OBJECT",
+    "properties": {
+      "case_id": {
+        "type": "STRING"
+      },
+      "verdict": {
+        "type": "STRING",
+        "enum": [
+          "confirm",
+          "reject",
+          "unresolved"
+        ]
+      },
+      "row_key": {
+        "type": "STRING",
+        "nullable": true
+      },
+      "reason": {
+        "type": "STRING"
+      },
+      "review_evidence_ids": {
+        "type": "ARRAY",
+        "items": {
+          "type": "STRING"
+        }
+      }
+    },
+    "required": [
+      "case_id",
+      "verdict",
+      "row_key",
+      "reason",
+      "review_evidence_ids"
+    ],
+    "propertyOrdering": [
+      "case_id",
+      "verdict",
+      "row_key",
+      "reason",
+      "review_evidence_ids"
+    ]
+  }
+}

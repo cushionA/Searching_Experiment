@@ -1,0 +1,75 @@
+{
+  "record_type": "official_public_specification_research",
+  "retrieved_at_utc": "2026-10-11T01:22:55.066882Z",
+  "scope": {
+    "provider": "Google Vertex AI / Gemini Enterprise Agent Platform public documentation",
+    "requested_model": "gemini-3.5-flash-lite",
+    "request_context": "Vertex groundingsearch/global/gemini-3.5-flash-lite; documentation review only, no inference request made",
+    "documentation_version": "Public documentation as returned by Google on retrieval time; the pages do not expose a separate version identifier. Model identifier/version discussed: Gemini 3.5 Flash-Lite."
+  },
+  "findings": {
+    "gemini_3_5_flash_lite": {
+      "default_thinking_level": "MINIMAL",
+      "supported_thinking_levels": [
+        "MINIMAL",
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "complete_thinking_off_supported_by_public_spec": false,
+      "recommended_minimum_setting": {
+        "thinkingConfig": {
+          "thinkingLevel": "MINIMAL"
+        }
+      },
+      "thinking_budget_zero": "Do not use as an OFF setting on Gemini 3.5. Google says thinking_budget is deprecated for Gemini 3 and later, can cause intermittent 400 INVALID_ARGUMENT errors, and should be removed for Gemini 3. The documented setting is thinking_level.",
+      "exact_quotes": [
+        {
+          "quote": "3.5 Flash-Lite defaults to minimal thinking",
+          "context": "The model-specific page says different thinking levels can be used to optimize quality, speed, and token output; it identifies MINIMAL as the default and recommends MEDIUM or HIGH for autonomous subagents.",
+          "source": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/gemini/3-5-flash-lite"
+        },
+        {
+          "quote": "You can set thinking_level to one of the following values: MINIMAL, LOW, MEDIUM, HIGH.",
+          "context": "The general Thinking page enumerates the levels, then lists supported levels by model; its table gives Gemini 3.5 Flash-Lite default MINIMAL and supported values MINIMAL, LOW, MEDIUM, HIGH. OFF is not one of the documented values.",
+          "source": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/thinking"
+        },
+        {
+          "quote": "The thinking_budget parameter is deprecated for Gemini 3 and later models. Using thinking_budget with these models can cause intermittent 400: INVALID_ARGUMENT errors.",
+          "context": "The same page warns that specifying thinking_level and thinking_budget together returns an error and says to remove thinking_budget when using Gemini 3 models.",
+          "source": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/thinking"
+        }
+      ],
+      "interpretation": "The public Vertex documentation does not specify a complete OFF mode for Gemini 3.5 Flash-Lite. The lowest documented level is MINIMAL. This conclusion is based on the documented supported-value list and model table; it does not assert undocumented backend behavior."
+    },
+    "gemini_2_5_flash_lite_comparison": {
+      "complete_thinking_off_supported_by_public_spec": true,
+      "off_setting": {
+        "thinkingConfig": {
+          "thinkingBudget": 0
+        }
+      },
+      "important_distinction": "The page separately lists Gemini 2.5 Flash-Lite's regular supported budget range as minimum 512 tokens, but explicitly documents zero as a special value to turn thinking off. Thus 0 is a documented OFF sentinel for 2.5 Flash-Lite, not a regular budget within the listed range; this exception does not apply to Gemini 3.5.",
+      "exact_quotes": [
+        {
+          "quote": "You can turn off thinking for Gemini 2.5 Flash and Gemini 2.5 Flash-Lite by setting thinking_budget to 0.",
+          "context": "The page's 'Turn off thinking' section explicitly names Gemini 2.5 Flash-Lite. It adds that although thinking content is not returned, generated text might still show reasoning-style output.",
+          "source": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/thinking"
+        },
+        {
+          "quote": "Gemini 2.5 Flash-Lite | Minimum tokens: 512 | Maximum tokens: 24,576 | Default: Auto (up to 8,192 tokens)",
+          "context": "This is the regular supported-thinking-budget table immediately before the separate Turn off thinking section; the explicit zero sentinel is a special OFF instruction rather than the table's minimum ordinary budget.",
+          "source": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/thinking"
+        }
+      ]
+    },
+    "thoughts_token_count": {
+      "field": "usageMetadata.thoughtsTokenCount",
+      "exact_quote": "Output only. The number of tokens that were part of the model's generated \"thoughts\" output, if applicable.",
+      "source": "https://cloud.google.com/vertex-ai/generative-ai/docs/reference/rest/v1/GenerateContentResponse",
+      "interpretation": "If thoughtsTokenCount is absent, the response omitted a field whose value is conditional ('if applicable'). Absence alone does not establish that thinking was disabled, nor does it prove zero internal thinking tokens. Treat it as inconclusive unless another documented signal establishes the setting and its effect."
+    }
+  },
+  "retrieval_method": "Unauthenticated HTTP GET of the Google public documentation pages through the configured HTTP proxy. No API inference or credential access was performed.",
+  "limitations": "This records publicly documented behavior. No request was sent to verify runtime acceptance, and documentation does not guarantee every deployment alias or routing layer behaves identically."
+}

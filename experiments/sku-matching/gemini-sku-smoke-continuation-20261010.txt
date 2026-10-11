@@ -1,3 +1,15 @@
+2026-10-11 10:26 JST 最新：誤答4件の思考LOW再試験とプロンプト一式
+- userはOFF希望から公式仕様確認後「LOWに増やして4件試験」を選択。3.5既定MINIMAL、完全OFF非対応、budget0は送らずthinkingLevelLOW。
+- run: results/20261011T011921Z-gemini-thinking-off-errors4/（名前は当初OFF希望由来、実条件はLOW）。4組190行、9matching＋1dimension＋4review=14新規、全HTTP200/STOP/modelVersion3.5flashlite。
+- 既知ラベル上0/4→2/4。最終採用1/除外1/未評価2/保留0。誤採用49c7は未評価で停止、04a683正解AUrow採用、8c12サイズ矛盾除外、74f7未評価。
+- 構造matching8/9・case3/4、dimension1/1valid/pass、review2/4valid。assertion_without_evidence1、confirm_gate_failed2残存。
+- 誤答選抜4件・ラベル人手未確認・過去対照1回ずつ。全体改善やLOW因果効果を主張しない。採用SKU軸は原文支持、一部非寸法属性は未確認。
+- usage prompt189909/candidates17599/total207508、API51.644s/wall52.612s、thoughtsTokenCount未提供。
+- 認証runtimeと最初一時値invalid。次一時値で実probe両200、非表示stdin→プロセス内GCP_ACCESS_TOKENだけ、値/header非保存、設定未変更。次回は実認証必須。
+- prompt/input/schema/actualoutput一式 task-packages/20261011-gemini-sku-low/README.md に最新14＋比較元133を保存。ZIP不要。
+- 新規focused4＋既存16pass、full619の既存18failure/error同一。外部採点から派生のみ戻し、原labelsはcheckout外。report.md参照。
+- 今回の指定4ケースは完了。再試験は新しい依頼/出力先で行う。
+
 2026-10-11 09:36 JST 最新Gemini同タスク比較（旧固定6件は再送していない）
 - user「geminiで同じタスク確認」により追加Vertex許可。最新Luna V13の50組/934候補行を同じsource・promptで実行。
 - 保存先 results/20261011T002300Z-gemini-luna50-replay-v2/。初回400記録は results/20261011T001500Z-gemini-luna50-replay/。
