@@ -18,6 +18,7 @@ independent_eval.py picks the directories up unchanged.
 from __future__ import annotations
 
 import argparse
+import collections
 from collections import Counter
 import hashlib
 import json
@@ -25,6 +26,7 @@ from pathlib import Path
 import re
 import sys
 import time
+import unicodedata
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote_from_bytes, urlparse
 from urllib.request import Request, build_opener
@@ -50,10 +52,21 @@ CATEGORIES = {
                 "ブーツ", "サンダル", "パーカー", "トレーナー", "ブラウス", "カーディガン", "スーツ", "シューズ"],
     "food": ["お米", "コーヒー", "お茶", "紅茶", "ナッツ", "プロテイン", "ジュース", "炭酸水", "麺", "パスタ", "調味料",
              "お菓子", "チョコレート", "海苔", "味噌", "醤油", "オイル", "冷凍", "ドライフルーツ", "ミネラルウォーター",
-             "ギフト", "スナック", "ふりかけ", "ソース", "ビール", "ワイン", "お酒"],
+             "ギフト", "スナック", "ふりかけ", "ソース", "ビール", "ワイン", "お酒",
+             "鶏肉", "豚肉", "牛肉", "魚介", "干物", "納豆", "豆腐", "漬物", "梅干し", "昆布", "出汁", "カレー", "レトルト", "缶詰",
+             "ラーメン", "うどん", "そば", "そうめん", "餅", "せんべい", "クッキー", "ケーキ", "スイーツ", "プリン", "アイス", "パン",
+             "ジャム", "はちみつ", "オリーブオイル", "ごま油", "酢", "青汁", "野菜ジュース", "豆乳", "牛乳", "ヨーグルト", "チーズ",
+             "ソーセージ", "ハム", "ベーコン", "卵", "フルーツ", "みかん", "りんご", "いちご", "ぶどう", "トマト", "じゃがいも",
+             "玉ねぎ", "カップ麺", "天然水", "麦茶", "緑茶", "ほうじ茶", "抹茶", "コーヒー豆", "ドリップコーヒー", "ココア", "日本酒",
+             "焼酎", "ウイスキー", "梅酒", "サプリメント", "ビタミン", "コラーゲン", "乳酸菌", "無添加", "国産", "有機"],
     "beauty": ["シャンプー", "トリートメント", "化粧水", "乳液", "美容液", "ファンデーション", "リップ", "マスカラ",
                "アイシャドウ", "ヘアオイル", "ボディソープ", "洗顔", "日焼け止め", "ネイル", "香水", "ヘアカラー",
-               "入浴剤", "歯磨き", "パック", "クリーム", "ハンドクリーム", "ボディクリーム", "コンディショナー"],
+               "入浴剤", "歯磨き", "パック", "クリーム", "ハンドクリーム", "ボディクリーム", "コンディショナー",
+               "美容オイル", "クレンジング", "洗顔料", "ボディミルク", "ボディスクラブ", "シートマスク", "美白", "保湿", "ヘアミスト",
+               "ヘアパック", "ノンシリコン", "育毛", "頭皮ケア", "カラートリートメント", "ヘアブラシ", "ヘアアイロン", "チーク",
+               "アイライナー", "アイブロウ", "化粧下地", "コンシーラー", "フェイスパウダー", "口紅", "ネイルカラー", "ジェルネイル",
+               "マニキュア", "フレグランス", "アロマオイル", "ボディウォッシュ", "ハンドソープ", "洗顔フォーム", "歯ブラシ",
+               "マウスウォッシュ", "除毛", "シェービング", "制汗剤", "美顔器", "オーガニック"],
 }
 GENERIC_SLUGS = {"aupay", "au", "pay"}
 
@@ -204,10 +217,10 @@ def discover(args) -> None:
     state_path = MS / f"discover-state-{args.category}.json"
     state = jload(state_path, {"done": {}})
     start, a0, stop = time.time(), client.charged_http, "finished"
-    for page in range(1, DISCOVERY_PAGES + 1):
+    for page in range(1, args.pages + 1):
         for term in CATEGORIES[args.category]:
             key = f"{term}\t{page}"
-            if key in state["done"] or page > state["done"].get(f"{term}\ttotal", DISCOVERY_PAGES):
+            if key in state["done"] or page > state["done"].get(f"{term}\ttotal", args.pages):
                 continue
             if time.time() - start > args.max_seconds or client.charged_http - a0 >= args.max_attempts:
                 stop = "chunk_limit"
@@ -291,8 +304,116 @@ def qualify(args) -> None:
                      ensure_ascii=False))
 
 
+def norm_title(text: str) -> str:
+    t = unicodedata.normalize("NFKC", str(text or "")).casefold()
+    t = re.sub(r"【[^】]*】|\[[^\]]*\]|［[^］]*］|＼[^／]*／|<[^>]*>", "", t)
+    return re.sub(r"[\s　!！?？★☆◆◇■□●○▼▽▲△※、。,.・/|｜()（）「」『』~〜\-－_]+", "", t)
+
+
+def title_similarity(a: str, b: str) -> float:
+    """Share of the shorter title's character bigrams that the other title also has (calibrated on 3,268 known pairs)."""
+    x, y = norm_title(a), norm_title(b)
+    ba, bb = {x[i:i + 2] for i in range(len(x) - 1)}, {y[i:i + 2] for i in range(len(y) - 1)}
+    return len(ba & bb) / min(len(ba), len(bb)) if ba and bb else 0.0
+
+
+SIMILARITY_MIN = 0.5
+
+
+def usable_stem(stem: str) -> bool:
+    return len(stem) >= 4 and (bool(re.search(r"[a-z]", stem)) or len(stem) >= 6) and not re.fullmatch(r"[0-9a-f]{24,}", stem)
+
+
+def relevant_items(shop: dict, category: str) -> list[tuple[str, dict]]:
+    import select_multishop as sel
+    pat = re.compile(sel.CAT_WORDS[category])
+    return [(i, it) for i, it in shop["items"].items() if pat.search(it["name"]) and usable_stem(stem_of(it["image"]))]
+
+
+def qualify2(args) -> None:
+    """Relaxed same-shop check: the manage number equals the AU primary-image token (any Rakuten store) and the titles agree.
+
+    A shop is accepted when two different AU items each find a Rakuten product of one store whose manage number is a
+    token of the AU image name and whose title shares at least SIMILARITY_MIN of its bigrams with the AU title."""
+    shops = jload(MS / f"shops-{args.category}.json", {})
+    strict = {t["shop_id"] for t in ci.read_jsonl(MS / "shop-tests.jsonl") if t["hit"]}
+    tests_path = MS / "shop-tests2.jsonl"
+    tested = {r["shop_id"] for r in ci.read_jsonl(tests_path)}
+    cache_path = MS / "rakuten-title-cache.jsonl"
+    titles = {r["url"]: r for r in ci.read_jsonl(cache_path)}
+    web = RakutenWeb(MS / "rakuten-ledger2.jsonl")
+    order = sorted(((sid, relevant_items(s, args.category)) for sid, s in shops.items() if sid not in strict and sid not in tested),
+                   key=lambda x: -len(x[1]))
+    start, calls, stop = time.time(), 0, "finished"
+    for sid, rel in order:
+        if len(rel) < 2:
+            continue
+        if time.time() - start > args.max_seconds or calls >= args.max_attempts:
+            stop = "chunk_limit"
+            break
+        if not ci.claim(f"ms:qualify2:{sid}", "qualify2"):
+            continue
+        s = shops[sid]
+        result = {"shop_id": sid, "shop_name": s["name"], "categories": [args.category], "slug": None, "confirmed": [], "tried": []}
+        votes: dict[str, list] = collections.defaultdict(list)
+        for item_id, it in rel[:8]:
+            stem = stem_of(it["image"])
+            allowed = manage_prefixes(stem)
+            matched = False
+            for tok in token_queries(stem)[:2]:
+                status, raw, _ = web.get(SEARCH_BASE + tok + "/", "search", {"purpose": "qualify2", "token": tok, "shop_id": sid})
+                calls += 1
+                hits = sorted({(sl, m) for sl, m in search_hits(raw.decode("utf-8", "replace")) if m.casefold() in allowed}) if status == 200 else []
+                result["tried"].append({"au_item_id": item_id, "token": tok, "status": status, "hits": len(hits)})
+                if web.blocked:
+                    break
+                for sl, mg in hits[:3]:
+                    url = f"https://item.rakuten.co.jp/{sl}/{mg}/"
+                    if url not in titles:
+                        st2, raw2, ctype2 = web.get(url, "item", {"purpose": "qualify2_title", "shop_id": sid})
+                        calls += 1
+                        title = None
+                        if st2 == 200 and raw2:
+                            product, _ = fetch_rakuten.parse_page({"url": url, "requested_url": url, "retrieved_at_utc": ci.now(), "raw_file": "",
+                                                                   "status": st2, "content_type": ctype2}, raw2)
+                            title = product.get("title")
+                        titles[url] = {"url": url, "title": title, "status": st2}
+                        ci.append_jsonl(cache_path, titles[url])
+                        if web.blocked:
+                            break
+                    sim = title_similarity(it["name"], titles[url]["title"] or "")
+                    if sim >= SIMILARITY_MIN:
+                        votes[sl.casefold()].append({"au_item_id": item_id, "url": url, "token": tok, "similarity": round(sim, 3),
+                                                     "au_name": it["name"], "rakuten_title": titles[url]["title"]})
+                        matched = True
+                if matched or web.blocked:
+                    break
+            if web.blocked or any(len({v["au_item_id"] for v in vs}) >= 2 for vs in votes.values()):
+                break
+        if web.blocked:
+            stop = web.blocked
+            break
+        best = max(votes.items(), key=lambda kv: len({v["au_item_id"] for v in kv[1]}), default=None)
+        if best and len({v["au_item_id"] for v in best[1]}) >= 2:
+            result["slug"], result["confirmed"] = best[0], best[1][:4]
+            result["hit"] = {"manage_number": best[1][0]["url"].rstrip("/").split("/")[-1],
+                             "evidence": f"title similarity >= {SIMILARITY_MIN} on 2 AU items"}
+        else:
+            result["hit"] = None
+        ci.append_jsonl(tests_path, result)
+    tests = ci.read_jsonl(tests_path)
+    done_ids = {t["shop_id"] for t in tests}
+    print(json.dumps({"category": args.category, "stage": "qualify2", "stop": stop, "this_call": calls, "tested": len(tests),
+                      "qualified": sum(1 for t in tests if t["hit"]),
+                      "remaining": sum(1 for sid, rel in order if sid not in done_ids and len(rel) >= 2)}, ensure_ascii=False))
+
+
 def qualified(category: str) -> dict[str, dict]:
-    return {t["shop_id"]: t for t in ci.read_jsonl(MS / "shop-tests.jsonl") if t["hit"] and category in t["categories"]}
+    found = {t["shop_id"]: t for t in ci.read_jsonl(MS / "shop-tests.jsonl") if t["hit"] and category in t["categories"]}
+    for t in ci.read_jsonl(MS / "shop-tests2.jsonl"):
+        if t["hit"] and category in t["categories"]:
+            found.setdefault(t["shop_id"], t)
+    return found
 
 
 def au(args) -> None:
@@ -316,12 +437,18 @@ def au(args) -> None:
     terms = CATEGORIES[args.category]
     pending: list = []
 
+    sku_taken = Counter(str(r.get("shop_id") or "") for r in base.saved_records() if r.get("state") == "sku_product")
+
     def shop_evidence(sid):
         return sum(1 for ev in state["evidence"].values() if ev[0]["shop_id"] == sid)
 
+    def shop_full(sid, items_taken=0):
+        return bool((args.max_sku_products_per_shop and sku_taken[sid] >= args.max_sku_products_per_shop)
+                    or (args.max_items_per_shop and items_taken >= args.max_items_per_shop))
+
     def next_page():
         for sid in shops:
-            if args.max_items_per_shop and shop_evidence(sid) >= args.max_items_per_shop:
+            if shop_full(sid, shop_evidence(sid)):
                 continue
             for page in range(1, ci.MAX_PAGES_PER_TERM + 1):
                 for term in terms:
@@ -333,9 +460,9 @@ def au(args) -> None:
 
     while client.charged_http - a0 < args.max_attempts and time.time() - start < args.max_seconds:
         pending = [i for i, ev in state["evidence"].items() if i not in old_ids and i not in done]
-        if args.max_items_per_shop:
+        if args.max_items_per_shop or args.max_sku_products_per_shop:
             taken = Counter(state["evidence"][i][0]["shop_id"] for i in done if i in state["evidence"])
-            pending = [i for i in pending if taken[state["evidence"][i][0]["shop_id"]] < args.max_items_per_shop]
+            pending = [i for i in pending if not shop_full(state["evidence"][i][0]["shop_id"], taken[state["evidence"][i][0]["shop_id"]])]
         try:
             if pending:
                 item_id = pending[0]
@@ -345,7 +472,8 @@ def au(args) -> None:
                     continue
                 order += 1
                 try:
-                    base.process_id(client, item_id, ev[0]["shop_id"], ev, order)
+                    if base.process_id(client, item_id, ev[0]["shop_id"], ev, order) == "sku_product":
+                        sku_taken[ev[0]["shop_id"]] += 1
                 except fetch_au.BudgetExceeded:
                     raise
                 except Exception as exc:
@@ -437,7 +565,7 @@ def rakuten(args) -> None:
             state["items"][item_id] = {"result": "au_item_unreadable"}
             continue
         shop_id = str(info.get("shopUserId", ""))
-        slug = slug_of(shops[shop_id]["shop_name"]) if shop_id in shops else ""
+        slug = (shops[shop_id].get("slug") or slug_of(shops[shop_id]["shop_name"])) if shop_id in shops else ""
         images = info.get("productImageUrls") or []
         stem = stem_of(images[0]) if images else ""
         if not slug or not stem:
@@ -530,16 +658,19 @@ def status(args) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("stage", choices=["discover", "qualify", "au", "rakuten", "status"])
+    parser.add_argument("stage", choices=["discover", "qualify", "qualify2", "au", "rakuten", "status"])
     parser.add_argument("--category", choices=sorted(CATEGORIES))
     parser.add_argument("--max-attempts", type=int, default=400)
     parser.add_argument("--max-seconds", type=int, default=480)
+    parser.add_argument("--pages", type=int, default=DISCOVERY_PAGES, help="discover stage: pages per term")
+    parser.add_argument("--max-sku-products-per-shop", type=int, default=None,
+                        help="au stage: stop a shop once this many of its items are SKU products")
     parser.add_argument("--max-items-per-shop", type=int, default=None,
                         help="au stage: stop enumerating and processing a shop once this many of its items are known/captured")
     args = parser.parse_args()
-    if args.stage in ("discover", "au", "rakuten") and not args.category:
+    if args.stage in ("discover", "qualify2", "au", "rakuten") and not args.category:
         parser.error("--category is required")
-    {"discover": discover, "qualify": qualify, "au": au, "rakuten": rakuten, "status": status}[args.stage](args)
+    {"discover": discover, "qualify": qualify, "qualify2": qualify2, "au": au, "rakuten": rakuten, "status": status}[args.stage](args)
 
 
 if __name__ == "__main__":

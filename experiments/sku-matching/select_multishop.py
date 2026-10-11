@@ -16,6 +16,7 @@ import glob
 import hashlib
 import json
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -66,7 +67,8 @@ def links() -> list[dict]:
             p = rk[url]
             title = str(p.get("title") or "")
             au_title = str(recs[au_id].get("item_title") or "")
-            rows.append({"dir_category": cat, "au_item_id": au_id, "rakuten_url": url, "shop": url.split("/")[3],
+            rows.append({"dir_category": cat, "au_item_id": au_id, "au_shop_id": str(recs[au_id].get("shop_id") or ""),
+                         "rakuten_url": url, "shop": url.split("/")[3],
                          "rakuten_manage": url.rstrip("/").split("/")[-1], "sku_count": p.get("sku_count"),
                          "rakuten_axes": [x.get("axis_label") or x.get("label") or "" for x in (p.get("axes") or [])],
                          "rakuten_title": title, "au_title": au_title, "true_category": true_category(title + " " + au_title)})
@@ -78,11 +80,18 @@ def main() -> None:
     ap.add_argument("--name", required=True, help="output folder name under multishop/ (must not exist)")
     ap.add_argument("--per-pattern", type=int, default=3)
     ap.add_argument("--max-sku", type=int, default=60)
+    ap.add_argument("--only-relaxed", action="store_true",
+                    help="keep only shops confirmed by collect_multishop qualify2 (title-agreement alias), i.e. not the strict name rule")
     args = ap.parse_args()
     out = RUN / "multishop" / args.name
     if out.exists():
         raise SystemExit(f"{out} exists")
     rows = links()
+    if args.only_relaxed:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import collect_multishop as ms
+        relaxed = {t["shop_id"] for t in ms.ci.read_jsonl(ms.MS / "shop-tests2.jsonl") if t["hit"]}
+        rows = [r for r in rows if r["au_shop_id"] in relaxed]
     by_url: dict[str, list[dict]] = collections.defaultdict(list)
     for r in rows:
         by_url[r["rakuten_url"]].append(r)
