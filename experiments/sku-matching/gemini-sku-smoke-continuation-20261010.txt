@@ -1,3 +1,19 @@
+2026-10-11 09:36 JST 最新Gemini同タスク比較（旧固定6件は再送していない）
+- user「geminiで同じタスク確認」により追加Vertex許可。最新Luna V13の50組/934候補行を同じsource・promptで実行。
+- 保存先 results/20261011T002300Z-gemini-luna50-replay-v2/。初回400記録は results/20261011T001500Z-gemini-luna50-replay/。
+- runtime環境tokenはinvalid、ユーザーの一時tokenを非表示stdinでプロセス内GCP_ACCESS_TOKENにだけ適用してtokeninfo/Vertex両HTTP200。token/header/identity非保存、Cloud設定は未変更。次回の実API認証必須。
+- matching70うち先行Gemini3raw再利用＋67新規、寸法13新規、レビュー50新規。Luna answer再利用0。全133成功taskHTTP200/STOP/modelVersion=gemini-3.5-flash-lite、初回400を含む全generateContent134回。
+- exact source/prompt/selected value維持、decoderだけsource ID enum/配列minmaxを簡略化しローカルで厳密検証。status/source_idsと原文/IDローカル復元を維持。
+- 構造matching61/70（case42/50、断定のID欠落9chunk）、寸法13/13 valid・8pass、review35/50 valid。最終採用8/除外23/保留4/未評価15。
+- 既知同48ラベルのGemini28/48=58.33%、Luna44/48=91.67%。採用は6一致/1falseaccept/1truthunknown、precision6/7=85.71%、recall6/14=42.86%。ラベル人手未確認。
+- width100レース「あり」を主カーテンだけのAUへ誤採用(case49c7)。truthunknown(aef841)はメーカー型番・原産国source gap。原文ZIP/member/次カラー境界も確認。
+- usage prompt1132182/candidates98599/total1230781、成功API合計341.596秒、v2wall337.304秒。失敗400は別0.787秒でusage未提供。
+- 生8links保持、採点後label一致6links-label-agreement.jsonlは検査用であり新たなモデル精度/人手確認ではない。
+- labelsはcheckout外、派生grading/source-audit/provider-audit/report/16newtestsを同ブランチ保存。full615、既存18failure/error同一。ZIP不要。
+- 当比較の予定推論は完了。再度実行する必要はない。続きはreport.mdとfreezeを読み、追加試験が必要なら新しいrun/要求revisionへ。
+
+以下は従来Luna改善・固定6件と認証診断の履歴。
+
 2026-10-10 UTC Luna API役による継続改善の最新チェックポイント。Gemini固定6件は完了済み、追加Vertexなし。
 最新Luna成果は luna-sku-task-continuation-20261010.txt とv13/report.md を参照。
 v13: 新50組38/48→44/48=91.67%、累計250組219/241=90.87%、採用74/74がラベル上同じAUセル。

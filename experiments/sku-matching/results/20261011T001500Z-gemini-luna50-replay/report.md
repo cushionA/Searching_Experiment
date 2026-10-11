@@ -1,0 +1,5 @@
+同一50組の初回Geminiプロトコル。環境のGCP_ACCESS_TOKENはtokeninfo400/Vertex401。ユーザーの一時トークンを非表示stdinでプロセス内だけに適用し、両probeのHTTP200を確認した。値・header・tokeninfo URL・identityは保存していない。
+
+matching初回3リクエストはHTTP200/STOPでJSON解析可能。4番の27行リクエストはHTTP400 INVALID_ARGUMENTとなり、以後は停止。エラー本文は秘密保護のため保存せず、コード/statusだけを記録した。decoder複雑性の詳細な原因はこの記録だけでは特定できない。初回3の1件は後続の構造検証で断定の根拠ID欠落が判明したため、成功をJSON解析成功と構造成功に分ける。
+
+応答と要求は保持し、続行は別出力先 ../20261011T002300Z-gemini-luna50-replay-v2/ で行った。初回3件は同じ要求とraw応答をhash検証後に再利用し、再送しない。残る67matchingと寸法のresponseSchemaは入力依存のenum/配列件数制約だけ簡略化し、プロンプト・選択値・status/source_ids出力と厳密なローカル検証を維持。旧helpersとこの実行の記録は変更していない。
