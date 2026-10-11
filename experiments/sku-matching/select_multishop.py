@@ -67,7 +67,7 @@ def links() -> list[dict]:
             p = rk[url]
             title = str(p.get("title") or "")
             au_title = str(recs[au_id].get("item_title") or "")
-            rows.append({"dir_category": cat, "au_item_id": au_id, "au_shop_id": str(recs[au_id].get("shop_id") or ""),
+            rows.append({"dir_category": cat, "au_item_id": au_id, "au_shop_id": str(recs[au_id].get("shop_id") or (recs[au_id].get("product") or {}).get("shop_user_id") or ""),
                          "rakuten_url": url, "shop": url.split("/")[3],
                          "rakuten_manage": url.rstrip("/").split("/")[-1], "sku_count": p.get("sku_count"),
                          "rakuten_axes": [x.get("axis_label") or x.get("label") or "" for x in (p.get("axes") or [])],

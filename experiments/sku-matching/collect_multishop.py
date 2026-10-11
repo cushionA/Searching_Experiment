@@ -440,7 +440,7 @@ def au(args) -> None:
     terms = CATEGORIES[args.category]
     pending: list = []
 
-    sku_taken = Counter(str(r.get("shop_id") or "") for r in base.saved_records() if r.get("state") == "sku_product")
+    sku_taken = Counter(str(r.get("shop_id") or (r.get("product") or {}).get("shop_user_id") or "") for r in base.saved_records() if r.get("state") == "sku_product")
 
     def shop_evidence(sid):
         return sum(1 for ev in state["evidence"].values() if ev[0]["shop_id"] == sid)
