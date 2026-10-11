@@ -94,7 +94,15 @@ def jsave(path: Path, value) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + ".tmp")
     tmp.write_text(json.dumps(value, ensure_ascii=False), encoding="utf-8")
-    tmp.replace(path)
+    for attempt in range(8):
+        try:
+            tmp.replace(path)
+            return
+        except PermissionError:
+            # Windows: another process (indexer, scanner) briefly holds the target.
+            if attempt == 7:
+                raise
+            time.sleep(0.5 * (attempt + 1))
 
 
 def rebuild_shops(category: str) -> dict:
