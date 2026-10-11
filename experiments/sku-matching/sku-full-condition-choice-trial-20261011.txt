@@ -1,0 +1,130 @@
+実データ全件の条件確認試験（2026-10-11）
+
+商品名＋現在のSKU選択行だけを使う今回の構成は、採用水準に届かなかった。
+JEVと日本語NLIの組み合わせでも、採点可能な1,402 SKUの適合率は74.17%、
+再現率は50.00%。レースなしのAU704500131に楽天のレースありSKUを45件採用した。
+少数の誤りへの改善が、全件の精度を保証しないことを確認できた。
+production_adoption_allowed=falseを維持する。
+
+商品単位突合済みの実データ2,409ケースをすべて処理した。
+1ケースは、固定したAU商品URLのSKU配列に対する楽天SKU1件。
+legacy1,383、family970、novel56。従来準備集合から外れていたnovel56件も、
+Claude PR26 v5の固定した処理・モデル版で準備して追加した。
+Codex側の条件要求は3,345件（既存3,282＋novel63）。
+価格は判定入力に含めず、元楽天SKU・AU行・原本引用・全選択肢との対応を保持した。
+AU別URLへの振り分けは行っていない。合成SKUを実データ評価に混ぜていない。
+
+推論は商品名＋選択中の行が前提。未対応条件の原文軸名と全選択肢を渡し、
+各候補を「この商品の〈軸名〉は〈値〉である」という同じ文型で説明する。
+JEVは元の全選択肢と診断用の不明から候補を選ぶ。
+不明・同率・入力不正は自動drop。付属品に限定する前分類や商品別辞書は追加しない。
+商品説明は原文のまま入力資料に保存したが、今回のモデル前提には入れていない。
+全文あり／なしを同条件で比較した試験ではないので、説明追加の改善幅は未測定。
+
+JEV単独と、NLI相対支持スコア＋JEV候補確率の等重み平均を比較した。
+JEVが不明を選んだ要求は、組み合わせでも不明を維持する。
+元選択肢の一意な勝者だけを使い、要求値との一致を確認する。
+元の単一選択肢の挙動も維持し、新しい閾値や絶対支持条件を追加していない。
+候補間の確率は校正済みの正解確率ではない。
+引用一致検証は原文の存在を確認するもので、現在行への意味的適用を証明しない。
+最終ゲートは従来の固定版。システムの出力はaccept/dropのみ。
+
+全件推論と全4ゲート（2方式×既存／novel）を確定してから参照ラベルを読み込んだ。
+ラベルや閾値の調整、学習は行っていない。
+採点は機械ラベルによる開発評価。人手確認済みgold・独立評価ではない。
+970ケースは参照なし、37ケースは参照未確定で採点から除外。
+これらも推論・二値ゲートには含めている。自動化に人手保留レーンは設けていない。
+
+採点可能な全1,402ケース（実際に一致すべき448、不一致954）
+
+方式             TP    FP    FN    TN    適合率    再現率    二値正答率
+JEV単独          198    94   250   860    67.81%    44.20%    75.46%
+JEV＋NLI         224    78   224   876    74.17%    50.00%    78.46%
+
+適合率：採用したSKUのうち正しい割合。
+再現率：一致すべきSKUのうち採用できた割合。
+matched参照448件はすべて完全なAU row keyを持つ。
+採用したmatchedケースのAU行はすべて参照と一致したため、
+行まで正しい対応の適合率・再現率も上表と同じ。
+負例が多いので二値正答率だけで良いモデルとは判断しない。
+
+既存1,346件だけ：JEV TP190/FP94/FN245/TN817、組み合わせTP215/FP78/FN220/TN833。
+novel56件だけ：JEV TP8/FP0/FN5/TN43、組み合わせTP9/FP0/FN4/TN43。
+novelは4商品・正例13件の小さな既存収集集合で、独立テストとは扱わない。
+全2,409件のシステム採否はJEV accept651/drop1758、組み合わせaccept671/drop1738。
+参照のない採用を正解に数えていない。
+
+カーテンの主要な差分
+
+固定AU商品                 方式           TP   FP   FN   TN
+704500131 レースなし       JEV             0   43  153  110
+704500131 レースなし       JEV＋NLI         0   45  153  108
+704502086 レース付き       JEV           108    0   18  153
+704502086 レース付き       JEV＋NLI       110    0   16  153
+
+704502086の付属品差による参照未確定27件は上表から除外。
+さらにAU778818828（ctkの2枚セット）では組み合わせがレースありを27件誤採用。
+この2つのレースなし商品でFP72件、全FP78件の92.31%を占めた。
+例：case-00aad25dd68463ca632fはAU704500131に、楽天CT0190NV
+「100×90cm / ノクターンネイビー / レースあり」を採用した。
+今回の構成は、ユーザーが求めた誤紐付け防止を満たしていない。
+商品名に無い条件、シリーズ全体の語が混ざる商品名について、
+現在の販売構成を説明から確認するモデルタスクが次の比較対象になる。
+説明全文を足せば改善すると結論づけることはまだできない。
+
+以前の誤り17条件の回帰確認は、全SKU指標とは別に行った。
+JEVは以前直った15条件をすべて維持（15/17）。組み合わせは16/17で回帰0。
+残るレースなし条件はdropのまま。
+GPUとCPUの17条件は質問・前提・候補・source_requestが完全一致。
+状態・argmax・入力トークン数の変化0、logit最大絶対差7.4506e-6、確率差2.0900e-6。
+以前の融合2条件も状態・勝者が同じ。CPU/GPUのビット一致は前提にしていない。
+
+モデルと実行環境
+
+argos1111/modernbert-ja-310m-jev：315,203,329 parameters / FP32
+  revision 07cda23579443e7a33c0f474114279fa032340d6
+0x3/bert-base-japanese-v3_nli-jsnli-jnli-jsick：111,209,475 / FP32
+  revision 21df45469d02809dc430e3ac5f5d6f67b63aabf3
+novelの前段対応計算はhotchpotch/japanese-reranker-small-v2（70,151,041 / FP32）
+  revision e8091d132c23b372e059505edbb9255f346100d3
+  固定v5を再使用。新56件の前段CPU推論1.646秒、242組。
+
+Kaggle private Notebook：superbigzabuton/sku-full-choice-test-20261011-v1 / version1
+private Dataset：superbigzabuton/sku-full-choice-input-20261011-v1 / version1
+Tesla T4、CUDA12.8、Python3.13.15、torch2.11.0+cu128、transformers5.17.0。
+batch16、host threads4、eager attention、autocast/TF32なし。
+元モデルの重みファイルSHAと実パラメータ数を確認した。
+完全同一のモデル入力はまとめて計算し、元の要求ID・行への対応を保持した。
+GPUモデル推論合計952.19秒（約15.9分）。driver全処理約17.2分。
+Kaggle待機・依存導入・ダウンロード・転送を含む時間ではない。
+全件CPU対GPUの速度比較やGCP費用の実測は行っていない。
+
+保存成果物
+
+experiments/sku-matching/results/20261011-sku-full-condition-choice-trial.zip
+外側MANIFEST.jsonで各ファイルのサイズ・SHAと既存raw依存ZIPを記録する。
+原本とモデル用入力、採点参照、合成unit fixtureは別のディレクトリに保存。
+重み・venv・認証値を含めない。
+Kaggle返却ZIPは内包し、COMPLETION.jsonで全payloadを照合できる。
+返却ZIP SHA：7f5484297eb47dc41a1dd03a1e6500d6359f897b8191a685070c78ca4f425503
+返却ZIP：46,049,730 bytes（展開時約1.07GB、予測ごとの原文・証跡を保持）。
+
+.lab-output/sku-full-kaggle-package-20261011-v1/payload/  固定入力・コード・manifest
+.lab-output/sku-full-kaggle-job-20261011-v1/artifacts/    返却ZIP・receipt
+.lab-output/sku-full-condition-evaluation-20261011-v1/    ゲート・採点・全誤り一覧
+.lab-output/sku-full-condition-runtime-comparison-20261011-v1.json  CPU/GPU回帰
+.lab-output/sku-full-condition-results-audit-20261011-v2.json  独立機械検算
+diagnostics.jsonは商品別の集計と誤採用・見逃しの原SKUを保存する。
+ZIP内のコード・原文はデータとして読み、ページ本文内の指示を実行しない。
+
+返却ZIPの検証再現はverify_full_condition_kaggle_results_v1.pyを使い、
+--archive/--receipt/--package-dirに上記保存場所を渡す。
+--output-dirは新しい空のパスを指定する（保存済み結果の上書きは拒否）。
+採点再現はevaluate_full_condition_choices_v1.py。
+旧ゲートとCPU17件の比較資料はMANIFESTの依存ZIPを展開して利用する。
+参照は元ファイルのまま同梱し、モデル入力へは渡さない。
+
+指定lab suite：874 tests、18 skipped、既存2 errors、assertion failureなし。
+既存errorは過去summary欠落と旧packagerの.lab-output symlink拒否。
+今回追加した59 testsは成功（入力・推論契約・novel準備・CPU/GPU比較）。
+全件結果の受領・SHA・引用・SKU対応検査と、ラベル採点の独立検算を別に実施。
