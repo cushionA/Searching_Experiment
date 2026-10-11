@@ -1,0 +1,166 @@
+AU商品単位で未対応SKU条件の判定を共有する処理を実装した。
+同一AU URLでサイズ・色によって未対応条件が変わらず、売り切れ行は上流で除外済み、というユーザー確認済みの前提に基づく。
+商品単位突合後の固定AU商品だけを対象にする。別URLへの振り分けはしない。
+
+対応する軸が見つからない楽天条件だけを商品単位でまとめる。
+キーには正規AU URL、文書全体のSHA256、原文の軸名、順序を保った全選択値、モデル・内容版を含める。
+永続保存する判定キャッシュでは、試行方式variantとgroup_model_cache_keyの組をさらにSHA256化する。
+同じモデル入力でも多数決・モデル一致などの方式が違う結果を混ぜない。
+文書・モデル・選択肢・内容版が変わった場合はcache miss、今回の希望値やSKU展開件数だけが変わった場合はhit。
+7方式×22groupの実データcacheを保存し、lookup後のfanoutで状態・引用・元の全対応情報が不変と確認した。
+これは推論済み結果の再読み込み検証であり、その再生を新しい推論速度測定や節約回数へ加えていない。
+楽天側の今回の選択値とAUのサイズ・色選択行は判定入力から外す。
+モデルは全選択値と不明を比較する。選ばれた値に該当する元楽天SKUだけをkeep、それ以外をdropに戻す。
+明示された「なし」を含む原文選択値も、支持・不成立も再利用する。
+モデルが別の値を選んだだけで、意味的な矛盾が証明されたとは扱わない。
+出力は採用／除外の二値。内部の不明・エラー・同点は除外につながる。
+keepは残りのAU SKU比較へ進むだけで、SKU全体の採用を意味しない。
+
+共有適格性は既存taskのorigin=one_sided、または原本と完全対応するnovel one_sided証明に限定した。
+model_candidate、その他の未確定な値対応、逆方向の確認は共有しない。
+新しい商品カテゴリ辞書、サイズ・色・付属品の条件分岐は追加していない。
+元request ID・case ID・楽天SKU key・AU row key・全source task bindingsを保持する。
+収集原本の価格・SKUレコードは変更していない。
+モデル入力に原文の条件と全選択値を保持し、評価結果を元のSKU IDへ戻している。
+後続queueは不成立caseとそのAU候補行だけを除き、継続caseと候補行の原本・順序を保持する。
+
+全データに対する構造集計（推論の全件再実測ではない）：
+  準備済み対象 2,353 case、全request 3,282。
+  楽天→AU forward 2,425 request、3,751 task bindings。
+  共有適格 forward 2,014 request、2,894 task bindings。
+  非共有 forward 411 request／857 bindings、逆方向857 requestはそのまま。
+  共有適格な既存の完全同一入力754種類 → 商品単位94種類（72 AU商品）。87.53%減。
+  原文option対2,269 →333。
+  JEVで不明選択肢を含む1ブロックあたりの対3,023 →427。85.87%減。
+  将来top3のJEVなら1,281対、NLIなら999対になる。ただしモデルごとの実時間は異なる。
+  この集計から全件の処理秒数・クラウド料金・精度を推定した数値は出していない。
+
+今回の実測は、以前間違えた実データ44 caseだけ。
+  以前の誤採用12、取りこぼし32。13 AU商品。
+  過去エラー302件からAU商品×FP/FNセルごと最大3件をcase ID順で固定選択した診断。
+  正解済みcaseの回帰、全体精度、独立評価は含まない。
+  合成データは性能採点に使っていない。unit testの合成fixtureは性能データと別。
+  元ラベルを変更せず、推論・全方式のgate固定後に別ファイルの機械ラベルを採点用に読んだ。
+  人手確定goldではない。
+
+44 caseの構造：
+  全103 request：forward86、reverse17。
+  共有適格69 request／選択caseの72 task bindings。
+  元の完全同一入力66種類 → 商品単位22種類。
+  非共有forward17、reverse17、合計34予測は元baselineオブジェクトと同一。
+  全source bindings182件のうち110件は44 caseの外側。削らず証拠として保存した。
+
+モデルを実際にCPUで比較した。
+  reranker: hotchpotch/japanese-reranker-xsmall-v2、36,771,585 parameters、INT8 ONNX。
+    revision de99fd2f16c7b5df1df1bcc1d9ad2c16d88ce93a。
+  JEV: argos1111/modernbert-ja-310m-jev、315,203,329 parameters、FP32。
+    revision 07cda23579443e7a33c0f474114279fa032340d6。
+  NLI: 0x3/bert-base-japanese-v3_nli-jsnli-jnli-jsick、111,209,475 parameters、FP32。
+    revision 21df45469d02809dc430e3ac5f5d6f67b63aabf3。
+    前提はAU原文証拠、仮説は楽天の条件。
+  GLiNER: fastino/GLiNER2.5-multi-Decide、287,355,159 parameters、FP32。
+    revision e173bca1f0c4217d7a55b3b0c705d5ece8a0218d。
+  重み・実行環境は既存ローカルのもの。新規モデル取得、外部推論API、Kaggleジョブは使っていない。
+
+結果（同じ44過去エラー。TP／FP／FN／TN）：
+  元baseline                         0 /12 /32 / 0
+  商品単位top1 JEV                    9 / 7 /23 / 5
+  商品単位top3 JEV・2ブロック一致       9 / 7 /23 / 5
+  top3 JEV＋NLI・同ブロック一致        0 / 0 /32 /12
+  商品単位top1 GLiNER                 0 / 0 /32 /12
+  商品単位top3 GLiNER・2票             0 / 0 /32 /12
+  JEV＋GLiNERそれぞれの多数一致         0 / 0 /32 /12
+  JEV＋GLiNER同ブロックで2票一致        0 / 0 /32 /12
+  JEVの回収9件は採用AU row keyも機械参照と一致した。
+  全件除外方式は有用な精度改善とは扱わない。モデル選定のゴールにはまだ到達していない。
+  この44件から全データのprecision・recall・accuracyは報告しない。
+
+時間：
+  reranker 710対、19.17秒。
+  JEV 66ブロック／330選択肢対、272.92秒。
+  NLI 264対、81.70秒。最初の比較run全体382.08秒。
+  GLiNERは同じ22group／66ブロックを使用。reranker・JEVの新規推論はない。
+  GLiNERモデル読込12.98秒、推論24.30秒、比較run全体41.92秒。
+  4 CPU threads。JEV/NLIとGLiNERでは入力形式・バッチ処理・長さ制限が異なるため、同等精度の速度比較ではない。
+
+GLiNER脱落の切り分け：
+  66ブロック中58件は推論成功、8件は実コンパイル入力が512 tokenを超えたため未truncateで無投票。
+  固定confidence 0.5未満が52ブロック、0.5以上が6ブロック。
+  top1の22groupでは3件だけwinner、19件は無投票（confidence不足13、長さ超過6）。
+  JEVが回収した9caseの18未対応条件は、6groupに対応した。
+  その6groupは長さ超過5、confidence不足1。scopeの意味的正しさは独立検証されていない。
+  全除外を、単純に「情報混入だけが原因」とは断定できない。
+
+商品単位JEVのmask／queueは実データ44caseから23caseを早期除外し、21caseを残りのSKU比較へ送った。
+GLiNER・NLI一致方式では44caseすべて除外となった。
+過去baselineの非共有モデル判定は既に実行済みなので、この試行で後続queueによる追加の回避推論は0。
+将来の後続判定を省ける見込みと、今回実測したgroup入力数の削減を分けた。
+特に「全除外なら速い」という結果を実用上の成果とは扱わない。
+
+サイズ表記差の確認も行った。
+  例：楽天100×220cm、AU幅100×丈220cm(2枚)。数値寸法の表記差自体は値対応段階で吸収すべき。
+  Claude PR26-v5カードにはAUの対応候補があり、こちらの接続では未確定model_candidateを説明確認へ回していた。
+  17 forward候補のうち15件は数値寸法が一致し、AU値に(2枚)9件・(1枚)3件・(4枚組)3件が残る。
+  色2件も基礎色名は一致し、AUに（パイル）が付く。
+  寸法の解析ミスや軸の取り違えはこの範囲では示されなかった。
+  Claudeだけの落ち度とする先の説明を訂正した。
+  未確定候補の値対応を確定する接続段階が課題。枚数・生地の付加条件を捨てて全体同一とする修正は行っていない。
+  この17件は商品単位共有から除外し、元の逆方向・値対応予測も保持した。
+
+再現可能な保存先（ZIP内では同じリポジトリ相対パス）：
+  .lab-output/sku-product-share-contract-20261011-v1/contract.json
+  .lab-output/sku-product-share-full-contract-20261011-v1/contract.json
+  .lab-output/sku-product-condition-models-20261011-v2/
+  .lab-output/sku-product-condition-evaluation-20261011-v1/
+  .lab-output/sku-product-condition-gliner-20261011-v1/
+  .lab-output/sku-product-condition-gliner-evaluation-20261011-v2/
+  .lab-output/sku-product-condition-masks-20261011-v1/
+  .lab-output/sku-product-condition-gliner-masks-20261011-v1/
+  .lab-output/sku-product-condition-continuation-20261011-v1/
+  .lab-output/sku-product-condition-decision-cache-20261011-v1/
+  .lab-output/sku-product-condition-gliner-failure-analysis-20261011-v1/analysis.json
+  .lab-output/sku-axis-correspondence-audit-20261011-v1/findings.json
+
+未完の初回run .lab-output/sku-product-condition-models-20261011-v1 は、既存venvにtorchがなく停止した記録として残した。
+既存のtorch入りGLiNER環境でv2を実行し完了した。初回の部分runを成功試行へ含めていない。
+GLiNER評価v1の出力固定は、評価開始後の不変性だけを検証していた。
+監査指摘を受け、評価v2は採点前に完成runの33出力SHA・推論前freeze・コードsnapshot・plan・model requestsを照合した。
+v1も削除せず、v2を今回のGLiNER結果の保存版として用いる。
+原文引用の実在を確認することと、その引用が当該商品に適用されると証明することは区別する。
+
+実行例（既存環境と元データ依存関係を復元後、output-dirは毎回新規）：
+  python3 -B experiments/sku-matching/prepare_product_condition_share_v1.py --prepared-dir .lab-output/sku-scoped-html-error-prep-20261011-v2 --novel-prepared-dir .lab-output/sku-full-novel-prep-20261011-v1 --output-dir NEW-CONTRACT
+  .deps/sku-gliner-venv/bin/python -B experiments/sku-matching/trial_product_condition_models_v1.py --prepared-dir .lab-output/sku-scoped-html-error-prep-20261011-v2 --eligible-requests NEW-CONTRACT/contract.json --output-dir NEW-RUN
+  python3 -B experiments/sku-matching/evaluate_product_condition_share_v1.py --prepared-dir .lab-output/sku-scoped-html-error-prep-20261011-v2 --run-dir NEW-RUN --legacy-labels .lab-output/sku-real-luna-labels-20261010-v3/labels.jsonl --novel-labels .lab-output/sku-novel-luna-labels-20261010-v1/labels.jsonl --output-dir NEW-EVALUATION
+  .deps/sku-gliner-venv/bin/python -B experiments/sku-matching/trial_product_condition_gliner_v1.py --source-run NEW-RUN --output-dir NEW-GLINER
+  python3 -B experiments/sku-matching/evaluate_product_condition_gliner_v2.py --prepared-dir .lab-output/sku-scoped-html-error-prep-20261011-v2 --run-dir NEW-GLINER --legacy-labels .lab-output/sku-real-luna-labels-20261010-v3/labels.jsonl --novel-labels .lab-output/sku-novel-luna-labels-20261010-v1/labels.jsonl --output-dir NEW-GLINER-EVALUATION
+  python3 -B experiments/sku-matching/product_condition_continuation_v1.py --mask EXISTING-MASK.json --case-plans .lab-output/sku-scoped-html-error-prep-20261011-v2/case_plans.jsonl --row-plans .lab-output/sku-scoped-html-error-prep-20261011-v2/row_plans.jsonl --output-dir NEW-CONTINUATION
+  python3 -B experiments/sku-matching/product_condition_decision_cache_v1.py --plan NEW-GLINER/sharing-plan.json --group-results NEW-GLINER/product-top1-gliner-group-results.jsonl --variant product-top1-gliner --output NEW-CACHE.json
+
+maskは product_condition_mask_v1.build_mask(plan, all_original_predictions, original_case_plans, original_row_plans) で作る。
+元request全件とsource bindingsが必要。選択case外の原bindingも残して検証する。
+永続JSON読込後は artifact['cache'] を lookup_cache(cache, current_plan, variant) に渡す。
+戻り値はcurrent group IDごとのhitsとmisses。hitだけを再利用し、missは現在のモデルで改めて判定する。
+source plan SHAは保存元の証拠として保管するが、希望値やSKU件数の変化だけで同一モデル入力の再利用を妨げるキーにはしない。
+
+アーカイブは重み、venv、認証情報を含まない。今回の原AU APIファイルと実験入力・スコア・gate・別置き機械参照を含む。
+元の全データと上流baseline／コードは results/20261011-sku-full-condition-choice-trial.zip をSHA256付き依存関係として参照する。
+ZIP CRCと全payload SHA256を保存時に確認する。unit test実行結果と独立監査も同梱する。
+依存ZIPのmanifestにあるPR26統合・CPU試行・旧residual checkpoint・ラベル監査ZIPも復元対象。
+今回のZIPを単独で全データ収集原本・重みまで含む配布物とは扱わない。
+
+Lunaの最終監査 .lab-output/sku-product-share-code-audit-20261011-v5/audit.json では、
+7方式のvariant別cache key、cache artifact／entry／manifest、index→mask→queueのSHA連鎖を確認した。
+再生したcondition／caseの意味字段も保存maskと一致し、queue原本の順序・対応は維持された。
+再生結果にはsource cache provenanceが加わるため、元予測とのバイト単位同一を主張していない。
+index.json自身に自己hashは付けておらず、アーカイブmanifestのpayload SHAで検証する。
+
+検証結果：
+  python3 -B -m unittest discover -s tests -p 'test_lab_sku_product_condition*.py'
+  追加94テストPASS（合成fixtureによる構造・出典・cache・採点順・除外queueの検証）。
+  python3 -B -m unittest discover -s tests -p 'test_lab*.py'
+  全1,031テスト、18skip、2error。新規テストの失敗はないが、全suite PASSではない。
+  既存Luna packageテストの旧Decide summary参照エラーと.lab-output symlink拒否。前のHEADと同じ2件。
+  無関係な原データ移動・symlink変更でこれを回避していない。
+  ログ：.lab-output/sku-product-condition-sharing-targeted-tests-20261011-v3.log
+        .lab-output/sku-product-condition-sharing-lab-tests-20261011-v2.log
