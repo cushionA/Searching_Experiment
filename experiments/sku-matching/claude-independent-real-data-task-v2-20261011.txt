@@ -1,0 +1,99 @@
+独立実SKU評価データ拡張 v2（オーケストレーター用の手順書）
+2026-10-11  Claude（Opus 5.5）作成。v1 = codex の claude-expand-independent-real-data-20261011.txt を、実際に回して分かった点で修正した版。
+読み手: 別セッションのオーケストレーター（Sonnet）。この文書だけで続きを回せるように書く。
+
+0. 目的と固定条件
+- 公開APIと公開商品ページの実データから、PR26 v5（align_sku_conditions.py、基準 commit 7b8f5ab）の独立評価用入力と機械gold（machinegold）を作る。合成データ禁止。
+- 1 case = 固定AU商品URL 1件 + 楽天SKU 1件。候補はそのAU商品の全行。判定時に別AU URLへ振り分けない。
+- 独立性（ユーザー指示 2026-10-11）: 既存の楽天URL（.lab-output/sku-real-rakuten-2026* で取得済みの商品）を含むペアと、その既存楽天URLに紐づくAU商品を含むペアは、評価データから除外する。原本ファイルは消さない。除外は groups 段の excluded に理由つきで残る。
+- 既存の評価コード（align_sku_conditions.py、build_raw_pair_inputs.py、build_observed_pair_records.py、collect_au_samples_expanded.py、fetch_*.py）は変更しない。新しい処理は次の2ファイルにある:
+  - experiments/sku-matching/collect_independent_real.py   取得（カテゴリ分割、claim、throttle、台帳）
+  - experiments/sku-matching/independent_eval.py          ペア → 入力 → group → 注釈バッチ → 検査 → 凍結 → 採点
+- 予算: ユーザーが上限を外した（「予算なんてない」）。ただし各側のHTTP試行は全部台帳に残す。ホストごとの間隔は collect_independent_real.py の Throttle（wowma 0.5秒、楽天 1.0秒、プロセス横断）で守られる。403/429 や連続失敗10回で止まる。回避策は取らない。
+- Windows ローカル。`python -B`。Git Bash では cd /c/Users/tatuk/Desktop/SearchEngine-task-construction。データは .lab-output（git 管理外）にあり、同じPCのセッションからだけ読める。
+
+1. 現状（2026-10-11 11:00 JST 頃。取得は完了、ペア以降は正式出力なし）
+- 取得の出力: .lab-output/sku-independent-real-20261011/<category>/{au,rakuten}/
+  category = curtain bedding storage seating table pet household sweep sweepall。claims/ が全カテゴリ共通の取得済み印。
+  状況確認: python -B experiments/sku-matching/collect_independent_real.py status
+- 取得は全カテゴリ終了（au は全担当 search_exhausted か上限。楽天は最終巡回2巡とも新規0）。Haiku 5.5 のオペレーター9体で実行。
+  au: HTTP 2,675、新しいSKU商品 275、SKUセル 3,260、SKU無し 639（旧: SKU商品 642、セル 3,721）
+  楽天: HTTP 597、商品ページ 90、SKUあり 29、SKU行 150（旧: 商品 953、SKU行 6,856）
+- 試走（scratch。正式出力ではない）での結果:
+  - build_observed_pair_records（旧+新）: family 104 → 119、candidate_review 1,275 → 1,588
+  - token-pairs: candidate_review のうち主画像の型番が一意に一致する 200ペア（新57・旧143）、2,712ケース。build_raw_pair_inputs で失敗0。
+  - 既存楽天の除外を入れると、残りは token 21ペア・279ケース、family 1ペア。新しい楽天SKU商品が29件しかないため。
+
+2. v1 からの修正点（実際に詰まった所）
+- au 店内検索: 多くの語の1ページ目を回すと検索上限を食い尽くす。店全体は「送料無料」1語で 2,193件・55ページ（ipp 40）ある。sweepall 担当がこれを全ページ引く。
+- au 検索で status 200・空本文の応答があった。collect_independent_real.py は検査失敗として errors.jsonl に記録して飛ばす。
+- 楽天: 既存HTMLの中で観測できる WEIMALL 商品リンクは既に取り切っている（1,276件中1,268件取得済み）。新しいリンクは未取得のカテゴリページ（とその ?p=N ページ送り）からしか出ない。したがって、今の取得先のままでは新しい楽天URLはほとんど増えない。
+- カテゴリ分割は「優先順位」だけにする（排他にすると、早く終わった担当の取り分が残る）。重複は claim で防ぐ。各担当が早く止まるので、最後に全カテゴリの楽天を巡回し直す（finisher）。
+- build_observed_pair_records の family 条件には固定の商品種別語リスト（カーテン・マットレス等の初期カテゴリだけ）があり、同じ型番の新カテゴリ商品が candidate_review に落ちる。token-pairs 段で「主画像の型番が楽天SKU商品1件だけに一致・同じ店」のペアを primary_image_token_mapping_review として切り出す（既存コードは変えない）。商品の同一性は注釈者が確かめる。
+- fetch_rakuten.py は fcntl を import するので Windows では直接動かない。collect_independent_real.py は fcntl の空実装を入れてから import する（台帳ロックは使わない）。
+- build_raw_pair_inputs は Windows で動き、旧 family（970ケース）を sha256 まで再現した。
+
+3. 着手前に人へ確認が要る判断（オーケストレーターが勝手に決めない）
+- 独立データを大量に増やすには、新しい楽天URLの発見が必要。案は2つで、どちらも新しい取得対象になる:
+  A. 楽天の店内検索（search.rakuten.co.jp、WEIMALL の店内）で、新しいAU商品の型番（主画像ファイル名の先頭トークン）や商品名から商品ページURLを得る。
+  B. WEIMALL 以外で、au PAY マーケットと楽天の両方に出店している店に広げる（例: au 側で既知の nissen shopId 45442552）。collect_independent_real.py の SHOP と fetch_rakuten.valid_item_url（weimall 固定）を新コードで拡張する必要がある。
+  どちらを採るか、対象の店・上限をユーザーに確認してから実装する。許可が出るまでは、今あるデータでの評価（手順4）だけ進めてよい。
+
+4. 手順（各段は新しい出力先。既存の出力は上書きしない。出力名の日付・版は変えてよい）
+  E=.lab-output/sku-independent-real-20261011/eval-v1
+  4-1. 取得の完了を確認: collect_independent_real.py status。実行中のエージェントがいれば完了を待つ。
+  4-2. ペア: python -B experiments/sku-matching/independent_eval.py pairs --out $E/pairs   （旧+新を全部読む。数分〜十数分）
+  4-3. 型番ペア: python -B experiments/sku-matching/independent_eval.py token-pairs --pairs $E/pairs --out $E/token-pairs
+  4-4. 入力（状態ごと）:
+       python -B experiments/sku-matching/independent_eval.py inputs family --pairs $E/pairs --out $E/run-family
+       python -B experiments/sku-matching/independent_eval.py inputs token  --pairs $E/token-pairs --out $E/run-token
+       （confirmed は新規が無ければ不要。candidate は商品の同一性の裏づけが弱いので、使う場合は別ラベルで集計する）
+  4-5. group・除外・split:
+       python -B experiments/sku-matching/independent_eval.py groups --run $E/run-token --pairs $E/pairs --exclude-existing-rakuten --out $E/groups-token
+       （family も同様に $E/groups-family）。grain = old_dataset / new_sku_existing_product / new_product_group。split = group の sha1 偶奇（dev/test）。除外は split=excluded。
+  4-6. 注釈バッチ（除外は自動で外れる）:
+       python -B experiments/sku-matching/independent_eval.py batches --run $E/run-token --groups $E/groups-token/groups.jsonl --out $E/labels-token --per-batch 80
+       batch-*.md が注釈者に渡すファイル。private/ は注釈者に見せない。
+  4-7. 注釈（サブエージェント。5 の指示文）。1バッチ1体、並列。回答は labels-*/answers-NNN.jsonl。
+  4-8. 検査: python -B experiments/sku-matching/independent_eval.py check --labels $E/labels-token
+       problems.jsonl の欠け・不正は、該当バッチだけ同じ指示文で付け直す（3回まで）。根拠の quote は原文の部分文字列で、ref → ファイル・sha256・locator へ解決される（resolved.jsonl）。
+  4-9. 凍結: python -B experiments/sku-matching/independent_eval.py freeze --labels $E/labels-token
+       凍結の後で align を回す。test の結果を見てコード・規則・ラベルを変えない。
+  4-10. PR26 v5:
+       python -B experiments/sku-matching/align_sku_conditions.py similarity --run $E/run-token --out $E/align-token --threads 4
+       python -B experiments/sku-matching/align_sku_conditions.py align --run $E/run-token --out $E/align-token --labels-seen "none: independent eval, labels frozen before align"
+       （similarity は reranker で CPU 数分。閾値には使わない）
+  4-11. 採点: python -B experiments/sku-matching/independent_eval.py score --labels $E/labels-token --groups $E/groups-token/groups.jsonl --align $E/align-token --out $E/score-token.json
+       出力は split × grain × 結果（accept_same_row / accept_other_row / drop_but_adopted / <expected>/<align の reason> / quality_flag:*）の件数。機械goldなので「精度」とは書かず件数で書く。
+  4-12. 記録: counts.json（取得試行・ページ・AU商品・楽天SKU・AUセル・ペア・grain・split・accept/drop・flag・失敗をgrainごと）、
+       rawmanifest（原本の path/bytes/sha256/URL/時刻/status/ledger ref）と raw を含む ZIP とその sha256・ファイル数、flow-model-handoff.txt。
+       ZIP はリポジトリの experiments/sku-matching/results/ に新しい名前で置き、既存の ZIP は上書きしない。
+
+5. サブエージェントへの指示文（モデルはユーザー指定。既定は Haiku 5.5。記録上の実モデルIDを transcript の model 欄で確認して残す）
+5-1. 取得オペレーター（カテゴリごとに1体。コードを書かせない）
+  「担当カテゴリは <cat>。コードやファイルは編集しない。git も触らない。cd /c/Users/tatuk/Desktop/SearchEngine-task-construction。
+   次を交互に実行（timeout 600000）。A: python -B experiments/sku-matching/collect_independent_real.py au --category <cat> --max-attempts 300 --max-seconds 480
+   B: python -B experiments/sku-matching/collect_independent_real.py rakuten --category <cat> --max-attempts 100 --max-seconds 480
+   最後の JSON 行の "stop" で判断: A は search_exhausted（pending_hits 0）か budget で終了。B は category_http_cap、または candidates_exhausted かつ this_call 0 が2回続いたら終了。
+   blocked_status_403/429・ten_consecutive_failures は即停止して報告。Traceback は1回だけ再実行し、再発したら最後の10行を報告。終わったら status の担当行を5行以内で報告。」
+  全担当が終わったら finisher を1体: sweepall の A を終わるまで、その後 9カテゴリの B を1巡ずつ、全カテゴリ this_call 0 の巡が2回続くまで。
+5-2. 注釈者（1バッチ1体。並列。v1・v2 の値参照と同じく、モデルの判定・align の出力・group・split は見せない）
+  「楽天とauの、同じ店の商品ページを見比べ、楽天の各SKUがauのどの行で買えるかを判定する作業です。
+   読むファイルはこれ1つだけ: <batch-NNN.md の絶対パス>。他のファイル（private/ を含む）は開かない。検索・コード実行もしない。
+   ファイルには商品の組ごとに「## p0001」の見出しがあり、[T_au][T_rk] 商品名、a1… auの行（購入できる組み合わせ）、s1… 楽天のSKU（判定対象）、ap… auの購入オプション、ad… auの説明、rd… 楽天の説明が並びます。
+   楽天のSKU1つにつき1行、次のJSONを書く:
+   {"s": "p0001-s1", "expected": "accept", "au_rows": ["a2"], "data_quality_flag": null, "rationale": [{"ref": "s1", "quote": "シングル"}, {"ref": "T_au", "quote": "シングル"}, {"ref": "a2", "quote": "ベージュ"}]}
+   - まず、2つが同じ商品（同じ型番・同じ製品）かを商品名・説明で確かめる。別の商品なら、その組の全SKUを expected=drop にし、根拠に別物と分かる部分を引用する。
+   - expected=accept: そのSKUと同じもの（サイズ・色・タイプ・枚数・セット内容など全ての条件が同じ）を、auのその行で買える。該当する行を au_rows に全部書く。
+   - expected=drop: auのどの行でも同じものは買えない。au_rows は空。
+   - 片側にしか無い条件（楽天だけ「レースあり」、auは商品名に「1枚入り」など）は、商品名・説明・オプションの記述で判断する。記述で確かめられないときは推測しない。
+   - data_quality_flag は判定できないときだけ: "conflict"（原文どうしが矛盾）、"unclear"（判断材料が無い・曖昧）、"extraction_incomplete"（行や説明の欠け・文字化け）。付けたら expected は null、au_rows は空。
+   - rationale は1〜4個。ref は参照ID（s1, a2, T_au, ad5 など）、quote はその行から一字一句そのまま抜き出した短い部分（言い換え・要約は不可）。
+   - 価格・在庫は使わない（載せていない）。自信の度合いや長い説明は書かない。
+   保存: <answers-NNN.jsonl の絶対パス> に Write ツールで JSONL、ファイル中の全SKUについて1行ずつ。最後の返答は「保存した行数」だけ。」
+
+6. 既知の制約・未決
+- machinegold はモデルの注釈で、人手の独立goldではない。family/token/candidate は確定の商品ペアではない（pair_status をそのまま残す）。
+- group の series 規則（管理番号の末尾の数字+英字を落とす）は粗く、独立件数を少なめに数える側に倒している。
+- 楽天の SKU 無し商品・au の SKU 無し商品は、記録だけ残し、ケースにはしない。
+- 新しい楽天URLの発見方法（3 の A/B）が未決。これが決まらないと、除外つきの独立データはほとんど増えない。
