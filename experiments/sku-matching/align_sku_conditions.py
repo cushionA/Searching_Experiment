@@ -2,17 +2,23 @@
 
 similarity  per fixed pair, score every Rakuten option against every AU option with a Japanese
             cross-encoder reranker, in both directions. Scores are only ranked, never thresholded.
-align       four table steps, no vocabulary and no value parsing:
+align       four table steps, no vocabulary; values are only split at brackets, '/' and numbers:
             1. identical strings after NFKC rank first in both directions;
             2. a Rakuten value and an AU value pair when each is the other's best match; only identical
                pairs are confirmed, the model's pairs are candidates (it always names a best match, so
                it cannot say a value has no counterpart);
             3. a Rakuten axis and an AU axis are symmetric when their pairs, identical or the model's, join
                only each other; other Rakuten axes, and AU axes with several values that join none, are
-               one-sided. A join made only by model pairs has no identical pair, so none of its values is
-               ever confirmed: a wrong join costs false contradictions and exclusions, not adoptions;
+               one-sided;
             4. per AU row: aligned or contradiction on symmetric axes; model candidates and one-sided
                conditions go to the description check; an unpaired value on a symmetric axis is excluded.
+               On a symmetric axis where no AU value is identical to the Rakuten value, the AU values that
+               share its core replace the model's single pick: bracketed parts and the other '/' parts are
+               set aside, and numbers equal in order with labels added before a number or a unit added at
+               the end are the same core. Every such row is aligned, or keeps the set-aside parts as
+               residual conditions for the description check; rows with another core are contradictions.
+               An AU value identical to another value of the Rakuten axis stays with that value.
+               Such a core can confirm a value on a join made only by model pairs, so a wrong core costs adoptions.
 score       after the outputs are saved: Luna machine labels and the manual axis reference.
 """
 from __future__ import annotations
@@ -23,6 +29,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import platform
+import re
 import time
 import unicodedata
 from pathlib import Path
@@ -37,7 +44,9 @@ LABELS = ".lab-output/sku-real-luna-labels-20261010-v3/labels.jsonl"
 ROW_STATES = ["contradiction", "symmetric_unresolved", "pending_description_check", "aligned"]
 CONDITION_TO_ROW = {"contradiction": "contradiction", "symmetric_unresolved": "symmetric_unresolved",
                     "one_sided": "pending_description_check", "model_candidate": "pending_description_check",
-                    "aligned": "aligned"}
+                    "residual": "pending_description_check", "aligned": "aligned"}
+BRACKETED = re.compile(r"[（(【［\[]([^）)】］\]]*)[）)】］\]]")
+NUMBER = re.compile(r"\d+(?:\.\d+)?")
 
 
 def read_jsonl(path):
@@ -62,6 +71,42 @@ def sha256(path: Path) -> str:
 
 def norm(text: str) -> str:
     return "".join(unicodedata.normalize("NFKC", text).split())
+
+
+def parts(value: str) -> tuple[list, list]:
+    text = norm(value)
+    return sorted(p for p in BRACKETED.sub("", text).split("/") if p), [p for p in BRACKETED.findall(text) if p]
+
+
+def subsequence(short: str, long: str) -> bool:
+    chars = iter(long)
+    return all(c in chars for c in short)
+
+
+def same_numbers(a: str, b: str) -> bool:
+    if not NUMBER.findall(a) or NUMBER.findall(a) != NUMBER.findall(b):
+        return False
+    *heads_a, tail_a = NUMBER.split(a)
+    *heads_b, tail_b = NUMBER.split(b)
+    return (all(subsequence(x, y) or subsequence(y, x) for x, y in zip(heads_a, heads_b))
+            and (tail_a == tail_b or not tail_a or not tail_b))
+
+
+def residual(rakuten: str, au: str) -> list | None:
+    """None unless the two values share a core; otherwise the parts left over on each side, as [side, text]."""
+    (rc, ra), (ac, aa) = parts(rakuten), parts(au)
+    if not rc or not ac:
+        return None
+    if rc == ac or (len(rc) == len(ac) == 1 and same_numbers(rc[0], ac[0])):
+        left_r, left_a = [], []
+    elif len(rc) == 1 and rc[0] in ac:
+        left_r, left_a = [], [p for p in ac if p != rc[0]]
+    elif len(ac) == 1 and ac[0] in rc:
+        left_r, left_a = [p for p in rc if p != ac[0]], []
+    else:
+        return None
+    return ([["rakuten", p] for p in left_r + [p for p in ra if p not in aa]]
+            + [["au", p] for p in left_a + [p for p in aa if p not in ra]])
 
 
 def load(run: Path):
@@ -153,11 +198,20 @@ def conditions(case, context, table, symmetric, au_only) -> pd.DataFrame:
         status = np.select([np.full(len(rows), au_axis is None), np.full(len(rows), au_value is None),
                             row_values != au_value, np.full(len(rows), matched_by == "model")],
                            ["one_sided", "symmetric_unresolved", "contradiction", "model_candidate"], "aligned")
+        left = [None] * len(rows)
+        family = {norm(v) for v in axis["family_values"]}
+        options = {v for v in row_values if isinstance(v, str)} if au_axis is not None else set()
+        if norm(axis["value"]) not in {norm(v) for v in options}:
+            options = {v for v in options if norm(v) not in family}
+            cores = {v: residual(axis["value"], v) for v in options}
+            if any(c is not None for c in cores.values()):
+                left = [cores.get(v) if isinstance(v, str) else None for v in row_values]
+                status = np.array(["contradiction" if c is None else "residual" if c else "aligned" for c in left])
         out.append(pd.DataFrame({"row_key": rows.index, "kind": "rakuten", "axis_key": axis["axis_key"],
                                  "axis_label": axis["axis_label"], "value": axis["value"], "au_axis": au_axis,
-                                 "au_value": row_values, "status": status}))
+                                 "au_value": row_values, "status": status, "residual": left}))
     out += [pd.DataFrame({"row_key": rows.index, "kind": "au_only", "axis_key": None, "axis_label": n, "value": None,
-                          "au_axis": n, "au_value": rows[n].to_numpy(), "status": "one_sided"})
+                          "au_axis": n, "au_value": rows[n].to_numpy(), "status": "one_sided", "residual": None})
             for n in au_only]
     return pd.concat(out, ignore_index=True)
 
@@ -224,10 +278,13 @@ def align(args):
                "label_informed_changes": args.labels_seen, "similarities_sha256": meta["similarities_sha256"], "code_sha256": sha256(Path(__file__)),
                "decisions": dict(Counter(x["decision"] for x in decisions)),
                "decision_reasons": dict(Counter(x["reason"] for x in decisions)),
-               "handoff_rows": len(handoff), "diff_vs_rule": dict(Counter(f"{x['rule'][0]}->{x['alignment'][0]}" for x in diff)),
+               "handoff_rows": len(handoff),
+               "handoff_conditions": dict(Counter(f"{c['kind']}:{c['status']}" for h in handoff for c in h["conditions"]
+                                                  if c["status"] != "aligned")),
+               "diff_vs_rule": dict(Counter(f"{x['rule'][0]}->{x['alignment'][0]}" for x in diff)),
                "outputs_sha256": {p.name: sha256(p) for p in sorted(dest.glob("*.jsonl"))}}
     write_new(dest / "summary.json", text=json.dumps(summary, ensure_ascii=False, indent=2) + "\n")
-    print(json.dumps({k: summary[k] for k in ("decisions", "decision_reasons", "handoff_rows", "diff_vs_rule")},
+    print(json.dumps({k: summary[k] for k in ("decisions", "decision_reasons", "handoff_rows", "handoff_conditions", "diff_vs_rule")},
                      ensure_ascii=False, indent=1))
 
 

@@ -25,9 +25,15 @@ def rows_of(*values, axes):
                         for i, row in enumerate(values)]}
 
 
+def selected(table, *values):
+    return {"rakuten_selected": {"axes": [{"axis_key": k, "axis_label": label, "value": v,
+                                           "family_values": list(table.loc[table["axis_key"] == k, "value"])}
+                                          for k, label, v in values]}}
+
+
 def run(table, au, context, *values):
     symmetric, au_only = al.axis_pairs(table, au)
-    case = {"rakuten_selected": {"axes": [{"axis_key": k, "axis_label": label, "value": v} for k, label, v in values]}}
+    case = selected(table, *values)
     states = al.row_states(al.conditions(case, context, table, symmetric, au_only))
     return states.to_dict(), al.decide(states)
 
@@ -74,8 +80,7 @@ class TableTests(unittest.TestCase):
         symmetric, au_only = al.axis_pairs(table, au)
         self.assertEqual((symmetric, au_only), ({"size": "サイズ", "set": "カラー"}, []))
         context = rows_of(("S", "ホワイト"), ("S", "ブラック"), ("M", "ホワイト"), ("M", "ブラック"), axes=("サイズ", "カラー"))
-        case = {"rakuten_selected": {"axes": [{"axis_key": "size", "axis_label": "サイズ", "value": "S"},
-                                              {"axis_key": "set", "axis_label": "セット数", "value": "10個"}]}}
+        case = selected(table, ("size", "サイズ", "S"), ("set", "セット数", "10個"))
         conds = al.conditions(case, context, table, symmetric, au_only)
         self.assertEqual(set(conds.loc[conds["axis_key"] == "set", "status"]), {"model_candidate", "contradiction"})
         states = al.row_states(conds)
@@ -99,6 +104,45 @@ class TableTests(unittest.TestCase):
         self.assertEqual(run_here(black, ("set", "セット数", "10個"))[0]["r0"], "pending_description_check")
         # A value of a symmetric axis with no AU counterpart is excluded, not handed off.
         self.assertEqual(run_here(("colour", "カラー", "ネイビー"))[1][2], "symmetric_condition_unresolved")
+
+
+class CoreTests(unittest.TestCase):
+    def test_residual(self):
+        self.assertEqual(al.residual("100×220cm", "幅100×丈220cm(2枚)"), [["au", "2枚"]])
+        self.assertEqual(al.residual("ベージュ", "ショート/ベージュ"), [["au", "ショート"]])
+        self.assertEqual(al.residual("ホワイト(長袖)", "ホワイト"), [["rakuten", "長袖"]])
+        self.assertEqual(al.residual("21.0", "21.0cm"), [])
+        for rakuten, au in [("100×220cm", "幅100×丈200cm(2枚)"), ("01.ブラック", "01.ブラックポケットあり"),
+                            ("S", "XS"), ("ホワイト", "オフホワイト"), ("2人用", "2段"), ("100×220", "100-220")]:
+            self.assertIsNone(al.residual(rakuten, au), (rakuten, au))
+
+    def conds(self, rakuten, au, forward, reverse, *values):
+        table = al.value_pairs(entry(rakuten, au, forward, reverse))
+        symmetric, au_only = al.axis_pairs(table, au)
+        context = rows_of(*[(v,) for _, v in au], axes=("カラー",))
+        return al.conditions(selected(table, *values), context, table, symmetric, au_only)
+
+    def test_every_row_sharing_the_core_keeps_its_residual(self):
+        # The model picks グレー(フェイクファー) only; グレー(フォックス) shares the core and is not contradicted.
+        rakuten = [["c", "カラー", "グレー"], ["c", "カラー", "ブラック"]]
+        au = [["カラー", "グレー(フェイクファー)"], ["カラー", "グレー(フォックス)"], ["カラー", "ブラック"]]
+        conds = self.conds(rakuten, au, [[3, 1, 0], [0, 0, 0]], [[3, 0], [1, 0], [0, 0]], ("c", "カラー", "グレー"))
+        self.assertEqual(list(conds["status"]), ["residual", "residual", "contradiction"])
+        self.assertEqual(list(conds["residual"])[:2], [[["au", "フェイクファー"]], [["au", "フォックス"]]])
+        self.assertEqual(al.decide(al.row_states(conds))[2], "pending_description_check")
+
+    def test_au_value_identical_to_another_rakuten_value_is_not_shared(self):
+        rakuten = [["c", "カラー", "グレー"], ["c", "カラー", "グレー(メッシュ)"]]
+        au = [["カラー", "グレー"], ["カラー", "ブラック"]]
+        conds = self.conds(rakuten, au, [[0, 0], [3, 0]], [[0, 3], [0, 0]], ("c", "カラー", "グレー(メッシュ)"))
+        self.assertEqual(set(conds["status"]), {"symmetric_unresolved"})
+
+    def test_notation_only_difference_is_aligned(self):
+        rakuten = [["s", "サイズ", "21.0"], ["s", "サイズ", "21.5"]]
+        au = [["カラー", "21.0cm"], ["カラー", "21.5cm"]]
+        conds = self.conds(rakuten, au, [[1, 0], [0, 1]], [[1, 0], [0, 1]], ("s", "サイズ", "21.0"))
+        self.assertEqual(list(conds["status"]), ["aligned", "contradiction"])
+        self.assertEqual(al.decide(al.row_states(conds)), ("matched", "r0", "all_conditions_aligned_on_one_row"))
 
 
 if __name__ == "__main__":
