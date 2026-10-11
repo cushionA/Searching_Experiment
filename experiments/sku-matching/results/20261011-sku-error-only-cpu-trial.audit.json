@@ -1,0 +1,83 @@
+{
+  "schema_version": "sku-scoped-condition-package-audit-v1",
+  "archive": "experiments/sku-matching/results/20261011-sku-error-only-cpu-trial.zip",
+  "archive_sha256": "a6e96bd5e8e67b8e811309ea975f701554de5eed68f8d14b76c3737edfcc9576",
+  "archive_size_bytes": 1102653,
+  "payload_count": 152,
+  "member_count": 153,
+  "checks": {
+    "zip_sha_expected": true,
+    "zip_size_expected": true,
+    "zip_sha_sidecar": true,
+    "external_archive_metadata": true,
+    "152_payload_plus_checkpoint": true,
+    "no_duplicate_members": true,
+    "no_unsafe_paths": true,
+    "crc_ok": true,
+    "payload_names_match_checkpoint": true,
+    "all_payload_size_sha": true,
+    "workspace_source_byte_identical": true,
+    "external_embedded_manifest_payload_match": true,
+    "old_full_ranking_dependency_sha": true,
+    "17_ref_predictions_id_match": true,
+    "refs_v4_are_remaining_two": true,
+    "jev_correction_counts": true,
+    "remaining_fusion_one_of_two": true,
+    "jev_support_citations_exact_source_slices": true,
+    "fusion_support_citations_exact_source_slices": true,
+    "no_gold_in_model_inputs": true,
+    "JEV_code_label_free_and_nonproduction": true,
+    "fusion_code_label_free_and_nonproduction": true,
+    "fusion_scores_are_unfitted_arithmetic": true,
+    "original_options_and_selected_values_preserved": true
+  },
+  "all_checks_pass": true,
+  "details": {
+    "unsafe_paths": [],
+    "payload_hash_mismatches": [],
+    "workspace_source_mismatches": [],
+    "workspace_source_missing": [],
+    "old_full_ranking_dependency_sha256": "01e282a8d6519baf6adcba025afd5d1fc3e649899f446f49aee9bc91111c5b01",
+    "jev_selected_error_corrections": {
+      "total_corrected": 15,
+      "total": 17,
+      "corrections_by_previous_error_kind": {
+        "missed_accept": {
+          "total": 14,
+          "corrected": 12
+        },
+        "false_accept": {
+          "total": 3,
+          "corrected": 3
+        }
+      },
+      "remaining_ids": [
+        "generic-description:cdc0247dbee5b84657a37c9e2a3038d9bddac15b5f6e1b120f9b8752dda55e92",
+        "generic-description:65bcc2faeb0df35d6f4cf3d70d5d3f946cece7674d6030812a4c3c41b7a8155c"
+      ]
+    },
+    "jev_support_quote_refs_verified": 24,
+    "jev_quote_errors": 0,
+    "fused_remaining_cases": {
+      "generic-description:cdc0247dbee5b84657a37c9e2a3038d9bddac15b5f6e1b120f9b8752dda55e92": {
+        "expected": "accept",
+        "predicted": "accept",
+        "corrected": true
+      },
+      "generic-description:65bcc2faeb0df35d6f4cf3d70d5d3f946cece7674d6030812a4c3c41b7a8155c": {
+        "expected": "accept",
+        "predicted": "drop",
+        "corrected": false
+      }
+    },
+    "fusion_support_quote_refs_verified": 2,
+    "fusion_quote_errors": 0,
+    "gold_input_leaks": [],
+    "warnings": [
+      "Selected-error development-only machine references, not human gold or independent test.",
+      "JEV-described corrected 15/17 selected prior errors: 12/14 missed_accept and 3/3 false_accept. Fusion corrected 1 of the two remaining errors only; previous 15 were not rescored after fusion. Do not report fused 17-case accuracy.",
+      "Normal-case regressions were not measured. The code consumes original request options and source text; no source SKU creation or raw SKU relabeling was found.",
+      "Fusion averages NLI relative entailment and JEV candidate probabilities at fixed 0.5 weights without calibration; diagnostic only, production adoption false."
+    ]
+  }
+}

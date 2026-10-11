@@ -1,0 +1,83 @@
+前回誤判定だけを使ったCPUタスク改善（2026-10-11）
+
+商品単位突合とClaude PR26 v5の対応候補・入力形式を固定したまま、
+未対応の条件を確認するCodex側のタスクだけを変更した。
+固定AU URLと選択SKU行の仕様を確認する。別URLへ振り分けない。
+価格は一致判定に使わず、楽天SKU単位の元レコードとの対応を保持する。
+商品別の辞書・寸法変換・付属品判定規則は追加していない。
+
+実データの単一条件17件、固定AU商品9件。
+旧モデルが誤採用した3件と見逃した14件のみを選んだ。
+以前正しかった11件は28件の準備集合から除外した。
+SKUや選択値を作り替えず、原本の全選択肢・引用位置・方向・case/SKU/行IDを保持。
+カーテン2商品のレース条件も含む。機械ラベルで選んだ開発診断であり、
+人手確認済みgold、独立テスト、SKU全体の精度とは呼ばない。
+モデル入力と採点参照は別ファイル。参照ラベルはモデルへ渡していない。
+
+最初の17誤りに対する結果（誤りの修正件数だけを採点）
+
+方式                                      誤採用修正/3  見逃し修正/14  合計修正/17
+GLiNER 直接条件判定（2文型、同じ結果）      0             14             14
+日本語NLIによる支持/矛盾                    3              0              3
+GLiNER支持をNLI矛盾で拒否                   3              3              6
+NLI タイトルから全候補比較                  3              6              9
+ModernBERT 候補値＋不明を選択                3              7             10
+ModernBERT 全候補を同じ文型で説明            3             12             15
+
+GLiNERは適正長の全本文窓で支持になったため、この直接判定は採用しない。
+NLIは配送・注意書きの否定文まで強い矛盾にしてしまい、単純な拒否器には使えない。
+候補比較では、商品名＋現在の選択行を前提に、原文の軸名と全選択肢を渡す。
+ModernBERTの候補説明は全て「この商品の〈軸名〉は〈値〉である」に揃える。
+条件が特定できない候補も用意し、別値・不明・同率・入力エラーは自動dropする。
+候補間softmaxは校正済みの正解確率ではなく、引用の存在も適用の証明ではない。
+全実験で production_adoption_allowed=false。自動化の出力はaccept/dropで、人手保留レーンは作らない。
+
+次の比較は、最後のModernBERTが間違えた2条件だけに縮小した。
+case-726357665293ad285c23 / AU509691375 / タイプ=4WAYタイプ
+case-001a5707d96903cfe7da / AU704500131 / レースカーテン=なし
+
+同じ凍結済みNLIとModernBERTの候補スコアを等重みで合わせた。
+ModernBERTが不明を選んだ場合は維持し、それ以外で原文候補の順位を比較する。
+新しいモデル推論なし。2件のうち4WAYタイプ1件を回収し、レースなし1件はdropのまま。
+この追加方式について先に直った15件は再採点していないので、
+融合方式の17件全体スコアや回帰なしという主張には足さない。
+残るレースなしは、商品名・選択行だけでは記載不足として扱われた。
+その条件を確認できる商品説明・内容表をモデルへ渡す改善につなげる。
+
+使用した既存CPUモデル（追加の重み取得・API推論なし）
+fastino/GLiNER2.5-multi-Decide / 287,355,159 parameters / FP32
+  e173bca1f0c4217d7a55b3b0c705d5ece8a0218d
+0x3/bert-base-japanese-v3_nli-jsnli-jnli-jsick / 111,209,475 / FP32
+  21df45469d02809dc430e3ac5f5d6f67b63aabf3
+argos1111/modernbert-ja-310m-jev / 315,203,329 / FP32
+  07cda23579443e7a33c0f474114279fa032340d6
+hotchpotch/japanese-reranker-xsmall-v2 / INT8 ONNXは以前の上位5本文を再利用しただけ。
+
+CPU 4threadsのモデル推論時間：GLiNER61.13/57.23秒、NLI24.42秒、
+NLI候補比較3.20秒、ModernBERT候補比較17.40/16.17秒。
+共有環境での開発実測であり、GCP性能・費用の実測ではない。
+
+保存場所（ZIP内も同じ相対パス）
+.lab-output/sku-scoped-condition-inputs-20261011-v3/          17条件のモデル入力
+.lab-output/sku-scoped-condition-reference-20261011-v3/       17条件の採点参照
+.lab-output/sku-scoped-condition-inputs-20261011-v4/           残る2条件のモデル入力
+.lab-output/sku-scoped-condition-reference-20261011-v4/       2条件の採点参照
+.lab-output/sku-scoped-condition-evaluation-20261011-v1/final-complete/    17件比較JSON/CSV
+.lab-output/sku-scoped-condition-evaluation-20261011-v1/remaining-two/     2件比較JSON/CSV
+.lab-output/sku-scoped-condition-evaluation-20261011-v1/case-contexts.jsonl 原文の条件・商品名
+各runに入力・コード・モデルpin・全候補スコア・予測SHAを保存。
+ZIPには9商品のAU原本と仕様表の先行確認メモも含む。実験コード内の合成unit fixtureは、実SKU評価に混ぜていない。
+重み・venv・大きな全件rankingは含めず、前回チェックポイントをSHA付き依存として記録。
+
+再現用：リポジトリルートで、展開済み出力を上書きしない新しい--output-dirを指定する。
+.deps/sku-gliner-venv/bin/python -B \
+  .lab-output/sku-scoped-condition-evaluation-20261011-v1/trial_jev_title_choice_described.py \
+  --input-dir .lab-output/sku-scoped-condition-inputs-20261011-v3 \
+  --ranking-dir .lab-output/sku-claude-pr26-integrated-models-20261011-v5-v2 \
+  --output-dir .lab-output/sku-scoped-condition-jev-title-choice-described-replay
+採点スクリプトはscore_selected_errors.py。前回正しかった参照を受け付けず、IDとSHA一致を検査する。
+
+コード検証：新しい契約テスト52件成功。
+指定の全lab suiteは815件、18skipped、既存の2errors、assertion failureなし。
+既存errorsは過去summary欠落と旧packagerによる.lab-output symlink拒否で、前回と同じ。
+今回の判定・データを変更して隠していない。
