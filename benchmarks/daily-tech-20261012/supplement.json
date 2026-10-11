@@ -1,0 +1,38 @@
+{
+  "collected_at_utc": "2026-10-11T22:01Z",
+  "sources": [
+    {
+      "url": "https://api.crawl4ai.com/",
+      "type": "official service README/landing page",
+      "observed_claims": [
+        "Cloud API lists /scrape, /extract, /search, /answer (experimental), and /serp (beta since 2026-10-08).",
+        "A no-card free allowance is advertised; paid credit packs start at $10; limits and prices are explicitly soft-launch/changeable.",
+        "Hosted API requires a bearer API key; remote MCP configuration also uses that key.",
+        "Self-hosted software is advertised as Apache-2.0; hosted service is a separate commercial service."
+      ],
+      "not_verified": ["real-result recall or source provenance against existing search methods", "privacy/data processing terms", "actual rate limits", "quality of any target query", "cloud latency and uptime"]
+    },
+    {
+      "url": "https://github.com/docling-project/docling.rs/releases/tag/v2.15.0",
+      "type": "official GitHub release",
+      "observed_claims": ["v2.15.0 dated 2026-10-11 adds streaming Markdown with --layers / --traverse-pictures.", "v2.14.0 additionally adds those flags for Markdown/text/HTML and optional browser OCR WebGPU path."],
+      "not_verified": ["actual peak RSS reduction", "CPU throughput on Japanese scans", "CLI/runtime compatibility with current workspace"]
+    },
+    {
+      "url": "https://github.com/docling-project/docling.rs/blob/master/README.md",
+      "type": "official project README, mutable branch observed 2026-10-11",
+      "observed_claims": ["Rust project claims streamed Markdown is emitted in document order with backpressure and byte-identical concatenation to buffered export.", "README describes --picture-ocr for non-PDF embedded images (e.g. slides/HTML/video frames), model setup and optional GPU/browser paths."],
+      "qualification": "README performance/feature statements are project claims, not independent benchmarks. Branch is mutable; use tagged release source for reproducibility."
+    },
+    {
+      "url": "https://github.com/commoncrawl/web-graph-embeddings",
+      "type": "official repository metadata/README",
+      "observed_claims": ["repository stays at 1 star and September 7 push; no newer repository release signal"],
+      "not_verified": ["incremental Japan-focused host discovery value"]
+    }
+  ],
+  "external_search": {
+    "queries": ["2026 focused crawling host discovery graph embeddings web crawling research paper", "2026 web crawling URL filtering reduce fetch content retrieval research paper", "2026 OCR document parsing streaming Markdown layers traverse pictures docling rs v2.15"],
+    "outcome": "Search results did not surface a new primary research paper with a deployable URL/host discovery method directly applicable to the current workflow; no non-primary blog was elevated into a candidate."
+  }
+}

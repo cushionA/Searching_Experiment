@@ -1,0 +1,219 @@
+{
+  "schema_version": 2,
+  "investigation_date_jst": "2026-10-12",
+  "observed_at_utc": "2026-10-11T22:01:26Z-22:10:12Z",
+  "baseline_commit": "7460493",
+  "previous_daily_report_commit": "02d9823b893c214913e83b752ede82279097bcae",
+  "scope": "public-source technology updates and saved-repository outputs across crawling, browsers, discovery/search, OCR/image, lightweight SLM, web archive, and a separate NLP lane",
+  "evidence_class_definitions": {
+    "A": "reproducible PoC evidence for stated narrow input/conditions",
+    "B": "primary-source-supported hypothesis not validated on target workload",
+    "C": "currently low value or tightly scoped"
+  },
+  "integration_decision": "separate from evidence class; no candidate approved for production integration",
+  "counts": {
+    "candidates": 9,
+    "new_findings": 3,
+    "monitors": 6,
+    "evidence_A": 1,
+    "evidence_B": 7,
+    "evidence_C": 1
+  },
+  "source_files": [
+    "github-sources.json",
+    "model-sources.json",
+    "model-card-evidence.json",
+    "source-evidence.json",
+    "supplement.json"
+  ],
+  "findings": [
+    {
+      "name": "Docling.rs v2.15 PDF Markdown streaming mode",
+      "class": "A",
+      "novelty": "2.15 integrates existing streaming with export --layers/--traverse-pictures; streaming itself predates this release",
+      "release": "2026-10-11T12:46:10Z",
+      "tag_commit": "c3b05695cda94eef81bc2ee32b0339bb12800a62",
+      "repo_stars": 96,
+      "license": "MIT code; model licenses separate",
+      "runtime": "official x86_64 release binary, CPU; no rust toolchain installed",
+      "PoC": "synthetic 200-page 150147-byte text-layer PDF, same v2.15 binary, --text-layer-only, 3 alternating runs per mode; stream default vs --no-stream",
+      "result": {
+        "first_byte_median_s_stream": 0.0122,
+        "first_byte_median_s_buffer": 0.204,
+        "first_byte_runs_per_mode": 2,
+        "wall_median_s_stream": 0.210657,
+        "wall_median_s_buffer": 0.206897,
+        "peak_child_rss_median_kib_stream": 22160,
+        "peak_child_rss_median_kib_buffer": 28340,
+        "stdout_bytes": 485999,
+        "stdout_sha256": "841284bd049de3cd279ee82df10fb8b0903a77f198ea6c6b1417039283b9d528",
+        "all_six_exit_0": true
+      },
+      "limits": [
+        "same-release output-mode comparison, not release-to-release evidence",
+        "text-layer-only: OCR quality and runtime untested",
+        "--layers and picture traversal are export-only",
+        "small synthetic input; not end-to-end product proof"
+      ],
+      "integration": "defer; investigate only with a representative OCR workload and streaming consumer",
+      "update": "v2.15.0 released 2026-10-11; 96 GitHub stars; tag c3b05695cda94eef81bc2ee32b0339bb12800a62",
+      "purpose": "incrementally emit PDF Markdown by page to a downstream consumer",
+      "commercial": "MIT project code; OCR/model weights have separate terms",
+      "install": "official Linux x86_64 release binary available and used; CPU-only synthetic PoC; Rust toolchain not installed; package dependencies not added",
+      "cpu_gpu_ram": "CPU test measured per-child peak RSS; GPU and OCR weights not tested",
+      "community": "small project at snapshot time; public release binary and tagged sources",
+      "next_test": "representative scanned PDF, same model/CPU, byte equivalence and OCR accuracy plus first-byte/total/RSS"
+    },
+    {
+      "name": "Crawl4AI Cloud",
+      "class": "B",
+      "novelty": "hosted /search and /serp (beta 2026-10-08), /scrape, /extract, experimental /answer; separate from OSS release",
+      "source": "https://api.crawl4ai.com/",
+      "license": "OSS Apache-2.0; service terms separate",
+      "commercial": "self-hosted OSS Apache-2.0; hosted service terms distinct; no-card trial and $10+ soft-launch credits advertised",
+      "limits": [
+        "API key required",
+        "host resource specs and quality/provenance unverified",
+        "no hosted query or payment"
+      ],
+      "integration": "no service call; future test requires explicit credentials/data-sharing/cost decision",
+      "update": "official page advertises /serp beta since 2026-10-08; OSS v0.9.4 released 2026-09-23 and repository had 85254 stars at snapshot",
+      "purpose": "hosted search/SERP/scrape/extract as an alternative source discovery and browser service",
+      "install": "remote HTTP/MCP API; API key required; service call not performed",
+      "cpu_gpu_ram": "managed server resources undisclosed",
+      "community": "OSS repository is large/active; this says nothing about hosted API quality"
+    },
+    {
+      "name": "Tev1-0.8B-experimental SLM",
+      "class": "B",
+      "model_id": "togethercomputer/Tev1-0.8B-experimental",
+      "revision": "6bb2dff14b38fea90ddb14d870166ccaf77374e9",
+      "last_modified": "2026-09-25T17:25:31Z",
+      "base_model": "Qwen/Qwen3.5-0.8B",
+      "safetensors_total_parameter_count": 873438784,
+      "license": "card metadata does not establish a finalized license; README says finalization pending",
+      "limits": [
+        "English-centered task card; Japanese suitability untested",
+        "no model inference",
+        "Qwen3.8 latest-family author/search query returns larger family models, not evidence that all small/third-party variants are absent"
+      ],
+      "integration": "research candidate only; no SKU-work overlap",
+      "update": "HF exact revision updated 2026-09-25; snapshot 2202 downloads/20 likes",
+      "purpose": "structured one-of-options decision model, separate NLP/SLM candidate",
+      "commercial": "fine-tuned weight license being finalized; base model Apache-2.0 does not settle Tev1 checkpoint license",
+      "install": "Hugging Face Transformers possible; Ollama Q8_0 listing about 797 MB; neither installed/downloaded",
+      "cpu_gpu_ram": "0.8B parameter class; CPU/GPU/RAM inference profile unmeasured",
+      "community": "experimental release; card cautions language, calibration and OOD robustness; no Japanese validation"
+    },
+    {
+      "name": "Playwright 1.64.0",
+      "class": "B",
+      "release": "2026-10-07",
+      "stars": 97494,
+      "license": "Apache-2.0",
+      "existing_evidence": "prior local fixture 2/4 to 4/4 saved HTML; live locator already 4/4",
+      "integration": "no duplicate run; live-site benefit unverified",
+      "purpose": "serialize open Shadow DOM content for saved HTML consumers",
+      "commercial": "Apache-2.0",
+      "install": "npm Playwright plus matched browser build",
+      "cpu_gpu_ram": "CPU browser; previous separate child process tree max RSS ~120.3 MiB",
+      "community": "97494 GitHub stars; active Microsoft release",
+      "update": "v1.64.0 released 2026-10-07",
+      "use_fit": "only when saved HTML misses open-shadow links exposed elsewhere; prior live locator already recovered all 4"
+    },
+    {
+      "name": "Common Crawl Web Graph Embeddings",
+      "class": "B",
+      "last_repo_update": "2026-09-07",
+      "stars": 1,
+      "license": "Apache-2.0 code; dataset terms separate",
+      "limits": [
+        "degree >=8; old snapshot",
+        "FP16 dense matrix about 13.5 GB before index overhead",
+        "archive-derived graph is not archive-independent"
+      ],
+      "integration": "no rerun; Japan-seed host coverage unverified",
+      "purpose": "find graph-adjacent hosts without fetching page body at discovery step",
+      "commercial": "Apache-2.0 source; dataset licensing/access terms separately checked",
+      "install": "Parquet/NumPy/FAISS or sharded custom pipeline",
+      "cpu_gpu_ram": "CPU chunking possible; full FP16 vectors ~13.5GB before ANN overhead; reference training 4xH100",
+      "community": "1 GitHub star; latest repo update 2026-09-07",
+      "use_fit": "conditional discovery recall complement; graph derived from Common Crawl archive"
+    },
+    {
+      "name": "GLiNER2 package 2.1.0 and GLiNER2.5 models",
+      "class": "B",
+      "release": "2026-10-09",
+      "stars": 2356,
+      "license": "Apache-2.0 package; model metadata separate",
+      "models": "fastino/gliner2.5-small-v1 73.9M params, base 193.6M, multi 287.4M, Decide 486.4M; metadata captured independently from package release",
+      "integration": "no SKU rerun; separate NLP lane only",
+      "purpose": "schema extraction; possible hidden-state reuse on repeated input and schemas",
+      "commercial": "Apache-2.0 package; verify each selected model and dependencies",
+      "install": "pip gliner2==2.1.0; model weights downloaded separately if used",
+      "cpu_gpu_ram": "CPU standard path; Flash decoder CUDA-specific; memory unmeasured",
+      "community": "2356 GitHub stars; model author HF family includes small/base/multi/decide; multilingual tag only for multi variant",
+      "use_fit": "independent multi-schema NLP use only, no current SKU rerun"
+    },
+    {
+      "name": "Browsertrix Crawler 1.15.0",
+      "class": "B",
+      "release": "2026-10-02",
+      "stars": 1159,
+      "license": "AGPL-3.0",
+      "limits": [
+        "archive QA, not new-site discovery",
+        "RAM depends on worker concurrency"
+      ],
+      "integration": "wait for named archive collection",
+      "purpose": "QA saved web archives: capture misses/skipped pages and sampling",
+      "commercial": "AGPL-3.0 obligations depend on use/distribution",
+      "install": "official Docker stack and browser services",
+      "cpu_gpu_ram": "CPU workers; RAM scales with concurrency and records, unmeasured",
+      "community": "1159 GitHub stars; Webrecorder project",
+      "use_fit": "known archive collection QA; does not discover new sites"
+    },
+    {
+      "name": "RapidOCR 3.10.0",
+      "class": "B",
+      "release": "2026-10-08",
+      "stars": 8110,
+      "license": "Apache-2.0 code",
+      "limits": [
+        "CPU ONNX possible; GPU runtime-dependent",
+        "real-image speed not measured"
+      ],
+      "integration": "no duplicate OCR comparison",
+      "purpose": "local OCR of images/documents",
+      "commercial": "Apache-2.0 code; verify model and dependency terms",
+      "install": "RapidOCR with compatible ONNX Runtime",
+      "cpu_gpu_ram": "CPU supported; GPU requires matching runtime; no RAM benchmark",
+      "community": "8110 GitHub stars and multiple contributors"
+    },
+    {
+      "name": "Trafilatura 2.3.1",
+      "class": "C",
+      "release": "2026-10-06",
+      "stars": 6957,
+      "license": "Apache-2.0",
+      "integration": "no new coverage/time hypothesis",
+      "purpose": "extract main text and remove boilerplate",
+      "commercial": "Apache-2.0",
+      "install": "pip install trafilatura==2.3.1",
+      "cpu_gpu_ram": "CPU only; no GPU or RAM benchmark",
+      "community": "6957 GitHub stars",
+      "use_fit": "general baseline, no current novel coverage/time hypothesis"
+    }
+  ],
+  "repo_review": {
+    "main_head": "7460493",
+    "pull_request_26_head": "4c408376640ed4d26e6b67eb815e89c10f0aafc2",
+    "paths_read": "experiments/sku-matching/align_sku_conditions.py; experiments/sku-matching/claude-next-steps-and-codex-advice-20261010.txt; tests/test_lab_sku_align.py",
+    "other_commits_readonly": [
+      "4a9f54b128b7f46720da2de2a2f87ac5a10f1d31",
+      "3507a936bed75c27cd73806be3fb297c4789c7b1",
+      "435a1582240058994fec14a2b39dd9d9423b7e75"
+    ],
+    "interpretation": "read-only development status, not independent gold; A judgment given fixed correct evidence, B evidence selection, C integrated judgment; product/series splits and real/synthetic data distinct; internal support/contradiction/unknown distinct from final accept/exclude; unknown excluded and human review not mandatory for normal operation"
+  }
+}

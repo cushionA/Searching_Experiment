@@ -1,0 +1,9 @@
+2026-10-11T22:10Z source/API checks
+- GitHub repository collector: 8 repositories, no errors (snapshot in github-sources.json)
+- Hugging Face model metadata: 11 exact IDs, no errors; Qwen3.8 author/search: 6 hits; GLiNER2.5 family search: 69 hits
+- Model cards fetched by exact revision for available selected cards; URL/revision/SHA excerpt evidence in model-card-evidence.json
+- Docling v2.15.0 official x86_64 binary; stream vs --no-stream, same version, synthetic text-layer PDF; saved logs are in docling-probe-results.json and docling-first-byte-results.json
+- No new OCR/model inference, no hosted search API call, no target-site crawl
+
+Saved-run verifier executed (does not rerun converter): 6 stream/buffer trials + 4 first-byte trials, all exit 0 and empty stderr; stdout output has one SHA-256 841284bd049de3cd279ee82df10fb8b0903a77f198ea6c6b1417039283b9d528 across 485999 bytes. Recomputed medians: stream 0.210657s / 22160 KiB / first-byte 0.012239s; buffer 0.206897s / 28340 KiB / first-byte 0.204000s. Fixture SHA verified: 0c3475006cf8884b0cae592c1608035f7430eedc3f9b23eb96753913ba786b6e.
+Final integrity checks: all JSON parse and every manifest-listed file size/SHA matches; git diff --cached --check passes after stage.

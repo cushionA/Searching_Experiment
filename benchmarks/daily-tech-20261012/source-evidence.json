@@ -1,0 +1,56 @@
+{
+  "collected_at_utc": "2026-10-11T22:12:31Z",
+  "docling": {
+    "release": {
+      "url": "https://github.com/docling-project/docling.rs/releases/tag/v2.15.0",
+      "published_at_utc": "2026-10-11T12:46:10Z",
+      "tag_commit": "c3b05695cda94eef81bc2ee32b0339bb12800a62",
+      "asset": "docling-rs-v2.15.0-x86_64-unknown-linux-gnu.tar.gz",
+      "asset_bytes": 22775046,
+      "asset_sha256": "9e309b913cd6a1e904eab22bf938c29ed9adea9656fa076db773ff95cb9e5185",
+      "binary_bytes": 61220360
+    },
+    "sources": [
+      {
+        "url": "https://github.com/docling-project/docling.rs/blob/c3b05695cda94eef81bc2ee32b0339bb12800a62/crates/docling/src/stream.rs",
+        "snapshot": "source-snapshots/docling-stream-c3b0569.rs",
+        "sha256": "5d50ef9664d50edc00c7e72c0f852f73142747d1329740bd52f8a72b32953d39",
+        "evidence": {
+          "1-11": "PDF pages processed in parallel and emitted in document order; Markdown only; JSON requires full tree",
+          "25-28": "bounded synchronous channel depth 8; producer throttled when consumer lags",
+          "120-145": "only PDF without hierarchy rewrite uses page-level path; other formats construct full DoclingDocument synchronously",
+          "227-260": "PDF pipeline configured with OCR options, convert_streaming_outcome page callback; OCR phase is included before per-page output"
+        }
+      },
+      {
+        "url": "https://github.com/docling-project/docling.rs/blob/c3b05695cda94eef81bc2ee32b0339bb12800a62/crates/docling-cli/src/main.rs",
+        "snapshot": "source-snapshots/docling-cli-c3b0569.rs",
+        "sha256": "4d282e7aa3fe11c6714c6a41c23fff9bac8634cec4a36723c62141fedfa8902c",
+        "evidence": {
+          "118-126": "--layers and --traverse-pictures configure export; streaming default for Markdown; --no-stream buffers",
+          "652-662": "layers/picture traversal explicitly export-only"
+        }
+      }
+    ],
+    "claim_boundary": "Streaming PDF runs the conversion pipeline and emits completed page chunks through a bounded channel; this does not establish that input decoding/OCR itself streams. --layers and --traverse-pictures are output serializer choices. Synthetic test disabled OCR, so no OCR speed/accuracy/memory claim. The release announcement's layer/traverse integration is new; the streaming mode itself predates v2.15, so same-release stream/no-stream measurements do not estimate a version delta.",
+    "prior_release_streaming": {
+      "tag": "v2.14.0",
+      "source_urls": [
+        "https://github.com/docling-project/docling.rs/blob/v2.14.0/crates/docling-cli/src/main.rs",
+        "https://github.com/docling-project/docling.rs/blob/v2.14.0/crates/docling/src/stream.rs"
+      ],
+      "snapshots": [
+        "source-snapshots/docling-cli-v2.14.rs",
+        "source-snapshots/docling-stream-v2.14.rs"
+      ],
+      "sha256": [
+        "9fee29153ff40faa01415645afa5eccaba764f265076abab6a1ca33a5149219e",
+        "22882e3f216e38c2ea445ee112790be3c534f53f6494c1d315f4d95a322d4359"
+      ],
+      "evidence": "CLI lines 123-126 say Markdown streaming is default; stream.rs begins with streaming module and bounded CHANNEL_DEPTH=8 at line 28. This proves stream mode predates v2.15; v2.15 release delta is layer/picture serializer integration."
+    }
+  },
+  "model_sources": "model-sources.json; timestamped Hugging Face public model API selected metadata plus exact query parameters/results; no weights fetched",
+  "previous_report": "https://github.com/cushionA/Searching_Experiment/blob/02d9823b893c214913e83b752ede82279097bcae/reports/2026-10/2026-10-11-daily-tech.md",
+  "current_pr26": "https://github.com/cushionA/Searching_Experiment/commit/4c408376640ed4d26e6b67eb815e89c10f0aafc2"
+}
