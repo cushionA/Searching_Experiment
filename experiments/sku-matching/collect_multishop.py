@@ -421,6 +421,9 @@ def au(args) -> None:
     base.OUT = out
     client = catalog_client(out)
     shops = qualified(args.category)
+    if args.shops_file:
+        chosen = set(json.loads(Path(args.shops_file).read_text(encoding="utf-8")))
+        shops = {sid: t for sid, t in shops.items() if sid in chosen}
     if not shops:
         print(json.dumps({"category": args.category, "side": "au", "stop": "no_qualified_shops"}))
         return
@@ -663,6 +666,7 @@ def main() -> None:
     parser.add_argument("--max-attempts", type=int, default=400)
     parser.add_argument("--max-seconds", type=int, default=480)
     parser.add_argument("--pages", type=int, default=DISCOVERY_PAGES, help="discover stage: pages per term")
+    parser.add_argument("--shops-file", default=None, help="au stage: JSON list of shop ids to work on (others are skipped)")
     parser.add_argument("--max-sku-products-per-shop", type=int, default=None,
                         help="au stage: stop a shop once this many of its items are SKU products")
     parser.add_argument("--max-items-per-shop", type=int, default=None,
