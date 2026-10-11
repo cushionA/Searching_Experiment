@@ -1,23 +1,18 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "investigation_date_jst": "2026-10-12",
   "observed_at_utc": "2026-10-11T22:01:26Z-22:10:12Z",
   "baseline_commit": "7460493",
   "previous_daily_report_commit": "02d9823b893c214913e83b752ede82279097bcae",
   "scope": "public-source technology updates and saved-repository outputs across crawling, browsers, discovery/search, OCR/image, lightweight SLM, web archive, and a separate NLP lane",
-  "evidence_class_definitions": {
-    "A": "reproducible PoC evidence for stated narrow input/conditions",
-    "B": "primary-source-supported hypothesis not validated on target workload",
-    "C": "currently low value or tightly scoped"
-  },
-  "integration_decision": "separate from evidence class; no candidate approved for production integration",
+  "integration_decision": "independent from evaluation and PoC status; all candidates deferred",
   "counts": {
     "candidates": 9,
     "new_findings": 3,
     "monitors": 6,
-    "evidence_A": 1,
-    "evidence_B": 7,
-    "evidence_C": 1
+    "evaluation_A": 0,
+    "evaluation_B": 8,
+    "evaluation_C": 1
   },
   "source_files": [
     "github-sources.json",
@@ -29,7 +24,7 @@
   "findings": [
     {
       "name": "Docling.rs v2.15 PDF Markdown streaming mode",
-      "class": "A",
+      "class": "B",
       "novelty": "2.15 integrates existing streaming with export --layers/--traverse-pictures; streaming itself predates this release",
       "release": "2026-10-11T12:46:10Z",
       "tag_commit": "c3b05695cda94eef81bc2ee32b0339bb12800a62",
@@ -62,7 +57,10 @@
       "install": "official Linux x86_64 release binary available and used; CPU-only synthetic PoC; Rust toolchain not installed; package dependencies not added",
       "cpu_gpu_ram": "CPU test measured per-child peak RSS; GPU and OCR weights not tested",
       "community": "small project at snapshot time; public release binary and tagged sources",
-      "next_test": "representative scanned PDF, same model/CPU, byte equivalence and OCR accuracy plus first-byte/total/RSS"
+      "next_test": "representative scanned PDF, same model/CPU, byte equivalence and OCR accuracy plus first-byte/total/RSS",
+      "evaluation_reason": "Conditional on a concrete long-PDF workload and incremental consumer; this workload is not established and total-time/OCR benefit remains unverified, so not A merely because a PoC exists.",
+      "poc_status": "completed; synthetic text-layer PDF only",
+      "integration_status": "deferred"
     },
     {
       "name": "Crawl4AI Cloud",
@@ -214,6 +212,12 @@
       "3507a936bed75c27cd73806be3fb297c4789c7b1",
       "435a1582240058994fec14a2b39dd9d9423b7e75"
     ],
-    "interpretation": "read-only development status, not independent gold; A judgment given fixed correct evidence, B evidence selection, C integrated judgment; product/series splits and real/synthetic data distinct; internal support/contradiction/unknown distinct from final accept/exclude; unknown excluded and human review not mandatory for normal operation"
+    "interpretation": "read-only development status, not independent gold; A judgment given fixed correct evidence, B evidence selection, C integrated judgment; product/series splits and real/synthetic data distinct; internal support/contradiction/unknown distinct from final accept/exclude; unknown excluded and human review not mandatory for normal operation",
+    "dataset_grain": "1,383レコード/644ユニーク楽天SKU"
+  },
+  "evaluation_definitions": {
+    "A": "すぐ試す価値あり",
+    "B": "条件付きで有望",
+    "C": "現時点では不要"
   }
 }

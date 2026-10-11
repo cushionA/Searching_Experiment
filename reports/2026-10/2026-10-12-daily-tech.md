@@ -2,24 +2,25 @@
 
 ## 結論
 
-本日の新発見は、Docling.rsの既存PDF streaming経路を公式CPU binaryで測った結果と、Crawl4AI Cloudの検索/SERP API提供状況。Doclingは**調査A（限定条件下の再現PoCあり）**だが、OCR品質・実スキャン資料・製品導入効果は未検証。Crawl4AI Cloudと軽量SLM候補は**調査B（一次情報から次の検証仮説）**。既存監視候補は更新だけで再実験しない。**本体導入は全候補で保留**。A/B/Cは根拠の段階を示し、導入可否とは独立である。
+本日の新発見は、Docling.rsの既存PDF streaming経路を公式CPU binaryで測った結果と、Crawl4AI Cloudの検索/SERP API提供状況。Doclingは**B（条件付きで有望）**。長文PDFを逐次消費する具体用途がある場合に価値があるが、その用途は未確定で、総処理時間の改善や実スキャンでの効果も未検証のため、すぐ試す価値ありのAにはしない。PoCは実施済み、導入は保留という別の状態として記録する。Crawl4AI Cloudと軽量SLM候補も**B（条件付きで有望）**。既存監視候補は更新だけで再実験しない。**本体導入は全候補で保留**。A/B/Cは試す価値を示し、PoC実施状況・導入可否とは独立である。
 
-9候補を確認: 新発見3（Docling PoC、Crawl4AI Cloud、Tev1 SLM）と継続監視6（Playwright、Common Crawl graph、GLiNER2、Browsertrix、RapidOCR、Trafilatura）。機能PR・本体変更なし。別会話のSKU作業を読み取り参照しただけで、編集・推論・再採点はしていない。
+9候補（A0 / B8 / C1）を確認: 新発見3（Docling PoC、Crawl4AI Cloud、Tev1 SLM）と継続監視6（Playwright、Common Crawl graph、GLiNER2、Browsertrix、RapidOCR、Trafilatura）。機能PR・本体変更なし。別会話のSKU作業を読み取り参照しただけで、編集・推論・再採点はしていない。
 
-## 方法と根拠の段階
+## 方法と評価定義
 
 調査時刻は2026-10-11 22:01–22:12 UTC（2026-10-12 07:01–07:12 JST）。baseは`7460493`。前日レポートと実験記録はcommit [`02d9823`](https://github.com/cushionA/Searching_Experiment/tree/02d9823b893c214913e83b752ede82279097bcae)から明示取得。GitHub release/API、Hugging Face public API/model cards、公式Cloudページを確認し、取得時刻・metadata・一部原文source snapshot・SHAを`benchmarks/daily-tech-20261012/`へ保存した。
 
-- **調査A**: 再現可能な小規模PoCがあり、その入力・版・方法・出力・制約が保存された。
-- **調査B**: 一次情報から有望な仮説は立つが、対象データで効果未検証。
-- **調査C**: 現在の範囲では追試価値が乏しい、または用途を限定。
+- **A**: すぐ試す価値あり。
+- **B**: 条件付きで有望。
+- **C**: 現時点では不要。
+- **PoC実施状況**: 実施済み・未実施と、その検証範囲を別記する。PoC保存の有無でA/B/Cを決めない。
 - **導入判断**: 上記とは独立。実サイト/本番データ適合、運用・license・資源を別途判断する。
 
 公開APIのmetadata取得は実施した。検索サービス・対象サイトのクエリ、Cloud API呼び出し、モデル推論、OCRを伴う処理は行っていない。GPU/Kaggle、新規認証、課金、パッケージ依存追加もなし。作業中に環境接続の短い中断通知があったが、保存済みPoCの再起動はせず、その後の作業でソース確認と報告修正を継続した。
 
 ## 新発見と追加検証
 
-### Docling.rs: streaming出力の限定PoC（調査A）
+### Docling.rs: streaming出力（B・条件付きで有望／PoC実施済み／導入保留）
 
 [v2.15.0 release](https://github.com/docling-project/docling.rs/releases/tag/v2.15.0)は2026-10-11公開。新しい差分は`--layers`/`--traverse-pictures`をstreaming Markdownと組み合わせたこと。**streaming自体はv2.14.0 CLIに既に既定として存在し、v2.15で初めて追加されたとは言えない（[v2.14 CLI source](https://github.com/docling-project/docling.rs/blob/v2.14.0/crates/docling-cli/src/main.rs)、tag snapshotも保存）。**公式タグcommit [`c3b0569`](https://github.com/docling-project/docling.rs/tree/c3b05695cda94eef81bc2ee32b0339bb12800a62)の[source](https://github.com/docling-project/docling.rs/blob/c3b05695cda94eef81bc2ee32b0339bb12800a62/crates/docling/src/stream.rs)ではPDFだけがページ単位の真の逐次経路で、深さ8の同期channelが消費側に合わせてproducerを止める。PDF変換pipelineとOCR設定の後、完了ページをMarkdown chunkで渡す。非PDF backendは全DoclingDocumentを同期的に作ってから出力するためfirst-byte短縮効果はない。CLI [source](https://github.com/docling-project/docling.rs/blob/c3b05695cda94eef81bc2ee32b0339bb12800a62/crates/docling-cli/src/main.rs)上、`--layers`とpicture traversalはexport-only。これらがOCR/入力処理を減らす根拠はない。
 
@@ -34,7 +35,7 @@ repoは保存時96 stars、MIT codeの小規模公開プロジェクト。公式
 
 この合成text-layer入力では初回出力が早く、peak RSSは約6.0 MiB低い一方、総時間は同程度でstream側がわずかに長い。小さい合成PDFでのプロセス単体値であり、実スキャン、大きな画像、OCRモデル、全system RSSの改善を示さない。今回OCRを実行しなかった理由はOCR実測の主張が目的でなく、text serializer/逐次出力の最小切り分けに限定したため。OCR効果は未確認。
 
-**判断**: 技術的なstream出力は入力範囲内で再現した。長文PDFの後段consumerが逐次出力を使う場合にだけ検討価値あり。次の有用な追加検証は、スキャンPDFで同一モデル設定のstream/bufferを比べ、byte同等性、first-byte、total、peak RSS、OCR結果を別々に記録すること。すぐ本体導入は推奨しない。
+**評価Bの理由**: 技術的なstream出力は入力範囲内で再現したが、PoC実施済みであること自体をAの理由にはしない。長文PDFの後段consumerが逐次出力を使う場合にだけ検討価値あり。次の有用な追加検証は、スキャンPDFで同一モデル設定のstream/bufferを比べ、byte同等性、first-byte、total、peak RSS、OCR結果を別々に記録すること。すぐ本体導入は推奨しない。
 
 ### Crawl4AI Cloud: 新しい検索出口（調査B）
 
@@ -69,10 +70,10 @@ main調査base `7460493`。現在の別作業は読み取り確認のみ。
 
 - PR26 head [`4c408376`](https://github.com/cushionA/Searching_Experiment/commit/4c408376640ed4d26e6b67eb815e89c10f0aafc2), [`align_sku_conditions.py`](https://github.com/cushionA/Searching_Experiment/blob/4c408376640ed4d26e6b67eb815e89c10f0aafc2/experiments/sku-matching/align_sku_conditions.py), handoff [`claude-next-steps-and-codex-advice-20261010.txt`](https://github.com/cushionA/Searching_Experiment/blob/4c408376640ed4d26e6b67eb815e89c10f0aafc2/experiments/sku-matching/claude-next-steps-and-codex-advice-20261010.txt), test [`test_lab_sku_align.py`](https://github.com/cushionA/Searching_Experiment/blob/4c408376640ed4d26e6b67eb815e89c10f0aafc2/tests/test_lab_sku_align.py) （commit固定のリンク）。 現在の変更は共通価値条件を先にまとめ、残差条件だけ説明確認へ送る処理。337 matched/815 unmatchedを維持し、固定サイズ軸の41件は引用根拠で解決したと記録。大規模GPU実験は停止中。これらは開発途中の成果であり、独立評価ではない。
 - Read-only commits [`4a9f54b`](https://github.com/cushionA/Searching_Experiment/commit/4a9f54b128b7f46720da2de2a2f87ac5a10f1d31), [`3507a936`](https://github.com/cushionA/Searching_Experiment/commit/3507a936bed75c27cd73806be3fb297c4789c7b1), [`435a1582`](https://github.com/cushionA/Searching_Experiment/commit/435a1582240058994fec14a2b39dd9d9423b7e75) 関連成果物を読み取り確認した。コードやSKUファイルは変更せず、比較も再実行していない。
-- 1,383商品掲載・644 SKUの機械ラベルは独立goldではない。評価を **A: 正しい根拠を固定した判定、B: 根拠選択、C: 統合判断** に分ける。商品単位・series単位のsplitを区別し、実データと合成例も分ける。根拠内部の状態（支持・矛盾・不明）と最終判断（採用・除外）は別軸。不明は最終採用から除外する。通常運用で人手確認を必須にしない。固定商品ペア内でSKU条件の対応を先に行い、未対応条件だけAU名・説明全文で根拠を確認する。変更中のSKU調査を中断・置換・重複しない。
+- 1,383レコード/644ユニーク楽天SKUの機械ラベルは独立goldではない。評価を **A: 正しい根拠を固定した判定、B: 根拠選択、C: 統合判断** に分ける。商品単位・series単位のsplitを区別し、実データと合成例も分ける。根拠内部の状態（支持・矛盾・不明）と最終判断（採用・除外）は別軸。不明は最終採用から除外する。通常運用で人手確認を必須にしない。固定商品ペア内でSKU条件の対応を先に行い、未対応条件だけAU名・説明全文で根拠を確認する。変更中のSKU調査を中断・置換・重複しない。
 
 ## 成果物と次の判断
 
-再現コードと手順は `experiments/daily-tech-20261012/`、取得資料・実行結果・環境は `benchmarks/daily-tech-20261012/` に保存した。[ソース証拠](../../benchmarks/daily-tech-20261012/source-evidence.json)、[モデルカード証拠](../../benchmarks/daily-tech-20261012/model-card-evidence.json)、[実在ID・revision・系列一覧](../../benchmarks/daily-tech-20261012/model-sources.json)を参照。調査AはDoclingの合成テキスト層PDFに限り、実サイトやOCRの導入効果を示さない。CloudとSLMは一次情報に基づく調査Bで、導入はいずれも保留。
+再現コードと手順は `experiments/daily-tech-20261012/`、取得資料・実行結果・環境は `benchmarks/daily-tech-20261012/` に保存した。[ソース証拠](../../benchmarks/daily-tech-20261012/source-evidence.json)、[モデルカード証拠](../../benchmarks/daily-tech-20261012/model-card-evidence.json)、[実在ID・revision・系列一覧](../../benchmarks/daily-tech-20261012/model-sources.json)を参照。Doclingは用途が具体化した場合に条件付きで有望なBであり、PoC実施済みの範囲は合成テキスト層PDFに限る。実サイトやOCRの導入効果は示さない。CloudとSLMもB、PoC未実施で、導入はいずれも保留。
 
 保存済み結果の検算で本処理6試行・first-byte測定4試行の正常終了と出力ハッシュ一致を確認した。新しい実測は再起動していない。JSON読込・manifestハッシュ・staged whitespaceチェックを実施。実験基盤や本体コードの変更がないため、既存lab全体のテストや通常CI修正は行っていない。
