@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bind Claude's pinned flat v2/v3/v4 handoff to frozen fixed-page SKU inputs.
+"""Bind Claude's pinned flat v2/v3/v4/v5 handoff to frozen fixed-page SKU inputs.
 
 No labels, inference, source code execution, routing or final SKU adoption. Whole
 values survive partial correspondence; AU obligations stay in a separate direction.
@@ -31,16 +31,20 @@ UPSTREAM_V3_HEAD = "86b5e3b7612f88185be639b86a88233a7c06f431"
 ARCHIVE_V3_SHA = "46388080b7ab0abfd56629760cb21871e376a6853b6b1e8de99009a70ae5d6d4"
 UPSTREAM_V4_HEAD = "2c2db5c52c328405e2f4249f424f2970b4ceca5a"
 ARCHIVE_V4_SHA = "7dd4a51cbd45fbe93502b69c06204a92cb66b6394c3cb32fca98e23c1c64e2d9"
+UPSTREAM_V5_HEAD = "7b8f5abf20ad5428a9a1dd48f5b67a1a208a1ba8"
+ARCHIVE_V5_SHA = "20faff8be793caebb7882cff37b4c12b69929f6e5812fcffe89b7ab32819118b"
 PINNED_RUNS = {
     UPSTREAM_HEAD: (RUN, ARCHIVE_SHA),
     UPSTREAM_V3_HEAD: (".lab-output/sku-align-20261011-v3", ARCHIVE_V3_SHA),
     UPSTREAM_V4_HEAD: (".lab-output/sku-align-20261011-v4", ARCHIVE_V4_SHA),
+    UPSTREAM_V5_HEAD: (".lab-output/sku-align-20261011-v5", ARCHIVE_V5_SHA),
 }
 STATES = {"aligned", "one_sided", "extra_in_value"}
 VERSION_STATES = {
     UPSTREAM_HEAD: STATES,
     UPSTREAM_V3_HEAD: STATES,
     UPSTREAM_V4_HEAD: {"aligned", "one_sided", "model_candidate"},
+    UPSTREAM_V5_HEAD: {"aligned", "one_sided", "model_candidate"},
 }
 
 
@@ -145,7 +149,9 @@ def prepare(archive: Path, input_dir: Path, output_dir: Path,
     if expected_head not in PINNED_RUNS:
         raise ValueError("upstream head is not a known pinned flat handoff version")
     run, default_sha = PINNED_RUNS[expected_head]
-    is_v4 = expected_head == UPSTREAM_V4_HEAD
+    flat_version = {UPSTREAM_HEAD: 2, UPSTREAM_V3_HEAD: 3,
+                    UPSTREAM_V4_HEAD: 4, UPSTREAM_V5_HEAD: 5}[expected_head]
+    identical_only = flat_version >= 4
     allowed_states = VERSION_STATES[expected_head]
     expected_sha256 = expected_sha256 or default_sha
     handoff_members = tuple(f"{run}/{cohort}/align/handoff.jsonl" for cohort in COHORTS)
@@ -261,8 +267,8 @@ def prepare(archive: Path, input_dir: Path, output_dir: Path,
                 kind, status = condition.get("kind"), condition.get("status")
                 if kind not in ("rakuten", "au_only") or status not in allowed_states:
                     raise ValueError(f"unsupported condition kind/status: {location}:{kind}/{status}")
-                if is_v4 and "matched_by" in condition:
-                    raise ValueError(f"v4 condition uses retired matched_by field: {location}")
+                if identical_only and "matched_by" in condition:
+                    raise ValueError(f"v{flat_version} condition uses retired matched_by field: {location}")
                 if expected_head == UPSTREAM_V3_HEAD:
                     method = condition.get("matched_by")
                     if ("matched_by" not in condition or
@@ -300,9 +306,9 @@ def prepare(archive: Path, input_dir: Path, output_dir: Path,
                         raise ValueError(f"multiple Rakuten axes map the same AU axis: {location}")
                     mapped.add(au_axis["axis_name"])
                 if status == "aligned":
-                    if is_v4 and ("".join(unicodedata.normalize("NFKC", axis["value"]).split()) !=
+                    if identical_only and ("".join(unicodedata.normalize("NFKC", axis["value"]).split()) !=
                                   "".join(unicodedata.normalize("NFKC", au_axis["value"]).split())):
-                        raise ValueError(f"v4 aligned condition is not an identical whole-value link: {location}")
+                        raise ValueError(f"v{flat_version} aligned condition is not an identical whole-value link: {location}")
                     context["aligned_conditions"].append({"producer_condition": condition, "raw_condition": axis,
                                                           "mapped_au_condition": au_axis,
                                                           "status": "upstream_alignment_not_independent_proof"})
@@ -322,7 +328,7 @@ def prepare(archive: Path, input_dir: Path, output_dir: Path,
                 cards.append(card)
             if processed != set(axes) or only_au & mapped:
                 raise ValueError(f"condition axis coverage/overlap differs: {location}")
-            if is_v4:
+            if identical_only:
                 # The producer exports AU-only axes only when they have several
                 # values. Record any absent whole AU axes, without inventing
                 # conditions or interpreting their values.
@@ -372,13 +378,13 @@ def prepare(archive: Path, input_dir: Path, output_dir: Path,
                 "input_cases_without_handoff": len(set(cases) - represented), "card_count": len(cards),
                 "reverse_condition_count": len(reverse), "condition_counts": dict(counts),
                 "output_sha256": {name: sha256(body) for name, body in outputs.items()}, "validation_only": validate_only}
-    if is_v4:
+    if identical_only:
         candidate_member = f"{run}/candidate/align/handoff.jsonl"
         candidate_summary_member = f"{run}/candidate/align/summary.json"
         candidate_summary = (parse_json(payload[candidate_summary_member], candidate_summary_member)
                              if candidate_summary_member in payload else None)
         manifest.update(
-            upstream_flat_version=4,
+            upstream_flat_version=flat_version,
             upstream_checkpoint_purpose=checkpoint.get("purpose"),
             allowed_condition_states=sorted(allowed_states),
             model_candidate_is_proof=False,
@@ -397,10 +403,15 @@ def prepare(archive: Path, input_dir: Path, output_dir: Path,
             producer_au_only_export_limitation="AU-only export includes only axes with multiple values; singleton AU axes can be absent.",
             unrepresented_au_axis_counts=dict(uncovered_au))
         manifest["warnings"].extend([
-            "V4 is label-informed: the upstream method changed after its author read machine value references.",
+            f"V{flat_version} is label-informed: the upstream method changed after its author read machine value references.",
             "Model candidates are unresolved whole values in both directions, never correspondence proof.",
             "Only legacy/family handoffs are received; the candidate cohort handoff is not imported.",
             "The upstream AU-only export can omit singleton axes; absence is not proof that no AU obligation remains."])
+        if flat_version == 5:
+            manifest.update(upstream_axis_links_can_use_model_candidates=True,
+                            upstream_model_axis_link_is_value_correspondence_proof=False)
+            manifest["warnings"].append(
+                "V5 axis joins may use mutual model candidates; these joins can exclude rows but never confirm whole-value correspondence.")
     if not validate_only:
         output_dir.mkdir(parents=True, exist_ok=False)
         for name, body in outputs.items():

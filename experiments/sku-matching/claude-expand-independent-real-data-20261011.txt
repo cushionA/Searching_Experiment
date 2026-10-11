@@ -1,0 +1,51 @@
+Claude作業指示：API込みの独立実SKU評価データ拡張
+2026-10-11
+
+目的
+公開APIと公開商品ページから実データを追加し、PR26v5の独立評価用入力を作る。合成データ禁止。取得・整形と評価は別段階にし、原本・失敗・未解決を残す。
+
+固定要件
+- 基準は `refs/remotes/origin/pr26-review-20261011-v5`（`7b8f5abf20ad5428a9a1dd48f5b67a1a208a1ba8`）。既存評価コードは変更せず、実行時commit・code/input SHA256を記録する。
+- 1 case = 固定AU商品URL 1件 + 楽天選択SKU 1件。候補はそのAU URLの全stockListセル。突合判定時に別AU URLへroutingしない。
+- ただし商品対応候補を作る収集工程では、店内検索から兄弟商品URLを発見してよい。別URLは別の商品pair/group候補として保存し、原本で商品対応を確認してから独立pairにする。元pairへ合体したり、case判定で振り分けない。
+- カテゴリを広げ、SKU差分（サイズ/色/レース有無/セット構成/型番/容量等）のある実商品を含める。重複商品、同じseries/store family、同一parent productのvariantを独立件数として水増ししない。
+- 商品名と説明全文、無料/有料options、全SKU軸・組合せ、原文、価格、在庫を取得時の形で保存。各原本にURL・UTC時刻・HTTP status・SHA256・JSONPath/locatorを対応させる。商品説明の全文と引用範囲を保持する。
+- au価格は `itemInfo.currentPrice` の商品単位、楽天価格はSKU要素 `taxIncludedPrice` のSKU単位。au全 `skuInfo.stockList` cell、楽天全 `sku[].selectorValues` の組合せと各在庫根拠を残す。楽天コードでは価格/選択値は埋込み `script#item-page-app-data` JSON、数量は `purchaseInfo.variantMappedInventories` とSKU keyの照合、表示設定は `inventoryDisplay` 系fieldから抽出する。`hidden`, `HIDDEN_STOCK`, quantity, 画面表示在庫は別fieldに保つ。未取得値・SKU無しを生成しない。
+- 予算は `AGENTS.md` とcollectorの既存累積ledger/authorized上限を守る。新ledgerでresetせず、失敗/redirectもHTTP試行として計上。前版の仮上限値を独自の推奨上限にしない。現在の上限・残量・出力先が分からない場合は取得せず確認事項をhandoffする。
+
+au API/探索
+- 商品詳細: `GET https://wowma.jp/api/item/{lotNumber}`、header `x-triton-api: 1`, `Accept: application/json`, `Referer: https://wowma.jp/item/{lotNumber}`。itemInfo, itemTitle, currentPrice, skuInfo.stockList等を原本から展開。
+- options: `GET https://wowma.jp/api/items/{lotNumber}/itemOptions`、同じheader。raw responseとfreeOptions/paidOptionsの原値を保持する。
+- 店内検索: `GET https://wowma.jp/catalog/api/search/items?user={shopId}&keyword={encodedKeyword}&ipp={ipp}&page={page}`、header `X-Catalog-API-Version: 1.0.0`, `Accept: application/json`。日本語keywordは `keyword.encode("cp932")` をstrictに行い、そのbyte列をURL encodeする（代替encodingで続行しない）。response JSONはUTF-8で読み、`condition.shopId` と `condition.keyword` が要求値に一致する応答だけ採用。応答原文、query、ページ、条件検査結果を保存。
+- Pythonの検索query例: `urllib.parse.urlencode({"user": shop_id, "keyword": "シリーズ名 レース", "ipp": 30, "page": 1}, encoding="cp932", errors="strict")`。通常のUTF-8版URLSearchParams/encodeURIComponentをこの日本語keywordへ使わない。
+- 実装参照: `fetch_au.py` は既知item IDのdetail/options取得、`collect_au_samples_expanded.py` は durable budget ledger付きcatalog探索とdetail/options取得。後者の実引数は `--output-dir --resume --max-http --max-catalog-http --max-body-bytes --max-response-bytes --max-new-products --known-limit`。default上限はコード内定義を読み、既存ledgerの設定と残量を確認して使う。catalog探索の発見URLは新規候補として記録し、商品ページGETは規定予算内でのみ行う。
+- 実行例（既存ledgerのresume時のみ。capsは既存値以下）:
+```bash
+python3 -B experiments/sku-matching/collect_au_samples_expanded.py --output-dir .lab-output/sku-independent-real-20261011/au --resume
+```
+  `--resume` は同じ出力先の一致するledgerがある時だけ使う。初回は空の新規出力先で既定capを明示し、事前に予算値を確認する。
+
+楽天取得・展開
+- 商品URL候補は既存公開リンク/店内の商品一覧で得た直接商品URLを使う。`fetch_rakuten.py` の標準取得CLIは `--urls-file --out-dir --max-products --max-http --prior-products --prior-http --delay`。失敗/redirectを含む累計を指定し、既存許可上限以下とする。stage2探索を使う場合は同ファイルの `--catalog-stage2` 実引数（ledger・total cap等）と既存ledgerを確認して使う。
+- 価格/在庫の正規化は `fetch_rakuten.py` の既存extractorを使う。source JSONPathをmanifestへ記録し、抽出後もraw HTML/JSONを残す。raw captureを再parseする場合も別の新規output directoryを使う。
+
+PR26v5入力と評価
+- `build_raw_pair_inputs.py` は旧固定入力 `.lab-output/sku-observed-product-pairs-20261010-final-v4/` を読むため、新captureだけでは自動で評価データに入らない。`build_observed_pair_records.py` の `--au-dir`（repeat可）, `--rakuten-dir`（repeat可）, `--output-dir` を確認し、新規出力へpair recordsを構築。その後、必要ならPR26 schemaに合わせた専用変換を新規コード/出力として作る。元raw fieldsはsidecar/rawmanifestへ保持。
+- schema確認: `schemas/sku_gate_case_input.schema.json`, `sku_gate_product_context.schema.json`。casesは1楽天SKU/固定AU pair、価格/stockをidentity inputに入れない。productsはAU全行と楽天説明/selector familyを保持する。family/candidateをconfirmedに偽装しない。`failures.jsonl` と未構築例を残す。
+- Dev/test splitはparent product/series/store family単位で行い、同じgroupを跨がせない。`old_dataset`, `new_sku_existing_product`, `new_product_group` を別ラベルで集計する。
+- 評価ラベルは `expected=accept|drop` のmachinegold。Luna等の機械注釈は機械goldと明記し、人手独立goldと呼ばない。注釈後に各label rationaleを原本・JSONPath・quote・SHAへ解決して検証する。原文衝突/不明/抽出不全は別 `data_quality_flag` として残し、binary labelや通常指標へ無理に混ぜない。ラベル固定・入力hash後にtestを開き、testを見て閾値/コードを調整しない。
+- PR26v5の現行比較コマンドは `align_sku_conditions.py`。`similarity` は固定rerankerによる双方向順位スコア、`align` は同値/相互best-matchの軸対応と行別条件状態を出す。similarityを閾値判定に使わない。固定入力では次の形（全て新規run/output directory）:
+```bash
+python3 -B experiments/sku-matching/align_sku_conditions.py similarity --run NEW_RUN --out NEW_OUT --threads 4
+python3 -B experiments/sku-matching/align_sku_conditions.py align --run NEW_RUN --out NEW_OUT
+```
+  CLIと出力契約を該当commit上で確認し、入力layoutが異なる場合は新規data adapterで揃える。旧 `run_sku_gates.py` 分岐をPR26v5の最終評価と扱わない。
+
+実行順とdeliverables
+1. budget/ledger・既存URL・未使用output pathを確認し、新規API/page取得。取得試行も含めたraw原本を保管。
+2. au/rakuten tablesを生成し監査。商品の固定対応を根拠と状態付きで作成し、AU全SKUセルとRakuten全SKUを展開。曖昧対応はcandidateのまま。
+3. PR26v5 schemaへ変換し、cases/products/failuresとsource sidecarを作る。parent group splitと重複除去を固定。input manifest/SHAを作成。
+4. その後machinegold注釈とsource resolutionを実施し、ラベルmanifestをfreeze。PR26v5 `similarity` / `align` を走らせ、評価内容とラベル種別を区別して集計。
+5. 次を新規run directoryへ保存: `rawmanifest.zip` + SHA256、原本manifest（path/bytes/SHA/URL/time/status/locator/ledger ref）、products/cases/failures、注釈と根拠、input/code/label hashes、`counts.json`、`flow-model-handoff.txt`。
+6. countsは取得試行/pages、distinct AU products、Rakuten pages/SKUs、AU cells、商品pairs、old/new SKU/new product group、split、machinegold accept/drop、quality flag別、失敗をgrainごとに分ける。ZIPにはraw原本とraw manifestを含め、zip SHAとfile countを記録する。
+7. handoffへ再実行コマンド、使用cap/消費量、固定commit、input/output SHA、カテゴリ/grain、ラベル方針、similarity/align結果、品質flag・失敗・未測定を記録する。親には保存pathと件数、SHA、残課題を報告する。
