@@ -1,0 +1,138 @@
+PR26 v5 と汎用CPU説明確認の結合実験
+2026-10-11
+
+状態: 全件CPU推論・結合・凍結後の採点を完了。この構成は改善にならなかった。
+機械ラベルで正しいAU行への採用精度85.0%、再現率3.91%。独立testの性能ではない。
+
+実測結果
+モデル推論: 2,022種類、論理要求3,282件、5,317.229秒（88.62分）。
+条件支持178件、unknown 3,104件。取得説明窓19,362、分類窓12,123。
+分類窓ok 9,043、入力長超過3,080（25.4%）。同一モデル本文の再利用54窓。
+全groupに少なくとも1つの長さ上限内入力があり、全窓超過groupは0。
+推論要求の内訳: 高confidenceの既知値なし2,912、支持178、別選択値143、複数値49。
+支持を確認できない主因は、上限超過だけではなく、既知の選択値を支持できないことだった。
+
+SKU単位の結合: 2,353ケース、accept 213 / drop 2,140。
+上流直接採用baseline: accept 164 / drop 2,189。
+採用内訳: legacy 28（baseline 21）、family 185（baseline 143）。
+追加採用49件: legacy unmatched 3、legacy review 4、family参照なし42。
+採点可能な追加採用3件はいずれも誤採用。新たな正しい採用は0。
+
+採点対象: legacyの機械ラベル1,346件（matched 435 / unmatched 911）。
+参照未確定37件と参照なしfamily 970件は除外し、成功件数へ加算していない。
+                     baseline         model integration
+TP / FP / FN / TN    17 / 0 / 418 / 911  17 / 3 / 418 / 908
+採用精度              100.0%            85.0%
+再現率                3.91%             3.91%
+二値accuracy          68.95%            68.72%
+採用済みmatchedのAU行誤り0、AU行未採点0。上記精度・再現率は正しいAU行基準でも同値。
+baselineの100%は正しい採用17件だけの結果で、十分な自動化精度を示すものではない。
+
+誤採用3件はAU 695394169 × 楽天 weimall/fia6080 の直径60cm SKU。
+AUの商品名は幅80cm、説明の販売仕様は（約）直径80x高さ74cm。
+引用した同じ窓の冒頭には幅60cm/幅80cmのシリーズ案内も混在していた。
+モデルが60cmを支持し、固定URLの80cm商品へ紐づけた。
+case-493e0491a70a66e2414c / case-ac39a44bd9d3bbcc1c10 / case-dc71ab6dd1a2c284318e。
+引用の実在検査だけでは、現在販売されている仕様への適用可能性を証明できなかった。
+この設定を運用候補として採用しない。今回の結果に合わせた閾値調整・再ラベルはしていない。
+
+基準
+PR: https://github.com/cushionA/Searching_Experiment/pull/26
+head: 7b8f5abf20ad5428a9a1dd48f5b67a1a208a1ba8
+v5 ZIP SHA256: 20faff8be793caebb7882cff37b4c12b69929f6e5812fcffe89b7ab32819118b
+align_sku_conditions.py SHA256: 70e75088c40e4fc600c7ed91abaf237842ed7ea6f4d99c58bb40723d751280c3
+作業ブランチ: codex-sku-generic-model-gates-20261010
+結合コード保存commit: ab2a746
+
+入力と処理
+商品単位で対応候補を固定した後、楽天SKU 1件を固定AU URL内の全AU行へ照合する。
+別商品URLへ振り分けず、楽天のsource SKU/variant/record keyと原文を維持する。
+価格や在庫で同一性を推測しない。今回の対象はSKU対応判定で、CSV販売価格の生成ではない。
+legacy 1,383ケース、family 970ケース、合計2,353ケース。
+generic入力2,409ケースの残り56ケースは、このv5受領cohortの外で未処理。
+familyの商品単位の同一性まで、この結合実験で独立確認したわけではない。
+
+v5は同梱の双方向類似度行列で軸・値対応を再計算する。
+値全体がNFKC/空白除去後に同じものだけを、基本の対応として使う。
+モデルの対応候補は未証明のまま説明確認へ渡す。
+Rakuten側の未対応条件はAUの商品名・選択AU行・取得済み説明全文へ確認する。
+AU側にだけ残る条件は逆方向で、Rakutenの商品名・選択SKU・取得済み説明へ確認する。
+付属品への事前分類、カテゴリー別の語彙辞書、寸法の分解規則は追加しない。
+複合条件は部分的に消費せず、元の値全体と全選択肢を両方向で保持する。
+
+上流の直接採用164ケースも、全SKU軸と固定AU行のwhole-value対応を再構築して検査した。
+pending 2,108候補行とdirect 164行の計2,272行で、全Rakuten/全AU軸を網羅。
+上流symmetric_unresolvedでhandoff外の81ケースは自動drop。
+今回の受領行では欠落AU軸は0件。上流の全商品でsingleton軸が必ず網羅される保証ではない。
+確認義務4,608件: 楽天→AU 3,751、AU→楽天857。
+論理要求3,282件、軸名/対象文書/対象行/元の全選択肢が同じ推論入力2,022種類。
+希望する選択値は最後の照合にだけ使い、検索文やモデル本文へ注入しない。
+
+CPUモデル
+検索: hotchpotch/japanese-reranker-xsmall-v2、36,771,585 parameters、INT8 ONNX。
+revision de99fd2f16c7b5df1df1bcc1d9ad2c16d88ce93a。
+判定: fastino/GLiNER2.5-multi-Decide、287,355,159 parameters、FP32 CPU。
+revision e173bca1f0c4217d7a55b3b0c705d5ece8a0218d。
+取得済み全文を300文字/75文字overlapで保存し、軸名と対象行で各窓を検索。
+商品名＋選択行は常時入力し、説明の上位5窓にも同じ商品名＋選択行を添える。
+GLiNERには原文の全選択肢と不明を渡す。最大実encoder入力512tokens。
+本文/選択肢を切り詰めない。超過した窓は未推論。他の有効窓から支持できなければunknown/dropへ。
+confidence .5は従来の開発診断の設定を推論前に固定したもので、運用閾値ではない。
+異なる窓で複数の値が高confidenceならunknown。別選択肢の勝者もunknownとし、矛盾証明にしない。
+同一バイトのモデル本文とschemaだけをキャッシュし、ケース/引用の対応は別に保存する。
+CPU共有環境の実行であり、GCPの価格や本番スループットの実測ではない。
+新しい重み、GPU、Kaggle、GCPジョブは使っていない。
+
+結合ゲート
+同じAU行の両方向の全条件が支持され、支持する行が唯一、他の全行が上流矛盾なら実験accept。
+unknown、欠落、複数支持、未確認の競合行はdrop。人手確認への分岐は作らない。
+上流の矛盾をモデル支持で上書きしない。
+引用の文書ID/field/Unicodeoffset/引用文は凍結対象で照合する。
+引用の実在は意味支持や、その行への適用可能性の証明ではない。
+モデル支持を使う採用は比較実験に限定し、全出力のproduction_adoption_allowedはfalse。
+上流directも軸対応の意味を独立goldで証明したものではない。
+上流の行別矛盾IDはhandoffに無いため、再計算一致と行状態件数の整合を検査基準とする。
+
+構造検証
+v5 ZIPの24payloadを全CRC・size・SHAで検査。
+legacy/familyの上流value_pairs/axes/decisions/handoffをv5コードで再実行。
+計8ファイルのSHAが上流配布結果と一致。モデル行列は受領済みを使用、重みの再推論ではない。
+5番目の旧規則との差分資料は、旧v10の全予測がないため再生成していない。
+その受領ファイル自体のCRC/SHAは検証した。最終判定とhandoffには依存しない。
+原本240ファイルのSHAを再計算し、全一致。
+モデル実行元-v5-v3と最終ゲート用-v5-final2の5入力ファイルはバイト単位で一致。
+空予測baseline結合はaccept164/drop2,189で上流との差分0。
+required全体検査: 763tests、18skipped、既存2errors、assertion failuresなし。
+既存errorsは旧Luna結果ファイルの欠落と、旧packagerによる.lab-output symlink拒否。
+新しい結合処理のテストは成功。原本や旧testsを改変してエラーを隠していない。
+合成データは明示した契約test fixtureだけで、実データのモデル評価へ混ぜていない。
+
+再現する場合（出力先はすべて新規、既存runは上書きしない）
+python3 -B experiments/sku-matching/import_claude_alignment_handoff_v2.py --archive .lab-output/sku-claude-pr26-review-20261011-v5/20261011-sku-align-v5.zip --expected-head 7b8f5abf20ad5428a9a1dd48f5b67a1a208a1ba8 --output-dir NEW_IMPORT
+python3 -B experiments/sku-matching/integrate_claude_description_v1.py prepare --handoff-dir NEW_IMPORT --archive .lab-output/sku-claude-pr26-review-20261011-v5/20261011-sku-align-v5.zip --output-dir NEW_PREP
+.deps/sku-gliner-venv/bin/python -B experiments/sku-matching/trial_integrated_description_models_v1.py --input-dir NEW_PREP --output-dir NEW_MODELS --threads 4 --batch-size 8 --top-k 5 --confidence 0.5
+python3 -B experiments/sku-matching/integrate_claude_description_v1.py finish --prepared-dir NEW_PREP --predictions NEW_MODELS/predictions.jsonl --output-dir NEW_GATE
+python3 -B experiments/sku-matching/integrate_claude_description_v1.py score --finished-dir NEW_GATE --labels .lab-output/sku-real-luna-labels-20261010-v3/labels.jsonl --output-file NEW_SCORE.json
+
+評価時はモデル予測/結合結果を凍結してから、別ファイルの機械ラベルを読む。
+参考ラベルのreviewは未確定参照として採点から分ける。システムの出力はaccept/dropだけ。
+ラベルなしのfamilyはSKU正解率に混ぜず、出力件数と未採点件数を報告する。
+この旧データは開発用。PR26 v5自体もlabel-informedで、独立testの性能とは呼ばない。
+独立した新商品群の追加手順/APIは claude-expand-independent-real-data-20261011.txt にある。
+
+推論中のPR26追加更新
+終了時head: 51764df7f8fffcfd52db986a960399d8d677c3ce。
+7b8f5abとの差分はcollect_independent_real.py / independent_eval.py / claude-independent-real-data-task-v2-20261011.txtの3ファイルのみ。
+突合v5とモデル入力契約は不変なので、今回の結合実験は同じv5に対する結果。
+追加3ファイルは原文とSHAをcheckpointのupstream-collection-referenceへ保管し、read-onlyで確認した。
+active実装へ統合したものではなく、新しいHTTP取得も実行していない。
+引継事項: category別ledgerによる累積予算のresetと保存cap引上げ、旧AU 20261009原本のnew-product分類への不足、未完了注釈でもfreeze可能な点を修正してから使う。
+手順文中の予算撤廃の記載を、こちらのuser authorizationとして扱っていない。
+old-but-unpaired原本を許容する新ルールは、未使用の商品原本だけで独立評価するルールとは異なる。
+
+成果物
+experiments/sku-matching/results/20261011-sku-pr26-v5-description-integration.zip
+同名.manifest.json / .zip.sha256。原本・重み・venvを複製せず、入力/予測/結合/機械採点/再計算/検証/コード/手順を収録。
+既存原本依存: 20261010-sku-generic-residual-checkpoint.zip（SHA 17c79a8d01692e180322d5b59e749150337faeb8792c8c14ad1ca9c8b02a7f17）。
+品質監査依存: 20261011-sku-label-quality-audit.zip（SHA 386ddd10c5ab88d4c3cb7dec5be300017ba524b3548a7cc18a4f8857fdd98b62）。
+包装前の凍結SHA再照合30項目と、包装後の全payload CRC/size/SHAを検証する。
