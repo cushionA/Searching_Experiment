@@ -314,9 +314,15 @@ def au(args) -> None:
             {"sku_product", "non_sku", "shop_mismatch", "item_http_error", "options_http_error"}} | set(state["failed"])
     start, a0, order, stop = time.time(), client.charged_http, len(done), "chunk_limit"
     terms = CATEGORIES[args.category]
+    pending: list = []
+
+    def shop_evidence(sid):
+        return sum(1 for ev in state["evidence"].values() if ev[0]["shop_id"] == sid)
 
     def next_page():
         for sid in shops:
+            if args.max_items_per_shop and shop_evidence(sid) >= args.max_items_per_shop:
+                continue
             for page in range(1, ci.MAX_PAGES_PER_TERM + 1):
                 for term in terms:
                     key = f"{sid}\t{term}\t{page}"
@@ -327,6 +333,9 @@ def au(args) -> None:
 
     while client.charged_http - a0 < args.max_attempts and time.time() - start < args.max_seconds:
         pending = [i for i, ev in state["evidence"].items() if i not in old_ids and i not in done]
+        if args.max_items_per_shop:
+            taken = Counter(state["evidence"][i][0]["shop_id"] for i in done if i in state["evidence"])
+            pending = [i for i in pending if taken[state["evidence"][i][0]["shop_id"]] < args.max_items_per_shop]
         try:
             if pending:
                 item_id = pending[0]
@@ -387,7 +396,7 @@ def au(args) -> None:
         finally:
             jsave(state_path, state)
     products, cells = base.rebuild_exports()
-    pending_left = len([i for i in state["evidence"] if i not in old_ids and i not in done])
+    pending_left = len(pending)
     print(json.dumps({"category": args.category, "side": "au", "stop": stop, "http": client.charged_http, "this_call": client.charged_http - a0,
                       "states": dict(Counter(r.get("state") for r in base.saved_records())), "sku_products": products, "sku_cells": cells,
                       "shops": len(shops), "pending_items": pending_left}, ensure_ascii=False))
@@ -525,6 +534,8 @@ def main() -> None:
     parser.add_argument("--category", choices=sorted(CATEGORIES))
     parser.add_argument("--max-attempts", type=int, default=400)
     parser.add_argument("--max-seconds", type=int, default=480)
+    parser.add_argument("--max-items-per-shop", type=int, default=None,
+                        help="au stage: stop enumerating and processing a shop once this many of its items are known/captured")
     args = parser.parse_args()
     if args.stage in ("discover", "au", "rakuten") and not args.category:
         parser.error("--category is required")
