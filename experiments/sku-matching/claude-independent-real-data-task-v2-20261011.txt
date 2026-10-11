@@ -5,7 +5,9 @@
 0. 目的と固定条件
 - 公開APIと公開商品ページの実データから、PR26 v5（align_sku_conditions.py、基準 commit 7b8f5ab）の独立評価用入力と機械gold（machinegold）を作る。合成データ禁止。
 - 1 case = 固定AU商品URL 1件 + 楽天SKU 1件。候補はそのAU商品の全行。判定時に別AU URLへ振り分けない。
-- 独立性（ユーザー指示 2026-10-11）: 既存の楽天URL（.lab-output/sku-real-rakuten-2026* で取得済みの商品）を含むペアと、その既存楽天URLに紐づくAU商品を含むペアは、評価データから除外する。原本ファイルは消さない。除外は groups 段の excluded に理由つきで残る。
+- 対象は同じ店舗（au と楽天の両方の WEIMALL）の同じ商品（au の主画像に楽天の管理番号が一意に入る）のペアだけ。属性が似ているだけの candidate_review は使わない。
+- 独立性（ユーザー指示 2026-10-11）: 既存のペア（final-v4 の confirmed / family）に入っている楽天URLと、そのペアのAU URLを含むペアは除外する。
+  以前に取得しただけで au と紐づいていなかった楽天・AU（旧の楽天SKU商品 580件のうち 472件）は除外しない。原本ファイルは消さない。除外は groups 段の excluded に理由つきで残る。
 - 既存の評価コード（align_sku_conditions.py、build_raw_pair_inputs.py、build_observed_pair_records.py、collect_au_samples_expanded.py、fetch_*.py）は変更しない。新しい処理は次の2ファイルにある:
   - experiments/sku-matching/collect_independent_real.py   取得（カテゴリ分割、claim、throttle、台帳）
   - experiments/sku-matching/independent_eval.py          ペア → 入力 → group → 注釈バッチ → 検査 → 凍結 → 採点
@@ -22,7 +24,9 @@
 - 試走（scratch。正式出力ではない）での結果:
   - build_observed_pair_records（旧+新）: family 104 → 119、candidate_review 1,275 → 1,588
   - token-pairs: candidate_review のうち主画像の型番が一意に一致する 200ペア（新57・旧143）、2,712ケース。build_raw_pair_inputs で失敗0。
-  - 既存楽天の除外を入れると、残りは token 21ペア・279ケース、family 1ペア。新しい楽天SKU商品が29件しかないため。
+  - 既存ペアの除外（--exclude-existing-pairs）を入れても、token は 198ペア・2,699ケースが残る（除外2ペア）。
+    grain: new_product_group 13ペア・232ケース、new_sku_existing_product 185ペア・2,467ケース。82 group。family の新規は約15ペア・約160ケース。
+    新ペアの大半は「以前に取得したが未リンクだった楽天・AU」が今回つながったもの（au新×楽天既存未リンク 58、au既存未リンク×楽天既存未リンク 127）。
 
 2. v1 からの修正点（実際に詰まった所）
 - au 店内検索: 多くの語の1ページ目を回すと検索上限を食い尽くす。店全体は「送料無料」1語で 2,193件・55ページ（ipp 40）ある。sweepall 担当がこれを全ページ引く。
@@ -34,7 +38,7 @@
 - build_raw_pair_inputs は Windows で動き、旧 family（970ケース）を sha256 まで再現した。
 
 3. 着手前に人へ確認が要る判断（オーケストレーターが勝手に決めない）
-- 独立データを大量に増やすには、新しい楽天URLの発見が必要。案は2つで、どちらも新しい取得対象になる:
+- 今のデータで約210ペア・約2,900ケースまでは取得なしで作れる（手順4）。それ以上に増やすには、新しい楽天URLか、新しい店が要る。案は2つで、どちらも新しい取得対象になる:
   A. 楽天の店内検索（search.rakuten.co.jp、WEIMALL の店内）で、新しいAU商品の型番（主画像ファイル名の先頭トークン）や商品名から商品ページURLを得る。
   B. WEIMALL 以外で、au PAY マーケットと楽天の両方に出店している店に広げる（例: au 側で既知の nissen shopId 45442552）。collect_independent_real.py の SHOP と fetch_rakuten.valid_item_url（weimall 固定）を新コードで拡張する必要がある。
   どちらを採るか、対象の店・上限をユーザーに確認してから実装する。許可が出るまでは、今あるデータでの評価（手順4）だけ進めてよい。
@@ -49,8 +53,9 @@
        python -B experiments/sku-matching/independent_eval.py inputs token  --pairs $E/token-pairs --out $E/run-token
        （confirmed は新規が無ければ不要。candidate は商品の同一性の裏づけが弱いので、使う場合は別ラベルで集計する）
   4-5. group・除外・split:
-       python -B experiments/sku-matching/independent_eval.py groups --run $E/run-token --pairs $E/pairs --exclude-existing-rakuten --out $E/groups-token
-       （family も同様に $E/groups-family）。grain = old_dataset / new_sku_existing_product / new_product_group。split = group の sha1 偶奇（dev/test）。除外は split=excluded。
+       python -B experiments/sku-matching/independent_eval.py groups --run $E/run-token --exclude-existing-pairs --out $E/groups-token
+       （family も同様に $E/groups-family）。grain = old_dataset（final-v4 の confirmed/family）/ new_sku_existing_product（未リンクだった既存商品を含む新ペア）/ new_product_group（両側とも今回初取得）。
+       split = group の sha1 偶奇（dev/test）。除外は split=excluded。
   4-6. 注釈バッチ（除外は自動で外れる）:
        python -B experiments/sku-matching/independent_eval.py batches --run $E/run-token --groups $E/groups-token/groups.jsonl --out $E/labels-token --per-batch 80
        batch-*.md が注釈者に渡すファイル。private/ は注釈者に見せない。
@@ -96,4 +101,4 @@
 - machinegold はモデルの注釈で、人手の独立goldではない。family/token/candidate は確定の商品ペアではない（pair_status をそのまま残す）。
 - group の series 規則（管理番号の末尾の数字+英字を落とす）は粗く、独立件数を少なめに数える側に倒している。
 - 楽天の SKU 無し商品・au の SKU 無し商品は、記録だけ残し、ケースにはしない。
-- 新しい楽天URLの発見方法（3 の A/B）が未決。これが決まらないと、除外つきの独立データはほとんど増えない。
+- 新しい楽天URLの発見方法（3 の A/B）が未決。決まるまでは、今のデータの約210ペアが上限。

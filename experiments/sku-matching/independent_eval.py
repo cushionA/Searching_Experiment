@@ -152,14 +152,15 @@ def groups(args) -> None:
     run = ROOT / args.run
     cases = read_jsonl(run / "inputs/cases.jsonl")
     contexts = {c["dossier_id"]: c for c in read_jsonl(run / "inputs/products.jsonl")}
-    old_pairs = {p["pair_id"] for p in read_jsonl(OLD_PAIRS / "observed_product_pairs.jsonl")}
     old_au = {str(p.get("item_id")) for d in OLD_AU for p in read_jsonl(ROOT / d / "products.jsonl")}
     old_rk = {str(p.get("manage_number")) for f in glob.glob(str(ROOT / ".lab-output/sku-real-rakuten-2026*/**/products.jsonl"), recursive=True)
               for p in read_jsonl(Path(f))}
-    # AU items paired with an already captured Rakuten product anywhere (old pairs or the current pairs) are not independent.
-    linking = read_jsonl(OLD_PAIRS / "observed_product_pairs.jsonl") + (read_jsonl(ROOT / args.pairs / "observed_product_pairs.jsonl") if args.pairs else [])
-    linked_au = {str(p["au_product_id"]) for p in linking if p.get("au_product_id") and p.get("rakuten_manage_number")
-                 and p["pair_status"] in STATUS.values() and str(p["rakuten_manage_number"]) in old_rk}
+    # Products already in an existing pair (confirmed or family in final-v4) add nothing; captured but unlinked ones do.
+    existing = [p for p in read_jsonl(OLD_PAIRS / "observed_product_pairs.jsonl")
+                if p["pair_status"] in (STATUS["confirmed"], STATUS["family"])]
+    paired_rk = {str(p["rakuten_manage_number"]) for p in existing}
+    paired_au = {str(p["au_product_id"]) for p in existing}
+    old_pairs = {p["pair_id"] for p in existing}
     parent: dict[str, str] = {}
 
     def find(x):
@@ -183,8 +184,8 @@ def groups(args) -> None:
         grain = ("old_dataset" if ctx["pair_ref"] in old_pairs else
                  "new_sku_existing_product" if au_id in old_au or manage in old_rk else "new_product_group")
         group = find(f"pair:{ctx['pair_ref']}")
-        excluded = (None if not args.exclude_existing_rakuten else "existing_rakuten_url" if manage in old_rk else
-                    "au_linked_to_existing_rakuten_url" if au_id in linked_au else None)
+        excluded = (None if not args.exclude_existing_pairs else "rakuten_url_in_existing_pair" if manage in paired_rk else
+                    "au_url_in_existing_pair" if au_id in paired_au else None)
         rows.append({"dossier_id": d, "pair_ref": ctx["pair_ref"], "pair_status": ctx.get("pair_status"), "grain": grain,
                      "group_id": "g-" + hashlib.sha1(group.encode()).hexdigest()[:12], "excluded": excluded,
                      "split": "excluded" if excluded else "test" if int(hashlib.sha1(group.encode()).hexdigest(), 16) % 2 else "dev"})
@@ -201,15 +202,17 @@ def groups(args) -> None:
     out = ROOT / args.out
     write_new(out / "groups.jsonl", jsonl(rows))
     summary = {"created_at_utc": now(), "inputs_sha256": {n: sha256(run / "inputs" / n) for n in ("products.jsonl", "cases.jsonl")},
-               "grain_rule": {"old_dataset": "pair_id present in sku-observed-product-pairs-20261010-final-v4",
-                              "new_sku_existing_product": "new pair whose AU item or Rakuten product was captured before 2026-10-11",
+               "grain_rule": {"old_dataset": "pair_id is a confirmed/family pair in sku-observed-product-pairs-20261010-final-v4",
+                              "new_sku_existing_product": "pair not linked in final-v4 (absent or candidate_review only) whose AU item "
+                                                          "or Rakuten product was captured before 2026-10-11",
                               "new_product_group": "new pair with both products first captured on 2026-10-11"},
                "group_rule": "connected components over pair, AU item, Rakuten manage number and its series prefix "
                              "(manage number without trailing digits+letters); split = sha1(group) parity",
                "pairs_by_grain_split": {f"{g}/{s}": n for (g, s), n in sorted(Counter((r["grain"], r["split"]) for r in rows).items())},
                "cases_by_grain_split": {f"{g}/{s}": n for (g, s), n in sorted(per_case.items())},
                "excluded_pairs": dict(Counter(r["excluded"] for r in rows if r["excluded"])),
-               "exclude_existing_rakuten": bool(args.exclude_existing_rakuten),
+               "exclude_existing_pairs": bool(args.exclude_existing_pairs),
+               "exclusion_rule": "pair excluded when its Rakuten URL or its AU URL is already in a confirmed/family pair of final-v4",
                "groups": len(by_group)}
     write_new(out / "groups-summary.json", json.dumps(summary, ensure_ascii=False, indent=1) + "\n")
     print(json.dumps(summary, ensure_ascii=False, indent=1))
@@ -416,9 +419,8 @@ def main() -> None:
     p = sub.add_parser("groups")
     p.add_argument("--run", required=True)
     p.add_argument("--out", required=True)
-    p.add_argument("--pairs", help="pairs dir whose links also mark AU items tied to existing Rakuten URLs")
-    p.add_argument("--exclude-existing-rakuten", action="store_true",
-                   help="exclude pairs with an already captured Rakuten URL and pairs whose AU item is linked to one")
+    p.add_argument("--exclude-existing-pairs", action="store_true",
+                   help="exclude pairs whose Rakuten URL or AU URL is already in a confirmed/family pair of final-v4")
     p = sub.add_parser("batches")
     p.add_argument("--run", required=True)
     p.add_argument("--groups", required=True)
