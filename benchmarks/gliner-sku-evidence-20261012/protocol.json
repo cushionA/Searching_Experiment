@@ -1,0 +1,49 @@
+{
+  "task": "real AU title/full-description field/span extraction ONLY; no condition classifier or SKU acceptance",
+  "selection": [
+    "309329265",
+    "337595272",
+    "483077897",
+    "509691375",
+    "524251610",
+    "597651839",
+    "653618158",
+    "695392874",
+    "704280046",
+    "704500131",
+    "704502086",
+    "778809347"
+  ],
+  "selection_rule": "one lexicographically first v7 unresolved row per 12 explicitly stratified AU products; no accessory prefilter, no label selection",
+  "strata": [
+    "dimensions",
+    "mattress type and size",
+    "bedding optional bundle",
+    "chair type",
+    "compound residual",
+    "step count",
+    "panel/door counts",
+    "diameter",
+    "blanket size/type",
+    "curtain model_candidate and reverse count residual"
+  ],
+  "label_kind": "Luna machine annotations; development data previously used by multiple sessions",
+  "train_test": "no training/split/held-out accuracy claimed; sibling Rakuten URLs and repeated AU descriptions must stay grouped in future splits",
+  "fields": {
+    "dimension": "Exact size, width, height, length, diameter or dimensions of a product, including units.",
+    "piece_count": "Exact numbers of included pieces, panels, doors, sets, or components with their names.",
+    "material": "Material or fabric of a product.",
+    "color": "Color name or pattern of a product.",
+    "product_type": "Product type, model variant or construction style.",
+    "included_item": "Items stated to be included or excluded, including conditional inclusion."
+  },
+  "threshold": 0.5,
+  "splitter": "whitespace (official checkpoint default)",
+  "threads": 2,
+  "first_smoke_products": 2,
+  "max_products": 12,
+  "baseline": "literal unresolved selected value matches in same full text; citations are candidates only, never support",
+  "metrics": "output shape, exact source offsets, partial machine-quote overlap/retention; no independent precision/recall or semantic three-state accuracy",
+  "reverse_residual_policy": "AU-side residuals remain untested; require Rakuten evidence",
+  "chunk_policy": "token-budgeted complete scan with overlap; record every chunk and validate coverage"
+}

@@ -1,0 +1,53 @@
+WARNING: The directory '/home/agent/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
+Collecting gliner2==2.0.0 (from gliner2[local]==2.0.0)
+  Downloading gliner2-2.0.0-py3-none-any.whl.metadata (52 kB)
+Collecting transformers==5.17.0
+  Downloading transformers-5.17.0-py3-none-any.whl.metadata (32 kB)
+Collecting sentencepiece
+  Downloading sentencepiece-0.2.2-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (33 kB)
+Collecting protobuf
+  Downloading protobuf-7.36.2-cp310-abi3-manylinux2014_x86_64.whl.metadata (595 bytes)
+Collecting psutil
+  Downloading psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl.metadata (22 kB)
+Collecting pydantic<3,>=2.0 (from gliner2==2.0.0->gliner2[local]==2.0.0)
+  Downloading pydantic-2.14.1-py3-none-any.whl.metadata (133 kB)
+Collecting requests<3,>=2.28 (from gliner2==2.0.0->gliner2[local]==2.0.0)
+  Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+Collecting tqdm<5,>=4.64 (from gliner2==2.0.0->gliner2[local]==2.0.0)
+  Downloading tqdm-4.70.1-py3-none-any.whl.metadata (57 kB)
+Collecting urllib3<3,>=1.26 (from gliner2==2.0.0->gliner2[local]==2.0.0)
+  Downloading urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting huggingface-hub<2.0,>=1.5.0 (from transformers==5.17.0)
+  Downloading huggingface_hub-1.33.0-py3-none-any.whl.metadata (16 kB)
+Collecting numpy>=1.17 (from transformers==5.17.0)
+  Downloading numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+Collecting packaging>=20.0 (from transformers==5.17.0)
+  Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Collecting pyyaml>=5.1 (from transformers==5.17.0)
+  Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Collecting regex>=2025.10.22 (from transformers==5.17.0)
+  Downloading regex-2026.9.29-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+Collecting tokenizers<0.24.0,>=0.23.1 (from transformers==5.17.0)
+  Downloading tokenizers-0.23.3-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (9.8 kB)
+Collecting typer (from transformers==5.17.0)
+  Downloading typer-0.27.3-py3-none-any.whl.metadata (16 kB)
+Collecting safetensors>=0.8.0 (from transformers==5.17.0)
+  Downloading safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.2 kB)
+Collecting peft<1,>=0.10 (from gliner2[local]==2.0.0)
+  Downloading peft-0.21.2-py3-none-any.whl.metadata (15 kB)
+Requirement already satisfied: torch<3,>=2.1 in /tmp/gliner-sku-venv/lib/python3.12/site-packages (from gliner2[local]==2.0.0) (2.7.1+cpu)
+INFO: pip is looking at multiple versions of gliner2[local] to determine which version is compatible with other requirements. This could take a while.
+ERROR: Cannot install gliner2[local]==2.0.0 and transformers==5.17.0 because these package versions have conflicting dependencies.
+
+The conflict is caused by:
+    The user requested transformers==5.17.0
+    gliner2[local] 2.0.0 depends on transformers<5 and >=4.38; extra == "local"
+
+To fix this you could try to:
+1. loosen the range of package versions you've specified
+2. remove package versions to allow pip to attempt to solve the dependency conflict
+
+
+[notice] A new release of pip is available: 25.0.1 -> 26.2.1
+[notice] To update, run: python3 -m pip install --upgrade pip
+ERROR: ResolutionImpossible: for help visit https://pip.pypa.io/en/latest/topics/dependency-resolution/#dealing-with-dependency-conflicts
