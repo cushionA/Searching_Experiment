@@ -106,15 +106,20 @@ class TableTests(unittest.TestCase):
         self.assertEqual(run_here(("colour", "カラー", "ネイビー"))[1][2], "symmetric_condition_unresolved")
 
 
+def left(c):
+    return [(r["side"], r["text"], r["verify_with"]) for r in c["residual"]]
+
+
 class CoreTests(unittest.TestCase):
-    def test_residual(self):
-        self.assertEqual(al.residual("100×220cm", "幅100×丈220cm(2枚)"), [["au", "2枚"]])
-        self.assertEqual(al.residual("ベージュ", "ショート/ベージュ"), [["au", "ショート"]])
-        self.assertEqual(al.residual("ホワイト(長袖)", "ホワイト"), [["rakuten", "長袖"]])
-        self.assertEqual(al.residual("21.0", "21.0cm"), [])
-        for rakuten, au in [("100×220cm", "幅100×丈200cm(2枚)"), ("01.ブラック", "01.ブラックポケットあり"),
-                            ("S", "XS"), ("ホワイト", "オフホワイト"), ("2人用", "2段"), ("100×220", "100-220")]:
-            self.assertIsNone(al.residual(rakuten, au), (rakuten, au))
+    def test_compare(self):
+        self.assertEqual(left(al.compare("ベージュ", "ショート/ベージュ")), [("au", "ショート", "rakuten")])
+        self.assertEqual(left(al.compare("ホワイト(長袖)", "ホワイト")), [("rakuten", "長袖", "au")])
+        self.assertEqual(al.compare("グレー", "グレー(パイル)")["residual"][0]["source_value"], "グレー(パイル)")
+        # A sign, unit or qualifier is never dropped: the cores differ, and only bracketed parts are split off.
+        for rakuten, au in [("15℃", "-15℃"), ("100cm", "最大100cm"), ("21.0", "21.0cm"), ("1", "1/2サイズ"),
+                            ("100×220cm", "幅100×丈220cm(2枚)"), ("01.ブラック", "01.ブラックポケットあり"), ("S", "XS")]:
+            self.assertFalse(al.compare(rakuten, au)["core"]["identical"], (rakuten, au))
+        self.assertEqual(left(al.compare("100×220cm", "幅100×丈220cm(2枚)")), [("au", "2枚", "rakuten")])
 
     def conds(self, rakuten, au, forward, reverse, *values):
         table = al.value_pairs(entry(rakuten, au, forward, reverse))
@@ -128,8 +133,18 @@ class CoreTests(unittest.TestCase):
         au = [["カラー", "グレー(フェイクファー)"], ["カラー", "グレー(フォックス)"], ["カラー", "ブラック"]]
         conds = self.conds(rakuten, au, [[3, 1, 0], [0, 0, 0]], [[3, 0], [1, 0], [0, 0]], ("c", "カラー", "グレー"))
         self.assertEqual(list(conds["status"]), ["residual", "residual", "contradiction"])
-        self.assertEqual(list(conds["residual"])[:2], [[["au", "フェイクファー"]], [["au", "フォックス"]]])
+        self.assertEqual([[(r["side"], r["text"]) for r in x] for x in list(conds["residual"])[:2]],
+                         [[("au", "フェイクファー")], [("au", "フォックス")]])
         self.assertEqual(al.decide(al.row_states(conds))[2], "pending_description_check")
+
+    def test_siblings_of_an_unconfirmed_pick_stay_candidates(self):
+        # 100×80cm is not provably 幅100×丈80cm: the pick and its (4枚組) sibling stay candidates with their parts split off.
+        rakuten = [["s", "サイズ", "100×80cm"], ["s", "サイズ", "100×90cm"]]
+        au = [["カラー", "幅100×丈80cm(2枚)"], ["カラー", "幅100×丈80cm(4枚組)"], ["カラー", "幅100×丈90cm(2枚)"]]
+        conds = self.conds(rakuten, au, [[3, 2, 0], [0, 0, 3]], [[3, 0], [2, 0], [0, 3]], ("s", "サイズ", "100×80cm"))
+        self.assertEqual(list(conds["status"]), ["model_candidate", "model_candidate", "contradiction"])
+        self.assertEqual([c["identical"] for c in list(conds["core"])[:2]], [False, False])
+        self.assertEqual([x[0]["text"] for x in list(conds["residual"])[:2]], ["2枚", "4枚組"])
 
     def test_au_value_identical_to_another_rakuten_value_is_not_shared(self):
         rakuten = [["c", "カラー", "グレー"], ["c", "カラー", "グレー(メッシュ)"]]
@@ -137,12 +152,12 @@ class CoreTests(unittest.TestCase):
         conds = self.conds(rakuten, au, [[0, 0], [3, 0]], [[0, 3], [0, 0]], ("c", "カラー", "グレー(メッシュ)"))
         self.assertEqual(set(conds["status"]), {"symmetric_unresolved"})
 
-    def test_notation_only_difference_is_aligned(self):
-        rakuten = [["s", "サイズ", "21.0"], ["s", "サイズ", "21.5"]]
-        au = [["カラー", "21.0cm"], ["カラー", "21.5cm"]]
-        conds = self.conds(rakuten, au, [[1, 0], [0, 1]], [[1, 0], [0, 1]], ("s", "サイズ", "21.0"))
-        self.assertEqual(list(conds["status"]), ["aligned", "contradiction"])
-        self.assertEqual(al.decide(al.row_states(conds)), ("matched", "r0", "all_conditions_aligned_on_one_row"))
+    def test_numbers_alone_do_not_align(self):
+        rakuten = [["t", "温度", "15℃"], ["t", "温度", "20℃"]]
+        au = [["カラー", "-15℃"], ["カラー", "20℃以下"]]
+        conds = self.conds(rakuten, au, [[1, 0], [0, 1]], [[1, 0], [0, 1]], ("t", "温度", "15℃"))
+        self.assertNotIn("aligned", set(conds["status"]))
+        self.assertEqual(al.decide(al.row_states(conds))[0], "unmatched")
 
 
 if __name__ == "__main__":
