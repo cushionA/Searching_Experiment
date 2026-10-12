@@ -1,0 +1,31 @@
+# Frozen DEV SKU condition-alignment handoff
+
+## Purpose and state
+
+Use this bundle as source-backed input for the existing SKU semantic axis/condition alignment process on the frozen DEV population. This is an input handoff, not an alignment result. No Claude task responses, similarity stage, inference, classification, or scoring are included or claimed complete here. The local candidate-producing stage is being handled separately.
+
+The input bundle is pinned by the adjacent `20261013-sku-claude-frozen-dev-alignment-inputs.zip.manifest.json` and `.zip.sha256` files. The request is inside the ZIP, so it deliberately does not embed the ZIP's own digest. The bundle includes a `BUNDLE_MANIFEST.json` with member hashes, the full input archive/member SHA pins, and a line-level mapping from each DEV case to its original v2/v3 source record.
+
+## Required scope
+
+Process only the 1,370 fixed DEV cases in the bundle (v2: 1,295; v3: 75), their 107 deduplicated AU products, and every original AU row, including sold-out rows. Keep every selected Rakuten axis, every AU row axis, and every complete ordered raw option family. Carry the exact original `case_id`, `dossier_id`, `au_product_id`, `source_sku_key`, `au_row_key`, source version, source archive/input line, source SHA-256, locator, and literal span through each output record.
+
+Use the existing semantic axis/condition aligner and its established output contract as documented by `prepare_claude_alignment_v7.py` and the v7 `real-prepared` artifact schema. Write a fresh versioned DEV-only result under:
+
+`experiments/sku-matching/results/20261013-sku-claude-dev-condition-alignment/`
+
+Keep the familiar logical artifacts (`case_plans.jsonl`, `row_plans.jsonl`, `tasks.jsonl`, `requests.jsonl`, `documents.jsonl`, and `manifest.json`) where applicable. Bind output records to this bundle's original DEV identities and source pins; never reuse v7 row decisions or prior predictions as DEV results.
+
+## Alignment evidence and unknowns
+
+Represent each original Rakuten axis against each AU row with an explicit source-bound association, a source-supported one-sided condition, or `unknown`/unresolved. A missing name/value match is not evidence that a condition is one-sided. Do not fabricate a per-case response or row mapping when source evidence or an actual task response is absent; record the exact missing binding and leave the condition unresolved.
+
+Preserve original strings and option order. Carry numeric, unit, model, size, and other literal values with their source spans; do not use text normalization, category-specific rules, or a newly introduced model to create alignment. Keep alignment distinct from final SKU classification. A new model alternative winning on similarity alone is not proof of equivalence or conflict. Any structured conflict must state the exact compared axes/values, the original row and source spans, and the evidence that supports the conflict. If that evidence is insufficient, return `unknown`.
+
+Selected Rakuten values in the source/task inputs are binding context for the fixed SKU case, not output labels. Do not turn them into alignment targets or expose any final match label. Preserve all candidate AU rows and alternatives independently of a proposed alignment.
+
+## Output and validation
+
+Each emitted case/row/task must resolve to the exact original case, product, selected SKU, AU row, and raw source bytes using the included mapping and filtered source index. Reverify all source SHA-256 pins and span quotes before using them. Record every actual model/task response with its request/task ID and exact source bindings; distinguish an actual response from a deterministic source proof. Keep missing purchase-option input honest: the source flags report 12 of 107 DEV products with empty or absent `au_purchase_option_lines`; API availability is not inferred from that field.
+
+The result manifest should list input ZIP SHA-256, member hashes, code and model/runtime pins, exact DEV coverage, unresolved/unknown counts, response coverage, and explicit `labels_read: false`, `test_case_records_parsed: false`, `inference_run` and scoring state. Do not parse, select, include, or use test cases, test labels, gold references, scores, baseline outputs, secrets, or model weights. Keep the frozen hold-out split sealed.

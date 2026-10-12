@@ -1,0 +1,37 @@
+Claude向け: 凍結devの選択軸・条件対応の接続
+
+新しいカテゴリ規則、新判定器、新収集、再ラベルは依頼しません。
+既存の対応処理を、まだ接続されていない凍結dev入力へ適用してください。
+Codex側では同じ既存reranker版によるsimilarity/align候補生成を別runで進めています。
+重複実行する前にその成果物を確認し、原本への対応と未確定条件の出力をそろえてください。
+
+入力
+- results/20261013-sku-claude-frozen-dev-alignment-inputs.zip
+- SHA256: fd9f5bfda54e8bbb9497f1fde2a8237db89050949d738689f0a85032ef9d23af
+- 1,370 devケース（v2 1,295 / v3 75）、107商品、211原本capture。
+  case/product/groups、全AU配列、全原選択肢、原行/SHA対応表、source indexを同じ凍結版で同梱。
+  testケース・ラベル・予測・モデル応答は含めていません。
+- 購入option linesが空/欠落のdev商品は12/107。API原本の存在有無をこの欠落から推測しないでください。
+- ZIP内の英語依頼書は入力凍結時点の記録です。この日本語文は追加の具体的な接続要件です。
+
+出力要件
+1. 同一商品内の全AU行（売切れを含む）を保持し、case_id、dossier_id、au_product_id、
+   元楽天SKUキー、au_row_key、source版/原入力行、raw SHA/spanを各条件へ結び付けてください。
+2. 各AU行の状態を行キー付きで出してください。contradiction行の総数や
+   several_rows_alignedの件数だけではCodex側で全候補行を検証できません。
+3. 原軸名・原値・全選択肢・順序を維持してください。既存の正規化/core/residualは候補やヒントであり、
+   原値全体が一致しないものを自動証明にしません。別optionがモデルの1位になっただけではconflictにしません。
+4. 軸対応、one_sided、互いに排他的な条件は、それを支持する原本の軸/配列/値と根拠を出してください。
+   対応がないことや軸名の欠落だけでone_sidedを推測せず、根拠不足はunknownにしてください。
+5. 各楽天原軸と各AU原軸を漏れなく説明してください。映像/説明文などの未確定条件は実応答と引用を保存し、
+   欠けた応答を生成済み扱いにしないでください。確定条件と未確定条件を同一AU行に結び付けてください。
+6. 既存v7の別商品/別SKUの結果を転用しないでください。code/model/revision/runtime、入力と
+   similarities/各出力のSHA、全行coverage、unknown/実応答数、labels_read:falseをmanifestへ保存してください。
+
+希望する成果物
+- 新dev用のdecisions/handoffと、全case×AU行の原本付きrow trace。
+- 未確定の条件task/requestと実応答（存在するもののみ）、原選択肢・raw参照・manifest。
+- 入力やラベルを変更せず、fresh versionのZIPとSHAで渡してください。
+
+今回の消費済みtest40件に合わせたカテゴリ規則・ラベル変更は不要です。
+改善はこの商品重複のないdevで行い、Codex側で方針を固定してから未使用testを評価します。
