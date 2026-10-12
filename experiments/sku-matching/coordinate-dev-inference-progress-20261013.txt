@@ -1,0 +1,44 @@
+新DEV20件：原本座標と参照索引方式の固定・推論中（2026-10-12 UTC）
+
+独立TEST40件の結果50.0%（TP11/FP0/FN11/TN3、既知25・未確定15）は
+4047090efd8eed97028f8b9725d3110077259be3でリモート保存済み。消費済みTESTは変更しない。
+完成とは判断せず、別のDEV10商品×2ケースをIDハッシュだけで事前選択した。
+選択membership SHA256: 436d9c078f944a0265ebc6bedbaae42712c958f079a492387259f149385e2f32
+先のDEV20商品と重複0、元TEST106商品とも重複0。これはDEVであり独立TESTではない。
+
+原本の取得済みJSONPath・楽天selector IDを使用して、同じ見出しによる
+AU16件・楽天16件の座標抽出失敗を解消。値・見出し・完全な配列順は正規化しない。
+与えられたlabel/value spanの原本SHA、位置、実座標、楽天のネイティブSKU IDを検証する。
+残る16条件は異なる軸の選択肢を1配列に混ぜた入力で、原本の個別familyと一致しない。
+これらはunknownのまま。商品別・カテゴリ別の判定規則を追加したものではない。
+旧source-nli-v1/v2と修正履歴を残し、現行はsource-nli-v3（source fact error0）。
+新しいliteral adapterは元ef00 proof関数のbytecodeに原本抽出だけを接続する。
+元の軸名唯一性・全ordered family完全一致の意味規則を維持し、重複見出しのproofはunknown。
+
+モデルへの情報は、全選択肢、反対側の実選択済み事実、全文bodyを維持。
+自分側のselected wanted値やcase/task/SKU IDは渡さない。
+モデルは各選択肢の意味状態、座標scope、排他理由、使用した事実の索引を判断する。
+rendererはモデルが選んだ参照から元v2形式を組み立て、不正な索引・欠落vectorはunknown。
+raw inequality、別winner、本文での欠落を自動的な否定根拠にしない。
+
+固定対象は全20ケース・320 AU行・1,220双方向条件・773要求・20文書。
+341 contextのうち152は独立literalで保護、残る189 context/2,510選択肢を実Lunaへ委譲。
+入力・意味code・dispatch全202pinを推論前に固定:
+fd00b9bf05bb5c90d36439540a89a3350cc85d46a2690b2bd46d9e1c44167b2e
+元NLI a467、normalizer f43、全行gate 2782、literal ef00は不変。
+明示gpt-6-luna/fork-none routingを利用。自己申告はモデルID証明にしない。
+ホスト重みrevisionは独立検証できない。GPUは追加投入していない。
+
+部分checkpointは15 packet / 47 pair / 738判断の時点の不変snapshot。
+最新のライブ進捗・全推論完了・精度のcheckpointではない。
+全raw初回応答を保存し、packet007の未出力pair継続、038の初回serializer回復、
+050のstate→relation enum転記を監査注記する。後続022/031/040の意味判定誤り、
+049のplaceholder出力失敗も報告されており、既に出力済みの意味状態は変更しない。
+採点ラベルはまだ開いていない。全最終予測/gate固定後に選択20件だけを採点する。
+
+required1,347件：failure0、既存欠落fixture14error、37skip。新しい関連25件は成功。
+部分ZIPは265 payload＋内部manifestを全byte/SHA/CRC検証、全202pinと22原本capture一致。
+experiments/sku-matching/results/20261013-sku-coordinate-dev-inference-partial-checkpoint.zip
+5,666,075 bytes / SHA256 983d0d156b3e8e1df647be22ff63e8cf0a9a04b69b1053856fda5974de84cc11
+元全件case/productsと参照ZIPは外部依存SHA。重み・secret・gold・scoreは含めない。
+原本freeze、モデル応答、全行集約、採点の順で継続する。残る未使用TEST66商品は保留。
