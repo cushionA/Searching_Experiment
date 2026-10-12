@@ -803,7 +803,7 @@ Claude 3. holdout適用の入口
 - Codex への受け渡し（説明確認の接続）:
   - residual の条件は、中核がすでに確定している。説明確認は、残余の文字列だけを確かめればよい。
     - au 側の残余（2枚、パイル、ショート）: AU 行ごとに違う。「楽天の SKU がその付加条件を満たすか」という逆方向の確認になる。
-    - rakuten 側の残余（5分袖、ロング、ワイド）: AU 行に依らない。Codex の商品単位共有（one_sided と同じ扱い）に乗せられる。
+    - rakuten 側の残余（5分袖、ロング、ワイド）: AU の情報で確かめる。（訂正、13-14: 一律に商品単位で共有できるとした記述は誤り。共有できるかの判定と接続は Codex 側が担当する）
   - Codex 報告の17件と同じ型（寸法＋枚数、色＋（パイル））は、29ペアの model_candidate 800件がすべて residual になった。29ペア以外の該当ケースは個別には照合していない。
   - 残る model_candidate（説明確認へ流れる未確定の値対応）の型:
     - 括弧の位置の入れ替え: 【A】3D立体 → A(3D立体)/Mサイズ。v1 token の残り 864件のうち 320件。
@@ -819,3 +819,44 @@ Claude 3. holdout適用の入口
 - 出力:
   - 29ペア・family・候補: .lab-output/sku-align-20261012-v6/{legacy,family,candidate}/align/
   - 独立評価: .lab-output/sku-independent-real-20261011/eval-v{1,2,3}/align-v6-{family,token}/align/ と score-v6-*.json
+
+13-14. v7: Codex の v6 レビューへの対応（2026-10-12、ローカル。ラベルは読んでいない）
+- 指摘と対応:
+  1. 数値の一致が広すぎた。単体で 15℃ と -15℃、100cm と 最大100cm が aligned になっていた（数字の前のラベルを黙って落としていた）。
+     対応: 数字の規則を削除した。中核は括弧の中身と '/' の他の部分を脇に置いた残りで、完全に同じ場合だけ一致とする。
+     '/' は数字に挟まれた位置では分けない（1/2サイズ を 1 と 2サイズ に分けない）。
+     同一性を証明できない組は未確認（model_candidate）のまま渡す。カテゴリ別の例外は追加していない。
+  2. 残余の側と元の条件を保持してほしい。
+     対応: residual の各要素は {side, text, source_value, verify_with}。楽天側の残余は au で、au 側の残余は楽天で確かめる。
+     条件には core（{identical, rakuten, au}）も付けた。受け渡し行には、次の4つを追加した。
+     - 楽天の各軸の axis_label・値・family_values・value_span
+     - AU 行の各軸の値と value_span（JSONPath と raw_file・sha256）
+     - AU の軸ごとの選択肢一覧（au_axis_options）
+     - 元からある楽天SKUと AU 商品の原本参照
+  3. 残余を一律に商品単位で共有しない。13-13 の記述を訂正した。共有の判定と接続は Codex 側が担当する。
+  4. 実出力の共有: v6 と v7 の handoff・decisions・summary を、新しい ZIP にまとめた（下記）。
+- 兄弟行の扱い:
+  - v6 では、中核が証明できた値だけが model の1つの選択に代わっていた。数字の規則が無くなると、寸法の (2枚)/(4枚組) の兄弟は再び隠れた選択になる。
+  - v7 では、model の選んだ AU 値と中核が同じ行（兄弟）は、矛盾ではなく model_candidate として残す。core（未確認）と、脇に置いた部分も付ける。
+  - これで、v5 で矛盾にならなかった行は v7 でも矛盾にならない。中核の一致は除外を足さず、格上げだけをする。
+- 結果（コード sha256 は summary.json の code_sha256。similarities は v5 のものを再利用）:
+  - 判定:
+    - 29ペア・family・独立 v1 family・v2 family・v3 token は v5 と同じ。
+    - 独立 v1 token と v2 token は、除外（未解決）から説明確認へ移ったものだけが v6 と同じく残った。v1 は 10ケース、v2 は 15ケースで、括弧の付記の中核一致による。
+    - v6 の数字の規則による採用（v2 token の +231）は消えた。
+    - 候補: 採用は v5 と同じ 417件。除外（未解決）から説明確認へ移った 312ケースは v6 と同じ。v6 の採用 +1（iPhone12ProMax → 12ProMax）は消えた。受け渡し行は 13,327→14,084。
+  - 機械ラベルとの突き合わせ: 新しい誤り（drop_but_adopted・accept_other_row）は、全 run・全分割で 0。accept_same_row は全 run で v5 と同じ。
+  - 受け渡しの条件:
+    - 29ペア: model_candidate 720（寸法。core 未確認、(2枚) などは residual として分離済み）、residual 80（色＋（パイル））。
+    - 受け渡し行の増加は兄弟行による。独立 v1 token は 2,073→2,173、v2 token は 2,287→2,470。
+- 出力:
+  - .lab-output/sku-align-20261012-v7/{legacy,family,candidate}/align/
+  - 独立評価: .lab-output/sku-independent-real-20261011/eval-v{1,2,3}/align-v7-{family,token}/align/
+  - ZIP（既存の成果物は上書きしていない。リポジトリの直下で展開すると .lab-output の相対パスに戻る）:
+    - 29ペア・family・独立評価 v1〜v3 の v6・v7: experiments/sku-matching/results/20261012-sku-align-v6-v7-outputs.zip
+      sha256 f5522952…、45ファイル、2,554,855 bytes。
+    - 候補の v6・v7: experiments/sku-matching/results/20261012-sku-align-v6-v7-candidate-outputs.zip
+      sha256 0358ab00…、9ファイル、4,424,421 bytes。
+    - 中身: 各 run の align/handoff.jsonl・decisions.jsonl・summary.json と、各版のコード（v6 = 4c40837、v7 = 7fd8e17）。
+      manifest には、入力（products・cases）・similarities・コードの sha256 と、変更していないラベルの sha256（29ペアは Luna、独立評価は label-manifest・resolved・groups）を記録した。
+      展開して全ファイルの sha256 を manifest と照合し、不一致は 0 だった。ラベル本体は含めていない。
