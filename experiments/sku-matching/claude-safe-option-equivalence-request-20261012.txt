@@ -1,0 +1,60 @@
+Claude担当への転送文
+
+次の2件について、元のaxis/option値を根拠に、安全な同値判定の条件を検討してください。現状の差分はCodexNLIがunknownを返した候補で、バグと断定していません。Codex側がadapter/gate/採点を担当します。結果は、同値とできる条件・できない条件、各条件の根拠、汎用的なadversarial例を含めてください。
+
+各判定にはprovenance sidecarを付け、型（例: 大文字小文字の表記差、サイズ接尾辞の同値）、根拠となる入力値、実施する正規化手順、入力原文の対応spanを記録してください。Codexが原文から再検証できる形式にしてください。意味、数量、単位、符号、最大等の修飾、付属品、残余条件を必ず保存すること。証明できない場合はmodel_candidateのままとし、その理由を報告してください。原値が異なる現状では「aligned」だけ付けてもCodexの現adapterは自動proofとして採用しません。
+
+依頼範囲はgenericな同値判定の設計と証拠整理です。特定カテゴリ専用例外、数値だけの同一視、型・文脈を検証しないstrip/casefold/部分ラベル比較は提案しないでください。test原本の変更、新規データ収集、新モデルの追加は不要です。凍結済みrunは上書きせず、成果は新しいrunに保存し、ZIP・input・SHAを報告してください。独立test参照は禁止です。
+
+既存の実装にも接続する修正案を用意してください。各証明は完全な原文値を再構成できる形で、正規化した部分と未確認の残余を別に記録してください。対照テストには L/XL、L/L(ロング)、250g×2P/500g×1P、15℃/-15℃、100cm/最大100cm の誤同一視を防ぐ例を含めてください。合成例はunit testだけに使い、実データ評価へ混ぜないでください。
+
+対象と観測値
+
+1) case-163fa1792c386ae5e726 — サイズ「L」と「Lサイズ」
+方向: 楽天選択値からau SKU候補への対応。対象au行 au:379580385:88157962:1:0、source SKU https://item.rakuten.co.jp/wilmart/osr-1149/#26091:10。producerは楽天 axis「サイズ」=「L」をau「サイズ」=「Lサイズ」に結び付け、状態はmodel_candidate、core.identical=false。
+
+au側の全候補値:
+- サイズ: Mサイズ / Lサイズ / LLサイズ
+- カラー: ブラック / グリーン / ピンク / サックス / ホワイト
+楽天側のselector family:
+- サイズ: M / L / LL
+- カラー: サックスブルー / ピンク / グリーン / ホワイト / ブラック
+選択された原値は楽天サイズ「L」、auサイズ「Lサイズ」。対象au行のカラー原値は「ブラック」(このケース内のカラー条件は既にaligned)。
+
+au source span (SHA-256 0a00c86a5bd5e03596aad26c366c0661030e7183b3e777142dd6455e47d6d002):
+- サイズ名「サイズ」: .lab-output/sku-independent-real-20261011/multishop/selection-v1/au/raw/379580385-item.json, $.itemInfo.skuInfo.optionName.row, quote「サイズ」, [0,3)
+- 選択値「Lサイズ」: 同ファイル, $.itemInfo.skuInfo.rowNames[1], quote「Lサイズ」, [0,4)
+- 同一行カラー値「ブラック」: 同ファイル, $.itemInfo.skuInfo.columnNames[0], quote「ブラック」, [0,4)
+- 全候補サイズ: $.itemInfo.skuInfo.rowNames[0..2] = Mサイズ, Lサイズ, LLサイズ
+- 全候補色: $.itemInfo.skuInfo.columnNames[0..4] = ブラック, グリーン, ピンク, サックス, ホワイト
+au row key: au:379580385:88157962:1:0 (SKU 88157962; source array line 508)。
+
+楽天 source span (SHA-256 54114a3989f4c209c5d9842cb09cb1c3103f1a87a3b8aca4e1b2752cdb799e68):
+- axis「サイズ」および選択値「L」: .lab-output/sku-independent-real-20261011/apparel/rakuten/raw/osr-1149-06c1d67b.html; EUC-JP HTML text; selector path sku[variantId=26091].selectorValues[1]; value quote「L」, [77538,77539); axis label quote「サイズ」。
+- family values M/L/LL (同じselector)。選択色はブラック。
+
+2) case-502654b9aeb6d7fb58f8 — 「×2P」と「×2p」
+方向: 楽天選択値からau SKU候補への対応。対象au行 au:785352843:335013786:0:0、source SKU https://item.rakuten.co.jp/kouragumi/200132/#200132aa:0。producerは楽天 axis label「種類を選んで下さい」=「ゆで250g×2P」をau「種類を選んでください」=「ゆで250g×2p」に結び付け、状態はmodel_candidate、core.identical=false。
+
+楽天側のaxis「種類を選んで下さい」の全option値:
+- ゆで250g×2P
+- あぶり250g×2P
+- ゆで250g+あぶり250g
+au側のaxis「種類を選んでください」の全候補値:
+- ゆで250g×2p
+- 炙り250g×2p
+- ゆで250g＋炙り250g
+対象選択値は楽天「ゆで250g×2P」、au「ゆで250g×2p」。残り候補にある調理法と混合内容、数量、単位、演算記号の違いを壊さず、該当する表記正規化の安全範囲を示してください。
+
+au source spans (SHA-256 1a3cdc446ddb8fa47398f8a155f96263580484dba6bfef0162c9202f951e30aa):
+- axis「種類を選んでください」: .lab-output/sku-independent-real-20261011/multishop/selection-v3/au/raw/785352843-item.json, $.itemInfo.skuInfo.optionName.column, quote「種類を選んでください」, [0,10)
+- 選択値「ゆで250g×2p」: 同ファイル, $.itemInfo.skuInfo.columnNames[0], quote「ゆで250g×2p」, [0,9)
+- 全候補は $.itemInfo.skuInfo.columnNames[0..2] の上記順。
+- 対象行 au:785352843:335013786:0:0 (SKU 335013786; source array line 14)。
+
+楽天 source spans (SHA-256 73a434c57287cd256f5cae03e64793cffd4500acf19924663454907457c29035):
+- axis label「種類を選んで下さい」: .lab-output/sku-independent-real-20261011/food/rakuten/raw/200132-ccefbe3e.html, EUC-JP HTML text, variantSelectors[0].label, [121527,121536)
+- 選択値「ゆで250g×2P」: 同ファイル, sku[variantId=200132aa].selectorValues[0], [122226,122235)
+- family values: ゆで250g×2P / あぶり250g×2P / ゆで250g+あぶり250g
+
+入力の用意元は .lab-output/sku-mixed-gpu-prep-20261012-v5 の gpu-cases.jsonl / tasks.jsonl です。既知の「旧family4参照未生成」は確認済みなので、その参照を新たに生成する作業は依頼しません。
