@@ -1,0 +1,113 @@
+SKU購入構成の説明文照合: 20261013実験の結果・再開先
+
+最新の開発候補
+- .lab-output/sku-composition-language-model-20261013-v1/complete-sku-evaluation/complete-sku-fallback
+  predictions.jsonl と gates/ を一組で使用する。
+- 既存機械参照73件: TP36 / FP1 / FN19 / TN17。
+  precision97.3%、recall65.5%、accuracy72.6%。正解AU行36、別AU行誤採用0。
+  直前候補30/1/25/17から6件回収、既存TPの回帰0、追加FP0。
+- 旧誤り44件: 17/1/15/11。既読dev26件: 19/0/4/3。旧対照3件: 0/0/0/3。
+  回収6件は旧誤り集合のAU商品3件に集中している。独立devの成績は変わらない。
+  全83ケースでは新規受理7件。このうち採点対象外1件の正否は評価していない。
+  既読の開発集合で選んだ候補であり、一般精度・独立test・本番採用の結果ではない。
+  独立testは開かず、既存原本・ラベル・凍結入力を変更していない。
+
+変更の理由と方式
+- 軸の単語だけでは数量・付属品・選択状態を区別できない。
+  全原選択肢と不明を保ち、説明の仕様・セット内容から購入構成を判定する。
+  paired条件には同一対象SKUの全選択軸を提示する。
+  genuine one-sided共有29group/80要求には特定の選択軸・選択原値・AU行を提示しない。
+- 主入力はmixed83ケース/134要求。typed同値証明1要求を維持し、
+  残りを共有29unitとpaired53unit、計82unitとして扱った。
+  72unitにtop3までの原文ブロックがあり、10unitは出典不足でunknown。
+- 楽天の凍結HTMLをbyte SHA/encoding/locatorから復元し、513ブロックを追加。
+  既存AU546と合わせて1059。説明fieldへliteralに復元できない113経路/ブロックは除外。
+  明示的検索語、リンク付き表（兄弟行のリンクも含む）、文脈未確認の表を除外する。
+  商品説明内の仕様は保持するが、独立したtitle fieldはモデルへ渡さない。
+- v1のlegacy parser由来のnested raw locator metadataをv2で修復。
+  4原HTML、513ブロックの15,394 raw spansを再検証した。
+  model_passage・document quote refs・block identityは不変。
+  原文/引用一致は記載のSKU適用性や意味の正しさを自動証明しない。
+
+全比較（同じ機械参照73件、TP/FP/FN/TN）
+旧候補                                      30/1/25/17
+新構成ブロック+固定JEV、全model条件置換         18/9/37/9
+同JEV、旧非supportを補完                     31/11/24/7
+同JEV、共有条件だけ補完                       30/5/25/13
+同入力の固定raw NLI unique支持補完             30/1/25/17
+同入力のJEV+NLI同一2ブロック支持補完            30/1/25/17
+gpt-6-luna、旧非supportを補完                  38/9/17/9
+同モデル、全model条件置換                     27/0/28/18
+同cached予測、明示された別構成なら保留          38/4/17/14
+同cached予測、新規採用は全条件の新支持を要求     36/1/19/17 ← 開発候補
+
+- 固定モデルの比較では新reranker2482対/1968 unique、JEV2126対/180 unique choice、
+  追加NLI1917対/1714 uniqueをCPUで実推論した。
+  NLI実推論614.227秒。GPU再submitは行わず、過去HTTP409/受付不明を維持。
+- 固定モデルは従来のmodel revision、FP32 CPUとreranker int8を維持。
+  保存済みスコアを新推論として報告せず、各推論のsource/model/output pinsを保存した。
+- gpt-6-lunaは明示的model overrideを指定した4つのforkなしworkerで実推論。
+  原文packet、全選択肢、pairedの全選択軸だけを渡した。正解・既存予測・評価結果を渡していない。
+  hosted aliasのweight revisionは固定/検証できていない。モデル自己申告をID証明にしていない。
+  生応答と検証済み予測によるcached評価は再現可能だが、新推論の厳密な同一性は保証できない。
+  推論確率・JEV logits・GPU速度を生成/代用していない。
+- worker1の初回17/18応答とunit ID転記誤りをcoverage検証で検出。
+  元17予測を変えず、ID訂正と欠落した元packet1件の判定だけを依頼し、修復前後を保持。
+  72応答が揃ってからgateを作成。別の1応答はnonnullなのに引用block IDがなく、unknownにした。
+
+SKU全体を扱う補完契約
+- 単純に条件ごとの旧supportと新supportを混ぜると、異なる購入構成から条件を継ぎ合わせ、
+  FPが1→9件になる。新モデルが別のwhole raw optionを明示した要求ではunknownへ保留する。
+  代替候補の選択を、自動証明済みconflictへ昇格させない。
+- さらに、旧候補でdropしたSKUを新規採用するには、同じ元AU行の全original conditionが
+  upstream_identical、または今回の構成モデルによるsupportで満たされる必要がある。
+  一つでも新モデルがunknown/別構成なら、旧supportとの混合で新規採用しない。
+  旧採用の結果は新モデルの情報不足だけでは失わせない。明示的別構成による保留は適用する。
+  元の全軸AND、全AU行配列、候補行唯一性、他行の既存contradictionをgateで再確認する。
+- complete-sku-fallbackは既存dev比較を踏まえた追加cached方針。
+  predeclaredモデル比較と区別してexploratory_dev_informedを明示した。
+  全83件の134要求・gateを凍結後に既存機械参照73件を採点し、採点後も入力/出力SHAを検証。
+  特定case IDや正解に合わせる例外、閾値調整、原値正規化は追加していない。
+  scope_status=unproved / production_adoption_allowed=falseを維持する。
+
+ユーザー提示商品712679385のAPI確認
+- URL: https://wowma.jp/item/712679385?spe_id=top_total_rank_2
+  GET https://wowma.jp/api/item/712679385、public header x-triton-api: 1。
+  2026-10-12T16:32:08 UTC取得、HTTP200、24,024 bytes。
+  原応答SHA256: 95e4834998fa9b42dbef9bd4753cfbcdfcadfaf8bd149936b841304c7e4de116
+- $.itemInfo.extraItemComment に画像の「商品詳細」表と注意事項をHTMLテキストとして確認。
+  同fieldのdecoded string offsetで10引用を検証した。
+  2台セット、DC12V、上部78×76mm、下部直径65mm×高さ165mm、295g、1.5m、
+  約17,500時間で交換/約19,000時間で停止の記載がある。
+  extraItemCommentWithVideoは同一HTML。itemCommentは空のHTML。
+  skuInfo.optionName.row=バリエーション、rowNames=ブラック系/ホワイト系。
+  仕様表は商品共通の説明、色は選択軸として区別できる。
+- 最初のx-triton-apiなしrequestは404。エラー観測を残し、bodyは未保存と明示。
+  通常collectorと同じheaderで再取得した原JSONと検証scriptを追加ZIPへ保存。
+  この商品は現83ケースやモデル入力・採点に追加していない。
+
+検証
+- python3 -B -m unittest discover -s tests -p 'test_lab_sku_composition*.py': 38件成功。
+- required: python3 -B -m unittest discover -s tests -p 'test_lab*.py'
+  1176件、assertion failure0、error11、skip37。全成功ではない。
+  前回と同じ過去資料/別checkout不足: GPU条件準備1、旧統合bundle1、
+  annotation入力3、旧評価出力3、旧expanded AU SKU3。関連変更による新errorはない。
+  sku-composition-resume-20261013-v1/required-tests-complete-final.logに全ログ。
+- read-only別agentでraw全原値、shared/paired文脈、引用・source span・新採用全条件契約をレビュー。
+  全7新規受理で同一AU行の全model条件支持を独立に照合し、typed proof不変を確認した。
+  共有requestを複数行に再利用する3要求中1要求は、いずれの行も他条件が揃わずunknownへ戻る。
+  保守的な副作用であり、新規採用の条件漏れはない。将来は要求と行の結合を維持した
+  gate段階の全構成判定に整理できる。今回の凍結予測は変更しない。
+
+永続化と再開
+- results/20261013-sku-composition-evidence-checkpoint.zip と隣接manifest。
+  今回の全実推論・却下比較・修復前後・source revalidation・cached evaluator・API原応答・検証ログを収録。
+  従来5ZIPへ依存し、名前/CRC/member bytes/SHA256と依存ZIP SHAを照合して復元する。
+  モデル重み・認証値・cache・.depsは収録しない。
+  凍結source_snapshotの絶対パスは今回のworktreeを示す。復元先が違う場合は入力を書き換えず、
+  そのパスで復元するか別の明示的path mapping検証を行う。
+- cached最新評価script: sku-composition-language-model-20261013-v1/evaluate_complete_sku.py。
+  既存complete-sku-evaluationがある場合は上書きを拒否する。新推論は起動しない。
+- 残りFN19と毛布セットFP1を、未知情報・選択状態・表の適用範囲に分けて追う。
+  共有判定は商品共通仕様まで、条件付き仕様は元SKU全選択軸に束ねる。
+  Claude側への追加カテゴリ規則/ラベル変更依頼は現段階ではない。

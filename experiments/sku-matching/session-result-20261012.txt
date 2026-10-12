@@ -193,3 +193,24 @@ Claude成果物を接続した最新の開発候補
   前回と同じ過去資料/別checkout不足11件。詳細・再開方法は typed-value-equivalence-result-20261012.txt。
   results/20261012-sku-value-equivalence-integration-checkpoint.zip に受領ZIP・検証・全結果・ログを保存。
   先の4ZIPに依存。GPU受付不明の履歴を維持し、再submitしていない。
+
+購入構成を全条件で照合した最新の開発候補（20261013 run）
+- 最新: .lab-output/sku-composition-language-model-20261013-v1/complete-sku-evaluation/complete-sku-fallback。
+  既存機械参照73件=TP36/FP1/FN19/TN17、正解AU行36、別AU行誤採用0。
+  precision97.3%、recall65.5%、accuracy72.6%。前候補30/1から回収6、既存TP回帰0、追加FP0。
+  回収は旧誤り44件の3商品に集中。既読dev26件は19/0/4/3のまま。
+- 楽天原HTMLの513説明ブロックと15,394 raw spansを検証し、AU546ブロックと合わせて比較。
+  独立したtitle fieldを外し、全原選択肢とpairedの元SKU全選択軸を保持。
+  固定JEV/NLIの追加CPU実推論は改善なし、全比較を保持した。
+  別途gpt-6-lunaの原文に限定した実応答72件（source不足10件はunknown）を保存。
+  hosted model aliasのみが確認済みで、weight revisionは未固定。raw応答のcached評価と区別する。
+- 条件単位の補完ではFP1→9件。新規採用SKUは全original model条件を同じAU行で
+  新構成モデルが支持する場合に限定し、明示された代替whole optionはunknownとして保留。
+  全83件gateをfreeze後に73件を採点したdev-informed候補。scope未証明・本番未適用。
+  独立test・既存原本・ラベル・凍結入力は変更していない。
+- 関連38テスト成功。required1176件、failure0/error11/skip37（従来の過去資料/別checkout不足）。
+  results/20261013-sku-composition-evidence-checkpoint.zip に全比較/推論/評価/修復/検証ログを保存。
+  前の5ZIPに依存。詳細とcached再開先は composition-evidence-result-20261013.txt。
+- ユーザー提示712679385のAPIも実取得。itemInfo.extraItemComment内に商品詳細HTML表と
+  2台セット・寸法・重量・交換/停止時間の注意事項がある。skuInfoには色の黒/白2行。
+  確認用原応答と引用offsetを追加ZIPへ収録。この商品は83ケースや採点入力に追加していない。
