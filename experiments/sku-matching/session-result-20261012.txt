@@ -227,3 +227,20 @@ Claude成果物を接続した最新の開発候補
 - context-replace27/0/28/18は旧TP12件を失うため却下。FN16と毛布セットFP1が残る。Claudeへの追加カテゴリ規則依頼なし。
 - 関連62テスト成功。required1200件、failure0/error11/skip37。以前からの資料/別checkout不足11件が残る。
 - results/20261013-sku-composition-context-checkpoint.zipとmanifestに今回のraw/修復/却下比較/診断/テスト/再開codeを保存。前回ZIPと従来5ZIPへ依存。
+
+自律継続改善: source復元と元要求SKU文脈（20261013 run）
+- 詳細はautonomous-improvement-result-20261013.txt。最新dev候補は
+  .lab-output/sku-scoped-request-composition-20261013-v1/evaluation/complete-scoped-request-fallback。
+- 同じ機械dev73件46/0/9/18、再現率83.6%、precision100%。39/1からFN7回収、FP1除外、旧TP回帰0。
+  safe source復元で45/0、元要求ごとの全SKU軸のpaired照合で46/0。新カテゴリ規則なし。
+- guard ablationは予測/判定変更0。title補助は改善0で不採用。
+- 独立レビューは46採用行の全条件と同AU行対応を確認。ただし旧supportを残す混合fallbackであり、
+  d966タイプの最終引用には旧title/keyword根拠も残る。新scoped単独の精度とは扱わない。
+- source復元の削除first-v3履歴を復元不能として記録、危険な中間fallbackも保存して未採用。
+  prepare失敗2回は推論前修復、失敗コードとretrospective receiptsを保持。
+- composition89 tests成功。required1,229、failure0/error11/skip37（以前と同じ資料不足）。
+  network sandbox制限の初回失敗とnetwork有効の再検査ログを両方保持。
+- test1,292件の原本入力を復元し、全55,609 spans検証済み。未使用ラベルはまだ開いていない。
+  ラベル前に200件baselineとさらに40件composition比較の決定的subsetを凍結して実推論する。
+  旧Kaggle受付不明jobは再submitしない。新baseline jobを別refで準備、GPU不調時CPUへ戻す。
+- このcheckpoint時点では未使用test採点は未完了、本番採用不可。Claudeへの追加規則依頼なし。

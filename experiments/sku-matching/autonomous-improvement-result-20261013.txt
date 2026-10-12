@@ -1,0 +1,72 @@
+継続改善の開発チェックポイント（20261013 run）
+
+現候補
+- .lab-output/sku-scoped-request-composition-20261013-v1/evaluation/complete-scoped-request-fallback
+- 元83ケースの全行・全条件を保持。既存機械dev参照73件では TP46/FP0/FN9/TN18。
+  再現率83.636%、precision100%、accuracy87.671%。正解AU行46、別AU行誤採用0。
+- 直前39/1/16/17からFN7件を回収、FP1件を除外。以前のTP39件の回帰0。
+  新しい未使用testの成績ではなく、既読devで改善した探索的候補。本番採用不可。
+
+変更と比較
+1. 過去採用caseへの競合行support追加を防ぐguardのablationは、134予測/83判定の変更0。
+   現dev上の改善をこの分岐によるものとは説明しない。既存安全guardは維持。
+2. 原本titleを補助文脈に足す79unit実推論は39/1/16/17で改善なし、不採用。
+   title-only置換では25/0/30/18。独立title fieldは現候補へ入れていない。
+3. 凍結済み説明のitem_desc[line=N]とAPI JSON leafを復元。新しい収集はしていない。
+   最終safe v3-v2には229追加候補、4,876 raw span検証記録、30 raw capture pins。
+   既存の除外規則で24候補（リンク13、リンク表9、無結合表1、keyword1）を除外。
+   リンク、無結合表、広告/keywordを支持根拠に戻していない。
+   全適格本文の74unit実推論で45/0/10/18。回収6件はAU483077897とAU724257905。
+   毛布セットの旧FPは別のwhole optionが明示されて除外された。
+4. 元要求ごとの対象SKU全選択軸を提示するpaired照合を追加。133unitのうち125を実推論、
+   出典不足8unitはunknown。全原値選択肢を保持し、原要求の希望値・ラベル・旧予測は
+   モデルへ渡していない。文脈の違う要求・行へ支持を共有していない。
+   45/0/10/18から46/0/9/18へ。唯一の追加回収はcase-d96635cc46c0bbfdf067、
+   AU row au:704280046:323772413:3:0。旧TP45件の回帰0、FP0維持。
+   全置換34/0/21/18は不採用。完全一致の既存typed proof1件はそのまま保持。
+
+契約と実モデル
+- 新規採用は同一AU行の全original条件が新構成モデルsupportまたは検証済みupstream identity
+  を満たす場合だけ。条件1つの補完だけで採用しない。内部unknownは除外。
+- 全capture配列と売切れ行を保持。価格・在庫を同一性根拠にしない。
+- 独立レビューで、46採用の全行が元の全条件gateを満たすことを確認。
+  ただし最終予測は旧モデルsupportを残す混合fallbackで、新scopedだけの46正解ではない。
+  d966のタイプ条件の最終gateには旧global support（title/検索ワード引用を含む）が残る。
+  新scopedも同じ原値をcleanな内容引用で支持するが、その引用へ最終予測を差し替えてはいない。
+  新sourceのリンク/keyword除外が旧baseline引用まで除去したとは説明しない。
+- gpt-6-lunaはforkなし・明示model overrideでtitle79、restored74、scoped125の実応答を保存。
+  各runでinvalid response0。hosted aliasのweight revisionは未固定、確率は取得していない。
+- source SHAと引用を検証し、全予測とwhole SKU gatesをfreezeしてから既存73参照で採点。
+- 旧誤り44件27/0/5/12、既読dev26件19/0/4/3、旧対照3件0/0/0/3。
+  一般化の改善とは未判定。現在のラベルは人手goldではなく既存機械参照。
+
+失敗履歴
+- 最初のsource restoration v3は担当agentが削除/置換し、元の234追加/4,891 spansの
+  実ファイルは復元不能。既知counts/hashだけをsafe v3-v2 manifestのlifecycleへ保存。
+  現存する中間v3（403追加/5,398 spans）の危険な分割fallbackは分類・採用せず保存。
+  安全なv3-v2は別directoryへ作成し、以後上書きしていない。
+- restored prepareはdescription_text_spanのordering座標不足で失敗。失敗runnerを保持し、
+  検証済みsource_ref.start/endを並び順だけに使用。本文・引用・原本を変更していない。
+- scoped prepareはlist契約へdictを渡して失敗。失敗runnerを保持しlistへ修正。
+  どちらも出力freeze/推論開始前の失敗。retrospective receiptをoriginal logとは扱わない。
+
+確認状況と次の検証
+- composition関連89 tests成功。必須test_lab* 1,229件、assertion failure0/error11/skip37。
+  error11は以前と同じ過去資料/別checkout不足。初回はネットワークsandboxのloopback禁止で
+  追加5error/1failureも発生し、許可済みnetworkを付けた再検査で解消。両ログを保持。
+  独立引用レビューはsku-scoped-request-independent-review-20261013-v1/review.json。
+- 凍結v2/v3入力の全2,662ケース（dev1,370/test1,292）と55,609 raw spansを機械検証済み。
+  testは4,735厳密SKU文脈cache inputs。testラベル・予測はまだ読んでいない。
+- 全件推論の量を考慮し、test入力metadataだけで商品均衡の決定的200件を先に選定・freeze。
+  この200件も2,795文脈を要するため、fixed JEV/NLI baselineは200件、原文構成モデルを
+  含む比較は事前にさらに40件へ絞る。どちらもラベル/推論前に別membershipを固定する。
+  評価後の同じtestへの調整はしない。全1,292件/全200件の構成モデル評価とは報告しない。
+- Kaggle旧83件jobは受付不明のまま。新submitやGPU高速化成功を主張しない。
+  独立評価のfresh baseline jobは別目的の入力として準備し、使えなければCPUで継続する。
+- Claudeへの新カテゴリ規則・新判定器の依頼はなし。
+
+再開
+- 本報告のdev候補をcachedで再評価する場合は新directoryへ出力。旧freeze/応答を上書きしない。
+- 新チェックポイントZIPは本報告・raw応答・全採用/却下比較・source検証・失敗履歴を収録し、
+  従来のcomposition-context/evidenceと5個のCPU/改善ZIPに依存する。
+- raw/inputsのabsolute pathを変更する場合は明示path mappingを行い、元のfreezeを編集しない。
