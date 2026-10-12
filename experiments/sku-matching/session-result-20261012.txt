@@ -154,3 +154,21 @@ required test_lab* 1111件、assertion failure 0、旧資料/環境不足error 1
   現候補は共有top3-JEV、非共有forward=NLI/reverse=JEVを維持する。
 - results/20261012-sku-followup-checkpoint.zip にユーザー確認・修正済み診断・追加実推論と採点を保存。
   先の初回CPU/改善ZIPに依存。原本ラベル、独立test、既存凍結結果を変更せず、モデル重み・認証値は収録しない。
+
+非対称SKUを全選択肢から見る提案の比較
+- Claudeへの転送用指示は claude-safe-option-equivalence-request-20261012.txt に保存、7c75ab1でpush済み。
+  L/Lサイズ・ゆで250g×2P/ゆで250g×2pについて安全な汎用同値判定とtyped provenanceを依頼。
+  Codexが原値・数量・残余を再検証して接続する。直接Claudeへ送信する接続はない。
+- 既存版の全選択肢+不明を維持し、実仕様・セット内容を問う文面を実推論。
+  同じmixed83/134要求、共有29group/80要求、旧証拠順位・state・top3/min2を固定。
+  非共有54は保存済みforward=NLI/reverse=JEVに一致。全予測/gateをfreeze後に73参照を採点。
+  実仕様文面: TP27/FP1/FN28/TN17。回収3、回帰4、不採用。
+  各候補の質問にも全原値JSON配列を列挙: TP17/FP4/FN38/TN14。
+  80 unique中4種類が512token上限超過し、切り詰めずunknown。回帰11・追加FP3、不採用。
+  事前宣言した3文面の2/3 group判定一致: TP24/FP1/FN31/TN17。追加推論なし、回帰4、不採用。
+  全方式とも別AU行誤採用0。今回の固定JEVの文面/列挙形式の比較に限られる。
+- 現候補はTP28/FP1/FN27/TN17のまま維持。全選択肢と不明の入力契約を変更しない。
+  詳細: option-context-result-20261012.txt。
+  全2実推論と1cached比較、コード、ログは results/20261012-sku-option-context-checkpoint.zip に保存。
+  初回CPU/改善/追加確認の3ZIPに依存し、SHA・CRC・全member byteを照合する。
+  新規12・関連46テスト成功。required1123件、failure0/error11/skip37（過去資料/別checkout不足）。

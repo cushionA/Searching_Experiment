@@ -1,0 +1,97 @@
+非対称SKUの全選択肢比較（2026-10-12）
+
+結論
+今回の固定JEVによる3方式では改善なし。現候補を維持する。
+現候補はgenuine one_sidedの共有top3-JEV、非共有forward=NLI/reverse=JEV。
+確定した機械参照73件でTP28/FP1/FN27/TN17、正しいAU行28、誤AU行0。
+採用精度28/29=96.6%、再現率28/55=50.9%、正解率45/73=61.6%。
+既読devで検討した開発結果。独立testは開かず、本番利用の検証とは扱わない。
+
+Claudeへの具体的指示
+claude-safe-option-equivalence-request-20261012.txt を同ブランチに保存・push済み（7c75ab1）。
+Claudeへ直接送信できる接続はこのセッションにないため、同ファイルが転送用の指示である。
+L/Lサイズ、ゆで250g×2P/ゆで250g×2pについて汎用的な安全同値判定と実装接続案を依頼。
+原値、数量、単位、符号、修飾、付属品、残余、全選択肢と対応spanを保存する。
+typed provenanceと検証可能な正規化手順を付け、証明できなければmodel_candidateを維持。
+Codexが原文・証拠を再検証してadapter/gate/採点へ接続する。
+カテゴリ別例外、数値の部分一致、無条件strip/casefold、新モデル、新収集、ラベル/test変更は依頼しない。
+
+ユーザー提案の適用
+存在する元の全選択肢をそろえ、AU商品がどれに該当するかを問い、不明も候補に含める。
+既存共有版にも全選択肢と不明の個別採点は実装されていた。
+JEVは質問+状況と各候補を個別に符号化するため、choices配列だけでは各符号化に他の候補が見えない。
+そこで、軸と値を組み合わせて実際の仕様・セット内容を問う文面と、
+各候補の質問にも全候補の原値JSON配列を載せる文面を別々に実推論した。
+例は元の「レースカーテン」軸の「あり」「なし」と不明。元ラベルをレースあり等へ書き換えてはいない。
+商品の記載から特定できない場合に、二択へ強制しない。
+
+固定した条件
+凍結済みmixed83ケース、全2333捕捉AU行、134要求・137taskを変更しない。
+共有対象は契約で明示されたgenuine one_sided forward80要求のみ、29商品条件group。
+全83個の分類入力（80 unique）、410候補対（396 unique）を各実推論に使用。
+1groupは有効ブロックがなくunknown。既存reranker順位を維持し、上位3ブロック・最低2票を固定。
+各groupのtarget document ID/SHA、原axis、元の全option値と順序、request ID集合を旧版と照合。
+各分類のstate、block ID/順位、候補ラベル列は旧版と完全一致。質問と候補説明だけを変更。
+選択済みSKU値や特定AU行をモデル入力へ注入しない。
+54個の非共有要求は保存済み実推論のNLI forward/JEV reverseと完全一致。
+同一AU行で全条件を満たすgateを使い、内部unknownはdrop。
+価格・追加料金・在庫をSKU同一性の根拠にしない。sold-outを含む全捕捉行を維持。
+JEV argos1111/modernbert-ja-310m-jev、revision07cda23579443e7a33c0f474114279fa032340d6、CPU FP32。
+ファイルSHA・モデルpin・入力・コード・保存出力を推論前後と採点後に照合。
+新しい文面に旧JEV cacheを流用せず実推論。NLI/rerankerの新推論は行わない。
+全予測と83件gateをfreezeしてから同じ既存機械参照を採点。
+採点対象73=旧誤り44+独立dev確定26+旧対照確定3。
+未確定dev5、未生成旧対照4、診断1は分母から除外。参照を新作しない。
+
+結果（全てTP/FP/FN/TN、誤AU行0）
+方式                         旧誤り44       dev26        対照3       合計73
+現候補                        10/1/22/11    18/0/5/3     0/0/0/3     28/1/27/17
+実仕様を問う文面               10/1/22/11    17/0/6/3     0/0/0/3     27/1/28/17
+各入力に全候補JSONも列挙        0/1/32/11    17/2/6/1     0/1/0/2     17/4/38/14
+3文面の2票一致                  7/1/25/11    17/0/6/3     0/0/0/3     24/1/31/17
+
+実仕様文面
+.lab-output/sku-compound-product-choices-20261012-v1
+全80 unique正常採点。全体476.241秒、JEV推論463.910秒。
+現候補から3件回収、4件回帰し、誤採用1件は残ったため不採用。
+回収: case-05e5c1205a1e6f72eb73 / case-4affc9a0b923a185a28b / case-6e3a342c60ef68a1e3f6。
+回帰: case-2005f458935f61409085 / case-65ad354481ea4f821318 / case-7131b9c315b8eb6def30 / case-9efbb1bb2aac50914a7a。
+
+全候補列挙
+.lab-output/sku-all-options-context-20261012-v1
+wrapper freeze: .lab-output/sku-all-options-context-wrapper-20261012-v1。
+全体430.582秒、JEV推論419.516秒。76 unique正常、4 uniqueはinput_too_long。
+83分類recordでは79正常・4長さ超過。4groupのサイズ軸、最大候補対519〜526 tokenが512上限を超えた。
+候補/説明を切り詰めずunknown扱いにした。超過原因だけを全ての悪化の原因とは断定しない。
+現候補から回収0、回帰11、追加誤採用3。原値を全て列挙する今回の入力形式は不採用。
+元の誤採用case-9c77ad2ed25be9294fd5も残った。
+
+3文面一致
+.lab-output/sku-option-prompt-consensus-20261012-v1
+事前方針: .lab-output/sku-option-prompt-consensus-plan-20261012-v1/protocol.json。
+全候補列挙の推論中に、2/3 variant一致・unknown/error/tie棄権を宣言した。
+各variantの最終whole raw optionを1票とし、同じブロックを3倍に数えない。
+3つのgroup IDは異なるため元request ID集合で対応させ、原文・状態・ブロック順位・全候補列を再検証。
+元実scoreと完全なrequest key/pin、保存group結果の再構成一致、literal引用の妥当性を確認。
+一致したvariantの引用のみを使って、改めて全134予測と83gateをfreeze後に採点。
+追加モデル推論なし。回収0、回帰4、FP1維持のため不採用。
+同じモデル・商品説明の文面安定性の比較であり、独立した証拠の票数とは扱わない。
+
+解釈と次の接続
+今回の結果は固定JEVと今回の質問・候補説明・JSON列挙形式の比較に限られる。
+全選択肢をそろえ、不明を残す入力契約は維持する。
+改善を確認できた方向別モデルroutingを現候補として保持し、失敗したpromptを本番へ反映しない。
+表記同値のtyped証明をClaudeから受けたら、Codex側で数量・残余を保つ検証をして接続する。
+候補の列挙・モデル入力・AU行gate・採点はCodex担当であり、Claudeへカテゴリ規則追加を転送しない。
+GPUは既存HTTP409/受付不明とユーザーのNotebookなし確認を保持、再投入なし。速度未計測でCPU継続。
+
+検証・保存
+新規12テスト成功、関連46テスト成功。
+required test_lab* 1123件、assertion failure0、資料/別checkout不足error11、skip37。完全成功ではない。
+初回sandboxではloopback bind拒否による追加6件が出たが、通信権限を付けた再検証で解消。
+残11件はGPU helper checkout1、integrated bundle1、annotation inputs3、旧evaluation outputs3、旧AU skus3の不足。
+モデル入力fixtureを再生成・ラベル変更して通過させていない。
+ログは sku-compound-product-choices-resume-20261012-v1 と sku-all-options-context-resume-20261012-v1。
+results/20261012-sku-option-context-checkpoint.zip に全3比較の入力・実score・gate・採点・凍結コード・ログを収録。
+依存する初回CPU/改善/追加確認の3ZIPのSHAをmanifestへ記録。全memberのCRC/byte/SHAを確認する。
+モデル重み、cache、認証値、独立testは収録しない。
