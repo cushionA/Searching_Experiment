@@ -1,0 +1,57 @@
+{
+ "archive": "20261012-sku-independent-real-eval-v2-v3-token-inputs.zip",
+ "extract_at": "repository root; preserve .lab-output relative paths",
+ "contents": "Frozen token-run inputs of independent eval v2 and v3 (products, cases, failures, inputs manifest, freeze), groups with the dev/test split, the intermediate files the input spans point to, AU SKU rows, and the AU itemOptions API responses of every AU product in the inputs. Files are byte copies; nothing was regenerated.",
+ "not_included": "labels (unchanged; in the earlier eval archives), raw AU item JSON and Rakuten HTML (in the earlier eval archives), family runs, v1",
+ "purchase_options": "Every AU product in these inputs has its itemOptions API response; au_purchase_option_lines cite $.au_product_options_raw in au_product_sku_arrays.jsonl, which embeds that response.",
+ "sets": {
+  "v2": {
+   "checks": {
+    "inputs_manifest_outputs_sha256": true,
+    "inputs_manifest_source_sha256": "624/624",
+    "align_v5_v7_inputs_sha256": true
+   },
+   "options_api_responses": {
+    "matches_capture_sha256": 176
+   },
+   "dossiers": 176,
+   "cases": 2494,
+   "cases_by_split": {
+    "test": 1199,
+    "dev": 1295
+   },
+   "dossiers_with_purchase_option_lines": 156,
+   "raw_item_json_and_rakuten_html": {
+    "archive": "experiments/sku-matching/results/20261011-sku-independent-real-eval-v2.zip",
+    "sha256": "6f65d988222c79c758614592340ba28565a51fa8891317724ba354c5fc38b457",
+    "note": "referenced raw files are in this earlier archive and not repeated here"
+   }
+  },
+  "v3": {
+   "checks": {
+    "inputs_manifest_outputs_sha256": true,
+    "inputs_manifest_source_sha256": "154/154",
+    "align_v5_v7_inputs_sha256": true
+   },
+   "options_api_responses": {
+    "matches_capture_sha256": 37
+   },
+   "dossiers": 37,
+   "cases": 168,
+   "cases_by_split": {
+    "dev": 75,
+    "test": 93
+   },
+   "dossiers_with_purchase_option_lines": 37,
+   "raw_item_json_and_rakuten_html": {
+    "archive": "experiments/sku-matching/results/20261012-sku-independent-real-eval-v3.zip",
+    "sha256": "52f6faa51127a9c12250a3cdb5eb3d1818a36461a8c09323e481748aeed1f37b",
+    "note": "referenced raw files are in this earlier archive and not repeated here"
+   }
+  }
+ },
+ "size_bytes": 2815092,
+ "sha256": "db2815a3d5c726e45f996ad07e73cdcf1cdff0610de53ad84af8a4a0a880488f",
+ "file_count": 234,
+ "uncompressed_bytes": 60621164
+}
