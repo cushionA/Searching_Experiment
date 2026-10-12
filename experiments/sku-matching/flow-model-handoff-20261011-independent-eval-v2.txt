@@ -1,0 +1,42 @@
+独立実SKU評価 v2（他店・衣類中心）の受け渡し
+2026-10-11 オーケストレーター（Sonnet 5.5）作成。v1（WEIMALL 1店、2,949ケース）の続き。手順書: experiments/sku-matching/claude-independent-real-data-task-v2-20261011.txt の手順4〜5。
+ブランチ claude/sku-condition-alignment。評価コード（align_sku_conditions.py、build_observed_pair_records.py、independent_eval.py など）は変更なし。
+
+1. 何を作ったか
+- 他店（40店が条件を満たし、うち21店が楽天側の対応商品あり）の、同じ店の同じ商品。1 case = 固定AU商品 + 楽天SKU 1件。候補はそのAU商品の全行。
+- 同じ店の条件: AUの店名の英数字 = 楽天のURLスラッグ、かつ楽天の管理番号がAU主画像のファイル名の先頭トークンに一致（既存のペア作成コードと同じ条件）。
+- ラベルは Haiku 5.5（claude-haiku-5-5）による「機械注釈」で、人手の独立goldではない。件数で読み、「精度」とは呼ばない。合成データなし。
+- カテゴリ: 衣類・雑貨系が大半。食品・美容は店の条件を満たす専門店がほとんど無く、ほぼ取れていない（下記5）。
+
+2. 出力パス（E2 = .lab-output/sku-independent-real-20261011/eval-v2、git 管理外）
+- 取得: .lab-output/sku-independent-real-20261011/{apparel,food,beauty}/{au,rakuten}、multishop/（店の探索・確認・台帳）
+- multishop/selection-v1/   同じパターンを畳んだ選択（links.jsonl に全リンクの kept / folded と理由。畳んだ分は消していない）
+- pairs-v2/ token-pairs-v2/   ペア（build_multishop_pairs.py で作成）と型番ペア
+- run-family/ run-token/ groups-*/ labels-*/ align-*/ score-*.json
+- counts.json rawmanifest.jsonl annotator-models.json collection-status.json sibling-split-*.json(l)
+
+3. 件数（counts.json に全数）
+- 取得（停止時点、3ディレクトリ合計）: 店 1,025 を発見 / 店名の英数字が使える 464 / 楽天に同じ店・同じ型番がある 40。AU の SKU 商品 4,893、楽天商品ページ 3,638（SKUあり 3,633、SKU行 32,613）。
+- 畳み込み（店 × 軸の型ごとに最大3商品、SKU行60超は除外）: リンク 3,665 → 楽天 219 商品・AU 223 商品・楽天SKU行 2,763（畳んだ: 同じパターン 3,392、SKU行が多い 50）。
+- ペア: 223（候補 213、family 10）。型番ペア 210（SKUレコード 2,696）。入力作成で失敗したケース: token 202、family 12（楽天のSKU IDが元HTMLに見つからない。作らず記録のみ）。
+- ケース: token 2,494（176ペア）、family 113（7ペア）。全て店が新規のため grain はほぼ new_product_group。
+  token: dev/new_product_group 1,291、dev/new_sku_existing_product 4、test/new_product_group 1,199。family: dev 55、test 58。
+- 機械注釈（注釈者 Haiku 5.5 の40体 = 39バッチ + token バッチ015の付け直し1回）:
+  token: accept 1,696 / drop 326 / flag 472（conflict 305、unclear 57、extraction_incomplete 110）。
+  family: accept 60 / drop 0 / flag 53（unclear 42、conflict 5、extraction_incomplete 6）。family の test 58 件のうち 42 件が unclear で、test としては使いにくい。
+- align（PR26 v5。ラベルは align の前に凍結済み）: token 採用 883 / 不採用 1,611。family 採用 39 / 不採用 74。
+- 採点（flag 除外、dev+test の件数）:
+  token: accept_same_row 841 / drop_but_adopted 0 / accept_other_row 0 / accept だが不採用 855 / drop だが不採用 326。
+  family: accept_same_row 34 / drop_but_adopted 0 / accept だが不採用 26（説明確認待ち）/ drop 0。
+- 兄弟商品に分かれた SKU（同じ楽天SKUが別のAU商品では accept、この商品では drop）: token 38 ケース（楽天SKU 38）。align は全件不採用。sibling-split-cases.jsonl。
+
+4. 手順書にない前提・追加した新コード
+- collect_multishop.py: 取得（店の探索、同じ店の確認、AU商品、楽天商品）。select_multishop.py: 同じパターンを畳む。build_multishop_pairs.py: 既存のペア作成コードの候補判定を差し替えて実行（固定の商品種別語リストに無い衣類を候補にするため）。既存コードは変更していない。
+- 取得を止めた理由: 衣類の追加で楽天商品が増えなくなった（直近3回で増加なし）。食品は7店、衣類は3店が未着手のまま止めた（ms-state.json から再開可能）。
+
+5. 限界・未了
+- machinegold は人手の独立goldではない。family/token は確定の商品ペアではない。
+- 食品・美容: 実質ほぼ無し（畳み後 食品 12、美容 5 商品程度）。店の条件（店名の英数字 = スラッグ）が厳しく、専門店が通らなかった。条件を緩めるには下流のペア作成コードに別の経路が要る。
+- 偏り: 衣類の店 2〜3店が元の取得の大半を占めていた（畳んで緩和）。
+- 説明の3項目（itemComment、extraItemComment、detailComment）の固有/共通の切り分けは未実装（検討中）。
+- test の結果を見てコード・規則・ラベルは変えていない。

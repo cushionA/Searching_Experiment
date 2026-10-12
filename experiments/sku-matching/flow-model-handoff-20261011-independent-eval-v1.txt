@@ -1,0 +1,46 @@
+独立実SKU評価 v1 の受け渡し（flow-model-handoff）
+2026-10-11 オーケストレーター（Sonnet 5.5）作成。手順書: experiments/sku-matching/claude-independent-real-data-task-v2-20261011.txt の手順4〜5。
+ブランチ claude/sku-condition-alignment、コード基準 commit 51764df（評価コードは変更なし）。
+
+1. 何を作ったか
+- 同じ店舗（auと楽天の両方の WEIMALL）の同じ商品を、au 商品1件＋楽天SKU1件（case）で固定し、候補はそのAU商品の全行とした入力と、機械注釈（machinegold）。
+- ラベルは Haiku 5.5（claude-haiku-5-5）による「機械注釈」で、人手の独立goldではない。件数で読み、「精度」とは呼ばない。
+- 合成データなし。原本は rawmanifest.jsonl（593ファイル、sha256 は run の入力と全件一致）。
+
+2. 出力パス（E = .lab-output/sku-independent-real-20261011/eval-v1、git 管理外）
+- pairs/            build_observed_pair_records の出力（旧+新）
+- token-pairs/      主画像の型番が一意に一致する candidate_review 210ペア・2,800ケース（primary_image_token_mapping_review）
+- run-family/ run-token/   入力（inputs/）と規則の予測（predictions/、freeze.json）
+- groups-family/ groups-token/   group・grain・split（除外は split=excluded）
+- labels-family/ labels-token/   batch-NNN.md（注釈者用）、answers-NNN.jsonl、private/（resolved.jsonl、label-manifest.json）。凍結済み
+- align-family/ align-token/     PR26 v5 の similarity と align
+- score-family.json score-token.json   採点（split × grain × 結果の件数）
+- counts.json rawmanifest.jsonl rawmanifest-summary.json annotator-models.json collection-status.json
+
+3. 件数（counts.json に全数）
+- 取得（2026-10-11 新規分）: au HTTP 2,675 / SKU商品 275 / SKU無し 639。楽天 HTTP 597 / 商品ページ 90 / SKUあり 29 / SKU行 150。
+- pairs: au 商品 917、楽天商品 1,039。family 119 ペア（1,132ケース）、token 210ペア（2,800ケース）。入力の失敗 0。
+- group・除外: --exclude-existing-pairs で、既存ペア（final-v4 の confirmed/family）に入る楽天URL・AU URL のペアだけ除外。
+  family は 119 ペア中 104 ペア（970ケース）が既存で除外、15 ペア・162ケースが対象。token は 2 ペア（13ケース）除外、208 ペア・2,787ケースが対象。
+- ケース（split/grain）:
+  family: dev/new_sku_existing_product 88、test/new_sku_existing_product 74。
+  token: dev/new_product_group 223、dev/new_sku_existing_product 991、test/new_product_group 12、test/new_sku_existing_product 1,561。
+- 機械注釈（注釈者 Haiku 5.5 の 40体、再注釈 0、check の問題 0）:
+  family 162件: accept 49 / drop 110 / flag 3（unclear 2、conflict 1）。
+  token 2,787件: accept 938 / drop 1,631 / flag 218（conflict 105、unclear 112、extraction_incomplete 1）。
+- align（PR26 v5、全ケース。注釈ラベルは align の前に凍結済み。ラベル未参照）:
+  family: 採用(matched) 166 / 不採用 966。token: 採用 456 / 不採用 2,344。
+- 採点（ラベルあり、flag 除外、dev+test の件数）:
+  family: accept_same_row 22 / drop_but_adopted 0 / accept だが不採用 27（説明確認待ち）/ drop だが不採用 110。
+  token:  accept_same_row 372 / drop_but_adopted 28（dev 24、test 4）/ accept_other_row 0 / accept だが不採用 566 / drop だが不採用 1,603。
+  上は機械注釈との突き合わせ件数。drop_but_adopted の 28 件は、ラベルの誤りか align の誤採用かを人が見ていない。
+
+4. 手順書に無かった前提（今回追加した作業）
+- align は run/predictions/A-full_spec_notice.jsonl（規則 v10 の予測）を読む。run_sku_gates.py の freeze → predict を run-family と run-token に実行して作った（ラベルは読まない既存コード、freeze.json は各 run にある）。
+- 同時並行の注釈者は上限20体のため、残りは完了を待って順に起動した。
+
+5. 限界・未了
+- machinegold は人手の独立goldではない。family/token は確定の商品ペアではない（pair_status をそのまま残す）。
+- token の new_product_group は test が 12ケースのみで、test の分析には小さすぎる。
+- 新しい取得対象（楽天の店内検索 search.rakuten.co.jp、WEIMALL 以外の店）は、手順書3のとおりユーザー確認が出るまで実装・取得していない。
+- test の結果を見てコード・規則・ラベルは変えていない。

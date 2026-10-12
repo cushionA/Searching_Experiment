@@ -1,0 +1,38 @@
+独立実SKU評価 v3（食品・美容を増やす: 店の条件を緩めた経路）の受け渡し
+2026-10-12 オーケストレーター（Sonnet 5.5）作成。v1（WEIMALL）・v2（他店・衣類中心）の続き。
+ブランチ claude/sku-condition-alignment。評価コード（align_sku_conditions.py、build_observed_pair_records.py、independent_eval.py など）は変更なし。
+
+1. 何を作ったか
+- 店の条件を緩めた経路（collect_multishop.py qualify2）で確認した食品・美容の店（各30店を選択、1店あたり AU 150商品・SKU商品50を上限）の、同じ店の同じ商品。
+  緩めた条件 = 楽天の管理番号がAU主画像のファイル名のトークンに一致 + 商品名の類似度 0.5 以上（別々のAU商品2件以上で成立）。店名の英数字 = スラッグは要求しない。
+- 1 case = 固定AU商品 + 楽天SKU 1件。候補はそのAU商品の全行。
+- ラベルは Haiku 5.5（claude-haiku-5-5）3体による「機械注釈」で、人手の独立goldではない。件数で読み、「精度」とは呼ばない。合成データなし。注釈者の使用モデルは各体のトランスクリプトで確認し、読んだのは自分のバッチ1つ、書いたのは自分の回答1つだけ。
+
+2. 出力パス（E3 = .lab-output/sku-independent-real-20261011/eval-v3、git 管理外）
+- multishop/selection-v3/（畳んだ選択。links.jsonl に全リンクの kept / folded と理由）
+- pairs/ token-pairs/（multishop_token_pairs.py = 確認済み別名に対応した型番ペア）run-token/ groups-token/ labels-token/ align-token/ score-token.json
+- counts.json rawmanifest.jsonl annotator-models.json collection-status.json sibling-split-*.json(l)
+
+3. 件数（counts.json に全数）
+- 取得（食品・美容・衣類ディレクトリ合計）: AU SKU商品 5,113、楽天商品ページ 3,731（SKUあり 3,725、SKU行 33,405）。選んだ食品30店のうちSKU商品があったのは9店（SKU商品72、楽天側に対応あり10）、美容30店のうち12店（127、対応あり72）。
+- 畳み込み（selection-v3: 緩めた条件の店だけ）: リンク 81 → 楽天 49 商品・AU 54 商品・楽天SKU行 201（畳んだ: 同じパターン 26、SKU行が多い 1）。
+- ペア 54（すべて型番ペア、SKUレコード 225）。入力作成で失敗したケース 57（楽天のSKU IDが元HTMLに見つからない。作らず記録のみ）。
+- ケース 168（37ペア・31グループ）。全て店が新規のため grain は new_product_group。dev 75 / test 93。
+  機械注釈: accept 105 / drop 44 / flag 19（unclear 16、conflict 2、extraction_incomplete 1）。
+- カテゴリ（タイトル語による推定。ケース数）: 美容 128、食品 10、その他 25、衣類 5。
+- align（PR26 v5。ラベルは align の前に凍結済み）: 採用 81 / 不採用 87。
+- 採点（flag 除外、dev+test の件数）: accept_same_row 79 / accept だが不採用（説明確認待ち）26 / drop だが不採用 44（説明確認待ち 30、対称条件が未解決 14）/ drop_but_adopted 0。
+- 兄弟商品に分かれた SKU: 0 ケース。
+
+4. 手順書にない前提・追加した新コード
+- collect_multishop.py（qualify2、au の --shops-file / --max-sku-products-per-shop）、select_multishop.py（--only-relaxed）、multishop_token_pairs.py。既存の評価コードは変更していない。
+- select_multishop.py は、SKU商品の記録が shop_id を持たず product.shop_user_id にあるため、店の判定が空になる不具合があり、修正した（取得・ラベルには影響なし）。
+- 注釈の保存先は、独立評価の check/freeze が読む labels ディレクトリ（= batches の出力先）。
+
+5. 限界・未了
+- 食品は 10 ケースしか増えていない。食品の店はAU側にSKU（購入オプション）を持つ商品が少なく、あっても楽天側に同じ商品が見つからないことが多い（選んだ30店のうち9店、対応あり10商品）。美容は 128 ケース。
+- 店の候補（食品 337、美容 277 が緩めた条件を通過）のうち、取得したのは各30店のみ。残りを取れば増えるが、1店あたりの得られるSKU商品は少なく見込まれる。
+- 楽天のSKU ID が元HTMLに見つからず作れなかったケースが 57（全体の約25%）。
+- 説明の3項目（itemComment、extraItemComment、detailComment）の固有/共通の切り分けは未実装（検討中）。
+- machinegold は人手の独立goldではない。token は確定の商品ペアではない。
+- test の結果を見てコード・規則・ラベルは変えていない。

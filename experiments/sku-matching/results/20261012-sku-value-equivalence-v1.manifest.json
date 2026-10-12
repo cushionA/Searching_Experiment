@@ -1,0 +1,452 @@
+{
+ "created_at_utc": "2026-10-12T13:32:20.563469+00:00",
+ "archive": "20261012-sku-value-equivalence-v1.zip",
+ "commit": "3530296",
+ "extract_at": "repository root; preserve relative paths",
+ "contents": "Value equivalence sidecars and summaries per run, the proof code, the align v7 module it imports, tests and notes.",
+ "labels_read": false,
+ "test_split_read": false,
+ "note": "Independent eval runs read only dev-split dossiers. Inputs are frozen runs and align v7 handoffs; they are not copied here (see the v6-v7 and v2-v3 input archives).",
+ "code": [
+  {
+   "path": "experiments/sku-matching/prove_value_equivalence.py",
+   "sha256": "6a302f82ca48f10e269125287cada5d4e39291940a61d6048d50b90fca7fd1a1"
+  },
+  {
+   "path": "experiments/sku-matching/align_sku_conditions.py",
+   "sha256": "173c9c90157278147740f3c885ba5fae9144152b0d20493a19056eb3efba5a7e"
+  },
+  {
+   "path": "tests/test_lab_sku_value_equivalence.py",
+   "sha256": "ed80d4160c7f6029eef2578facf523a519396710a1d52912da464ec71773effc"
+  },
+  {
+   "path": "tests/test_lab_sku_align.py",
+   "sha256": "880f067b6855912ec716dbde9ed0f91a26ff8be96af5bfab8370d8f8856002d1"
+  },
+  {
+   "path": "experiments/sku-matching/claude-value-equivalence-proofs-20261012.txt",
+   "sha256": "67cf8d6952d31840fdb0efd9176dd0500145fa445e2861a5f00609f765363c8f"
+  }
+ ],
+ "runs": [
+  {
+   "name": "candidate",
+   "run": ".lab-output/sku-gate-raw-candidate-20261011-v1",
+   "align": ".lab-output/sku-align-20261012-v7/candidate",
+   "groups": null,
+   "splits": null,
+   "inputs": {
+    "cases.jsonl": {
+     "path": ".lab-output/sku-gate-raw-candidate-20261011-v1/inputs/cases.jsonl",
+     "sha256": "3a3b8e74174a09ae605e5f9ff2808333c6e6bb715d70fea7bbb7d65e3e0261bf"
+    },
+    "products.jsonl": {
+     "path": ".lab-output/sku-gate-raw-candidate-20261011-v1/inputs/products.jsonl",
+     "sha256": "0cadf88b64ac06291427a6a86478500936213a7ac8e63c726bb3545a1ec56473"
+    },
+    "handoff.jsonl": {
+     "path": ".lab-output/sku-align-20261012-v7/candidate/align/handoff.jsonl",
+     "sha256": "b1a62aefc24b603f5b82f248bde7e30f94d36fae9a94e4fca6ddfe9fcd5bac63"
+    },
+    "align_summary.json": {
+     "path": ".lab-output/sku-align-20261012-v7/candidate/align/summary.json",
+     "sha256": "04bea3170c4e2af83d1d729d3bdaee57df65fe12f387b0a5ed2eef344e0e78a1"
+    }
+   },
+   "code_sha256": "6a302f82ca48f10e269125287cada5d4e39291940a61d6048d50b90fca7fd1a1",
+   "align_code_sha256": "173c9c90157278147740f3c885ba5fae9144152b0d20493a19056eb3efba5a7e",
+   "cases_read": 26819,
+   "model_candidates": 3331,
+   "verdicts": {
+    "model_candidate": 3329,
+    "proven_equivalent": 2
+   },
+   "proof_types": {
+    "own_axis_name_affix": 2
+   },
+   "proven_with_residual_unconfirmed": 0,
+   "with_corroboration": 0,
+   "files": [
+    {
+     "path": ".lab-output/sku-value-equivalence-20261012-v1/candidate/sidecars.jsonl",
+     "bytes": 17320250,
+     "sha256": "14db91f5802f02843ec3cda6c1b878b0b1bf4c168469be76f6ed19939a7ce7b8"
+    },
+    {
+     "path": ".lab-output/sku-value-equivalence-20261012-v1/candidate/summary.json",
+     "bytes": 1367,
+     "sha256": "68abd41e861b405a11426a2661692256294e7aeb3823770b94b78fe7bb81297e"
+    }
+   ]
+  },
+  {
+   "name": "eval-v1-family-dev",
+   "run": ".lab-output/sku-independent-real-20261011/eval-v1/run-family",
+   "align": ".lab-output/sku-independent-real-20261011/eval-v1/align-v7-family",
+   "groups": ".lab-output/sku-independent-real-20261011/eval-v1/groups-family/groups.jsonl",
+   "splits": [
+    "dev"
+   ],
+   "inputs": {
+    "cases.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v1/run-family/inputs/cases.jsonl",
+     "sha256": "4135d955441fc626b29d1f366cd397f134e9aece6511796909b870e4fd44276b"
+    },
+    "products.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v1/run-family/inputs/products.jsonl",
+     "sha256": "2063725c32b36146a47b8b363aed51b65d55f998641bfcc0f32b3e4189d55443"
+    },
+    "handoff.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v1/align-v7-family/align/handoff.jsonl",
+     "sha256": "c183bcaa5ace3a9858e4d83f7e6044310df05c1e86c3ed84af5a17b10ee7c8ff"
+    },
+    "align_summary.json": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v1/align-v7-family/align/summary.json",
+     "sha256": "43e29443b1ba95c1a24480ca99e5a2fd4b8d5c447b21e3c33232c18a63af63a2"
+    },
+    "groups.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v1/groups-family/groups.jsonl",
+     "sha256": "7e4c3124dc8bb3f7c7125fd6fa5e06d7b4b62978ca754132a9b06f2f3b95615f"
+    }
+   },
+   "code_sha256": "6a302f82ca48f10e269125287cada5d4e39291940a61d6048d50b90fca7fd1a1",
+   "align_code_sha256": "173c9c90157278147740f3c885ba5fae9144152b0d20493a19056eb3efba5a7e",
+   "cases_read": 88,
+   "model_candidates": 15,
+   "verdicts": {
+    "model_candidate": 15
+   },
+   "proof_types": {},
+   "proven_with_residual_unconfirmed": 0,
+   "with_corroboration": 0,
+   "files": [
+    {
+     "path": ".lab-output/sku-value-equivalence-20261012-v1/eval-v1-family-dev/sidecars.jsonl",
+     "bytes": 81810,
+     "sha256": "8ca0bd63d85fe4fd37a7b81a1244e103f7280f8676ca927c8998d27e5ba88eab"
+    },
+    {
+     "path": ".lab-output/sku-value-equivalence-20261012-v1/eval-v1-family-dev/summary.json",
+     "bytes": 1463,
+     "sha256": "769d7277a610b0d85f729230d95575a351a2a746f39ac5fa1c92d6c916d3c793"
+    }
+   ]
+  },
+  {
+   "name": "eval-v1-token-dev",
+   "run": ".lab-output/sku-independent-real-20261011/eval-v1/run-token",
+   "align": ".lab-output/sku-independent-real-20261011/eval-v1/align-v7-token",
+   "groups": ".lab-output/sku-independent-real-20261011/eval-v1/groups-token/groups.jsonl",
+   "splits": [
+    "dev"
+   ],
+   "inputs": {
+    "cases.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v1/run-token/inputs/cases.jsonl",
+     "sha256": "c755712157991b59b7b0e8ca8b84489c4d813500ebab86b068118dae37caf222"
+    },
+    "products.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v1/run-token/inputs/products.jsonl",
+     "sha256": "8663d65cc32f7357d6861d7a3835c6bddb3421c8400ce92a9c2825ca1ca30e1b"
+    },
+    "handoff.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v1/align-v7-token/align/handoff.jsonl",
+     "sha256": "abfd9b9768209602999ee9875fd3d04f794f055e3bd7477bc7bfbdc5643f6d3d"
+    },
+    "align_summary.json": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v1/align-v7-token/align/summary.json",
+     "sha256": "101ba0c0a34fd870c8d848b6d47c1d47a9d6e2309c15add32ef3ad01907895b1"
+    },
+    "groups.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v1/groups-token/groups.jsonl",
+     "sha256": "4f9f9733ee0d34a792d91f0408013fb8f89adf1443a37827ba1bdc4655ae3750"
+    }
+   },
+   "code_sha256": "6a302f82ca48f10e269125287cada5d4e39291940a61d6048d50b90fca7fd1a1",
+   "align_code_sha256": "173c9c90157278147740f3c885ba5fae9144152b0d20493a19056eb3efba5a7e",
+   "cases_read": 1214,
+   "model_candidates": 52,
+   "verdicts": {
+    "model_candidate": 52
+   },
+   "proof_types": {},
+   "proven_with_residual_unconfirmed": 0,
+   "with_corroboration": 0,
+   "files": [
+    {
+     "path": ".lab-output/sku-value-equivalence-20261012-v1/eval-v1-token-dev/sidecars.jsonl",
+     "bytes": 309626,
+     "sha256": "b9905d6bf98b478364cd9d9fcfa5f0b3d84982f459f4cd3a0c4f677b9ca85d34"
+    },
+    {
+     "path": ".lab-output/sku-value-equivalence-20261012-v1/eval-v1-token-dev/summary.json",
+     "bytes": 1462,
+     "sha256": "5f9f850152f23e28d745a1fcf15991c2912576f54006fadfb6f7903cbf45c93c"
+    }
+   ]
+  },
+  {
+   "name": "eval-v2-family-dev",
+   "run": ".lab-output/sku-independent-real-20261011/eval-v2/run-family",
+   "align": ".lab-output/sku-independent-real-20261011/eval-v2/align-v7-family",
+   "groups": ".lab-output/sku-independent-real-20261011/eval-v2/groups-family/groups.jsonl",
+   "splits": [
+    "dev"
+   ],
+   "inputs": {
+    "cases.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v2/run-family/inputs/cases.jsonl",
+     "sha256": "0523ab6ec161c37dc40a4ff3135f274db247d015ffb8a277c3a401c30f8aa1fc"
+    },
+    "products.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v2/run-family/inputs/products.jsonl",
+     "sha256": "3ae9e42032e24b491110f4e4dc51f2228d1acf08b24dde9288ceac0824a5c17a"
+    },
+    "handoff.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v2/align-v7-family/align/handoff.jsonl",
+     "sha256": "26989b033d77572a48087b262d19e606690af483386c90d83e9a98e536a2b138"
+    },
+    "align_summary.json": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v2/align-v7-family/align/summary.json",
+     "sha256": "59e96c0e7c467b34c62276bd25697c8e2a48f2fc1e5b5b9117350b3b9b6ac46b"
+    },
+    "groups.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v2/groups-family/groups.jsonl",
+     "sha256": "525665158bed470adbaca11461f44168f937d52ed8d342ed104a685eeda9f891"
+    }
+   },
+   "code_sha256": "6a302f82ca48f10e269125287cada5d4e39291940a61d6048d50b90fca7fd1a1",
+   "align_code_sha256": "173c9c90157278147740f3c885ba5fae9144152b0d20493a19056eb3efba5a7e",
+   "cases_read": 55,
+   "model_candidates": 6,
+   "verdicts": {
+    "model_candidate": 6
+   },
+   "proof_types": {},
+   "proven_with_residual_unconfirmed": 0,
+   "with_corroboration": 0,
+   "files": [
+    {
+     "path": ".lab-output/sku-value-equivalence-20261012-v1/eval-v2-family-dev/sidecars.jsonl",
+     "bytes": 34675,
+     "sha256": "d995a8fe90226cebf6a94ada6789af509641adde0de1393a5efda944dacc4354"
+    },
+    {
+     "path": ".lab-output/sku-value-equivalence-20261012-v1/eval-v2-family-dev/summary.json",
+     "bytes": 1460,
+     "sha256": "677e0be114411d90d4143a579adaddb0cd58eb382354aad6ddca47f198c33e58"
+    }
+   ]
+  },
+  {
+   "name": "eval-v2-token-dev",
+   "run": ".lab-output/sku-independent-real-20261011/eval-v2/run-token",
+   "align": ".lab-output/sku-independent-real-20261011/eval-v2/align-v7-token",
+   "groups": ".lab-output/sku-independent-real-20261011/eval-v2/groups-token/groups.jsonl",
+   "splits": [
+    "dev"
+   ],
+   "inputs": {
+    "cases.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v2/run-token/inputs/cases.jsonl",
+     "sha256": "c3c48eeb9a29020f36b8639e25581c6e263f2d826ba14e8ad84742288750879e"
+    },
+    "products.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v2/run-token/inputs/products.jsonl",
+     "sha256": "9388daae7cbdb3f673cb32582c10e3ea431440bd16830185378d0584cb65f3d7"
+    },
+    "handoff.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v2/align-v7-token/align/handoff.jsonl",
+     "sha256": "630008f4565de5978806df8953db6d7dea8652ba9ca85e70398997c6b1f009b6"
+    },
+    "align_summary.json": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v2/align-v7-token/align/summary.json",
+     "sha256": "5f82383136dbdbed0016d03d825aa151673e6dbd2d43fcc9c739f178286a50a4"
+    },
+    "groups.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v2/groups-token/groups.jsonl",
+     "sha256": "34f92e1a61ea9174533060a3150385553501a8e3b6338b967515936f5be672bc"
+    }
+   },
+   "code_sha256": "6a302f82ca48f10e269125287cada5d4e39291940a61d6048d50b90fca7fd1a1",
+   "align_code_sha256": "173c9c90157278147740f3c885ba5fae9144152b0d20493a19056eb3efba5a7e",
+   "cases_read": 1295,
+   "model_candidates": 397,
+   "verdicts": {
+    "proven_equivalent": 23,
+    "model_candidate": 374
+   },
+   "proof_types": {
+    "own_axis_name_affix": 23
+   },
+   "proven_with_residual_unconfirmed": 8,
+   "with_corroboration": 0,
+   "files": [
+    {
+     "path": ".lab-output/sku-value-equivalence-20261012-v1/eval-v2-token-dev/sidecars.jsonl",
+     "bytes": 3036556,
+     "sha256": "37d3efc2aeaf04ed0491d8b1ba553c44b67483d17ee0b291762d43791b2db661"
+    },
+    {
+     "path": ".lab-output/sku-value-equivalence-20261012-v1/eval-v2-token-dev/summary.json",
+     "bytes": 1567,
+     "sha256": "f18bbf07883f31be9daba93ccb949dfd2e172479c5de4ccadb82574c04f96c8d"
+    }
+   ]
+  },
+  {
+   "name": "eval-v3-token-dev",
+   "run": ".lab-output/sku-independent-real-20261011/eval-v3/run-token",
+   "align": ".lab-output/sku-independent-real-20261011/eval-v3/align-v7-token",
+   "groups": ".lab-output/sku-independent-real-20261011/eval-v3/groups-token/groups.jsonl",
+   "splits": [
+    "dev"
+   ],
+   "inputs": {
+    "cases.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v3/run-token/inputs/cases.jsonl",
+     "sha256": "7b4ee84e039203a26067699a83e958ebb866b32c508802ad19c2ad5f91984053"
+    },
+    "products.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v3/run-token/inputs/products.jsonl",
+     "sha256": "b8f87ca5a48756a4247b10fb9ab89ddb565627914a8bd53d47b51e33ddb5f5d6"
+    },
+    "handoff.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v3/align-v7-token/align/handoff.jsonl",
+     "sha256": "3d01564adcb76091f62705706333891bcd203ea76c24de53bfda2a50e2d639d2"
+    },
+    "align_summary.json": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v3/align-v7-token/align/summary.json",
+     "sha256": "6bc2082d60739bedcdf8cbdc55167126d92773b0a76c125510963cd811ec9e20"
+    },
+    "groups.jsonl": {
+     "path": ".lab-output/sku-independent-real-20261011/eval-v3/groups-token/groups.jsonl",
+     "sha256": "abbd2605983e190ce583520d69ea1aa31af848c0f9619f9ff6cde604971d27a1"
+    }
+   },
+   "code_sha256": "6a302f82ca48f10e269125287cada5d4e39291940a61d6048d50b90fca7fd1a1",
+   "align_code_sha256": "173c9c90157278147740f3c885ba5fae9144152b0d20493a19056eb3efba5a7e",
+   "cases_read": 75,
+   "model_candidates": 7,
+   "verdicts": {
+    "model_candidate": 7
+   },
+   "proof_types": {},
+   "proven_with_residual_unconfirmed": 0,
+   "with_corroboration": 1,
+   "files": [
+    {
+     "path": ".lab-output/sku-value-equivalence-20261012-v1/eval-v3-token-dev/sidecars.jsonl",
+     "bytes": 35232,
+     "sha256": "43f320b3849ce84e6386e0efca83dc6a92763a7a3be20bc128ed2c50ef8721c5"
+    },
+    {
+     "path": ".lab-output/sku-value-equivalence-20261012-v1/eval-v3-token-dev/summary.json",
+     "bytes": 1519,
+     "sha256": "e9921693046ed86914163d413a0bf2def980ac11bd13de8baeeef2f4bc368494"
+    }
+   ]
+  },
+  {
+   "name": "family",
+   "run": ".lab-output/sku-gate-raw-family-20261010-v10",
+   "align": ".lab-output/sku-align-20261012-v7/family",
+   "groups": null,
+   "splits": null,
+   "inputs": {
+    "cases.jsonl": {
+     "path": ".lab-output/sku-gate-raw-family-20261010-v10/inputs/cases.jsonl",
+     "sha256": "50ba830f33b4dfa98b86e9ddebbcfc45c52f0d8f0a45e7d09b2d7e2c14f99f21"
+    },
+    "products.jsonl": {
+     "path": ".lab-output/sku-gate-raw-family-20261010-v10/inputs/products.jsonl",
+     "sha256": "18d5a897b2162004fdfe1ae242d5999c2b57300f69d71583b0184588bcb699b8"
+    },
+    "handoff.jsonl": {
+     "path": ".lab-output/sku-align-20261012-v7/family/align/handoff.jsonl",
+     "sha256": "3b643e268c91cfe6a7f9e48e62d962c7f4e7a89261ac049b77484d618acdf8ee"
+    },
+    "align_summary.json": {
+     "path": ".lab-output/sku-align-20261012-v7/family/align/summary.json",
+     "sha256": "b6e61246c46b548e2453f94ef9a36145ea415a6e7dc62664a8b9db5db84989cf"
+    }
+   },
+   "code_sha256": "6a302f82ca48f10e269125287cada5d4e39291940a61d6048d50b90fca7fd1a1",
+   "align_code_sha256": "173c9c90157278147740f3c885ba5fae9144152b0d20493a19056eb3efba5a7e",
+   "cases_read": 970,
+   "model_candidates": 42,
+   "verdicts": {
+    "model_candidate": 38,
+    "proven_equivalent": 4
+   },
+   "proof_types": {
+    "own_axis_name_affix": 4
+   },
+   "proven_with_residual_unconfirmed": 0,
+   "with_corroboration": 0,
+   "files": [
+    {
+     "path": ".lab-output/sku-value-equivalence-20261012-v1/family/sidecars.jsonl",
+     "bytes": 173103,
+     "sha256": "19591178ac1158313a626d3d76ae13094064ae420e034232938a39708341af97"
+    },
+    {
+     "path": ".lab-output/sku-value-equivalence-20261012-v1/family/summary.json",
+     "bytes": 1354,
+     "sha256": "0523c8bd04d74e8686924c93c9ebdd20b629d4cef75d11aa7dc722bbb91d57c7"
+    }
+   ]
+  },
+  {
+   "name": "legacy",
+   "run": ".lab-output/sku-gate-tasks-20261010-v10",
+   "align": ".lab-output/sku-align-20261012-v7/legacy",
+   "groups": null,
+   "splits": null,
+   "inputs": {
+    "cases.jsonl": {
+     "path": ".lab-output/sku-gate-tasks-20261010-v10/inputs/cases.jsonl",
+     "sha256": "1590b856a9914cdcc74f9daaef214bc204d66ebf9603c84f5b83d48a38e8fa24"
+    },
+    "products.jsonl": {
+     "path": ".lab-output/sku-gate-tasks-20261010-v10/inputs/products.jsonl",
+     "sha256": "f61a63729ae320380737f6f239dbda1ea67bdfce93721f32c767421d516786f6"
+    },
+    "handoff.jsonl": {
+     "path": ".lab-output/sku-align-20261012-v7/legacy/align/handoff.jsonl",
+     "sha256": "d8697d624ddc41ea3ce22fd6565d6351e5aaaba643cc1bd993e6835bfc0d923b"
+    },
+    "align_summary.json": {
+     "path": ".lab-output/sku-align-20261012-v7/legacy/align/summary.json",
+     "sha256": "f95fea02add483a3ab2591963a185a096bfdadc2fea04df8dbd511cb5af421eb"
+    }
+   },
+   "code_sha256": "6a302f82ca48f10e269125287cada5d4e39291940a61d6048d50b90fca7fd1a1",
+   "align_code_sha256": "173c9c90157278147740f3c885ba5fae9144152b0d20493a19056eb3efba5a7e",
+   "cases_read": 1383,
+   "model_candidates": 720,
+   "verdicts": {
+    "model_candidate": 720
+   },
+   "proof_types": {},
+   "proven_with_residual_unconfirmed": 0,
+   "with_corroboration": 0,
+   "files": [
+    {
+     "path": ".lab-output/sku-value-equivalence-20261012-v1/legacy/sidecars.jsonl",
+     "bytes": 6507360,
+     "sha256": "d2f57a062b0e6acd47fc28c6cfa16bdfbd1e6d7694a8482806f18dcfe7a97c7e"
+    },
+    {
+     "path": ".lab-output/sku-value-equivalence-20261012-v1/legacy/summary.json",
+     "bytes": 1254,
+     "sha256": "77810d85fec41e388e2bc31932c53e6c491dcdd163c5d66bc171266d652eb5a5"
+    }
+   ]
+  }
+ ],
+ "size_bytes": 625776,
+ "sha256": "0b97e1a900bd1172ec91464029278cb7f3994da8c32a1596557f96cee4a17e69",
+ "file_count": 22
+}

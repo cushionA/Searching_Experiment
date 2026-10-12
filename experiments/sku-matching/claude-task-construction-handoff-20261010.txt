@@ -1,6 +1,8 @@
 Claude Code 並列検証ハンドオフ — SKU判定タスク構築
 作成日: 2026-10-10
 
+追記: 全実データZIPと最新のCodex試行は `codex-to-claude-shared-updates-20261010.txt` を先に参照してください。ZIPは `results/20261010-all-real-data.zip`、分析promptは `claude-all-real-data-prompt-20261010.txt`。既存の `claude/task-construction` で作業を続けられます。以下の初期checkpoint・原本46ファイルという記述は過去の受領範囲です。
+
 目的
 固定済みの商品ペアを前提に、楽天の1選択SKUを、同一AU URLの全SKU選択肢と商品ページ根拠に照らして判定するタスク構造を実装・検証する。優先は構築品質と実運用上の誤受理防止。SKU判定前の商品検索や別URLへの再ルーティングは行わない。提案書だけで終わらず、2方式以上をCPUで実装し、source-preservation testを通してから診断評価を行う。
 

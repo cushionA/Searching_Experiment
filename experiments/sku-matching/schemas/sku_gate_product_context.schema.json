@@ -1,0 +1,372 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sku_gate_product_context.schema.json",
+  "title": "Fixed AU/Rakuten product pair context for the SKU gates",
+  "description": "One fixed pair: the complete AU SKU array with raw spans, fixed titles, scoped description lines, and Rakuten selector families. Prices, stock, shipping and promotions are excluded.",
+  "type": "object",
+  "required": [
+    "dossier_id",
+    "pair_ref",
+    "au_product",
+    "au_rows",
+    "rakuten_product",
+    "color_vocab",
+    "variant_tokens",
+    "au_description_lines",
+    "rakuten_description_lines",
+    "au_purchase_option_lines",
+    "size_code_crosswalks",
+    "excluded_non_identity_fields"
+  ],
+  "properties": {
+    "dossier_id": {
+      "type": "string"
+    },
+    "pair_ref": {
+      "type": "string",
+      "pattern": "^au:\\d+\\|raku:"
+    },
+    "au_product": {
+      "type": "object",
+      "required": [
+        "product_id",
+        "raw_file",
+        "sha256",
+        "title",
+        "title_span",
+        "axis_names"
+      ],
+      "properties": {
+        "product_id": {
+          "type": "string"
+        },
+        "raw_file": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "title": {
+          "type": "string"
+        },
+        "title_span": {
+          "$ref": "#/$defs/span"
+        },
+        "axis_names": {
+          "type": "object"
+        }
+      },
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "price"
+            ]
+          },
+          {
+            "required": [
+              "current_price"
+            ]
+          },
+          {
+            "required": [
+              "stock"
+            ]
+          }
+        ]
+      }
+    },
+    "au_rows": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "row_key",
+          "row_index",
+          "column_index",
+          "sku_id",
+          "axes",
+          "array_source"
+        ],
+        "properties": {
+          "row_key": {
+            "type": "string",
+            "pattern": "^au:\\d+:\\d+:\\d+:\\d+$"
+          },
+          "row_index": {
+            "type": "integer"
+          },
+          "column_index": {
+            "type": "integer"
+          },
+          "sku_id": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
+          "axes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "axis_name",
+                "value",
+                "axis_name_span",
+                "value_span"
+              ],
+              "properties": {
+                "axis_name": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "axis_name_span": {
+                  "$ref": "#/$defs/span"
+                },
+                "value_span": {
+                  "$ref": "#/$defs/span"
+                }
+              }
+            }
+          },
+          "array_source": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "rakuten_product": {
+      "type": "object",
+      "required": [
+        "url",
+        "raw_file",
+        "sha256",
+        "encoding",
+        "title",
+        "title_span",
+        "selector_families"
+      ],
+      "properties": {
+        "title_span": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/span"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "selector_families": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "label",
+              "label_span",
+              "values",
+              "variant_tokens"
+            ]
+          }
+        }
+      }
+    },
+    "color_vocab": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "variant_tokens": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "au_description_lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "text",
+          "span",
+          "scope_tag"
+        ],
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "span": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/span"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "scope_tag": {
+            "type": "string"
+          },
+          "source_field": {
+            "type": "string"
+          },
+          "source_line": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "rakuten_description_lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "text",
+          "span",
+          "scope_tag"
+        ],
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "span": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/span"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "scope_tag": {
+            "type": "string"
+          },
+          "source_field": {
+            "type": "string"
+          },
+          "source_line": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "au_purchase_option_lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "text",
+          "span"
+        ],
+        "properties": {
+          "span": {
+            "$ref": "#/$defs/span"
+          }
+        }
+      }
+    },
+    "size_code_crosswalks": {
+      "type": "array"
+    },
+    "excluded_non_identity_fields": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "price",
+          "stock",
+          "inventory",
+          "shipping",
+          "coupon",
+          "promotion",
+          "availability"
+        ]
+      },
+      "minItems": 7
+    }
+  },
+  "$defs": {
+    "span": {
+      "type": "object",
+      "required": [
+        "raw_file",
+        "sha256",
+        "locator",
+        "start",
+        "end",
+        "quote"
+      ],
+      "properties": {
+        "raw_file": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "locator": {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "html_text",
+                "json_leaf",
+                "jsonl_leaf"
+              ]
+            },
+            "encoding": {
+              "type": "string"
+            },
+            "path": {
+              "type": "string"
+            },
+            "json_path": {
+              "type": "string",
+              "pattern": "^\\$"
+            },
+            "line": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "identical_copies": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

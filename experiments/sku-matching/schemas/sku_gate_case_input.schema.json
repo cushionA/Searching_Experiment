@@ -1,0 +1,247 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sku_gate_case_input.schema.json",
+  "title": "One selected Rakuten SKU for a fixed AU product pair",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "task_version",
+    "case_id",
+    "dossier_id",
+    "group_id",
+    "split",
+    "au_product_id",
+    "rakuten_selected",
+    "excluded_non_identity_fields"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "sku-gate-case-input-v1"
+    },
+    "task_version": {
+      "type": "string"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^case-[0-9a-f]{20}$"
+    },
+    "dossier_id": {
+      "type": "string"
+    },
+    "group_id": {
+      "type": "string"
+    },
+    "split": {
+      "enum": [
+        "dev",
+        "test",
+        "exploration"
+      ]
+    },
+    "au_product_id": {
+      "type": "string"
+    },
+    "rakuten_selected": {
+      "type": "object",
+      "required": [
+        "url",
+        "raw_file",
+        "sha256",
+        "variant_id",
+        "source_row_key",
+        "source_sku_key",
+        "sku_record_key",
+        "source_row_index",
+        "axes"
+      ],
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "axes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "axis_index",
+              "axis_key",
+              "axis_label",
+              "axis_label_span",
+              "value",
+              "value_span",
+              "family_values"
+            ],
+            "properties": {
+              "value_span": {
+                "$ref": "#/$defs/span"
+              },
+              "axis_label_span": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/span"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "family_values": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "variant_attributes": {
+          "type": "array",
+          "description": "Per-SKU structured attributes of the selected variant from the original page JSON (identity facts only; no price fields).",
+          "items": {
+            "type": "object",
+            "required": [
+              "title",
+              "value",
+              "unit",
+              "value_span"
+            ],
+            "properties": {
+              "title": {
+                "type": "string",
+                "not": {
+                  "pattern": "価格|ポイント|送料|在庫"
+                }
+              },
+              "value": {
+                "type": "string"
+              },
+              "unit": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "value_span": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/span"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "not": {
+        "anyOf": [
+          {
+            "required": [
+              "price"
+            ]
+          },
+          {
+            "required": [
+              "price_jpy"
+            ]
+          },
+          {
+            "required": [
+              "stock"
+            ]
+          }
+        ]
+      }
+    },
+    "excluded_non_identity_fields": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "price",
+          "stock",
+          "inventory",
+          "shipping",
+          "coupon",
+          "promotion",
+          "availability"
+        ]
+      },
+      "minItems": 7
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "span": {
+      "type": "object",
+      "required": [
+        "raw_file",
+        "sha256",
+        "locator",
+        "start",
+        "end",
+        "quote"
+      ],
+      "properties": {
+        "raw_file": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "locator": {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "html_text",
+                "json_leaf",
+                "jsonl_leaf"
+              ]
+            },
+            "encoding": {
+              "type": "string"
+            },
+            "path": {
+              "type": "string"
+            },
+            "json_path": {
+              "type": "string",
+              "pattern": "^\\$"
+            },
+            "line": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "identical_copies": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
