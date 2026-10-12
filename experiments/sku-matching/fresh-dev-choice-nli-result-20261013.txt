@@ -1,0 +1,79 @@
+20261013-run / 記録時刻 2026-10-12 UTC
+source_split: dev
+independent_test: false
+production_adoption_allowed: false
+
+新しい商品分離DEV40件では、既知一致36件の取りこぼしが20件から1件へ減った。
+baseline-literal-overlay: TP16 / FP0 / FN20 / TN0、recall44.4444%。
+explicit-choice-nli-experimental: TP35 / FP0 / FN1 / TN0、recall97.2222%。
+採用した既知35件のAU行キーは原参照行に完全一致、wrong accepted row 0。
+参照未確定4件は別集計。実推論・全行組立は40件すべて実行した。
+既知36件は全件matchedで、不一致の既知参照が0件。FP0/precision100%は
+誤接続耐性を検証した結果として扱わない。このDEVは独立テストではない。
+参照はClaude Haiku 5.5の機械注釈で、人手goldではない。
+
+選定と入力
+- 商品20件×2ケースをモデル応答/正解を読む前にhash選定。
+- membership SHA256: ab90d19dc4065be564acb8fe7d57d966d9c82f8018b1482de515083ab39f3a58
+- v2=34 / v3=6、AU全504行、元の両方向全1,924条件、1,045 requests。
+- DEV全1,370件/107商品とTEST全1,292件/106商品の商品/dossier/case重複0。
+- 原値、原軸名、原選択肢の完全な順序配列、原AU行キー、原本SHA/位置を保持。
+- 入力: .lab-output/sku-next-dev-v7-adapter-20261013-v1/full-gate-inputs-v8
+- input manifest SHA256: 38b00718eab0ef5952258763f20b99b3d538e56a9c1194b231d23cb1ce578e21
+
+判定の変更
+- 最も近い選択肢だけを見る方式から、全原選択肢をそれぞれsupport / explicit_conflict /
+  unknownとして評価するgpt-6-lunaの実判定へ変更した。
+- 全選択肢をunmarkedで渡し、相手側の実選択原値・原軸名・全family・検証済み説明文を提示。
+  自側の欲しい答え/実選択値/ケースID/タスクIDはモデル入力へ渡さない。
+  隠した実選択値を変えてもモデルpayloadが同じになる検査を実施した。
+- semantic判定に同一軸名のフィルタやカテゴリ/商品ID/個別ケース分岐を追加していない。
+  原値完全一致・同軸名・同順序familyを必要とする既存literal証明は別に保護した。
+- 別選択肢が勝ったこと・原値の不一致・本文の欠落だけではconflictにしない。
+  support/conflictとも同一条件・座標をモデルが明示評価し、原軸名/実値/whole optionを引用。
+  conflictはさらに相互排他の説明を必要とする。これはモデル判断で、意味の自動証明ではない。
+- baseline fallbackや過去採用を残すguardは使わず、この全選択肢経路とliteralだけで組立。
+- 各行は全両方向条件を確認。一行だけ全support、他の全行がconflictの場合に採用。
+  unknownは競合行の除外に使わない。売切れ行を含む原504行をすべて残した。
+
+実計算と検証
+- 固定JEV/NLIモデルのfresh CPU FP32計算を実行。1,045 requests、541 JEV groups、
+  3,758 NLI pairs、合計2,411.9秒。生出力240 support / 805 unknown。
+- 原v7 producerの固定rerankerも新全DEVで実計算済み。全行traceを別保存。
+  v7状態/core/residualはuntrusted hintで、このgateの証拠や採用条件に使っていない。
+- 543 exact NLI文脈中、literalで全taskを解決した305を除き、238文脈/2,174whole optionsを
+  実gpt-6-lunaへ4分割して判定。モデルoverrideは実spawn時指定、自己申告だけで認定していない。
+- 回答引用のSHA/位置/quoteと元全文を検証。237 valid、1 empty vectorをunknownへ戻した。
+- 最終task: support560 / conflict1,344 / unknown20。
+  最終row: support37 / conflict465 / unknown2。ケース37 accept / 3 drop。
+  参照未確定4件のうち2件のacceptは正解扱いせず、既知TP35とは分けた。
+- 全予測/gate/入力/code272pinsを凍結してからroot GOで選定DEVの原参照40件だけ採点。
+  最終freeze SHA256: c194d98fc9c694a082c7bdfb65107061850666c136658e88b34b55601e62a49c
+
+機械的修復と制限
+- 引用IDが未付与の原軸名を提示していたため、SHA/start/end/quoteが一意に完全一致する
+  230引用のevidence_idだけ別viewで正規化。hypothesis軸名の原spanも別registryへ登録。
+- 1workerは回答形式schema名をprotocol欄に記入した。実dispatchは全件同じv2と確認し、
+  59回答のprotocol欄だけ別viewで正規化。state/reason/quote/offset/選択肢は不変、再推論なし。
+- 初回validation/初回gateは未採点のまま保存。凍結NLI意味規則/validator本体は変更しない。
+- proof manifestのみ後からcanonical hash metadataが確定し、root pinと差異があった。
+  元manifest bytesは未保存で全文差分を再現できない。その他203初回pinsと全proof payloadが
+  不変であることを検査し、別reconciliation receiptへ記録した。
+- worker0はroot snapshot前に1～16行の架空source-axis引用と参照を削除した。
+  削除前backup/SHAがなく、最初のbytes不変を立証できない。違反と制限をsnapshot receiptに保存。
+  現回答は保持し、empty vectorを作り直さずunknownにした。これも再推論していない。
+- hostedモデルのaliasはweights revisionを固定できない。保存した実回答の再生は可能だが、
+  新規推論のbyte一致は保証しない。意味の真偽・本番性能・全TEST成功を確立したとは扱わない。
+
+検査・保存・継続
+- 関連51テスト成功。必須test_lab*は1,308件、failure0/error14/skip37。
+  14errorは過去の.lab-output fixture不足。全suite成功とは報告しない。原log/不足一覧保存済み。
+- 結果: .lab-output/sku-next-dev-checkpoint-build-20261013-v1/dev-score.json
+- gate: .lab-output/sku-next-dev-v7-adapter-20261013-v1/final-gate-run-v2
+- checkpoint: results/20261013-sku-next-dev-checkpoint.zip とmanifest/SHAで復元する。
+  固定weights/secrets/全goldはZIPへ含めない。外部元ZIPは原SHA依存として明記する。
+- 先の独立TEST40はrecall45.7%のまま保存し、今回のDEV97.2%へ置き換えない。
+- この方式を固定し、先のTEST20商品をすべて除いた未使用商品で独立テストを続行する。
+  Claudeへ新カテゴリ規則/新判定器/新収集の追加依頼はない。既存原入力の対応依頼は別保存済み。
+- Kaggleへの入力uploadは自動承認レビューで具体payloadの外部送信承認不足として拒否された。
+  実送信/GPU投入なし。CPU fallbackで作業を継続した。

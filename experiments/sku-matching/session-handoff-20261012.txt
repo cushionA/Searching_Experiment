@@ -102,3 +102,14 @@ submitは1回のみ。job.jsonにref/version/source signature保存。wait/照�
 - 消費済みtest40で追加調整や独立testの再主張をしない。改善はdevで行い、未使用testを保持。
   最新必須test_lab*は1,249件failure0/error11/skip37（過去fixture不足）、修復grader10成功。
   リモートの最終HEADは同ブランチのgit log/ls-remoteで確認。元古い結果とrawは移動/削除しない。
+
+最新追記（2026-10-12 UTC / fresh全選択肢DEV完了・未使用TEST続行）
+- 新商品分離DEV40/20商品、全504行/1,924両方向条件を実推論し、全gate凍結後に採点。
+- 既知36/未確定4、baseline16TP20FN→全選択肢NLI35TP1FN、正解採用AU行35、recall97.2%。
+  既知negative0なのでFP0を誤接続耐性の証明としない。DEVであり独立TESTではない。
+- 先の独立TEST40/20商品recall45.7%は不変・消費済み。新TESTはその20商品全体を除外。
+- 関連51tests成功、required1,308/failure0/error14/skip37（過去fixture不足）。
+- fresh-dev-choice-nli-result-20261013.txtに詳細、metadata修復/worker0初回引用削除の監査制限も記載。
+- 復元: results/20261013-sku-next-dev-checkpoint.zip + manifest/SHA。新全dev原入力のClaude用ZIPは別保存。
+- 凍結方式を保ち、未使用TEST20商品×2件のsource-only準備を継続。正解は全gate固定後だけ開く。
+  新カテゴリ分岐/新判定器/新収集をClaudeへ依頼する必要は現時点ではない。
