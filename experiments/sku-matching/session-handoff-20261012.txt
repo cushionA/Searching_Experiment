@@ -1,0 +1,79 @@
+別セッションへの引継ぎ（2026-10-12）
+
+現在のユーザー指示
+- このセッションの本作業は停止した。今は引継ぎ資料・保存だけを行う。GPUジョブは未投入。
+- 次のセッションでは目的から完了まで自動で進め、繰り返し確認を求めない。
+- Lunaが選んだ追加dev31件、過去の誤り44件、有用な既存対照7件を合わせた実データ82件で、現在の有力な軽量モデル構成をGPUで再測定する。商品ペアが疑わしい1件は診断として別扱い。
+- GPUは高速化のため。Qwen等へのモデル変更を求めていない。Qwen3.5-4Bへ切り替える案は取り下げ済み。
+- 実データと合成データを混ぜない。合成はunit testのみ。出典・旧誤り・追加dev・旧対照の層を保持。
+
+作業場所とブランチ
+/workspace/Searching_Experiment-model-gates-20261010
+branch: codex-sku-generic-model-gates-20261010
+開始HEAD: 4a9f54b128b7f46720da2de2a2f87ac5a10f1d31
+Claude upstream: claude/sku-condition-alignment
+v3データcommit: f5df6a7022610cd55da5d688b234ad6e644d648e
+v7コード/出力commit: a15ed1e3b57607e07b69ef56e6921f6976ca48e7
+PR26: https://github.com/cushionA/Searching_Experiment/pull/26
+
+確定タスク
+商品単位の対応を先に固定し、楽天1SKUレコードをそのAU URL内の全AU SKU候補へ照合する。別AU URLへ振り分けない。同一AU行で全条件を満たす必要がある。出力は採用/除外、内部不明は除外。価格・在庫を同一性根拠にしない。売切れ処理は別に検査し、取得配列の事実を無断で変えない。
+真正な非対称one_sided条件だけAU商品単位で共有できるというユーザー確認済み契約。model_candidate、v7残余、逆方向条件を一律に共有しない。
+楽天側残余はAU情報で確認、AU側残余は楽天情報で確認。原値・全選択肢・原本参照を維持。
+
+完了した作業
+1. Claude v7の既知数値不具合（15℃と-15℃、100cmと最大100cm）修正と出力ZIP整合を確認。まだスラッシュ順の正規化だけでは意味同一性を保証しないため、Codex接続は完全な原値一致以外を確認済みにしない。
+2. prepare_claude_alignment_v7.pyを追加。新形式を既存二値ゲートに接続。2,353ケース、2,284候補行、4,656条件、3,306要求で構造検査。空予測では採用164/除外2189、上流から変更0。これは精度改善ではない。
+3. 共有互換は94 group（72 AU商品）を確認。94はone_sided共有だけ。非共有/逆方向1282 requestは別。
+4. HTMLリンク文を支持から外す変更。全anchor本文を支持viewから除き、元リンク・href・raw refsは監査metadataに保持。複数値の正当な仕様表は残す。古いblockは再構築が必要。
+5. CPU再計測を実施・完了。過去誤り44件だけ（12誤採用、32取りこぼし）、共有22group。
+
+CPU実測結果（機械ラベル、旧誤り集合のみ）
+入力：.lab-output/sku-anchor-filter-error-prep-20261012-v1
+推論：.lab-output/sku-anchor-filter-error-models-20261012-v1
+採点：.lab-output/sku-anchor-filter-error-evaluation-20261012-v1
+全体379.572秒。reranker推論16.934秒/633対、JEV推論265.269秒/66入力・330選択肢対、NLI推論87.534秒/264対。4 CPU threads。
+方式                         TP FP FN TN
+元baseline                    0 12 32 0
+product-top1-jev               7  8 25 4
+product-top3-jev              10  7 22 5
+product-top3-verified          0  0 32 12
+JEV top3で取りこぼし10件回収・誤採用7件残る。以前の同じ44件のtop3は9/7/23/5。改善は小さく、実用精度に到達したとは言えない。NLI全件除外は有用な改善ではない。
+CPU計測はv7全件の性能ではなく、旧条件入力へリンク除外を適用した比較。推論freeze後にラベルを読んで採点、元ラベル変更なし。
+
+現在の有力モデル構成（変更せずGPUで再測定）
+retrieval: hotchpotch/japanese-reranker-xsmall-v2 / INT8 ONNX（GPUでINT8が使えない場合CPUのままにし別計時）
+primary: argos1111/modernbert-ja-310m-jev / FP32
+comparison: 0x3/bert-base-japanese-v3_nli-jsnli-jnli-jsick / FP32
+モデル・revision・ファイルSHAは既存manifests/CPU freezeを固定。GPU JEV/NLIでCUDA実体とFP32を確認、TF32無効。別モデルや再学習、閾値調整を混ぜない。
+
+選抜済みデータ
+.lab-output/sku-luna-selected-dev-20261012-v1/ : 追加dev主評価31＋診断1
+.lab-output/sku-luna-mixed-gpu-selection-20261012-v1/ : union83（primary82＋診断1）
+membership.jsonlに元ケース・原本入力・row plans・model obligations・source SHA。case_idで重複排除し新旧層を保持。Luna指定のサブエージェント経路で選択、独立test・新devラベル・予測を選択に使用していない。case/src/dev/rawSHAをrootでも照合し差分0。
+
+未完・必ず確認する点
+prepare_mixed_gpu_sku_inputs_v1.py と kaggle_product_condition_gpu_v1.py、そのtestsは新規作成途中/最終未検証として扱う。存在することは完成・CUDA成功を意味しない。
+新devはproducts.jsonlがZIPで省略。AU原本SKU表と楽天原本からの復元が必要。v7 eval出力とAU row_keyの整合を確認する。購入option API原本が含まれない可能性はsource_flagsとして保持、捏造しない。新devの上流行数がsoldoutを含む実例があり、全配列は保持して在庫状態を監査する。
+新dev/reverseに未推論のbaseline placeholderを入れて採点しない。GPU runnerは非共有条件も実際に推論する必要がある。旧baselineの再生と新規推論を分けて記録。
+本turnの新実装全体test_lab*はまだ未実行。関連39tests成功、v7単体17tests成功（最終コードで再確認すること）。過去HEADの全suiteは1031test/18skip/既存2errorで、完全passとは言わない。
+
+GPU/Kaggle
+GPU job未投入、dataset uploadも未実施。
+.AGENTSと .agents/skills/kaggle-ops/SKILL.md を読む。helperは .deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py
+このセッションdoctor成功、quota残97794.362秒、reserved0。古い観測なので次sessionでquota再確認。tokenはCloud networksecretのKAGGLE_API_TOKEN、値を表示/保存しない。認証値・重みを不用意にNotebook/成果物へ含めない。
+submitは1回のみ。job.jsonにref/version/source signature保存。wait/照合/出力回収/固定SHA検査後に成功報告。未確認submitを再送しない。
+
+再開順序
+1. checkpoint復元、AGENTS・Kaggle skill読取、git状態・原本SHAを確認。
+2. 新2GPU補助スクリプトの未完成部分とunit testsを確認して完成。mixed82の全SKU・全未確認条件を失わずモデル入力をfreeze。
+3. required suite: python3 -B -m unittest discover -s tests -p 'test_lab*.py'。既存失敗と新規失敗を区別。
+4. private Dataset/Notebookのuploadallowlist・manifest・secret不混入を検査、quota確認、同じ軽量モデルをGPUで1回submit。
+5. 状態監視・出力回収。CUDA実体/モデルpins/全件処理/schema/hashを検証。
+6. 予測をfreeze後、機械ラベルで層別採点。旧誤り44、新dev31、旧対照7を別に出す。診断1と参照未確定は通常正解率から分ける。
+7. CPU↔GPUのモデル・入力・precision一致と差分を確認し、時間・回収・誤採用・形式失敗を報告。良い構成へ達するまで継続。ただしGPU高速化だけを精度改善とは言わない。
+
+新セッションへ渡す短いpromptはresume-prompt.txt。Claudeへの依頼は必要な既存dev入力共有だけ（claude-request.txt）。
+
+コミット直前の最終検査
+2026-10-12: required test_lab* 1,070件、18skip、既存Luna packageの2error、assertion failureなし。新規テストは成功。GPU CUDA実測は未実行。引継ぎZIP503ファイルはCRCとmanifestのbyte/SHAを全検査済み。ZIP内の検査状態記載はこの最終検査前のスナップショットなので、この追記を最新状態とする。

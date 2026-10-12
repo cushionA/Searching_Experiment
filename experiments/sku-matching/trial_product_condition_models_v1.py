@@ -27,7 +27,7 @@ write_json, write_rows = V1.write_json, V1.write_rows
 TOP_K, MIN_VOTES = 3, 2
 VARIANTS = ("product-top1-jev", "product-top3-jev", "product-top3-verified")
 UNKNOWN_DESCRIPTION = "この商品の条件に該当する値は、商品名と引用された商品説明から特定できない。"
-CONTENT_VERSION = "product-condition-models-v1/title+html-blocks-v1/top1+top3"
+CONTENT_VERSION = "product-condition-models-v2/title+anchor-excluded-html-v2/top1+top3"
 CODE_NAMES = tuple(dict.fromkeys((Path(__file__).name, "product_condition_sharing_v1.py", *V1.CODE_NAMES)))
 
 
@@ -58,7 +58,7 @@ def query_for(group):
 
 def state_for(group, block):
     return ("現在の商品名：" + group["title"]
-            + "\nこのページの商品説明（表の文脈とリンク先を含む）：\n" + block["model_passage"])
+            + "\nこのページの商品説明（表の文脈を含み、リンク文を除く）：\n" + block["model_passage"])
 
 
 def product_refs(group, documents, block):
@@ -272,7 +272,7 @@ def run(prepared_dir, eligible_requests, output_dir, reranker_model_dir=V1.DEFAU
               "eligible_request_count": len(eligible_ids), "passthrough_request_count": len(requests) - len(eligible_ids),
               "request_count": len(requests), "group_count": len(groups), "selected_axes_model_input": False,
               "wanted_value_separately_injected": False, "all_raw_original_options_preserved": True,
-              "product_model_context": "current title plus original HTML block with context/links; no selected row",
+              "product_model_context": "current title plus anchor-excluded HTML block with table context; no selected row",
               "variants": list(VARIANTS), "top_k": TOP_K, "minimum_votes": MIN_VOTES,
               "majority_policy": "at least two distinct blocks select the same whole raw option; unknown/error/tie cast no vote",
               "verification_policy": "at least two of those same JEV-winning blocks also have raw three-class NLI support unique argmax",

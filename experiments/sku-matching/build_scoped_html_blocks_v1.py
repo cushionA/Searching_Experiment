@@ -17,7 +17,7 @@ import json
 from pathlib import Path
 import re
 
-VERSION = "scoped-html-blocks-v1"
+VERSION = "scoped-html-blocks-v2-anchor-excluded"
 FIELDS = ("itemComment", "extraItemComment", "extraItemCommentWithVideo")
 VOID = frozenset("area base br col embed hr img input link meta param source track wbr".split())
 INVISIBLE = frozenset({"script", "style", "template"})
@@ -166,9 +166,11 @@ def _normalized(value):
     return "\n".join(" ".join(line.split()) for line in value.splitlines() if line.strip()).strip()
 
 
-def _tokens(node):
+def _tokens(node, evidence_only=False):
     if isinstance(node, _Text):
         return [(node.text, node)]
+    if evidence_only and node.tag == "a":
+        return [("\n", None)]
     if not _visible(node):
         return []
     if node.tag in {"br", "hr"}:
@@ -180,14 +182,14 @@ def _tokens(node):
     for child in node.children:
         if isinstance(child, _Node) and child.tag in BOUNDARIES:
             result.append(("\n", None))
-        result.extend(_tokens(child))
+        result.extend(_tokens(child, evidence_only=evidence_only))
         if isinstance(child, _Node) and child.tag in BOUNDARIES:
             result.append(("\n", None))
     return result
 
 
-def _text(node):
-    return _normalized("".join(value for value, _ in _tokens(node)))
+def _text(node, evidence_only=False):
+    return _normalized("".join(value for value, _ in _tokens(node, evidence_only=evidence_only)))
 
 
 def _descendants(node, tags):
@@ -253,6 +255,21 @@ def extract_blocks(raw_html: str, source_ref: dict, title: str = "") -> list[dic
         return [line.strip() for value, leaf in _tokens(node) if leaf is not None
                 for line in value.splitlines() if line.strip()]
 
+    def evidence_text_runs(node):
+        result = []
+        for value, leaf in _tokens(node, evidence_only=True):
+            if leaf is None or not value.strip():
+                continue
+            is_alt = isinstance(leaf, _Node)
+            result.append({"text": value, "kind": "image_alt" if is_alt else leaf.kind,
+                           "source_ref": ref(leaf.start, leaf.end,
+                           **({"attribute": "alt", "dom_path": leaf.path} if is_alt else {}))})
+        return result
+
+    def evidence_visible_parts(node):
+        return [line.strip() for value, leaf in _tokens(node, evidence_only=True) if leaf is not None
+                for line in value.splitlines() if line.strip()]
+
     def links(node):
         candidates = ([node] if node.tag == "a" else []) + list(_descendants(node, {"a"}))
         return [{"href": link.attrs.get("href"), "text": _text(link),
@@ -262,7 +279,9 @@ def extract_blocks(raw_html: str, source_ref: dict, title: str = "") -> list[dic
     def snippet(node, kind):
         return {"kind": kind, "tag": node.tag, "text": _text(node),
                 "source_ref": node_ref(node), "links": links(node), "text_runs": text_runs(node),
-                "visible_parts": visible_parts(node)}
+                "visible_parts": visible_parts(node), "support_text": _text(node, evidence_only=True),
+                "support_text_runs": evidence_text_runs(node),
+                "support_visible_parts": evidence_visible_parts(node)}
 
     # Table ownership is based on ancestors, not on arbitrary string windows.
     tables = [node for node in dom.nodes if node.tag == "table" and _visible(node)]
@@ -407,7 +426,10 @@ def extract_blocks(raw_html: str, source_ref: dict, title: str = "") -> list[dic
         block = {"schema_version": VERSION, "block_id": block_id, "kind": kind, "tag": node.tag,
                  "text": _text(node), "text_is_exact_quote": False, "source_ref": node_ref(node),
                  "html_start": node.start, "html_end": node.end, "text_runs": text_runs(node),
-                 "visible_parts": visible_parts(node), "links": links(node), "context": context}
+                 "visible_parts": visible_parts(node), "links": links(node),
+                 "support_text": _text(node, evidence_only=True),
+                 "support_text_runs": evidence_text_runs(node),
+                 "support_visible_parts": evidence_visible_parts(node), "context": context}
         if kind == "table_row":
             block["cells"] = [{**snippet(cell, "table_cell"),
                                "colspan": cell.attrs.get("colspan", "1"),

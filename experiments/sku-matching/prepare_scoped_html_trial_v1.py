@@ -68,15 +68,17 @@ def context_snippets(block):
 
 
 def render_passage(block):
-    # Labels below describe DOM structure; only original snippets are evidence.
+    # Legacy blocks have no safe anchor-filtered view; never render them.
+    if block.get("schema_version", "").startswith("scoped-html-blocks-v1") or "support_text" not in block:
+        raise ValueError("block must be rebuilt with anchor-excluded support fields")
+    # Labels below describe DOM structure; only anchor-excluded snippets are evidence.
     parts = ["説明フィールド：" + block["source_ref"]["locator"]["json_path"], "HTML構造：" + block["kind"]]
     for snippet in context_snippets(block):
-        parts.append("表・節の見出し：\n" + snippet["text"])
-    parts.append("このブロックの本文：\n" + block["text"])
-    links = block.get("links", []) + [link for s in context_snippets(block) for link in s.get("links", [])]
-    if links:
-        parts.append("この記述に含まれるリンク先：\n" + "\n".join(
-            (link["text"] or "（テキストなし）") + " → " + (link.get("href") or "（リンク先なし）") for link in links))
+        if "support_text" not in snippet:
+            raise ValueError("context snippet must be rebuilt with anchor-excluded support fields")
+        if snippet["support_text"]:
+            parts.append("表・節の見出し：\n" + snippet["support_text"])
+    parts.append("このブロックの本文：\n" + block["support_text"])
     return "\n".join(parts)
 
 
@@ -87,9 +89,14 @@ def literal_refs(block, document):
     by normalizing the document or by locating the same word in another field.
     Raw HTML offsets remain the more specific location of each original node.
     """
-    parts = block.get("visible_parts", []) + [p for s in context_snippets(block) for p in s.get("visible_parts", [])]
+    if "support_visible_parts" not in block:
+        return [], ["legacy_block_requires_rebuild"]
+    snippets = context_snippets(block)
+    if any("support_visible_parts" not in s for s in snippets):
+        return [], ["legacy_context_requires_rebuild"]
+    parts = block["support_visible_parts"] + [p for s in snippets for p in s["support_visible_parts"]]
     if not parts:
-        return [], ["no_visible_parts"]
+        return [], ["no_support_text"]
     field = block["source_ref"]["locator"]["json_path"]
     raw_sha = block["source_ref"]["sha256"]
     doc_text = document["description"]["text"]

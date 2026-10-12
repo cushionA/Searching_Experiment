@@ -14,9 +14,11 @@ spec.loader.exec_module(P)
 class PreparationContract(unittest.TestCase):
     def block_doc(self):
         ref = {"raw_file": "fixture.json", "sha256": "a" * 64, "locator": {"json_path": "$.itemInfo.extraItemComment"}}
-        block = {"block_id": "b", "kind": "table_row", "source_ref": ref,
+        block = {"schema_version": "scoped-html-blocks-v2-anchor-excluded", "block_id": "b", "kind": "table_row", "source_ref": ref,
                  "visible_parts": ["内容", "幅100", "遮光カーテン 2枚"],
-                 "text": "内容\n幅100\n遮光カーテン 2枚", "context": {}, "links": []}
+                 "support_visible_parts": ["内容", "幅100", "遮光カーテン 2枚"],
+                 "text": "内容\n幅100\n遮光カーテン 2枚",
+                 "support_text": "内容\n幅100\n遮光カーテン 2枚", "context": {}, "links": []}
         text = "内容\n幅100\n遮光カーテン 2枚"
         doc = {"document_id": "d", "document_sha256": "c" * 64,
                "description": {"text": text, "segments": [{"start": 0, "end": len(text),
@@ -40,23 +42,25 @@ class PreparationContract(unittest.TestCase):
 
     def test_internal_space_not_rewritten_to_create_quote(self):
         block, doc = self.block_doc()
-        block["visible_parts"][-1] = "遮光カーテン  2枚"
+        block["support_visible_parts"][-1] = "遮光カーテン  2枚"
         _, failed = P.literal_refs(block, doc)
         self.assertEqual(failed, ["遮光カーテン  2枚"])
 
     def test_heading_also_requires_literal_evidence(self):
         block, doc = self.block_doc()
-        block["context"] = {"table": {"preceding_header_rows": [{"text": "別商品", "visible_parts": ["別商品"]}]}}
+        block["context"] = {"table": {"preceding_header_rows": [{"text": "別商品", "visible_parts": ["別商品"],
+                         "support_text": "別商品", "support_visible_parts": ["別商品"]}]}}
         _, failed = P.literal_refs(block, doc)
         self.assertEqual(failed, ["別商品"])
 
-    def test_link_destination_and_width_context_remain_visible(self):
+    def test_link_destination_stays_in_audit_but_not_model_evidence(self):
         block, _ = self.block_doc()
         block["links"] = [{"text": "4枚セットはこちら", "href": "https://wowma.jp/item/other"}]
         rendered = P.render_passage(block)
         self.assertIn("幅100", rendered)
-        self.assertIn("https://wowma.jp/item/other", rendered)
-        self.assertIn("4枚セットはこちら", rendered)
+        self.assertNotIn("https://wowma.jp/item/other", rendered)
+        self.assertNotIn("4枚セットはこちら", rendered)
+        self.assertEqual(block["links"][0]["href"], "https://wowma.jp/item/other")
 
     def test_error_selection_is_order_independent_and_capped_per_group(self):
         errors = [{"case_id": f"case-{i}", "cell": "fp", "au_product_id": "x"} for i in range(8)]
