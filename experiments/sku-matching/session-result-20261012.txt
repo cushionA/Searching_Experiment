@@ -214,3 +214,16 @@ Claude成果物を接続した最新の開発候補
 - ユーザー提示712679385のAPIも実取得。itemInfo.extraItemComment内に商品詳細HTML表と
   2台セット・寸法・重量・交換/停止時間の注意事項がある。skuInfoには色の黒/白2行。
   確認用原応答と引用offsetを追加ZIPへ収録。この商品は83ケースや採点入力に追加していない。
+
+
+追加継続: 20261013 全本文文脈のSKU構成モデル
+- 再開先: composition-context-result-20261013.txt。旧composition-evidence報告も保持。
+- 最新開発候補: .lab-output/sku-composition-context-20261013-v1/evaluation/complete-context-fallback。
+- 同じ機械dev73件39/1/16/17、再現率70.9%、precision97.5%。直前36/1/19/17から3FN回収、旧TP回帰0、追加FP0。全83でも変化3件だけ。
+- 回収3件は同じAU778818828の旧誤り。既読dev26件は不変、独立test未評価、本番採用不可。
+- top3から凍結原文の全適格ブロックへ拡張。72unitを明示gpt-6-luna forkなしで推論、10unit出典不足unknown。全選択肢・paired全軸を維持、旧予測/正解/titlefieldなし。
+- 旧採用caseに競合行supportを追加して失う回帰を採点前に防止。typed proof1要求と全originalrow条件契約を維持。
+- prepareがhelper完成前のSHAを凍結したずれを検出。元freeze保存、assembly-freezeでrunner/helper2ファイルのみ修復履歴を記録。モデル入力・raw応答は不変。
+- context-replace27/0/28/18は旧TP12件を失うため却下。FN16と毛布セットFP1が残る。Claudeへの追加カテゴリ規則依頼なし。
+- 関連62テスト成功。required1200件、failure0/error11/skip37。以前からの資料/別checkout不足11件が残る。
+- results/20261013-sku-composition-context-checkpoint.zipとmanifestに今回のraw/修復/却下比較/診断/テスト/再開codeを保存。前回ZIPと従来5ZIPへ依存。

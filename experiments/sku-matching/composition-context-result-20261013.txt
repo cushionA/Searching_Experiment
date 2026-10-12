@@ -1,0 +1,112 @@
+SKU購入構成の全本文文脈: 20261013追加実験・再開先
+
+最新の開発候補
+- .lab-output/sku-composition-context-20261013-v1/evaluation/complete-context-fallback
+  predictions.jsonl と gates/ を一組で使用する。
+- 同じ既存機械参照73件: TP39 / FP1 / FN16 / TN17。
+  precision97.5%、recall70.9%、accuracy76.7%。正解AU行39、別AU行誤採用0。
+  直前のcomplete-sku-fallback 36/1/19/17から3件を回収。
+  既存TP36件の回帰0、追加FP0。全83ケースでも変化は同じ3件のみ。
+- 回収3件は旧誤り集合の同じAU商品778818828に集中する。
+  case-01f6fc36ae1d87a566c7: au:778818828:332504238:2:6
+  case-216d0118521222d617f5: au:778818828:332504238:0:1
+  case-33c119946649e9d03e0f: au:778818828:332504238:0:4
+  旧誤り44件20/1/12/11、既読dev26件19/0/4/3、旧対照3件0/0/0/3。
+  既読dev26件の成績は変わらない。一般精度・独立testの改善とは主張しない。
+  独立testは開かず、既存原本・ラベル・83ケースの凍結入力は変更していない。
+  scope_status=unproved / production_adoption_allowed=falseを維持する。
+
+何を変えたか
+- 上位3抜粋に必要な購入内容が入らない場合を調べ、同じ凍結原文の
+  適格な全説明ブロックを文脈として提示した。新しい収集やカテゴリ規則は追加していない。
+- 元1059ブロックの検索語、リンク付きブロック、リンクを含む表全体、
+  文脈未確認の表の除外方針は前回と同じ。
+  全適格ブロックをhtml_start/html_end/block_id順で保持し、順位選択・切り詰めを行わない。
+- 元の82unit（商品共通29、paired53）を維持する。
+  72unitをgpt-6-luna明示override・forkなしの4workerに18件ずつ渡して実推論。
+  10unitは適格な出典がないため推論せずunknown。
+  72packet内のmodel_passageは重複使用を含め297,267文字、compact入力924,055bytes。
+- 原全選択肢と順序、axis_name、target documentを維持。
+  genuine one-sided共有には特定SKUの選択軸・希望値・AU行を渡さない。
+  pairedだけに元の同一対象SKUの全選択軸を渡す。
+  title独立field、selected_value、旧予測、参照ラベル、評価結果はモデル入力に含めない。
+- full packetsには原文quote_refsを保存し、model payloadにはblock IDと
+  exact model_passageを渡す。locator内の重複本文を文脈に重ねない。
+  packet SHAとmodel input SHAを別に保存。本文・全原値・引用元を正規化しない。
+- 72応答のcoverage、whole raw option、引用block ID、当該documentのliteral引用を検証。
+  今回は形式/引用不正0。モデル応答は修正・再推論していない。
+  literal引用の一致はSKU適用範囲や意味の正しさの自動証明ではない。
+- hosted aliasのweights revisionは固定/検証できていない。
+  モデル自己申告をID証明にしない。raw応答によるcached評価は再現可能だが、
+  将来の新推論の厳密な同一性は保証しない。確率・JEV logits・速度指標は生成していない。
+  今回固定モデルの新推論/GPU新ジョブはなく、過去HTTP409/受付不明のGPU状態を維持する。
+
+採用方針と比較
+- complete-context-fallback: 39/1/16/17（開発候補）。
+  新規採用は同じ元AU行の全original conditionについて、今回のmodel supportか
+  upstream_identicalを要求する。旧supportと新supportの条件継ぎ合わせで新規採用しない。
+  明示的に別のwhole raw optionを選んだ要求はunknownへ保留し、証明済みconflictと扱わない。
+  新モデルunknownだけでは以前の採用を失わせない。
+- 以前採用したcaseの別候補行へ新supportを足すと、複数支持行で旧採用がdropし得る。
+  reviewでこの回帰経路を見つけ、採点前に防いだ。
+  以前採用したcaseに紐づくbaseline非supportへ新supportを追加しない。
+  明示的な別原値による保留は引き続き適用する。
+- context-replace: 27/0/28/18（却下）。
+  全model条件の置換ではFP1を解消する一方、既存TP12件を失い、3件回収してもTPが減る。
+- 元の全軸AND、全AU行配列、同一行条件、候補行唯一性、他行conflictを既存gateで再確認。
+  strict typed-value-equivalenceの1要求は原値証明・元予測をそのまま維持する。
+  共有requestを複数行へ再利用する場合の保守的なrequest-global撤回は残る。
+  行ごとの適用性を扱う契約は将来の改善候補で、今回に混ぜていない。
+- 両方針は推論前に宣言し、全134要求・83gateを凍結してから既存参照73件を採点。
+  既存devの診断を踏まえたexploratory_dev_informedの実験として記録。
+  case ID固有例外、正解に合わせた規則/閾値調整は追加していない。
+
+凍結時点のずれと修復履歴
+- prepare時にpolicy helperの完成を待ち切らず、その途中版SHAが入力freezeへ入った。
+  read-only reviewで採点前に検出した。元freeze.jsonは上書きしていない。
+- assembly-freeze.jsonで変更をrunnerとpolicy helperの2ファイルだけに限定し、
+  原freeze SHA、変更前後SHA、完成後のsource snapshotを記録。
+  全packet/payload/protocol/原文sourceのpinが不変であることを確認した。
+  helperのcoverage検証と旧採用保護を完成させてからassembly/scoringした。
+  model応答を方針選択のために読まず、モデルの回答や推論入力は変更していない。
+- runner-at-input-freeze.py、helper変更記録、元freezeを保存する。
+  helper初期版を再構成したファイルは途中freezeのSHAと一致せず、未検証の再構成と明記。
+  その再構成を元freezeの実行版と主張しない。helperはprepare中の入力生成には使わない。
+- runnerのreconciliationはpin mapを検証する。receiptの監査flags/schemaの整合性は
+  checkpoint packagerで追加検証し、矛盾する監査情報は保存成果物として受け付けない。
+  ローカルな記録・snapshot照合であり、人間/他agentから情報を暗号学的に隔離する機構ではない。
+
+診断と次の改善余地
+- .lab-output/sku-composition-remaining-diagnosis-20261013-v1/diagnosis.json に
+  前回の19FN/1FPのrequest→新model unit→packetを記録。
+  初回診断は古いfallback理由を新model理由と混同したため、初版を保持して訂正した。
+  元20誤りは抜粋外の出典候補13件（FN12/FP1）、方向別の出典不足FN4、
+  生地の選択状態曖昧FN2、残る別条件unknownのFN1に分けた。
+  これは候補の存在/判定状態による診断で、各原文のSKU適用性を証明した分類ではない。
+- 新候補の残りはFN16/FP1。今回の本文拡張だけでは商品共通記載と選択済み構成、
+  不足する方向別原文、付属品の対象範囲をすべて解決できなかった。
+  毛布セットのFPは、新modelがunknownでも以前のsupportを保持する方針が残す。
+  この1件だけのcase例外や、他の正解を失う一律置換は採用しない。
+  次は原文から購入構成の適用範囲・選択状態を束ねる方式を検討する。
+- Claudeへの追加カテゴリ規則や新判定器、ラベル変更の依頼は現段階ではない。
+  方向別出典不足は既存captureとlocatorの復元を先に確認する。
+
+検証・保存・再開
+- 関連compositionテスト62件成功。
+- required: python3 -B -m unittest discover -s tests -p 'test_lab*.py'
+  1200件、assertion failure0、error11、skip37。全成功ではない。
+  過去と同じ資料/別checkout不足: GPU条件準備1、旧統合bundle1、annotation入力3、
+  旧評価出力3、旧expanded AU SKU3。新しいassertion failure/errorはない。
+  最終ログはsku-composition-context-resume-20261013-v1へ保存。
+- read-only別agentで入力/応答/gate/source pins、原引用、新採用3行の全条件契約、
+  proof不変と既存TPの維持を確認する。review.jsonとread-only-review.jsonを保存。
+- results/20261013-sku-composition-context-checkpoint.zip と隣接manifestへ保存。
+  今回の入力・raw応答・元/修復freeze・両比較・診断修正前後・source code・検証を収録。
+  前回composition-evidence-checkpointと従来5ZIPに依存する。
+  ZIP名、CRC、member bytes/SHA、依存ZIP SHAを確認して復元する。モデル重み/認証値は含めない。
+- frozen snapshotには元worktreeの絶対パスがある。同じパスで復元するか、
+  原入力を改変せず明示的path mappingを別に検証する。
+- runner: experiments/sku-matching/trial_composition_context_v1.py。
+  prepare/evaluateは既存出力への上書きを拒否する。現在のevaluateはraw応答のcached再評価で、
+  新たなモデル呼び出しを行わない。現evaluationは保存済みのため再実行時は別runを使う。
+- 再開時は本報告と前回composition-evidence-result-20261013.txtを読む。
