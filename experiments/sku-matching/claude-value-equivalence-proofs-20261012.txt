@@ -1,0 +1,135 @@
+値の同値判定：安全に証明できる条件と証拠（Claude担当、2026-10-12）
+
+依頼（Codex経由）
+- 対象: align v7 で model_candidate のまま Codex NLI が unknown を返した2件。
+  - case-163fa1792c386ae5e726: L ↔ Lサイズ
+  - case-502654b9aeb6d7fb58f8: ゆで250g×2P ↔ ゆで250g×2p
+- 求められたもの:
+  - 元の軸名・選択肢を根拠にした、汎用の同値判定の条件（できる条件、できない条件、各条件の根拠、汎用的な adversarial 例）
+  - 判定ごとの provenance sidecar
+- 禁止事項: カテゴリ専用の例外、数値だけでの同一視、無条件の strip/casefold/ラベル比較、test の参照、新規収集、新モデル。
+
+範囲と前提
+- align v7 のコードと凍結済みの run は変えていない。判定は新しいスクリプトで、凍結した入力と v7 の handoff を読み、新しい出力先に書く。
+  - スクリプト: experiments/sku-matching/prove_value_equivalence.py
+- 対象: v7 handoff の model_candidate（楽天側の条件）。
+- 比較の単位: v7 の中核（NFKC と空白除去の後、括弧の中身と「/」の他の部分を脇に置いた残り）だけ。
+  - 脇に置いた部分（残余）は側・元の値ごと sidecar に写し、証明の対象にしない。
+  - 証明は中核の同値だけを言う。残余が残る組は residual_unconfirmed=true。
+- ラベルは読んでいない。独立評価は dev 分割の dossier だけを読み、test 分割の dossier は入力から読み込んでいない。
+
+証明できる型（すべての条件を満たした場合だけ proven_equivalent）
+1. ascii_case_variant（大文字小文字の表記差）
+   a. differs_only_in_ascii_letter_case: 中核の長さが同じで、違う位置はすべて ASCII 英字の大小だけ。
+      根拠: 大小以外の差（符号、修飾、仮名・漢字、数字）は一切ここに入らない。非 ASCII の casefold（ß、ギリシャ文字など）も使わない。
+   b. case_separates_nothing_on_{rakuten,au}_options: 各側の全選択肢で、大小をそろえても2つの選択肢が1つにならない。
+      加えて、変わった文字は各側で一方の大小でしか書かれていない。
+      根拠: その軸で大小が選択肢を区別していないこと（大小がその出品の表記の癖であること）を、選択肢一覧そのもので示す。
+   c. unique_counterpart: 大小をそろえた楽天の中核に合う AU の選択肢がちょうど1つで、その逆も1つ。
+   d. no_changed_letter_touches_a_digit: 変わった文字を含む英字の連なりが、数字に接していない。
+      根拠: 数字に付いた英字は単位・接頭辞になりうる。そこでは大小が意味を変える（5g/5G、1GB/1Gb、10mW/10MW、1m/1M）。
+      単位の語彙表を持たずにこれを見分ける方法がないので、数字に接する大小差は値だけでは証明しない。
+2. own_axis_name_affix（その軸自身の名前が付いた表記差。サイズ接尾辞など）
+   a. same_axis_name: 楽天の軸名と AU の軸名が、NFKC・空白除去の後で同じ。
+   b. one_core_is_the_other_plus_the_axis_name: 一方の中核が、他方の中核の前か後ろにその軸名を足したものと完全に同じ。外すのは軸名の文字列だけで、それ以外は1文字も変えない。
+   c. axis_name_on_every_<side>_option: 軸名が付いている側の全選択肢が、同じ位置にその軸名を持つ。
+      根拠: 全選択肢に共通する文字は、どの選択肢も区別しない（情報を持たない）。
+   d. axis_name_on_no_option_of_the_other_side: もう一方の側には、軸名が付いた選択肢が1つもない。
+      根拠: 側ごとの一貫した表記の癖であって、同じ側で「L」と「Lサイズ」を別物として並べていないこと。
+   e. removal_keeps_options_distinct_and_non_empty: 軸名を外した後も、その側の選択肢は互いに異なり、空にならない。
+   f. unique_counterpart: 外した後の中核がもう一方の側のちょうど1つの選択肢と一致し、その逆も1つ。
+   参考として full_option_list_bijection（外した後の選択肢一覧と、相手の一覧が集合として同じか）も記録する。
+
+証明しない型（model_candidate のまま。理由を sidecar の reasons に残す）
+- 数字だけが一致する組。例: 100×220cm ↔ 幅100×丈220cm（v7 で取り下げた規則）。29ペアの寸法 720件はすべてこれ。
+  「幅」「丈」はこの軸の名前ではないので、2 の型にも当たらない。
+- 符号・修飾・限定の差。例: 15℃ ↔ -15℃、100cm ↔ 最大100cm。どの型の a 条件も通らない。
+- 数字に接する大小差。例: 2P ↔ 2p、5g ↔ 5G、1GB ↔ 1Gb。1 の d で止まる。
+- 単位風の接尾辞が、その軸の名前と違う。例: 1 ↔ 1号（軸名は「号数」）、500 ↔ 500ml（軸名は「容量」）。
+  軸名でない文字を外すことは、無条件のラベル除去になる。
+- 一方がもう一方を含むだけ。例: ベージュ ↔ サンドベージュ、ホワイト ↔ オフホワイト、S ↔ XS。全 run で 1,308条件。
+- 仮名・漢字、送り仮名、異体の表記差。例: あぶり ↔ 炙り、角型 ↔ 角形、グレー ↔ グレイ。辞書なしでは証明できない。
+- 相手が一意でない。例: S（単品）↔ Sサイズ では、楽天側に中核「S」の選択肢が複数あり、単品・セットは残余で決まる。
+- 軸名が全選択肢に付いていない、または相手側にも付いている。例: 楽天の一覧に「Sサイズ」と「S」が混在する。
+
+汎用的な adversarial 例（テスト tests/test_lab_sku_value_equivalence.py に収録。すべて証明されないことを確認）
+- 大小: 5g/5G、1GB/1Gb、10mW/10MW、1m/1M、ゆで250g×2P/2p（数字に接する）。
+  S/s が同じ側の一覧で別の選択肢として並ぶ場合。変わる文字が同じ側で両方の大小で書かれる場合（Ab と xB）。
+- 大小以外: 15℃/-15℃、100cm/最大100cm、あぶり250g/炙り250g、S/XS。
+- 接尾辞: 1/1号（軸名「号数」）、500/500ml（軸名「容量」）、軸名の不一致（サイズ/サイズ表記）。
+  AU 側の一部の選択肢にしか付いていない場合、相手側にも付いている場合、外すと空になる場合（サイズ）。
+- 残余の保持: L（24.0〜24.5）↔ Lサイズ(目安：24.0〜24.5m) は中核だけを証明し、
+  残余 [rakuten: 24.0〜24.5]・[au: 目安：24.0〜24.5m] を未確認のまま残す（AU側の「m」は誤記に見えるが、こちらでは直さない）。
+- テスト: tests/test_lab_sku_value_equivalence.py と tests/test_lab_sku_align.py の合計 17件が PASS。テストの作例は性能評価に混ぜていない。
+
+対象2件の判定
+1) case-163fa1792c386ae5e726（独立評価 v2 token、dev）: proven_equivalent（own_axis_name_affix）
+   - a: 楽天の軸名「サイズ」= AU の軸名「サイズ」
+   - b: AU の中核「Lサイズ」= 楽天の中核「L」＋軸名「サイズ」（後ろ）。外した文字列は「サイズ」だけ。
+   - c: AU の全選択肢 Mサイズ / Lサイズ / LLサイズ が「サイズ」で終わる。
+   - d: 楽天の M / L / LL はどれも「サイズ」で終わらない。
+   - e: 外した後の M / L / LL は互いに異なり、空でない。
+   - f: L に合う AU の選択肢は Lサイズ だけで、その逆も L だけ。full_option_list_bijection = true。
+   - 原文の位置:
+     - 楽天: osr-1149-06c1d67b.html（sha256 54114a39…）、sku[variantId=26091].selectorValues[1]、[77538,77539)
+     - AU: 379580385-item.json（sha256 0a00c86a…）、$.itemInfo.skuInfo.rowNames[1]
+     - 軸名と全選択肢の位置も sidecar に記録した。
+   - 残余なし。
+2) case-502654b9aeb6d7fb58f8（独立評価 v3 token、dev）: model_candidate のまま
+   - ascii_case_variant の a〜c は満たす。
+     - 差は位置8の P/p だけ。
+     - 楽天の一覧は P だけ、AU の一覧は p だけを使い、どちらの一覧も大小で選択肢がまとまらない。
+     - 相手はそれぞれ1つだけ。
+   - d で止まる: 変わった文字 P は数字「2」に接する（字句「2P」/「2p」）。大小が単位・接頭辞の意味を変えうる位置なので、値だけでは証明しない。
+   - own_axis_name_affix は a で止まる（軸名が「下さい」と「ください」で違う。この型の対象でもない）。
+   - 他の候補との関係: 楽天「あぶり」と AU「炙り」は仮名・漢字の差で、どの型でも証明しない。
+     楽天の「ゆで250g+あぶり250g」と AU の「ゆで250g＋炙り250g」は、＋が NFKC で + になっても「あぶり／炙り」が残るので一致しない。
+     調理法・混合内容・数量（250g、×2）・単位（g）・演算記号（×、+）は、どの段でも変えていない。
+   - 裏付け（証拠であって証明ではない。sidecar の corroboration）: AU 自身の説明文（$.itemInfo.itemComment、sha256 1a3cdc44…）に、楽天側の表記「2P」がある。
+     - 「【A】ゆでスライス500g（250g×2P）」[227,249)
+     - 「【B】あぶりスライス500g（250g×2P）」[283,306)
+     - つまり AU の出品者は、同じ出品の中で 2P と 2p の両方を使っている。
+     - ただし「2P」は A と B の両方の行にあり、ゆでの選択肢だけを指す証拠ではない。説明確認でこの行を「ゆで」の選択肢に結び付けられれば、大小差の意味がないことの支持になる。
+
+sidecar の形式（sidecars.jsonl、model_candidate 1条件につき1行）
+- 識別: case_id、dossier_id、au_row_key、axis_key
+- rakuten: 軸名とその span、選択値とその span、family_values と、その入力上の位置（inputs/cases.jsonl の JSONPath）
+- au: 軸名とその span、選択値とその span、全選択肢と各 span
+- align_v7: status・core・residual（v7 の出力そのまま）
+- normalization_before_types: NFKC・空白除去の結果と、中核・残余の分離（v7 と同じ処理）
+- attempts: 型ごとに、全条件の名前・合否・証拠（選択肢一覧、まとまった選択肢、使われた大小、外した文字列など）。
+  型ごとの正規化手順（ascii_letter_case_fold、remove_axis_name_affix とその位置・外した文字列）も記録する。
+- verdict（proven_equivalent か model_candidate）、proof_type、proof_scope（中核だけ）、residual_unconfirmed
+- reasons: 証明できない場合の、失敗した条件
+- preserved: 残余（側・文字列・元の値・確認に使う側）と、証明で行った唯一の変更
+- corroboration: 数字に接する大小差だけで止まった組について、各側の商品名・説明・購入オプションに相手側の表記がある位置
+
+実行結果（出力 .lab-output/sku-value-equivalence-20261012-v1/。各 summary.json に入力・handoff・groups・コードの sha256 を記録）
+
+| run | 読んだケース | model_candidate | 証明 | 証明の型 |
+|---|---|---|---|---|
+| 29ペア（legacy） | 1,383 | 720 | 0 | — |
+| family | 970 | 42 | 4 | own_axis_name_affix（M/L → Mサイズ/Lサイズ） |
+| 候補（candidate） | 26,819 | 3,331 | 2 | own_axis_name_affix（角型/丸型 → 角型タイプ/丸型タイプ） |
+| 独立 v1 family（dev） | 88 | 15 | 0 | — |
+| 独立 v1 token（dev） | 1,214 | 52 | 0 | — |
+| 独立 v2 family（dev） | 55 | 6 | 0 | — |
+| 独立 v2 token（dev） | 1,295 | 397 | 23 | own_axis_name_affix（7種類。うち8件は残余が未確認） |
+| 独立 v3 token（dev） | 75 | 7 | 0 | —（case 2 は corroboration 付き） |
+
+- ascii_case_variant は全 run で1件も証明されなかった。大小だけの差は case 2 の1件だけで、d で止まった。
+- 証明できなかった条件の大まかな内訳（全 run、報告用の目安）:
+  - 一方が他方を含む: 1,308
+  - 数字は同じで他の文字が違う: 1,104
+  - 数字が違うか片側にだけある: 354
+  - その他: 1,775
+- 判定はすべて機械的な条件の合否で、ラベルとの突き合わせはしていない。正しさの数（精度）は報告しない。
+
+Codex 側での使い方の提案
+- proven_equivalent は「中核が同じ値の別表記」であることの証明。残余がある組（residual_unconfirmed=true）は、残余の確認が別に要る。
+- 証明は sidecar の条件と span だけで原文から再検証できる。軸名・全選択肢・選択値の位置が揃っている。
+- model_candidate の reasons と corroboration は、説明確認の入力の絞り込みに使える。証明の代わりにはならない。
+
+再実行（出力先は毎回新規）
+  python -B experiments/sku-matching/prove_value_equivalence.py --run RUN --align ALIGN_V7_OUT --out NEW_OUT [--groups GROUPS --split dev]
+  RUN と ALIGN_V7_OUT の組は ZIP の manifest に run ごとに記録した。
