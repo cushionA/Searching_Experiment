@@ -277,3 +277,11 @@ Claude成果物を接続した最新の開発候補
 - 復元: results/20261013-sku-next-dev-checkpoint.zip + manifest/SHA。新全dev原入力のClaude用ZIPは別保存。
 - 凍結方式を保ち、未使用TEST20商品×2件のsource-only準備を継続。正解は全gate固定後だけ開く。
   新カテゴリ分岐/新判定器/新収集をClaudeへ依頼する必要は現時点ではない。
+
+最新追記（未使用TEST40件 / 2026-10-12 UTC）
+- source-only選択20商品、全394行/1,598条件を固定後採点。主方式11/0/11/3、既知25、参照不明15、recall50.0%。採用AU行11正解。既知負例3のみ、本番安全性・完成を確立しない。
+- 元citation検証厳格ビュー9/0/13/3。意味状態不変で同一重複引用容器を正規化した比較ビュー11/0/11/3。変換は推論後・参照読取前であり、全parserの推論前不変とは言わない。
+- 詳細unused-holdout-choice-nli-result-20261013.txt、checkpoint results/20261013-sku-unused-holdout-checkpoint.zip。原本全件入力は外部依存SHA、選択39capture・入力・応答・ゲート・参照40件・失敗ログはZIP内。
+- FN11は正解行unknown10/conflict1。非support12条件はcontext欠落6/意味unknown5/意味conflict1、引用失敗0。診断は複合case+rowキー訂正版v2。旧診断誤りも保持。
+- required1,322件、failure0、既存欠落fixture14error、37skip。関連36pass。GPU追加投入なし。
+- 消費済TEST40商品を再調整用に戻さない。未使用TEST66商品は保留。新DEV20件/10商品を商品IDだけで選択し、AU行列JSONPath修復・短い事実参照索引方式の検証を進行中。追加のClaudeカテゴリ規則依頼なし。

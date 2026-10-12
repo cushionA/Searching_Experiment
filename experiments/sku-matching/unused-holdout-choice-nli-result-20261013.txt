@@ -1,0 +1,61 @@
+未使用の独立TEST40件：全選択肢・双方向SKU照合（2026-10-12 UTC / 20261013 run）
+
+結論
+完成とは判断しない。主方式は既知参照25件でTP11 / FP0 / FN11 / TN3、
+再現率50.0%。採用した11件のAU行キーはすべて参照行と一致した。
+参照未確定15件を精度の分母から除外し、40件すべての予測・参照状態を保存した。
+参照はClaude Haiku 5.5の機械注釈で、人手goldではない。
+既知の負例は3件のみ。誤接続0件だけで本番の安全性を確立したとは言わない。
+
+source_split: test / independent_test: true
+事前のIDハッシュ選択：20商品×2ケース、v2=34 / v3=6。
+最初に消費済みのTEST20商品を商品単位で除外。DEV107商品との重複なし。
+全394 AU候補行、全1,598双方向条件、1,042要求、40商品文書を保持。
+選択membership SHA256: 717c3403c11a7f00aa5e66ee03402717214744fe689ecee209354c7e0fac6da7
+選択policy canonical SHA256: 66fb8338069130e1c4b24dbde463291ccee3f8ebcd5708144a260da67b35256d
+全予測・ゲート280pin固定SHA256: 9d5a6452c3a9f3ba0e3489771a2c8a5a8dc7435791871b801ffca7b3755e2199
+採点完了: 2026-10-12T21:44:38.983805+00:00。固定後に選択40件の参照だけを開いた。
+
+方式と結果
+strict-source-metadata: TP9 / FP0 / FN13 / TN3、recall40.909%、正解AU行9。
+explicit-choice-nli-experimental: TP11 / FP0 / FN11 / TN3、recall50.0%、正解AU行11。
+後者は重複した同一内容のcitation tableを事前採点前に正規化したビュー。
+同一citation IDで内容が異なる8応答は修復せずunknown。
+モデルが出した意味状態・scope・理由・選択引用・引用tupleは変更していない。
+現TESTでは新しい固定JEV/NLI baselineを回していない。
+旧TEST45.7%やDEV97.2%は異なる集合の数値で、対応比較の改善幅とは扱わない。
+
+推論・引用検証
+元DEVで固定したwhole-option意味規則、完全原値family proof、全行集約規則は不変。
+494準備contextのうち238は独立literal proofで保護、256は実gpt-6-lunaへ委譲。
+全1,346選択肢を提示、受領1,342判断。1応答の4判断欠落は補完せずunknown。
+初回出力11ファイルをbyte/SHA固定。事後の意味推論や応答上書きは行っていない。
+元workerの出力なし拒否・観測範囲違反の別試行も履歴に明記した。
+モデル名は明示spawn経路で指定したもの。自己申告はモデルIDの証明としない。
+ホスト側の重みrevisionは独立に証明できず、同じ応答の再生と再推論を区別する。
+初期検証192valid/64invalid → 同一citation重複620件除去・caption引用ID192件正規化後232valid/24invalid。
+残るinvalidはsource tuple14、曖昧重複8、scope/対象事実欠落1、空判断vector1。
+意味の真偽は引用整合検証だけでは証明しない。unknownで候補を除外しない。
+NLI・literal・全行集約の意味コードはDEVから不変だが、容器正規化コードは
+現TESTの推論後・参照読取前に追加した。end-to-endコード全部が推論前不変とは主張しない。
+過去の合成test配置名を変更したpath対応receiptを保存。元テストbytesは維持した。
+
+取りこぼし診断（読み取り専用、参照変更なし）
+FN11の正解行はunknown10 / conflict1。34条件はsupport22 / unknown11 / conflict1。
+非support12条件：原本座標の曖昧さ等でcontextがない6、意味unknown5、意味conflict1。
+正解行のこの12条件では引用検証失敗0。引用容器だけ直しても残る取りこぼしは解消しない。
+ケースとAU行キーの複合キーで診断し直したv2を使用。行キー単独joinによる
+初期診断の誤りは旧ファイルを残し、correction-receipt.jsonで訂正した。
+現在の消費済みTESTを再分類・規則調整・再ラベルしない。
+次のDEV20件/10商品ではAU APIの実JSONPathによる行列識別と参照索引方式を検証する。
+残る未使用TESTは66商品。完成判断後の独立評価用として保留する。
+Claudeには既存原本の座標・入力対応の共有だけ依頼済み。新カテゴリ規則・新収集は不要。
+
+検証と再開
+required test_lab*: 1,322件、assertion failure0、既存欠落fixture由来14error、37skip。
+関連36件成功。初期のloopback制約エラーとtest名collisionもログを保存し、修正後を別runに記録。
+モデルweights・secret・全corpusのgoldはZIPへ含めない。
+元全件case/product入力と参照archivesは外部依存SHAを明記し、今回の選択入力・39原本capture・
+全モデル応答・検証・ゲート・選択40参照・失敗履歴をcheckpointに保存する。
+checkpoint: results/20261013-sku-unused-holdout-checkpoint.zip（manifest/SHA sidecar参照）。
+局所cached出力を再生できる。全元corpus準備の完全self-contained再実行とは主張しない。
