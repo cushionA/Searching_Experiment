@@ -129,3 +129,14 @@ submitは1回のみ。job.jsonにref/version/source signature保存。wait/照�
 - coordinate-dev-inference-progress-20261013.txt参照。partial checkpointは15packet47pair738判断だけのsnapshotで、全推論完了/精度の主張なし。265payload+内部manifest、202pins/22capture/全SHA/CRC検証。
 - required1,347/failure0/error14過去fixture不足/skip37、関連25pass。GPU追加なし、新規Claudeカテゴリ規則依頼なし。
 - raw初回状態は不変で、判定誤り・placeholder失敗・欠落継続・serializer回復の監査制限も保持。全gate固定後、選択20参照のみ採点。未使用TEST66商品は保留。
+
+最新追記（新DEV20：原本座標/refids固定採点完了）
+- 原値一致だけ6/0/7/3→全選択肢方式8/0/5/3、既知16/未確定4、recall61.5385%、正解採用AU行8。今回同じDEV比較だけ。未確定参照で採用2件、既知負例3件のみ、完成・本番安全性は未確立。
+- 全20ケース/320行/1,220条件、341 prepared context。152 literal保護、189 dispatch。実186/2,467全選択肢判断、3/43欠落unknown、手順違反8 context除外。全186の原本引用検証成功は意味の正しさの証明ではない。
+- FN5正解行unknown、競合21行全conflict。非support7条件はpaired実モデルunknown3/contextless4。raw誤り4packet・metadata aliases・継続/回復履歴は保持。
+- 採点前389pin固定・採点後差分0。最初の参照読取後にarchive版v2/v3とdev splitの採点metadataを別adapterで修復。原状態/参照/既存grader不変、supplemental freeze+4checks。
+- required v4 1,365/failure0/error14過去fixture不足/skip37、DEV20関連32とBODY R6関連11成功。R6実コードをQA snapshotに保存。後続R8/BODYは別候補。
+- coordinate-dev-refids-result-20261013.txt参照。results/20261013-sku-coordinate-dev-checkpoint.zip、8,205,321bytes、SHA3b472140ee904fb49d0a49eb61dc559a2d93ddd4384ea2017185edab636dca2d。438payload+内部manifest全CRC/SHA、389freeze replay pins/202preML/22raw検証。
+- ZIPは公開集計だけ。ケース別機械参照ラベル/正解行キー/詳細診断はprivate、元archive/fullsource7外部依存SHAを保持。
+- 次の別DEV5商品10ケースをIDだけで選択済み。native座標ごとrequestを修復し全110行/452条件を保持。BODY R8別protocol/source-only141pair、48literal保護/93dispatch、推論/goldはまだ。
+- 独立TEST50.0%は不変・未使用TEST66商品保留。GPU追加投入なし、追加Claudeカテゴリ規則/判定器/収集依頼なし。自律改善を継続する。

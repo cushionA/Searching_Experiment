@@ -1,0 +1,56 @@
+原本座標・短い事実参照方式：新DEV20固定結果（2026-10-12 UTC）
+
+結果
+- 新DEV10商品×2ケース、全320 AU行・1,220両方向条件を保持して推論・組立を固定後に採点。
+- 機械参照既知16件、参照未確定4件。参照はClaude Haiku 5.5の既存注釈で、人手goldではない。
+方式                         TP FP FN TN  recall       正解採用AU行
+literal-only                  6  0  7  3  46.1538%     6
+coordinate-refids-choice-nli   8  0  5  3  61.5385%     8
+- 同じ今回DEVで正例2件を追加回収。以前の別DEV97.2%や独立TEST50.0%との対応比較ではない。
+- 主方式の全採用10件のうち2件は参照未確定。参照未確定を正解扱いしていない。
+- 既知負例は3件だけ。FP0・既知precision100%を誤接続耐性や完成の証明としない。
+- FN5件はすべて正解行自身がunknown。競合21行は全conflict。非support7条件は実モデルunknown3・未ペアabstention4。
+- 独立TEST50.0%は不変。消費済みTEST40商品を調整用に戻さず、未使用TEST66商品は保留。
+
+凍結入力と方式
+- membership SHA256: 436d9c078f944a0265ebc6bedbaae42712c958f079a492387259f149385e2f32
+- source-nli-v3 freeze SHA256: 681026e353b595644d66631afcd7f324ee237e973b584c3f7090795f9705c6ec
+- 推論前202 pin freeze SHA256: fd00b9bf05bb5c90d36439540a89a3350cc85d46a2690b2bd46d9e1c44167b2e
+- captionだけで選択軸を探さず、AU行列・楽天native selectorの原本座標、raw SHA、全順序付き選択肢を照合。
+- 旧準備の曖昧な32 factを座標で修復。canonical準備341 context、原本fact error0。
+- 別軸をまとめた旧requestの16条件はunknownのまま。原条件・全行・原値を削除しない。
+- 独立した原値完全一致証明152 contextを保護。ef00e3のunique-axis/full-family条件は緩和しない。
+- 残り189 context・2,510選択肢をLuna指定の明示的tool経路へ投入。重みrevisionは未attest。
+- 実応答186 context・2,467選択肢、全186応答が原本引用検証を通過。引用検証は意味の正しさを証明しない。
+- packet049の151 byte foreign placeholderは原 bytes保存。3 context・43選択肢の判断は欠落としてunknown。
+- packet017/041/060の計8 contextは、全選択肢の個別判断をコードで生成した手順違反として主方式から除外。
+- この除外は推論前指示と原toolcode監査に基づき、参照読取前に固定。原応答は削除・再判定していない。
+- packet028/045/050のsemantic field aliasと、007初回欠落継続・038既に記述済み状態の保存回復は監査制限を保持。
+- first-pass combined SHA256: f9a5d1551e893556992d259ed0be5e72faad3d483e74d0bc9427e3323d1c25cb
+- snapshot receipt SHA256: 0d82142cba281571c0e6e3d4ae95252ad664022e90b944a411c33d7a9c54fa1f
+- 全条件を保持し、同じAU行の全条件support、支持行1件・競合全行conflictの場合だけ採用。不明で競合を除かない。
+- 今回の比較は実literal proofのみ。新しいJEV/NLI軽量baselineは未実行で、placeholder比較はない。
+
+検証と採点監査
+- required v4: 1,365 tests、failure0、過去fixture欠落error14、skip37。完全passとは報告しない。
+- DEV20関連32 tests成功。併走BODY R6の11 tests成功。R6コード・schema・testsの実bytesをQA snapshotに保持。
+- v1/v2/v3検証履歴を保存。v3のBODY draft 5 failure/2 errorはv4で修復した版の検証と区別する。
+- 最終gate v2は両方式とも20ケース・320行・1,220条件を全件保持。16 unpaired bindingを落とした失敗gate v1も保存。
+- 採点前389 pin freeze SHA256: b610324496d5d9e5c92bab9359088d7c1ae50896544390f9746b3b31a44aaba4
+- 全389 pinを採点後に再検証し差分0。raw応答・case選択・gate・原注釈・閾値は不変。
+- 最初の採点は評価split=devと原本archive版v2/v3のmetadata不一致で失敗し、選択20参照は既に読取済み。
+- 別adapterで採点時の一時membershipだけarchive版へ接続。元membership・参照・既存grader/parserは変更しない。
+- この修復は初回参照読取後。新adapter/code/testをsupplemental receiptで再採点前に固定、4 synthetic checks成功。
+- private参照は選択20ケースだけ出力。TEST case-plan identityは商品/case分離確認だけに使用し、分類・選択にTEST詳細や正解を使わない。
+
+保存と次の作業
+- 公開集計: .lab-output/sku-next-dev-coordinate-full-checkpoint-build-20261013-v1/dev20-aggregate-score.json
+- 詳細採点/複合case+row診断はprivate保持。checkpoint集計からケース別参照ラベル・正解行キーを省き、集計値は不変。
+- gate: .lab-output/sku-next-dev-coordinate-execution-20261013-v1/final-gate-run-v2
+- 復元ZIP: results/20261013-sku-coordinate-dev-checkpoint.zip。実SHA・CRC・全member検証は隣接manifest/checksumを参照。
+- 元の全case/productsと参照archiveは外部依存SHAを保持。選択raw、全応答、失敗履歴、code、gate、集計をcheckpointへ保存。
+- 新しい別DEV5商品10ケースで、native座標ごとのrequest修復と本文の全SKU共通/選択SKU限定根拠を検証する。
+- BODY prototypeは別protocol。今回の旧意味コード4本・今回判定・消費済みTESTを変更しない。
+- 追加のClaudeカテゴリ規則・新判定器・新収集依頼は現時点ではない。必要な既存凍結入力対応依頼だけを維持。
+- GPU追加投入なし。Kaggle外部uploadは先の自動承認レビューで拒否され、追加送信していない。
+- 完成・本番採用は未主張。新DEV検証後に候補を固定し、未使用TESTを評価する。
