@@ -77,3 +77,28 @@ submitは1回のみ。job.jsonにref/version/source signature保存。wait/照�
 
 コミット直前の最終検査
 2026-10-12: required test_lab* 1,070件、18skip、既存Luna packageの2error、assertion failureなし。新規テストは成功。GPU CUDA実測は未実行。引継ぎZIP503ファイルはCRCとmanifestのbyte/SHAを全検査済み。ZIP内の検査状態記載はこの最終検査前のスナップショットなので、この追記を最新状態とする。
+
+最新追記（2026-10-12 UTC / 20261013 run）
+冒頭の「本作業停止」は当時の指示。現在はユーザーが自律継続改善、GPU利用可・問題時CPU、
+完成と判断したら全件または絞った評価を許可している。確認待ちで繰り返し止めない。
+詳細な作業履歴はsession-result-20261012.txt、最新固定評価はfinal-blind-sku-test-result-20261013.txt。
+
+- 先にremote保存済みの開発候補は2fb50dc3212a07ad0b4816002161cc76b49ccd40。
+  既読機械dev73件46/0/9/18、recall83.6%は混合fallbackの成績で、一般化の確立ではない。
+- 未使用test40件/20商品を全448行/1,798条件で固定推論・採点。
+  機械参照既知38件16/0/19/3、recall45.7%、正解AU行16、FP0、参照未確定2。
+  説明文構成モデルを足してもケース判定変更0。完成・本番採用不可。
+- fresh固定JEV/NLIをCPU FP32で1,209.727秒、gpt-6-lunaの実本文応答216件・invalid0。
+  Kaggle uploadは具体payload外部送信承認不足として自動レビュー拒否。送信・新GPU投入なし。
+  旧83件GPU job受付不明履歴は保持し、再submitしていない。
+- FN19は正解行支持済みだが競合行unknown12、自身unknown7。参照行conflict0。
+  .lab-output/sku-final-test-independent-review-20261013-v1/post-score-diagnosis.json/mdにsource trace。
+- 最終固定出力: .lab-output/sku-final-composition-subset-20261013-v1/evaluation-v2。
+  組立metadata/採点parserの修復は別receiptと失敗履歴を保存、モデル応答/規則/goldは不変。
+  results/20261013-sku-final-test-checkpoint.zipとmanifest/SHAで復元する。元absolute pathは明示mapping。
+- full dev1,370件/107商品はtest1,292件/106商品とcase/dossier/商品IDの重複0。
+  旧v7とはcase/商品/行/原本SHAのjoin0。次は既存Claude対応処理をこの凍結devへ適用する依頼。
+  新カテゴリ規則・新判定器・新収集・ラベル変更は不要。具体入力と依頼書を別保存する。
+- 消費済みtest40で追加調整や独立testの再主張をしない。改善はdevで行い、未使用testを保持。
+  最新必須test_lab*は1,249件failure0/error11/skip37（過去fixture不足）、修復grader10成功。
+  リモートの最終HEADは同ブランチのgit log/ls-remoteで確認。元古い結果とrawは移動/削除しない。

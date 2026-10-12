@@ -244,3 +244,25 @@ Claude成果物を接続した最新の開発候補
   ラベル前に200件baselineとさらに40件composition比較の決定的subsetを凍結して実推論する。
   旧Kaggle受付不明jobは再submitしない。新baseline jobを別refで準備、GPU不調時CPUへ戻す。
 - このcheckpoint時点では未使用test採点は未完了、本番採用不可。Claudeへの追加規則依頼なし。
+
+未使用40件の固定評価完了（20261013 run / 実施2026-10-12 UTC）
+- final-blind-sku-test-result-20261013.txtを最新結果として読む。判定と全gateを固定後、40件の参照を開いて採点。
+- 40件/20商品/448 AU行/1,798条件/1,145request。既知38件=TP16/FP0/FN19/TN3、recall45.7%。
+  採用16のAU行すべて参照と一致。未確定2件は明示除外し、40件の実推論自体は完了。
+  baseline-literal-overlayとcomplete-scoped-fallbackの採用結果は同じ。本文モデルによるケース改善0。
+- 以前の83.6%は旧v7人口・既読dev・旧supportを併用する混合fallback。今回の全原選択軸経路と同一ではない。
+  完成・全1,292件成功・本番採用とは判断しない。この40件で規則/モデルを再調整しない。
+- Kaggleへの入力外部送信はpayloadの具体的承認不足として自動レビュー拒否。送信/GPUsubmitなし。
+  許可済みCPU fallbackでfresh固定JEV/NLI FP32を実行、1,209.727秒。本文gpt-6-luna216実応答、invalid0。
+- FN19のうち12は正解行supportだが競合行unknown、7は正解行自身unknown。参照行conflict0。
+  post-score-diagnosis.json/mdに原本spanと全条件traceを保存。単にgateを緩めて採用していない。
+- 同じ131凍結input/codeを保持。assembly field alias/legacy count/独立flagと参照envelopeの対応を
+  別adapter/receiptで機械的に修復。失敗出力/parser/logを保持。全gate/原本/ラベル変更なし。
+- required1,249 tests: failure0/error11/skip37（既存fixture不足）。focused22＋source4成功、修復grader10成功。
+- 結果/入力/CPU実scores/216応答/40原参照/診断/失敗/検査を
+  results/20261013-sku-final-test-checkpoint.zipへ収録し、全member bytes/SHA/CRCを検証して同ブランチへ保存する。
+  原v2/v3gold/input ZIP3個は外部SHA依存。モデルweights/secrets/全goldは収録しない。
+- 全dev1,370件/107商品とtest1,292件/106商品のproduct/dossier/case overlap0。
+  既存v7と新full devは原本ID/行/SHAのjoin0。次の改善はこの独立dev入力を既存Claude軸対応へ接続する。
+  新カテゴリ規則や新判定器の依頼ではない。dev原入力・具体依頼を別ZIPと依頼書へ保存する。
+  消費済みtest40の成績は固定。devで新policyを固めた後、まだ未使用のtestを評価する。

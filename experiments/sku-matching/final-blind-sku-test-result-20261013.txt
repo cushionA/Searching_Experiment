@@ -1,0 +1,111 @@
+未使用SKU入力の固定評価（20261013 run）
+実施日: 2026-10-12 UTC。run名の20261013は既存の命名を維持。
+
+結論
+- 今回は完成・本番採用と判断しない。未使用40件を、採点前に固定した2方式で評価した。
+  機械参照が確定している38件: TP16 / FP0 / FN19 / TN3。
+  precision100%、recall45.714%、二値accuracy50%。採用したAU行16件はすべて参照行と一致。
+  参照未確定2件は採点分母から除外したが、40件すべての推論・全候補行gateは完了。
+- baseline-literal-overlayとcomplete-scoped-fallbackは採用ケース・採用AU行・上記成績が同一。
+  説明文モデルによる今回のケース判定改善は0件。精度向上とは報告しない。
+- 先の開発候補46/0/9/18、recall83.636%は既読の混合83ケース中73機械参照の結果。
+  今回は別商品・全原選択軸の入力経路と新しいliteral-family証明を使っている。
+  元v7残余条件と旧モデルsupportを併用した開発候補の同一pipeline再検証ではない。
+  83.6%を全件の精度・未使用商品の再現率として扱わない。
+
+対象と抽出
+- 復元済みv2/v3: successful case 2,662（dev1,370 / test1,292）、商品213。
+  原入力の259失敗は別のcoverage記録を保持。55,609 raw spansを原本と照合。
+- 当初のtest200件準備は未使用の親集合として保持。Kaggle uploadの自動承認レビューが
+  具体的な外部送信payloadの承認不足として拒否したため送信・GPU投入は実行せず、CPUへ戻した。
+  旧83件Kaggle受付不明jobは再submitしていない。GPU実測・高速化成功は主張しない。
+- 主評価は事前固定したtest40件、20商品（各2件、v2=26 / v3=14）。
+  seed: final-composition40-20261013。商品hash順・ケースhash順で選び、ラベル/予測を用いていない。
+  membership SHA256: 212123b8851168a8895e8a035f8a1a032c173c496b76024b707030efca93778d。
+  全448 AU候補行、売切れを含む取得配列、1,798条件binding、1,145request、547厳密文脈を保持。
+  test1,292件全体や親200件すべての推論完了とは報告しない。
+- 以前の83ケースと各分類入力とのcase/dossier/AU商品ID/楽天URL overlapはいずれも0。
+  全dev107商品と全test106商品のcase/dossier/AU商品ID overlapも0（case plans metadataで検査）。
+  商品単位の抽出なので40件は独立した40商品ではなく20商品の測定。
+
+固定した判定契約
+- 楽天SKUを指定された同一AU商品の全候補行へ照合。採用行は全original条件supportが必要。
+  exactly one support rowかつ全競合行の明示conflictが必要。unknownはconflictへ変えない。
+  モデルが別のwhole optionを選んだだけでは競合行のconflict証明としない。
+  価格・在庫は同一性根拠にしない。正解を見てcase/カテゴリ例外・閾値を追加していない。
+- 新しいliteral-family routeは、軸名が両側で一意かつ原値完全一致、全選択肢の原文字列と
+  順序が完全一致、selected valueの所属と一意性、全軸/選択肢source spanの検証を要求。
+  正規化・数値部分一致・core/residualの自動証明は使わない。意味的同一性一般の証明ではない。
+  40件の804 pair proof: support166 / conflict420 / unknown218。
+  全bindingが一致した712requestだけ保護: support188 / conflict524。
+  厳密なcache context331件を本文モデルから省略し、残る216文脈を実推論。
+
+実推論と原文
+- JEV: argos1111/modernbert-ja-310m-jev
+  revision 07cda23579443e7a33c0f474114279fa032340d6。
+- NLI: 0x3/bert-base-japanese-v3_nli-jsnli-jnli-jsick
+  revision 21df45469d02809dc430e3ac5f5d6f67b63aabf3。
+  12 model file SHAを照合。CPU / FP32 / 4 threads / batch16、fresh実推論1,145request。
+  総時間1,209.727秒（約20.2分）。2,359 unique NLI pair。旧予測/placeholderの再生ではない。
+- 本文は既存whole-docとsafe typed-source helperで復元した1,163blockから738を適格にし、
+  425を既存除外規則で除外。39,685span receipts、40 raw capture pinsを保持。
+  全適格本文、全原選択肢、対象SKU全選択軸を提示。独立title field・希望selected value・
+  ラベル・旧予測は本文モデルへ渡していない。異なるSKU文脈への支持共有はしない。
+- 明示gpt-6-luna、forkなしの4分類agentが各54件、合計216実応答を保存。invalid0。
+  winning valueあり73 / null143。source-bound unit support73 / unknown143。
+  モデルaliasは検証したがhosted weights revisionは未固定。確率は取得していない。
+  入力/dispatch/応答を保存したcached再評価と、hosted再推論の一致保証を区別する。
+
+採点と機械的修復
+- root freezeの131入力/code pinsを推論後も照合。両方式40判定/1,145予測を固定した後に採点。
+  評価時の規則・モデル応答・raw入力・全候補行・ラベルは変更していない。
+- 凍結runnerが期待するmembership field名とprepared manifestのlegacy matched count不足を
+  別のassembly adapter/metadata receiptで修復。旧runner bytecode・元入力を保持。
+  部分生成evaluation-v1、初回syntax失敗、元gate-prepared-v2も上書きせず保存。
+  完全な最終評価はevaluation-v2。独立test flagの補足も別receiptで記録。
+- 初回採点は回答envelopeにcase_idがなく停止。既存private/resolved.jsonlにある正確な
+  case_id -> answer_file + 1-based lineだけで対応を復元。原ZIP・answer member・原行SHAを照合し、
+  expected/qualityの一致とAU row keysが凍結case plansに存在することを検証。
+  ラベル変更・近似join・行キー合成は行わない。失敗parser/logと新parser SHA/testを保持。
+- 参照はClaude Haiku 5.5による既存機械注釈で、人手goldではない。
+  v2既知24件: 8/0/15/1、recall34.783%。v3既知14件: 8/0/4/2、recall66.667%。
+  未確定: case-2f77e6ed0ec1e53a7eef、case-b298917f9d95fd9a44c3。
+  40件分の原参照とscoreのみcheckpointへ収録し、全gold ZIPは外部依存のままにする。
+
+取りこぼしの診断と継続範囲
+- 19FNのうち12件は参照行の全条件supportだが、競合行unknownのため不採用。
+  その12件には合計37のunknown競合行、82のunknown条件があり、78はモデルの別option選択を
+  conflictへ変換しなかったもの、4はmodel_unknown。これは契約上の保留で、閾値不足とは別。
+- 残り7件は参照行自体unknown: model_unknown5件、別option選択をconflict扱いしない2件。
+  参照行conflictは0。原値の所属や対象全選択軸の入力落ちはこの19件では見つからない。
+  全66参照行bindingで原値のopposite family所属と対象軸文脈を確認。
+- 既存v7人口と新full dev入力はcase/product/SKU/AU行/原本SHAのexact joinが0。
+  古いalignmentを新商品へ移植したり、missingをone_sidedと推測したりしない。
+  次は別の凍結dev1,370件で、既存Claude軸対応処理を原本ID・全AU行に結合して検証する。
+  新カテゴリ規則や新判定器ではなく、既存処理を未接続のdev原入力へ適用する依頼を準備。
+- この40件は消費済みtestとして固定。これを見た調整の再採点を独立testとは呼ばない。
+  改善はdevのみで行い、新しいpolicyを固定後に未使用testを別途評価する。
+  すべての取りこぼしを解消した、一般化を確立した、本番採用可能とは報告しない。
+
+検査
+- required test_lab*: 1,249件、assertion failure0、error11、skip37。
+  error11は従来と同じ過去fixture/別checkout不足。全suite成功とは報告しない。
+  初回のnetwork制限由来の追加error/failureと、network有効の再検査logを保持。
+- runtime/gate/literal/旧grader focused22件成功、source preparation4件成功。
+  parser修復後のgrader10件成功（追加5件を含む）。必要範囲で再検証し、同じfull suiteを反復していない。
+- 独立read-only reviewで131source pins/21gate source pins/15gate outputsを照合、
+  採用16行の全条件と全競合行conflict、448行のaccountingを確認。
+  過去のpre-inference名reviewは実際には推論進行中/応答後に作成されたため、
+  そのファイル名を事前review実施の証拠とは扱わない。post-gates reviewに時系列補足あり。
+
+再現と保存
+- 結果: .lab-output/sku-final-composition-subset-20261013-v1/evaluation-v2
+- score/選択40参照: .lab-output/sku-final-test-checkpoint-build-20261013-v1/
+- protocol/code/input pins: .lab-output/sku-final-test-execution-20261013-v1/experiment-freeze.json
+- 診断: .lab-output/sku-final-test-independent-review-20261013-v1/post-score-diagnosis.json
+- DEV接続audit: .lab-output/sku-next-dev-alignment-audit-20261013-v1/
+- 最終checkpoint: results/20261013-sku-final-test-checkpoint.zip と .zip.manifest.json / .zip.sha256。
+  実source captures・全選択40モデル入力/実応答/CPU scores・全gate/参照/score・修復/失敗/検査を保存。
+  大きな原v2/v3 gold/input ZIPは3個のSHA固定外部依存としてmanifestへ記載。
+  別checkoutへの復元は明示path mappingを使い、元freezeのabsolute pathを勝手に変更しない。
+  archive hashは循環を避けてsidecarに保存。リモート保存確認は最新session記録を参照。
