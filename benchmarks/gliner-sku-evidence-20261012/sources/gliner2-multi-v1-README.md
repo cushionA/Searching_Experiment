@@ -169,13 +169,13 @@ If you use this model in your research, please cite:
 
 ```bibtex
 @misc{zaratiana2025gliner2efficientmultitaskinformation,
-      title={GLiNER2: An Efficient Multi-Task Information Extraction System with Schema-Driven Interface}, 
+      title={GLiNER2: An Efficient Multi-Task Information Extraction System with Schema-Driven Interface},
       author={Urchade Zaratiana and Gil Pasternak and Oliver Boyd and George Hurn-Maloney and Ash Lewis},
       year={2025},
       eprint={2507.18546},
       archivePrefix={arXiv},
       primaryClass={cs.CL},
-      url={https://arxiv.org/abs/2507.18546}, 
+      url={https://arxiv.org/abs/2507.18546},
 }
 ```
 
