@@ -1,0 +1,96 @@
+Claudeの値同値証明の接続と保存済みNLI判定の比較（2026-10-12）
+
+現在の開発候補
+- shared genuine one_sidedは元top3-JEV、非共有forwardはNLI、reverseはJEVを維持。
+  厳密に再検証したtyped同値証明を追加し、非共有forwardの保存済み全選択肢NLIについて
+  唯一のraw supportを使う判定を比較した。追加モデル推論は0。
+- mixed83件/134要求を処理し、既存機械参照が確定している73件だけを採点。
+  旧誤り44、独立収集dev確定26、旧対照3。既読devに基づく探索的な開発結果である。
+  独立testは開いていない。以下の数値を一般精度や本番採用の検証と扱わない。
+
+方式                         TP FP FN TN  正解AU行 別AU行誤採用
+前候補                       28  1 27 17      28       0
+typed同値証明を接続          29  1 26 17      29       0
+さらにraw NLI unique support 30  1 25 17      30       0
+
+最新73件: precision=30/31=96.8%、recall=30/55=54.5%、accuracy=47/73=64.4%。
+旧44=TP11/FP1/FN21/TN11、dev26=TP19/FP0/FN4/TN3、旧対照3=TP0/FP0/FN0/TN3。
+前候補から正解2件を回収し、既存正解の回帰0。誤採用は毛布セット1件が残る。
+
+Claude成果物の受領
+- remote branch claude/sku-condition-alignment、commit e614a3f30bde3db7112d477b070707e2bf4a78cb。
+  upstreamのalign_sku_conditions.pyは従来v7と同じSHA。
+  既存凍結コードを変更しないため、branch全体をmergeせずZIPを検証して別runへ展開した。
+- 20261012-sku-value-equivalence-v1.zip: 625776 bytes、22 members。
+  SHA256=0b97e1a900bd1172ec91464029278cb7f3994da8c32a1596557f96cee4a17e69。
+  外部/内部manifest、全member byte/SHA、CRC、summaryの入力/コードSHAを照合済み。
+  evalのsidecarsはdevのみ。独立testラベルやtest dossierは取り込んでいない。
+- 受領一式: .lab-output/sku-claude-value-equivalence-incoming-20261012-v1。
+  validation.json、verified-L-receipts.json、検証脚本と原ZIPを保持する。
+
+Codex側の厳密な再検証
+- verify_typed_value_equivalence_v1.pyは現在own_axis_name_affixだけを接続する。
+  sidecarのprovenをそのまま通さず、原商品/ケース/条件/行キー/軸/全選択肢を照合する。
+  同じ原軸名が一方の全値に一様に付加され、他方には付加されず、全値が一対一に対応し、
+  選択値が一意で、coreが元値全体、残余が空であることを要求する。
+  原本SKU配列を再解析し、原本SHA・locator・quote・start/endを検証する。
+  値のNFKC変換、空白除去、数量/単位/符号/上限/修飾語の除去で一致させない。
+- trial_typed_value_equivalence_v1.pyは原入力ファイル全体のSHAとケース/商品レコードSHA、
+  groups、v7 handoff、align summary、request/task/document bindingsも照合する。
+  原値から非完全一致のcoreだけを取り出す方法や、未確認残余のある証明は接続しない。
+- case-163fa1792c386ae5e726のサイズM/L/LLとMサイズ/Lサイズ/LLサイズが通った。
+  選択Lに対応する元AU行は au:379580385:88157962:1:0。
+  forward/reverseの2 receiptを作成。reverseは既存モデルがsupportなので変更しない。
+  forwardのunknown要求1件だけを証明付きsupport carrierに置換し、元モデル出力を保存。
+  他の133要求、shared80、原本・元モデルスコア・全選択肢は変えていない。
+- 旧gateのreason名experimental_quoted_model_supportは互換用の名称である。
+  新予測のtyped provenance/source_model_predictionで証明と実モデル出力を区別する。
+  この名称を追加モデル推論やモデルの支持確率として読まない。
+- typed結果: .lab-output/sku-typed-value-equivalence-20261012-v1。
+  全83件gateの変化は上記Lケースのdrop→acceptだけ。TP29/FP1/FN26/TN17。
+- 「ゆで250g×2P／ゆで250g×2p」はupstreamでもmodel_candidateのまま。
+  P/pが数字に接し、軸名の違いも残るため、この接続では証明に昇格させない。
+  AU説明に元2P表記がある事実は補助情報として保持する。
+
+保存済み全選択肢NLIの判定比較
+- .lab-output/sku-raw-nli-unique-support-20261012-v1/assemble-predictions.py。
+  typed候補を基に、非共有forward25要求の既存実NLIスコアを再利用した。
+  保存済み入力/実スコア/モデルsummary/codeのSHAを凍結し、全候補の順序・個数・原値と
+  premise/hypothesis/request/document/quoteの完全一致を確認する。
+  全候補がfiniteかつerrorなし、切り詰めなし512token以内の場合だけ比較する。
+- 各原選択肢でsupportがconflictとunknownを厳密に上回るものを数える。
+  ちょうど1つで、requestの選択原値と一致した場合だけ非supportを変更する。
+  support同点・複数・0件・別選択肢・検証不成立は元判断を保持する。
+  shared80・reverse29・既存support・typed証明は維持し、各rawスコアを原出力ごと保存する。
+  25要求は既存support3、0候補16、複数候補4、追加support2となった。
+- 100×135cm: support .439966、conflict .401477、unknown .158557。
+  150×135cm: support .528840、conflict .338248、unknown .132912。
+  絶対的な高確信の判定ではなく、元relative mass閾値を外す開発向けの方針比較である。
+  premiseは当該候補AU行の商品名+選択軸。行を除外したone_sided共有や独立した裏付けと扱わない。
+- 134要求中2要求だけがunknown→supportになった。全条件を同じAU行で満たす旧gateを適用し、
+  最終判断が変わったのは case-1dc5f4454d768c7c63f0（100×135cm）の1件。
+  au:704502086:331810175:1:5を正しく採用。もう1要求は最終gateを変えなかった。
+- 採点: .lab-output/sku-raw-nli-unique-support-evaluation-20261012-v1。
+  execution sourceを検証し、全83件のgateをfreeze後に73件の既存参照を読む。
+  採点後にも全入力/コード/出力SHAを照合。TP30/FP1/FN25/TN17。
+  request-changes、source-freeze、case-results、全gate、差分、脚本を保存している。
+
+検証と保存
+- 新しいstrict validatorの15テスト、既存product model/sharingを含む関連49テストは成功。
+  Claudeの受領proof単体7テストも成功。
+- required: python3 -B -m unittest discover -s tests -p 'test_lab*.py'。
+  1138件、assertion failure 0、error11、skip37。過去の資料/別checkout不足が残り完全成功ではない。
+  欠損は既存GPU準備用checkout1、旧integrated bundle1、annotation入力3、旧evaluation出力3、
+  旧expanded AU skus3。前回と同じ11 error。原ラベルの新規生成・改変で埋めていない。
+  ログ: .lab-output/sku-typed-value-equivalence-resume-20261012-v1。
+  初回準備エラーと修正前脚本、tests import環境エラーも成功ログと併せて保持する。
+- 永続化: results/20261012-sku-value-equivalence-integration-checkpoint.zip と隣接manifest。
+  受領ZIP・22展開ファイル・新コード/テスト・2段階の全結果/凍結/ログ/文書を収録。
+  既存CPU、gates-improvement、followup、option-contextの4ZIPに依存する。
+  SHAは各隣接manifestと本checkpointのdependenciesを照合する。重み/venv/cache/認証値は含めない。
+- 再開時はsession-resultと本記録を読む。4依存ZIPの全byte/SHAとCRCを照合してから
+  当該checkpointをリポジトリ相対パスへ復元する。最新候補は上記raw-NLI評価run。
+  frozen-source、元原本、参照ルート、モデル実スコアは依存ZIP内の同じ版を使う。
+  再実行は旧結果を上書きせず新outputを指定する。saved runnerの定数も新runで変更し記録する。
+- GPU受付不明HTTP409の履歴は維持し、再submitしていない。今回も追加GPU/CPU推論なし。
+  現段階でClaudeへの新モデル・新カテゴリ規則・新収集・新ラベルの追加依頼はない。

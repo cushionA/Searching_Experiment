@@ -172,3 +172,24 @@ required test_lab* 1111件、assertion failure 0、旧資料/環境不足error 1
   全2実推論と1cached比較、コード、ログは results/20261012-sku-option-context-checkpoint.zip に保存。
   初回CPU/改善/追加確認の3ZIPに依存し、SHA・CRC・全member byteを照合する。
   新規12・関連46テスト成功。required1123件、failure0/error11/skip37（過去資料/別checkout不足）。
+
+Claude成果物を接続した最新の開発候補
+- claude/sku-condition-alignment の e614a3f30bde3db7112d477b070707e2bf4a78cb を受領。
+  原ZIP22項目のCRC・全byte/SHAと入力pinsを照合し、凍結コードとは別runへ展開した。
+  Codex側で原SKU配列・全選択肢・残余・軸名・原本span・case/product/request/taskの結び付きを再検証。
+  L/Lサイズのforward/reverse 2証明が通り、forward unknown1件だけを置換。TP29/FP1/FN26/TN17。
+  P/pが数量に接するゆで250g×2P/2pは証明扱いにせず保持。
+- 保存済み非共有forward25要求の全選択肢NLI実スコアについて、raw supportの唯一性を比較。
+  supportがconflict/unknownを厳密に上回る候補が1つで選択原値と一致する場合だけ変更。
+  追加推論0、rawスコア・shared80・reverse29・typed証明・既存supportは維持。
+  unknown2要求が変わり、全条件を同じAU行で満たした100×135cmの1ケースを追加回収。
+- 最新候補: .lab-output/sku-raw-nli-unique-support-evaluation-20261012-v1。
+  73件=TP30/FP1/FN25/TN17、正解AU行30、別AU行誤採用0。
+  precision96.8%、recall54.5%、accuracy64.4%。前候補28/1から回収2、既存正解の回帰0。
+  旧44=11/1/21/11、dev26=19/0/4/3、旧対照3=0/0/0/3。
+  毛布セットのFP1とFN25は残る。raw supportの絶対確信度は要求していない探索的な方針比較。
+  既読devの既存機械参照を使用した結果であり、独立test・本番採用の検証とは扱わない。
+- 関連49テスト成功（新strict検証15を含む）。required1138件、failure0/error11/skip37。
+  前回と同じ過去資料/別checkout不足11件。詳細・再開方法は typed-value-equivalence-result-20261012.txt。
+  results/20261012-sku-value-equivalence-integration-checkpoint.zip に受領ZIP・検証・全結果・ログを保存。
+  先の4ZIPに依存。GPU受付不明の履歴を維持し、再submitしていない。

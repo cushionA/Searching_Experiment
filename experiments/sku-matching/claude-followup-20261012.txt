@@ -42,3 +42,16 @@ Codex側でSKUのセット構成と購入オプションを検討します。Cla
 この比較のモデル入力・選択肢列挙・AU行gate・採点はCodex担当。
 Claudeへの依頼は claude-safe-option-equivalence-request-20261012.txt の汎用同値判定・証拠付き実装案を継続。
 新カテゴリ規則や新モデルの作業を追加で依頼しない。
+
+Claudeの作業完了を受領（2026-10-12）
+- claude/sku-condition-alignment commit e614a3f30bde3db7112d477b070707e2bf4a78cb。
+  同値証明ZIP22項目の原本byte/SHAとCRCを検証し、既存v7/入力SHAまで再確認した。
+  L/LサイズについてCodexの厳密なraw全選択肢・残余・行・軸・locator再検証を通し、
+  forward/reverse 2 receiptを生成。forward unknown1件だけ接続し、正解1件を回収した。
+  ゆで250g×2P/2pはmodel_candidateのまま。元数量に接するcase変換を証明扱いにしない。
+  依頼した成果物の受領・接続は完了。追加のカテゴリ規則・新判定器・収集・ラベル作業は依頼しない。
+- Codex側で保存済み全選択肢NLIの唯一support判定を追加比較し、別の正解1件を回収。
+  現在の開発候補はTP30/FP1/FN25/TN17。旧44=11/1/21/11、dev26=19/0/4/3、旧対照3=0/0/0/3。
+  原モデルスコア・原本・元ラベル・独立testを変更していない。独立testは開いていない。
+  モデル入力/判定方針/同じAU行のgate/採点の比較は引き続きCodex担当。
+  詳細と引き継ぎZIPは typed-value-equivalence-result-20261012.txt を参照。
