@@ -1,0 +1,162 @@
+[
+  {
+    "id": "2505.03113",
+    "primary_title": "Image Recognition with Online Lightweight Vision Transformer: A Survey",
+    "primary_url": "https://arxiv.org/abs/2505.03113",
+    "official_code_url": "https://github.com/ajxklo/Lightweight-VIT (paper project page; survey/supporting code, not a candidate model implementation)",
+    "resource_evidence": "Survey; no one model's CPU timings or RAM established. ImageNet-1K comparison is the stated evidence.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2610.07987",
+    "primary_title": "VisionWeave: Weaving Elastic Visual Representations as a Native Capability of MLLMs",
+    "primary_url": "https://arxiv.org/abs/2610.07987",
+    "official_code_url": "https://github.com/FFY0/VisionWeave (candidate link; primary paper has no verified official repo link in examined abstract)",
+    "resource_evidence": "Training scale explicitly >30,000 A100 GPU-hours; 4B and 27B MLLMs. Clearly not a CPU-small model.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2604.04979",
+    "primary_title": "Squeez: Task-Conditioned Tool-Output Pruning for Coding Agents",
+    "primary_url": "https://arxiv.org/abs/2604.04979",
+    "official_code_url": "https://github.com/KRLabsOrg/squeez",
+    "resource_evidence": "Qwen 3.5 2B LoRA fine-tune; no CPU latency/RAM in reviewed abstract. No evidence it removes the need for stored archive/retrieval; task is selective context input. Official README also offers a smaller extractive ModernBERT alternative; performance parity with 2B is not established.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2601.16746",
+    "primary_title": "SWE-Pruner: Self-Adaptive Context Pruning for Coding Agents",
+    "primary_url": "https://arxiv.org/abs/2601.16746",
+    "official_code_url": "https://github.com/Ayanami1314/swe-pruner",
+    "resource_evidence": "0.6B skimmer; README says reuse/reproduction recommends at least 4 GPUs; HF code-pruner card available. The paper also includes CPU claims only indirectly; do not infer practical CPU speed from model size.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2512.07921",
+    "primary_title": "DeepCode: Open Agentic Coding",
+    "primary_url": "https://arxiv.org/abs/2512.07921",
+    "official_code_url": "https://github.com/HKUDS/DeepCode",
+    "resource_evidence": "Agent framework requiring LLM and repo tool loop; no CPU budget or compact model claim. Paper/repo evaluations depend on external models and compute.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2505.13840",
+    "primary_title": "EfficientLLM: Efficiency in Large Language Models",
+    "primary_url": "https://arxiv.org/abs/2505.13840",
+    "official_code_url": null,
+    "resource_evidence": "Study run on 48 GH200 + 8 H200 GPUs; explicitly production-class cluster. Not a CPU-ready artifact or evidence of practical local model quality.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2406.12925",
+    "primary_title": "GLiNER multi-task: Generalist Lightweight Model for Various Information Extraction Tasks",
+    "primary_url": "https://arxiv.org/abs/2406.12925",
+    "official_code_url": "https://github.com/urchade/GLiNER (associated official framework; exact multi-task checkpoint/release needs pinning)",
+    "resource_evidence": "Paper calls it a small encoder, but reviewed abstract supplies no parameter count/CPU timings. Prior GLiNER line has CPU evidence, but do not transfer those measurements automatically to this multitask variant.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2501.16273",
+    "primary_title": "Return of the Encoder: Maximizing Parameter Efficiency for SLMs",
+    "primary_url": "https://arxiv.org/abs/2501.16273",
+    "official_code_url": "https://github.com/microsoft/encoder-decoder-slm",
+    "resource_evidence": "Official README reports 330M model CPU latency 1591ms, GPU 86ms, NPU 189ms; 1B-scale artifacts. Training requires torchrun/GPU and teacher checkpoint; CPU infer path provided. Paper says it isolates architecture under matched data/params/optimization.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2409.01990",
+    "primary_title": "Designing Large Foundation Models for Efficient Training and Inference: A Survey",
+    "primary_url": "https://arxiv.org/abs/2409.01990",
+    "official_code_url": "https://github.com/NoakLiu/Efficient-Foundation-Models-Survey",
+    "resource_evidence": "No model artifact or CPU workload; survey only.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2610.13113",
+    "primary_title": "Continually Post-training Small Models via Synthetic Self-distillation",
+    "primary_url": "https://arxiv.org/abs/2610.13113",
+    "official_code_url": null,
+    "resource_evidence": "Unknown; do not infer CPU capability from title or HF metadata.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2609.18063",
+    "primary_title": "The Other Half of the Memory Wall: Serving 35B MoEs from SSD with Trained Routing Prediction",
+    "primary_url": "https://arxiv.org/abs/2609.18063",
+    "official_code_url": null,
+    "resource_evidence": "Primary abstract explicitly requires 19.5GB 4-bit weights for the 35B model and a 24GB machine. 3GiB is peak active memory, not full storage. Exceeds this run 2GB download cap; accelerator type unverified.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2309.14592",
+    "primary_title": "Efficient Post-training Quantization with FP8 Formats",
+    "primary_url": "https://arxiv.org/abs/2309.14592",
+    "official_code_url": "https://github.com/intel/neural-compressor",
+    "resource_evidence": "FP8 generally requires supported accelerators; no evidence in reviewed source that it improves x86 CPU inference. Pool's vision classification match is irrelevant.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2507.18546",
+    "primary_title": "GLiNER2: An Efficient Multi-Task Information Extraction System with Schema-Driven Interface",
+    "primary_url": "https://arxiv.org/abs/2507.18546",
+    "official_code_url": "https://github.com/fastino-ai/GLiNER2",
+    "resource_evidence": "Paper reports 205M parameters and CPU latencies 130–208ms across 5–50 labels, but does not fully specify general CPU hardware in table snippet. CPU baseline times include GPT-4o network/API 358–463ms and DeBERTa 1714–16897ms. Official README says CPU-first/no GPU required. No retraining required for initial schema test.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2610.09633",
+    "primary_title": "Coding-Agent Benchmarks Should Match Their Users' Task Flows",
+    "primary_url": "https://arxiv.org/abs/2610.09633",
+    "official_code_url": "https://github.com/JetBrains-Research/SWE-TaskFlow-Generation-Public (candidate official repo from primary paper/HF page; inspect before use)",
+    "resource_evidence": "Benchmark/data analysis; no model/CPU inference claim. Pilot on 700 SWE-Bench Pro issues; cost and resolve rate are paper-reported.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2503.23135",
+    "primary_title": "LSNet: See Large, Focus Small",
+    "primary_url": "https://arxiv.org/abs/2503.23135",
+    "official_code_url": "https://github.com/THU-MIG/lsnet (official PyTorch code; paper also lists jameslahm/lsnet, likely mirror/author alias, pin canonical project)",
+    "resource_evidence": "Official README says throughput tests used NVIDIA RTX3090, so the commonly shown throughput does not establish CPU performance. ImageNet-1K weights available.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2109.15099",
+    "primary_title": "PP-LCNet: A Lightweight CPU Convolutional Neural Network",
+    "primary_url": "https://arxiv.org/abs/2109.15099",
+    "official_code_url": "https://github.com/PaddlePaddle/PaddleClas (paper's official code/model pointer)",
+    "resource_evidence": "Paper provides CPU-specific Intel Xeon Gold 6148 + MKLDNN latency and parameter counts. Figures are hardware/software-specific; not a current target CPU measurement.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2410.20011",
+    "primary_title": "A Survey of Small Language Models",
+    "primary_url": "https://arxiv.org/abs/2410.20011",
+    "official_code_url": null,
+    "resource_evidence": "No model or CPU timing; literature review only.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2609.20804",
+    "primary_title": "An Empirical Study of Harness Design for Coding Agents",
+    "primary_url": "https://arxiv.org/abs/2609.20804",
+    "official_code_url": null,
+    "resource_evidence": "Study uses 4 models, 176 settings, two coding benchmarks; compute/budget not established in accessible abstract. Findings are directly relevant to context management.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2406.09900",
+    "primary_title": "GEB-1.3B: Open Lightweight Large Language Model",
+    "primary_url": "https://arxiv.org/abs/2406.09900",
+    "official_code_url": null,
+    "resource_evidence": "1.3B FP32 weights require at least ~5.2GB for weights alone (derived 1.3B×4 bytes; not total RAM); paper abstract gives no measured CPU timing and describes ongoing quantization work.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  },
+  {
+    "id": "2605.07505",
+    "primary_title": "LiteGUI: Lightweight GUI Agents via Multi-Solution Guided Distillation and Dual-Level Reinforcement Learning",
+    "primary_url": "https://arxiv.org/abs/2605.07505",
+    "official_code_url": null,
+    "resource_evidence": "2B/3B GUI agent models; RL/post-training and vision-language inference likely accelerator-intensive, but exact training/inference budget not available in abstract. Treat GPU need as unknown rather than false.",
+    "execution_gate": "pending_judge_and_resource_verification"
+  }
+]

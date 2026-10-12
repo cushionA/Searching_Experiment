@@ -1,0 +1,37 @@
+{
+  "candidate": "2109.15099",
+  "status": "not_run",
+  "validation_level": "preparation_failed",
+  "candidate_execution_count": 0,
+  "started_at": "2026-10-12T17:40:00Z",
+  "ended_at": "2026-10-12T17:43:04.595168+00:00",
+  "repair_attempts": 1,
+  "errors": [
+    {
+      "stage": "dependency download in Docker",
+      "error": "SSL certificate verification failed",
+      "repair": "Downloaded only binary wheels on host through existing verified TLS configuration; did not disable certificate verification"
+    },
+    {
+      "stage": "docker build",
+      "error": "mkdir /home/agent/.docker/buildx: read-only file system",
+      "action": "Stopped; no second repair; no inference started"
+    }
+  ],
+  "download_accounted_conservative_bytes": 355495342,
+  "download_cap_bytes": 2000000000,
+  "download_accounting_note": "sum of wheel file bytes + inputs + uncompressed base image; protocol overhead and metadata not measured, large margin under cap",
+  "peak_candidate_ram": null,
+  "cpu_inference_seconds": null,
+  "accuracy": null,
+  "planned_isolation": {
+    "network": "none",
+    "host_credentials": false,
+    "cpu_limit": 2,
+    "ram_limit_gib": 8,
+    "read_only_root": true,
+    "nonroot_uid": 10001,
+    "cap_drop": "ALL"
+  },
+  "paid_services_used": false
+}

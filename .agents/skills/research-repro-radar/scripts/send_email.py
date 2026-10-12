@@ -1,0 +1,161 @@
+import argparse
+import datetime as dt
+import hashlib
+import json
+import os
+import smtplib
+import ssl
+import state
+from email.message import EmailMessage
+from pathlib import Path
+
+
+def heartbeat_due(mail_state, heartbeat_days):
+    if heartbeat_days <= 0:
+        return False
+    last = mail_state.get("last_sent_at")
+    if not isinstance(last, str) or not last:
+        return True
+    try:
+        parsed = dt.datetime.fromisoformat(last)
+    except ValueError:
+        return True
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=dt.timezone.utc)
+    return dt.datetime.now(dt.timezone.utc) - parsed >= dt.timedelta(days=heartbeat_days)
+
+
+def required_env(name):
+    value = os.environ.get(name, "").strip()
+    if not value:
+        raise ValueError(f"environment variable {name} is required")
+    return value
+
+
+def main():
+    state.force_utf8_stdio()
+    skill_root = Path(__file__).resolve().parents[1]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("report")
+    parser.add_argument("body")
+    parser.add_argument("--subject")
+    parser.add_argument("--state-dir", required=True)
+    parser.add_argument("--digest-limit", type=int, default=15)
+    parser.add_argument("--heartbeat-days", type=int, default=0)
+    parser.add_argument("--profile", default=str(skill_root / "references" / "profile.json"))
+    parser.add_argument("--today")
+    parser.add_argument("--expected-run-id", help="Require report.run_id to match this automation run")
+    parser.add_argument("--dry-run", action="store_true")
+    args = parser.parse_args()
+
+    profile = json.loads(Path(args.profile).read_text(encoding="utf-8"))
+    today_date = dt.date.fromisoformat(args.today) if args.today else dt.date.today()
+
+    report = json.loads(Path(args.report).read_text(encoding="utf-8"))
+    if not isinstance(report, dict):
+        raise ValueError("report must be a JSON object")
+    if args.expected_run_id is not None and (
+        not args.expected_run_id or report.get("run_id") != args.expected_run_id
+    ):
+        raise ValueError("report run_id does not match the current automation run")
+    completed_ids = state.get_completed_ids(report)
+    fresh_within_days = int(profile.get("adaptive_freshness", {}).get("fresh_within_days", 30))
+    recommended = report.get("recommended")
+    if not isinstance(recommended, list):
+        raise ValueError("report must contain a recommended array")
+    digest_items = report.get("digest", [])
+    if not isinstance(digest_items, list):
+        raise ValueError("report digest must be an array")
+    if args.digest_limit >= 0:
+        digest_items = digest_items[: args.digest_limit]
+
+    ids = []
+    allowed_categories = {"large_effect", "deep_dive_value", "大きな効果", "深掘り価値"}
+    for index, item in enumerate(recommended, 1):
+        if not isinstance(item, dict) or not item.get("id") or not item.get("title"):
+            raise ValueError(f"recommended item {index} needs id and title")
+        if item.get("category") not in allowed_categories:
+            raise ValueError(f"recommended item {index} needs a valid category")
+        ids.append(str(item["id"]))
+    for index, item in enumerate(digest_items, 1):
+        if not isinstance(item, dict) or not item.get("id") or not item.get("title"):
+            raise ValueError(f"digest item {index} needs id and title")
+        ids.append(str(item["id"]))
+
+    body = Path(args.body).read_text(encoding="utf-8")
+    mail_state = state.load_mail(args.state_dir)
+    today = today_date.isoformat()
+    if recommended:
+        tier = "detailed"
+        default_subject = f"[Research Repro Radar] 今週の注目研究 {len(recommended)}件"
+    elif digest_items:
+        tier = "digest"
+        default_subject = f"[Research Repro Radar] 今週のダイジェスト {len(digest_items)}件 ({today})"
+    else:
+        tier = "heartbeat"
+        default_subject = f"[Research Repro Radar] 今週は該当なし ({today})"
+        if not heartbeat_due(mail_state, args.heartbeat_days):
+            if not args.dry_run:
+                state.record_freshness(args.state_dir, recommended, today_date, fresh_within_days, run_id=report.get("run_id"))
+                state.remove_completed(args.state_dir, completed_ids)
+            print(json.dumps({"sent": False, "reason": "nothing_to_report"}))
+            return
+
+    subject = args.subject or default_subject
+    # detailed は内容だけで指紋を取り、再実行での二重送信を止める。digest と heartbeat は
+    # 「毎回届くこと」自体が目的なので、件名に日付が入り指紋が実行ごとに変わる。
+    fingerprint = hashlib.sha256((tier + "\n" + subject + "\n" + body + "\n" + "\n".join(ids)).encode("utf-8")).hexdigest()
+    freshness_run_id = report.get("run_id") or f"mail:{fingerprint}"
+    if fingerprint in mail_state["sent"]:
+        if not args.dry_run:
+            # 送信済みだが前回のstate更新だけが中断した場合にも完了を反映する。
+            state.record_seen(args.state_dir, recommended, tier)
+            state.record_freshness(args.state_dir, recommended, today_date, fresh_within_days, run_id=freshness_run_id)
+            state.remove_completed(args.state_dir, completed_ids)
+        print(json.dumps({"sent": False, "reason": "duplicate", "fingerprint": fingerprint}))
+        return
+    if args.dry_run:
+        print(json.dumps({"sent": False, "reason": "dry_run", "tier": tier, "recommended_count": len(recommended), "digest_count": len(digest_items), "fingerprint": fingerprint}))
+        return
+
+    host = required_env("RESEARCH_RADAR_SMTP_HOST")
+    port_text = required_env("RESEARCH_RADAR_SMTP_PORT")
+    username = required_env("RESEARCH_RADAR_SMTP_USERNAME")
+    password = required_env("RESEARCH_RADAR_SMTP_PASSWORD")
+    recipients = [item.strip() for item in required_env("RESEARCH_RADAR_EMAIL_TO").split(",") if item.strip()]
+    if not recipients:
+        raise ValueError("RESEARCH_RADAR_EMAIL_TO has no recipients")
+    try:
+        port = int(port_text)
+    except ValueError as exc:
+        raise ValueError("RESEARCH_RADAR_SMTP_PORT must be an integer") from exc
+
+    message = EmailMessage()
+    message["Subject"] = subject
+    message["From"] = os.environ.get("RESEARCH_RADAR_EMAIL_FROM", "").strip() or username
+    message["To"] = ", ".join(recipients)
+    message.set_content(body)
+    context = ssl.create_default_context()
+    if port == 465:
+        with smtplib.SMTP_SSL(host, port, timeout=30, context=context) as client:
+            client.login(username, password)
+            client.send_message(message)
+    else:
+        with smtplib.SMTP(host, port, timeout=30) as client:
+            client.starttls(context=context)
+            client.login(username, password)
+            client.send_message(message)
+
+    mail_state["sent"] = (mail_state["sent"] + [fingerprint])[-200:]
+    mail_state["last_sent_at"] = dt.datetime.now(dt.timezone.utc).isoformat()
+    state.save_mail(args.state_dir, mail_state)
+    # ダイジェストは「まだ検証していない」印なので既報にしない。既報にすると
+    # 次回キューに残した候補が二度と拾われなくなる。
+    state.record_seen(args.state_dir, recommended, tier)
+    state.record_freshness(args.state_dir, recommended, today_date, fresh_within_days, run_id=freshness_run_id)
+    state.remove_completed(args.state_dir, completed_ids)
+    print(json.dumps({"sent": True, "tier": tier, "recommended_count": len(recommended), "digest_count": len(digest_items), "fingerprint": fingerprint}))
+
+
+if __name__ == "__main__":
+    main()
