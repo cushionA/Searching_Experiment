@@ -65,3 +65,62 @@ Claudeへの依頼
 旧対照family4件の既存参照が生成済みなら、同じ凍結版のcase_idと原本SHA付きで共有してほしい。
 生成されていなければ、その事実だけでよい。新しいラベル作成や既存ラベル変更は依頼しない。
 詳細は claude-followup-20261012.txt。
+
+追加開発実験: 明示的な検索キーワードブロックの除外
+- 成功run: .lab-output/sku-keyword-filter-cpu-20261012-v2
+  成功評価: .lab-output/sku-keyword-filter-evaluation-20261012-v3
+  v1推論出力は推論開始前の空ブロック群処理エラー。評価v1/v2は出典検証までの失敗出力。
+  元測定・元ラベルを変更せず、別ディレクトリに成功版を作成した。
+- 対象商品とカテゴリに依存する語は使わず、先頭行に検索ワード等と明記された17ブロックだけ除外。
+  29条件groupでの除外は26 group/block対。元rerankerの全ブロック実スコア順を保持し、次順位をtop3へ繰り上げた。
+- JEVの原文question/state/全選択肢、固定revision・モデルSHA・コードSHAが完全一致する57入力は再利用。
+  追加23 unique入力を固定CPU FP32で実推論。推論118.014秒、実験全体128.995秒、モデルエラー0。
+  これはキャッシュ使用の追加実験時間で、GPUとの速度比較ではない。
+- 非共有・逆方向54要求は元の実推論済みbaselineと完全一致、全134要求を出力。
+  推論前にexecution-freezeを書き、モデル・入力・コード・キャッシュSHAを終了時にも照合した。
+- 採点結果: 旧44=10/7/22/5、新dev26=17/0/6/3、旧対照3=0/1/0/2。
+  合計73=TP27/FP8/FN28/TN10。正解AU行27、別行誤採用0。元top3から全83件の判断・AU行がbyte一致。
+  検索キーワード除外だけでは精度改善しなかった。既読devに基づく開発実験で、独立testではない。
+- 単独の軸判断が数量・付属品の組合せを誤って通す問題が残る。次の対象はSKU全体のセット構成の照合。
+  同じAU行で全条件を満たす契約、真正なone_sidedだけの共有、原値・全選択肢・出典の保持を維持する。
+- 過去参照の原本ラベル2ファイルをtrackedの20261010-sku-nonllm-v5-checkpoint.zipからSHA一致で復元し、
+  旧44件の各参照まで再照合した。原ラベルの変更・新収集は行っていない。
+- 元product-modelのerrors_only=trueは旧runnerの固定metadataで、混合集合を表していない。
+  source-manifestはerrors_only=false、83件のmembershipとinputSHAを検証。追加実験ではこの不一致を明記した。
+
+永続保存
+- 初回測定: コミット281c14f、results/20261012-sku-mixed-cpu-checkpoint.zip。
+  354項目、全byte/SHA・CRCを照合。凍結入力・全CPU結果・評価・参照ルート・GPU受付不明の証拠を収録。
+  AU/Rakuten原本はraw-captures93項目として収録し、raw-source-registryに旧入力名と原本SHAを保持。
+  Claude追加共有ZIPも含む。モデル重み、venv、cache、認証値は含めない。
+- 追加実験: results/20261012-sku-mixed-gates-improvement-checkpoint.zip。
+  初回ZIPに依存。予測freeze、元キャッシュの出典、追加実推論、評価、実行コード、検証ログを保存する。
+- 再開ではこのsession-resultを読む。旧session-handoffは初回再開前の記録なので現在のGPU/CPU状態には使わない。
+  GPU jobのsubmission_unknownを未受付扱いに変更せず、未確認submitの再送を行わない。
+
+保存済み実スコアでのモデル合成の改善
+- .lab-output/sku-baseline-ablation-20261012-v2 に5方式の予測・全83件のgate・出典・採点を保存。
+  元CPU測定のJEV/NLIの実スコアを使用。追加推論は0。モデル・原条件・元ラベル・閾値は変更しない。
+  80共有条件は従来のproduct-top3-JEVを維持し、非共有54条件のモデルの使い分けだけを比較した。
+  全方式のgateを先にfreezeしてから、同じ確定73件の既存機械ラベルを読む。
+
+非共有条件の方式        TP FP FN TN  正解AU行  別行誤採用
+従来fusion              27  8 28 10      27       0
+JEVのみ                 30  8 25 10      30       0
+NLIのみ                 27  1 28 17      27       0
+forward JEV/reverse NLI  27  1 28 17      27       0
+forward NLI/reverse JEV  28  1 27 17      28       0
+自分側残余ありNLI/他JEV 28  1 27 17      28       0
+
+有力な開発候補: genuine one_sided共有はtop3-JEV、非共有forwardはNLI、reverseはJEV。
+旧誤り44=TP10/FP1/FN22/TN11、新dev26=TP18/FP0/FN5/TN3、旧対照3=TP0/FP0/FN0/TN3。
+従来から誤採用7件を除き、新devの正解1件を回収。従来の正解27件の回帰0。
+残余で使い分けた方式も同じ数値だが、上流の分解metadataに依存する。方向別方式を次の比較基準にする。
+価格・在庫を同一性証拠にせず、同一AU行で全条件を満たす二値出力を維持。
+残る誤採用は毛布セット1件。取りこぼし27件が残る。セット構成・購入オプション・placeholderの問題は未解決。
+既読devで検討した開発結果なので、一般精度・独立test・本番利用の検証とは扱わない。
+次はこの候補を別の凍結入力で検証し、SKU全体のセット構成を照合する。独立testを開発材料にしない。
+
+最終検証: 新規追加11テスト成功。初回関連79テストも成功。
+required test_lab* 1111件、assertion failure 0、旧資料/環境不足error 11、skip 37。完全成功ではない。
+検証ログは追加ZIPの sku-keyword-filter-resume-20261012-v1/required-tests-final.log。
