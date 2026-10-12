@@ -156,6 +156,39 @@ class ProductConditionSharingContracts(unittest.TestCase):
             with self.assertRaises(ValueError):
                 build(values, docs, bindings, {**contract, field: changed})
 
+    def test_mixed_stock_retention_requires_exact_row_policy_audit_and_keeps_onesided_scope(self):
+        values, docs, bindings, contract, _ = fixture()
+        mixed = {**contract,
+            "statement": ("AU one_sided source proof; only Rakuten one_sided with null AU axis is eligible "
+                          "to share; all other and reverse requirements remain row-specific."),
+            "sold_out_rows_excluded_upstream": False,
+            "row_policy_audit": {"schema_version": "mixed-real-gpu-sku-inputs-v1",
+                "row_policy": "all captured stockList cells, as in the pinned producer; stock is audit-only",
+                "all_captured_rows_retained": True, "stock_is_identity_evidence": False}}
+        lookup = {value["request_id"]: value for value in values}
+        self.assertEqual(S._validate_contract(mixed, lookup), set(mixed["eligible_forward_request_ids"]))
+        plan = build(values, docs, bindings, mixed)
+        self.assertEqual(len(plan["groups"]), 1)
+        self.assertEqual(set(plan["groups"][0]["request_ids"]), set(mixed["eligible_forward_request_ids"]))
+        self.assertEqual(len(plan["passthrough_request_ids"]), len(values) - len(mixed["eligible_forward_request_ids"]))
+
+    def test_mixed_stock_retention_rejects_missing_or_inaccurate_audit(self):
+        values, docs, bindings, contract, _ = fixture()
+        statement = "only Rakuten one_sided with null AU axis is eligible to share; all other and reverse requirements remain row-specific"
+        good = {"schema_version": "mixed-real-gpu-sku-inputs-v1",
+            "row_policy": "all captured stockList cells, as in the pinned producer; stock is audit-only",
+            "all_captured_rows_retained": True, "stock_is_identity_evidence": False}
+        for audit in (None, {**good, "all_captured_rows_retained": False},
+                      {**good, "stock_is_identity_evidence": True}, {**good, "row_policy": "row filtering occurred"}):
+            modified = {**contract, "statement": statement, "sold_out_rows_excluded_upstream": False}
+            if audit is not None:
+                modified["row_policy_audit"] = audit
+            with self.assertRaisesRegex(ValueError, "row-policy audit"):
+                build(values, docs, bindings, modified)
+        with self.assertRaisesRegex(ValueError, "one_sided source scope"):
+            build(values, docs, bindings, {**contract, "statement": "share all options",
+                "sold_out_rows_excluded_upstream": False, "row_policy_audit": good})
+
     def test_product_identity_axis_ordered_options_and_document_identity_isolate_groups(self):
         doc = document()
         other = document("fixed-au:other", "999000002")

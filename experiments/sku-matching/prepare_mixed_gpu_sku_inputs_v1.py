@@ -38,6 +38,8 @@ DEFAULT_MEMBERSHIP = ROOT / ".lab-output/sku-luna-mixed-gpu-selection-20261012-v
 DEFAULT_GENERIC = ROOT / ".lab-output/sku-generic-model-inputs-20261010-v2"
 DEFAULT_V7 = ROOT / ".lab-output/sku-claude-v7-integration-review-20261012-v1"
 DEFAULT_NOVEL = ROOT / ".lab-output/sku-full-novel-prep-20261011-v1"
+DEFAULT_FROZEN_SHARE = ROOT / ".lab-output/sku-claude-dev-input-share-20261012-v1/20261012-sku-independent-real-eval-v2-v3-token-inputs.zip"
+FROZEN_SHARE_SHA256 = "db2815a3d5c726e45f996ad07e73cdcf1cdff0610de53ad84af8a4a0a880488f"
 NAMES = ("documents.jsonl", "requests.jsonl", "tasks.jsonl", "row_plans.jsonl", "case_plans.jsonl")
 DESCRIPTION_FIELDS = ("itemComment", "extraItemComment", "extraItemCommentWithVideo", "detailComment", "detailLinkName")
 
@@ -250,21 +252,315 @@ def archive_jsonl(zipped, member):
     return [json.loads(line) for line in zipped.read(member).splitlines() if line.strip()]
 
 
-def dev_group(store, membership, case):
-    archive = next(path for path in store.archives if path.resolve() == (store.root / membership["source_archive"]).resolve())
-    zipped = store.archives[archive]
-    case_member = membership["source_case_ref"]["member"]
-    run = case_member.split("/run-")[1].split("/")[0]
-    parent = case_member.split("/run-")[0]
-    member = parent + f"/groups-{run}/groups.jsonl"
-    groups = [group for group in archive_jsonl(zipped, member) if group.get("dossier_id") == case["dossier_id"]]
-    if len(groups) != 1 or groups[0].get("split") != "dev" or groups[0].get("excluded"):
+def frozen_cohort_paths(root, source_cohort):
+    versions = {"independent_real_eval_v2": "v2", "independent_real_eval_v3": "v3"}
+    if source_cohort not in versions:
+        raise ValueError("unsupported frozen independent source cohort")
+    version = versions[source_cohort]
+    base = Path(root) / f".lab-output/sku-independent-real-20261011/eval-{version}"
+    return {"version": version, "inputs": base / "run-token/inputs",
+        "groups": base / "groups-token/groups.jsonl",
+        "sku_arrays": base / ("token-pairs-v2/au_product_sku_arrays.jsonl" if version == "v2"
+                               else "token-pairs/au_product_sku_arrays.jsonl")}
+
+
+def frozen_v7_align_prefix(version):
+    if version not in {"v2", "v3"}:
+        raise ValueError("unsupported frozen v7 source version")
+    return f".lab-output/sku-independent-real-20261011/eval-{version}/align-v7-token/align/"
+
+
+def frozen_record_at_ref(root, ref):
+    path = Path(root) / normalized_path(ref["member"])
+    with path.open("rb") as stream:
+        stream.seek(ref["byte_offset"])
+        raw = stream.readline().rstrip(b"\r\n")
+    value = json.loads(raw)
+    return value, raw, path
+
+
+def load_selected_frozen_inputs(membership, root, share_archive):
+    """Load only selected dev/diagnostic case rows and their product rows."""
+    share_archive = Path(share_archive)
+    if file_sha(share_archive) != FROZEN_SHARE_SHA256:
+        raise ValueError("frozen independent input share archive SHA differs")
+    sidecar = share_archive.with_suffix(".manifest.json")
+    sidecar_value = json.loads(sidecar.read_bytes())
+    if sidecar_value.get("sha256") != FROZEN_SHARE_SHA256:
+        raise ValueError("frozen independent input share manifest SHA differs")
+    input_hashes = {str(share_archive.resolve()): FROZEN_SHARE_SHA256,
+        str(sidecar.resolve()): file_sha(sidecar)}
+    selected = {}
+    for member in membership:
+        for entry in member["memberships"]:
+            cohort = entry.get("source_cohort")
+            if cohort not in {"independent_real_eval_v2", "independent_real_eval_v3"}:
+                continue
+            ref = entry["source_case_ref"]
+            case, raw, case_path = frozen_record_at_ref(root, ref)
+            if case.get("case_id") != member["case_id"] or case != entry["original_case"]:
+                raise ValueError("selected membership case differs from frozen case source")
+            if file_sha(case_path) != ref["member_sha256"]:
+                raise ValueError("frozen case source file SHA differs")
+            source = selected.setdefault(cohort, {"cases": {}, "case_raw": {}, "products": {}, "links": {},
+                "paths": frozen_cohort_paths(root, cohort)})
+            if case["case_id"] in source["cases"]:
+                raise ValueError("selected frozen case is duplicated")
+            source["cases"][case["case_id"]] = case
+            source["case_raw"][case["case_id"]] = raw
+            source["links"][case["case_id"]] = {"case_ref": {**ref, "sha256": hashlib.sha256(raw).hexdigest()},
+                "source_archive": entry["source_archive"], "source_archive_sha256": entry["source_archive_sha256"]}
+
+    for cohort, source in selected.items():
+        paths = source["paths"]
+        input_dir = paths["inputs"]
+        manifest_path, freeze_path = input_dir / "manifest.json", input_dir.parent / "freeze.json"
+        manifest = json.loads(manifest_path.read_bytes())
+        freeze = json.loads(freeze_path.read_bytes())
+        if manifest.get("labels_read") is not False or freeze.get("labels_read_before_freeze") is not False:
+            raise ValueError("frozen independent inputs do not explicitly exclude labels")
+        relevant = {"cases.jsonl": input_dir / "cases.jsonl", "products.jsonl": input_dir / "products.jsonl"}
+        output_hashes = manifest.get("outputs_sha256", {})
+        freeze_hashes = {normalized_path(name): digest for name, digest in freeze.get("sha256", {}).items()}
+        for name, path in relevant.items():
+            actual = file_sha(path)
+            if output_hashes.get("inputs/" + name) != actual:
+                raise ValueError("frozen input manifest output SHA differs: " + name)
+            expected = freeze_hashes.get(normalized_path(path.relative_to(root)))
+            if expected != actual:
+                raise ValueError("frozen input freeze SHA differs: " + name)
+            input_hashes[str(path.resolve())] = actual
+        manifest_sha = file_sha(manifest_path)
+        if freeze_hashes.get(normalized_path(manifest_path.relative_to(root))) != manifest_sha:
+            raise ValueError("frozen input manifest freeze SHA differs")
+        input_hashes[str(manifest_path.resolve())] = manifest_sha
+        input_hashes[str(freeze_path.resolve())] = file_sha(freeze_path)
+        product_path = relevant["products.jsonl"]
+        wanted = {case["dossier_id"] for case in source["cases"].values()}
+        found = {}
+        product_raw = {}
+        for line_number, raw_line in enumerate(product_path.open("rb"), 1):
+            if not any(dossier.encode("utf-8") in raw_line for dossier in wanted):
+                continue
+            product = json.loads(raw_line)
+            dossier = product.get("dossier_id")
+            if dossier in wanted:
+                if dossier in found:
+                    raise ValueError("selected frozen product is duplicated")
+                found[dossier] = product
+                product_raw[dossier] = raw_line.rstrip(b"\r\n")
+                product_ref = {
+                        "path": str(product_path.resolve()), "line": line_number,
+                        "line_sha256": hashlib.sha256(raw_line.rstrip(b"\r\n")).hexdigest(),
+                        "input_manifest_sha256": manifest_sha}
+                for case_id, case in source["cases"].items():
+                    if case["dossier_id"] == dossier:
+                        source["links"][case_id]["product_ref"] = product_ref
+        if found.keys() != wanted:
+            raise ValueError("not every selected frozen case has its original product")
+        source["products"] = found
+        source["product_raw"] = product_raw
+        groups_path = paths["groups"]
+        group_sha = file_sha(groups_path)
+        input_hashes[str(groups_path.resolve())] = group_sha
+        groups_by_dossier = {}
+        dossier_needles = {case["dossier_id"] for case in source["cases"].values()}
+        for raw_line in groups_path.open("rb"):
+            if not any(dossier.encode("utf-8") in raw_line for dossier in dossier_needles):
+                continue
+            group = json.loads(raw_line)
+            if group.get("dossier_id") in dossier_needles:
+                groups_by_dossier.setdefault(group["dossier_id"], []).append(group)
+        for case_id, case in source["cases"].items():
+            groups = groups_by_dossier.get(case["dossier_id"], [])
+            if len(groups) != 1 or groups[0].get("split") != "dev" or groups[0].get("excluded"):
+                raise ValueError("selected frozen case is not a unique eligible dev group")
+            source["links"][case_id]["group_ref"] = {"path": str(groups_path.resolve()),
+                "sha256": group_sha, "group": groups[0]}
+        sku_path = paths["sku_arrays"]
+        sku_sha = file_sha(sku_path)
+        input_hashes[str(sku_path.resolve())] = sku_sha
+        wanted_au = {str(case["au_product_id"]) for case in source["cases"].values()}
+        sku_records, sku_raw = {}, {}
+        for line_number, raw_line in enumerate(sku_path.open("rb"), 1):
+            if not any(product_id.encode("ascii") in raw_line for product_id in wanted_au):
+                continue
+            record = json.loads(raw_line)
+            product_id = str(record.get("au_product_id", ""))
+            if product_id in wanted_au:
+                if product_id in sku_records:
+                    raise ValueError("selected AU SKU source array is duplicated")
+                sku_records[product_id] = record
+                sku_raw[product_id] = raw_line.rstrip(b"\r\n")
+                sku_ref = {
+                        "path": str(sku_path.resolve()), "line": line_number,
+                        "line_sha256": hashlib.sha256(raw_line.rstrip(b"\r\n")).hexdigest(),
+                        "file_sha256": sku_sha}
+                for case_id, case in source["cases"].items():
+                    if str(case["au_product_id"]) == product_id:
+                        source["links"][case_id]["sku_array_ref"] = sku_ref
+        source["sku_records"] = sku_records
+        source["sku_raw"] = sku_raw
+        source["manifest_sha256"] = manifest_sha
+    return selected, input_hashes
+
+
+def frozen_product_to_model(frozen, case):
+    """Map the byte-frozen token input into the existing choice-gate shape."""
+    if frozen.get("dossier_id") != case.get("dossier_id"):
+        raise ValueError("frozen case/product dossier differs")
+    au_source, rak_source = frozen["au_product"], frozen["rakuten_product"]
+    if str(au_source.get("product_id")) != str(case.get("au_product_id")):
+        raise ValueError("frozen case/product AU ID differs")
+    if rak_source.get("url") != case.get("rakuten_selected", {}).get("url"):
+        raise ValueError("frozen case/product Rakuten URL differs")
+    if not frozen.get("au_rows"):
+        raise ValueError("frozen product has no complete AU SKU rows")
+    descriptions = lambda lines: [{"text": row["text"], "text_kind": "derived_visible_html_text",
+        "source_ref": deepcopy(row["span"]), "source_field": row.get("source_field"),
+        "source_line": row.get("source_line"), "scope_tag": row.get("scope_tag")} for row in lines]
+    return {"dossier_id": frozen["dossier_id"],
+        "au": {"product_id": str(au_source["product_id"]), "title": au_source.get("title"),
+            "title_source": deepcopy(au_source.get("title_span")), "axis_names": deepcopy(au_source.get("axis_names")),
+            "rows": deepcopy(frozen["au_rows"]), "descriptions": descriptions(frozen.get("au_description_lines", [])),
+            "iframe_urls": [], "purchase_options": [{"text": row["text"], "text_kind": "literal_source_value",
+                "source_ref": deepcopy(row.get("span"))} for row in frozen.get("au_purchase_option_lines", [])]},
+        "rakuten": {"url": rak_source.get("url"), "title": rak_source.get("title"),
+            "title_source": deepcopy(rak_source.get("title_span")),
+            "descriptions": descriptions(frozen.get("rakuten_description_lines", [])), "iframe_urls": []}}
+
+
+def validate_frozen_sku_rows(frozen, sku_record, case):
+    """Check source row identities and preserve the captured stock matrix."""
+    if sku_record is None:
+        return ["options_capture_missing"]
+    cells = sku_record.get("au_sku_cells_raw")
+    if not isinstance(cells, list) or sku_record.get("au_sku_cells_count") != len(cells):
+        raise ValueError("frozen AU SKU array cell count is inconsistent")
+    rows = frozen.get("au_rows") or []
+    if len(rows) != len(cells):
+        raise ValueError("frozen AU rows differ from captured complete SKU array")
+    for row, cell in zip(rows, cells, strict=True):
+        grain = cell.get("source_grain") or {}
+        expected_key = f"au:{case['au_product_id']}:{grain.get('sku_id')}:{grain.get('row_index')}:{grain.get('column_index')}"
+        if row.get("row_key") != expected_key:
+            raise ValueError("frozen AU row key differs from captured v7 row identity")
+        expected_axes = [axis for axis in (cell.get("axes_raw") or [])
+                         if axis.get("axis_name_raw") or axis.get("value_raw")]
+        actual_axes = [{"axis_name_raw": axis.get("axis_name"), "value_raw": axis.get("value")}
+                       for axis in row.get("axes", [])]
+        if actual_axes != expected_axes:
+            raise ValueError("frozen AU row axes differ from complete captured SKU array")
+    options = sku_record.get("au_product_options_raw")
+    if not isinstance(options, dict):
+        return ["options_capture_missing"]
+    return []
+
+
+def validate_population_coverage(membership, output_cases, case_plans, row_plans, tasks, requests):
+    """Require an exact, internally bound replay of every requested case."""
+    expected = {row["case_id"]: row for row in membership}
+    if len(expected) != len(membership):
+        raise ValueError("requested membership has duplicate case ids")
+    actual_cases = {row["case_id"]: row for row in output_cases}
+    plans = {row["case_id"]: row for row in case_plans}
+    if len(actual_cases) != len(output_cases) or actual_cases.keys() != expected.keys():
+        raise ValueError("prepared case coverage differs from requested membership")
+    if len(plans) != len(case_plans) or plans.keys() != expected.keys():
+        raise ValueError("case plan coverage differs from requested membership")
+
+    primary_expected = 0
+    for case_id, member in expected.items():
+        eligible = all(entry.get("primary_score_eligible", False) for entry in member["memberships"])
+        case = actual_cases[case_id]
+        if case.get("memberships") != member.get("memberships"):
+            raise ValueError("prepared case membership differs: " + case_id)
+        if case.get("selection_primary_score_eligible") != eligible:
+            raise ValueError("prepared primary/diagnostic membership differs: " + case_id)
+        primary_expected += int(eligible)
+        expected_rows = plans[case_id].get("candidate_row_keys")
+        if not isinstance(expected_rows, list) or len(set(expected_rows)) != len(expected_rows):
+            raise ValueError("case plan candidate rows are missing or duplicated: " + case_id)
+
+    rows_by_case = defaultdict(list)
+    row_keys = set()
+    for row in row_plans:
+        identity = (row["case_id"], row["au_row_key"])
+        if row["case_id"] not in expected or identity in row_keys:
+            raise ValueError("row plan is unrequested or duplicated")
+        row_keys.add(identity)
+        rows_by_case[row["case_id"]].append(row["au_row_key"])
+    for case_id, plan in plans.items():
+        if set(rows_by_case[case_id]) != set(plan["candidate_row_keys"]):
+            raise ValueError("row plan coverage differs from candidate rows: " + case_id)
+
+    request_by_id = {row["request_id"]: row for row in requests}
+    task_by_id = {row["task_id"]: row for row in tasks}
+    if len(request_by_id) != len(requests) or len(task_by_id) != len(tasks):
+        raise ValueError("duplicate request or task identity")
+    if any(task.get("case_id") not in expected or
+           (task.get("case_id"), task.get("au_row_key")) not in row_keys or
+           task.get("request_id") not in request_by_id for task in tasks):
+        raise ValueError("task is not bound to a requested case, row, and request")
+    expected_bindings = set()
+    for row in row_plans:
+        for binding in row.get("condition_bindings", []):
+            if binding.get("kind") == "model":
+                expected_bindings.add(binding.get("task_id"))
+    if expected_bindings != task_by_id.keys():
+        raise ValueError("model task coverage differs from row-plan bindings")
+    bound_request_ids = {task["request_id"] for task in tasks}
+    if bound_request_ids != request_by_id.keys():
+        raise ValueError("request coverage differs from model tasks")
+    return {"requested_case_count": len(expected), "primary_membership_case_count": primary_expected,
+            "diagnostic_membership_case_count": len(expected) - primary_expected,
+            "covered_case_count": len(actual_cases), "covered_row_plan_count": len(row_plans),
+            "covered_task_count": len(tasks), "covered_request_count": len(requests)}
+
+
+def write_non_ready(output_dir, membership, failures, input_hashes, reason, coverage_errors=()):
+    """Persist useful diagnostics while making an incomplete prep unusable."""
+    coverage_errors = list(coverage_errors)
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=False)
+    write_rows(output_dir / "membership.jsonl", membership)
+    write_rows(output_dir / "failures.jsonl", failures)
+    write_rows(output_dir / "coverage-errors.jsonl", [{"error": str(error)} for error in coverage_errors])
+    manifest = {"schema_version": VERSION, "phase": "prepare", "input_ready": False,
+        "readiness_failure": reason, "labels_read": False, "labels_in_model_inputs": False,
+        "model_inference_run": False, "membership_case_count": len(membership),
+        "failure_count": len(failures), "coverage_error_count": len(coverage_errors),
+        "input_sha256": input_hashes,
+        "output_sha256": {name: file_sha(output_dir / name)
+            for name in ("membership.jsonl", "failures.jsonl", "coverage-errors.jsonl")}}
+    (output_dir / "manifest.json").write_bytes(encoded(manifest) + b"\n")
+    return manifest
+
+
+def write_raw_jsonl(path, lines):
+    with Path(path).open("xb") as stream:
+        for line in lines:
+            stream.write(line.rstrip(b"\r\n") + b"\n")
+
+
+def require_complete_population(output_dir, membership, output_cases, case_plans, row_plans, tasks, requests,
+                                failures, input_hashes):
+    if failures:
+        write_non_ready(output_dir, membership, failures, input_hashes, "source_reconstruction_failures")
+        raise RuntimeError(f"mixed input preparation is not ready: {len(failures)} source reconstruction failure(s)")
+    try:
+        return validate_population_coverage(membership, output_cases, case_plans, row_plans, tasks, requests)
+    except (KeyError, TypeError, ValueError) as error:
+        write_non_ready(output_dir, membership, failures, input_hashes, "population_coverage_mismatch", [error])
+        raise RuntimeError("mixed input preparation is not ready: " + str(error)) from error
+
+
+def dev_group(source, case):
+    group_ref = source["links"][case["case_id"]]["group_ref"]
+    group = group_ref["group"]
+    if group.get("split") != "dev" or group.get("excluded"):
         raise ValueError("independent selected case is not a unique eligible sidecar dev group")
-    number = archive_jsonl(zipped, case_member)[membership["source_case_ref"]["line"] - 1]
-    if number != case:
-        raise ValueError("selected original case differs from captured archive line")
-    return {"original_group": groups[0], "source_ref": {"archive": str(archive.resolve()),
-        "archive_sha256": file_sha(archive), "member": member, "member_sha256": sha(zipped.read(member))}}
+    return {"original_group": group, "source_ref": group_ref}
 
 
 def add_new_plans(case, product, decision, handoffs, provenance, documents, requests, tasks, row_plans):
@@ -391,7 +687,8 @@ def add_new_plans(case, product, decision, handoffs, provenance, documents, requ
         "all_pending_rows_received": True, "production_adoption_allowed": False}
 
 
-def prepare(membership_path, output_dir, generic_dir=DEFAULT_GENERIC, v7_dir=DEFAULT_V7, novel_dir=DEFAULT_NOVEL, root=ROOT):
+def prepare(membership_path, output_dir, generic_dir=DEFAULT_GENERIC, v7_dir=DEFAULT_V7, novel_dir=DEFAULT_NOVEL,
+            root=ROOT, frozen_share_archive=DEFAULT_FROZEN_SHARE):
     output_dir, root = Path(output_dir), Path(root)
     if output_dir.exists():
         raise FileExistsError("refusing to overwrite frozen mixed inputs")
@@ -399,13 +696,14 @@ def prepare(membership_path, output_dir, generic_dir=DEFAULT_GENERIC, v7_dir=DEF
     ids = {row["case_id"] for row in membership}
     if len(ids) != len(membership):
         raise ValueError("mixed membership has duplicate case ids")
+    frozen_sources, frozen_hashes = load_selected_frozen_inputs(membership, root, frozen_share_archive)
     archive_paths = {root / entry["source_archive"] for row in membership for entry in row["memberships"] if entry.get("source_archive")}
     store = CapturedStore(root, sorted(archive_paths))
     for row in membership:
         for entry in row["memberships"]:
             if entry.get("source_archive") and file_sha(root / entry["source_archive"]) != entry["source_archive_sha256"]:
                 raise ValueError("membership source archive SHA differs")
-    inputs = {str(Path(membership_path).resolve()): file_sha(membership_path)}
+    inputs = {str(Path(membership_path).resolve()): file_sha(membership_path), **frozen_hashes}
     generic_cases = {row["case_id"]: row for row in read_rows(Path(generic_dir) / "cases.jsonl")}
     generic_products = {row["dossier_id"]: row for row in read_rows(Path(generic_dir) / "products.jsonl")}
     for name in ("cases.jsonl", "products.jsonl", "manifest.json"):
@@ -457,35 +755,42 @@ def prepare(membership_path, output_dir, generic_dir=DEFAULT_GENERIC, v7_dir=DEF
                 audit = {"raw_file": au_raw, "sha256": sha(raw), "item_info_raw": info,
                     "row_policy": "original frozen product rows copied without pruning"}
             else:
-                original = deepcopy(entry["original_case"])
-                group = dev_group(store, entry, original)
+                if entry.get("source_cohort") not in frozen_sources:
+                    raise ValueError("selected independent case lacks byte-frozen source inputs")
+                frozen_source = frozen_sources[entry["source_cohort"]]
+                original = deepcopy(frozen_source["cases"][identity])
+                if original != entry["original_case"]:
+                    raise ValueError("selected membership case differs from byte-frozen source")
+                group = dev_group(frozen_source, original)
                 case = GENERIC.make_case(original, entry["source_cohort"])
                 # GENERIC.make_case intentionally removes transport metadata.
                 # The mixed host artifact retains the original fixed row/URL
                 # identity fields as well as the choice runner's normal fields.
                 case["rakuten"] = deepcopy(original["rakuten_selected"])
                 case["original_split"], case["split"], case["group_id"] = original["split"], "dev", group["original_group"]["group_id"]
-                cohort = "eval-v3" if entry["source_cohort"].endswith("v3") else "eval-v2"
-                prefix = f".lab-output/sku-independent-real-20261011/{cohort}/align-v7-token/align/"
+                cohort = frozen_source["paths"]["version"]
+                prefix = frozen_v7_align_prefix(cohort)
                 decision_member, handoff_member = prefix + "decisions.jsonl", prefix + "handoff.jsonl"
                 decisions = [finite(json.loads(line)) for line in payload[decision_member].splitlines() if json.loads(line).get("case_id") == identity]
                 handoffs = [finite(json.loads(line)) for line in payload[handoff_member].splitlines() if json.loads(line).get("case_id") == identity]
                 if len(decisions) != 1:
                     raise ValueError("selected independent case lacks one pinned v7 decision")
-                au_paths = {h["au_product_source"]["raw_file"] for h in handoffs}
-                if not au_paths:
-                    names = [name for zipped in store.archives.values() for name in zipped.namelist()
-                             if name.endswith("/" + case["au_product_id"] + "-item.json")]
-                    if len(set(names)) != 1:
-                        raise ValueError("captured fixed AU item path is missing or ambiguous")
-                    au_paths = {names[0]}
-                if len({normalized_path(path) for path in au_paths}) != 1:
-                    raise ValueError("handoff names multiple fixed AU captures")
-                au_raw = next(iter(au_paths))
-                product, audit, flags = reconstruct_product(store, original, au_raw)
+                frozen_product = deepcopy(frozen_source["products"][case["dossier_id"]])
+                frozen_sku = deepcopy(frozen_source["sku_records"].get(str(case["au_product_id"])))
+                product = frozen_product_to_model(frozen_product, original)
+                flags = validate_frozen_sku_rows(frozen_product, frozen_sku, original)
+                capture_reference(store, [original, frozen_product, frozen_sku or {}])
+                verify_record_spans(store, [original, frozen_product, frozen_sku or {}])
+                frozen_link = frozen_source["links"][identity]
+                audit = {"source_kind": "byte_frozen_token_input", "frozen_source_product": frozen_product,
+                    "frozen_au_sku_array_record": frozen_sku,
+                    "row_policy": "all original frozen AU SKU rows preserved; source stock array retained when present"}
                 provenance = {"archive": str(archive.resolve()), "archive_sha256": ARCHIVE_SHA256,
                     "member": decision_member, "member_sha256": sha(payload[decision_member]),
-                    "input_case_source": deepcopy(entry["source_case_ref"]), "labels_read": False}
+                    "input_case_source": frozen_link["case_ref"], "input_product_source": frozen_link["product_ref"],
+                    "input_group_source": frozen_link["group_ref"], "input_sku_array_source": frozen_link.get("sku_array_ref"),
+                    "input_manifest_sha256": frozen_source["manifest_sha256"],
+                    "shared_archive_sha256": FROZEN_SHARE_SHA256, "labels_read": False}
                 plans[identity] = add_new_plans(case, product, decisions[0], handoffs, provenance, docs, requests,
                     combined["tasks.jsonl"], combined["row_plans.jsonl"])
                 combined["case_plans.jsonl"].append(plans[identity])
@@ -507,14 +812,12 @@ def prepare(membership_path, output_dir, generic_dir=DEFAULT_GENERIC, v7_dir=DEF
         except (KeyError, ValueError, OSError, IndexError, TypeError) as error:
             failures.append({"case_id": identity, "source_incomplete": True, "primary_score_eligible": False,
                 "error_type": type(error).__name__, "error": str(error), "original_membership": member})
-    if failures:
-        # A failed case's original membership remains available for diagnosis.
-        # It cannot acquire a fabricated candidate, source, or task.
-        failed = {failure["case_id"] for failure in failures}
-        for name in ("tasks.jsonl", "row_plans.jsonl", "case_plans.jsonl"):
-            combined[name] = [value for value in combined[name] if value["case_id"] not in failed]
+    # New plans populate the canonical request map; refresh the row list before
+    # coverage validation so every task is checked against the full population.
     selected_request_ids = {task["request_id"] for task in combined["tasks.jsonl"]}
     combined["requests.jsonl"] = [value for key, value in requests.items() if key in selected_request_ids]
+    coverage = require_complete_population(output_dir, membership, outputs_cases, combined["case_plans.jsonl"],
+        combined["row_plans.jsonl"], combined["tasks.jsonl"], combined["requests.jsonl"], failures, inputs)
     selected_document_ids = {request["target_document_id"] for request in combined["requests.jsonl"]}
     combined["documents.jsonl"] = [value for key, value in docs.items() if key in selected_document_ids]
     bindings = defaultdict(list)
@@ -560,9 +863,31 @@ def prepare(membership_path, output_dir, generic_dir=DEFAULT_GENERIC, v7_dir=DEF
         "normalized_request": deepcopy(requests[task["request_id"]]), "labels_read": False,
         "whole_values_and_full_choices_preserved": True, "numeric_core_is_proof": False} for task in combined["tasks.jsonl"]]
     output_dir.mkdir(parents=True, exist_ok=False)
+    frozen_case_lines, frozen_product_lines, frozen_sku_lines = [], {}, {}
+    frozen_links = []
+    for member in membership:
+        entry = next((value for value in member["memberships"]
+                      if value.get("source_cohort") in frozen_sources), None)
+        if entry is None:
+            continue
+        source = frozen_sources[entry["source_cohort"]]
+        case_id = member["case_id"]
+        case = source["cases"][case_id]
+        frozen_case_lines.append(source["case_raw"][case_id])
+        dossier = case["dossier_id"]
+        frozen_product_lines.setdefault(dossier, source["product_raw"][dossier])
+        sku_id = str(case["au_product_id"])
+        if sku_id in source["sku_raw"]:
+            frozen_sku_lines.setdefault(sku_id, source["sku_raw"][sku_id])
+        frozen_links.append({"case_id": case_id, "dossier_id": dossier,
+            "source_cohort": entry["source_cohort"], **source["links"][case_id]})
+    write_raw_jsonl(output_dir / "frozen-source-cases.jsonl", frozen_case_lines)
+    write_raw_jsonl(output_dir / "frozen-source-products.jsonl", frozen_product_lines.values())
+    write_raw_jsonl(output_dir / "frozen-au-sku-arrays.jsonl", frozen_sku_lines.values())
     extra = {"gpu-cases.jsonl": outputs_cases, "model-tasks.jsonl": model_tasks, "products.jsonl": list(products.values()),
         "membership.jsonl": membership, "failures.jsonl": failures, "baseline-predictions.jsonl": baseline,
-        "blocks.jsonl": blocks, "excluded-blocks.jsonl": excluded, "retrieval-requests.jsonl": retrieval}
+        "blocks.jsonl": blocks, "excluded-blocks.jsonl": excluded, "retrieval-requests.jsonl": retrieval,
+        "frozen-input-links.jsonl": frozen_links}
     for name, values in {**combined, **extra}.items():
         write_rows(output_dir / name, values)
     raw_registry = []
@@ -576,7 +901,8 @@ def prepare(membership_path, output_dir, generic_dir=DEFAULT_GENERIC, v7_dir=DEF
         raw_registry.append({"raw_file": rel, "original_aliases": sorted(store.aliases[rel]), **spec,
             "bundle_file": "raw-captures/" + name})
     write_rows(output_dir / "raw-source-registry.jsonl", raw_registry)
-    manifest = {"schema_version": VERSION, "phase": "prepare", "created_at_utc": datetime.now(timezone.utc).isoformat(),
+    manifest = {"schema_version": VERSION, "phase": "prepare", "input_ready": True,
+        "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "upstream_head": UPSTREAM_HEAD, "adapter_sha256": file_sha(Path(__file__)), "synthetic": False,
         "labels_read": False, "labels_in_model_inputs": False, "model_inference_run": False,
         "production_adoption_allowed": False, "development_only": True, "independent_test": False,
@@ -585,7 +911,11 @@ def prepare(membership_path, output_dir, generic_dir=DEFAULT_GENERIC, v7_dir=DEF
         "baseline_predictions_are_unevaluated": True, "baseline_must_be_regenerated_for_all_requests": True,
         "whole_values_and_alternatives_preserved": True, "candidate_url_routing": False,
         "upstream_row_state_contract": "pinned aggregate counts/top row plus original pending handoffs; omitted identities are never fabricated",
+        "row_policy_audit": {"schema_version": VERSION,
+            "row_policy": "all captured stockList cells, as in the pinned producer; stock is audit-only",
+            "all_captured_rows_retained": True, "stock_is_identity_evidence": False},
         "membership_case_count": len(membership), "case_count": len(combined["case_plans.jsonl"]),
+        **coverage,
         "primary_score_eligible_case_count": sum(case["primary_score_eligible"] for case in outputs_cases),
         "cohort_case_counts": dict(Counter(case["cohort"] for case in outputs_cases)),
         "source_flag_counts": dict(Counter(flag for case in outputs_cases for flag in case["source_flags"])),
@@ -596,7 +926,9 @@ def prepare(membership_path, output_dir, generic_dir=DEFAULT_GENERIC, v7_dir=DEF
         "document_count": len(combined["documents.jsonl"]), "block_count": len(blocks), "failure_count": len(failures),
         "input_sha256": inputs, "source_raw_sha256": {rel: spec["sha256"] for rel, spec in store.registry.items()},
         "raw_capture_output_sha256": {"raw-captures/" + path.name: file_sha(path) for path in raw_dir.iterdir()},
-        "output_sha256": {name: file_sha(output_dir / name) for name in (*combined, *extra, "raw-source-registry.jsonl")}}
+        "frozen_source_archive_sha256": FROZEN_SHARE_SHA256,
+        "output_sha256": {name: file_sha(output_dir / name) for name in (*combined, *extra, "raw-source-registry.jsonl",
+            "frozen-source-cases.jsonl", "frozen-source-products.jsonl", "frozen-au-sku-arrays.jsonl")}}
     (output_dir / "manifest.json").write_bytes(encoded(manifest) + b"\n")
     validate_inputs(output_dir)
     if any(file_sha(Path(path)) != digest for path, digest in inputs.items()):
@@ -610,9 +942,11 @@ def main():
     parser.add_argument("--generic", type=Path, default=DEFAULT_GENERIC)
     parser.add_argument("--v7", type=Path, default=DEFAULT_V7)
     parser.add_argument("--novel", type=Path, default=DEFAULT_NOVEL)
+    parser.add_argument("--frozen-share-archive", type=Path, default=DEFAULT_FROZEN_SHARE)
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
-    result = prepare(args.membership, args.out, args.generic, args.v7, args.novel)
+    result = prepare(args.membership, args.out, args.generic, args.v7, args.novel,
+                     frozen_share_archive=args.frozen_share_archive)
     print(json.dumps({key: result[key] for key in ("case_count", "request_count", "task_count", "host_au_row_count", "source_flag_counts", "failure_count")}, ensure_ascii=False))
 
 

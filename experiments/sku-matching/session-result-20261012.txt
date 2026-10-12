@@ -1,0 +1,67 @@
+2026-10-12 再開結果（開始コミット fbc91b9）
+
+ブランチ: codex-sku-generic-model-gates-20261010
+作業場所: /workspace/Searching_Experiment-model-gates-20261010
+
+実データの復元と入力
+- 元引き継ぎZIPはCRCと全503項目のbyte/SHAを確認して復元した。
+- Claudeの追加共有を upstream 1a0b4beba4440ba20f0dab9f635c22b3877a6a79 から取得した。
+  20261012-sku-independent-real-eval-v2-v3-token-inputs.zip
+  SHA256 db2815a3d5c726e45f996ad07e73cdcf1cdff0610de53ad84af8a4a0a880488f
+  全233原本項目のbyte/SHAとCRCを照合。products、cases、group、購入オプション原本を復元した。
+- 有効な測定入力は .lab-output/sku-mixed-gpu-prep-20261012-v5 のみ。
+  主評価82件（旧誤り44、新dev31、旧対照7）と診断1件。134要求、137タスク、81候補行。
+  捕捉済みAU SKU全2333行を保持。在庫・価格は同一性の証拠にしない。
+  再構築失敗やmembershipの欠落では成功manifestを作らず、入力を拒否するよう修正した。
+- 真正なone_sided forwardだけを共有。80要求を29商品条件groupへ共有し、非共有・逆方向54要求も実推論した。
+  原値完全一致以外のcore/residualは自動証明にしていない。
+
+GPUとCPUの状態
+- private Dataset superbigzabuton/sku-mixed83-fp32-20261012-v1、version 1、Readyを確認した。
+- GPU Notebookのsubmitは1回だけ。HTTP 409で受付不明（submission_unknown）。
+  version未確定、status取得は403。リストに無いことやquota未変化を未受付の証明にはしていない。
+  再submit禁止。job.jsonと受付照合の証拠を保存した。GPU実測・速度改善は未確認。
+- ユーザーのCPU復帰指示に従い、固定モデルのCPU実測を完了した。
+  .lab-output/sku-mixed-cpu-run-20261012-v1、全体1084.241秒（約18分4秒）。
+  JEV・NLIはFP32、rerankerはINT8 ONNX CPUExecutionProvider。revisionと全モデルファイルSHAを照合。
+  新dev/reverseをplaceholderで採点せず、baseline全要求を新しく実推論してから商品共有の比較を行った。
+
+凍結後の評価（既存機械ラベル。人間gold・独立test・一般精度ではない）
+モデル・予測・4方式の採用判断をfreezeしてから、新devラベルを開いた。
+最初のfreezeと最終評価のdecisions.jsonlは4方式ともbyte一致。
+正解確定73件を採点。新dev未確定5件、旧対照の参照不足4件、診断1件は分母に含めない。
+最終評価: .lab-output/sku-mixed-cpu-evaluation-20261012-v4
+ラベル出典: .lab-output/sku-mixed-cpu-reference-routes-20261012-v2
+
+方式                    旧誤り44 TP/FP/FN/TN  新dev26 TP/FP/FN/TN  旧対照3 TP/FP/FN/TN
+baseline                0/12/32/0             17/1/6/2              0/0/0/3
+product-top1-jev         10/8/22/4             17/0/6/3              0/1/0/2
+product-top3-jev         10/7/22/5             17/0/6/3              0/1/0/2
+product-top3-verified    0/0/32/12             17/0/6/3              0/0/0/3
+
+top3-JEVの採用した正解AU行は27件、正解SKUでの別行誤採用0件。誤採用SKUは8件。
+旧誤り44件のtop3結果は旧CPU測定と同じだが、入力が違うので同入力の速度比較にはしない。
+NLI厳格方式は旧集合の正解を全除外するため、有用な改善とは扱わない。
+
+残る問題と別実験
+- 誤採用8件: セット枚数違い7、毛布セットの付属品違い1。
+  原条件はwhole-original reverseも含めて推論済み。数量条件が単に入力から欠落したわけではない。
+  検索キーワードや適用範囲未証明の説明をモデルが支持している。
+- 取りこぼし28件: 旧22、新dev6。68モデル条件のtask/request/予測/評価を確認し、欠落なし。
+  unknown35条件が採用を止めている。元条件・残余を勝手に除去してrecallを上げない。
+- dev6件の購入オプション原本は保存済みだが対象モデル文書に未投入。
+  配送・確認事項と商品構成、有料グランドシート、placeholder軸の扱いを今後の入力改善候補とする。
+- 初回測定は変更しない。検索キーワードと明示された説明ブロックだけを除外する別の開発実験を行う。
+  モデル・閾値・カテゴリ規則は変えない。既読devを使うため開発中の比較として報告する。
+
+検証
+- 今回の関連79テスト成功。
+- required test_lab*: 1100件、assertion failure 0、error 11、skip 37。完全成功ではない。
+  旧実験の不足fixture・任意Claude checkoutの不足を記録。今回の採用判断assertionの失敗はない。
+- モデル・入力・予測は実測中/実測後に変更していない。独立testラベルは開いていない。
+
+Claudeへの依頼
+追加共有は受領済みで、dev入力の再現に必要な新収集・新規モデル・カテゴリ規則の依頼はない。
+旧対照family4件の既存参照が生成済みなら、同じ凍結版のcase_idと原本SHA付きで共有してほしい。
+生成されていなければ、その事実だけでよい。新しいラベル作成や既存ラベル変更は依頼しない。
+詳細は claude-followup-20261012.txt。

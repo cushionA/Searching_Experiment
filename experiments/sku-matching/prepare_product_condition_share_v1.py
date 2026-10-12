@@ -18,6 +18,13 @@ DEFAULT_OUTPUT = ROOT / ".lab-output/sku-product-condition-share-20261011-v1"
 PREP_FILES = ("requests.jsonl", "documents.jsonl", "tasks.jsonl")
 NOVEL_FILE = "upstream_conditions.jsonl"
 STATEMENT = "AU product non-asymmetric conditions are fixed across size/color; sold-out SKU rows excluded upstream."
+MIXED_SCHEMA = "mixed-real-gpu-sku-inputs-v1"
+MIXED_ROW_POLICY_AUDIT = {"schema_version": MIXED_SCHEMA,
+    "row_policy": "all captured stockList cells, as in the pinned producer; stock is audit-only",
+    "all_captured_rows_retained": True, "stock_is_identity_evidence": False}
+MIXED_STATEMENT = ("AU product non-asymmetric conditions are fixed across size/color; captured AU SKU rows, "
+    "including sold-out rows, are retained and stock state is audit-only; only Rakuten one_sided with null AU axis "
+    "is eligible to share; all other and reverse requirements remain row-specific.")
 
 
 def sha_bytes(data: bytes) -> str:
@@ -219,11 +226,15 @@ def prepare(prepared_dir: Path, output_dir: Path, novel_prepared_dir: Path | Non
     scope = {"prepared_dir": str(prepared_dir.resolve()), "schema_version": manifest["schema_version"],
              "novel_prepared_dir": str(novel_prepared_dir.resolve()) if novel_prepared_dir else None,
              "novel_schema_version": novel_manifest.get("schema_version") if novel_manifest else None}
+    mixed_rows_retained = manifest.get("schema_version") == MIXED_SCHEMA
+    if mixed_rows_retained and manifest.get("row_policy_audit") != MIXED_ROW_POLICY_AUDIT:
+        raise ValueError("mixed input manifest lacks the exact captured-row policy audit")
     contract = {
         "basis": "user_asserted",
-        "statement": STATEMENT,
+        "statement": MIXED_STATEMENT if mixed_rows_retained else STATEMENT,
         "eligible_forward_request_ids": sorted(eligible),
-        "sold_out_rows_excluded_upstream": True,
+        "sold_out_rows_excluded_upstream": not mixed_rows_retained,
+        **({"row_policy_audit": dict(MIXED_ROW_POLICY_AUDIT)} if mixed_rows_retained else {}),
         "source_proof": [{"request_id": rid, "task_proofs": eligible[rid]} for rid in sorted(eligible)],
         "source_sha256": {"prepared": source_hashes, "novel_prepared": novel_hashes},
         "scope": scope,

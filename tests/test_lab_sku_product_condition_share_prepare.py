@@ -51,11 +51,13 @@ class ProductConditionSharePrepareTests(unittest.TestCase):
                            "axis_key": "サイズ", "raw_condition": {"value": value},
                            "source_ref": {"path": "source.jsonl", "line": 1}})
 
-    def freeze(self):
+    def freeze(self, schema_version="fixture-v1"):
         files = {"requests.jsonl": write_rows(self.prepared / "requests.jsonl", self.requests),
                  "documents.jsonl": write_rows(self.prepared / "documents.jsonl", [self.document]),
                  "tasks.jsonl": write_rows(self.prepared / "tasks.jsonl", self.tasks)}
-        manifest = {"schema_version": "fixture-v1", "output_sha256": {k: digest(v) for k, v in files.items()}}
+        manifest = {"schema_version": schema_version, "output_sha256": {k: digest(v) for k, v in files.items()}}
+        if schema_version == PREP.MIXED_SCHEMA:
+            manifest["row_policy_audit"] = dict(PREP.MIXED_ROW_POLICY_AUDIT)
         (self.prepared / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
 
     def test_only_all_one_sided_tasks_eligible_and_wanted_value_not_group_key(self):
@@ -70,6 +72,7 @@ class ProductConditionSharePrepareTests(unittest.TestCase):
         result = PREP.prepare(self.prepared, self.output)
         counts = result["structural_savings"]
         self.assertEqual(result["eligible_forward_request_ids"], ["r1", "r2"])
+        self.assertEqual([proof["task_proofs"][0]["task_id"] for proof in result["source_proof"]], ["t1", "t2"])
         self.assertEqual(counts["eligible_forward_task_fanout"], 2)
         self.assertEqual(counts["old_exact_input_groups"], 1)
         self.assertEqual(counts["product_level_groups"], 1)
@@ -86,6 +89,17 @@ class ProductConditionSharePrepareTests(unittest.TestCase):
         result = PREP.prepare(self.prepared, self.output)
         self.assertEqual(result["eligible_forward_request_ids"], ["forward"])
         self.assertEqual(result["pass_through"]["reverse_request_ids"], ["reverse"])
+
+    def test_mixed_gpu_schema_reports_sold_out_rows_retained_as_audit_only(self):
+        self.add_request("mixed")
+        self.add_task("tm", "mixed")
+        self.freeze(schema_version="mixed-real-gpu-sku-inputs-v1")
+        result = PREP.prepare(self.prepared, self.output)
+        self.assertFalse(result["sold_out_rows_excluded_upstream"])
+        self.assertEqual(result["row_policy_audit"], PREP.MIXED_ROW_POLICY_AUDIT)
+        self.assertIn("including sold-out rows, are retained", result["statement"])
+        self.assertIn("only Rakuten one_sided with null AU axis is eligible to share", result["statement"])
+        self.assertEqual([proof["task_proofs"][0]["task_id"] for proof in result["source_proof"]], ["tm"])
 
     def test_upstream_residual_requires_exact_one_sided_rakuten_null_axis_proof(self):
         self.add_request("novel-good")

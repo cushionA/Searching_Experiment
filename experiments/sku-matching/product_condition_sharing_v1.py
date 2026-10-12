@@ -23,6 +23,8 @@ DESCRIPTION = "この商品の「{axis_name}」は「{value}」である。"
 UNKNOWN_DESCRIPTION = (
     "この商品の「{axis_name}」に該当する値は、現在の商品名と商品説明から特定できない。"
 )
+MIXED_ROW_SCHEMA = "mixed-real-gpu-sku-inputs-v1"
+MIXED_ROW_POLICY = "all captured stockList cells, as in the pinned producer; stock is audit-only"
 SEMANTIC_FIELDS = (
     "direction", "axis_name", "selected_value", "option_values",
     "target_document_id", "target_document_sha256", "target_selected_axes",
@@ -143,10 +145,22 @@ def _validate_bindings(requests, bindings, documents):
 
 
 def _validate_contract(contract, requests):
-    if (not isinstance(contract, dict) or contract.get("basis") != "user_asserted" or
-            contract.get("sold_out_rows_excluded_upstream") is not True):
+    if not isinstance(contract, dict) or contract.get("basis") != "user_asserted":
         raise ValueError("explicit user-asserted product-global invariance contract required")
-    _nonempty_text(contract.get("statement"), "user invariance statement")
+    statement = _nonempty_text(contract.get("statement"), "user invariance statement")
+    if contract.get("sold_out_rows_excluded_upstream") is True:
+        pass  # Preserve the original, sold-out-filtered contract semantics.
+    elif contract.get("sold_out_rows_excluded_upstream") is False:
+        audit = contract.get("row_policy_audit")
+        expected = {"schema_version": MIXED_ROW_SCHEMA, "row_policy": MIXED_ROW_POLICY,
+                    "all_captured_rows_retained": True, "stock_is_identity_evidence": False}
+        if audit != expected:
+            raise ValueError("mixed stock-retaining contract requires the exact row-policy audit")
+        required_scope = ("Rakuten one_sided with null AU axis", "all other and reverse requirements remain row-specific")
+        if any(fragment not in statement for fragment in required_scope):
+            raise ValueError("mixed contract statement must preserve one_sided source scope")
+    else:
+        raise ValueError("explicit user-asserted product-global invariance contract required")
     eligible = contract.get("eligible_forward_request_ids")
     if (not isinstance(eligible, list) or any(not isinstance(v, str) for v in eligible) or
             len(set(eligible)) != len(eligible) or not set(eligible) <= set(requests)):
@@ -160,8 +174,10 @@ def build_groups(requests, documents, bindings, *, model_identity, content_versi
     """Build product-only classification inputs and immutable original mappings.
 
     ``invariance_contract`` must contain ``basis='user_asserted'``, a literal
-    nonempty ``statement``, ``sold_out_rows_excluded_upstream=True``, and an
-    explicit list ``eligible_forward_request_ids``. Eligibility is never
+    nonempty ``statement``, an explicit sold-out row policy, and a list
+    ``eligible_forward_request_ids``. A mixed stock-retaining contract must
+    carry the exact ``row_policy_audit`` and preserve its one-sided scope.
+    Eligibility is never
     guessed from axis names, categories, or task origin. All unlisted requests
     are caller-baseline passthrough, including every reverse request.
 

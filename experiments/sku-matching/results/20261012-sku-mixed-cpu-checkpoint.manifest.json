@@ -1,0 +1,1821 @@
+{
+  "schema_version": "sku-mixed-cpu-checkpoint-v1",
+  "starting_head": "fbc91b9d14d73f3472e40fb34b2a049b7942aaef",
+  "branch": "codex-sku-generic-model-gates-20261010",
+  "execution_device": "cpu",
+  "gpu_state": "submission_unknown",
+  "gpu_submit_attempts": 1,
+  "gpu_measured": false,
+  "independent_test_read": false,
+  "model_weights_included": false,
+  "canonical_evaluation": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4",
+  "canonical_run": ".lab-output/sku-mixed-cpu-run-20261012-v1",
+  "captured_sources": "all 93 raw-captures; raw-source-registry.jsonl records original aliases and SHA",
+  "restore_rule": "verify CRC and every byte/SHA before extraction; do not overwrite a different existing source; restore raw aliases from registry only after SHA validation",
+  "dependencies": [
+    {
+      "path": "experiments/sku-matching/results/20261012-sku-session-handoff.zip",
+      "size_bytes": 40096684,
+      "sha256": "697b325a38259127b297bae2333f772699064ee70660c29f783be0d03a9fb579",
+      "role": "tracked source archive containing original raw files; 90/93 raw-capture entries found by SHA-256 in its members or nested ZIPs",
+      "include_in_checkpoint": false,
+      "git_tracked": true
+    },
+    {
+      "path": ".lab-output/sku-claude-dev-input-share-20261012-v1/20261012-sku-independent-real-eval-v2-v3-token-inputs.zip",
+      "size_bytes": 2815092,
+      "sha256": "db2815a3d5c726e45f996ad07e73cdcf1cdff0610de53ad84af8a4a0a880488f",
+      "role": "existing input archive; restores 2 additional raw-capture files by SHA-256",
+      "include_in_checkpoint": true,
+      "git_tracked": false
+    },
+    {
+      "path": ".lab-output/sku-observed-product-pairs-20261010-final-v4/au_product_sku_arrays.jsonl",
+      "size_bytes": 6036398,
+      "sha256": "862aaaebd6973090fcc8c300738c0e9e88842c5aa59c5296d67ee252950b52c3",
+      "role": "original raw source for 1 remaining capture; not present in tracked session handoff ZIP",
+      "include_in_checkpoint": false,
+      "git_tracked": false
+    },
+    {
+      "path": "experiments/sku-matching/results/20261010-sku-generic-presence-checkpoint.zip",
+      "git_tracked": true,
+      "member": ".lab-output/sku-observed-product-pairs-20261010-final-v4/au_product_sku_arrays.jsonl",
+      "sha256": "c69bb28d88968cc48e1a8f6d825c4794cd1d44d0cedd0e685f141a186e9c683a",
+      "role": "historical original full AU SKU table; its exact bytes are also included in raw-captures"
+    }
+  ],
+  "file_count": 354,
+  "files": [
+    {
+      "path": ".lab-output/sku-claude-dev-input-share-20261012-v1/20261012-sku-independent-real-eval-v2-v3-token-inputs.manifest.json",
+      "bytes": 2381,
+      "sha256": "b714cb47f1b51f06a88a6451aa09ae96175d36645b5e63404a18235e1a232707"
+    },
+    {
+      "path": ".lab-output/sku-claude-dev-input-share-20261012-v1/20261012-sku-independent-real-eval-v2-v3-token-inputs.zip",
+      "bytes": 2815092,
+      "sha256": "db2815a3d5c726e45f996ad07e73cdcf1cdff0610de53ad84af8a4a0a880488f"
+    },
+    {
+      "path": ".lab-output/sku-claude-dev-input-share-20261012-v1/20261012-sku-independent-real-eval-v2-v3-token-inputs.zip.sha256",
+      "bytes": 124,
+      "sha256": "66daa7bfbec2a5cc33350d0b3e7d85a866dfdb457a730dbab49b2bbd7bf453f9"
+    },
+    {
+      "path": ".lab-output/sku-luna-mixed-gpu-selection-20261012-v1/membership.jsonl",
+      "bytes": 5915845,
+      "sha256": "01ae9110f91bb1ee341d014ef6763e7e053cbd3e24723490c0e27de7d3af095d"
+    },
+    {
+      "path": ".lab-output/sku-luna-mixed-gpu-selection-20261012-v1/selected-cases.txt",
+      "bytes": 22585,
+      "sha256": "a72c556155b5bbfadb9bea6c9563d425efdafc52a7173184a24ef9b4f7722b4f"
+    },
+    {
+      "path": ".lab-output/sku-luna-mixed-gpu-selection-20261012-v1/selection-manifest.json",
+      "bytes": 4448,
+      "sha256": "2a9dcd7e808d7a556523f65d0b307da12435a30ae582a1958c57629ddd80facc"
+    },
+    {
+      "path": ".lab-output/sku-luna-selected-dev-20261012-v1/selected-cases.txt",
+      "bytes": 7387,
+      "sha256": "4206f867574c76c63446362afc0aa6c80cc79a5b6d69e6369e34d37f798888cf"
+    },
+    {
+      "path": ".lab-output/sku-luna-selected-dev-20261012-v1/selection-manifest.json",
+      "bytes": 9757,
+      "sha256": "5ad845aa03730cbd2c0d6a632296bd1acf568b898ea2f494dfaa8c3220eee408"
+    },
+    {
+      "path": ".lab-output/sku-luna-selected-dev-20261012-v1/selection-verification.json",
+      "bytes": 137,
+      "sha256": "7494fc30f59657e2c45f32dbc4b89658cad6a3aedd5c5e52079cf1be3eabf7e0"
+    },
+    {
+      "path": ".lab-output/sku-luna-selected-dev-20261012-v1/selection.jsonl",
+      "bytes": 338600,
+      "sha256": "c96f035acb96ef57666e57da58d5cd80ed1d69da4c875d8f6cf3347b11627c50"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-error-analysis-20261012-v1/false-adoptions.json",
+      "bytes": 508118,
+      "sha256": "96f85f6f34f03f3e1acdab0371090652645453b0bb4eb4849fb721b6b889b7e8"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-error-analysis-20261012-v1/misses.json",
+      "bytes": 271479,
+      "sha256": "b04bbd72911e7463ab940701056b9d50e54626d82e2682c28ce32444eae497fc"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/all-gates-frozen.json",
+      "bytes": 523,
+      "sha256": "51edec95e203935c45ff0c17a302e9abec4ca855470f24b09cee7fc521cf6e70"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/baseline/condition_results.jsonl",
+      "bytes": 82430,
+      "sha256": "35b85caa004d7eb747d484a91314da1c67facd153525a3664424666de672bf5e"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/baseline/decisions.jsonl",
+      "bytes": 39920,
+      "sha256": "de703399694d933e1d08ab352543f11d9a79a7adb7bc1f96fa837f4c2c5ff359"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/baseline/diff_vs_upstream.jsonl",
+      "bytes": 9400,
+      "sha256": "42139070aae1f1af9f463752be35a938e0fc57e03929e2a8a21a4a6106ac16be"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/baseline/manifest.json",
+      "bytes": 2924,
+      "sha256": "2f88b58ac67559342ae0e92e3963a42da9204ed0968cc7afe64b9788bfdb0032"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/baseline/row_results.jsonl",
+      "bytes": 20193,
+      "sha256": "79450e82acb2076bf33004c142e334877bb08ce9bf8a454a5a442498c5c809d2"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/case-eligibility.jsonl",
+      "bytes": 15774,
+      "sha256": "bded6ab193f63a0e81167655f84c445af02dc613556109df80b8693b11cc345d"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/case-results.jsonl",
+      "bytes": 283235,
+      "sha256": "f4ae0f9466bcde44998ef43310989ecd3284630e3becfbd8072e888cc4d3678b"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/freeze.json",
+      "bytes": 8416,
+      "sha256": "0328021d87a2a2322fdcd27478f1e29e60c407e013b3b7cdbff7ba26d5a9af9c"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/product-top1-jev/condition_results.jsonl",
+      "bytes": 169397,
+      "sha256": "9d237e9849915d55b45e4f4728b6958e8ec281e700095b51ea568f66d9212ea9"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/product-top1-jev/decisions.jsonl",
+      "bytes": 40136,
+      "sha256": "970f16b9d5e59978b32025fac14574ec3ca437c00d40ca017207edead95ab4c7"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/product-top1-jev/diff_vs_upstream.jsonl",
+      "bytes": 12313,
+      "sha256": "11a7f4de1f5028f45bbdc163529cb4b71dfec922fd7d99bc1fd9661ec4e23b05"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/product-top1-jev/manifest.json",
+      "bytes": 2931,
+      "sha256": "cf1d070d26e87828e4f0aaab27659ec9115e4da87112613d991772316e392dbf"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/product-top1-jev/row_results.jsonl",
+      "bytes": 20121,
+      "sha256": "f762dfb385a9cde5a9d65b143db30c1f7e214140a98197cc1a6adf8e13fc2efd"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/product-top3-jev/condition_results.jsonl",
+      "bytes": 330768,
+      "sha256": "da501d45fb8099f5be9575d989857f176bcbf107018843645a5b09d5e9192333"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/product-top3-jev/decisions.jsonl",
+      "bytes": 40100,
+      "sha256": "4c48abcb0d8871e7dca3599f36ff6faf4cc392c8b08cc303cc9fb470948a9ec2"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/product-top3-jev/diff_vs_upstream.jsonl",
+      "bytes": 11819,
+      "sha256": "796b137ef224ec023bb2d457b30700ca89aa68ea9fa11bd2bf345f13b19c0d05"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/product-top3-jev/manifest.json",
+      "bytes": 2932,
+      "sha256": "08f91410f36343db8e7ac58869bc8737c98758467f4e7e01270bd069590ed30a"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/product-top3-jev/row_results.jsonl",
+      "bytes": 20133,
+      "sha256": "d3c920d84ce8f6e1e24a8dfcbf41a74c0765c31ba1389a69f709a4e46bd6e71f"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/product-top3-verified/condition_results.jsonl",
+      "bytes": 81786,
+      "sha256": "81bfe521b9745ba332e4781082aea9c912306a0eb417d165ceb27b817bc8acc2"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/product-top3-verified/decisions.jsonl",
+      "bytes": 39414,
+      "sha256": "ef2ed85be1b4e59826060f11e3f61ea0c1ef253fa3f664d819f879a6b4389b0b"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/product-top3-verified/diff_vs_upstream.jsonl",
+      "bytes": 2515,
+      "sha256": "008243f0821690330809ddf9ed2e09a9c1605a6743b96619b9c52f2a98a26f6f"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/product-top3-verified/manifest.json",
+      "bytes": 2936,
+      "sha256": "3624f73e82faf495c47ecb5e594c5582467b963d6d9f360c27cd0c0c6b5da2ee"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/product-top3-verified/row_results.jsonl",
+      "bytes": 20361,
+      "sha256": "816dc2ab4e10eb743be39236c8e33766768380b313973518507ca573ca537962"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/reference-routes.jsonl",
+      "bytes": 64570,
+      "sha256": "0c2525f9f0d860bbd0ae2c810ba756f305f520baa41103e44771b40da73723e6"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/references-for-scoring.jsonl",
+      "bytes": 297805,
+      "sha256": "e1ef316d5f32dd73390a005d53b93d02a0a06c8dfab16702d8e27dbe8162f662"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-evaluation-20261012-v4/summary.json",
+      "bytes": 13782,
+      "sha256": "bdb02949fd13c288be3fbbb6cbcc40a561b40c8067654de6a79db0dbe499e4e1"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/all-gates-frozen.json",
+      "bytes": 523,
+      "sha256": "51edec95e203935c45ff0c17a302e9abec4ca855470f24b09cee7fc521cf6e70"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/baseline/condition_results.jsonl",
+      "bytes": 82430,
+      "sha256": "35b85caa004d7eb747d484a91314da1c67facd153525a3664424666de672bf5e"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/baseline/decisions.jsonl",
+      "bytes": 39920,
+      "sha256": "de703399694d933e1d08ab352543f11d9a79a7adb7bc1f96fa837f4c2c5ff359"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/baseline/diff_vs_upstream.jsonl",
+      "bytes": 9400,
+      "sha256": "42139070aae1f1af9f463752be35a938e0fc57e03929e2a8a21a4a6106ac16be"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/baseline/manifest.json",
+      "bytes": 2924,
+      "sha256": "2f88b58ac67559342ae0e92e3963a42da9204ed0968cc7afe64b9788bfdb0032"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/baseline/row_results.jsonl",
+      "bytes": 20193,
+      "sha256": "79450e82acb2076bf33004c142e334877bb08ce9bf8a454a5a442498c5c809d2"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/case-eligibility.jsonl",
+      "bytes": 15774,
+      "sha256": "bded6ab193f63a0e81167655f84c445af02dc613556109df80b8693b11cc345d"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/freeze.json",
+      "bytes": 8416,
+      "sha256": "581bddc1a4d783dc434eef152678680c3d8c49cf14253f308e043c7c6cd4866c"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/product-top1-jev/condition_results.jsonl",
+      "bytes": 169397,
+      "sha256": "9d237e9849915d55b45e4f4728b6958e8ec281e700095b51ea568f66d9212ea9"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/product-top1-jev/decisions.jsonl",
+      "bytes": 40136,
+      "sha256": "970f16b9d5e59978b32025fac14574ec3ca437c00d40ca017207edead95ab4c7"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/product-top1-jev/diff_vs_upstream.jsonl",
+      "bytes": 12313,
+      "sha256": "11a7f4de1f5028f45bbdc163529cb4b71dfec922fd7d99bc1fd9661ec4e23b05"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/product-top1-jev/manifest.json",
+      "bytes": 2931,
+      "sha256": "cf1d070d26e87828e4f0aaab27659ec9115e4da87112613d991772316e392dbf"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/product-top1-jev/row_results.jsonl",
+      "bytes": 20121,
+      "sha256": "f762dfb385a9cde5a9d65b143db30c1f7e214140a98197cc1a6adf8e13fc2efd"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/product-top3-jev/condition_results.jsonl",
+      "bytes": 330768,
+      "sha256": "da501d45fb8099f5be9575d989857f176bcbf107018843645a5b09d5e9192333"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/product-top3-jev/decisions.jsonl",
+      "bytes": 40100,
+      "sha256": "4c48abcb0d8871e7dca3599f36ff6faf4cc392c8b08cc303cc9fb470948a9ec2"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/product-top3-jev/diff_vs_upstream.jsonl",
+      "bytes": 11819,
+      "sha256": "796b137ef224ec023bb2d457b30700ca89aa68ea9fa11bd2bf345f13b19c0d05"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/product-top3-jev/manifest.json",
+      "bytes": 2932,
+      "sha256": "08f91410f36343db8e7ac58869bc8737c98758467f4e7e01270bd069590ed30a"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/product-top3-jev/row_results.jsonl",
+      "bytes": 20133,
+      "sha256": "d3c920d84ce8f6e1e24a8dfcbf41a74c0765c31ba1389a69f709a4e46bd6e71f"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/product-top3-verified/condition_results.jsonl",
+      "bytes": 81786,
+      "sha256": "81bfe521b9745ba332e4781082aea9c912306a0eb417d165ceb27b817bc8acc2"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/product-top3-verified/decisions.jsonl",
+      "bytes": 39414,
+      "sha256": "ef2ed85be1b4e59826060f11e3f61ea0c1ef253fa3f664d819f879a6b4389b0b"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/product-top3-verified/diff_vs_upstream.jsonl",
+      "bytes": 2515,
+      "sha256": "008243f0821690330809ddf9ed2e09a9c1605a6743b96619b9c52f2a98a26f6f"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/product-top3-verified/manifest.json",
+      "bytes": 2936,
+      "sha256": "3624f73e82faf495c47ecb5e594c5582467b963d6d9f360c27cd0c0c6b5da2ee"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-gates-freeze-20261012-v1/product-top3-verified/row_results.jsonl",
+      "bytes": 20361,
+      "sha256": "816dc2ab4e10eb743be39236c8e33766768380b313973518507ca573ca537962"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-reference-routes-20261012-v2/independent-dev.jsonl",
+      "bytes": 172863,
+      "sha256": "beb0b1e1857abbe397b485c25529c672299d05b2ce6b4cd41cfd212591bffea6"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-reference-routes-20261012-v2/manifest.json",
+      "bytes": 2017,
+      "sha256": "bcbc08324c170a169ae993e1cb2513ffb8e871ffe9a83c09edfd436085b8c510"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-reference-routes-20261012-v2/missing-control-references.jsonl",
+      "bytes": 568,
+      "sha256": "f2dc3b26b9b9b28cab442dd3adbeb491ac772fa3aebfe7ed6c946b73eba38e38"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-reference-routes-20261012-v2/old-structural-controls.jsonl",
+      "bytes": 6694,
+      "sha256": "937a493735e211bad97d863385fd685fee64aa71c5767309afc5993bdba1ae54"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-reference-routes-20261012-v2/prior-errors.jsonl",
+      "bytes": 116110,
+      "sha256": "d2d2b4ecc14724a442297af7d9a23a63a241739ab3dba292bc933dff262a2bb6"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/code/trial_cpu_requirement_relations_v1.py",
+      "bytes": 30453,
+      "sha256": "d5bf039e5c799a2f703c1fd3e1ff3e73e3d495cea96178c8cee45dc04c120eb2"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/code/trial_full_scoped_condition_choices_v1.py",
+      "bytes": 24867,
+      "sha256": "e6ffd64babfb3d1f96180b42cc877e2b5300d2ef2ac0a090276376a4fd2586de"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/code/trial_generic_gliner_choice_v1.py",
+      "bytes": 26534,
+      "sha256": "e76683e22dcd1593300cb083fee93aadd3b7d4076789ffc9e5aa06d616d68197"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/code/trial_generic_model_jev_v1.py",
+      "bytes": 23142,
+      "sha256": "100b43a09e41c0bce4de09cdfcc9bad6623ab41e4bb4db43dc9ed2d18a790863"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/code/trial_generic_model_nli_v1.py",
+      "bytes": 9552,
+      "sha256": "97ac4af19534c2f26b4e7cf85961e7e331c9b6cdf9695d1b7d6cec019caf22eb"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/code/trial_scoped_condition_gliner_v1.py",
+      "bytes": 26044,
+      "sha256": "9839d550865d058c4f17b98230ec525c90d5779bd0ab239b790a329d26e2504c"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/code/trial_scoped_condition_nli_choice_v1.py",
+      "bytes": 10895,
+      "sha256": "e6d83ff283483454db20ccf335d7c93e2917453fd57520cbae4581e120901f54"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/code/trial_scoped_condition_nli_v1.py",
+      "bytes": 16004,
+      "sha256": "7e7df5fe85d098ed167886684c5ca42483495b739e5298431ce5114ac7b75496"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/code/try_gliner.py",
+      "bytes": 17396,
+      "sha256": "6d2122d3d4b69d378d44bdf0eb4c6d695cf3dc42a2876c64e12da39628b3f3f8"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/freeze.json",
+      "bytes": 5153,
+      "sha256": "47f662277d88323eaab412783233dfba6f1f00a4ee5cfb0fc9aa79fe0d34fa68"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/fusion-predictions.jsonl",
+      "bytes": 22758908,
+      "sha256": "8c53591435791b99879bef6a47954a714dced663c02118011dab80b534ecc48a"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/jev-classification-options.jsonl",
+      "bytes": 960173,
+      "sha256": "d78c370692954188efc993616773bfb94be0bde6bfc9b07112789647d0570585"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/jev-predictions.jsonl",
+      "bytes": 3186782,
+      "sha256": "2f59276b98b799cae2d010c73b8bef7d31e2a93517ce6c83b2442942388a066c"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/jev-unique-scores.jsonl",
+      "bytes": 924073,
+      "sha256": "e79af29a4751d30c289cdbf1f727eddb60bf8d97dfec8fd6b32b341725ff11dc"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/model-nli-pairs.jsonl",
+      "bytes": 16625344,
+      "sha256": "e1005b0889fa661cb22bca1a4d290249b03ca5717c2ae697b5057408a516bfda"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/model-requests.jsonl",
+      "bytes": 219716,
+      "sha256": "fac676dc0b2a31da260b6e89692a4d2d5d8083e7789e7373d0132cc377eadab0"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/nli-classification-options.jsonl",
+      "bytes": 15073320,
+      "sha256": "36358c6642748d16beff62f91805cfd23c46c070ad62fb949fa61275da659709"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/nli-predictions.jsonl",
+      "bytes": 17312190,
+      "sha256": "543d4df93b1eb1fdbef1e7a4bb4b787390f3cb9f984886dcd25d1e67d0fb379b"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/nli-skips.jsonl",
+      "bytes": 28781,
+      "sha256": "a0b83c1b954d11867ca7b3bbfc1a5d66d32712de4332ffe7961def7e6aed70c3"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/nli-unique-scores.jsonl",
+      "bytes": 14742626,
+      "sha256": "b8724eb5fdd2e680cdf442fb71d1e8a73624d88e9929936f3ddace5283668fef"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/predictions.jsonl",
+      "bytes": 22758908,
+      "sha256": "8c53591435791b99879bef6a47954a714dced663c02118011dab80b534ecc48a"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/progress.json",
+      "bytes": 179,
+      "sha256": "c70087b8e0a691cf64873eadea0922c107009d40e92d913165bcbf85d65eed9a"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/source-documents.jsonl",
+      "bytes": 3116614,
+      "sha256": "5ee59f9f1fb44cd8cbe4ad4676c42cd0b1945e9bbd002e3862d8d8532b81b6bc"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/source-manifest.json",
+      "bytes": 38367,
+      "sha256": "156de1edc55a778c930690c5364985ffdf6947893af83119cd4ed18f5644d8a1"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/source-requests.jsonl",
+      "bytes": 199279,
+      "sha256": "cde607252f1fb7f0bdd0f4e332623ee2f237a1cbe78f8a120f4a218d4cc75f10"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/source-tasks.jsonl",
+      "bytes": 1910576,
+      "sha256": "d4703dc1553696151bb5b8e6c5c8ecbed7f44a08636e4941de1a8199e2e3da91"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/baseline-model/summary.json",
+      "bytes": 12676,
+      "sha256": "0b06abdf6b4f2770e1b2533c07cedb46b8e1d2aea17b424ae876f2a729220a0b"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/eligible-requests.json",
+      "bytes": 418067,
+      "sha256": "863d9baa0635b62e0f9c3a2c0c6a9f5b68e025e43568ed721306d0a30f915726"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/prepared/baseline-predictions.jsonl",
+      "bytes": 22758908,
+      "sha256": "8c53591435791b99879bef6a47954a714dced663c02118011dab80b534ecc48a"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/prepared/blocks.jsonl",
+      "bytes": 11679190,
+      "sha256": "3a1fc12bac07a2669f163b52e03fab52a1f428d44837a45e5d35222928f26ea1"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/prepared/documents.jsonl",
+      "bytes": 3116614,
+      "sha256": "5ee59f9f1fb44cd8cbe4ad4676c42cd0b1945e9bbd002e3862d8d8532b81b6bc"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/prepared/manifest.json",
+      "bytes": 40617,
+      "sha256": "0b8de2915cc3cb615d7676f87d7e9c44b54271638323d06bc60ddd91fdfd5ad8"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/prepared/requests.jsonl",
+      "bytes": 199279,
+      "sha256": "cde607252f1fb7f0bdd0f4e332623ee2f237a1cbe78f8a120f4a218d4cc75f10"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/prepared/retrieval-requests.jsonl",
+      "bytes": 7017901,
+      "sha256": "0b9c6c4acfdb8d5b398cef0ca2ff0a3641d9a674c9923a397525213fb339ffd7"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/baseline-refresh/prepared/tasks.jsonl",
+      "bytes": 1910576,
+      "sha256": "d4703dc1553696151bb5b8e6c5c8ecbed7f44a08636e4941de1a8199e2e3da91"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/code/backend_reranker.py",
+      "bytes": 7231,
+      "sha256": "0a8fcede4620fc73e69cf4be61cc718730d14fdd9dc368ac4fe266d3f0d3d6c3"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/code/manifests/reranker.json",
+      "bytes": 1743,
+      "sha256": "85a69dd4d03f312d5f8c39e56574ac50142ebceb7de76377df7b5e0b6d1d3c77"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/code/product_condition_sharing_v1.py",
+      "bytes": 21453,
+      "sha256": "b9d98003eb24c5e1de0ae05d3cfc5860062589c14c41ec88561f45f433cba928"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/code/trial_cpu_requirement_relations_v1.py",
+      "bytes": 30453,
+      "sha256": "d5bf039e5c799a2f703c1fd3e1ff3e73e3d495cea96178c8cee45dc04c120eb2"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/code/trial_full_scoped_condition_choices_v1.py",
+      "bytes": 24867,
+      "sha256": "e6ffd64babfb3d1f96180b42cc877e2b5300d2ef2ac0a090276376a4fd2586de"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/code/trial_generic_gliner_choice_v1.py",
+      "bytes": 26534,
+      "sha256": "e76683e22dcd1593300cb083fee93aadd3b7d4076789ffc9e5aa06d616d68197"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/code/trial_generic_model_jev_v1.py",
+      "bytes": 23142,
+      "sha256": "100b43a09e41c0bce4de09cdfcc9bad6623ab41e4bb4db43dc9ed2d18a790863"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/code/trial_generic_model_nli_v1.py",
+      "bytes": 9552,
+      "sha256": "97ac4af19534c2f26b4e7cf85961e7e331c9b6cdf9695d1b7d6cec019caf22eb"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/code/trial_mixed_cpu_sku_v1.py",
+      "bytes": 13602,
+      "sha256": "a326d930b01363b184e772a3265d60e28252d023a9d697b3d9db6c60d306d374"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/code/trial_product_condition_models_v1.py",
+      "bytes": 22875,
+      "sha256": "b4372f55f7c032c7f47b40bb3ae195b585b0fb56cab1b0d71cd413a7a9d9b797"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/code/trial_scoped_condition_gliner_v1.py",
+      "bytes": 26044,
+      "sha256": "9839d550865d058c4f17b98230ec525c90d5779bd0ab239b790a329d26e2504c"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/code/trial_scoped_condition_nli_choice_v1.py",
+      "bytes": 10895,
+      "sha256": "e6d83ff283483454db20ccf335d7c93e2917453fd57520cbae4581e120901f54"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/code/trial_scoped_condition_nli_v1.py",
+      "bytes": 16004,
+      "sha256": "7e7df5fe85d098ed167886684c5ca42483495b739e5298431ce5114ac7b75496"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/code/trial_scoped_html_evidence_v1.py",
+      "bytes": 25405,
+      "sha256": "e68a41fee0bb6813458dc4968c9c34fcc3c85b8d8df5d067130a8ac0df360970"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/code/try_gliner.py",
+      "bytes": 17396,
+      "sha256": "6d2122d3d4b69d378d44bdf0eb4c6d695cf3dc42a2876c64e12da39628b3f3f8"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/cpu-source-freeze.json",
+      "bytes": 2379,
+      "sha256": "25f4d87755303156fbc9887d0faf4a7b3daa9dd1758eb5f958fdf172548b8354"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/execution-freeze.json",
+      "bytes": 2699,
+      "sha256": "9ba69f8505cd151eefa153d0dc894d81e6b99344f6d42d741584725b8ec46eb4"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-groups.jsonl",
+      "bytes": 441006,
+      "sha256": "a32fd217c6abf2b17d515cb5d013e0ca0b7365e66131625d8e88adbcd8b64ff5"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/baseline-predictions.jsonl",
+      "bytes": 22758908,
+      "sha256": "8c53591435791b99879bef6a47954a714dced663c02118011dab80b534ecc48a"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/code/backend_reranker.py",
+      "bytes": 7231,
+      "sha256": "0a8fcede4620fc73e69cf4be61cc718730d14fdd9dc368ac4fe266d3f0d3d6c3"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/code/product_condition_sharing_v1.py",
+      "bytes": 21453,
+      "sha256": "b9d98003eb24c5e1de0ae05d3cfc5860062589c14c41ec88561f45f433cba928"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/code/reranker.json",
+      "bytes": 1743,
+      "sha256": "85a69dd4d03f312d5f8c39e56574ac50142ebceb7de76377df7b5e0b6d1d3c77"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/code/trial_cpu_requirement_relations_v1.py",
+      "bytes": 30453,
+      "sha256": "d5bf039e5c799a2f703c1fd3e1ff3e73e3d495cea96178c8cee45dc04c120eb2"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/code/trial_full_scoped_condition_choices_v1.py",
+      "bytes": 24867,
+      "sha256": "e6ffd64babfb3d1f96180b42cc877e2b5300d2ef2ac0a090276376a4fd2586de"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/code/trial_generic_gliner_choice_v1.py",
+      "bytes": 26534,
+      "sha256": "e76683e22dcd1593300cb083fee93aadd3b7d4076789ffc9e5aa06d616d68197"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/code/trial_generic_model_jev_v1.py",
+      "bytes": 23142,
+      "sha256": "100b43a09e41c0bce4de09cdfcc9bad6623ab41e4bb4db43dc9ed2d18a790863"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/code/trial_generic_model_nli_v1.py",
+      "bytes": 9552,
+      "sha256": "97ac4af19534c2f26b4e7cf85961e7e331c9b6cdf9695d1b7d6cec019caf22eb"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/code/trial_product_condition_models_v1.py",
+      "bytes": 22875,
+      "sha256": "b4372f55f7c032c7f47b40bb3ae195b585b0fb56cab1b0d71cd413a7a9d9b797"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/code/trial_scoped_condition_gliner_v1.py",
+      "bytes": 26044,
+      "sha256": "9839d550865d058c4f17b98230ec525c90d5779bd0ab239b790a329d26e2504c"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/code/trial_scoped_condition_nli_choice_v1.py",
+      "bytes": 10895,
+      "sha256": "e6d83ff283483454db20ccf335d7c93e2917453fd57520cbae4581e120901f54"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/code/trial_scoped_condition_nli_v1.py",
+      "bytes": 16004,
+      "sha256": "7e7df5fe85d098ed167886684c5ca42483495b739e5298431ce5114ac7b75496"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/code/trial_scoped_html_evidence_v1.py",
+      "bytes": 25405,
+      "sha256": "e68a41fee0bb6813458dc4968c9c34fcc3c85b8d8df5d067130a8ac0df360970"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/code/try_gliner.py",
+      "bytes": 17396,
+      "sha256": "6d2122d3d4b69d378d44bdf0eb4c6d695cf3dc42a2876c64e12da39628b3f3f8"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/freeze.json",
+      "bytes": 431446,
+      "sha256": "5c3298eb4d7cd1bcd9bedb4e75562d761dc75dbb023f31aead092adb734e094e"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/jev-classification-options.jsonl",
+      "bytes": 716747,
+      "sha256": "fa6cfaedb9ece3456703c814b37495dc10389cee4c52bd52957fc053413389cb"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/jev-unique-scores.jsonl",
+      "bytes": 693873,
+      "sha256": "e1c85df5ac985efc4ee416f54c09c4a2eca22730c8720847abfd5c936d44ebda"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/model-nli-pairs.jsonl",
+      "bytes": 1269548,
+      "sha256": "df2776fccbe5f661bc03eececcfbf963cf81b908dbff856a528353a3e19b29ad"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/model-requests.jsonl",
+      "bytes": 207699,
+      "sha256": "87fc76779e8d014809b004513ec7cb4d168cb08c1526013d7245fdd761a1318a"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/nli-classification-options.jsonl",
+      "bytes": 1453051,
+      "sha256": "40f103c4bb7cb6bf3b0d50c8e5c039082234fad48ba82ba72b38b93dfa304c05"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/nli-unique-scores.jsonl",
+      "bytes": 1418709,
+      "sha256": "1097131e102162dc4dfa67146cf6e362b01f54df0d1c099b5ec4ff5f8b4350c5"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/product-groups.jsonl",
+      "bytes": 441006,
+      "sha256": "a32fd217c6abf2b17d515cb5d013e0ca0b7365e66131625d8e88adbcd8b64ff5"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/product-top1-jev-group-results.jsonl",
+      "bytes": 78602,
+      "sha256": "ebbb9a665d156b6cdcfb0fb8a764c44a7adb9795bf13a675267c4b1f822cd66b"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/product-top1-jev-predictions.jsonl",
+      "bytes": 15323371,
+      "sha256": "1520be00b5531d6010fb39b5db2f2752fb728f0428f8a03703c3b51d23c884fb"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/product-top3-jev-group-results.jsonl",
+      "bytes": 152254,
+      "sha256": "cc3848b82b95239c899e81e904e795577ba89e79d5895b4921f01bf8ff4dcfd1"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/product-top3-jev-predictions.jsonl",
+      "bytes": 15759275,
+      "sha256": "16daac3b003cd39ccd539233ef7ff3c224c42a0860a58cd4f280b46bcdcfc15e"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/product-top3-verified-group-results.jsonl",
+      "bytes": 41326,
+      "sha256": "b47ab2151c5e8229ffa35e0d1b5e5c82b33a829e3ef9d85b4d3f3756d0a5ba5b"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/product-top3-verified-predictions.jsonl",
+      "bytes": 15109630,
+      "sha256": "30f8bb5c396254859199a5b6e7272d3dbf5257231f6d7a2d49e695ab983ae138"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/progress.json",
+      "bytes": 171,
+      "sha256": "47c344cb5a62953ac24fb8f2d624471462fc033dbb2d404bb11bbcc3a8d53ecc"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/retrieval-model-requests.jsonl",
+      "bytes": 2461532,
+      "sha256": "4fe98dffb9d36cd8dbbee3013809db9801501d7009dc91e3ecb6aeb938e73827"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/retrieval-rejected-blocks.jsonl",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/retrieval-scores.jsonl",
+      "bytes": 2613406,
+      "sha256": "7780a8c649ea4f7f986b7b97459dfe20a66ccc908ab1f3888b6a3ba9d6ae69ad"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/retrieval-selections.jsonl",
+      "bytes": 45735,
+      "sha256": "bfefc57e542379a3237cdbb1058950a37c2e205e353aefe128e33dadec09eb83"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/retrieval-unique-scores.jsonl",
+      "bytes": 150158,
+      "sha256": "6b230afc0bb82487c0decbfad9ffdcaa7e1f7a83e201e9ed276c73caa6efffe4"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/sharing-contract.json",
+      "bytes": 418067,
+      "sha256": "863d9baa0635b62e0f9c3a2c0c6a9f5b68e025e43568ed721306d0a30f915726"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/sharing-plan.json",
+      "bytes": 8200407,
+      "sha256": "f5aefd6983169b7632ef12dfe7d54cd5e3e418370ff36cf6a7f8ada3db01f6de"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/source-baseline-predictions.jsonl",
+      "bytes": 22758908,
+      "sha256": "8c53591435791b99879bef6a47954a714dced663c02118011dab80b534ecc48a"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/source-blocks.jsonl",
+      "bytes": 11679190,
+      "sha256": "3a1fc12bac07a2669f163b52e03fab52a1f428d44837a45e5d35222928f26ea1"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/source-documents.jsonl",
+      "bytes": 3116614,
+      "sha256": "5ee59f9f1fb44cd8cbe4ad4676c42cd0b1945e9bbd002e3862d8d8532b81b6bc"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/source-eligible-requests.json",
+      "bytes": 418067,
+      "sha256": "863d9baa0635b62e0f9c3a2c0c6a9f5b68e025e43568ed721306d0a30f915726"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/source-manifest.json",
+      "bytes": 40617,
+      "sha256": "0b8de2915cc3cb615d7676f87d7e9c44b54271638323d06bc60ddd91fdfd5ad8"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/source-requests.jsonl",
+      "bytes": 199279,
+      "sha256": "cde607252f1fb7f0bdd0f4e332623ee2f237a1cbe78f8a120f4a218d4cc75f10"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/source-retrieval-requests.jsonl",
+      "bytes": 7017901,
+      "sha256": "0b9c6c4acfdb8d5b398cef0ca2ff0a3641d9a674c9923a397525213fb339ffd7"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/source-tasks.jsonl",
+      "bytes": 1910576,
+      "sha256": "d4703dc1553696151bb5b8e6c5c8ecbed7f44a08636e4941de1a8199e2e3da91"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-model/summary.json",
+      "bytes": 441093,
+      "sha256": "2145352d7ae3d62dcbdd9325b6065e0d529d45bb20605a629cff95cabbca2468"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-top1-jev-predictions.jsonl",
+      "bytes": 15323371,
+      "sha256": "1520be00b5531d6010fb39b5db2f2752fb728f0428f8a03703c3b51d23c884fb"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-top3-jev-predictions.jsonl",
+      "bytes": 15759275,
+      "sha256": "16daac3b003cd39ccd539233ef7ff3c224c42a0860a58cd4f280b46bcdcfc15e"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/product-top3-verified-predictions.jsonl",
+      "bytes": 15109630,
+      "sha256": "30f8bb5c396254859199a5b6e7272d3dbf5257231f6d7a2d49e695ab983ae138"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/session.log",
+      "bytes": 2059,
+      "sha256": "19e03cc31f9fd4a2fce99c1154e81c08cf71b0bb3cf6ea67b2fb036547aa7f77"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/sharing-contract.json",
+      "bytes": 418067,
+      "sha256": "863d9baa0635b62e0f9c3a2c0c6a9f5b68e025e43568ed721306d0a30f915726"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/sharing-plan.json",
+      "bytes": 8200407,
+      "sha256": "f5aefd6983169b7632ef12dfe7d54cd5e3e418370ff36cf6a7f8ada3db01f6de"
+    },
+    {
+      "path": ".lab-output/sku-mixed-cpu-run-20261012-v1/summary.json",
+      "bytes": 453975,
+      "sha256": "d5b61644cf620528bf4be28f2b6c3357fd68a38b3da0fe304b90eabd976350df"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-contract-20261012-v1/contract.json",
+      "bytes": 417428,
+      "sha256": "c8b1caf9fcfc69cf800c006220421a2619481cefaabcec3ed0f326c9978448dc"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-job-20261012-v1/continuation.json",
+      "bytes": 490,
+      "sha256": "f8897d0dab1b3640c74f5c825811190f6714deafbba2fe3a69f73b71ba80bad1"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-job-20261012-v1/job.json",
+      "bytes": 826,
+      "sha256": "5154bc4b3021eff60df5e34238c2bf3339df2467d29fff2b05947e16ba11679b"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-job-20261012-v1/kernels-after-submit.json",
+      "bytes": 1773,
+      "sha256": "7f2d6bd5f3c6f21069de460545e4385d5008564abd7079b05ff0c2a870ddb18b"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-job-20261012-v1/submission-reconciliation-probe.json",
+      "bytes": 709,
+      "sha256": "4d2af1aec87848b43cdb85c21ce576a4c9f0413b8f1da04e40d7c1089d1140c3"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/notebook-upload/kernel-metadata.json",
+      "bytes": 419,
+      "sha256": "e87df1fefef20c9fbd04b10ea0816944b2f446c7a12043cc505958c806b87769"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/package-receipt.json",
+      "bytes": 1413,
+      "sha256": "195048ea680893c66289df92a1cb8f4737992586fbfc9f5836157169788e6d27"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/BUNDLE_MANIFEST.json",
+      "bytes": 7472,
+      "sha256": "84eb5cec95ac6697da7e2ad7afe1d12580ccc753e7833806bdff04c9a3fd5391"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/code/backend_reranker.py",
+      "bytes": 7231,
+      "sha256": "0a8fcede4620fc73e69cf4be61cc718730d14fdd9dc368ac4fe266d3f0d3d6c3"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/code/download_candidate.py",
+      "bytes": 9317,
+      "sha256": "742fdad13d93ba11f9f971b0d9e8b2d9fee6ff9fb402b2f9479191aa90d49aac"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/code/kaggle_full_condition_choices_v1.py",
+      "bytes": 32945,
+      "sha256": "5b141fdad9fec7d02b21138b296fe43656c255b3da219b11193c29c07e735b79"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/code/kaggle_product_condition_gpu_v1.py",
+      "bytes": 30440,
+      "sha256": "931686aca95087b2e5809b659efad0bfa6a98aea9b3929699a2ad2b34e193946"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/code/manifests/reranker.json",
+      "bytes": 1743,
+      "sha256": "85a69dd4d03f312d5f8c39e56574ac50142ebceb7de76377df7b5e0b6d1d3c77"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/code/product_condition_sharing_v1.py",
+      "bytes": 21453,
+      "sha256": "b9d98003eb24c5e1de0ae05d3cfc5860062589c14c41ec88561f45f433cba928"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/code/trial_cpu_requirement_relations_v1.py",
+      "bytes": 30453,
+      "sha256": "d5bf039e5c799a2f703c1fd3e1ff3e73e3d495cea96178c8cee45dc04c120eb2"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/code/trial_full_scoped_condition_choices_v1.py",
+      "bytes": 24867,
+      "sha256": "e6ffd64babfb3d1f96180b42cc877e2b5300d2ef2ac0a090276376a4fd2586de"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/code/trial_generic_gliner_choice_v1.py",
+      "bytes": 26534,
+      "sha256": "e76683e22dcd1593300cb083fee93aadd3b7d4076789ffc9e5aa06d616d68197"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/code/trial_generic_model_jev_v1.py",
+      "bytes": 23142,
+      "sha256": "100b43a09e41c0bce4de09cdfcc9bad6623ab41e4bb4db43dc9ed2d18a790863"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/code/trial_generic_model_nli_v1.py",
+      "bytes": 9552,
+      "sha256": "97ac4af19534c2f26b4e7cf85961e7e331c9b6cdf9695d1b7d6cec019caf22eb"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/code/trial_product_condition_models_v1.py",
+      "bytes": 22875,
+      "sha256": "b4372f55f7c032c7f47b40bb3ae195b585b0fb56cab1b0d71cd413a7a9d9b797"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/code/trial_scoped_condition_gliner_v1.py",
+      "bytes": 26044,
+      "sha256": "9839d550865d058c4f17b98230ec525c90d5779bd0ab239b790a329d26e2504c"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/code/trial_scoped_condition_nli_choice_v1.py",
+      "bytes": 10895,
+      "sha256": "e6d83ff283483454db20ccf335d7c93e2917453fd57520cbae4581e120901f54"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/code/trial_scoped_condition_nli_v1.py",
+      "bytes": 16004,
+      "sha256": "7e7df5fe85d098ed167886684c5ca42483495b739e5298431ce5114ac7b75496"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/code/trial_scoped_html_evidence_v1.py",
+      "bytes": 25405,
+      "sha256": "e68a41fee0bb6813458dc4968c9c34fcc3c85b8d8df5d067130a8ac0df360970"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/code/try_gliner.py",
+      "bytes": 17396,
+      "sha256": "6d2122d3d4b69d378d44bdf0eb4c6d695cf3dc42a2876c64e12da39628b3f3f8"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/eligible-requests.json",
+      "bytes": 417428,
+      "sha256": "c8b1caf9fcfc69cf800c006220421a2619481cefaabcec3ed0f326c9978448dc"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/input/baseline-predictions.jsonl",
+      "bytes": 2173839,
+      "sha256": "f8d4769442a8cd0cdc55aa0a1097fe35274ee1215c4a8572259a16c81f5b6a60"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/input/blocks.jsonl",
+      "bytes": 11679190,
+      "sha256": "3a1fc12bac07a2669f163b52e03fab52a1f428d44837a45e5d35222928f26ea1"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/input/documents.jsonl",
+      "bytes": 3116614,
+      "sha256": "5ee59f9f1fb44cd8cbe4ad4676c42cd0b1945e9bbd002e3862d8d8532b81b6bc"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/input/manifest.json",
+      "bytes": 38367,
+      "sha256": "156de1edc55a778c930690c5364985ffdf6947893af83119cd4ed18f5644d8a1"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/input/requests.jsonl",
+      "bytes": 199279,
+      "sha256": "cde607252f1fb7f0bdd0f4e332623ee2f237a1cbe78f8a120f4a218d4cc75f10"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/input/retrieval-requests.jsonl",
+      "bytes": 7017901,
+      "sha256": "0b9c6c4acfdb8d5b398cef0ca2ff0a3641d9a674c9923a397525213fb339ffd7"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/input/tasks.jsonl",
+      "bytes": 1910576,
+      "sha256": "d4703dc1553696151bb5b8e6c5c8ecbed7f44a08636e4941de1a8199e2e3da91"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/parity44/eligible-requests.json",
+      "bytes": 58184,
+      "sha256": "0da26362fb0575fd6bf9852d6e4ee0b1b068e4df6839091141fb9d5e1f5cb4e5"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/parity44/input/baseline-predictions.jsonl",
+      "bytes": 9159927,
+      "sha256": "9866667a87c0b4716f8caa62b76978452a678f23e5f18b36a525c864d127ea58"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/parity44/input/blocks.jsonl",
+      "bytes": 8645212,
+      "sha256": "bcefb5d21e451e726933ecd8fd24f4695b8cf44f1daf9664304be4ff62680602"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/parity44/input/documents.jsonl",
+      "bytes": 1087898,
+      "sha256": "db2b00e5fe6e9acc160fd4280b351c7abbdbeef4b809a403711b1fdd60dcb078"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/parity44/input/manifest.json",
+      "bytes": 48200,
+      "sha256": "27cd995daf41588daec7446bcbe7ca336776eb376bc51bfe2b5e90ecb4e60565"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/parity44/input/requests.jsonl",
+      "bytes": 95038,
+      "sha256": "3a49e9fc3e18f19d977aed8bc9571bf718ae5f4389fe373104ac37616224dad6"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/parity44/input/retrieval-requests.jsonl",
+      "bytes": 5708040,
+      "sha256": "85539c64cbb0771884379260eef92b6b93d4fc61b6ac57da17f01d4bdb4e53bf"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-package-20261012-v1/payload/parity44/input/tasks.jsonl",
+      "bytes": 255941,
+      "sha256": "7f37a3d6a30d769f4aecb72e38b3f605dcc6fa97cf6a2085c579022a3e6bbbed"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/baseline-predictions.jsonl",
+      "bytes": 2173839,
+      "sha256": "f8d4769442a8cd0cdc55aa0a1097fe35274ee1215c4a8572259a16c81f5b6a60"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/blocks.jsonl",
+      "bytes": 11679190,
+      "sha256": "3a1fc12bac07a2669f163b52e03fab52a1f428d44837a45e5d35222928f26ea1"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/case_plans.jsonl",
+      "bytes": 160371,
+      "sha256": "02b8056f9f77eca2e472a9f4cf2748965e7707be235ab9aba2bf3c360354ed50"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/documents.jsonl",
+      "bytes": 3116614,
+      "sha256": "5ee59f9f1fb44cd8cbe4ad4676c42cd0b1945e9bbd002e3862d8d8532b81b6bc"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/excluded-blocks.jsonl",
+      "bytes": 1616261,
+      "sha256": "61adbc75b4d2ef6a93f2c865fdeb64ef31d4bd99fb53caddfe8cfe9898f269ce"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/failures.jsonl",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/frozen-au-sku-arrays.jsonl",
+      "bytes": 397474,
+      "sha256": "ac7e855bdc69fe0edbe9ed70e0fe9bb39a1b425f260a4eb865e97b83d6307611"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/frozen-input-links.jsonl",
+      "bytes": 56174,
+      "sha256": "d5f0e848488d333f53d4eb19781e87dffb10798cf8e2f39ff2c8cb5f72d2e201"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/frozen-source-cases.jsonl",
+      "bytes": 191841,
+      "sha256": "44e55da05a19022b0c170d5e8fd1851bac7f8759e9c5c9e1f10218b9db9802f3"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/frozen-source-products.jsonl",
+      "bytes": 1667111,
+      "sha256": "1d86ae505700f2b7c09b076b2fe7d5fa6d39470286c657661d9e48735aa6da9b"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/gpu-cases.jsonl",
+      "bytes": 24153987,
+      "sha256": "ae53fa33e9057d441af6f390d4c13969e1bb8d7e3fce70deab63359eb028338c"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/manifest.json",
+      "bytes": 38367,
+      "sha256": "156de1edc55a778c930690c5364985ffdf6947893af83119cd4ed18f5644d8a1"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/membership.jsonl",
+      "bytes": 5915845,
+      "sha256": "326d5327bcb63267f58f6713fcd7a2a6d9ed7230f0d9c1480413dacb961ec01e"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/model-tasks.jsonl",
+      "bytes": 2136150,
+      "sha256": "6791672693aa7e0cc62c3fc27fef84253fe08c6459de0c58ceb2c02c17f525de"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/products.jsonl",
+      "bytes": 3907275,
+      "sha256": "a7f30db9431cc10753b88d1d45ccd903deb33239b67ec1835f434bed283c4ff9"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/00be36e6ed3620ad42b5773ae08dd37f54d35e27eaefe253bc49d4d01cdc2902.json",
+      "bytes": 33731,
+      "sha256": "00be36e6ed3620ad42b5773ae08dd37f54d35e27eaefe253bc49d4d01cdc2902"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/0877ebe4d7168a3607aeec1745e7e836e406504290279e9f174f4be21f5d82bf.json",
+      "bytes": 19762,
+      "sha256": "0877ebe4d7168a3607aeec1745e7e836e406504290279e9f174f4be21f5d82bf"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/0a00c86a5bd5e03596aad26c366c0661030e7183b3e777142dd6455e47d6d002.json",
+      "bytes": 28375,
+      "sha256": "0a00c86a5bd5e03596aad26c366c0661030e7183b3e777142dd6455e47d6d002"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/0d001f33221d31415e8195b5add0a08a1196f000f11a914aa56d5190fa32b170.json",
+      "bytes": 26835,
+      "sha256": "0d001f33221d31415e8195b5add0a08a1196f000f11a914aa56d5190fa32b170"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/112763b0fb28fa6632a66429bd72f750e3478d22bc36fba53cbba372544b3035.html",
+      "bytes": 159677,
+      "sha256": "112763b0fb28fa6632a66429bd72f750e3478d22bc36fba53cbba372544b3035"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/13ea1cbdd2d1d6a3465f95d4addafb3e027b2f996618c3d3ee9aef1a41e56c9e.json",
+      "bytes": 18658,
+      "sha256": "13ea1cbdd2d1d6a3465f95d4addafb3e027b2f996618c3d3ee9aef1a41e56c9e"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/13f000dd47c39b003ff0addf4a29b2a8f3064ac8f1f63841a8b6ed4c4d9f90c7.json",
+      "bytes": 13212,
+      "sha256": "13f000dd47c39b003ff0addf4a29b2a8f3064ac8f1f63841a8b6ed4c4d9f90c7"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/145b5feca6594d311c31218aa4cf1a45479db115050e109dc1501713fb339b34.json",
+      "bytes": 30241,
+      "sha256": "145b5feca6594d311c31218aa4cf1a45479db115050e109dc1501713fb339b34"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/1537d447e5c229028fc5e0d2e1cf47a3ae38f380429661b16d024b09d8dcabc8.html",
+      "bytes": 1130478,
+      "sha256": "1537d447e5c229028fc5e0d2e1cf47a3ae38f380429661b16d024b09d8dcabc8"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/16b9d833f5fc694f43b0ec61c93cdc8ab4cf4daaaf7bac778a119ee5f2a39dbd.json",
+      "bytes": 49803,
+      "sha256": "16b9d833f5fc694f43b0ec61c93cdc8ab4cf4daaaf7bac778a119ee5f2a39dbd"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/1a3cdc446ddb8fa47398f8a155f96263580484dba6bfef0162c9202f951e30aa.json",
+      "bytes": 25986,
+      "sha256": "1a3cdc446ddb8fa47398f8a155f96263580484dba6bfef0162c9202f951e30aa"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/1abf4d3b506f3c68bbd95eea1d17fc316be6fe2373b4341c8d5ece7a2c8e2fe2.jsonl",
+      "bytes": 383674,
+      "sha256": "1abf4d3b506f3c68bbd95eea1d17fc316be6fe2373b4341c8d5ece7a2c8e2fe2"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/1c277e5c0f8af9b77ff4e3f8f5340eb5e9fb3a5aacc90d88037be2ddb73df276.html",
+      "bytes": 262204,
+      "sha256": "1c277e5c0f8af9b77ff4e3f8f5340eb5e9fb3a5aacc90d88037be2ddb73df276"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/1cc494747f06ccaf81bd1e3fd04b8264688969f608d9822eab15d15fb332591e.html",
+      "bytes": 280007,
+      "sha256": "1cc494747f06ccaf81bd1e3fd04b8264688969f608d9822eab15d15fb332591e"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/23b62170c77b09dd62e7d1c63fa7073c6122211b029df0fb04ab8aec963fd5b3.json",
+      "bytes": 7648,
+      "sha256": "23b62170c77b09dd62e7d1c63fa7073c6122211b029df0fb04ab8aec963fd5b3"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/29d3ddbab406a2d1e1cc4684f76fc5b801f6261b3df7c8d86962b40e7a98b74d.html",
+      "bytes": 237301,
+      "sha256": "29d3ddbab406a2d1e1cc4684f76fc5b801f6261b3df7c8d86962b40e7a98b74d"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/2fe41c31a64f63c278152deb19c3b05a84576089bd3b2b4b2b89c629b33b35f4.json",
+      "bytes": 23684,
+      "sha256": "2fe41c31a64f63c278152deb19c3b05a84576089bd3b2b4b2b89c629b33b35f4"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/303bb8d81ddcd6d8005ffa4ad33abaafefc6476344464302bb4f1993f691bd3f.html",
+      "bytes": 229337,
+      "sha256": "303bb8d81ddcd6d8005ffa4ad33abaafefc6476344464302bb4f1993f691bd3f"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/318cd71c20fc28c98213323b164941d2e27745e93d6dd647d4cbdba0799b5eb0.json",
+      "bytes": 11534,
+      "sha256": "318cd71c20fc28c98213323b164941d2e27745e93d6dd647d4cbdba0799b5eb0"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/347f3b6157cb638ff8e74fd8795301f910806cee15acdf5dec012bf47d911a0d.json",
+      "bytes": 40765,
+      "sha256": "347f3b6157cb638ff8e74fd8795301f910806cee15acdf5dec012bf47d911a0d"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/366f0f85cf1ae8eae858fffda54086d3e570238ff658080cc16ead5104c9d1c0.html",
+      "bytes": 256508,
+      "sha256": "366f0f85cf1ae8eae858fffda54086d3e570238ff658080cc16ead5104c9d1c0"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/36c86d5b5946d756acd7790603c0e2cf7fe7b15f3496f8ca297ce113d88cdfb2.jsonl",
+      "bytes": 3190974,
+      "sha256": "36c86d5b5946d756acd7790603c0e2cf7fe7b15f3496f8ca297ce113d88cdfb2"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/3b8ccc4b7c168ae7d38730372dc974bdf072bcf53f78694f9abbd433196ba35c.json",
+      "bytes": 34614,
+      "sha256": "3b8ccc4b7c168ae7d38730372dc974bdf072bcf53f78694f9abbd433196ba35c"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/3cce6e17c3a32a79691fbb178091f6c91046873bf18f2f66f8a35c033c73ec84.json",
+      "bytes": 37914,
+      "sha256": "3cce6e17c3a32a79691fbb178091f6c91046873bf18f2f66f8a35c033c73ec84"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/3e554e8d536ce18b02c066305c592ce2f106cbb2a3b326f7facde1baab8cd892.html",
+      "bytes": 275479,
+      "sha256": "3e554e8d536ce18b02c066305c592ce2f106cbb2a3b326f7facde1baab8cd892"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/3fd3ebea48e17edbb136c0b8995b58bc767c3b38cf13c0f83d15a208f5f9e484.json",
+      "bytes": 13017,
+      "sha256": "3fd3ebea48e17edbb136c0b8995b58bc767c3b38cf13c0f83d15a208f5f9e484"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/422ee67a2496ab1740e88fdaa8ba8c42f3fa98766447e3a89be94c35f0302ad7.json",
+      "bytes": 50962,
+      "sha256": "422ee67a2496ab1740e88fdaa8ba8c42f3fa98766447e3a89be94c35f0302ad7"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/47614570499060edbbb271fd3cee5818332506a1928b75198cbe89f37c9b129f.json",
+      "bytes": 34698,
+      "sha256": "47614570499060edbbb271fd3cee5818332506a1928b75198cbe89f37c9b129f"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/493927d8e7245ba934b0d3f20bae140ef0412f4a76686ac4f3d1f8ed31dc9783.html",
+      "bytes": 128729,
+      "sha256": "493927d8e7245ba934b0d3f20bae140ef0412f4a76686ac4f3d1f8ed31dc9783"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/4bb74497a4b625555fee6d86401a9aca92ce6e6be7e7f146ca4d0bb94cc990e2.html",
+      "bytes": 220485,
+      "sha256": "4bb74497a4b625555fee6d86401a9aca92ce6e6be7e7f146ca4d0bb94cc990e2"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/4c974c33165d9465efda0f6b7fe86bd92dcbffd0ef106e0fee541b329bb21413.json",
+      "bytes": 19456,
+      "sha256": "4c974c33165d9465efda0f6b7fe86bd92dcbffd0ef106e0fee541b329bb21413"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/4d08e9162c8c6ffcd4720b51a1a061d44657b01b8f83caaab410f887f8caeda7.html",
+      "bytes": 121576,
+      "sha256": "4d08e9162c8c6ffcd4720b51a1a061d44657b01b8f83caaab410f887f8caeda7"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/537ae0714afc776da2e948059e092ad5843b974bc8d7aea5c3e285dcb07a30b5.html",
+      "bytes": 214367,
+      "sha256": "537ae0714afc776da2e948059e092ad5843b974bc8d7aea5c3e285dcb07a30b5"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/54114a3989f4c209c5d9842cb09cb1c3103f1a87a3b8aca4e1b2752cdb799e68.html",
+      "bytes": 164736,
+      "sha256": "54114a3989f4c209c5d9842cb09cb1c3103f1a87a3b8aca4e1b2752cdb799e68"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/54601fc0469821ada0627e49bb67a5a358aded6a53df74824e900afb7bbcc7fb.html",
+      "bytes": 120744,
+      "sha256": "54601fc0469821ada0627e49bb67a5a358aded6a53df74824e900afb7bbcc7fb"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/5cbddc238b00b452f25da2c6912db4999d4cd47fce9aed696fa2e854e9aa9e36.html",
+      "bytes": 300672,
+      "sha256": "5cbddc238b00b452f25da2c6912db4999d4cd47fce9aed696fa2e854e9aa9e36"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/67f228a9a43590e654d0e5df82a1a58a4b1f4a6a307f6350e27e5804c2ed522b.json",
+      "bytes": 12419,
+      "sha256": "67f228a9a43590e654d0e5df82a1a58a4b1f4a6a307f6350e27e5804c2ed522b"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/69d9d2456b5ded8da6c8b3aa1278824debb9acc14bf802d91ef239422f5e1010.html",
+      "bytes": 192345,
+      "sha256": "69d9d2456b5ded8da6c8b3aa1278824debb9acc14bf802d91ef239422f5e1010"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/6c45a4185657801c9a9adb050dabc5d777a4e16197b70ca76d773b5a7727b720.html",
+      "bytes": 202488,
+      "sha256": "6c45a4185657801c9a9adb050dabc5d777a4e16197b70ca76d773b5a7727b720"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/6d45410f281a56e5ea42b0e45ecb1b983aa6c809af59d5d82c93760974925cc8.html",
+      "bytes": 252582,
+      "sha256": "6d45410f281a56e5ea42b0e45ecb1b983aa6c809af59d5d82c93760974925cc8"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/6e7570a0da3cc2b43df766272c23b7a39f592cac3f91e93cc3442fe0c7b82197.json",
+      "bytes": 28005,
+      "sha256": "6e7570a0da3cc2b43df766272c23b7a39f592cac3f91e93cc3442fe0c7b82197"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/71c69ca8041cee0ed4fd65555716f9b1908d14def1124a0b24a2c9f0a8ea8e1c.html",
+      "bytes": 326468,
+      "sha256": "71c69ca8041cee0ed4fd65555716f9b1908d14def1124a0b24a2c9f0a8ea8e1c"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/73a434c57287cd256f5cae03e64793cffd4500acf19924663454907457c29035.html",
+      "bytes": 175461,
+      "sha256": "73a434c57287cd256f5cae03e64793cffd4500acf19924663454907457c29035"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/74dbc4dfab936da613dafe3f70f498b7906b0339690b81a384e828a824cd3cdb.json",
+      "bytes": 15420,
+      "sha256": "74dbc4dfab936da613dafe3f70f498b7906b0339690b81a384e828a824cd3cdb"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/78c35fdc0d7a031012661733439281472b56f6602107c51ac57e5f22a1d75f2f.json",
+      "bytes": 31968,
+      "sha256": "78c35fdc0d7a031012661733439281472b56f6602107c51ac57e5f22a1d75f2f"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/7bb5c4912e9393a51e3d7b2496beea1eca08afa00594e8e06490d7a19a2b4236.html",
+      "bytes": 195351,
+      "sha256": "7bb5c4912e9393a51e3d7b2496beea1eca08afa00594e8e06490d7a19a2b4236"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/857b15b5a9000237ec8e2d821cdc45cb54cc56cf6fe18dd47e885b36f2e5f3ee.json",
+      "bytes": 36326,
+      "sha256": "857b15b5a9000237ec8e2d821cdc45cb54cc56cf6fe18dd47e885b36f2e5f3ee"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/85b61ea5de28ca6bcaed95d616e99b27cc9b330a526b31acf23b5ee9bf414eac.html",
+      "bytes": 321816,
+      "sha256": "85b61ea5de28ca6bcaed95d616e99b27cc9b330a526b31acf23b5ee9bf414eac"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/862aaaebd6973090fcc8c300738c0e9e88842c5aa59c5296d67ee252950b52c3.jsonl",
+      "bytes": 6036398,
+      "sha256": "862aaaebd6973090fcc8c300738c0e9e88842c5aa59c5296d67ee252950b52c3"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/8719fd1ce89f4f178e7d2b718b9f52f874f97fcc6d1891af356334905743fd87.html",
+      "bytes": 179131,
+      "sha256": "8719fd1ce89f4f178e7d2b718b9f52f874f97fcc6d1891af356334905743fd87"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/8a29cac307286bd3834e12ea3b096f4b7927592159ac7741243898931a23053a.json",
+      "bytes": 28553,
+      "sha256": "8a29cac307286bd3834e12ea3b096f4b7927592159ac7741243898931a23053a"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/8bc8c8fffa7379944f6af8235241e8e4542fe0aa363cb591f273545d39cbe5b2.html",
+      "bytes": 216883,
+      "sha256": "8bc8c8fffa7379944f6af8235241e8e4542fe0aa363cb591f273545d39cbe5b2"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/9049aec6760b14db12405db35f6d0b7a4da1da0bda055db0ca74e2a23472ed49.html",
+      "bytes": 120921,
+      "sha256": "9049aec6760b14db12405db35f6d0b7a4da1da0bda055db0ca74e2a23472ed49"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/90c6ccd8292061df2dca807d08bab2d0ee3608a9b60ac6ced5a8146505ae007e.json",
+      "bytes": 15697,
+      "sha256": "90c6ccd8292061df2dca807d08bab2d0ee3608a9b60ac6ced5a8146505ae007e"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/93f71280a2b6f4c5e9e5e34de9b05ecb0abb937e1cb299928d09dfda46a369ef.json",
+      "bytes": 31347,
+      "sha256": "93f71280a2b6f4c5e9e5e34de9b05ecb0abb937e1cb299928d09dfda46a369ef"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/94ed896ea4519662b796d6c37d73fcb17f67d1c52a9529e91819a0287e7c9337.html",
+      "bytes": 380620,
+      "sha256": "94ed896ea4519662b796d6c37d73fcb17f67d1c52a9529e91819a0287e7c9337"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/96e7afa9223b641cf045086ba267dff51f207a76222abc0de69e1af752a731f1.json",
+      "bytes": 32685,
+      "sha256": "96e7afa9223b641cf045086ba267dff51f207a76222abc0de69e1af752a731f1"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/97caeccfc13366f8bb90267e1db31b463d68098266f0898a21e685bb921ce617.json",
+      "bytes": 9620,
+      "sha256": "97caeccfc13366f8bb90267e1db31b463d68098266f0898a21e685bb921ce617"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/9be343ae37fd89ea05e1e65f75760409bde21d81e2ba2a03bb2408eb893f2cea.html",
+      "bytes": 112372,
+      "sha256": "9be343ae37fd89ea05e1e65f75760409bde21d81e2ba2a03bb2408eb893f2cea"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/a044289e55d6286d1a4d9fbb4b503b6ed299ddfe03c1b39cf42a1cacbdc00f4d.json",
+      "bytes": 31039,
+      "sha256": "a044289e55d6286d1a4d9fbb4b503b6ed299ddfe03c1b39cf42a1cacbdc00f4d"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/a32cb9ad386fe983438816f24dd47590f214025f7e5da3bbc308b04bf4aab92c.html",
+      "bytes": 264400,
+      "sha256": "a32cb9ad386fe983438816f24dd47590f214025f7e5da3bbc308b04bf4aab92c"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/a496e2aeee1620b7867857fde72a62cc1a54dc393a7b767bdcc8ed51c896ff2b.html",
+      "bytes": 188355,
+      "sha256": "a496e2aeee1620b7867857fde72a62cc1a54dc393a7b767bdcc8ed51c896ff2b"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/a787b53607a0dab3391182ef9a0dfd83d56e8d1f3226003b49e67ade4b3f7c96.json",
+      "bytes": 35294,
+      "sha256": "a787b53607a0dab3391182ef9a0dfd83d56e8d1f3226003b49e67ade4b3f7c96"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/abd67242a1bc96d4f82fd26cbc9591a21b8e4469d649a2b761941320c4807fc8.json",
+      "bytes": 26375,
+      "sha256": "abd67242a1bc96d4f82fd26cbc9591a21b8e4469d649a2b761941320c4807fc8"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/acb1fc2a6d4130163239e6b4d39ddd049c32a38c749ff8bef8fe438046810978.json",
+      "bytes": 17165,
+      "sha256": "acb1fc2a6d4130163239e6b4d39ddd049c32a38c749ff8bef8fe438046810978"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/afc3f944d8c5371f863ed3559e1a17ea01215747324b0fc8878b6a99b82fad9d.json",
+      "bytes": 26635,
+      "sha256": "afc3f944d8c5371f863ed3559e1a17ea01215747324b0fc8878b6a99b82fad9d"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/b1956598c5f3191e3c3d39e200766031baf589321d570e36ceeaf6e8f349a716.json",
+      "bytes": 32417,
+      "sha256": "b1956598c5f3191e3c3d39e200766031baf589321d570e36ceeaf6e8f349a716"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/b1b3419bc48661b89f6c592e68c1d4183ee82c7268c5de5886ad05ac05eda3e4.json",
+      "bytes": 37479,
+      "sha256": "b1b3419bc48661b89f6c592e68c1d4183ee82c7268c5de5886ad05ac05eda3e4"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/b2d4082a4d43d44e1fbe4cb6cf57c5cbc027341033e2628c1923c46bd5d57667.json",
+      "bytes": 15495,
+      "sha256": "b2d4082a4d43d44e1fbe4cb6cf57c5cbc027341033e2628c1923c46bd5d57667"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/b42b25c5788702e75291ef1b4a7a70f20218c238ddf715841e817cf9e37052dc.html",
+      "bytes": 84596,
+      "sha256": "b42b25c5788702e75291ef1b4a7a70f20218c238ddf715841e817cf9e37052dc"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/b79bf7f90ef8187609ac5d32b36b53b3a269f0017a181d3231d3a722f3aed8fb.html",
+      "bytes": 104202,
+      "sha256": "b79bf7f90ef8187609ac5d32b36b53b3a269f0017a181d3231d3a722f3aed8fb"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/bd5db7df1eba4a5685789b52a5bd8e2aaf2e93ebded42ff01c65ce2127340a40.html",
+      "bytes": 97270,
+      "sha256": "bd5db7df1eba4a5685789b52a5bd8e2aaf2e93ebded42ff01c65ce2127340a40"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/be97ce207a9bb0038d564a16d79b4e4e28793973a1ae5d65057e95b9591b0045.json",
+      "bytes": 23970,
+      "sha256": "be97ce207a9bb0038d564a16d79b4e4e28793973a1ae5d65057e95b9591b0045"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/beaaadf70e1fc646908f3281e2a5d722f58e5b1cb417ebfb0f0c31de75b8067f.html",
+      "bytes": 100293,
+      "sha256": "beaaadf70e1fc646908f3281e2a5d722f58e5b1cb417ebfb0f0c31de75b8067f"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/c467ee6a70702b42c8421edf6463f2ba6839de96bd8eaafd7f3a6f4ed2e192e2.json",
+      "bytes": 23221,
+      "sha256": "c467ee6a70702b42c8421edf6463f2ba6839de96bd8eaafd7f3a6f4ed2e192e2"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/c58d65da3d0cd2c286f0e274fd9114794c8868f9a12e74e84e205f369b166423.html",
+      "bytes": 119249,
+      "sha256": "c58d65da3d0cd2c286f0e274fd9114794c8868f9a12e74e84e205f369b166423"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/c75a7e42e378e44cb884b33b236748def8817d4aa67fdab816e64d32b22ac2ad.html",
+      "bytes": 185019,
+      "sha256": "c75a7e42e378e44cb884b33b236748def8817d4aa67fdab816e64d32b22ac2ad"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/c8ec93bb241402c07a3aec250fce66ebc7be6c8c5e1755c012bf1b148317c917.json",
+      "bytes": 39377,
+      "sha256": "c8ec93bb241402c07a3aec250fce66ebc7be6c8c5e1755c012bf1b148317c917"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/cc539a922a685e3a77e886a1c14fc8f7a4425e43b91653eb861c856c525853eb.html",
+      "bytes": 247892,
+      "sha256": "cc539a922a685e3a77e886a1c14fc8f7a4425e43b91653eb861c856c525853eb"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/cdcba5a84f46cee7a9b525b26be00cb4a58642315d291f8432b3f91d6b48cbc4.json",
+      "bytes": 11429,
+      "sha256": "cdcba5a84f46cee7a9b525b26be00cb4a58642315d291f8432b3f91d6b48cbc4"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/d001f29b2e86f3d9dd29f21eb98a355bd730128372305458a649648c06742baa.json",
+      "bytes": 23832,
+      "sha256": "d001f29b2e86f3d9dd29f21eb98a355bd730128372305458a649648c06742baa"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/d4c3511e26dd027f60ce99ba716ce554c38426b5474ba6d0911889e01a965fe1.json",
+      "bytes": 12111,
+      "sha256": "d4c3511e26dd027f60ce99ba716ce554c38426b5474ba6d0911889e01a965fe1"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/d64a421aa493ee25b001d19cc6e8080e3f4b07cf69bc423dd2c6c2a009cc9588.html",
+      "bytes": 362509,
+      "sha256": "d64a421aa493ee25b001d19cc6e8080e3f4b07cf69bc423dd2c6c2a009cc9588"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/d711ce1b41cbec051455b28d62082e2f84072fabcb1447e253e31de30087908e.html",
+      "bytes": 361651,
+      "sha256": "d711ce1b41cbec051455b28d62082e2f84072fabcb1447e253e31de30087908e"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/dbf5a6c28495caaf6653678e2892de4b4cc7c0b3c95f8a3cc6dc7aa251695f9e.html",
+      "bytes": 232739,
+      "sha256": "dbf5a6c28495caaf6653678e2892de4b4cc7c0b3c95f8a3cc6dc7aa251695f9e"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/deeaf3044d2203a10461e5fd80d9acf435d29296e3c38b1b7264c4aad15dc891.json",
+      "bytes": 37876,
+      "sha256": "deeaf3044d2203a10461e5fd80d9acf435d29296e3c38b1b7264c4aad15dc891"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/ecbff9728c8697310e5035e011f8be37f41d99a7148fbd8789a1c794e230bf6e.json",
+      "bytes": 22810,
+      "sha256": "ecbff9728c8697310e5035e011f8be37f41d99a7148fbd8789a1c794e230bf6e"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/f263c0701433cb594717c4e775034810c07e547ce4f9fad5fbe82837381f75b1.html",
+      "bytes": 122548,
+      "sha256": "f263c0701433cb594717c4e775034810c07e547ce4f9fad5fbe82837381f75b1"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/f57cd12f224c42168af25e49094e56f57af118c6f0c800c3977188747e815c0d.json",
+      "bytes": 28978,
+      "sha256": "f57cd12f224c42168af25e49094e56f57af118c6f0c800c3977188747e815c0d"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/f775b312b7ad1cf0b3a524755da01cc6ea7523e02fb0a53a7430d761b600cf70.json",
+      "bytes": 34521,
+      "sha256": "f775b312b7ad1cf0b3a524755da01cc6ea7523e02fb0a53a7430d761b600cf70"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/f8449044d8cdd4429faae60323f2512ed68992e41817e2c3817f38b1fe3d0217.html",
+      "bytes": 591953,
+      "sha256": "f8449044d8cdd4429faae60323f2512ed68992e41817e2c3817f38b1fe3d0217"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/f9df59e9358788e97216ebb786b9a8a82405d1d151ecea4a467372f06f51fa8b.json",
+      "bytes": 39311,
+      "sha256": "f9df59e9358788e97216ebb786b9a8a82405d1d151ecea4a467372f06f51fa8b"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-captures/ffe5e3bf3065090011b123123f0e81acdb654e85e1c8638fb80e18214157491e.html",
+      "bytes": 154358,
+      "sha256": "ffe5e3bf3065090011b123123f0e81acdb654e85e1c8638fb80e18214157491e"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/raw-source-registry.jsonl",
+      "bytes": 68983,
+      "sha256": "a76ae60ca9e3c030d35542e4acb7aba7b68c2b8ccf172794bf0986c368cd4b3d"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/requests.jsonl",
+      "bytes": 199279,
+      "sha256": "cde607252f1fb7f0bdd0f4e332623ee2f237a1cbe78f8a120f4a218d4cc75f10"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/retrieval-requests.jsonl",
+      "bytes": 7017901,
+      "sha256": "0b9c6c4acfdb8d5b398cef0ca2ff0a3641d9a674c9923a397525213fb339ffd7"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/row_plans.jsonl",
+      "bytes": 809120,
+      "sha256": "23a2040c194cf9c31d087f00a1fe72d8e229a0e91bac8e89ef17d67360757fe1"
+    },
+    {
+      "path": ".lab-output/sku-mixed-gpu-prep-20261012-v5/tasks.jsonl",
+      "bytes": 1910576,
+      "sha256": "d4703dc1553696151bb5b8e6c5c8ecbed7f44a08636e4941de1a8199e2e3da91"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/build-checkpoint.py",
+      "bytes": 3612,
+      "sha256": "20d2ad5d94908e38dde171b71ea8b5249ba2a27ab7b68a7998b0e30d88d51007"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/checkpoint-file-list.json",
+      "bytes": 136034,
+      "sha256": "ba4b39726fc50cbff2514099a9ad49bf146faaef1771abfaaee9de27468a1d68"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/checkpoint-verification.json",
+      "bytes": 214,
+      "sha256": "82273a891c6de5c423a1a6e860ed9aa1c70b92c67800dd5df76e8cf8de7f3875"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/cpu-session.log",
+      "bytes": 13394,
+      "sha256": "59ce7b1463d7ceffea40638c59d06a794afd1d612c834a8f8c24932d6f0344fc"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/dataset-create-receipt.json",
+      "bytes": 35,
+      "sha256": "f9b00523083ac640dd2de1a0e974aa646c3923689e7066b931850f4ac6ee6ce9"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/dataset-ready.json",
+      "bytes": 1018,
+      "sha256": "a484611191628b512408424e61f5391f18065c33d4be7fa417aa87313c2a2ed3"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/dataset-remote/dataset-metadata.json",
+      "bytes": 398,
+      "sha256": "78b817aa67733cec1e4e535bb0d80e44dad9dc7307770d4f13651b12d7638bff"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/dataset-version.json",
+      "bytes": 981,
+      "sha256": "f9208bded2b3719cfc7ba59ee72f12558739966cdfcf887201973d6a63843022"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/decision-freeze-verification.json",
+      "bytes": 445,
+      "sha256": "5b4afe999b167cca67464ca63ea125399ea0e738993e33f539b438d46ef83338"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/evaluation-receipt.json",
+      "bytes": 6050,
+      "sha256": "ae270c0527ec1ea6c0478ce6cd3641b361cfdcacf41bd77dfe876f2e42cab9ef"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/focused-suite-final.log",
+      "bytes": 3277,
+      "sha256": "f892ef08fae1ce57bfa7779d5e813d1e9773cc25087a3190001ce1d006041ada"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/focused-suite.log",
+      "bytes": 3273,
+      "sha256": "eda63b6ef17392ab83d172100521f8ad2ffed953faee5b29ab412679636b25e1"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/gpu-acceptance-contract.json",
+      "bytes": 1181,
+      "sha256": "f3d6ea7a64df49a49ecb6cf11dde6a87551654ec4b1238a7692a2d3fbb749c78"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/kaggle-identity.json",
+      "bytes": 32,
+      "sha256": "f589c4cfa22a8ad0a1e325b9b74a34ebba184d9411c41343a5f0a908fd21d047"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/kaggle-kernels-preflight.json",
+      "bytes": 1773,
+      "sha256": "7f2d6bd5f3c6f21069de460545e4385d5008564abd7079b05ff0c2a870ddb18b"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/model-acquisition.json",
+      "bytes": 621,
+      "sha256": "0ac5d20580d5d9e731bb220217d3dfcd6b7a6d5e946184e47991d2287d908e7c"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/pre-submit-validation.json",
+      "bytes": 1144,
+      "sha256": "9de1a96611260dacf67ec91e861b0b4a2c0bd790fc35b4353b706268bc1e8782"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/quota.json",
+      "bytes": 273,
+      "sha256": "1f74862db141371af8dec1d97f57e67b072c6f3f72cae82c42dee015dbf5d814"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/required-suite-post-fallback.log",
+      "bytes": 40603,
+      "sha256": "3c2fa50e213123249f2e7df54e16f485e20b8b06e69cfde0026d6812968017a4"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/required-suite.log",
+      "bytes": 47988,
+      "sha256": "0f4c386ff4929e7cbeb46be09a83daae2bb480debc510b1b3c7c981b66245376"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/selected-source-restoration.json",
+      "bytes": 394,
+      "sha256": "e5c00d17fdda569a345535ebb4fee41c3ef7b075827060cb7aafcf7afeabf41d"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/sku-all-related-final-tests-20261012.log",
+      "bytes": 3281,
+      "sha256": "6faffc56708fe7b115e408004a992cd0d0806af546e345900dd4163fbfdbc79c"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/sku-resume-completed-lab-tests-20261012.log",
+      "bytes": 40349,
+      "sha256": "2ce50e1230dc30a41f6364cf82febfe391370e2414a64bbe4b466e861959a4ab"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/submit-receipt.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".lab-output/sku-resume-20261012-v1/transformers-index-preflight.txt",
+      "bytes": 1826,
+      "sha256": "5c5bb2ee3750cfb2c9a7daf8c1128da5c88d2966f4abf3fe3b63d54a32165695"
+    },
+    {
+      "path": "experiments/sku-matching/claude-followup-20261012.txt",
+      "bytes": 1730,
+      "sha256": "14b5b76987d5c6f87dc65d0a1d177c8fc81d34b720e1f74f2f1fb22e6e52eae6"
+    },
+    {
+      "path": "experiments/sku-matching/session-result-20261012.txt",
+      "bytes": 5333,
+      "sha256": "a947a1797058da4721ff04b1b193f21c3c728e4fe3f1453ef3c8d450550a71e7"
+    }
+  ]
+}
