@@ -1,3 +1,7 @@
+## native実判定確認（2026-10-13）
+
+最新版55ceed6のホストnative経路でprobeと保存済みSWE-Pruner1件の実判定に成功。候補はdefer、推論0、未完了1,057件維持。詳細: [native v3報告](../../reports/2026-10/2026-10-13-evening-radar-native-v3.md)。既存collectorのcodex固定gateと単独cronは未移行で、CLI復旧を意味しない。ホストがnativeを明示選択するときは最新版platform/native.mdの2段階probeを使い、CLI gateを先に実行しない。
+
 ## 判定器修復ブランチ（2026-10-13）
 
 上流修正: https://github.com/cushionA/zabuton_skills/pull/5 （commit `b4bf3f37786a645875c5c08ddca677f9ebe389cf`）。このブランチは正規stateブランチの最新版 `39f7dfb238565361683f240634c41f42acc107a0` から分岐し、実際の `.agents/skills/research-repro-radar/` コピーの6ファイルだけを同期した。profile等のローカル差分は維持する。
