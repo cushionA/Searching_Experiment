@@ -1,0 +1,7 @@
+format DEV4 firstpass + grading checkpoint（2026-10-13）
+
+このcheckpointはformat DEV4のsource、101-pin pre-inference freeze、16件のfirst-draftとcold Luna execution、render/source validation、grading freeze/GO、集計scoreを復元可能な形で保存する。対象は新規2 products/4 cases（以前の45 productsは除外）、14 rows、58 tasks、40 requests、4 documents。16 dispatched pairs、7 literal-protected pairs、30 choices。全16 draftがrender/source validationを通過し、errors/retries/自動補完citationはなし。58 original task bindingsと全whole gatesを保持した。
+
+known referenceは2件で両方positive、unknownは2件。indexedはTP=2, FP=0, FN=0, TN=0、literal-onlyはTP=0, FP=0, FN=2, TN=0。2件の小標本でnegative evidenceはなく、production性能の根拠にはならない。unknownの判断集計は行わず、unknown case IDやcase-level情報は収録しない。private full score/reference detailsはZIP外。
+
+Guidance v2（SHA-256 4f80ba60babd87bd9db1e1ef688792bf30fd626d976daec79f1e3f7b71e50e5e）はscopeがcondition dimensionでありvalue equalityではないこと、およびstring/null protocolを明確化するだけで、model/gate/semantic sourceは変更しない。Route packetizerは既存moduleを再利用。base commit 1a6353dとR9 checkpoint依存はmanifestに記録。
