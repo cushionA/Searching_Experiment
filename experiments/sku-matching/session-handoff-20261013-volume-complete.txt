@@ -1,0 +1,32 @@
+ボリュームテスト完了、2026-10-13
+branch codex-sku-generic-model-gates-20261010
+
+全965classifier taskがterminal、worker稼働なし。全46未使用TEST商品/569ケースの評価完了。既知439ケース（positive332/negative107）、unknown130。indexed-body-invariant-v3: exact accepted SKU-row281/332=84.64%、TP281 FN51 FP0 TN107。literal-only164/332=49.40%。paired117gain/0loss。product macro37products77.21% vs56.76%。unknown accept54は未検証。機械注釈で人のgoldではない。約7h5mのhosted agent実行、Kaggle新job未投入。
+
+最新ユーザーは条件分岐の確認のみを要求。商品/カテゴリ固有の追加意味ルール0。主要12本はanchor f605cdcc57ca232d5bdaaa40d05bcdbc06cea6c1と原bytes一致。共通検証runnerのguardsは多く整理余地あり。現時点で新しい規則/モデル/コード整理/収集/再推論は開始していない。
+次回Kaggle可という無条件の約束は禁止。認証とGPUquotaは利用可能だが、現hosted gpt-6-luna重みをKaggleへ移植できない。同モデルのままではKaggle GPU化できない。GPU対応モデルを別に用意・DEVで比較する実行構成は未準備。ユーザーは元Qwen案を撤回しており、無断で戻さない。
+
+EX .lab-output/sku-volume-unused-test-execution-20261013-v1
+config .lab-output/sku-volume-unused-test-20261013-v1/runner-config-volume-v2.json
+final gates EX/final-gate-run-v1
+snapshot EX/firstpass-snapshot-v1
+freeze EX/grading-freeze-v1.json SHA23376c45087002a222223d103081cccd3812207a01d9cf74f13b90c377d3e6b3
+root GO EX/root-go-for-volume-test-grading-v1.json
+private grade EX/postfreeze-private-grade-v1.json（成果物には未同梱、原正解ZIP別依存）
+metrics results/20261013-sku-volume-unused-test-metrics-v1.json SHA9ac3ad200d81d99921ea5a797f0f69aab74b697d047401466b056ca992ed3355
+report results/20261013-sku-volume-unused-test-report-v1.txt
+completed checkpoint results/20261013-sku-volume-unused-test-completed-v2.zip SHAa86e51dc7296d22cd66841724f0afdf37e08125cdb96a628f2303a3fb1d3d65b、21,668,317B、6599members。CRCと全memberSHAをpackerとROOTで確認、private grade/正解ZIP除外。
+
+復元依存: results/20261013-sku-volume-unused-test-source-checkpoint.chunks.json、4parts、restore-supplement、experiments/sku-matching/restore_volume_source_checkpoint_v1.py。SOURCE archive147,621,321B SHA6ad75d12e5b6cf74c32792cebb390b40beaf7d4d56bba50f2938efd73bceeaeb。最終checkpointはこれと全partsの重複内包を除いた。復元helperは91captureの原bytesをlogical→physical source_rootへ検証して配置する。repo path /workspace/Searching_Experiment-model-gates-20261010想定。
+
+再現限界: 8 early individual spawn recordsにgap、supplemental coordinator model-selector報告で明示。旧ledger1行のdelimiter修復前全bytesは残っていない。model weightsの実体/各worker内部全tool履歴は独立attestationなし。958既存file拒否は作者/第一write帰属未確認、構造・引用有効で凍結collectorそのまま利用、60case binding(TP23/FN7/unknown accept20/drop10)を記録。原bytes更新なし。mode331/851/936の自己申告は以前のsemanticdraft上書き証拠とは別。11missing originals/4empty/418・552actualEOF不正など全監査v18保存。33missing response+34invalidはunknown、全569case/13159rows/62252tasks保持。source unknown30/contextless60も除外せず保持。
+
+監査のv2を正とする箇所: pregrade-independent-review-receipt-v1の857対965『不一致』は担当range109..965=857とprefix108の違いであり、v2で誤解を訂正。postgrade-failure-diagnosis-v1のpair join不可能/958不可はv2で訂正。condition-branch-audit-v1のSHAはrstripしたtextであり、生bytes不変証拠はroot-raw-classifier-hash-audit-v1を使う。原v1を黙って書き換えていない。
+
+QA: 新規adapter focused19tests/collector4回帰/集計guard合成検証passed、全lab1436tests assertion failure0、ERROR14 historical fixtures missing、skip37。全greenと言わない。
+
+評価はここで消費済み。全元TEST106商品の独立利用枠はなく、同じTESTに合わせた追加ルール調整/新variantを独立改善と称することは禁止。必要なら今後DEVで共通入出力・serializer・JSON typed-sourceproofを改善、新独立評価には新freeze集合。今回50FN no_full_support、1unknown competitor、expected row unknown45/conflict5/support1。
+
+Remote: 最終確認origin HEAD53cd968cd962d81adc8ea844884619b8c11d61eb。商品原文91captureを含む約148MBsource checkpointをGitHub cushionA/Searching_Experimentの既存同branchへpushする操作がauto-reviewで拒否され、具体payload+destinationの明示承認をasyncで依頼済み、未回答。旧『remote』『全部承認』を再解釈して再pushしない。今回成果物はLOCAL COMMITのみ、remote保存完了と宣言しない。具体承認が届いたら元branchへpushしてremote HEAD検証。承認がない間、別宛先や別手段への同payload送信で迂回しない。
+
+未関連untracked HANDOFF.txt,audit/,claude-request.txt,resume-prompt.txt,workspace.patch,tests/test_lab_body_r9_firstpass_freeze.before-*.pyを維持する。

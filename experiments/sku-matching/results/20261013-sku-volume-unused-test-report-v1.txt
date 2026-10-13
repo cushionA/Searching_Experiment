@@ -1,0 +1,36 @@
+ボリュームテスト結果と条件分岐確認（2026-10-13）
+
+結論: 一般的な改善を続ける価値はある。ただし現時点はユーザーの「条件分岐だけ確認」に従い、新しい判定規則やモデルを追加しない。次の作業を行うなら、DEVで共通の入力・出力・保存処理とJSON原文証明を先に整える。採点済みのこの集合に合わせた条件調整は行わない。
+
+対象は未使用TESTの全46商品・569ケース。既に消費した60 TEST商品は商品単位で全723ケースを除外して固定した。今回の569ケースは一切削らず、全13,159原SKU行、62,252判定条件を両方式に保持した。965 cold classifier jobsで971比較pairを処理した。1005 pairは既存の厳密な原文literal証明で保護した。分類モデル指定はgpt-6-luna/fork_turns:none。モデル重みの独立な実体証明はない。
+
+機械注釈が既知の439ケース: 一致332、不一致107。注釈不明130は精度計算から外し、採用数を別記した。
+方式                     正しいSKU行の再現率  TP   FN   FP   TN   既知ケース正解率
+indexed-body-invariant-v3 84.64% (281/332)   281   51    0  107   88.38% (388/439)
+literal-only              49.40% (164/332)   164  168    0  107   61.73% (271/439)
+同一ケースで117件改善、悪化0。既知の採用281件は全て注釈の正しいAU SKU行に一致。既知負例107件で誤採用0。注釈はClaude Haiku 5.5の機械注釈で、人手の正解や本番の誤採用率を確定した結果ではない。
+
+商品を均等に重み付けした正しいSKU行の再現率（既知一致ケースを持つ37商品）は77.21%、literal-onlyは56.76%。見逃し51ケースは14商品に分布する。残った51件の期待行は45行unknown、5行conflict、1行support（競合unknownのため見送り）。期待行の53 unknown条件のうち、18条件はmissing firstpass、14条件はschema/source invalidと結び付く。source family/contextlessの不備は3 FNケースの期待行に関係した。単なる関与・共起を、修正によって必ず回復する件数とは解釈しない。判定内容そのものを再裁定していない。
+
+注釈不明130ケースのうち新方式は54件採用、従来方式は8件採用。この54件の正しさは未検証であり、TPにもFPにも加えていない。
+
+条件分岐監査: 今回追加した商品・カテゴリ固有の意味判定例外は0。分類器・全SKUゲート・literal証明・body-v3・indexed transport・引用処理などの本体12ファイルは、テスト開始前のanchor f605cdcc57ca232d5bdaaa40d05bcdbc06cea6c1と現在の原ファイルがバイト単位で一致する。原値が不一致のcore/residualや表記の類似を自動証明に戻す変更もない。
+新しい分岐は入力の型・件数・ID・原文証拠・pin/freeze・ファイル保存の共通検証。指定した新規/実行script群のAST if/ternary/matchノードは385、runner単体121（絶対数であり商品ルール数でも追加差分数でもない）。この検証部分の重複・連鎖には共通化して簡素化する余地がある。今は整理のコード変更も行っていない。独立レビューのSHA表は末尾空白除去後のhashであり、原バイトSHAとして使わず、ROOTの生バイト照合receiptを正とする。
+
+実行品質: 938 original responsesを登録し、33 pairは欠落/形式エラーでunknown、登録内34 pairは構造不正でunknown。追加推論や原応答補完はしなかった。原draftファイルの欠落11、空4、実際の最終改行不正418/552、保存mode逸脱自己申告331/851/936等を原状保存。packet510は自己申告と違い実ファイルにLFがあり、その矛盾も記録。元の原文証明が不成立の30条件と依存するcontextless合計60条件を元の全条件に残した。
+
+再現性の限界: 初期の8 actual classifier spawnには個別tool記録がなく、coordinator報告のrequested model/fork selectorをsupplementalとして区別している。初期ledgerの1行は元バイト全体を保持する前にdelimiter修正され、修復前全履歴は復元できない。個々のworker内部tool履歴は全て独立に確認できず、「再試行0」はROOT/coordinatorからの追加semantic再派遣・修復なしを意味する。
+packet958は既存ファイルで初回保存が拒否されたという原FINALがある。既存ファイルはref1964として構造・引用検証を通り、凍結collectorの変更なしで使ったが、作者と最初のwriteの帰属は未確認。このpairに結び付く60ケースの内訳は既知TP23/FN7、注釈不明accept20/drop10。依存関係の集計は、このpairが採用に必須だったことやfirstpassの実作者・意味的真偽を証明しない。従って完全なfirstpass履歴保証や本番採用完了とは扱わない。
+
+時間: 最初に記録されたclassifier spawnから最後のterminalまで約7時間5分。hosted agent serviceと実行管理・入出力を含む壁時計時間であり、CPU/GPUでモデル重みを動かした純推論benchmarkではない。Kaggleは認証とGPU枠（最後に確認した残約27時間）を確認したが、新GPU jobは未投入。今回固定したhostedモデルをKaggle notebookに移せないためモデルを置換しなかった。採点完了後のGPU再実行は不要。
+
+検証: 新しいsource/partial/runner対象19 tests、collector4回帰と集計ガードの合成検証を通過。指定の全lab testは1436 tests、assertion failure0、過去fixture未復元のERROR14、skip37。全テストgreenとはしていない。両方式のcase/product/row/task ID集合は原入力と完全一致をROOTと独立レビューで照合。全予測・source/code・QA・実行バイトのinventoryを採点前に固定し、正解ZIPはその後にのみ開いた。
+
+採点freeze SHA256: 23376c45087002a222223d103081cccd3812207a01d9cf74f13b90c377d3e6b3
+aggregate summary SHA256: 9ac3ad200d81d99921ea5a797f0f69aab74b697d047401466b056ca992ed3355
+保存されたsummary: results/20261013-sku-volume-unused-test-metrics-v1.json
+再現ZIPは結果・原応答・公開入力に依存する原文・利用可能な実行記録を保存し、個別private gradeと正解ZIPは含めない。正解ZIP再現依存SHAはv2 6f65d988222c79c758614592340ba28565a51fa8891317724ba354c5fc38b457、v3 52f6faa51127a9c12250a3cdb5eb3d1818a36461a8c09323e481748aeed1f37b。
+
+この実行で元TEST全106商品の独立な利用枠は消費済み。今後の改善はDEVで検証し、独立な改善主張には新しい固定評価集合が必要。新規収集やモデル置換、判定分岐追加はこの作業では開始しない。
+
+リモート保存: 商品原文91 captureを含む約148MBの復元source checkpointをcushionA/Searching_Experimentの既存branchへpushする操作が、自動承認レビューで拒否された。具体的な送信内容と送信先の明示承認が未回答。local commitと成果物は保存するが、remoteに保存済みとは主張しない。承認後に同branchのremote HEADを確認してpushする。
