@@ -1,3 +1,15 @@
+## 判定器修復ブランチ（2026-10-13）
+
+上流修正: https://github.com/cushionA/zabuton_skills/pull/5 （commit `b4bf3f37786a645875c5c08ddca677f9ebe389cf`）。このブランチは正規stateブランチの最新版 `39f7dfb238565361683f240634c41f42acc107a0` から分岐し、実際の `.agents/skills/research-repro-radar/` コピーの6ファイルだけを同期した。profile等のローカル差分は維持する。
+
+再開時は実行側にもこのブランチの変更を取り込む。正規stateの4JSONは変更せずに読む。Skillは固定した旧SHAではなく承認済み最新版を取得し、インストールされたコピーのSHA/manifestを照合する。スケジュール・cronは変更していない。今回アクセスできたAutomations一覧には夕方レーダーの定義が無く、固定プロンプトや実際の起動環境への反映は確認できない。別の起動設定がこのstateブランチを固定取得している場合は、承認後にこの修正をそのブランチへ取り込む必要がある。
+
+大量探索・採点前に `RADAR_LLM=codex python experiments/research-repro-radar/judge_preflight.py` を1回だけ実行する。記録上の指定modelは `gpt-6-luna`（利用可能性は未確認）。変更が明示承認された場合のみ `RADAR_JUDGE_MODEL` に指定する。`collect.py` / `collect_expanded.py` は最初にこのgateを実行し、非0なら取得や書込みをしない。採点等の他コマンドを単独で起動する場合は `.agents/skills/research-repro-radar/scripts/run_checked.py --model gpt-6-luna -- <コマンド>` でgateする。複数コマンドのオーケストレータは開始前に一度だけpreflightを呼び、非0で通常ループからreturnする。候補なしとは報告せず判定基盤利用不可とする。既存1,679 artifactを再収集しない。
+
+対応環境での確認範囲: 実行ファイル/version/help → 最小probe → 保存済み `runs/2026-10-13-evening/review-sources/` 資料1件を実候補schemaで `llm.judge_with_diagnostics()` に渡す。今回のWork環境はcodex未検出なので後半2段階は未成功・未実施。候補モデル推論とは別の確認である。認証の移設やsandbox解除は行わない。
+
+以下は過去の調査記録であり、古い再開条件より上記gateを優先する。
+
 # 最新の夕方記録（2026-10-13 JST）
 
 [当日報告](../../reports/2026-10/2026-10-13-evening-radar.md)。一意artifact1,679、最終review20、推論0、未完了1,057。必須Codex judgeはnullで未完了。初回444件を全て保持。`evening-state/` が正規の4JSONで、最新の記録を復元する。
