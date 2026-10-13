@@ -1,0 +1,29 @@
+ボリュームTESTの途中保存（256 terminal / 965、2026-10-13）
+
+最新の目的は未使用TEST46商品569ケースを全件評価し、結果から改善をさらに続ける価値を判断すること。
+これは途中保存で、評価完了や新しい精度値ではない。正解ラベルはまだ開いていない。
+まず session-handoff-20261013-volume-in-progress.txt と session-handoff-20261013-volume-progress108.txt を読む。
+
+results/20261013-sku-volume-progress-256-terminal-v1.zip
+1,062,279B / SHA a8c72a7db3f9da1db07f8832fdf728fc5b2b1d10d8d5605a164d80a48185bd56。
+256実terminal、253原draft、原draftなし packet18/247/248。
+247/248は一度の判定後、最初のexclusive書込みのshell引用でSyntaxErrorになったもの。
+原FINALと実spawnを保持し、書込み再試行・再判定・意味修正をしない。unknownとして全体に残す。
+ZIPのCRCと全member SHAを確認済み。原ledger・実spawn/FINAL event・原draft・保存済みprompt・helperを保存。
+進捗ZIP内の実行台帳には、その時点で進行中のcallも含まれ得る。complete snapshotとは扱わない。
+
+入力復元には別の147,621,321B/4分割source checkpointとrestore supplementが必要。
+同じsource/guidance/gate/modelの凍結を維持。モデルはgpt-6-luna/fork none、965packet/971pair。
+/root/volume_dispatch_supervisor_v2 が109以降を全965まで担当。ROOTで追加dispatchしない。
+現在状態は .lab-output/sku-volume-unused-test-execution-20261013-v1/supervisor-v2-state.json を読む。
+既に始まったpacketを再投入しない。全965terminalまで採点禁止。
+
+全件完了後、元ledgerを別版でnormalize_dispatch_metadata_v2.pyにより整理する。
+早期8件の個別spawn記録欠落、修正前ledger全bytes不足は引き続き明示し、tool呼出しを捏造しない。
+collect_normalized_firstpass_v1.py は全terminal coverageを確認し、原draftをSHA/bytes同一コピーするwrapper。
+凍結collector本体SHA95a2da93c93c60c91f5ce706cc17b8aa4f77f504b67746f14cc7a2b7f3eadafbは変更せず、metadata EXEC/OUTのみ指定する。
+snapshot → 全569caseのliteral/body両variant assemble → 全予測・source・code・QA freeze → ROOT grading GO → selected label読取りの順。
+
+自動承認レビューによる148MB source checkpoint push拒否は未解消。
+ユーザーへの具体的payload/送信先の承認質問への明示返答を待つ。再pushや別経路への送信はしない。
+ローカル保存とテスト実行は継続する。新しい承認なしに以前の一般remote許可を新返答とみなさない。
