@@ -42,3 +42,8 @@ quota観測：remaining90568.701048s/reserved0。再投入時再確認。
 - experiments/sku-matching/results/20261014-sku-nextdata-bounded-s000-ready-payload-v1.chunks.json：ready120.7MB ZIPを40MiB上限3partsで保存、連結SHA検証済み。元のZIP名/復元先はmanifest参照。planningpreviewとは異なる。
 - 既存source/full-prepare/primary-Luna/collector checkpointを依存として残す。原gold ZIP/旧raw/index移動・削除なし。
 GitHub pushは以前別のauto-reviewでデータ外部転送の明示承認不足として拒否されている。未pushをremote保存済みと報告しない。
+
+更新（2026-10-14 JST）：ユーザー「いいよ」で120.7MB追加転送とGPUを明示承認。その後「適宜リトライしていいので最後までよろしく」。root-additional-dataset-user-approval-v1.jsonとRootGO v2を記録。
+同privateDataset actualversion2 READY、全24member名/size一致を確認。固定resume-s000 version1を一度だけsubmit成功。source signature de7c1af1390f6f435f97aaa16ae56c54242e8f705d414ff926c8a34918cbad88、コードSHA/返却ref/version一致。
+現在同jobのwait中（kaggle-job-s000-v1/job.json、root-wait-s000-v1）。入力SHA検査成功ログあり。モデル成果物未回収・未採点。監視のConnectionErrorはstatus停止とは扱わずread retry。
+承認・転送・提出receiptはresults/20261014-sku-nextdata-bounded-s000-submitted-v1.zip（全CRC/member SHA検証済み）。旧承認待ち記載はこの更新が優先。GitHub push許可は別件で未取得・未push。
