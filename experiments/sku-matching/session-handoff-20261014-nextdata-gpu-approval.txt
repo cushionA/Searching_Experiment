@@ -1,0 +1,44 @@
+継続引継ぎ（2026-10-13T19:37:27.606801+00:00）
+branch codex-sku-generic-model-gates-20261010。保存直前HEAD83dd486。以降のローカル保存コミットはgit logで確認。
+ユーザーは自律改善/GPU利用/大きめGPUテストを許可。カテゴリ例外を増やさない。
+
+実モデル：Kaggle JEV argos1111/modernbert-ja-310m-jev（315203329params、rev07cda23579443e7a33c0f474114279fa032340d6）とNLI 0x3/bert-base-japanese-v3_nli-jsnli-jnli-jsick（111209475params、rev21df45469d02809dc430e3ac5f5d6f67b63aabf3）。Lunaは別のhosted比較。
+指定4fields全text、画像はmetadata/OCRなし、46商品すべてcollected/全文fallback0。商品名も出典付きで追加。collectedは全仕様把握の意味ではない。
+主Luna fresh全文対fresh説明：固定108（正例32/負例4/未確定72）、全文26/32=81.25%、新説明28/32=87.5%、既知誤採用0、paired回収2/悪化0。未確定採用33対26、品質不明。
+誤り8ケース対照は双方2/8、回収1/悪化1。別集計。ClaudeHaiku5.5機械注釈、消費済diagnostic、人手/独立testではない。完成/本番採用未確立。
+主説明194packet初回freeze、新全文166packet初回freeze完了。新全文160raw/6missing、172pair中155validated17unknown。欠落・不正・unknown再推論/意味補修なし。
+残る主FN4は3件の楽天colorfamily正確引用/対応付け検証不成立と同一行に依存するAU逆方向context、1件はpair1397 table123初回raw欠落。全文full013同pair原本は存在し別variantなので不整合ではない。
+旧診断v1-v3は保存、正しいv4とcorrective-index優先。軸名文字列の違いを原因としない。原本未記録か引用対応付け消失か未確定。
+Claudeへの依頼はexperiments/sku-matching/claude-nextdata-color-source-request-20261014-v1.txt。既存原本メタデータ確認のみ。外部送信していない。
+
+旧GPU固定ref superbigzabuton/sku-nextdata-table-fp32-20261013-v1 version2。7200s上限でcancelled。TeslaT4/CUDA12.8/torch2.11/FP32 eager/batch16/TF32false。
+9rawfiles全SHA/JSONL尾部を検証して回収。34345firstscores/model、1418options、166pairs/model/variant、COMPLETIONなし。途中prefixを全件精度として採点しない。
+原数値/unknownを保存し、原occurrenceを優先。exactinput/modelpins/runtime一致だけキャッシュ再利用。旧call内重複除去からさらに28.4204%の計算削減（46,032/model）。速度の実測値ではない。
+231872unique combined、38686cached、193186missing、13shards。新batch groupingによる未書込みFP32浮動差はあり得る。旧値の再計算/上書きなし。
+現在完成ML商品0、literal商品21/172casesのみ。literal smoke全172acceptはモデル精度ではない。
+第0shard完了予定は38products（17ML+21literal）、324cases（152ML product+172literal）、5818rows、22004tasks、171MLpairs。全元行・全元条件が4モデル/ビューで完了した商品だけ出版/採点する。
+元全46products569cases13159rows62252tasks971MLpairsは不変。
+
+追加GPUの具体payloadは.lab-output/sku-nextdata-description-bounded-resume-20261013-v1/kaggle-package-after-v2-s000-v1/dataset-upload/sku-nextdata-exact-resume-payload.zip。
+120674508bytes、SHA25679b7fce982b8c7d13e0a7cacdc5d89a656c361b2571066d2d01c387368cd3be9。publicsource+SKU+code+保存済GPU値だけ。gold/採点/原ページ/認証/重み/私有case-row joinsは除外。
+新Notebook ref superbigzabuton/sku-nextdata-table-fp32-20261013-resume-s000 version1、同privateDataset新version2を準備済。numeric6000s/Notebook7200s。
+**追加転送をauto-reviewが拒否。process未開始、remote変更/追加upload/submissionなし。** 旧28.5MB ZIP承認は120.7MB worker-state+計算値を含まないため。
+ユーザーへ120.7MB同privateDataset転送＋分割GPU実行の必須承認をasyncで質問済み。新しい回答はまだない。無回答/時間経過を承認としない。別コマンドで迂回しない。
+root-bounded-s000-remote-go-v1.jsonの旧authorization推定は不十分、root-additional-dataset-auto-review-rejection-v1.jsonが最新状態。
+承認後は具体answerとpayloadSHAをreceiptに保存→fresh RootGO→helper.dataset-update一度→actualDatasetversion2/privateREADY/ファイルSHA確認→helper.submit一度→returnedfixedref/version/source_signature一致確認→同job wait/recover。
+曖昧submitを再送しない。旧job再投入なし。現在activeGPU/monitor/モデルworkerなし。
+承認不要の既回収解析/ローカル保存は完了。追加転送を拒否された場合は回収済データだけ進める。
+新値import→固定indexへmerge（旧値/unknown保護）→assemble completeproducts→collect_nextdata_completed_gpu_products_v1.py（4views全freeze）→original multiple-rowset grade。scope unproved/citation semantics false、本番採用不可。
+builderのexactcommandsはBOUNDED_NOTEBOOK_BUILDER_HANDOFF_v1.json。ただし末尾の当時『import中』は古く、post-v2 actualpackage作成/QAは完了し承認待ち。
+quota観測：remaining90568.701048s/reserved0。再投入時再確認。
+
+最終required1490tests、assertion failures0、既存fixture欠落14errors、37skip。全greenとは言わない。nextdata関連44pass。コード変更が無い限り反復不要。
+12semantic core oldSHA不変、商品/カテゴリ固有分岐追加0。追加はsource/provenance/cache/transport/completeproduct収集だけ。
+
+永続化用ローカル成果物（全CRC/内部manifest SHA確認済み。GitHubへの送信はしていない）：
+- experiments/sku-matching/results/20261014-sku-nextdata-fresh-full-description-complete-v1.zip SHA6859f2cd63ac21d8997f3ba33fa683695bf1b1f81b0fd324d23ca7ce4da55927
+- experiments/sku-matching/results/20261014-sku-nextdata-kaggle-v2-terminal-raw-v1.zip SHAaacc41aa7dbd9608d73c768ac49f998d36413e5ac94fb555ac695855222d9931
+- experiments/sku-matching/results/20261014-sku-nextdata-bounded-s000-builder-and-approval-v1.zip SHA3fc3330ac4a3cb4c7db0052177bb10716939dfa1e194b0ce78e4d181aa137288
+- experiments/sku-matching/results/20261014-sku-nextdata-bounded-s000-ready-payload-v1.chunks.json：ready120.7MB ZIPを40MiB上限3partsで保存、連結SHA検証済み。元のZIP名/復元先はmanifest参照。planningpreviewとは異なる。
+- 既存source/full-prepare/primary-Luna/collector checkpointを依存として残す。原gold ZIP/旧raw/index移動・削除なし。
+GitHub pushは以前別のauto-reviewでデータ外部転送の明示承認不足として拒否されている。未pushをremote保存済みと報告しない。
