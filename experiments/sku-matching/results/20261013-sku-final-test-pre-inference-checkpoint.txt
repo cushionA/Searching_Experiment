@@ -1,0 +1,7 @@
+final body indexed TEST source/pre-inference checkpoint（2026-10-13）
+
+本archiveは実際のclassifier呼び出し前に凍結されたsource/input snapshotである。root pre-inference freeze SHA-256は d57b5c624f7f8c1b39202e868b21d99b34beb66f5f94163d274bcf65b5237f22、408 pinsをすべて再照合した。40 raw captures、40 cases/20 products、474 rows、1,922 tasks、1,228 requests、40 documents、590 prepared pairs（308 protected/282 dispatched）、1,541 options、277 complete packetsを保持する。source preparation focused QAは18件pass。
+
+Root inference GOは存在し、classifier呼び出しはその後に開始済みである。ここには入力・pre-call freeze・GO・source QAだけを収録し、live drafts、supervisor dispatch ledger、現在のpacket outputs、predictions、labels、scoresは含めない。したがって「job未開始」とは主張せず、ML result未完了のcheckpointとして扱う。
+
+Scoped-source metadata v2がv1 manifestに対する3 SHA metadataの追加を記録する。内容payload、source body、binding、gateまたはsemantic sourceは変更していない。候補policy freeze SHA-256は cd458b94c9047bead2313cc2609d7815c0bd10fc234f746cd02dd28f1d9b99df。旧R9 archiveとbase commit 840a24bはexternal dependencies。
