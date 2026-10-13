@@ -1,0 +1,9 @@
+# Body R9-v3 pre-ML checkpoint
+
+2026-10-13時点のSOURCE-onlyチェックポイントです。固定pre-ML freezeの175 pins、freeze、root classification GOの合計177メンバーを収録しました。メンバーはrepo-relative pathを保ち、全件のサイズとSHA-256をsidecar manifestに記録しています。ZIP CRC、メンバー重複なし、全メンバーSHA照合を確認済みです。モデル応答・live draft・ラベル・private gold・gradesは読み込まず、収録していません。
+
+凍結時の構成は141 pairs、93 dispatches、48 protected pairs、317 whole options、64 packetsです。SOURCE cohortは10 cases、5 products、110 rows、452 tasks、native Rakuten body docsは3件、bound fieldsは4件、body blocksは151件です。
+
+実MLは現在進行中ですが、このcheckpointはML開始前のSOURCE状態です。性能結果はまだありません。既存のindependent TEST 50%集計（11 TP、0 FP、11 FN、3 TN、25 known、15 unknown）は変更なしで、未使用のTEST 66 productsは予約のままです。関連31件pass、required 1,392件のうち14件は歴史的fixture欠落、0 fail、37 skipです。
+
+Source pin SHAはpre-ML freezeの指定値と全175件一致し、GOはfreeze SHAとpin countを結合しています。元source archiveの依存SHA、基点HEAD cbc0abdda33b392bd407bcb62adee6aed7d9b739はmanifestに記録し、archive自体はcheckpointへ重複収録していません。

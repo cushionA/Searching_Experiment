@@ -1,0 +1,548 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sku-body-invariant-choice-v3.schema.json",
+  "title": "Body-invariant whole-option NLI v3 literal response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "pair_id",
+    "cache_key",
+    "decisions"
+  ],
+  "properties": {
+    "protocol": {
+      "const": "sku-body-invariant-choice-v3"
+    },
+    "pair_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cache_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decision"
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "bodyQuoteRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "body_index",
+        "block_id",
+        "document_sha256",
+        "source_sha256",
+        "source_alias",
+        "quote",
+        "start",
+        "end"
+      ],
+      "properties": {
+        "body_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "block_id": {
+          "$ref": "#/$defs/text"
+        },
+        "document_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "quote": {
+          "$ref": "#/$defs/text"
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "source_alias": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "familyAudit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state_index",
+        "whole_state",
+        "member_evidence_ids",
+        "applicability",
+        "explanation"
+      ],
+      "properties": {
+        "state_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "whole_state": {
+          "type": "object"
+        },
+        "member_evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          },
+          "minItems": 1
+        },
+        "applicability": {
+          "enum": [
+            "covered",
+            "exception",
+            "uncertain",
+            "contradicted",
+            "not_covered"
+          ]
+        },
+        "explanation": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "selectedSkuBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_fact_index",
+        "body_axis_quote",
+        "body_value_quote",
+        "role",
+        "binding_explanation"
+      ],
+      "properties": {
+        "target_fact_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "body_axis_quote": {
+          "$ref": "#/$defs/text"
+        },
+        "body_value_quote": {
+          "$ref": "#/$defs/text"
+        },
+        "role": {
+          "enum": [
+            "product_attribute",
+            "restriction",
+            "comparison",
+            "recommendation",
+            "other",
+            "uncertain"
+          ]
+        },
+        "binding_explanation": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "bodyInvariant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attribute",
+        "attribute_quote",
+        "value",
+        "value_quote",
+        "role",
+        "role_explanation",
+        "subject_resolution",
+        "subject_scope",
+        "target_identity_explanation",
+        "quantifier_scope",
+        "invariance_basis",
+        "target_document_sha256",
+        "family_audit",
+        "semantic_explanation",
+        "scope_evidence_quote",
+        "positive_scope_explanation",
+        "product_scope_assessment",
+        "whole_attribute_assessed"
+      ],
+      "properties": {
+        "attribute": {
+          "$ref": "#/$defs/text"
+        },
+        "attribute_quote": {
+          "$ref": "#/$defs/text"
+        },
+        "value": {
+          "$ref": "#/$defs/text"
+        },
+        "value_quote": {
+          "$ref": "#/$defs/text"
+        },
+        "role": {
+          "enum": [
+            "product_attribute",
+            "restriction",
+            "comparison",
+            "recommendation",
+            "other",
+            "uncertain"
+          ]
+        },
+        "role_explanation": {
+          "$ref": "#/$defs/text"
+        },
+        "subject_resolution": {
+          "enum": [
+            "target_product",
+            "related_product",
+            "ambiguous",
+            "uncertain"
+          ]
+        },
+        "subject_scope": {
+          "$ref": "#/$defs/text"
+        },
+        "target_identity_explanation": {
+          "$ref": "#/$defs/text"
+        },
+        "quantifier_scope": {
+          "$ref": "#/$defs/text"
+        },
+        "invariance_basis": {
+          "enum": [
+            "explicit_universal_statement",
+            "positive_scope_wide_product_specification"
+          ]
+        },
+        "target_document_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "family_audit": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/familyAudit"
+          }
+        },
+        "semantic_explanation": {
+          "$ref": "#/$defs/text"
+        },
+        "scope_evidence_quote": {
+          "$ref": "#/$defs/text"
+        },
+        "positive_scope_explanation": {
+          "$ref": "#/$defs/text"
+        },
+        "product_scope_assessment": {
+          "enum": [
+            "target_product_level",
+            "sku_specific",
+            "related_product",
+            "uncertain"
+          ]
+        },
+        "whole_attribute_assessed": {
+          "const": true
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "option_index",
+        "whole_option",
+        "option_evidence_id",
+        "whole_value_assessed",
+        "state",
+        "scope_assessment",
+        "semantic_relation",
+        "scope_and_coordinate_explanation",
+        "option_relation_explanation",
+        "exclusivity_assessment",
+        "exclusivity_explanation",
+        "grounding_route",
+        "target_fact_indices",
+        "body_invariant",
+        "body_quote_refs",
+        "body_condition_bindings",
+        "direct_contradiction_explanation"
+      ],
+      "properties": {
+        "option_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "whole_option": {
+          "$ref": "#/$defs/text"
+        },
+        "option_evidence_id": {
+          "$ref": "#/$defs/text"
+        },
+        "whole_value_assessed": {
+          "const": true
+        },
+        "state": {
+          "enum": [
+            "support",
+            "explicit_conflict",
+            "unknown"
+          ]
+        },
+        "scope_assessment": {
+          "enum": [
+            "same_condition",
+            "different_condition",
+            "uncertain"
+          ]
+        },
+        "semantic_relation": {
+          "enum": [
+            "support",
+            "explicit_conflict",
+            "uncertain"
+          ]
+        },
+        "scope_and_coordinate_explanation": {
+          "$ref": "#/$defs/text"
+        },
+        "option_relation_explanation": {
+          "$ref": "#/$defs/text"
+        },
+        "exclusivity_assessment": {
+          "enum": [
+            "source_family",
+            "source_body",
+            "model_assessed",
+            "uncertain"
+          ]
+        },
+        "exclusivity_explanation": {
+          "$ref": "#/$defs/text"
+        },
+        "grounding_route": {
+          "enum": [
+            "selected_fact",
+            "selected_sku_body",
+            "body_invariant",
+            "none"
+          ]
+        },
+        "target_fact_indices": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "uniqueItems": true
+        },
+        "body_invariant": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/bodyInvariant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "body_quote_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bodyQuoteRef"
+          }
+        },
+        "body_condition_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/selectedSkuBinding"
+          }
+        },
+        "direct_contradiction_explanation": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "grounding_route": {
+                "const": "body_invariant"
+              }
+            },
+            "required": [
+              "grounding_route"
+            ]
+          },
+          "then": {
+            "properties": {
+              "target_fact_indices": {
+                "maxItems": 0
+              },
+              "body_invariant": {
+                "$ref": "#/$defs/bodyInvariant"
+              },
+              "body_quote_refs": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "grounding_route": {
+                "const": "selected_fact"
+              }
+            },
+            "required": [
+              "grounding_route"
+            ]
+          },
+          "then": {
+            "properties": {
+              "target_fact_indices": {
+                "minItems": 1
+              },
+              "body_invariant": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "grounding_route": {
+                "const": "selected_sku_body"
+              }
+            },
+            "required": [
+              "grounding_route"
+            ]
+          },
+          "then": {
+            "properties": {
+              "target_fact_indices": {
+                "minItems": 1
+              },
+              "body_invariant": {
+                "type": "null"
+              },
+              "body_quote_refs": {
+                "minItems": 1
+              },
+              "body_condition_bindings": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "grounding_route": {
+                "const": "none"
+              }
+            },
+            "required": [
+              "grounding_route"
+            ]
+          },
+          "then": {
+            "properties": {
+              "target_fact_indices": {
+                "maxItems": 0
+              },
+              "body_invariant": {
+                "type": "null"
+              },
+              "state": {
+                "const": "unknown"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "explicit_conflict"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "scope_assessment": {
+                "const": "same_condition"
+              },
+              "semantic_relation": {
+                "const": "explicit_conflict"
+              },
+              "exclusivity_assessment": {
+                "enum": [
+                  "source_family",
+                  "source_body",
+                  "model_assessed"
+                ]
+              },
+              "exclusivity_explanation": {
+                "minLength": 1
+              },
+              "direct_contradiction_explanation": {
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "support"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "scope_assessment": {
+                "const": "same_condition"
+              },
+              "semantic_relation": {
+                "const": "support"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "x-source-only-validation": [
+    "decisions cover each complete original option exactly once in original order",
+    "all body refs bind a supplied target block and exact support_text substring offsets",
+    "invariant family_audit exactly equals target_native_sku_inventory.all_option_states in order and cites every member evidence ID",
+    "selected_sku_body binds each selected target fact to exact body condition/value quotes and is limited to the current source-bound SKU row",
+    "subject_resolution must be target_product and invariance_basis must be explicit_universal_statement for body_invariant route",
+    "source SHA/offset checks prove provenance only; semantic truth remains unverified",
+    "related/linked products, prices, inventory, defaults, relative winners, and axis absence cannot establish invariance",
+    "all missing, ambiguous, malformed, or partial model-authored fields abstain to unknown"
+  ]
+}
