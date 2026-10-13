@@ -1,0 +1,55 @@
+2026-10-14 JST / NEXT_DATA description experiment progress
+
+4 fields: extraItemComment, extraItemCommentWithVideo, itemComment, detailComment.
+Exact user Cheerio extractor, pinned Cheerio 1.1.2. 46/46 collected, 0 original-full fallback.
+Collected means text retrieved; it does not establish specification completeness. No OCR.
+Native selections, complete option vectors and original whole-SKU gate unchanged.
+Source-bound product title is also included. This is an input change in addition to text cleanup.
+Core 12 semantic files byte-identical to 07872d2; new product/category exceptions: 0.
+
+Luna primary pilot: original hash-selected 12 products / 108 cases.
+Known machine annotations: 36 cases (32 positive, 4 negative). Unknown annotations: 72.
+Description: 28 correct accepts / 32 known positives = 87.5% exact row recall.
+Same-case historical full: 26/32 = 81.25%. Known wrong accepts: 0 in both.
+Unknown annotations: description accepts 26. 7 old drops became accept, 9 old accepts became drop.
+The unknown cases cannot be scored. This is not accuracy over all108, or a new independent TEST.
+Annotations are Claude Haiku 5.5 machine annotations, not human gold.
+Fresh previous-error diagnostic: full2/8 and description2/8, one recovery shared, one gained and one lost.
+The main gain is not isolated to extraction: historical execution and stochastic variation differ.
+
+All original194 cold jobs terminal. Original drafts188, missing6, syntax invalid2.
+Description185 pairs: source/scope validation passed166; invalid/missing19 retained unknown.
+No semantic retries or original output repairs. Raw bytes and literal LF framing saved separately.
+Full source and all rows retained: primary+error115 cases /1735 rows /9076 tasks.
+Original complete reference row sets were loaded after output/gate freeze.
+A historical correct accepted row was NOT substituted for the whole reference row set.
+
+Additional fresh full main control: unchanged main108, 172 closure pairs.
+5 existing same-experiment full first passes reused unchanged;167 unassigned full pairs /166 packets.
+Same gpt-6-luna selector, fork none, four workers; classified outputs are currently pending.
+Original primary result and input freeze remain unchanged. Bad first passes remain unknown.
+
+Kaggle private Dataset: superbigzabuton/sku-nextdata-table-fp32-20261013-v1-inputs (user approved).
+Notebook: superbigzabuton/sku-nextdata-table-fp32-20261013-v1, fixed version2, still running.
+Version1 failed before any cell: missing kernelspec. Version2 added Python kernel metadata and cell IDs.
+JEV: argos1111/modernbert-ja-310m-jev,315203329 parameters.
+NLI: 0x3/bert-base-japanese-v3_nli-jsnli-jnli-jsick,111209475 parameters.
+Both FP32 CUDA, eager attention, no autocast/TF32, batch16. Numerical task is scope-relaxed diagnostic.
+It does not manufacture Luna citation/quantifier evidence; production adoption remains disallowed.
+All source971 pairs /4268 options paired between original-full and normalized-description views.
+CPU-tokenizer-only preflight:1942 views /44099 chunks /206026 option-chunks, technical unknown0.
+Actual GPU model outputs observed; full completion and runtime/weight artifact verification are pending.
+Current throughput threatens the7200s operational limit. No duplicate submit is performed.
+After legacy intra-call dedup, exact text caching can additionally avoid46032/161968 requests (28.42%) per model.
+A bounded resume preserving old occurrence scores, technical unknowns and whole-case inventory is being prepared.
+
+Reproducible local checkpoints:
+20261014-sku-nextdata-description-source-checkpoint-v1.zip SHA44765192f7f823e45abacb226ed6f0d6adbc4737eb169a583a73dd55dab7251e
+20261014-sku-nextdata-description-error8-v1.zip SHA5503731d4822dbc1d399d3b2d14f839c8f7cabd76e8dee58b22ea68e705236bb
+20261014-sku-nextdata-description-luna-complete-v1.zip SHA27120b75c8d733a8525f9e8e8205443865e6fc74ae92ea49ed1df3efc764f902
+Source checkpoint depends on20261013-sku-volume-unused-test-source-checkpoint.chunks.json and its parts.
+Raw annotation archives are not included in the new checkpoints; postfreeze score diagnostics are included.
+GitHub push approval remains outstanding; these commits/checkpoints are local and are not reported as remote-saved.
+
+Validation:28 new focused tests passed. Full lab suite1464 ran;14 historical missing-fixture errors remain.
+Six sandbox-network-sensitive checks passed when rerun with network permission. Full suite is not all green.
