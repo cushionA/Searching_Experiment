@@ -23,8 +23,10 @@ def digest(data):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--ref', required=True, help='Fetched commit to restore without credentials or mutation')
+    parser.add_argument('--run', default=RUN.name)
     args = parser.parse_args()
-    installation = json.loads((RUN / 'installation.json').read_text())
+    run = RUN.parent / args.run
+    installation = json.loads((run / 'installation.json').read_text())
     expected = installation['canonical_state_sha256_before']
     actual = {p.name: digest(p.read_bytes()) for p in STATE.glob('*.json')}
     assert actual == expected

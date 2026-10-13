@@ -1,7 +1,7 @@
 {
   "upstream_repo": "cushionA/zabuton_skills",
   "upstream_ref": "main",
-  "upstream_commit": "f986e0c185898bf8f3f3184adcad91738664441e",
+  "upstream_commit": "55ceed634506c5942d6a8e84c71d7e80acc103ff",
   "upstream_previous_main": "fc0f3796dadb134c64d10a35a6613c42fea5ebd0",
   "installed_before": {
     "status": "absent",
@@ -315,31 +315,35 @@
   "files": [
     {
       "path": ".agents/skills/research-repro-radar/SKILL.md",
-      "git_blob_sha1": "8552c47534b003926c878668eeeb677cc43e51e3"
+      "git_blob_sha1": "ca8d6e54b9dfa62894294727d217582789929268"
     },
     {
       "path": ".agents/skills/research-repro-radar/agents/openai.yaml",
       "git_blob_sha1": "8133f5a4bc48ac9bf834a7b50fbdce6c219b028f"
     },
     {
-      "path": ".agents/skills/research-repro-radar/ci-state/.gitkeep",
-      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
-    },
-    {
       "path": ".agents/skills/research-repro-radar/platform/claude.md",
       "git_blob_sha1": "36a7bb8b353c6691aebb312f4f07223c903f683d"
     },
     {
+      "path": ".agents/skills/research-repro-radar/platform/native.md",
+      "git_blob_sha1": "80283bc7d62ed49e427c6329468192c0823172a7"
+    },
+    {
       "path": ".agents/skills/research-repro-radar/platform/openai.md",
-      "git_blob_sha1": "3d7993f4a2cb544b2ea24a8cdf7bed7b1a4f3516"
+      "git_blob_sha1": "41639c02d41e35bcae5ec6c80ad3b0fd0ebb5aa1"
     },
     {
       "path": ".agents/skills/research-repro-radar/references/automation.md",
-      "git_blob_sha1": "88c61a97d1735ed601aa8f0e61362df973ce3b1b"
+      "git_blob_sha1": "f603f715541b912f3d6534781b7bad560fe617a7"
     },
     {
       "path": ".agents/skills/research-repro-radar/references/candidate-schema.md",
       "git_blob_sha1": "df971ddd4bac343fdadb491e86967e52d95abcba"
+    },
+    {
+      "path": ".agents/skills/research-repro-radar/references/native-candidate.schema.json",
+      "git_blob_sha1": "43c3d7c7f280453fc9b9b53230cf4a7162aeed01"
     },
     {
       "path": ".agents/skills/research-repro-radar/references/profile.json",
@@ -359,7 +363,11 @@
     },
     {
       "path": ".agents/skills/research-repro-radar/scripts/llm.py",
-      "git_blob_sha1": "5d5369b5a9ff01447119108354322e94ab1ffac5"
+      "git_blob_sha1": "3cbbc96e9cfc8388e8e235ffa2a0596fb79d8373"
+    },
+    {
+      "path": ".agents/skills/research-repro-radar/scripts/native_judge.py",
+      "git_blob_sha1": "3a14edc85292062ddd82e6023727413ace0a3017"
     },
     {
       "path": ".agents/skills/research-repro-radar/scripts/rank_candidates.py",
@@ -382,8 +390,8 @@
       "git_blob_sha1": "90c25189767b3a57b3a44d89fce4be9035fab2f7"
     },
     {
-      "path": ".agents/skills/research-repro-radar/state/.gitkeep",
-      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+      "path": ".agents/skills/research-repro-radar/tests/fixtures/native-smoke-20261013.json",
+      "git_blob_sha1": "e9a690cf753d22043c45a26d56f4f811c01d74b4"
     },
     {
       "path": ".agents/skills/research-repro-radar/tests/test_codex_transport.py",
@@ -392,6 +400,10 @@
     {
       "path": ".agents/skills/research-repro-radar/tests/test_llm.py",
       "git_blob_sha1": "5bee280efae34ac6608bd52788ab3ef2a36f609a"
+    },
+    {
+      "path": ".agents/skills/research-repro-radar/tests/test_native_judge.py",
+      "git_blob_sha1": "48b02c097c07b862bf49d108dd3d94f8e7f3b528"
     },
     {
       "path": ".agents/skills/research-repro-radar/tests/test_ranking_state.py",
@@ -425,6 +437,15 @@
     "judge_execution_success": false,
     "candidate_judge_executed": false,
     "model_inference_executed": false,
+    "canonical_state_unchanged": true
+  },
+  "latest_reinstall": {
+    "run": "2026-10-13-reinstall-native-v2",
+    "source_files_matched": 25,
+    "unit_tests_passed": 74,
+    "cli_probe_success": false,
+    "native_probe_executed": false,
+    "native_status": "awaiting explicit backend scope clarification",
     "canonical_state_unchanged": true
   }
 }
