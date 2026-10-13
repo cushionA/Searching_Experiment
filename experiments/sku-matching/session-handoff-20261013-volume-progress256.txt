@@ -55,3 +55,20 @@ postgrade集計script更新はAU行誤採用を誤りとして数えるclass+exa
 summary script SHA d5a20d022dd226841137316da8c0c0b21a1d97d5ca3f9f5707459cfff375d099。
 合成QA receipt SHA add10829bb2799d2980e84c675a625167e04193fb9b86b91edbf3b2f90144c20。
 classifier/guidance/source/gateの凍結は変更せず、SKUカテゴリ条件分岐も追加していない。
+
+追記（504 terminal、2026-10-13 10:38 UTC）:
+results/20261013-sku-volume-progress-504-terminal-v1.zip
+2,302,159B / SHA63590b3e60431d05d24c6421d7dede34f883f0be08731c9257c7fae281ba2f68。
+504実terminal/500原draftファイル（314はempty、418は末尾がliteral backslash+n）。
+missingは18/247/248/452。452は全入力読取を完了できず、判定初稿は未authorと原FINALが申告。
+418末尾の原bytesを独立確認（hex5c6e、actual newlineなし）。修復せず凍結collectorの既存unknown処理へ渡す。
+採点前の観測audit v1/v2/v3と全原回答・元FINAL/eventをZIPに保持。CRC/全member SHA一致確認済み。
+最新audit_v3 SHA b9d27bfc55c0db88b3bcfd734446e01106316776e0e9dca62c87accc6f106c8c。
+source/code/guidance/model/選択569ケースは元freezeのまま。正解ラベル未読、採点未実施、残りまで継続する。
+
+10:30 UTCにROOT監視とcoordinatorのmetadata保存で一時exec-server transport disconnectedが発生。
+cloud statusは同じenvironmentでcurrent/connected/running/failure:null、pwdとstate読取も即正常を確認。
+同じmetadata保存/読取を再開しただけで、classifier再投入/モデル変更はない。
+旧ROOT watcher cell92は終了、新watcher cell127が40秒ごとにstate件数だけを監視している。
+live V2 coordinatorが109..965担当。全actualclassifier terminal確認後のみnormalize/collect/assemble/freeze/ROOT-GO/gradeする。
+Remoteの148MB原capture送信は引き続き具体的承認待ち。新しいpushなし。
