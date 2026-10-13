@@ -1,0 +1,7 @@
+indexed DEV10 firstpass + grading checkpoint（2026-10-13）
+
+このcheckpointはindexed DEV10のsource、frozen execution、17 packetのraw drafts/responses、render/source validation、grading freezeと集計結果を復元できる形で保存する。pre-inference freezeは139 pinsで、SHA-256は 65ee78299d3f31bb70d739a083b4106ff05868ca0d77444f564558ff9104ea10。raw snapshot SHA-256は a735e6d3b407520d254a93ed0fb7882c74ca5a60d264b5cbffd1db09598767aa。snapshot receipt SHA-256は 8d5c2a0602de980fb1bfdc02be41222c9668cc62b4f570f63e6109f1bdacff80。executionは17 packets、22 response drafts、81 options、うち15件source-valid・7件invalid。
+
+集計はknown 8件、unknown 2件。indexed-body-invariant-v3はTP=5, FP=0, FN=1, TN=2、recall 83.3%。literal-onlyはTP=4, FP=0, FN=2, TN=2、recall 66.7%。indexed版のknown positiveは1件増えた。negativeは2件のみで、production性能の証明にはならない。全文score、case差分、case/unknown ID、excluded record、gold row/labelはZIPに含めず、公開aggregateにnumeric metricsだけを残した。
+
+QA artifactsとhistorical preflight/source artifactsを含む。base repository dependency: 6f1e14b（既存R9 checkpoint）。ZIP内はsource pin SHA、unique member path、ZIP CRCを検証する。
