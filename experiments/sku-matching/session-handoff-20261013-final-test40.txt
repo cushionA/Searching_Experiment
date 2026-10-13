@@ -1,0 +1,49 @@
+再開用メモ: 独立TEST40 firstpass（2026-10-13）
+
+ブランチ: codex-sku-generic-model-gates-20261010
+成果物commit: 53129310dd6c546beeff1a8a99603d9ed36e2d68（origin一致確認済み）。このメモ/診断はその次commit。
+固定候補コード復元anchor: f605cdcc57ca232d5bdaaa40d05bcdbc06cea6c1。
+まず results/20261013-sku-final-indexed-test40-firstpass-checkpoint.txt と postscore-diagnosis.txt を読む。
+
+未使用20商品40ケースについて全474候補行/1922task/277modelpacketsを実行済み。GPUjobは使用せずhosted Luna。
+indexed:26TP0FP5FN0TN、既知陽性31件で再現率83.9%。same-cohort literal:20TP0FP11FN0TN、64.5%。純増6・損失0。
+正解9件未確定で採点外。そのうち4採用は正誤未確定。既知否定例0、人goldでなくclaude-haiku-5-5機械注釈。
+この結果から本番適合率100%を主張しない。過去別cohortの50%からのpaired改善とはしない。
+
+results/20261013-sku-final-indexed-test40-firstpass-checkpoint.zip
+SHA b7f8936811ae42f5a74d3f3fc6fbea8d30bc218cfcb09845fb4f9ecf94b4999e、45,086,861B、1314members。
+Root/worker双方CRCと1312member SHA/1308pregrade pins検証。score原本/ケース別gold/privateauditは非同梱。
+repo anchorをcheckoutしZIPをrepo根へ展開。既存repo runtime code/Python>=3.12が必要。
+モデル再推論せず元回答でassemble再現。gradeには別保存の既存v2/v3 label archiveが必要。
+
+BASE=.lab-output/sku-final-body-indexed-test-20261013-v1
+EX=.lab-output/sku-final-body-indexed-test-execution-20261013-v1
+採点対象をIDだけで決めたmanifest=.lab-output/sku-body-final-test-identity-plan-20261013-v1/manifest.json
+SHA6747e6d9ac160d608f18f3ac51a3a543c06a34b8f3091736689a20dba249773d
+選択membershipSHA09b11b352cead06686eb5f446b4ed713d8391f08255cd2731ec8c263ddf9a4fa。
+この20商品は消費済みTESTとして全商品単位で今後の独立TESTから除外。既存2 TEST cohort40商品も除外を維持。
+今回TESTを使った再チューニング/再推論/閾値変更禁止。診断のみ。新改善は未使用DEVで行い将来未使用TESTへ。
+ユーザー: 自律改善を許可、GPUが早ければ使用可/問題時CPU、商品カテゴリの条件分岐を増やしすぎない。
+
+全classifiers cold gpt-6-luna/fork none。要求modelのtool selectorはprocess metadataで重み署名の証明ではない。
+packet80だけ初回入力前技術失敗1件→復旧が最初の意味判定。生成済み意味判断の再試行なし。
+277packets、278固有canonical試行名、台帳294spawn行は16重複記録を含む。count clarification参照。
+古いFINALの一部詳細欠落を明記、原ログ保持。277登録contexts/5 missing-or-ref-mismatch unknown/7 source-invalid unknown/270 sourcevalid。
+NLI/normalize/literal/BODYv3/schema/whole gateの意味規則を固定。GUIDANCEv2のみ共通引用・scope文言調整。商品固有例外なし。
+source-citation/source-origin一致とsemantic truthを混同しない。全未選択・全native familyを保持、unknownは除外証明に使わない。
+
+動くsourceはBASE/scoped-native-source-v2、preflight-v2、config runner-config-scoped-metadata-adapter-v1.json。
+採点assemblyはEX/final-gate-run-v2。元v1と全13semantic/gate datafiles byte同一、receiptにidentity2SHAのみ追加。
+source scope manifestのidentity3SHA補足とassembly metadata不足を原版保持のadapterで解決。コード/gate/判断修正なし。
+FULLfreeze=EX/root-all-artifacts-pregrade-freeze-v2.json(1308pins)、grading-freeze-v1.json、root-go-for-indexed-test-grading-v1.json。
+raw=EX/firstpass-snapshot-v2。metadata helper v1/v2/原snapshot/count correction履歴もZIP同梱。
+TEST generic source/assembly builderのmetadata不足は既知。将来共通metadata stampingを直すなら今の凍結版を変更せず別版で行う。
+
+post-score5FN正解行16tasks:7support/3conflict/6unknown。unknown1missingraw/1schema-invalid/4rawsemanticunknown。
+3conflict全てselected_fact。1つは理由文が同値と言いながらconflictでモデル出力が矛盾。機械goldの誤りも否定できず自動support化しない。
+6追加採用行27supporttasks:18selected_fact/1body_invariant/8strict_literal_family/0selected_sku_body。
+route単独の因果効果ではない。上記はlabel-free aggregateのみ公表、全case auditは非公開 .lab-output/sku-final-test40-postscore-diagnosis-20261013-v1/private-audit.json。
+今段階Claudeへ追加カテゴリ規則/新判定器の依頼なし。まず既存source全選択肢と根拠対応、モデル結論と理由の共通整合性が開発候補。
+
+QAfocused18passed。旧required1418tests/37skip、既存fixture未配置14errorsが残る。loopback権限6failuresは個別再検証全成功。
+既存untracked HANDOFF/audit/claude-request/resume-prompt/workspace.patch/tests.before-* はユーザー作業として変更せず残した。
