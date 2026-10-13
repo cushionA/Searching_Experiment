@@ -1,0 +1,39 @@
+独立TEST40・初回回答固定評価（2026-10-13）
+
+結果: indexed 26 TP / 0 FP / 5 FN / 0 TN、既知31ケースの再現率83.9%。
+同じ31ケースのliteral-onlyは20 TP / 0 FP / 11 FN / 0 TN、再現率64.5%。
+追加で6ケースを拾い、literal-onlyで拾えていたケースの損失は0。
+40ケース中9ケースは既存機械注釈が未確定で採点対象外。indexedはそのうち4を採用したが正誤未確定。
+既知31ケースは全て陽性。今回の集合には既知の否定例がなく、誤採用の安全性や本番適合率を証明しない。
+正解はclaude-haiku-5-5の既存機械注釈で、人によるgoldではない。商品全体のSKU正しさの証明ではない。
+
+対象は未使用20商品・40ケース。全474候補行・1922課題を省略せず評価した。
+全未使用TEST829ケースの一部を、事前にIDだけで選択。ラベルや今回の結果から選び直していない。
+277公開パケット / 282比較コンテキスト / 1541全選択肢。
+要求モデルgpt-6-luna、fork none。277パケットに278固有試行名。
+packet番号80の初回1件だけ入力前の技術的失敗。復旧後が最初の意味判定。生成済み意味判定の再試行なし。
+実行台帳の294 spawn行には16重複記録がある。固有canonical task名は278。原台帳は保持しcount clarificationを同梱。
+古いFINALの報告パス・行数の一部は現存履歴から復元できず、欠落を明記。重みの署名付きモデル証明ではない。
+277登録応答、5比較はファイル欠落/割当ref不一致のためunknown。登録応答中7比較は形式/引用検証不適合でunknown。
+原応答・不適合応答を保存。270/282比較で原文への引用を検証したが、引用一致は意味的真偽の証明ではない。
+
+商品/カテゴリ固有の例外規則を追加せず、全選択肢・原文証拠の共通形式と引用方法の指示を使用。
+NLI、正規化、literal証明、BODY v3、schema、whole-SKU gateの判定規則は固定。
+保護された完全一致に加えて、モデルの全選択肢評価と引用検証を用いた。同一集合上の補助方式との比較であり本文route単独の因果効果ではない。
+TEST中に判定規則/モデル指示/閾値の調整なし。採点は全予測とgateを固定しROOTGO後に選択40参照だけを開いた。
+採点前の2つのmetadata記載不足は原版を保持して補った。scope manifestに3識別SHA、assembly receiptに2識別SHA。
+13個の全gate/意味データファイルは原版・改訂版でbyte同一。判定内容の修正なし。
+
+QA: 最終TEST bridge focused18件合格。入力/コード408pin、最終採点前1308pin、40生captureSHAを照合。
+以前のrequired discoverは1418 tests / 37 skips、既存fixture未配置14件のerrorが残る。
+loopback権限による6件は許可付き個別再検証で全件合格。required全件greenとは扱わない。
+
+ZIP: 20261013-sku-final-indexed-test40-firstpass-checkpoint.zip
+45,086,861 bytes / 1,314 unique members / 1,312 manifest member SHA / 1,308 pregrade artifact pins。
+SHA256: b7f8936811ae42f5a74d3f3fc6fbea8d30bc218cfcb09845fb4f9ecf94b4999e
+Root側でCRC・全manifest SHA・全pregrade pin・private score非同梱を独立再検証済み。
+復元はrepository commit f605cdcc57ca232d5bdaaa40d05bcdbc06cea6c1（同ブランチ）をcheckoutしてからZIPをrepo根へ展開。
+Python3.12以上と既存repository依存が必要。ZIPは全repo clone/環境/未選択参照archiveの代替ではない。
+モデル推論の再実行は不要で、保存済み初回回答でgateを再現できる。
+採点再現には既存v2/v3 label archiveが必要（凍結SHAと選択manifestを照合）。追加のケース別goldはZIPに含めない。
+この20商品は今後の未使用TESTから商品単位で除外する。今回の結果でこのTESTを再チューニングしない。
