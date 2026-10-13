@@ -1,0 +1,136 @@
+NEXT_DATA description experiment: frozen preparation handoff, 2026-10-13 UTC
+
+Repository: /workspace/Searching_Experiment-model-gates-20261010
+Branch: codex-sku-generic-model-gates-20261010
+This handoff records preparation only. Check ROOT/supervisor receipts for later
+inference, Kaggle submission, grading, and durable export status.
+
+PRIMARY input is the user's exact Cheerio collector across extraItemComment,
+extraItemCommentWithVideo, itemComment, and detailComment. It deduplicates exact
+HTML, preserves normalized line/cell boundaries, and keeps media metadata in
+the source proof. Model body text contains source-bound productTitle and the
+complete normalized sections. Images are metadata, not body evidence text.
+If collection has no description text or a collection failure, use the entire
+original full input. Actual captures: 46 products collected, 0 fallbacks.
+The initial table-only exploration is superseded by this four-field variant.
+For compatibility, the public alias remains table_payload and packet variant
+table; its declared meaning is cleaned_description_fields_with_full_fallback.
+
+Existing frozen source options, actual opposite selected facts, native SKU
+inventories, rows, task bindings, literal proofs, BODY semantic schema, and the
+whole-SKU gate remain unchanged. New description quotations use the dedicated
+source provenance adapter and actual pinned NEXT_DATA leaves. They are never
+remapped into old body text. Every semantic field is still model-authored.
+
+All files under:
+.lab-output/sku-nextdata-table-20261013-v1/prepared-v1
+
+input-freeze.json, 200983 bytes:
+137709cf0295a8e1bf07126d681c4f1cdf5195b84e01b8514141cea70ed6d6ad
+public-paired-inputs.jsonl, 256109321 bytes:
+49e1892ecf6de7d7091cf8ca233e336f8e142951e5ce8f78429a84e8826d9e51
+public-description-sourceproof.json, 269756 bytes:
+d5ace37e0bec59bbeff091e68deff5f66c7ea5772272ff1a34b844905f1813b5
+candidate-public-population-freeze.json, 988 bytes:
+905dd3468aed2a2a67474fb8a57f69157140feea9b1d22267460d2c3f50cf441
+The candidate is explicitly root_verified=false. ROOT independently checks it
+and writes an authoritative compact population freeze before model execution.
+Kaggle upload allowlist is public input, compact ROOT freeze, public sourceproof,
+and reviewed GPU scripts/config only. Do not upload private-selection,
+private-pair-body-index-maps, historical decisions, source captures, label ZIPs,
+or the complete input-freeze dependency inventory.
+
+Original population retained: 1976 prepared pairs, 971 dispatch pairs, 4268
+options per input variant / 8536 paired option predictions, 46 products,
+569 cases, 13159 original AU rows, 62252 original tasks, 92 source bodies.
+
+Main Luna selection: first 12 products in SHA-256 ordering of
+'nextdata-table-pilot-v1|' + product_id; all their 108 cases and 172 dispatch
+pairs. Compare fresh cleaned-description Luna to historical completed full-body
+first pass. This main comparison is not a fresh paired full/description run.
+Error diagnostic: first 8 previously missed positive cases by required complete
+case dispatch pair count then SHA-256('nextdata-table-error-v1|' + case_id).
+All their complete-case dependencies comprise 18 unique pairs. Fresh original
+full-body and fresh description first passes compare these same 8 full cases.
+One error case overlaps main; reuse the same table first pass.
+Table/description union: 115 cases, 185 pairs, 179 packets.
+Fresh full diagnostic: 8 cases, 18 pairs, 15 packets.
+194 cold Luna packet jobs total. Whole families remain intact; a family larger
+than the 8-option soft limit remains a singleton. Large single contexts remain
+whole; two contexts exceeding 90000-byte soft limit are separated.
+
+packets/table/index.json SHA:
+28ad79f06fa6df60eccee066df358b6da65a5f486aa3b90530095b85cf9b4637
+packets/full/index.json SHA:
+6960d967b0e8a093c3e839be54c0c44033be9e9ef2519a9e347049aa08eb0914
+Each worker reads only its assigned complete packet and produces immutable
+first-write JSONL. Missing/invalid responses stay unknown. No semantic retry,
+repair, filler predictions, or copied prior classifier judgments.
+Supervisor plans draft dirs:
+.lab-output/sku-nextdata-table-20261013-v1/luna-dispatch-v1/drafts/table
+.lab-output/sku-nextdata-table-20261013-v1/luna-dispatch-v1/drafts/full
+Expected draft filename is packet-001.jsonl, matching packet index file stem.
+
+Harness: experiments/sku-matching/run_nextdata_table_experiment_v1.py
+SHA 694889c6393e6cd719493d9d1362811ca41ae468f41597c5125cbf4b75e1ed5a
+Tests: tests/test_lab_sku_nextdata_table_experiment_v1.py
+SHA 39823efd5685fb716bde56863fe51429ae97e5bfc5e32067eeba4452ffc796fc
+Final adapter SHA:
+550635608562ab5ecd898180965ad96ae5ab11585ba33b1239ff0fde55cba609
+Runtime recorded: Python 3.12.14, Node v24.19.0, Cheerio 1.1.2.
+Frozen original semantic core raw hashes were reconciled against the previous
+volume audit. Focused combined checks: 27 tests passed. Complete readonly
+load_experiment revalidation passed after prepare. No original files modified.
+
+Collect Luna into a NEW output directory, once the complete assigned run has
+finished and original first drafts have been retained:
+python3 -B experiments/sku-matching/run_nextdata_table_experiment_v1.py collect-luna --experiment .lab-output/sku-nextdata-table-20261013-v1/prepared-v1 --variant table --drafts .lab-output/sku-nextdata-table-20261013-v1/luna-dispatch-v1/drafts/table --output .lab-output/sku-nextdata-table-20261013-v1/luna-description-gate-v1
+Use variant full and the full drafts dir for the fresh full diagnostic.
+Each collection writes original raw bytes, provenance results, all original
+selected row/task resolutions, complete whole-case decisions, and output-freeze.
+
+Collect a GPU model/variant into a NEW output directory:
+python3 -B experiments/sku-matching/run_nextdata_table_experiment_v1.py collect-gpu --experiment .lab-output/sku-nextdata-table-20261013-v1/prepared-v1 --variant table --raw-jsonl RAW_PATH --model-id ACTUAL_MODEL_ID --output NEW_DIRECTORY
+Input rows are {pair_ref, decisions:[{option_index,state,...score_metadata}]}.
+State is support|explicit_conflict|unknown. Every original option index occurs
+once in order. Score metadata is preserved in raw originals. The collector
+does not invent citations or same_condition scope. Its gate is explicitly a
+small_model_relaxed_scope_diagnostic with the same original whole-SKU gate,
+complete 569 cases/13159 rows/62252 tasks, and literal proof overlay.
+Preserve actual Kaggle model/config/device/completion manifests separately.
+
+AUTHORITATIVE GRADING MUST USE ORIGINAL REFERENCE ROW SETS.
+The harness grade command reconstructs known labels from old grade differences,
+unknown lists, and old correct outcomes. This reproduces old aggregate metrics,
+but reconstructing an old TP as [old accepted row] cannot recover a reference
+set containing additional correct rows. Its cache-based exact-row statistics
+are therefore limited and must not be reported as authoritative original-goldset
+numbers. ROOT decided to use an original-reference supplement after ALL new
+predictions/gates are frozen. No model/source/harness edits are required.
+
+Original reader: run_indexed_volume_test_v1.cloned_selected_label_reader()
+returns unchanged grade_final_test_subset_v1.read_label_archives, adapting only
+the empty selected-source-version skip. Arguments:
+(archive_v2, archive_v3, score_membership, original_prepared/row-plans.jsonl).
+Add source_version and split to each membership row from original case-plans.
+Original membership rows themselves contain only case_id and au_product_id.
+Original scorer: grade_final_test_subset_v1.score_variant(membership,
+predictions, references). Do not modify labels or reference AU row sets.
+Reference archives (read ONLY after the new prediction/gate output freezes):
+.lab-output/sku-claude-additional-review-20261012-v1/20261011-sku-independent-real-eval-v2.zip
+SHA 6f65d988222c79c758614592340ba28565a51fa8891317724ba354c5fc38b457
+.lab-output/sku-claude-additional-review-20261012-v1/20261012-sku-independent-real-eval-v3.zip
+SHA 52f6faa51127a9c12250a3cdb5eb3d1818a36461a8c09323e481748aeed1f37b
+Original prepared source:
+.lab-output/sku-volume-unused-test-20261013-v1/prepared-source-v1
+Root can load all 569 references once after all new outputs are frozen, then
+subset references for each collection/main/error stratum. Retain complete gold
+row sets for wrong-row counts, recall, accuracy, and paired gains/losses.
+
+This is consumed-TEST diagnostic work, independent_test=false. Error selection
+uses prior machine annotations, not human gold. Separate unknown acceptances,
+wrong accepted rows, missing/invalid execution, source-family unknowns, exact
+row recall, and full-case coverage. Do not equate GPU scope-relaxed results to
+the Luna source/scope protocol, or treat these results as an untouched test.
+No inference, Kaggle upload/submission, or GitHub push was performed by the
+harness agent. Remote persistence and actual execution belong to ROOT.
