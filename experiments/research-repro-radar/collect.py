@@ -41,6 +41,8 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--run',type=Path,required=True,help='New evidence directory; refuses overwrite')
     args=parser.parse_args()
+    from judge_preflight import require_judge
+    require_judge()
     RUN=args.run
     RAW=RUN/'sources'
     if RUN.exists(): raise SystemExit('Run directory already exists; preserve previous evidence')

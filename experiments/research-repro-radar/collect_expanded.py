@@ -1,6 +1,8 @@
 """Additional official discovery feeds; never executes candidate code."""
 import importlib.util,json,concurrent.futures as cf,urllib.parse
 from pathlib import Path
+from judge_preflight import require_judge
+require_judge()
 spec=importlib.util.spec_from_file_location("collector",Path(__file__).with_name("collect.py"))
 c=importlib.util.module_from_spec(spec);spec.loader.exec_module(c)
 run=Path(__file__).parent/"runs/2026-10-13-evening"
