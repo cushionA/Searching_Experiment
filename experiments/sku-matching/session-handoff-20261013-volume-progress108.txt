@@ -1,0 +1,47 @@
+ボリュームTESTの途中保存（2026-10-13）
+
+主タスクは全未使用TEST46商品569ケースのボリューム評価を終え、結果で改善継続を判断すること。
+このメモとprogress ZIPは完了報告ではない。新しい精度値はまだない。
+まず session-handoff-20261013-volume-in-progress.txt と results/20261013-sku-volume-unused-test-source-checkpoint.txt を読む。
+
+ローカルsource checkpoint commit d948f6f。originは最後の確認時53cd968。
+148MB source checkpointを同じGitHub cushionA/Searching_Experiment・同ブランチへpushする操作は自動承認レビューに拒否された。
+理由は原商品captureを含む具体的payload/送信先の明示承認不足。承認質問をユーザーへ非同期で提出し返事待ち。
+推論とローカル保存は継続中。拒否の回避操作や別送信先へのアップロードはしていない。
+新承認が届くまでこのpayloadのpushを再試行しない。以前のremote一般許可を新たな返答と誤認しない。
+
+EX=.lab-output/sku-volume-unused-test-execution-20261013-v1
+root classifier GOとsource/code/identity freezeは元のまま。
+元volume_dispatch_supervisor担当1〜57は全terminal、56draftsとpacket18の1no-draft failure。
+ROOTが58〜108をcold gpt-6-luna/fork noneで実行し全terminal。原回答の意味再試行なし。
+packet70は誤ったFSパスに原回答を1度保存したため、SHA/bytes一致を確認して指定パスへバイト同一コピー。元ファイルも保存。
+他のpath誤記の多くはFINAL文章のみで、指定パスの実draft/bytes/SHAは一致。原回答の編集なし。
+
+ROOT-owned1〜108の閉じたprefixをZIP保存:
+results/20261013-sku-volume-progress-first108-terminal-20261013-v1.zip
+163,256B / SHA2382c80bda0bc2fdb03f2301aa260d856db2ff7ad91561bdee8c79bfa37103dd。
+108terminal/107原draft/packet18 missing、CRC確認済み。全965完了ではなく採点禁止。
+Source bundleは前の147,621,321Bの4分割checkpointから別途復元する。
+
+109以降は /root/volume_dispatch_supervisor_v2 が全965まで継続する。
+モデル判定は全てgpt-6-luna/fork none。coordinator自身は分類せず、複雑な実行台帳/状態管理だけを担当。
+新coordinatorは元モデルcapacityエラー後に同一coordinatorとして復帰。既開始classifierの再dispatchなし。
+一時exec-server transport disconnectedもcloudstatus connected/running・pwd正常で復帰を確認。
+実行中のlive agentsと元ledgerを確認し、開始済みpacketを再投入しない。
+
+既知の台帳限界（判定原本は保持）:
+元supervisorの8実spawn(40,49,50,51,52,54,55,56)は個別spawn行が欠落。
+同supervisorのspawn_metadata_gapでcanonical名・要求model/forkを補足申告、元の個別call時刻は復元しない。
+packet20重複spawn記録、重複terminal記録は実追加モデル呼出しとして数えない。
+packet29/52の元FINAL受信時刻欠落は明記。FINAL原文の遅い転記と区別。
+元台帳1行のliteral改行修正は修正前の全原バイトが未保存。line SHA/decoded objects/修正履歴は残る。
+その限界を隠して元の全tool記録が揃うとは報告しない。
+
+ROOTmetadata normalization helpers v1/v2は原ledgerを書き換えず、同じcanonicalの重複行/field aliasだけ別版に整える。
+8件補足は「担当者が申告した元tool指定、元個別記録なし」として明示。重み署名や個別call原記録の独立証明とはしない。
+classifier/guidance/gate/source codeは変更しない。全965terminalになってからCollectorへ別normalized ledgerを渡す。
+元collectorSHA95a2...は変更せず、runtime adapterでmetadata用EXECと新OUTだけを指定する案。元draftはバイト同一コピーまたはlink。
+snapshot後、generic volume assembleでliteral/body双方の全13,159行・62,252task・569caseを固定。
+全gate・原回答・source・code・QAのfreezeとROOT grading GOを作った後だけ既存v2/v3selected referencesを読む。
+precision/recallのほかexact AU row key、既知negative数・unknown label採用・input/model失敗率・実時間を報告する。
+消費済みTESTを使って新規則を調整しない。今の残り46商品を全て使うので将来の独立TESTには別の凍結集合が必要。
