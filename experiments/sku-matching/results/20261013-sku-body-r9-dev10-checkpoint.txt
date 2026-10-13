@@ -1,0 +1,11 @@
+# Body R9 DEV10 full checkpoint
+
+選択済みDEV10（10 cases、5 products）の採点成果です。grading freezeの361 files全件、175 pre-ML pins、freeze/spec/ROOTGO v1・v2、7 adapter pins、64 packets/drafts、50 response files（69 responses）、first-pass raw snapshot、24 failure pairs、QA v1/v2、proof/input source/native capturesを収録しました。全件差分を含む元score、独立TEST内容、private references/diagnostics/goldは収録していません。公開集計scoreは元score SHAと除外規則を持ち、casewise ID/label/row/prediction/difference/unknown IDを除いています。
+
+body-invariant-v3は3 TP / 0 FP / 3 FN / 0 TN、recall 50%。literal-onlyは0 TP / 0 FP / 6 FN / 0 TN、recall 0%。既知6件は全てpositive、unknownは4件です。4 gross acceptsのうち3件は既知で正しく、1件は未解決で採点不能です。表示上のprecision 100%は負例を含まないため確証になりません。
+
+69 responsesはsource-valid。244 decisionsのうち233はselected_fact、11はnoneで、body-invariant/selected SKU bodyによる採用は0件です。body gainは示されていません。93 pairsを64 packetsで試行し、14 packetsで形式失敗、24 pairsはunknownのままです。再試行なし。selectorはgpt-6-luna。040–042の3 follow-upはpublic historyを保ち開示、model self-attestationは不使用です。外部packet-040 draftはrepo draftとbyte-identicalで、移動せず追加コピーを収録しました。
+
+採点では選択DEV10のv2 referencesだけを開きました。初回partial gradingは旧parserが空のv3 archiveを要求して失敗し、archival routing metadataだけを修正しました。凍結predictions/gatesに変更なし。7 synthetic adapter checksはpass。最終QAは1,397 checks、0 fail、歴史的fixture欠落14、skip 37、focused tests 36 passです。
+
+将来のindependent TEST計画はidentity/countのみで未実施です。選択40 cases / 20 products、未使用枠66 products / 829 casesを記録し、テスト内容を含めていません。
