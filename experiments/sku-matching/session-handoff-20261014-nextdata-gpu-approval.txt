@@ -47,3 +47,7 @@ GitHub pushは以前別のauto-reviewでデータ外部転送の明示承認不�
 同privateDataset actualversion2 READY、全24member名/size一致を確認。固定resume-s000 version1を一度だけsubmit成功。source signature de7c1af1390f6f435f97aaa16ae56c54242e8f705d414ff926c8a34918cbad88、コードSHA/返却ref/version一致。
 現在同jobのwait中（kaggle-job-s000-v1/job.json、root-wait-s000-v1）。入力SHA検査成功ログあり。モデル成果物未回収・未採点。監視のConnectionErrorはstatus停止とは扱わずread retry。
 承認・転送・提出receiptはresults/20261014-sku-nextdata-bounded-s000-submitted-v1.zip（全CRC/member SHA検証済み）。旧承認待ち記載はこの更新が優先。GitHub push許可は別件で未取得・未push。
+
+並行したsource-only修正候補（GPU/Luna既存入力・判定・12coreは不変）：sku_embedded_json_source_spans_v1.py。原本script#item-page-app-data内のJSON文字列leafをrawSHA/encoding/scriptID/JSONPath/axis/memberで確認し、raw JSON escape表記の再構築を避ける。importだけで有効化されず、別候補processのinstall_adapter contextで使う。
+旧3カラーケース54sourcefacts：既検証36+unknown18→source検証54。元source/条件/選択値を変更せず、原本は既存EUC-JP原HTML。モデル精度改善・再推論の主張なし。コード/7tests/原本2ファイル/54条件/原行SHA/訂正auditv1-v3/最終QAをresults/20261014-sku-embedded-json-source-candidate-v1.zipにCRC/memberSHA検査して保存。Claude追加共有依頼は原本発見により不要、依頼書に追記。
+最終required1497/failure0/error14既存fixture不足/skip37。独立レビューのbool offset型指摘を修正し、同型エラーケースを追加検証後76.768sで再確認。旧12coreのSHAは07872d2と一致、商品/カテゴリ規則追加0。

@@ -8,3 +8,5 @@ Claudeへの依頼：既存凍結原本のメタデータ確認だけ
 
 目的：原本に存在しないのか、入力の引用・対応付けで落ちたのかを区別する。現時点で新カテゴリ規則・新判定器の依頼はありません。
 出典：root-main-fn4-mechanical-diagnostic-v4.json。旧v2のvariant混同・軸名不一致説は訂正済みで採用しません。
+
+2026-10-14 JST 追記：保存済み原本の確認で上記メタデータを復元できました。追加共有依頼は不要です。原因はvariantSelectors[1]先頭値のJSON escape \u003dと、再構築したraw引用の「=」の表記差でした。新しいカテゴリ規則は不要で、JSON pathで原本の文字列値を確認する別候補を検証済みです。進行中GPU/旧Luna入力には適用していません。詳細はresults/20261014-sku-embedded-json-source-candidate-v1.zip（54sourcefactsのうち旧unknown18がsource検証可能、モデル精度改善は未判定）。
