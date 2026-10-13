@@ -1,0 +1,9 @@
+route DEV10 firstpass + grading checkpoint（2026-10-13）
+
+本ZIPはroute DEV10のsource、178-pin pre-inference freeze、実行packetとraw response、render/validation、pre-grade freeze/GO、採点の公開集計をまとめる。実行は87 fresh cold Luna packet、671 choices。全件selected_factで、79 source-valid、8 invalid（extra metadata 1、scope schema constant 5、null string 2）。missing/retryなし。cohortは10 cases、5 products、118 rows、452 original task bindings、129 pairs（42 protected、87 dispatched）。
+
+評価はknown 8件が全てpositive、unknown 2件。route indexedはTP=5, FP=0, FN=3, TN=0、recall 62.5%。literal-onlyはTP=4, FP=0, FN=4, TN=0、recall 50%。paired positiveは+1だが、このcohortにはnegative evidenceがなく、production性能の証明にはならない。前のindexed DEV10 cohortと異なるため、cohort横断の改善主張はしない。full private scoreとcase-level/reference detailsは含めず、数値aggregateのみを収録。
+
+Grounding guidanceはcitation contract clarificationに限定し、canonical body/schema/NLI/evaluation/literal処理は変更していない。既存R9 checkpoint `20261013-sku-body-r9-dev10-checkpoint.zip`（SHA-256 `f1375337dbf58df989878af5765155b2a417e18222d70fa98035b79767d6e23c`）とbase repository commit 1d79912をexternal dependenciesとして記録。
+
+未知参照2件は両variantでacceptされたが、真偽未確定として採点対象外。knownの受理5件を全受理7件の精度と混同しない。
