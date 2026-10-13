@@ -36,3 +36,22 @@ CRCと全member SHAを確認。全965件の処理は継続中、採点・新し�
 この新版には全件terminal後のcollect wrapper、postgrade集計script、合成ケースQA receiptも含む。
 集計の合成QAは誤AU行・既知negative・unknown referenceの扱いを確認しただけで、実際のラベルは読んでいない。
 集計にはpreparedのidentifier-only membershipではなく、identity-planの元selected-membership（SHA0fa08f2）を渡す。
+
+追記（403 terminal、2026-10-13 10:01 UTC）:
+results/20261013-sku-volume-progress-403-terminal-v1.zip
+1,799,171B / SHA dc1259b69dfbf377ca8d04e56344159af1bb266ab8ed753c5880ccd59064c6c4。
+403実terminal/400原draftファイル、うち314は0bytes。missingは18/247/248。
+331は最初のwriteにoverwrite-capable modeを使用したと元FINALが自己報告。
+元draftを変更せず、手順逸脱をworker_failureとして保持。元FINALはno retry/no modifyと報告している。
+上書き可能なmode使用と、既存の意味回答を実際に置換した証拠は区別し、後者が独立に証明されたとはしない。
+凍結collectorの既存firstpass/構造検証は変更せず、報告上この逸脱を明記する。
+333は誤ったパスに2038B/SHA12292ecf...の原draftを1度保存したため、ROOTがbyte同一copyで期待先へ運んだ。
+元ファイル・元worker_failure・元FINAL・relocation receipt/eventすべてを保持し、意味修正/再推論はない。
+同様の原draft transportは70/333の2件。root-observed-protocol-issues-v1.jsonに採点前の事実を保存。
+ZIPのCRC/全member SHA確認済み。正解ラベル未読、採点未実施、全965まで継続中。
+
+postgrade集計script更新はAU行誤採用を誤りとして数えるclass+exact-row accuracyを追加したもの。
+合成5knownケースで2/5=0.4を確認。実際のラベルは未読。
+summary script SHA d5a20d022dd226841137316da8c0c0b21a1d97d5ca3f9f5707459cfff375d099。
+合成QA receipt SHA add10829bb2799d2980e84c675a625167e04193fb9b86b91edbf3b2f90144c20。
+classifier/guidance/source/gateの凍結は変更せず、SKUカテゴリ条件分岐も追加していない。
