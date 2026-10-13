@@ -1,3 +1,17 @@
+# 最新の夕方記録（2026-10-13 JST）
+
+[当日報告](../../reports/2026-10/2026-10-13-evening-radar.md)。一意artifact1,679、最終review20、推論0、未完了1,057。必須Codex judgeはnullで未完了。初回444件を全て保持。`evening-state/` が正規の4JSONで、最新の記録を復元する。
+
+現行stateの検算:
+
+```bash
+python experiments/research-repro-radar/verify_evening.py --run 2026-10-13-evening --previous-ref f1a9a681a4f06d33a004c3ca77d7fab5c03e58c5
+```
+
+以下の初回記録と `verify_state.py` は初回1runに固定された履歴用。最新stateでその固定テストを使わない。stateディレクトリが既に存在するときは `cp -r evening-state state` ではなく、4つのJSONをstate直下へコピーしてhashを検算する。
+
+---
+
 # 夕方 Research Repro Radar（初回・2026-10-12 UTC）
 
 最新版 Skill をそのまま導入した、実調査と状態保存の試運転。確定判定と候補モデル推論は環境エラーで未完了。失敗を成功として数えない。

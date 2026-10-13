@@ -1,0 +1,161 @@
+{
+  "run_id": "evening-2026-10-13",
+  "date": "2026-10-13",
+  "recommended": [],
+  "digest": [
+    {
+      "id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+      "title": "Qwen2.5-Coder-1.5B-Instruct",
+      "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+      "picked_reason": "1.54Bのコード生成モデル。後発Coder-Nextは80B総重みで同サイズ代替ではない。",
+      "deferred_reason": "CPU品質・速度の比較未実施。指定judgeも未完了",
+      "verification": "未検証"
+    },
+    {
+      "id": "2412.14219",
+      "title": "A Survey on Inference Optimization Techniques for Mixture of Experts   Models",
+      "url": "https://arxiv.org/abs/2412.14219",
+      "picked_reason": "MoE推論最適化の整理。小型化・オフロードの関心に一致。",
+      "deferred_reason": "surveyであり単一の実行対象なし。指定judgeも未完了",
+      "verification": "未検証"
+    },
+    {
+      "id": "2211.11014",
+      "title": "Understanding and Improving Knowledge Distillation for   Quantization-Aware Training of Large Transformer Encoders",
+      "url": "https://arxiv.org/abs/2211.11014",
+      "picked_reason": "encoderの蒸留と量子化を同時に扱う公式コード。",
+      "deferred_reason": "コードのライセンス未確認、著者評価はA6000。指定judgeも未完了",
+      "verification": "未検証"
+    },
+    {
+      "id": "2207.01405",
+      "title": "I-ViT: Integer-only Quantization for Efficient Vision Transformer   Inference",
+      "url": "https://arxiv.org/abs/2207.01405",
+      "picked_reason": "ViTの整数演算化、Apache-2.0の公式実装。",
+      "deferred_reason": "著者速度評価はRTX 2080 Ti、CPU効果未測定。指定judgeも未完了",
+      "verification": "未検証"
+    },
+    {
+      "id": "2505.03113",
+      "title": "Image Recognition with Online Lightweight Vision Transformer: A Survey",
+      "url": "https://arxiv.org/abs/2505.03113",
+      "picked_reason": "軽量ViTの設計・動的処理・蒸留を比較。",
+      "deferred_reason": "survey、モデル検証への対象化未完了。指定judgeも未完了",
+      "verification": "未検証"
+    },
+    {
+      "id": "2610.07987",
+      "title": "VisionWeave: Weaving Elastic Visual Representations as a Native Capability of MLLMs",
+      "url": "https://arxiv.org/abs/2610.07987",
+      "picked_reason": "視覚tokenを内容に応じて割り当てる2026年10月の研究。",
+      "deferred_reason": "大規模MLLMで、重み・実行資源の上限適合未確認。指定judgeも未完了",
+      "verification": "未検証"
+    },
+    {
+      "id": "2607.25180",
+      "title": "Bekko Embedding: Parameter-Efficient Multilingual Retrieval with Ultra-Compact Encoders",
+      "url": "https://arxiv.org/abs/2607.25180",
+      "picked_reason": "多言語embeddingの8M/25M encoder、MITモデルあり。",
+      "deferred_reason": "日本語の用途別品質とCPU資源は未測定。指定judgeも未完了",
+      "verification": "未検証"
+    },
+    {
+      "id": "2604.04979",
+      "title": "Squeez: Task-Conditioned Tool-Output Pruning for Coding Agents",
+      "url": "https://arxiv.org/abs/2604.04979",
+      "picked_reason": "coding agentのツール出力から必要な原文を抽出。",
+      "deferred_reason": "証拠欠落と追加CPUコストの比較待ち。指定judgeも未完了",
+      "verification": "未検証"
+    },
+    {
+      "id": "2601.16746",
+      "title": "SWE-Pruner: Self-Adaptive Context Pruning for Coding Agents",
+      "url": "https://arxiv.org/abs/2601.16746",
+      "picked_reason": "0.6B skimmerによるタスク依存の重要行抽出。",
+      "deferred_reason": "CPUでの品質・速度を未検証。指定judgeも未完了",
+      "verification": "未検証"
+    },
+    {
+      "id": "2606.26488",
+      "title": "What Survives When You Compress a Recursive Reasoner for the Edge?",
+      "url": "https://arxiv.org/abs/2606.26488",
+      "picked_reason": "recursive reasonerのedge圧縮時に残る能力を調査。",
+      "deferred_reason": "著者実験はHexagon HTP、CPU fallbackなし。指定judgeも未完了",
+      "verification": "未検証"
+    },
+    {
+      "id": "2206.01861",
+      "title": "ZeroQuant: Efficient and Affordable Post-Training Quantization for Large-Scale Transformers",
+      "url": "https://arxiv.org/abs/2206.01861",
+      "picked_reason": "Transformerの後学習量子化、DeepSpeed系の一次論文。",
+      "deferred_reason": "現在の実装・後継・CPU性能の照合未完了。指定judgeも未完了",
+      "verification": "未検証"
+    },
+    {
+      "id": "2408.08554",
+      "title": "ABQ-LLM: Arbitrary-Bit Quantized Inference Acceleration for Large   Language Models",
+      "url": "https://arxiv.org/abs/2408.08554",
+      "picked_reason": "任意bit量子化のGPU kernel、Apache-2.0実装。",
+      "deferred_reason": "CUDA/Turing以降の条件、対象環境で未測定。指定judgeも未完了",
+      "verification": "未検証"
+    },
+    {
+      "id": "2603.28765",
+      "title": "Adaptive Block-Scaled Data Types",
+      "url": "https://arxiv.org/abs/2603.28765",
+      "picked_reason": "block単位の低精度表現、fouroversix公式実装。",
+      "deferred_reason": "高速backendはBlackwell依存、無料GPU互換未確認。指定judgeも未完了",
+      "verification": "未検証"
+    },
+    {
+      "id": "2603.19635",
+      "title": "BEAVER: A Training-Free Hierarchical Prompt Compression Method via Structure-Aware Page Selection",
+      "url": "https://arxiv.org/abs/2603.19635",
+      "picked_reason": "学習不要の階層的prompt圧縮。",
+      "deferred_reason": "公式ページからコード・licenseを確認できず。指定judgeも未完了",
+      "verification": "未検証"
+    },
+    {
+      "id": "2512.07921",
+      "title": "DeepCode: Open Agentic Coding",
+      "url": "https://arxiv.org/abs/2512.07921",
+      "picked_reason": "論文からコードへの情報圧縮とagent構成。",
+      "deferred_reason": "既存認可内のLLM利用・費用条件を未検証。指定judgeも未完了",
+      "verification": "未検証"
+    }
+  ],
+  "completed_ids": [],
+  "status": "research_recorded_judgment_incomplete",
+  "counts": {
+    "hf_papers_unique": 1216,
+    "mdpi_papers": 200,
+    "model_repo_additional_unique": 263,
+    "normalized_before_dedup": 1684,
+    "rank_input_with_carry": 1686,
+    "ranked": 1056,
+    "review_pool_read": 20,
+    "additional_primary_papers_read": 14,
+    "model_or_repo_cards_reviewed": 19,
+    "candidate_inference_executed": 0,
+    "judge_attempts": 1,
+    "judge_valid_outputs": 0,
+    "pending_after_record_expected": 1057,
+    "collected_unique_artifacts": 1679
+  },
+  "blocker": "Required scripts/llm.py judge with RADAR_LLM=codex returned null. Prior run also blocked. No alternate backend, no repairs, no previous PP-LCNet restart.",
+  "cost": {
+    "cash_jpy": 0,
+    "gpu_seconds": 0,
+    "gpu_device": null,
+    "gpu_visibility": "not applicable; no submission",
+    "candidate_model_download_bytes": 0
+  },
+  "source_coverage": "All 1679 unique artifacts metadata-scored; not 1679 full-paper/license reviews. Includes model/checkpoint variants. Top20 factual primary review +19 model/repo cards; unknowns explicit. OpenReview request HTTP403.",
+  "independent_hot_signals": "Not confirmed twice for any detailed recommendation; author paper and repo not counted independently",
+  "state": "Prior 444 retained; digest does not complete; see queue-reconciliation.json",
+  "notification": {
+    "channel": "this ChatGPT conversation only",
+    "email_sent": false,
+    "pause_question": "Same judge availability blocker occurred in two runs; ask whether to pause evening automation, without pausing it"
+  }
+}

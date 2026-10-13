@@ -1,0 +1,446 @@
+{
+  "collected_on": "2026-10-13",
+  "scope": "Official primary-source facts only; no comparative judgments. Excludes GLiNER, PP-LCNet, Docling, and Xberg.",
+  "candidates": [
+    {
+      "title": "MobileNetV4",
+      "url": "https://github.com/tensorflow/models/tree/master/official/vision/modeling/backbones/mobilenet",
+      "published_updated": "Official TensorFlow Models repo API fetched 2026-10-13 (updated_at 2026-10-13T06:30:10Z; pushed_at in API snapshot); paper 2024-04.",
+      "license": "Apache-2.0 repository code (GitHub license metadata NOASSERTION; verify weight artifact terms).",
+      "stars": 77647,
+      "current_model_id": "MobileNetV4 (Conv-S, Conv-M, Conv-L; Hybrid variants); Google research/Kaggle model artifacts",
+      "successor_evidence": "Official paper presents MobileNetV4 as the newer MobileNet family; no later MobileNetV5 successor confirmed in reviewed sources",
+      "hardware": "Designed for mobile/edge CPU and accelerator inference; official paper benchmarks on Pixel 8 CPU/GPU/NPU",
+      "limitations": "Classifier backbone, not a general-purpose vision-language model; throughput depends on runtime, input resolution, quantization, and target device.",
+      "source_urls": [
+        "https://github.com/tensorflow/models/tree/master/official/vision/modeling/backbones/mobilenet",
+        "https://arxiv.org/abs/2404.10518",
+        "https://api.github.com/repos/tensorflow/models"
+      ],
+      "unconfirmed_fields": [
+        "specific checkpoint artifact licensing",
+        "CPU latency on target hardware"
+      ],
+      "snapshot_files": [
+        "models__github.json",
+        "models__README.md"
+      ]
+    },
+    {
+      "title": "EfficientViT (MIT HAN Lab)",
+      "url": "https://github.com/mit-han-lab/efficientvit",
+      "published_updated": "GitHub API updated_at 2026-10-10T17:41:05Z; pushed_at recorded in API snapshot.",
+      "license": "Apache-2.0 (GitHub repository API SPDX metadata).",
+      "stars": 3369,
+      "current_model_id": "MIT HAN Lab EfficientViT family; distinct from MobileViT/other EfficientViT-named projects.",
+      "successor_evidence": "Repository includes multiple generations/task branches (including EfficientViT-SAM); no single new version supersedes all models",
+      "hardware": "Repository describes hardware-efficient models targeting edge devices; provides PyTorch implementations and deployment paths",
+      "limitations": "Repository spans high-resolution dense prediction, classification, segmentation and SAM-related models; check specific task/model. The cited arXiv:2205.14756 is correctly titled “EfficientViT: Multi-Scale Linear Attention for High-Resolution Dense Prediction” (ICCV 2023; revised 2024-02-06).",
+      "source_urls": [
+        "https://github.com/mit-han-lab/efficientvit",
+        "https://arxiv.org/abs/2205.14756",
+        "https://api.github.com/repos/mit-han-lab/efficientvit"
+      ],
+      "unconfirmed_fields": [
+        "latest commit-specific release/version",
+        "CPU performance per supported model"
+      ],
+      "snapshot_files": [
+        "efficientvit__github.json",
+        "efficientvit__README.md"
+      ]
+    },
+    {
+      "title": "FastViT",
+      "url": "https://github.com/apple/ml-fastvit",
+      "published_updated": "GitHub API updated_at 2026-10-03T02:44:12Z.",
+      "license": "Custom Apple ML Research License (repository LICENSE; not MIT/Apache). Verify pretrained weight terms as applicable.",
+      "stars": 2039,
+      "current_model_id": "Official Apple repo: FastViT model family/checkpoints; exact checkpoint inventory is in captured README.",
+      "successor_evidence": "FasterViT is a separate NVIDIA paper/project; no official source found establishing it as a successor to Apple FastViT. Treat names as separate projects.",
+      "hardware": "Apple describes mobile/edge efficiency; model implementation is PyTorch; deployment targets include mobile inference workflows",
+      "limitations": "Classification-focused; published latency is device/runtime-specific and not a substitute for host CPU profiling.",
+      "source_urls": [
+        "https://github.com/apple-aiml-research/ml-fastvit",
+        "https://api.github.com/repos/apple-aiml-research/ml-fastvit",
+        "https://raw.githubusercontent.com/apple-aiml-research/ml-fastvit/main/LICENSE"
+      ],
+      "unconfirmed_fields": [
+        "repository license classification / checkpoint terms",
+        "non-Apple CPU performance"
+      ],
+      "snapshot_files": [
+        "ml-fastvit__github.json",
+        "ml-fastvit__README.md",
+        "ml-fastvit__LICENSE"
+      ]
+    },
+    {
+      "title": "MobileCLIP",
+      "url": "https://github.com/apple/ml-mobileclip",
+      "published_updated": "GitHub API updated_at 2026-10-09T16:48:02Z.",
+      "license": "MIT repository code; MobileCLIP2 checkpoint cards declare apple-amlr custom terms, so weights need separate review.",
+      "stars": 1669,
+      "current_model_id": "Official project includes MobileCLIP and MobileCLIP2 generations; exact model variant/checkpoint should follow captured README.",
+      "successor_evidence": "MobileCLIP2 is presented in the official project repository as a newer generation. It is included in the fetched official README snapshot.",
+      "hardware": "Image-text encoders designed for mobile efficiency; Apple repository provides inference and export guidance",
+      "limitations": "Contrastive image/text embedding model rather than generative captioner; zero-shot results vary by dataset/domain and prompt.",
+      "source_urls": [
+        "https://github.com/apple-aiml-research/ml-mobileclip",
+        "https://api.github.com/repos/apple-aiml-research/ml-mobileclip",
+        "https://raw.githubusercontent.com/apple-aiml-research/ml-mobileclip/main/LICENSE"
+      ],
+      "unconfirmed_fields": [
+        "checkpoint-specific license",
+        "CPU-only latency"
+      ],
+      "snapshot_files": [
+        "ml-mobileclip__github.json",
+        "ml-mobileclip__README.md",
+        "ml-mobileclip__LICENSE"
+      ]
+    },
+    {
+      "title": "all-MiniLM-L6-v2",
+      "url": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2",
+      "published_updated": "HF API lastModified 2026-06-01T06:29:13Z; API likes 6,300 (not GitHub stars); downloads 220,348,634 at snapshot.",
+      "license": "Apache-2.0",
+      "stars": null,
+      "current_model_id": "sentence-transformers/all-MiniLM-L6-v2; card describes 22.7M parameters.",
+      "successor_evidence": "No official newer L6-v2 successor identified from reviewed card; same publisher has other MiniLM variants, but succession not established",
+      "hardware": "Small transformer encoder; suitable for CPU embeddings; HF card documents sentence-transformers usage",
+      "limitations": "English sentence/short-paragraph embeddings. Card says default maximum sequence length is 256 word pieces; training used max sequence length 128. For longer inputs truncation applies.",
+      "source_urls": [
+        "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2",
+        "https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2"
+      ],
+      "unconfirmed_fields": [
+        "CPU benchmark on target hardware"
+      ],
+      "likes": 6300,
+      "snapshot_files": [
+        "sentence-transformers__all-MiniLM-L6-v2.json",
+        "sentence-transformers__all-MiniLM-L6-v2__README.md"
+      ]
+    },
+    {
+      "title": "e5-small-v2",
+      "url": "https://huggingface.co/intfloat/e5-small-v2",
+      "published_updated": "HF API lastModified 2025-02-17T03:24:44Z; API likes 130 (not stars), downloads 871,434 at snapshot.",
+      "license": "MIT",
+      "stars": null,
+      "current_model_id": "intfloat/e5-small-v2 (small English text embedding model)",
+      "successor_evidence": "Publisher has later E5 models including multilingual and larger instruct variants; no explicit same-size direct replacement confirmed",
+      "hardware": "Small transformer encoder compatible with common Transformers/Sentence-Transformers inference on CPU",
+      "limitations": "English-only; card specifies query:/passage: prefixes for retrieval and maximum sequence length 512; embedding model, not generative.",
+      "source_urls": [
+        "https://huggingface.co/intfloat/e5-small-v2",
+        "https://huggingface.co/api/models/intfloat/e5-small-v2"
+      ],
+      "unconfirmed_fields": [
+        "CPU benchmark"
+      ],
+      "likes": 130,
+      "snapshot_files": [
+        "intfloat__e5-small-v2.json",
+        "intfloat__e5-small-v2__README.md"
+      ]
+    },
+    {
+      "title": "Qwen3-Embedding-0.6B",
+      "url": "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B",
+      "published_updated": "HF API lastModified 2026-04-20T02:45:58Z; API likes 1,278 (not GitHub stars), downloads 4,453,000+ at snapshot.",
+      "license": "Apache-2.0",
+      "stars": null,
+      "current_model_id": "Qwen/Qwen3-Embedding-0.6B; card says 0.6B parameters, 100+ languages, 32k context, up to 1024-dimensional embeddings.",
+      "successor_evidence": "Qwen3-Embedding family is current relative to the publisher's earlier Qwen embedding releases; newer Qwen embedding generation needs a current check",
+      "hardware": "0.6B parameter embedding encoder; local CPU possible with quantization but heavier than sub-100M sentence encoders",
+      "limitations": "Large compared with compact <100M sentence encoders; 32k input support carries higher compute/memory cost. Embedding/ranking model, not generator.",
+      "source_urls": [
+        "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B",
+        "https://huggingface.co/api/models/Qwen/Qwen3-Embedding-0.6B"
+      ],
+      "unconfirmed_fields": [
+        "CPU runtime benchmark"
+      ],
+      "likes": 1278,
+      "snapshot_files": [
+        "Qwen__Qwen3-Embedding-0.6B.json",
+        "Qwen__Qwen3-Embedding-0.6B__README.md"
+      ]
+    },
+    {
+      "title": "Phi-4-mini-instruct",
+      "url": "https://huggingface.co/microsoft/Phi-4-mini-instruct",
+      "published_updated": "HF API lastModified 2025-12-10T20:24:40Z; API likes 856 (not stars), downloads 359,850 at snapshot.",
+      "license": "MIT (HF model card/API).",
+      "stars": null,
+      "current_model_id": "microsoft/Phi-4-mini-instruct; 3.8B parameters; 128K context per Microsoft model card",
+      "successor_evidence": "Microsoft has Phi-4-mini-reasoning and Phi-4-mini-flash-reasoning sibling checkpoints plus ONNX variants, updated 2025-12-10/2026-02-11 per official model API. These are reasoning/runtime variants; no unambiguous newer general instruct replacement established.",
+      "hardware": "Microsoft ONNX optimized variants document CPU/GPU, desktop and mobile CPU configurations; full weights require substantial memory, quantization advised for local CPU.",
+      "limitations": "3.8B is materially heavier than sub-1B options; model card directs task-specific evaluation; long context raises KV-cache memory.",
+      "source_urls": [
+        "https://huggingface.co/microsoft/Phi-4-mini-instruct",
+        "https://huggingface.co/microsoft/Phi-4-mini-instruct-onnx",
+        "https://huggingface.co/microsoft/Phi-4-mini-reasoning-onnx",
+        "https://huggingface.co/api/models/microsoft/Phi-4-mini-instruct"
+      ],
+      "unconfirmed_fields": [
+        "per-device CPU throughput and RAM at chosen precision"
+      ],
+      "likes": 856,
+      "snapshot_files": [
+        "microsoft__Phi-4-mini-instruct.json",
+        "microsoft__Phi-4-mini-instruct__README.md"
+      ]
+    },
+    {
+      "title": "Qwen3-0.6B",
+      "url": "https://huggingface.co/Qwen/Qwen3-0.6B",
+      "published_updated": "HF API lastModified 2025-07-26T03:46:27Z; API likes 1,793 (not stars), downloads 30,726,361 at snapshot.",
+      "license": "Apache-2.0",
+      "stars": null,
+      "current_model_id": "Qwen/Qwen3-0.6B is post-trained/instruction-ready (README says base_model Qwen/Qwen3-0.6B-Base); not the base checkpoint. Card: 0.6B total, 0.44B non-embedding, 32,768 context.",
+      "successor_evidence": "Qwen3.5-0.8B is an official later Qwen model and direct small-family successor option; API snapshot lastModified 2026-03-02, Apache-2.0. It is multimodal (image-text-to-text) and has different capability/hardware profile.",
+      "hardware": "0.6B model size enables CPU inference, especially with quantized GGUF/ONNX community conversions; vendor repository primarily documents Transformers usage",
+      "limitations": "Small model capacity; README notes best practices to avoid endless repetitions, including sampling settings. Long contexts use more memory.",
+      "source_urls": [
+        "https://huggingface.co/Qwen/Qwen3-0.6B",
+        "https://huggingface.co/Qwen/Qwen3.5-0.8B",
+        "https://huggingface.co/api/models/Qwen/Qwen3-0.6B",
+        "https://huggingface.co/api/models/Qwen/Qwen3.5-0.8B"
+      ],
+      "unconfirmed_fields": [
+        "specific CPU throughput for the two models"
+      ],
+      "likes": 1793,
+      "snapshot_files": [
+        "Qwen__Qwen3-0.6B.json",
+        "Qwen__Qwen3-0.6B__README.md"
+      ]
+    },
+    {
+      "title": "Qwen2.5-Coder-1.5B-Instruct",
+      "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+      "published_updated": "HF API lastModified 2025-01-12T02:05:01Z; API likes 158 (not stars), downloads 470,353.",
+      "license": "Apache-2.0",
+      "stars": null,
+      "current_model_id": "Qwen/Qwen2.5-Coder-1.5B-Instruct; card says 1.54B params, 32,768 context.",
+      "successor_evidence": "Qwen3-Coder-Next is a later official Qwen coding model (HF API updated 2026-02-03; Apache-2.0), but a distinct, much larger family; it is not a like-for-like tiny CPU successor. No 1–2B Qwen3-Coder replacement verified.",
+      "hardware": "1.5B; quantized local CPU inference is possible; vendor card documents Transformers and code-generation usage",
+      "limitations": "Coding-focused instruct model; not equivalent to repository-level coding agents; quality depends on language/task and context; 1.5B quantized generation can still be slow on low-power CPUs.",
+      "source_urls": [
+        "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+        "https://huggingface.co/Qwen/Qwen3-Coder-Next",
+        "https://huggingface.co/api/models/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+        "https://huggingface.co/api/models/Qwen/Qwen3-Coder-Next"
+      ],
+      "unconfirmed_fields": [
+        "CPU performance/quantization results"
+      ],
+      "likes": 158,
+      "snapshot_files": [
+        "Qwen__Qwen2.5-Coder-1.5B-Instruct.json",
+        "Qwen__Qwen2.5-Coder-1.5B-Instruct__README.md"
+      ]
+    },
+    {
+      "title": "SmolLM2-1.7B-Instruct",
+      "url": "https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B-Instruct",
+      "published_updated": "HF API lastModified 2025-04-21T20:51:14Z; API likes 762 (not stars), downloads 227,777.",
+      "license": "Apache-2.0",
+      "stars": null,
+      "current_model_id": "HuggingFaceTB/SmolLM2-1.7B-Instruct; official card lists 135M, 360M and 1.7B family sizes; on-device intent.",
+      "successor_evidence": "SmolLM3-3B is official later family model (HF API lastModified 2025-09-10; Apache-2.0, 3B). It exceeds the 1.7B candidate size.",
+      "hardware": "1.7B model supports local inference and HF offers optimized/smaller deployment paths; quantized CPU deployment likely practical depending RAM/latency budget.",
+      "limitations": "Model card warns smaller model capabilities are limited vs larger LMs; validate language coverage, reasoning, and instruction following for application.",
+      "source_urls": [
+        "https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B-Instruct",
+        "https://huggingface.co/HuggingFaceTB/SmolLM3-3B",
+        "https://huggingface.co/api/models/HuggingFaceTB/SmolLM2-1.7B-Instruct",
+        "https://huggingface.co/api/models/HuggingFaceTB/SmolLM3-3B"
+      ],
+      "unconfirmed_fields": [
+        "CPU performance by quantization/runtime"
+      ],
+      "likes": 762,
+      "snapshot_files": [
+        "HuggingFaceTB__SmolLM2-1.7B-Instruct.json",
+        "HuggingFaceTB__SmolLM2-1.7B-Instruct__README.md"
+      ]
+    },
+    {
+      "title": "Granite-3.3-2B-Instruct",
+      "url": "https://huggingface.co/ibm-granite/granite-3.3-2b-instruct",
+      "published_updated": "HF API lastModified 2025-05-08T15:01:59Z; API likes 87 (not stars), downloads 340,908.",
+      "license": "Apache-2.0",
+      "stars": null,
+      "current_model_id": "ibm-granite/granite-3.3-2b-instruct; card: 2B params, 128K context, Apache-2.0.",
+      "successor_evidence": "Official IBM Granite 4.2-3B and Granite 4.2-3B-GGUF model cards exist (API updated 2026-09-02); 3B successor-sized models, not the same 2B footprint.",
+      "hardware": "2B model; IBM model documentation supports local deployment with common runtimes, with quantization needed for smaller memory/CPU setups.",
+      "limitations": "General instruct model rather than specialized coding model; 2B size and context consume more RAM than sub-1B models; verify task-specific performance.",
+      "source_urls": [
+        "https://huggingface.co/ibm-granite/granite-3.3-2b-instruct",
+        "https://huggingface.co/ibm-granite/granite-4.2-3b",
+        "https://huggingface.co/ibm-granite/granite-4.2-3b-GGUF",
+        "https://huggingface.co/api/models/ibm-granite/granite-3.3-2b-instruct"
+      ],
+      "unconfirmed_fields": [
+        "quantized CPU RAM/latency"
+      ],
+      "likes": 87,
+      "snapshot_files": [
+        "ibm-granite__granite-3.3-2b-instruct.json",
+        "ibm-granite__granite-3.3-2b-instruct__README.md"
+      ]
+    },
+    {
+      "title": "Gemma 3 270M IT",
+      "url": "https://huggingface.co/google/gemma-3-270m-it",
+      "published_updated": "HF API lastModified 2025-08-14T07:35:07Z; API likes 664 (not stars), downloads 75,662.",
+      "license": "Gemma 3 model uses Gemma Terms of Use; however official Gemma 4 checkpoints are published under Apache-2.0.",
+      "stars": null,
+      "current_model_id": "google/gemma-3-270m-it (270M instruction tuned)",
+      "successor_evidence": "Gemma 4 E2B/E4B is a later family. Google provides Gemma 4 E2B QAT mobile checkpoint google/gemma-4-E2B-it-qat-mobile-ct (API lastModified 2026-07-20; Apache-2.0). Card describes mobile hardware optimization. Gemma 4 E2B is 2.3B effective / 5.1B including embeddings, considerably larger than Gemma 3 270M.",
+      "hardware": "270M model targets very small footprint and edge/local experimentation; compatible deployments depend on supported runtime/conversion.",
+      "limitations": "270M instruction model has limited capacity relative to larger Gemma. Gemma 3 terms are custom; Gemma 4 QAT mobile model is a separate Apache-2.0 model with larger total/effective parameter count.",
+      "source_urls": [
+        "https://huggingface.co/google/gemma-3-270m-it",
+        "https://huggingface.co/google/gemma-4-E2B-it-qat-mobile-ct",
+        "https://huggingface.co/google/gemma-4-E2B-it",
+        "https://huggingface.co/api/models/google/gemma-3-270m-it",
+        "https://huggingface.co/api/models/google/gemma-4-E2B-it-qat-mobile-ct"
+      ],
+      "unconfirmed_fields": [
+        "device-specific performance and RAM for QAT mobile checkpoint"
+      ],
+      "likes": 664,
+      "snapshot_files": [
+        "google__gemma-3-270m-it.json",
+        "google__gemma-3-270m-it__README.md"
+      ]
+    },
+    {
+      "title": "MobileCLIP2-S0",
+      "url": "https://huggingface.co/apple/MobileCLIP2-S0",
+      "published_updated": "HF API lastModified 2025-10-09T17:53:00Z; 55 likes, 417 downloads at fetch (likes are not stars).",
+      "license": "apple-amlr (custom Apple model terms; inspect license file)",
+      "stars": null,
+      "likes": 55,
+      "current_model_id": "apple/MobileCLIP2-S0; official README calls this model the smallest MobileCLIP2 variant.",
+      "successor_evidence": "Newer than MobileCLIP family; Apple official repo README links MobileCLIP2 family and release note dated 2025-08-28.",
+      "hardware": "Apple reports mobile latency/accuracy measurements on iPhone 12 Pro Max; image-text dual encoder for mobile use.",
+      "limitations": "Contrastive image-text embedding/zero-shot model, not generative. Apple terms are not Apache/MIT; check allowed usage and redistribution.",
+      "source_urls": "https://github.com/apple-aiml-research/ml-mobileclip; https://huggingface.co/apple/MobileCLIP2-S0; https://huggingface.co/api/models/apple/MobileCLIP2-S0",
+      "unconfirmed_fields": [
+        "CPU latency on target device; full license conditions"
+      ],
+      "snapshot_files": [
+        "apple__MobileCLIP2-S0.json",
+        "apple__MobileCLIP2-S0__README.md"
+      ]
+    },
+    {
+      "title": "Qwen3.5-0.8B",
+      "url": "https://huggingface.co/Qwen/Qwen3.5-0.8B",
+      "published_updated": "HF API lastModified 2026-03-02T11:26:58Z; 764 likes, 2,754,295 downloads at fetch.",
+      "license": "Apache-2.0",
+      "stars": null,
+      "likes": 764,
+      "current_model_id": "Qwen/Qwen3.5-0.8B; card: 0.8B params, 262,144 native context, image-text-to-text multimodal task.",
+      "successor_evidence": "Official later generation than Qwen3-0.6B; separate current model entry.",
+      "hardware": "Small multimodal model; official card provides inference with Transformers, vLLM, SGLang and other runtimes; CPU suitability depends on quantization.",
+      "limitations": "Card states intended uses include prototyping and task-specific fine tuning; observed thinking-loop risk; very long context can cause OOM and should be reduced.",
+      "source_urls": "https://huggingface.co/Qwen/Qwen3.5-0.8B; https://huggingface.co/api/models/Qwen/Qwen3.5-0.8B",
+      "unconfirmed_fields": [
+        "CPU quantized throughput, memory requirements at target context"
+      ],
+      "snapshot_files": [
+        "Qwen__Qwen3.5-0.8B.json",
+        "Qwen__Qwen3.5-0.8B__README.md"
+      ]
+    },
+    {
+      "title": "SmolLM3-3B",
+      "url": "https://huggingface.co/HuggingFaceTB/SmolLM3-3B",
+      "published_updated": "HF API lastModified 2025-09-10T12:28:11Z; 1,059 likes, 766,135 downloads at fetch.",
+      "license": "Apache-2.0",
+      "stars": null,
+      "likes": 1059,
+      "current_model_id": "HuggingFaceTB/SmolLM3-3B; 3B parameter model.",
+      "successor_evidence": "Official later generation than SmolLM2; separate 3B entry.",
+      "hardware": "Card gives local inference paths including llama.cpp, ONNX, MLX, MLC, ExecuTorch and notes CPU usage in example.",
+      "limitations": "3B model requires more RAM than SmolLM2; 65,536 config context (card says longer context uses YaRN); evaluate model-specific limitations and 6-language coverage.",
+      "source_urls": "https://huggingface.co/HuggingFaceTB/SmolLM3-3B; https://huggingface.co/api/models/HuggingFaceTB/SmolLM3-3B",
+      "unconfirmed_fields": [
+        "CPU performance under listed runtime/quantization"
+      ],
+      "snapshot_files": [
+        "HuggingFaceTB__SmolLM3-3B.json",
+        "HuggingFaceTB__SmolLM3-3B__README.md"
+      ]
+    },
+    {
+      "title": "Granite-4.2-3B",
+      "url": "https://huggingface.co/ibm-granite/granite-4.2-3b",
+      "published_updated": "HF API lastModified 2026-09-02T21:57:50Z; 111 likes, 46,285 downloads at fetch.",
+      "license": "Apache-2.0",
+      "stars": null,
+      "likes": 111,
+      "current_model_id": "ibm-granite/granite-4.2-3b; card: 3B parameters, native 128K context, up to 512K extended.",
+      "successor_evidence": "Official later Granite generation than Granite 3.3; separate 3B entry.",
+      "hardware": "IBM calls this compact reasoning model; official GGUF variant is available for local runtime integration.",
+      "limitations": "3B RAM/latency exceeds 2B Granite 3.3; long-context use costs more memory; card describes reasoning model use.",
+      "source_urls": "https://huggingface.co/ibm-granite/granite-4.2-3b; https://huggingface.co/ibm-granite/granite-4.2-3b-GGUF; https://huggingface.co/api/models/ibm-granite/granite-4.2-3b",
+      "unconfirmed_fields": [
+        "CPU performance and RAM for selected quantization"
+      ],
+      "snapshot_files": [
+        "ibm-granite__granite-4.2-3b.json",
+        "ibm-granite__granite-4.2-3b__README.md"
+      ]
+    },
+    {
+      "title": "Gemma 4 E2B IT QAT mobile",
+      "url": "https://huggingface.co/google/gemma-4-E2B-it-qat-mobile-ct",
+      "published_updated": "HF API lastModified 2026-07-20T16:43:53Z; 33 likes, 3,797 downloads at fetch.",
+      "license": "Apache-2.0",
+      "stars": null,
+      "likes": 33,
+      "current_model_id": "google/gemma-4-E2B-it-qat-mobile-ct; QAT wNa8o8 mobile checkpoint; E2B dense model effective 2.3B / total incl embeddings 5.1B.",
+      "successor_evidence": "Official later Gemma generation and optimized mobile successor option to Gemma 3 270M, but substantially larger.",
+      "hardware": "Google card says mobile-optimized QAT schema with targeted 2-bit decoding layers, optimized KV caches, static activations; intended for mobile efficiency.",
+      "limitations": "Multimodal text/image/audio model, not a 270M text-only drop-in; QAT/format/runtime constraints matter. Card states 128K context; longer contexts consume memory.",
+      "source_urls": "https://huggingface.co/google/gemma-4-E2B-it-qat-mobile-ct; https://huggingface.co/api/models/google/gemma-4-E2B-it-qat-mobile-ct; https://ai.google.dev/gemma/docs/model_card_4",
+      "unconfirmed_fields": [
+        "actual phone/CPU RAM and latency for intended runtime"
+      ],
+      "snapshot_files": [
+        "google__gemma-4-E2B-it-qat-mobile-ct.json",
+        "google__gemma-4-E2B-it-qat-mobile-ct__README.md"
+      ]
+    },
+    {
+      "title": "Qwen3-Coder-Next",
+      "url": "https://huggingface.co/Qwen/Qwen3-Coder-Next",
+      "published_updated": "HF API lastModified 2026-02-03T16:16:38Z; 1,692 likes, 592,172 downloads at fetch.",
+      "license": "Apache-2.0",
+      "stars": null,
+      "likes": 1692,
+      "current_model_id": "Qwen/Qwen3-Coder-Next; card: 80B total parameters, 3B activated, 262,144 native context.",
+      "successor_evidence": "Later Qwen coding model than Qwen2.5-Coder; not a like-for-like CPU-sized successor.",
+      "hardware": "MoE activation count does not remove total-weight memory needs; official server setup examples use multi-GPU tensor parallel.",
+      "limitations": "80B total weights make ordinary CPU deployment memory-heavy despite only 3B active parameters; native 256K context adds KV-cache memory.",
+      "source_urls": "https://huggingface.co/Qwen/Qwen3-Coder-Next; https://huggingface.co/api/models/Qwen/Qwen3-Coder-Next; https://github.com/QwenLM/Qwen3-Coder",
+      "unconfirmed_fields": [
+        "quantized memory/latency on desktop CPU"
+      ],
+      "snapshot_files": [
+        "Qwen__Qwen3-Coder-Next.json",
+        "Qwen__Qwen3-Coder-Next__README.md"
+      ]
+    }
+  ],
+  "audit_manifest": "/workspace/radar-primary-sources/manifest.json",
+  "candidate_count": 19
+}

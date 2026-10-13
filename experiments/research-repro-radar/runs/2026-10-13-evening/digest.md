@@ -1,0 +1,15 @@
+- [Qwen2.5-Coder-1.5B-Instruct](https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct) — 1.54Bのコード生成モデル。後発Coder-Nextは80B総重みで同サイズ代替ではない。 保留：CPU品質・速度の比較未実施。指定judgeも未完了。
+- [A Survey on Inference Optimization Techniques for Mixture of Experts   Models](https://arxiv.org/abs/2412.14219) — MoE推論最適化の整理。小型化・オフロードの関心に一致。 保留：surveyであり単一の実行対象なし。指定judgeも未完了。
+- [Understanding and Improving Knowledge Distillation for   Quantization-Aware Training of Large Transformer Encoders](https://arxiv.org/abs/2211.11014) — encoderの蒸留と量子化を同時に扱う公式コード。 保留：コードのライセンス未確認、著者評価はA6000。指定judgeも未完了。
+- [I-ViT: Integer-only Quantization for Efficient Vision Transformer   Inference](https://arxiv.org/abs/2207.01405) — ViTの整数演算化、Apache-2.0の公式実装。 保留：著者速度評価はRTX 2080 Ti、CPU効果未測定。指定judgeも未完了。
+- [Image Recognition with Online Lightweight Vision Transformer: A Survey](https://arxiv.org/abs/2505.03113) — 軽量ViTの設計・動的処理・蒸留を比較。 保留：survey、モデル検証への対象化未完了。指定judgeも未完了。
+- [VisionWeave: Weaving Elastic Visual Representations as a Native Capability of MLLMs](https://arxiv.org/abs/2610.07987) — 視覚tokenを内容に応じて割り当てる2026年10月の研究。 保留：大規模MLLMで、重み・実行資源の上限適合未確認。指定judgeも未完了。
+- [Bekko Embedding: Parameter-Efficient Multilingual Retrieval with Ultra-Compact Encoders](https://arxiv.org/abs/2607.25180) — 多言語embeddingの8M/25M encoder、MITモデルあり。 保留：日本語の用途別品質とCPU資源は未測定。指定judgeも未完了。
+- [Squeez: Task-Conditioned Tool-Output Pruning for Coding Agents](https://arxiv.org/abs/2604.04979) — coding agentのツール出力から必要な原文を抽出。 保留：証拠欠落と追加CPUコストの比較待ち。指定judgeも未完了。
+- [SWE-Pruner: Self-Adaptive Context Pruning for Coding Agents](https://arxiv.org/abs/2601.16746) — 0.6B skimmerによるタスク依存の重要行抽出。 保留：CPUでの品質・速度を未検証。指定judgeも未完了。
+- [What Survives When You Compress a Recursive Reasoner for the Edge?](https://arxiv.org/abs/2606.26488) — recursive reasonerのedge圧縮時に残る能力を調査。 保留：著者実験はHexagon HTP、CPU fallbackなし。指定judgeも未完了。
+- [ZeroQuant: Efficient and Affordable Post-Training Quantization for Large-Scale Transformers](https://arxiv.org/abs/2206.01861) — Transformerの後学習量子化、DeepSpeed系の一次論文。 保留：現在の実装・後継・CPU性能の照合未完了。指定judgeも未完了。
+- [ABQ-LLM: Arbitrary-Bit Quantized Inference Acceleration for Large   Language Models](https://arxiv.org/abs/2408.08554) — 任意bit量子化のGPU kernel、Apache-2.0実装。 保留：CUDA/Turing以降の条件、対象環境で未測定。指定judgeも未完了。
+- [Adaptive Block-Scaled Data Types](https://arxiv.org/abs/2603.28765) — block単位の低精度表現、fouroversix公式実装。 保留：高速backendはBlackwell依存、無料GPU互換未確認。指定judgeも未完了。
+- [BEAVER: A Training-Free Hierarchical Prompt Compression Method via Structure-Aware Page Selection](https://arxiv.org/abs/2603.19635) — 学習不要の階層的prompt圧縮。 保留：公式ページからコード・licenseを確認できず。指定judgeも未完了。
+- [DeepCode: Open Agentic Coding](https://arxiv.org/abs/2512.07921) — 論文からコードへの情報圧縮とagent構成。 保留：既存認可内のLLM利用・費用条件を未検証。指定judgeも未完了。

@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/RtPcwSTOpXZfsVomWkDfqomcTM4</id>
+  <title>arXiv Query: search_query=&amp;id_list=2505.13840,2406.12925,2501.16273,2409.01990,2609.18063&amp;start=0&amp;max_results=10</title>
+  <updated>2026-10-13T09:03:44Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=&amp;start=0&amp;max_results=10&amp;id_list=2505.13840,2406.12925,2501.16273,2409.01990,2609.18063" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>10</opensearch:itemsPerPage>
+  <opensearch:totalResults>5</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2501.16273v2</id>
+    <title>Return of the Encoder: Maximizing Parameter Efficiency for SLMs</title>
+    <updated>2025-01-30T16:44:45Z</updated>
+    <link href="https://arxiv.org/abs/2501.16273v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2501.16273v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The dominance of large decoder-only language models has overshadowed encoder-decoder architectures, despite their fundamental efficiency advantages in sequence processing. For small language models (SLMs) - those with 1 billion parameters or fewer - our systematic analysis across GPU, CPU, and NPU platforms reveals that encoder-decoder architectures achieve 47% lower first-token latency and 4.7x higher throughput compared to decoder-only models on edge devices. These gains may be attributed to encoder-decoder's one-time input processing and efficient separation of understanding and generation phases.
+  We introduce a novel knowledge distillation framework that enables encoder-decoder models to leverage capabilities from large scalable decoder-only teachers while preserving their architectural advantages, achieving up to 6 average performance points improvement across diverse tasks, with significant gains in asymmetric sequence tasks where input and output distributions can benefit from different processing approaches.
+  When combined with modern advances like Rotary Positional Embeddings (RoPE) and Vision encoders, our systematic investigation demonstrates that encoder-decoder architectures provide a more practical path toward deploying capable language models in resource-constrained environments. Our findings challenge the prevailing trend toward decoder-only scaling, showing that architectural choices become increasingly crucial as parameter budgets decrease, particularly for on-device and edge deployments where computational efficiency is paramount.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-01-27T18:06:36Z</published>
+    <arxiv:comment>13 pages, 5 figures. LLMs/SLMs, encoder-decoder and decoder-only</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Mohamed Elfeki</name>
+    </author>
+    <author>
+      <name>Rui Liu</name>
+    </author>
+    <author>
+      <name>Chad Voegele</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2406.12925v2</id>
+    <title>GLiNER multi-task: Generalist Lightweight Model for Various Information Extraction Tasks</title>
+    <updated>2024-08-01T10:09:15Z</updated>
+    <link href="https://arxiv.org/abs/2406.12925v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2406.12925v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Information extraction tasks require both accurate, efficient, and generalisable models. Classical supervised deep learning approaches can achieve the required performance, but they need large datasets and are limited in their ability to adapt to different tasks. On the other hand, large language models (LLMs) demonstrate good generalization, meaning that they can adapt to many different tasks based on user requests. However, LLMs are computationally expensive and tend to fail to generate structured outputs. In this article, we will introduce a new kind of GLiNER model that can be used for various information extraction tasks while being a small encoder model. Our model achieved SoTA performance on zero-shot NER benchmarks and leading performance on question-answering, summarization and relation extraction tasks. Additionally, in this article, we will cover experimental results on self-learning approaches for named entity recognition using GLiNER models.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.IR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-06-14T13:54:29Z</published>
+    <arxiv:comment>11 pages, 1 figure, 6 tables</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Ihor Stepanov</name>
+    </author>
+    <author>
+      <name>Mykhailo Shtopko</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2505.13840v1</id>
+    <title>EfficientLLM: Efficiency in Large Language Models</title>
+    <updated>2025-05-20T02:27:08Z</updated>
+    <link href="https://arxiv.org/abs/2505.13840v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2505.13840v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Language Models (LLMs) have driven significant progress, yet their growing parameter counts and context windows incur prohibitive compute, energy, and monetary costs. We introduce EfficientLLM, a novel benchmark and the first comprehensive empirical study evaluating efficiency techniques for LLMs at scale. Conducted on a production-class cluster (48xGH200, 8xH200 GPUs), our study systematically explores three key axes: (1) architecture pretraining (efficient attention variants: MQA, GQA, MLA, NSA; sparse Mixture-of-Experts (MoE)), (2) fine-tuning (parameter-efficient methods: LoRA, RSLoRA, DoRA), and (3) inference (quantization methods: int4, float16). We define six fine-grained metrics (Memory Utilization, Compute Utilization, Latency, Throughput, Energy Consumption, Compression Rate) to capture hardware saturation, latency-throughput balance, and carbon cost. Evaluating over 100 model-technique pairs (0.5B-72B parameters), we derive three core insights: (i) Efficiency involves quantifiable trade-offs: no single method is universally optimal; e.g., MoE reduces FLOPs and improves accuracy but increases VRAM by 40%, while int4 quantization cuts memory/energy by up to 3.9x at a 3-5% accuracy drop. (ii) Optima are task- and scale-dependent: MQA offers optimal memory-latency trade-offs for constrained devices, MLA achieves lowest perplexity for quality-critical tasks, and RSLoRA surpasses LoRA efficiency only beyond 14B parameters. (iii) Techniques generalize across modalities: we extend evaluations to Large Vision Models (Stable Diffusion 3.5, Wan 2.1) and Vision-Language Models (Qwen2.5-VL), confirming effective transferability. By open-sourcing datasets, evaluation pipelines, and leaderboards, EfficientLLM provides essential guidance for researchers and engineers navigating the efficiency-performance landscape of next-generation foundation models.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-20T02:27:08Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Zhengqing Yuan</name>
+    </author>
+    <author>
+      <name>Weixiang Sun</name>
+    </author>
+    <author>
+      <name>Yixin Liu</name>
+    </author>
+    <author>
+      <name>Huichi Zhou</name>
+    </author>
+    <author>
+      <name>Rong Zhou</name>
+    </author>
+    <author>
+      <name>Yiyang Li</name>
+    </author>
+    <author>
+      <name>Zheyuan Zhang</name>
+    </author>
+    <author>
+      <name>Wei Song</name>
+    </author>
+    <author>
+      <name>Yue Huang</name>
+    </author>
+    <author>
+      <name>Haolong Jia</name>
+    </author>
+    <author>
+      <name>Keerthiram Murugesan</name>
+    </author>
+    <author>
+      <name>Yu Wang</name>
+    </author>
+    <author>
+      <name>Lifang He</name>
+    </author>
+    <author>
+      <name>Jianfeng Gao</name>
+    </author>
+    <author>
+      <name>Lichao Sun</name>
+    </author>
+    <author>
+      <name>Yanfang Ye</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2409.01990v5</id>
+    <title>Designing Large Foundation Models for Efficient Training and Inference: A Survey</title>
+    <updated>2025-04-14T07:09:15Z</updated>
+    <link href="https://arxiv.org/abs/2409.01990v5" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2409.01990v5" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This paper focuses on modern efficient training and inference technologies on foundation models and illustrates them from two perspectives: model and system design. Model and System Design optimize LLM training and inference from different aspects to save computational resources, making LLMs more efficient, affordable, and more accessible. The paper list repository is available at https://github.com/NoakLiu/Efficient-Foundation-Models-Survey.</summary>
+    <category term="cs.DC" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-09-03T15:35:01Z</published>
+    <arxiv:primary_category term="cs.DC"/>
+    <author>
+      <name>Dong Liu</name>
+    </author>
+    <author>
+      <name>Yanxuan Yu</name>
+    </author>
+    <author>
+      <name>Yite Wang</name>
+    </author>
+    <author>
+      <name>Jing Wu</name>
+    </author>
+    <author>
+      <name>Zhongwei Wan</name>
+    </author>
+    <author>
+      <name>Sina Alinejad</name>
+    </author>
+    <author>
+      <name>Benjamin Lengerich</name>
+    </author>
+    <author>
+      <name>Ying Nian Wu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2609.18063v2</id>
+    <title>The Other Half of the Memory Wall: Serving 35B MoEs from SSD with Trained Routing Prediction</title>
+    <updated>2026-09-17T16:03:07Z</updated>
+    <link href="https://arxiv.org/abs/2609.18063v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2609.18063v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Mixture-of-experts (MoE) inference on consumer hardware is bounded by weight memory: a 35B-class model is 19.5GB at 4-bit, and sparsity shrinks the compute per token, not the bytes that must be held. Naive offloading to SSD does not help on its own, because layer N+1's experts must be chosen before layer N's output exists, so the reads cannot start early enough to hide behind compute. We present Edge0, a streaming MoE inference engine that closes the gap with a prerouter: a per-layer head predicts the next layer's routing one token ahead, and the prediction is consumed as the routing itself, so the staged expert set equals the routed set and nothing is dropped. An unmerged recovery LoRA, trained on the student path, pays back the quality lost to int4 quantization and routing replacement. On a single 24GB machine, Edge0 serves a 35B MoE at 20tok/s inside 3GiB of peak active memory, within a few points of its fp16 teacher on average across five public benchmarks. An 8B tier runs on the same framework, and the framework, checkpoints, and adapters are open source.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-09-16T03:09:04Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Yu Lin</name>
+    </author>
+    <author>
+      <name>Yiming Wang</name>
+    </author>
+    <author>
+      <name>Runyuan Cai</name>
+    </author>
+    <author>
+      <name>Hanze Liu</name>
+    </author>
+    <author>
+      <name>Xiaodong Zeng</name>
+    </author>
+  </entry>
+</feed>
