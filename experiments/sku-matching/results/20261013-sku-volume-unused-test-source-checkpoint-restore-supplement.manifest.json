@@ -1,0 +1,22 @@
+{
+  "schema_version": "sku-volume-source-restore-supplement-v1",
+  "source_checkpoint_sha256": "6ad75d12e5b6cf74c32792cebb390b40beaf7d4d56bba50f2938efd73bceeaeb",
+  "semantic_input_bytes_changed": false,
+  "purpose": "Restore mandatory source-bundle inventory and copy archived logical raw paths into frozen physical source_root; do not alter config or scoped freeze.",
+  "members": [
+    {
+      "path": ".lab-output/sku-full-evaluation-prepare-20261013-v1/inventory.json",
+      "bytes": 9225,
+      "sha256": "f68a027963bbd2ed7882a35e71b3d44b1bc8eba28b1e707d0b32cafaa4de4a28"
+    },
+    {
+      "path": ".lab-output/sku-volume-unused-test-execution-20261013-v1/root-go-for-model-inference-v1.json",
+      "bytes": 980,
+      "sha256": "b1f997815e6e8dc87cfc521bc78d0d2860f287bb90eed02c4d905407fd42c1ae"
+    }
+  ],
+  "raw_capture_inventory": ".lab-output/sku-volume-unused-test-20261013-v1/prepared-source-v1/raw-source-capture-inventory.json",
+  "physical_source_root": ".lab-output/sku-full-evaluation-prepare-20261013-v1/source",
+  "restoration": "Extract source checkpoint and this supplement at repository root. For every capture, copy the byte-exact repository-relative capture.path to physical_source_root/capture.path, verify bytes and SHA. The frozen runtime assumes repository at /workspace/Searching_Experiment-model-gates-20261010. Labels and grading archives remain separate.",
+  "labels_or_gold_included": false
+}

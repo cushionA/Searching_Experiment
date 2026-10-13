@@ -1,0 +1,14 @@
+Claude担当範囲の依頼候補（ボリュームTESTの判定変更には使わない）
+
+新しい商品カテゴリ規則、表記別名、判定器、再収集、ラベル編集の依頼ではありません。
+既存raw HTML内のJSON文字列に \u003d 等がある場合、全selector optionの出典座標を復元できる共通parserの対応をお願いします。
+claude_v9_gate/sku_gate_sources.py の rakuten_selector_value_span は、decoded valueのjson.dumps表現をraw文字列で探すため、rawのescape表現が違うとspanが見つかりません。
+同じ選択肢のselected value spanは存在しても、全選択肢familyの1値のspan欠落によりfamily全体が証明不能になります。
+
+原raw/SHA・decoded原値・全選択肢の順序を保持し、JSON token/pathから元の文字列leafを再導出して検証できる座標を追加する案が適切です。
+raw substringとdecoded valueが違う場合にhtml_text証明を緩める対応、値の正規化で一致した扱いにする対応は不要です。
+必要ならembedded JSON leaf用の明示的span型と検証を追加し、完全な原値・原文・source SHA・全行対応を保ってください。
+Unicode escape、通常の=、JSON escapeや引用符等の共通入力で再現できれば十分です。商品固有例外は不要です。
+
+現TESTではこの問題の30source tasksと依存30target-fact tasksをunknownに残しています。既存凍結版は変更せず全件評価します。
+修正を試す場合は後続DEV用の別版に保存し、今回のTESTを再チューニングに使わないでください。

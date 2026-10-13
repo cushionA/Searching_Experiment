@@ -1,0 +1,32 @@
+ボリュームTEST進行中（2026-10-13）
+
+まず results/20261013-sku-volume-unused-test-source-checkpoint.txt を読む。
+ブランチ codex-sku-generic-model-gates-20261010。元HEAD 53cd968cd962d81adc8ea844884619b8c11d61eb。
+ユーザー指示: ボリュームテストを実行し、その結果で追加改善を続けるか判断。Kaggle利用可だがカテゴリ分岐を増やさない。
+全未使用TEST46商品569ケース、原13,159行62,252tasksを固定。全既消費TEST60商品を除外。
+独立TEST label/goldはまだ読んでいない。モデル・guidance・判定規則は前回の固定版のまま。
+
+EX=.lab-output/sku-volume-unused-test-execution-20261013-v1
+BASE=.lab-output/sku-volume-unused-test-20261013-v1
+config=BASE/runner-config-volume-v2.json、source=BASE/scoped-native-source-v3。
+preflight=EX/pre-model-preflight-v2: 1,976pairs、1,005literal protected、971dispatched。
+packet-index-v1: 965packets/4,268option judgments。6packetsだけ2pairs、他は1pair。
+volume_dispatch_supervisorへROOT GOを送信済み。root+supervisor+5 cold gpt-6-luna classifiersで全件実行中。
+supervisor-instructions-v1.txtに全運用記載。実際のtool spawnとterminalをsupervisor-dispatch-ledger.jsonlへ記録。
+drafts/packet-NN.jsonlは最初の原回答、修正・再生成・意味再試行禁止。返答不正/根拠不正はunknown。
+このrunのモデルGO/freeze/source checkpointはresultsへ保存。分類回答はまだsource ZIPに含まない。
+既に開始したpacketを再投入しない。現在のlive agentsとappend-only ledger、draft存在を確認してから続行する。
+終了時は全965割当と全unique task nameの実terminalを確認。collectorで固定し、generic volume runnerでassemble/freeze。
+全回答・literal/body両gate・QA固定後だけgrading ROOT GOを作り既存v2/v3selected refsを読む。
+test dataを見た再調整・goldによるケース選別は禁止。最終結果はsame-cohort literal比較、既知negativeとunknown-label採用、実時間と失敗率を含める。
+未使用TESTがこのrunで全消費になるので、次の変更の独立評価には新しい凍結評価集合が必要。
+
+source unknown30件+依存target fact missing30件は62252bindingsに残る。原JSON Unicode escapeとspan locatorの問題で規則不一致ではない。
+prepare_indexed_volume_partial_source_v1.pyはunknownをcontextlessに残すreadiness adapterで、原literal/span/source検証・意味規則を変更しない。
+失敗版native-v1/v2とpreflight-v1のログを保存、正式版native-v3は現helper4c3c...で新規生成。
+source/caseとdocumentを混同したmetadata grain検証はgeneric runnerで修正、新回帰を含め19focused成功。
+required1436件/37skipは歴史fixture欠落14errors、0assert failure。新collector回帰4件/実index verify成功。
+
+Kaggleはquotaあり、現Luna hosted classifierをGPUへ移せないので別モデルにせず5並列。旧GPU jobは状態不明/HTTP403のため再投入禁止。
+既存untracked HANDOFF/audit/claude-request/resume-prompt/workspace.patch/tests.before-* は変更していない。
+前回TEST40は再現率83.9%（26TP/5FN、negative0、unknown9）だが今回の精度を示す値ではない。

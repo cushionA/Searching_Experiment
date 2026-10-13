@@ -1,0 +1,42 @@
+未使用TESTのボリューム検証: 推論前チェックポイント（2026-10-13）
+
+ブランチ codex-sku-generic-model-gates-20261010。元anchor 53cd968cd962d81adc8ea844884619b8c11d61eb。
+未使用46商品について全569原ケース、13,159原候補行、62,252原タスクを保持。
+既存3独立TESTの全60商品・723ケースを商品IDだけで除外。ラベルによる抽出なし。
+1,976公開コンテキストのうち1,005件は固定literal証明で保護し、971件・4,268選択肢を965回のcold firstpassで判定する。
+モデル gpt-6-luna、fork_turns none、guidance-v2。判定器・カテゴリ規則の追加や変更なし。
+元JSONのUnicode escapeの読み取り問題で30family receiptsと依存30taskがcontextless unknownになる。全タスクに残し、評価から除かない。
+92商品文書に91固有raw capture。全原文・全選択肢を保持。引用元一致は意味的正しさの証明ではない。
+
+本ファイルは推論前の保存記録。精度・採用率・推論所要時間はまだ測定していない。
+推論開始後に原回答を修正・再判定しない。全965割当が終了し、全回答・両gate・コード・QAを固定してから別ROOT GOで採点する。
+正解は既存Claudeの機械注釈。既知否定例の件数とunknown-label採用も最終結果で明記する。
+
+復元用ZIP: 20261013-sku-volume-unused-test-source-checkpoint.zip
+147,621,321 bytes / SHA-256 6ad75d12e5b6cf74c32792cebb390b40beaf7d4d56bba50f2938efd73bceeaeb。
+4つの .zip.part-001 〜 .zip.part-004 を番号順に連結。chunks.jsonで各partと全体のSHAを確認。
+ZIP内1,179 members。CRCと全member SHA検証済み。親も4part連結の全体SHAを独立検証。
+ZIPをrepo根へ展開し、-restore-supplement.zipも展開する。
+python3 -B experiments/sku-matching/restore_volume_source_checkpoint_v1.py
+を実行し、91原captureを凍結configのphysical source_rootへバイト一致で配置する。
+supplementはsource bundle inventoryとモデルGOを補足し、判定入力は変更しない。
+凍結版はrepo path /workspace/Searching_Experiment-model-gates-20261010 を前提とする。
+全コード・入力・proof・validation bindings・packet・元raw・準備履歴・QAを同梱。正解ラベル・採点原本は別保存。
+このZIPにはまだ分類回答はない。進行中のdraft/dispatch ledgerは後続firstpassチェックポイントで保存する。
+
+EX=.lab-output/sku-volume-unused-test-execution-20261013-v1
+BASE=.lab-output/sku-volume-unused-test-20261013-v1
+config=BASE/runner-config-volume-v2.json
+source=BASE/scoped-native-source-v3
+preflight=EX/pre-model-preflight-v2
+packets=EX/packet-index-v1
+root pre-inference freeze SHA 65135490e380107441dc4c91674f3c062586a5f490f55d9213f5e4f09c400dd1。
+model GO SHA b1f997815e6e8dc87cfc521bc78d0d2860f287bb90eed02c4d905407fd42c1ae。
+
+QA: focused 19件成功、独立レビューで既存candidate policy 24pins・worker instructions一致。
+collectorの非LLM回帰4件と実index 965packets/971pairsの検証に成功。
+required suiteは1436件/37skip、過去の.lab-output fixture欠落14errors。全成功とは報告しない。
+metadata/入力準備の失敗履歴は原版・ログを保持。unknownを証明済みに昇格させていない。
+
+Kaggle GPU残枠は97,794秒だったが、hosted Lunaの重みを移せないため今回の意味判定はGPUへ投入していない。
+別モデルへの置換なし。決定的処理はCPUで短時間だった。旧Kaggle jobはsubmission_unknown/HTTP403のまま再投入していない。
