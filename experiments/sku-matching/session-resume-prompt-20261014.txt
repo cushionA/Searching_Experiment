@@ -1,0 +1,20 @@
+リモートのブランチ codex-sku-generic-model-gates-20261010 の最新コミットから再開してください。
+最初に experiments/sku-matching/session-handoff-20261014-final.txt を読み、続いて
+session-failures-20261014.txt、session-restore-20261014.txt と、本文で指定した結果/設計差を確認してください。
+引き継ぎZIPと分割source/indexは同ブランチの experiments/sku-matching/results/ にあります。
+
+今後の主題は「小型モデルだけでやれるか」「一部を小型モデルに移譲できるか」です。
+以前の短文・候補間相対choiceと、今回の本文断片・独立3クラスNLIは設計が違います。
+今回の0/33だけで小型モデルの限界と結論せず、入力と判定契約をそろえて切り分けてください。
+意味的カテゴリ例外を増やさず、coverage・誤採用・正解行の誤除外・unknown・速度/費用を見ます。
+
+Lunaの追加精度検証はしばらくしません。全選択肢・引用・適用範囲のタスク構造は
+gemini-sku-task-structure-20261014.txt と最終handoff ZIPに将来のGemini検証用として保存済み。
+Geminiは今回未実行です。まず小型モデルの可能性と部分移譲を進めてください。
+
+Kaggleの固定resume-s000 v1は完了・回収・採点済みです。残り8商品へ同じ構成を拡大しません。
+旧kernelspec失敗、7200秒打切り、通信エラー、追加転送の拒否→明示許可→成功、
+初回raw欠落/invalid、source監査の誤診訂正も失敗台帳に残っています。
+状態不明jobを再submitせず、未確定を負例扱いせず、元出力・元複数正解行集合・原SHAを守ってください。
+参照は機械注釈で、既読testです。literal成功をモデル単体精度と混ぜないでください。
+GPUが有効なら既存許可範囲で使い、問題があればCPUへ。Claudeへ依頼が必要なら具体的に報告してください。

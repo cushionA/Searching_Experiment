@@ -1,0 +1,44 @@
+# SKU matching: failure/history handoff (2026-10-14)
+
+この文書は、次セッションで失敗を再演したり、異なる評価母集団を混ぜたりしないための台帳。証拠パスは末尾のJSONにもSHA-256/byte数付きで列挙した。個人情報・token・署名URL・model weightsは含めない。
+
+## Kaggle Notebook / 実行履歴
+
+- 初回Notebook v1はPapermillで `ValueError: No kernel name found in notebook and no override provided.` となった。nbformatの `MissingIDFieldWarning` も出ていた。これはkernel metadata不足とcell id warning。Notebook v2でkernel metadataを補い、実際のCUDA実行へ進めた。warning自体をkernelエラー原因と取り違えない。
+- v2のGPU実行はTesla T4/CUDAで動作したがNotebook上限7200秒に達してcancelled。途中成果はraw score 34,345件/model（合計68,690件）とmodel出力として回収・検証済み。全971 ML pair完了ではない。ログにある旧prefix上限922と実測prefix1418が食い違うので、922を実績値として使わない。途中prefixを完了評価として扱わない。
+- Kaggle監視時の `ConnectionError` はstatus取得/通信の失敗。GPU停止やjob失敗を示す証拠ではなく、ログprefixの再取得も停止証明にならない。通信が切れた場合は同じ固定refのstatus/wait/recoveryを続け、状態が確定する前に再submitしない。
+- ローカルwait timeoutはローカル待機の期限切れであり、Kaggle jobの失敗や未提出を意味しない。同じjobをresume/waitしてからreceiptとterminal状態を照合する。新規submitで置き換えない。
+- 古い83系jobはsubmission outcome unknown。明示的なref/versionと照合するまで再投入しない。曖昧なsubmitを再送しない。
+- 初期28.5 MB payload転送もauto-reviewに拒否され、process未開始だった。その後ユーザーが非公開Datasetへの転送とGPU実行を明示許可し実行できたが、後続の120.7 MB worker-state/計算値入りpayloadは別物で、追加転送のauto-reviewに拒否された。拒否時点ではprocess開始・追加upload・submissionなし。ユーザーの「いいよ」と、適宜retryして最後までとの指示を得てから同じprivate Dataset v2へ追加転送し、resume-s000 v1を一度だけsubmit。Kaggle jobは正常完了し、新規15,616 records（7,808/model）を回収した。技術エラー0。ここは過去のapproval wait記述より後のreceiptが優先。現時点でその実験は完了済み。
+- Kaggleのplanning previewは実行物ではない。`PREVIEW_BLOCKED` / do-not-submit previewをexecutable Notebook、upload、submissionの証拠として扱わない。
+- GitHub pushは以前の外部転送auto-reviewでblockされたが、その後ユーザーが現行pushを明示許可した記録があるため、今はpending approvalとして扱わない。ただし、この記録だけから実push完了を主張しない。remote HEADを確認した事実が別途必要。
+
+## データ移送・回収・集計の落とし穴
+
+- 最終push準備の最初のgit fetchはexec-server transport disconnectedでprocess開始前に失敗。同じread-only fetchを再試行して成功した。Kaggle/GPUの失敗ではない。
+- 以前のLuna全量569ケースは965 cold jobsで971 ML pairを処理。938 original response登録、33 pairは欠落/形式エラー、登録内34 pairは構造不正でunknown。draft欠落11/空4、末尾LF不正418/552、保存mode逸脱自己申告331/851/936なども原状保存。初期8spawnには個別tool記録不足、ledger1行には全raw保持前のdelimiter修正があり修正前全履歴は復元できない。packet958の既存ファイル(ref1964)は構造/引用検証を通るが作者/初回write帰属は不明。関連60ケースの集計を採用の必須依存や意味の正しさの証明としない。具体的な件数と再現性の限界は20261013-sku-volume-unused-test-report-v1.txtを参照。
+
+- 120.7 MB転送のauto-review rejectionを最終結果と誤記しない。続く明示許可とsuccessful same-private-Dataset-v2更新、固定job receipt、terminal recoveryがある。private Dataset member名/size一致とsource signature確認が済み。
+- `ConnectionError`でprefixが繰り返し取得できても、GPUが停止したという証拠ではない。取得済み部分は途中保存として保持し、terminal completion markerがない旧v2を全971完了としない。
+- 194件の主説明packetおよびfresh-full 166 packetのLuna初回出力を保存。fresh-full側は160 raw、6 missing。172 pairの内訳は155 validated、17 unknown。missing/invalid/unknown出力には意味補完・再推論・semantic retryをしない。全194 packetをcompletionの数字へ置き換えない。
+- f021の修正pathの実施順序は現状のreceipt群から確定できない。推測で chronology を書かず、次セッションでroot receiptを確認するまで未確定とする。
+- 旧failure diagnosis v1-v3にはvariantをまたいだjoinとaxis名の文字列比較に起因する誤診があった。確定版v4およびsource audit v3を優先する。カラーsourceの元のEUC-JP HTMLからraw JSON escapeを確認したことが実原因の補正根拠。新adapterはsource/provenance証明用で、過去GPU/Luna入力へ適用済みでも精度改善でもない。36 verified + 18 unknownから54 source facts verifiedとなったが、これは原本照合であってモデル再推論ではない。
+- 旧GPU未完了prefixは1418 options中11 supportだったが、別cohort・7200秒打切りprefix。現完了cohortの404 optionsはsupport 0。母集団が違うので統合・比較して全体support率を出さない。
+- 旧grade helperのsplit grouping不一致は現在の採点前に修正済み。現採点対象はoriginal multiple-rowsetで、historical singleton-derived cacheではない。新説明とfull bodyのrowset結果は採否/採用行の差0という別の事実。source scope未証明・citation semantics未検証なので本番採用不可。
+- 2026-10-14最終の1497-test receiptはfailure/assertion failure 0、historical fixture不足による14 error、37 skip。全greenとは表現しない。修正前のbool coordinate/offset type review findingはsource adapterで修正され、その型を含む回帰が通った。古い試行ログの失敗を最新状態と混同せず、実行receiptを見る。
+
+## 評価・次セッションの扱い
+
+- 最新方針は小型モデル単独で処理可能か、一部処理を小型へ移譲可能かの検証。Lunaを追加実行して数字を上げる作業は休止する。
+- 最終handoffのoffline復元helperを追加。16 archiveを実際に/tmpへ復元し、11568作成/36同一、physical91capture SHA一致、再復元作成0/11604同一を確認。元機械注釈ZIPは20261012-sku-session-handoff.zipにnested保存されていた。generic CHECKPOINT_MANIFESTはarchive別へ分け、旧codeはsnapshot保存しcurrentコードを上書きしない。
+- 引き継ぎ時に必須1497testsを88.594秒で再実行：assertion failure0、14errorsの名前は前回と同じ旧fixture不足、37skip。全greenではない。
+
+- Luna初回 missing/invalid出力のsemantic retriesをしない。保存したraw/missing状態をunknownとして残す。
+- full-choice/citation/scopeのタスク構造を将来のGemini評価用に保持する。ユーザーの最新指示により、しばらくLuna accuracy実験を追加せず、Geminiは今回実行せず、保存した構造を将来使う。既測定Lunaの機械注釈指標を変更・再解釈しない。
+- 旧短いtitle + selected-row相対choice taskと、現行body chunks + absolute 3-class choice（confidence threshold >= .9）は、定義も予測対象も異なる。旧recipeや結果から現行taskのcapabilityを主張しない。
+- 現行GPU完成cohortの404 options / support 0という記録と、旧cancelled jobの1418 / support 11を必ず別cohortとして保つ。機械注釈をhuman goldと呼ばず、literal-only商品をmodel performanceに算入しない。
+- 実験・分類・モデル再実行はこの引継ぎタスクでは行っていない。利用者はセッションを切り替える意向なので、次作業は既存成果の再確認から始める。
+
+## 必須保存・再確認先
+
+ハッシュ/サイズ付きの具体一覧は `.lab-output/sku-nextdata-description-bounded-resume-20261013-v1/handoff-failure-evidence-v1.json`。主要な継続元は `session-handoff-20261014-nextdata-gpu-approval.txt`、Kaggle v1/v2 persisted.log、dataset upload rejection、bounded resumeの追加dataset rejection/approval、s000 terminal recovery、original rowset grade receipt。元のraw/model成果物・worker bundle・merge indexは既存checkpointの依存として保持し、削除・移動しない。

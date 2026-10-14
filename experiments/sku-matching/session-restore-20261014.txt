@@ -1,0 +1,66 @@
+2026-10-14 最終handoffの復元
+
+入口はsession-handoff-20261014-final.txt。元の分割ZIP/個別ZIPはresults/にgit保存。
+restore_session_artifacts_20261014.py はネットワークやモデルを実行せず、原SHAを検査して
+16個の依存archiveから入力・raw・元機械注釈ZIP・完了結果・merge後索引を復元する。
+--include-handoffを指定すると、最終handoff ZIPもそのtracked .zip.sha256で検査して復元する。
+復元planはresults/20261014-sku-session-restore-plan-v1.json。
+
+新しいcheckoutで、リポジトリrootから実行する例：
+
+python3 -B experiments/sku-matching/restore_session_artifacts_20261014.py --destination . --include-handoff
+python3 -B experiments/sku-matching/restore_volume_source_checkpoint_v1.py
+
+Python3.12以上。全体を別の空ディレクトリで先に確認する場合は--destinationを/tmp等へ変更。
+返ったnext_commandはその復元先のphysical capture復元helperを示す。
+実物で16archiveを/tmpへ復元、11568ファイル作成/36同一を確認した。
+physical capture91件SHA検証（89件を元の配置へ複製）、再度同じ復元を実行して作成0を確認。
+public paired inputs256109321bytes、元v2/v3機械注釈ZIP、公開sample packet、入力freeze、
+merge SQLite306438144bytes、および全4collectorのfreeze/条件/行/ケース出力は元バイトと一致。
+証拠は最終handoff ZIP内root-coldrestore-executed-v1.json。
+
+保存規則
+- 各分割part、連結ZIP、ZIP CRCを検査。ZIPパス逸脱/シンボリックリンク/重複memberを拒否。
+- .lab-output以下は元の相対pathに復元。既存ファイルはSHAとsizeが同一の場合だけ再利用。
+  異なるバイトがあれば停止する。元raw・旧state・新結果を上書きしない。
+- archiveのコード/テスト/説明書は歴史的snapshotとして
+  .lab-output/_restore-snapshots/<archive名>/<元path>へ保存し、現在のgitコードを上書きしない。
+- 各ZIPにある汎用CHECKPOINT_MANIFEST.jsonは
+  .lab-output/_restore-manifests/<archive名>.jsonへ分ける。rootへ一律unzipしない。
+- 同一pathの旧code/textが現gitと異なる5例があった。詳細はhandoff-restore-audit-v1.json。
+- 過去receiptの絶対pathは元の/workspace/Searching_Experiment-model-gates-20261010を指す。
+  今回のcold restoreはバイト復元を確認したもの。別pathで過去validatorを動かす際は元の
+  layoutを使うか、別の明示的なpath対応をレビューし、原receiptや入力SHAを書き換えない。
+
+主要な依存と役割
+- 20261013-sku-volume-unused-test-source-checkpoint.chunks.json（4parts）とrestore-supplement：
+  以前の公開入力/論理rawと、physical原本配置を復元するためのinventory。
+- 20261012-sku-session-handoff.zip：元v2/v3機械注釈ZIPをnested memberとして保存済み。
+  v2 SHA6f65d988222c79c758614592340ba28565a51fa8891317724ba354c5fc38b457、
+  v3 SHA52f6faa51127a9c12250a3cdb5eb3d1818a36461a8c09323e481748aeed1f37b。
+  モデルworkerやKaggle公開payloadへ渡さず、出力freeze後の採点にだけ使う。
+- 20261013-sku-volume-unused-test-completed-v2.zip：以前のLuna569件のraw/結果/失敗。
+- 20261014-sku-nextdata-description-source-checkpoint-v1.zip：今回paired公開入力・source。
+- description-error8 / description-luna-complete / full-main-control-prepare /
+  fresh-full-description-complete：初回Luna入力・原応答・初回欠落/invalid・元行集合採点。
+- bounded-s000-builder-and-approval：元product全行/条件closure、追加許可の前後、builder。
+- bounded-s000-submitted / kaggle-v2-terminal-raw / bounded-gpu-complete：
+  固定提出receipt、旧途中raw、今回完了raw・runtime・全4freeze・採点。
+- 20261014-sku-nextdata-s000-merged-index-v1.chunks.json（3parts）：
+  完了後SQLite SHA5d6d11ad17974a1af688e7052529f4f3b519f7e40bee05a1604a133e7d3312dc。
+- embedded-json-source-candidate：原本JSON escapeのsource-only候補。精度改善は未測定。
+- luna-main-stratum-supplement：literalとML商品判定を分けた同じ主108件の再集計。
+- 最終handoff ZIP：失敗台帳、今回NLI0の再集計、復元実行証拠、将来Gemini用の
+  正確な公開protocol/代表packet/元writer/validator参照とSHA。
+
+履歴用の大きな2archiveはデフォルト復元planには入れない：
+- bounded-s000-ready-payload-v1.chunks.json：3parts、元120674508byte ZIP、SHA
+  79b7fce982b8c7d13e0a7cacdc5d89a656c361b2571066d2d01c387368cd3be9。
+  既にDataset2/fixedS000v1に提出・正常完了した公開worker payload。同jobを再投入しない。
+- bounded-resume-prepare-v1.chunks.json：計画段階の索引とpreview。
+  numeric_continuation_allowed=falseの計画資料で、実行用Notebookではない。
+必要時だけ各manifest順にpartsを連結し、個別part/連結ZIP SHA/CRCを確認する。
+READY内部のworker-state/public-bundleはKaggle用配置のため、リポジトリrootへ展開しない。
+
+認証情報・model重みはこれらの復元に不要。GPUの再推論をする場合の認証・枠・現在状態は
+その時点で別途確認し、同じjobの監視失敗を新規submitに置き換えない。

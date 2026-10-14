@@ -1,0 +1,60 @@
+NLI 0件の意味とタスク設計の差（2026-10-14、追加推論なし）
+
+今回の完了パイロットでは、NLIはML商品152ケース中、既知正例33件を全て見送った。
+ただし「前と同じタスクで同じモデルを試した結果0件」とは言えない。
+最終目的は同じ（楽天の実選択SKUに対応するAU行を全候補から確かめる）でも、
+小型モデルへ渡した入力と中間判定の方法が変わっている。
+
+以前の小型NLI choice:
+- trial_scoped_condition_nli_choice_v1.py の pairs_for は短い商品名と実選択行をpremiseにする。
+- 仮説は「この商品の〈軸〉は〈候補値〉である。」を全候補に生成。
+- choose は絶対含意確率0.90のほか、全候補の含意確率で正規化した相対質量0.5以上の
+  一意の首位が照合対象値なら、relative_choice_diagnosticとしてsupportを許す。
+- 別候補が首位でも、そのことだけでconflictを証明しない。unknownに残す。
+- trial_full_scoped_condition_choices_v1.py もこの pairs_for / choose を使う。
+
+今回のKaggle NLI:
+- kaggle_nextdata_table_alloption_v1.py の metadata / prepare_chunks が実選択の事実と
+  「全選択肢は実選択の証明ではない」という候補一覧を各断片へ繰り返す。
+- 実選択商品本文・全SKU一覧・参照商品本文を役割付きで512token以内に分割し、全文を使う。
+  切り捨てはしないが、断片をまたぐ推論はしない。
+- 仮説は「現在の実選択の商品の〈軸〉は〈候補値〉である。」。
+- 各候補を独立に3クラス判定。argmaxの確率0.90未満はunknown。相対質量による採用なし。
+- 断片集約は技術失敗→unknown、support/conflict混在→unknown、残りはsupport優先、
+  次にconflict、最後にunknown。明示引用生成・意味的scope証明は行わない。
+- scope_status=unproved / citation_semantics_supported=false。Lunaの全選択肢比較・
+  適用範囲・厳密な引用検証のタスク構造とも同条件ではない。
+
+今回の完了171pair（1viewあたり404候補）の実測:
+                        support  conflict  unknown
+全文 候補単位                  0       329       75
+商品説明 候補単位              0       350       54
+全文 断片×候補単位             0      2457     9793
+商品説明 断片×候補単位         0      1892     5184
+技術失敗は0。したがってこの完了集合では、最終SKU gateの前からNLI由来supportが0。
+最終gateだけが正しいsupportを落として0TPになった、という説明では足りない。
+ML商品の条件にあるsupport314件はstrict_literal_family由来で、NLI由来ではない。
+ML行は全文1108行中1043conflict/65unknown、説明1052conflict/56unknown、support行0。
+
+旧7200秒で終了したv2の途中全体では1418候補中11supportがある。
+これは今回の完了171pair/404候補とは別集合。旧11件を今回の中間support数に混ぜない。
+NLIの0/1/2は固定README由来のentailment/neutral/contradictionの順。
+premise/hypothesisの向きと変換コードを確認した限り、クラス入れ替えの具体的な不具合は
+見つからなかった。ただしタスクへの適合性・確率校正・長い説明の影響は未解決。
+
+旧 session-result-20261012.txt の「NLIのみ27TP/1FP」は全条件NLIではない。
+共有80条件はtop3-JEVを維持し、非共有54条件だけを切り替えた73既知ケースの開発比較。
+集合・入力・判定規則が異なるため、今回の0/33との数値差をモデル自体の劣化と解釈しない。
+
+次セッションの方針:
+1. 小型単独で任せられる範囲と、一部だけ小型へ移譲できる範囲を検討する。
+2. 旧短文相対choice / 今回の独立3クラス / 全選択肢比較の差を整理し、同じ入力・ケース・
+   元行集合で比較する。既読診断に合わせて閾値やカテゴリ例外を増やさない。
+3. supportだけでなくconflictの誤りも見る。誤ったconflictで正解行を消す委譲は危険。
+   coverage、既知誤採用、既知正例の誤除外、unknown、速度・費用を別々に記録する。
+4. Lunaの追加精度検証は休止。その全選択肢・引用・適用範囲の構造は後のGemini用に保存。
+   現時点でGeminiを実行しない。
+
+元注釈はClaude Haiku5.5の機械参照で、人手goldではない。この集合は既読の診断用。
+数値再集計とソース確認だけで、推論・出力修復・閾値変更・ラベル変更は行っていない。
+機械集計と入力ファイルSHAは最終handoff ZIP内のroot-nli-zero-task-design-audit-v1.json。
