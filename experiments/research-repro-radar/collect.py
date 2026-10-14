@@ -12,7 +12,7 @@ import urllib.request
 ROOT = Path(__file__).resolve().parent
 RUN = ROOT / 'runs/2026-10-12-evening'
 RAW = RUN / 'sources'
-QUERIES = ['text classification efficient', 'information extraction', 'small language model cpu inference', 'lightweight vision', 'coding agent']
+QUERIES = ['text classification efficient', 'information extraction', 'small language model cpu inference', 'lightweight vision', 'coding agent', 'text summarization', 'structured extraction noisy text', 'quantization int4 inference', 'distillation encoder', 'cpu inference throughput']
 URLS = [('trending', 'https://huggingface.co/api/daily_papers?sort=trending'), ('new', 'https://huggingface.co/api/daily_papers?sort=publishedAt')]
 URLS += [('query-'+str(i), 'https://huggingface.co/api/papers/search?q='+urllib.parse.quote(q)) for i,q in enumerate(QUERIES)]
 

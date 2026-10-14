@@ -1,0 +1,154 @@
+{
+  "run_id": "2026-10-14-evening",
+  "date_jst": "2026-10-14",
+  "recommended": [
+    {
+      "id": "2502.11880",
+      "title": "Bitnet.cpp: Efficient Edge Inference for Ternary LLMs",
+      "url": "https://arxiv.org/abs/2502.11880",
+      "category": "deep_dive_value",
+      "published_at": "2025-02-17T15:06:28.000Z",
+      "verification_level": "reading",
+      "priority": "A",
+      "reason": "三値LLMのedge/CPU推論に合い、HF trending 5位とGitHub 41,142 stars・3,830 forks・2026-07更新は異なる場の話題性を示す（同じ人気要因で相関する可能性は残る）。一次artifactのBitNet.cppと、2B重み1,178,623,988 bytes（2GB内）でCPU推論を試す具体仮説がありdeep_dive_valueを維持。新規性はternary用mpGEMMのTL/I2_S。著者の最大6.25xはfull-precision baselineとの報告値で未実測。repoはMITで商用利用可。Python/CMake/Clang要件に加えruntime RAM/速度は未確認。試す価値はあるが実行済み・実測済みを意味しない。",
+      "execution_completed": false,
+      "pending_execution": true,
+      "new_primary_evidence": "review-sources/model-1.txt"
+    },
+    {
+      "id": "2606.23050",
+      "title": "Unlimited OCR Works",
+      "url": "https://arxiv.org/abs/2606.23050",
+      "category": "deep_dive_value",
+      "published_at": "2026-06-22T00:00:00.000Z",
+      "verification_level": "reading",
+      "priority": "B",
+      "reason": "長文書OCR/情報抽出と長系列KV-cache効率の関心に合う。HF trending 9位とGitHub 27,330 stars・2,871 forks・2026-10-12更新は別場の話題性を示すが、相関しない母集団とまでは断定しない。一次artifactであるcode/weightsと具体仮説（長い文書でもcache一定・抽出品質を保つ）は原理を読む価値を支える。著者は数十ページの単一passを述べるが未測定。MIT license。新たに確認した単一weight 6,672,547,120 bytesは2GB download上限を大幅に超えるため、今は利用導入を保留し、GPU推論も勧めない。深掘り推薦は原理の読解価値であり、実行可否と区別する。",
+      "execution_completed": false,
+      "pending_execution": true,
+      "new_primary_evidence": "review-sources/model-0.txt"
+    }
+  ],
+  "digest": [
+    {
+      "id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+      "title": "Qwen2.5-Coder-1.5B-Instruct",
+      "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+      "why_and_deferred": "1.5Bコードモデルで関心一致。配布BF16は取得枠超過見込み、量子化版・後継の実適合未確認。",
+      "verified_inference": false
+    },
+    {
+      "id": "2412.14219",
+      "title": "A Survey on Inference Optimization Techniques for Mixture of Experts   Models",
+      "url": "https://arxiv.org/abs/2412.14219",
+      "why_and_deferred": "MoE推論効率の俯瞰。個別CPU PoCと商用実装条件を選べておらず保留。",
+      "verified_inference": false
+    },
+    {
+      "id": "2211.11014",
+      "title": "Understanding and Improving Knowledge Distillation for   Quantization-Aware Training of Large Transformer Encoders",
+      "url": "https://arxiv.org/abs/2211.11014",
+      "why_and_deferred": "encoder量子化と蒸留。teacher/student学習・データ準備が必要で今回未実行。",
+      "verified_inference": false
+    },
+    {
+      "id": "2207.01405",
+      "title": "I-ViT: Integer-only Quantization for Efficient Vision Transformer   Inference",
+      "url": "https://arxiv.org/abs/2207.01405",
+      "why_and_deferred": "整数専用ViTで軽量画像認識に一致。著者速度はGPU値、CPU/TVM環境未確認。",
+      "verified_inference": false
+    },
+    {
+      "id": "2505.03113",
+      "title": "Image Recognition with Online Lightweight Vision Transformer: A Survey",
+      "url": "https://arxiv.org/abs/2505.03113",
+      "why_and_deferred": "軽量ViT survey。HFのIBM/CrossViTリンクは別論文、公式実装扱いしない。",
+      "verified_inference": false
+    },
+    {
+      "id": "2607.25180",
+      "title": "Bekko Embedding: Parameter-Efficient Multilingual Retrieval with Ultra-Compact Encoders",
+      "url": "https://arxiv.org/abs/2607.25180",
+      "why_and_deferred": "超小型多言語encoder。公開ファイル取得まで、用途適合・CPU品質未測定。",
+      "verified_inference": false
+    },
+    {
+      "id": "2604.04979",
+      "title": "Squeez: Task-Conditioned Tool-Output Pruning for Coding Agents",
+      "url": "https://arxiv.org/abs/2604.04979",
+      "why_and_deferred": "toolログの逐語抽出でAI開発前処理に一致。150M版準備後Docker buildx書込失敗、推論0。",
+      "verified_inference": false
+    },
+    {
+      "id": "2601.16746",
+      "title": "SWE-Pruner: Self-Adaptive Context Pruning for Coding Agents",
+      "url": "https://arxiv.org/abs/2601.16746",
+      "why_and_deferred": "coding agentの0.6B文脈pruner。前日の判定成功とは別にCPU推論は未実施。",
+      "verified_inference": false
+    },
+    {
+      "id": "2606.26488",
+      "title": "What Survives When You Compress a Recursive Reasoner for the Edge?",
+      "url": "https://arxiv.org/abs/2606.26488",
+      "why_and_deferred": "再帰reasonerの小型化。パズル以外の用途・公開重み・商用条件未確認。",
+      "verified_inference": false
+    },
+    {
+      "id": "2206.01861",
+      "title": "ZeroQuant: Efficient and Affordable Post-Training Quantization for Large-Scale Transformers",
+      "url": "https://arxiv.org/abs/2206.01861",
+      "why_and_deferred": "Transformer量子化。GPU向け評価からCPU適合を確認できず保留。",
+      "verified_inference": false
+    },
+    {
+      "id": "2408.08554",
+      "title": "ABQ-LLM: Arbitrary-Bit Quantized Inference Acceleration for Large   Language Models",
+      "url": "https://arxiv.org/abs/2408.08554",
+      "why_and_deferred": "任意bit量子化。CUDA kernel前提、今回のモデル・資源条件を確認できず未実行。",
+      "verified_inference": false
+    },
+    {
+      "id": "2603.28765",
+      "title": "Adaptive Block-Scaled Data Types",
+      "url": "https://arxiv.org/abs/2603.28765",
+      "why_and_deferred": "ブロックごとのINT/FP切替。CUDA12.8+中心、CPU参照実装の実用速度未確認。",
+      "verified_inference": false
+    },
+    {
+      "id": "2603.19635",
+      "title": "BEAVER: A Training-Free Hierarchical Prompt Compression Method via Structure-Aware Page Selection",
+      "url": "https://arxiv.org/abs/2603.19635",
+      "why_and_deferred": "学習不要の長文ページ圧縮。0.6B導入例あり、モデル/依存総量とLICENSE実体未確認。",
+      "verified_inference": false
+    },
+    {
+      "id": "2512.07921",
+      "title": "DeepCode: Open Agentic Coding",
+      "url": "https://arxiv.org/abs/2512.07921",
+      "why_and_deferred": "論文からコードを作るagent、repo更新あり。モデル呼出し費用・最小構成未確認。",
+      "verified_inference": false
+    },
+    {
+      "id": "2505.14638",
+      "title": "Dual Precision Quantization for Efficient and Accurate Deep Neural   Networks Inference",
+      "url": "https://arxiv.org/abs/2505.14638",
+      "why_and_deferred": "INT4/FP8の二重精度。CPU backend適合と導入物が未確認。",
+      "verified_inference": false
+    }
+  ],
+  "completed_ids": [],
+  "counts": {
+    "collected_unique": 1420,
+    "rank_input_including_carry": 1572,
+    "ranked": 1069,
+    "review_pool_read": 20,
+    "extra_read": 4,
+    "candidate_inferences": 0,
+    "candidate_execution_attempts": 1,
+    "pending_before": 1057,
+    "pending_after_record": 1072
+  },
+  "state_policy_override": "User requires unexecuted/failed/deferred items retained. record_run marks detailed reading as seen/freshness, but its automatic recommended queue removal is reversed using the pre-record queue snapshot; completed_ids remains empty.",
+  "classification_note": "A=worth trying, B=conditional, C=no current need. A is not adoption approval. GPU-only native rejections are not accepted as completion.",
+  "cost_comparison": "No measured throughput; API/GKE economics not estimated. Historical profile prices not presented as current."
+}

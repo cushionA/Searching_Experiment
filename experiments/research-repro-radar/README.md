@@ -1,3 +1,13 @@
+## 2026-10-14 native夕方実行
+
+ホストから `RADAR_LLM=native` を明示する。最新Skillのprepare→指定 `gpt-6-luna` ホストspawn→終了待機→validate成功後、`RADAR_NATIVE_PROBE_REQUEST` と `RADAR_NATIVE_PROBE_RESPONSE` に今回の私有一時領域のパスを渡すとcollector gateが同じprobeを再検証する。nativeではCLIを呼ばない。ホスト要求モデルとprovider serving IDは別に記録し、後者が取得できなければunknown。
+
+詳細は [10/14報告](../../reports/2026-10/2026-10-14-evening-radar.md)。未完了1,072件、候補推論0。`retain_unfinished.py` は順位低下を完了と誤認してcarryを消さないための夕方側補助。読解推薦だけで未実行候補を消さないというユーザー指示に従い、record_run後にも未完了snapshotを保持する。
+
+stateは正規remoteの4JSONを `.agents/skills/research-repro-radar/state/` 直下へhash一致で復元し、Skill直下からrank_candidates/record_runとも `--state-dir state` を使用する。完了後4JSONを evening-state へ戻し、remoteのblob/hash一致を確認する。朝・weekly stateには触れない。
+
+以下のcodex固定gate記述は過去記録。nativeを明示選択した実行では上記手順を優先する。CLIは未復旧で、再試行・認証変更・認証移設を行わない。
+
 ## native実判定確認（2026-10-13）
 
 最新版55ceed6のホストnative経路でprobeと保存済みSWE-Pruner1件の実判定に成功。候補はdefer、推論0、未完了1,057件維持。詳細: [native v3報告](../../reports/2026-10/2026-10-13-evening-radar-native-v3.md)。既存collectorのcodex固定gateと単独cronは未移行で、CLI復旧を意味しない。ホストがnativeを明示選択するときは最新版platform/native.mdの2段階probeを使い、CLI gateを先に実行しない。

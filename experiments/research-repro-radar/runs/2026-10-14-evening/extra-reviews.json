@@ -1,0 +1,210 @@
+[
+  {
+    "candidate_id": "2502.11880",
+    "decision": "test",
+    "reason": "三値重みのLLMをCPU edgeで速く動かす推論実装。資料では2025年論文に対してrepoが2026年も活発更新され、CPU向け新しいembeddingモデルも掲載されているため、CPU小型モデルとAI開発への関心に強く合う。著者は最大6.25倍の速度向上を報告するが未測定で、GPU基準など条件の独立再現は未確認。repoはMIT、商用利用可。Python 3.10/CMake 3.22/Clang 18以上が必要で、2GB取得・CPU20分には小型対応モデルを選ぶ必要がある。すぐ試す価値はあるがlarge_effectは推薦しない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2502.11880",
+        "quote": "The advent of 1-bit large language models (LLMs), led by BitNet b1.58, has spurred interest in ternary LLMs."
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2502.11880",
+        "quote": "achieves up to a 6.25x increase in speed over full-precision baselines"
+      },
+      {
+        "source_url": "https://api.github.com/repos/microsoft/BitNet",
+        "quote": "\"license\": {\"key\": \"mit\""
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "CPU対応の小型モデルの配布サイズが2GB以内か、Clang 18/CMakeが既存環境にあるか確認して短い推論を試す。",
+    "unconfirmed": [
+      "各比較のhardware・baselineと独立再現",
+      "小型CPUモデルの実配布サイズとRAM/速度",
+      "手元のcompiler要件の充足"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        true,
+        true
+      ],
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2502.11880",
+          "coverage": "63111/63111 characters"
+        },
+        {
+          "url": "https://api.github.com/repos/microsoft/BitNet",
+          "coverage": "433/433 characters"
+        },
+        {
+          "url": "https://arxiv.org/abs/2502.11880",
+          "coverage": "4898/4898 characters"
+        },
+        {
+          "url": "https://api.github.com/repos/microsoft/BitNet/readme",
+          "coverage": "20570/20570 characters"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2610.08699",
+    "decision": "defer",
+    "reason": "個人向けagentを端末横断で動かす2026年10月の新しい設計提案で、AI開発のagent workflowには話題性が高い。新規性は一つのagent、編集可能なfile memory、承認を通す操作、共有relayの構成で、著者は動作上の制約も明記し、性能比較の実測はない。repoはGPL-3.0で商用利用には義務確認が必要。demoはあるが30分では端末連携・権限境界・relay管理まで評価できず、モデルは選択式でローカルCPU要件も不明。広い実装検証を今すぐ行うより、承認と記憶の設計を読む候補として保留。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.08699",
+        "quote": "memory is files the person can read"
+      },
+      {
+        "source_url": "https://arxiv.org/html/2610.08699",
+        "quote": "The hands are judged by their words, and not yet measured."
+      },
+      {
+        "source_url": "https://api.github.com/repos/nano-muse/nanoMuse",
+        "quote": "\"license\": {\"key\": \"gpl-3.0\""
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "READMEの既存ブラウザdemoで外部連携なしの動作範囲と、手元モデルのみでの利用要件を確認。",
+    "unconfirmed": [
+      "性能・agent評価の実測",
+      "ローカル利用時のCPU/RAM/モデルサイズ",
+      "GPL-3.0の具体的な商用利用条件と外部連携の権限安全性"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        true,
+        true
+      ],
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2610.08699",
+          "coverage": "46270/46270 characters"
+        },
+        {
+          "url": "https://api.github.com/repos/nano-muse/nanoMuse",
+          "coverage": "772/772 characters"
+        },
+        {
+          "url": "https://arxiv.org/abs/2610.08699",
+          "coverage": "4642/4642 characters"
+        },
+        {
+          "url": "https://api.github.com/repos/nano-muse/nanoMuse/readme",
+          "coverage": "16636/16636 characters"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2606.23050",
+    "decision": "test",
+    "reason": "長文書のOCR/構造化を一回の長いparseで扱い、decoder KV cacheを一定にする2026年6月の手法。要約・構造抽出・軽量vision関心に合い、既に朝確認したRapidOCRとは異なる長文脈の仮説を読む価値がある。著者はDeepSeek-OCRをbaselineとし数十ページを32K contextで処理できると報告、repoはMITで公開weightへリンクするが、結果は未測定。READMEの推論手順はPython3.12/CUDA12.9/NVIDIA GPU限定のため既存Kaggle GPUなら試験候補、CPU向けとはいえない。weight容量は不明で2GB上限を超える可能性があり、実行を始める前に確認が要る。large_effectは独立比較がないため推薦しない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2606.23050",
+        "quote": "maintaining a constant KV cache throughout the entire decoding process."
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2606.23050",
+        "quote": "transcribe dozens of pages of documents in a single forward pass"
+      },
+      {
+        "source_url": "https://api.github.com/repos/baidu/Unlimited-OCR",
+        "quote": "\"license\": {\"key\": \"mit\""
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "提供repo記載のモデルweight容量を確認し2GB以下なら既存Kaggle GPUで一つの長文書parseをRapidOCRと別タスクとして試す。",
+    "unconfirmed": [
+      "公開weight容量とKaggleでの取得可能性",
+      "著者の文書長・比較条件・精度の独立再現",
+      "CPU実行時の速度/RAMと商用利用条件の詳細"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        true,
+        true
+      ],
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2606.23050",
+          "coverage": "41550/41550 characters"
+        },
+        {
+          "url": "https://api.github.com/repos/baidu/Unlimited-OCR",
+          "coverage": "466/466 characters"
+        },
+        {
+          "url": "https://arxiv.org/abs/2606.23050",
+          "coverage": "4760/4760 characters"
+        },
+        {
+          "url": "https://api.github.com/repos/baidu/Unlimited-OCR/readme",
+          "coverage": "11539/11539 characters"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2609.18063",
+    "decision": "defer",
+    "reason": "35B MoEをSSDからstreamingしprerouterで次層expertを予測する2026年9月の新手法。小型CPUや限られたRAMから大モデルを扱う関心に合い、著者は24GB machine上で3GiB active memory・20 tok/sとFP16比平均数点差を報告。repoはApache-2.0。ただし配布checkpointは35B約23GB、8B約4.2GBでどちらもDL 2GB制限を超える。Python frameworkは現状Apple Silicon/macOSのみでCUDAはroadmap、既存Kaggle GPUなら解決する構成ではない。速い更新と独自提案は追う価値があるが、今回の取得・hardware条件では実装試験に進めないため保留。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2609.18063",
+        "quote": "a 35B-class model is 19.5GB at 4-bit"
+      },
+      {
+        "source_url": "https://api.github.com/repos/Edge0-AI/edge0/readme",
+        "quote": "(~4.2 GB)"
+      },
+      {
+        "source_url": "https://api.github.com/repos/Edge0-AI/edge0",
+        "quote": "\"license\": {\"key\": \"apache-2.0\""
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "2GB以内のweight縮小variantが提供された時点で、OS別engineとKaggle/CPU対応範囲を再評価。",
+    "unconfirmed": [
+      "Apple Silicon以外のengineの利用準備度と手元OSとの適合",
+      "速度・品質報告の独立再現",
+      "より小さなweight variantの有無"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        true,
+        true
+      ],
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2609.18063",
+          "coverage": "45244/45244 characters"
+        },
+        {
+          "url": "https://api.github.com/repos/Edge0-AI/edge0",
+          "coverage": "560/560 characters"
+        },
+        {
+          "url": "https://arxiv.org/abs/2609.18063",
+          "coverage": "4593/4593 characters"
+        },
+        {
+          "url": "https://api.github.com/repos/Edge0-AI/edge0/readme",
+          "coverage": "17931/17931 characters"
+        }
+      ]
+    }
+  }
+]

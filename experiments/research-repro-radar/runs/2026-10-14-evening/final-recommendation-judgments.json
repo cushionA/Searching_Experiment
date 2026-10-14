@@ -1,0 +1,72 @@
+[
+  {
+    "candidate_id": "2502.11880",
+    "decision": "test",
+    "reason": "三値LLMのedge/CPU推論に合い、HF trending 5位とGitHub 41,142 stars・3,830 forks・2026-07更新は異なる場の話題性を示す（同じ人気要因で相関する可能性は残る）。一次artifactのBitNet.cppと、2B重み1,178,623,988 bytes（2GB内）でCPU推論を試す具体仮説がありdeep_dive_valueを維持。新規性はternary用mpGEMMのTL/I2_S。著者の最大6.25xはfull-precision baselineとの報告値で未実測。repoはMITで商用利用可。Python/CMake/Clang要件に加えruntime RAM/速度は未確認。試す価値はあるが実行済み・実測済みを意味しない。",
+    "evidence": [
+      {
+        "source_url": "https://api.github.com/repos/microsoft/BitNet",
+        "quote": "\"stargazers_count\": 41142"
+      },
+      {
+        "source_url": "https://api.github.com/repos/microsoft/BitNet",
+        "quote": "\"pushed_at\": \"2026-07-27T05:52:06Z\""
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2502.11880",
+        "quote": "6.25x increase in speed over full-precision baselines"
+      },
+      {
+        "source_url": "https://api.github.com/repos/microsoft/BitNet/readme",
+        "quote": "2 bits per weight"
+      },
+      {
+        "source_url": "https://api.github.com/repos/microsoft/BitNet",
+        "quote": "\"license\": {\"key\": \"mit\""
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": "deep_dive_value",
+    "next_check": "既存のClang 18/CMake 3.22要件を確認し、DLは容量内の指定2B revisionに限定。CPUで短い生成を行い速度/RAMとcoding taskの実用性を記録する。",
+    "unconfirmed": [
+      "2B revision以外のモデル配布容量",
+      "手元CPUでの速度とRAM",
+      "著者報告値の独立再現と出力品質"
+    ]
+  },
+  {
+    "candidate_id": "2606.23050",
+    "decision": "defer",
+    "reason": "長文書OCR/情報抽出と長系列KV-cache効率の関心に合う。HF trending 9位とGitHub 27,330 stars・2,871 forks・2026-10-12更新は別場の話題性を示すが、相関しない母集団とまでは断定しない。一次artifactであるcode/weightsと具体仮説（長い文書でもcache一定・抽出品質を保つ）は原理を読む価値を支える。著者は数十ページの単一passを述べるが未測定。MIT license。新たに確認した単一weight 6,672,547,120 bytesは2GB download上限を大幅に超えるため、今は利用導入を保留し、GPU推論も勧めない。深掘り推薦は原理の読解価値であり、実行可否と区別する。",
+    "evidence": [
+      {
+        "source_url": "https://api.github.com/repos/baidu/Unlimited-OCR",
+        "quote": "\"stargazers_count\": 27330"
+      },
+      {
+        "source_url": "https://api.github.com/repos/baidu/Unlimited-OCR",
+        "quote": "\"pushed_at\": \"2026-10-12T10:37:00Z\""
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2606.23050",
+        "quote": "maintaining a constant KV cache throughout the entire decoding process"
+      },
+      {
+        "source_url": "https://api.github.com/repos/baidu/Unlimited-OCR/readme",
+        "quote": "https://huggingface.co/baidu/Unlimited-OCR"
+      },
+      {
+        "source_url": "https://api.github.com/repos/baidu/Unlimited-OCR",
+        "quote": "\"license\": {\"key\": \"mit\""
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": "deep_dive_value",
+    "next_check": "2GB以内の公式な重みvariantが公開された場合に取得可否を再評価する。",
+    "unconfirmed": [
+      "著者報告の品質・数十ページ処理・cache効率の独立再現",
+      "CPU速度/RAM",
+      "小型weight variantの提供予定"
+    ]
+  }
+]

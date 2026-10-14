@@ -1,0 +1,195 @@
+{
+  "recorded_utc": "2026-10-14T09:20:08Z",
+  "candidate": "Squeez extractive alternative",
+  "status": "blocked_before_candidate_execution",
+  "model": {
+    "id": "KRLabsOrg/verbatim-rag-modern-bert-v2",
+    "revision": "6a967332efedfe5aca9b85b8310cc68d9ac6f881",
+    "parameters": "150M per official model card",
+    "weights": {
+      "bytes": 598439784,
+      "sha256": "3127f7ead12786b4ab740191105d8a8e0febe6f8109e479ea0c1e9238fd79398"
+    },
+    "license_evidence": {
+      "huggingface_card": "Apache-2.0",
+      "squeez_repo_readme_and_LICENSE": "Apache-2.0",
+      "base_model": "Alibaba-NLP/gte-reranker-modernbert-base lists Apache-2.0"
+    },
+    "license_uncertainty": "HF model metadata API returns license=null and model repository file list has no LICENSE file; user-facing HF card displays Apache-2.0. Confirm model-specific terms before commercial redistribution."
+  },
+  "dependencies": {
+    "planned_install": "pip install torch==2.7.1+cpu --index-url https://download.pytorch.org/whl/cpu; then transformers==4.53.3 safetensors==0.5.3 from PyPI",
+    "official_cpu_procedure": "PyTorch official Linux/Pip/CPU selector at https://pytorch.org/get-started/locally/; pinned wheel index is https://download.pytorch.org/whl/cpu",
+    "install_status": "not reached: docker build failed before any dependency download"
+  },
+  "source_code_review": {
+    "file": "experiments/research-repro-radar/staging/squeez-poc/model/modeling_verbatim_rag.py",
+    "sha256": "a8b50b45c7789e3bca1e7be827f1e23309602bf64900e573a9c96547f7e24a85",
+    "finding": "4.6KB custom Transformers class extends ModernBertForTokenClassification; imports torch and AutoTokenizer; process tokenizes question/context, runs model, merges predicted character spans. It resolves tokenizer via config._name_or_path; intended local path plus HF_HUB_OFFLINE and TRANSFORMERS_OFFLINE. Static review only; never executed."
+  },
+  "docker": {
+    "image": "python:3.12-slim-bookworm",
+    "digest": "sha256:34386ef0cb081344d7ec1c103ba398e6e9f64e9ab3a1509accc92a4e24a07258",
+    "local_image_size": "131MB (docker image ls; network transfer bytes not measured)",
+    "hello_world": {
+      "command": "docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --user 10001:10001 --cpus 2 --memory 8g --pids-limit 64 --tmpfs /tmp:rw,noexec,nosuid,size=16m python:3.12-slim-bookworm python -B -c 'print(\"sandbox hello\")'",
+      "exit_code": 0,
+      "output": "sandbox hello",
+      "wall_seconds": 1.1
+    },
+    "candidate_build": {
+      "command": "docker build --file Dockerfile --tag evening-radar-squeez-poc:20261014 .",
+      "wall_seconds": 0.4,
+      "exit_code": 1,
+      "error": "ERROR: mkdir /home/agent/.docker/buildx: read-only file system",
+      "outcome": "blocked by read-only Docker buildx setup path; no config changes or bypass attempted"
+    },
+    "candidate_code_executions": 0,
+    "candidate_containers": 0,
+    "planned_run": {
+      "network": "none",
+      "read_only_root": true,
+      "cap_drop": "ALL",
+      "no_new_privileges": true,
+      "uid": "10001:10001",
+      "cpus": 2,
+      "memory": "8 GiB",
+      "mounts": []
+    },
+    "pull_seconds": 19.4,
+    "dependency_install_attempted": false,
+    "candidate_script_started": false,
+    "model_runtime_imports": {
+      "torch": 0,
+      "transformers": 0,
+      "candidate_custom_code": 0
+    }
+  },
+  "synthetic_inputs": {
+    "file": "experiments/research-repro-radar/staging/squeez-poc/synthetic-tool-logs.json",
+    "sha256": "c39961a913916eea229d9f1106f5e9d203c6c9e807dd864d7a57c1e4e4ee8ecc",
+    "cases": 10,
+    "clean_noisy_pairs": 5,
+    "individual_hashes": [
+      {
+        "id": "pytest-clean",
+        "pair": "pytest",
+        "kind": "clean",
+        "sha256": "431d558c0b4575cb536badd433ef478bb42aec6f15a90d53904537be55de088d"
+      },
+      {
+        "id": "pytest-noisy",
+        "pair": "pytest",
+        "kind": "noisy",
+        "sha256": "40e07ad30a922564afb0be8ad587a8f698471c86de0a20e265eb6f030e4c6afa"
+      },
+      {
+        "id": "build-clean",
+        "pair": "build",
+        "kind": "clean",
+        "sha256": "a2d3d2e8cb9f1c45bcd7e64823f86b20b9174c5dfee440e27b735a5adae6c03b"
+      },
+      {
+        "id": "build-noisy",
+        "pair": "build",
+        "kind": "noisy",
+        "sha256": "ef32d540bae697dd4478da7db26f2ec116d4444e7bc04f455252b4b897b0f6ac"
+      },
+      {
+        "id": "git-clean",
+        "pair": "git",
+        "kind": "clean",
+        "sha256": "f3905e88003e3ce17173a4b035165ee51fa29050fa38885abf1816aff6516c7b"
+      },
+      {
+        "id": "git-noisy",
+        "pair": "git",
+        "kind": "noisy",
+        "sha256": "b362a084cdacc362d615be4cfa7e73ef178b3076195688a8761bde3128a5afce"
+      },
+      {
+        "id": "kube-clean",
+        "pair": "kube",
+        "kind": "clean",
+        "sha256": "a0d54e245f0ce6dfd90558c1cad01b88f4fe8e0127d6fb1d34ca5c2e364a7e11"
+      },
+      {
+        "id": "kube-noisy",
+        "pair": "kube",
+        "kind": "noisy",
+        "sha256": "7baecf3de2a047dba1cb98da94ccb55c4dddd0649e3b2acfff8a4bfbabcc0755"
+      },
+      {
+        "id": "pip-clean",
+        "pair": "pip",
+        "kind": "clean",
+        "sha256": "f66236574384875951cc05ba8322570d9fda92f1f201a6565b5e44daccbd2922"
+      },
+      {
+        "id": "pip-noisy",
+        "pair": "pip",
+        "kind": "noisy",
+        "sha256": "9409e6bf58567335ef7809ea52ee1e443542f8f678d8dcade617c1f7d5aaaca6"
+      }
+    ],
+    "execution": "not run; no outputs or timing/RAM measurements"
+  },
+  "downloads": {
+    "bekko_model_id": "hotchpotch/bekko-embedding-v1-a8m",
+    "bekko_bytes": 164549410,
+    "squeez_model_repo_files_bytes": 602061579,
+    "python_image": "downloaded official pinned digest; local unpacked size 131MB, exact network bytes unknown",
+    "python_package_bytes": 0,
+    "cash_usd": 0,
+    "note": "Does not include small metadata/API responses. Exact Docker layer transfer size was not logged.",
+    "known_exact_public_file_bytes": 766610989,
+    "reference_payload_estimate_bytes": 897610989,
+    "reference_payload_estimate_note": "Reference budget estimate only: exact public model files (766,610,989 bytes) plus Docker local unpacked image size (131 MB). Docker layer network bytes and metadata responses were not measured; this is not a measured network total."
+  },
+  "staged_model_files": [
+    {
+      "path": "staging/squeez-poc/model/README.md",
+      "bytes": 10453,
+      "sha256": "e1a65ad2fddaf52220876b321d350ba6665cb50c35dbeec06251dc133938da05"
+    },
+    {
+      "path": "staging/squeez-poc/model/config.json",
+      "bytes": 1499,
+      "sha256": "e62290d1dfec418c3c6fcb8c9f9640035d9dbb9eb03647e7f0e063e0c98dd5aa"
+    },
+    {
+      "path": "staging/squeez-poc/model/model.safetensors",
+      "bytes": 598439784,
+      "sha256": "3127f7ead12786b4ab740191105d8a8e0febe6f8109e479ea0c1e9238fd79398"
+    },
+    {
+      "path": "staging/squeez-poc/model/modeling_verbatim_rag.py",
+      "bytes": 4619,
+      "sha256": "a8b50b45c7789e3bca1e7be827f1e23309602bf64900e573a9c96547f7e24a85"
+    },
+    {
+      "path": "staging/squeez-poc/model/special_tokens_map.json",
+      "bytes": 694,
+      "sha256": "ea97ecdbcc73713039d8d64dbb05e3689495c96657fbd9a18f5bed381be81049"
+    },
+    {
+      "path": "staging/squeez-poc/model/tokenizer.json",
+      "bytes": 3583499,
+      "sha256": "2aea6ff4701d063e7e029b6be695a1659f2caaa2ae4fb0e8b18285818271becd"
+    },
+    {
+      "path": "staging/squeez-poc/model/tokenizer_config.json",
+      "bytes": 21031,
+      "sha256": "626c86908d7c711f93b0feffd8657b782cc2727b391f9be190240e8cafb626d5"
+    }
+  ],
+  "artifact_manifest": "experiments/research-repro-radar/artifacts/verbatim-rag-modern-bert-v2/source-manifest.json",
+  "bekko_manifest": "experiments/research-repro-radar/artifacts/bekko-a8m/source-manifest.json",
+  "sources": {
+    "official_squeez_readme": "https://github.com/KRLabsOrg/squeez",
+    "official_model": "https://huggingface.co/KRLabsOrg/verbatim-rag-modern-bert-v2",
+    "base_model": "https://huggingface.co/Alibaba-NLP/gte-reranker-modernbert-base",
+    "pytorch_cpu_install": "https://pytorch.org/get-started/locally/"
+  },
+  "remaining_blocker": "A writable Docker buildx setup location is unavailable. Candidate inference must remain stopped until the normal Docker build route is available; no alternate execution path used."
+}

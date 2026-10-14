@@ -1,0 +1,951 @@
+[
+  {
+    "candidate_id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+    "decision": "defer",
+    "reason": "コード生成・修正を狙う1.54Bの指示調整モデルで、CPU小型開発への関心には合う。モデルカードはApache-2.0を掲げるが、配布重みはBF16で1.54Bパラメータ、2GBの取得上限を超える見込み。著者は32BのGPT-4o相当等も記載するが未実測扱い。2024年公開系列で後継・上位サイズは資料にある一方、今回の小型条件では現行候補性が弱い。CPU速度/RAMは不明、検証価値は量子化配布版が上限内にある場合に限られる。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct/raw/main/README.md",
+        "quote": "Number of Parameters: 1.54B"
+      },
+      {
+        "source_url": "https://huggingface.co/api/models/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+        "quote": "\"license\": \"apache-2.0\""
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "2GB以内の配布量子化版が保存資料にあるか確認し、なければ保留継続。",
+    "unconfirmed": [
+      "CPU速度とRAM使用量",
+      "配布重みの実取得サイズ",
+      "著者報告の性能の独立再現"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        true
+      ],
+      "all_quotes_exact": true,
+      "coverage": [
+        {
+          "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct/raw/main/README.md",
+          "coverage": "5255/5255 characters; truncated=False"
+        },
+        {
+          "url": "https://huggingface.co/api/models/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+          "coverage": "907/907 characters; truncated=False"
+        },
+        {
+          "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+          "coverage": "20000/33184 characters; truncated=True"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2412.14219",
+    "decision": "defer",
+    "reason": "MoE推論の圧縮・オフロード・CPU支援などを俯瞰する2024年末〜2025年改訂の調査で、モデル最適化や推論に関心があれば学習材料になる。一次artifactではなくsurveyで、独立した具体的仮説の検証には直結しない。収録例は大規模MoE中心で、8GB RAM/2GB取得枠/CPU20分での実装試験は現実的でない。コードの商用ライセンスは該当せず、論文はarXiv利用条件。新しい話題だが、より直近の手法・surveyとの優先差は資料内で判定不能。読むならCPUオフロード節に限定した短時間確認が妥当。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2412.14219",
+        "quote": "This comprehensive survey analyzes optimization techniques for MoE models across the entire system stack."
+      },
+      {
+        "source_url": "https://api.github.com/repos/moe-inf/awesome-moe-inference/readme",
+        "quote": "A curated list of awesome papers about optimizing the inference of MoE-based LLMs."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "CPU assisting節から実機制約に合う手法が1つあるかだけを確認。",
+    "unconfirmed": [
+      "個々の収録手法の現行性能と再現性",
+      "CPU単体での速度・メモリ要件",
+      "コード各リポジトリの商用利用条件"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        true
+      ],
+      "all_quotes_exact": true,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2412.14219",
+          "coverage": "70000/144827 characters; truncated=True"
+        },
+        {
+          "url": "https://api.github.com/repos/moe-inf/awesome-moe-inference",
+          "coverage": "424/424 characters; truncated=False"
+        },
+        {
+          "url": "https://arxiv.org/abs/2412.14219",
+          "coverage": "5384/5384 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/moe-inf/awesome-moe-inference/readme",
+          "coverage": "20000/34024 characters; truncated=True"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2211.11014",
+    "decision": "reject",
+    "reason": "BERT等の大規模Transformer encoderを量子化学習する際の知識蒸留を扱う2022年研究。分類/圧縮の関心とは接点があるが、新しい小型CPU推論を試す候補ではなく、teacher/studentとGLUE等のタスクデータを要する学習研究で今の30分・CPU20分・2GB枠に合わない。著者は量子化時の注意損失改善を検討。repoはEMNLP 2022実装だがREADME上ライセンス明記なし。古さ単独でなく課題と実験要件の不一致で優先度を下げる。商用利用可否・現在の代替手法は不明。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2211.11014",
+        "quote": "Knowledge distillation (KD) has been a ubiquitous method for model compression"
+      },
+      {
+        "source_url": "https://api.github.com/repos/marsjacobs/kd-qat-large-enc/readme",
+        "quote": "First, you need task-specific fine-tuned full-precision BERT models"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "現行のencoder量子化手法との比較",
+      "商用利用条件",
+      "小型CPUでの推論効果"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        true
+      ],
+      "all_quotes_exact": true,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2211.11014",
+          "coverage": "54127/54127 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/marsjacobs/kd-qat-large-enc",
+          "coverage": "509/509 characters; truncated=False"
+        },
+        {
+          "url": "https://arxiv.org/abs/2211.11014",
+          "coverage": "4756/4756 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/marsjacobs/kd-qat-large-enc/readme",
+          "coverage": "4836/4836 characters; truncated=False"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2207.01405",
+    "decision": "test",
+    "reason": "ViTの整数専用量子化によるedge推論効率化で、軽量visionと小型モデルの関心に直接合う。論文/公式repoは2023年ICCV発表と2022年初版でやや古いが、方式理解にはまだ有用。著者はRTX 2080Ti上で3.72–4.11倍の速度向上と同等精度を報告するものの、これはCPUの独立比較ではない。repoはApache-2.0で商用利用可能な条件だが、TVM 0.9.dev0推奨、Imagenetを使うQAT/ベンチ要件があり、2GB・CPU20分では完全再現できない。今回は論文とREADMEの短時間読解を試し、CPU実測やlarge_effect認定はしない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2207.01405",
+        "quote": "achieving 3.72 ∼ 4.11 × inference speedup compared to the FP model."
+      },
+      {
+        "source_url": "https://api.github.com/repos/zkkli/i-vit/readme",
+        "quote": "TVM version is recommended to be 0.9.dev0."
+      },
+      {
+        "source_url": "https://api.github.com/repos/zkkli/i-vit",
+        "quote": "\"license\": {\"key\": \"apache-2.0\""
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "READMEの既存精度表とTVMベンチ対象hardwareを確認し、CPU用の短い推論確認方法があるか見る。",
+    "unconfirmed": [
+      "CPU推論性能とRAM",
+      "著者報告値の独立再現",
+      "今回のhardwareでのTVM利用可否"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        false,
+        true,
+        true
+      ],
+      "all_quotes_exact": false,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2207.01405",
+          "coverage": "55664/55664 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/zkkli/i-vit",
+          "coverage": "580/580 characters; truncated=False"
+        },
+        {
+          "url": "https://arxiv.org/abs/2207.01405",
+          "coverage": "5303/5303 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/zkkli/i-vit/readme",
+          "coverage": "2453/2453 characters; truncated=False"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2505.03113",
+    "decision": "defer",
+    "reason": "ViT画像認識の軽量化を効率構成・動的ネットワーク・蒸留に整理した2022年発表/2023年改訂の研究で、軽量visionへの関心に関連する。著者はImageNet-1Kの精度・パラメータ・throughputを整理し、2025年改訂版だが個別の一次手法ではない。提示repoはIBM/CrossViTで論文のProject Pageと異なり、別の2021 CrossViT実装（Apache-2.0、ImageNet前提）なので取り違え。CPU速度/RAMや商用適合性は資料では不明。読む価値はあるが誤repo解消と小型CPU向け手法の特定までは試験に進めず保留。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2505.03113",
+        "quote": "We evaluate the relevant exploration for each topic on the ImageNet-1K benchmark"
+      },
+      {
+        "source_url": "https://api.github.com/repos/IBM/CrossViT/readme",
+        "quote": "This repository is the official implementation of CrossViT"
+      },
+      {
+        "source_url": "https://api.github.com/repos/IBM/CrossViT",
+        "quote": "\"license\": {\"key\": \"apache-2.0\""
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "候補論文自身が示すProject Pageのrepoを保存資料で確認し、IBM/CrossViTとの対応を訂正。",
+    "unconfirmed": [
+      "候補論文のProject Page repoの実体・ライセンス",
+      "個別手法のCPU推論速度とRAM",
+      "ImageNet以外の軽量visionデータでの効果"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        true,
+        true
+      ],
+      "all_quotes_exact": true,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2505.03113",
+          "coverage": "70000/158753 characters; truncated=True"
+        },
+        {
+          "url": "https://api.github.com/repos/IBM/CrossViT",
+          "coverage": "562/562 characters; truncated=False"
+        },
+        {
+          "url": "https://arxiv.org/abs/2505.03113",
+          "coverage": "4756/4756 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/IBM/CrossViT/readme",
+          "coverage": "3219/3219 characters; truncated=False"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2607.25180",
+    "decision": "defer",
+    "reason": "多言語検索向けの8M/25M Active Parameters埋め込み器で、層削減・短いベクトル・語彙表int8が新規性。2026年7月公開で比較的新しいが、本日時点の普及度は資料から不明。著者はMMTEB nDCG@10 56.2/57.5、CPUでe5-small比1.6倍、ONNX 124 MiB等を報告するが未独立検証。論文はCC BY 4.0、モデル重みの商用ライセンスは未確認。CPU/ONNXは制約に合いそうだが、用途は検索で要約・分類・構造抽出とは距離があり、検索rerank用途も優先しない。必要な多言語検索案件が出た時に小型モデルの候補として再評価する価値はある。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/html/2607.25180",
+        "quote": "the fastest on both CPU and GPU—about 1.6 × multilingual-e5-small on x86 CPU"
+      },
+      {
+        "source_url": "https://arxiv.org/html/2607.25180",
+        "quote": "License: CC BY 4.0"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "CPU速度・RAMは著者報告であり本環境では未測定。",
+      "配布重み個別の商用ライセンス、実際のダウンロードサイズ/実行条件、より新しい同用途モデルとの優劣は未確認。"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        false,
+        true
+      ],
+      "all_quotes_exact": false,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2607.25180",
+          "coverage": "70000/146692 characters; truncated=True"
+        },
+        {
+          "url": "https://arxiv.org/abs/2607.25180",
+          "coverage": "5298/5298 characters; truncated=False"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2604.04979",
+    "decision": "test",
+    "reason": "coding agentの長いtool出力から、次の判断に必要な逐語的な証拠部分を抜き出す仕組みで、混在ログを扱う点が新しい。2026年4月公開で話題は新しめだが、現時点の採用状況は不明。著者は手作業評価でrecall 0.86/F1 0.80、入力token 92%削減と報告。論文とrepoはApache-2.0を明記し商用利用可能。2B生成モデルは2GB DL/CPU 20分に収まるか不明だが、READMEに小型extractive ModernBERT版もあり、0円の短時間確認に向く。coding-agentのtool-output構造抽出・要約前処理に直接使えそうで、限定ログで抽出の有用性と依存/CPU可否を確認する価値がある。AはPoC完了を要しない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/html/2604.04979",
+        "quote": "0.86 recall and 0.80 F1 while removing 92% of input tokens"
+      },
+      {
+        "source_url": "https://github.com/KRLabsOrg/squeez",
+        "quote": "a smaller extractive ModernBERT alternative"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "READMEのextractive版を先に確認し、DL上限2GB・CPUのみで小さなpytest/grepログを処理できるか、抽出漏れと保持行の有用性を20分以内で試す。",
+    "unconfirmed": [
+      "精度値は著者評価で独立再現していない。",
+      "実際のCPU速度/RAM、extractive版のサイズ・商用ライセンス細目と8GB環境での導入可否は未測定。論文実験は単一NVIDIA A100 80GB。"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        false,
+        false
+      ],
+      "all_quotes_exact": false,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2604.04979",
+          "coverage": "28241/28241 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/KRLabsOrg/squeez",
+          "coverage": "569/569 characters; truncated=False"
+        },
+        {
+          "url": "https://arxiv.org/abs/2604.04979",
+          "coverage": "4062/4062 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/KRLabsOrg/squeez/readme",
+          "coverage": "10314/10314 characters; truncated=False"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2601.16746",
+    "decision": "defer",
+    "reason": "coding agentの長いコード文脈をタスク目標に応じて行単位で間引く手法で、汎用tool出力抽出のSqueezとは対象が異なる。2026年1月初版、5月改訂で現在の利用状況は不明。著者はSWE-Bench系で23–54% token削減、単発課題で最大14.84倍圧縮と報告。論文CC BY 4.0、repoはMITで商用利用可能。0.6B skimmerだがCPUの速度/RAMや配布物要件は資料から確定できず、すでに近いcoding-agent圧縮候補があるため優先度は下げる。ソースコード文脈圧縮が具体課題になれば比較対象として試す価値がある。repo名と論文題名は一致しており、取り違えは見当たらない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2601.16746",
+        "quote": "achieving 23-54% token reduction on agent tasks like SWE-Bench Verified"
+      },
+      {
+        "source_url": "https://github.com/Ayanami1314/swe-pruner",
+        "quote": "Make Claude Tokens 40% Saving!"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "arXiv本文資料は99,249字中70,000字で切詰め。上記評価値は著者報告。",
+      "CPU速度/RAM、2GB以内のモデル入手、商用時の重みライセンスと現行の後継・上位候補は未確認。"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        false
+      ],
+      "all_quotes_exact": false,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2601.16746",
+          "coverage": "70000/99249 characters; truncated=True"
+        },
+        {
+          "url": "https://api.github.com/repos/Ayanami1314/swe-pruner",
+          "coverage": "490/490 characters; truncated=False"
+        },
+        {
+          "url": "https://arxiv.org/abs/2601.16746",
+          "coverage": "5015/5015 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/Ayanami1314/swe-pruner/readme",
+          "coverage": "7936/7936 characters; truncated=False"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2606.26488",
+    "decision": "defer",
+    "reason": "数百万parameter級の再帰型reasonerをedgeに載せる量子化研究で、繰返し推論で誤差が蓄積する点を扱う。2026年6月公開・9月改訂の新しいpreprintだが採用状況は不明。著者はINT8+再帰1回で全深度精度、校正INT4で重み3.3MBを報告する一方、naive INT4で全体推論が崩れる例も示す。論文はCC BY 4.0だがコード/重みとその商用条件は確認できない。CPU/MCUの小型化関心には合うものの、対象は特殊なパズルreasonerで一般的な分類・要約への直接性が低く、計測済みartifactもないため今すぐ実験する優先度は低い。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2606.26488",
+        "quote": "calibrated INT4 brings the backbone to 3.3 MB, inside a 4 MB budget"
+      },
+      {
+        "source_url": "https://arxiv.org/html/2606.26488",
+        "quote": "License: CC BY 4.0"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "arXiv本文資料は73,609字中70,000字で切詰め。数値は論文著者による報告で独立比較ではない。",
+      "コード/重みartifact、商用ライセンス、実CPU速度とピークRAM、一般タスクでの適用性は未確認。"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        true
+      ],
+      "all_quotes_exact": true,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2606.26488",
+          "coverage": "70000/73609 characters; truncated=True"
+        },
+        {
+          "url": "https://arxiv.org/abs/2606.26488",
+          "coverage": "4803/4803 characters; truncated=False"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2206.01861",
+    "decision": "reject",
+    "reason": "BERT/GPT型TransformerをGPU向けにINT8/INT4量子化する2022年の研究で、weight/activation別量子化、蒸留、CUDA最適化が主題。著者はFP16比最大5.19x/4.16xやメモリ3分の1等を報告するが、これらは当時のGPU設定の結果で未独立検証。資料上、論文はarXivの非独占ライセンス、コードはDeepSpeedへ後日公開予定との記載にとどまり、商用利用条件を確認できない。実験はA100/T4等のGPU向けで、CPUのみ・DL 2GB・短時間という現条件に対する直接用途が薄い。量子化一般の背景資料としては有用だが、実装検証候補としては今試す価値がない。古さだけでなくhardware/用途の不一致で判定。後継・上位手法との比較は資料から未確認。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2206.01861",
+        "quote": "up to 5.19x/4.16x speedup on those models compared to FP16 inference"
+      },
+      {
+        "source_url": "https://arxiv.org/html/2206.01861",
+        "quote": "Code will be released soon as a part of https://github.com/microsoft/DeepSpeed"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "arXiv本文資料は83,666字中70,000字で切詰め。著者報告値の独立再現なし。",
+      "該当実装が現在のDeepSpeedで利用可能か、実装/モデルの商用条件、現行の後継・上位量子化法との比較は未確認。"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        true
+      ],
+      "all_quotes_exact": true,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2206.01861",
+          "coverage": "70000/83666 characters; truncated=True"
+        },
+        {
+          "url": "https://arxiv.org/abs/2206.01861",
+          "coverage": "5084/5084 characters; truncated=False"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2408.08554",
+    "decision": "reject",
+    "reason": "任意bit量子化でLLM推論の精度・速度・メモリを改善する狙いは量子化関心に合い、著者はLLaMA-7BでWikiText2 perplexity 7.59、SmoothQuant比1.6倍加速/2.7倍圧縮を報告。ただし未検証の著者値。公開repoはApache-2.0だが推論kernelにはCUDA Toolkitが必要でTuring以降向けGPUを想定し、CPU限定・30分/8GB枠に合わない。本文HTMLは切詰めあり。",
+    "evidence": [
+      {
+        "source_url": "https://github.com/bytedance/abq-llm",
+        "quote": "Install the basic CUDA Toolkit."
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2408.08554",
+        "quote": "Compared to SmoothQuant, we realized 1.6× acceleration improvement and 2.7× memory compression gain."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "論文HTMLは79110字中70000字で切詰め。加速・圧縮・品質値は著者報告で独立比較未確認。",
+      "CPUで利用できる実行経路・速度・RAM使用量は不明。"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        false,
+        false
+      ],
+      "all_quotes_exact": false,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2408.08554",
+          "coverage": "70000/79110 characters; truncated=True"
+        },
+        {
+          "url": "https://api.github.com/repos/bytedance/abq-llm",
+          "coverage": "600/600 characters; truncated=False"
+        },
+        {
+          "url": "https://arxiv.org/abs/2408.08554",
+          "coverage": "5549/5549 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/bytedance/abq-llm/readme",
+          "coverage": "8981/8981 characters; truncated=False"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2603.28765",
+    "decision": "defer",
+    "reason": "IF4がFP4/INT4を値群ごとに選びNVFP4由来の誤差を下げる新しい形式で、2026年3月の話題として関心に合う。著者は学習時損失とPTQ精度の改善、IF4 MAC設計を報告するが独立検証ではない。MIT repoだが依存要件はCUDA 12.8+で現行GPU向け。CPU参照実装はREADMEで遅いとされ、CPU/8GB条件での試行価値は低い。対応GPUまたは軽量CPU参照実験の条件が分かれば再評価する。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2603.28765",
+        "quote": "IF4 outperforms existing 4-bit block-scaled formats"
+      },
+      {
+        "source_url": "https://api.github.com/repos/mit-han-lab/fouroversix/readme",
+        "quote": "CUDA toolkit 12.8 or newer"
+      },
+      {
+        "source_url": "https://api.github.com/repos/mit-han-lab/fouroversix/readme",
+        "quote": "our reference implementation, which is slow"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "GPU有無を確認し、CPUのみならREADMEのSKIP_CUDA_BUILD参照実装で最小PTQ例の依存量と実行条件を読む。",
+    "unconfirmed": [
+      "論文・repoの精度改善結果は著者報告で独立再現なし。CPU参照の速度・RAMは未測定。"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        true,
+        true
+      ],
+      "all_quotes_exact": true,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2603.28765",
+          "coverage": "60492/60492 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/mit-han-lab/fouroversix",
+          "coverage": "645/645 characters; truncated=False"
+        },
+        {
+          "url": "https://arxiv.org/abs/2603.28765",
+          "coverage": "4681/4681 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/mit-han-lab/fouroversix/readme",
+          "coverage": "8581/8581 characters; truncated=False"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2603.19635",
+    "decision": "test",
+    "reason": "BEAVERは長文をページ単位で選択し談話構造を保つ学習不要のprompt圧縮で、論文要約や文書分類前の文脈整理に使えそうな2026年の新規候補。著者は128k contextで26.4倍低遅延を報告するが未検証。READMEにはCPU版PyTorchとQwen3-0.6Bの起動例があり、2GB DL枠に収まるか実重み・依存込みで確認しつつ短い文書で情報保持を30分以内に試す価値がある。商用ライセンスはGitHub APIで未設定、READMEのApache-2.0バッジと食い違うため確認が必要。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2603.19635",
+        "quote": "reduces latency by 26.4x on 128k contexts"
+      },
+      {
+        "source_url": "https://github.com/JusperLee/BEAVER",
+        "quote": "pip install torch --index-url https://download.pytorch.org/whl/cpu"
+      },
+      {
+        "source_url": "https://github.com/JusperLee/BEAVER",
+        "quote": "--model_path Qwen/Qwen3-0.6B"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "CPU経路でQwen3-0.6Bと依存のDL量/空きRAMを確認し、短文書で圧縮前後の要点保持を比べる。",
+    "unconfirmed": [
+      "論文HTMLは72614字中70000字で切詰め。26.4倍は著者報告で独立比較未確認。",
+      "実際のDL容量、RAM、CPU速度は未測定。READMEのApache-2.0バッジとrepo APIのlicense=nullが不一致。"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        false,
+        false
+      ],
+      "all_quotes_exact": false,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2603.19635",
+          "coverage": "70000/72614 characters; truncated=True"
+        },
+        {
+          "url": "https://api.github.com/repos/JusperLee/BEAVER",
+          "coverage": "441/441 characters; truncated=False"
+        },
+        {
+          "url": "https://arxiv.org/abs/2603.19635",
+          "coverage": "4706/4706 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/JusperLee/BEAVER/readme",
+          "coverage": "7190/7190 characters; truncated=False"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2512.07921",
+    "decision": "defer",
+    "reason": "DeepCodeは論文仕様から実装を作る複数agent型コーディング基盤でAI開発関心に合い、repoは直近も更新されMITライセンス。著者はPaperBenchで商用agentや専門家を上回ると報告するが独立評価ではない。複数agent・モデル設定と実装環境が必要で、CPU 20分/8GB・0円の検証条件に収まるか不明。論文/READMEとも取得資料が切詰められており、まず最小構成と利用モデル要件を確認したい。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2512.07921",
+        "quote": "achieves state-of-the-art performance on the PaperBench benchmark"
+      },
+      {
+        "source_url": "https://api.github.com/repos/HKUDS/DeepCode",
+        "quote": "\"license\": {\"key\": \"mit\""
+      },
+      {
+        "source_url": "https://api.github.com/repos/HKUDS/DeepCode",
+        "quote": "\"pushed_at\": \"2026-10-13T05:57:01Z\""
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "READMEの最小導入要件、利用モデル/APIとCPU-only時の構成を確認し、小タスクが成立するか判断する。",
+    "unconfirmed": [
+      "論文HTMLは90031字中70000字、READMEは77384字中20000字で切詰め。性能値と実行要件の全体確認は未完。",
+      "PaperBench比較は著者報告。CPU速度/RAMは未測定。"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        false,
+        true,
+        true
+      ],
+      "all_quotes_exact": false,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2512.07921",
+          "coverage": "70000/90031 characters; truncated=True"
+        },
+        {
+          "url": "https://api.github.com/repos/HKUDS/DeepCode",
+          "coverage": "571/571 characters; truncated=False"
+        },
+        {
+          "url": "https://arxiv.org/abs/2512.07921",
+          "coverage": "4786/4786 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/HKUDS/DeepCode/readme",
+          "coverage": "20000/77384 characters; truncated=True"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2505.14638",
+    "decision": "defer",
+    "reason": "DPQはINT4重みとFP8演算を組み合わせるW4A8量子化で、精度低下を抑え推論を速める狙いは軽量推論関心に関連する。著者はthroughput改善を報告し論文はCC BY 4.0だが数値は著者実験で未測定。対象は近代アクセラレータのFP8演算で、CPUのみで同じ利点を試せるか不明。利用コードはIntel Neural Compressor repoにあるとの記載だが、その導入条件は資料に含まれない。CPU対応backendを確認できれば再検討する。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2505.14638",
+        "quote": "inference computations are performed using 8-bit floating-point arithmetic"
+      },
+      {
+        "source_url": "https://arxiv.org/html/2505.14638",
+        "quote": "The source code is publicly available at the Intel Neural Compressor repository"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "Intel Neural Compressor内のDPQ実装とFP8/CPU backend要件を確認し、CPUで動かせる対象モデルがあれば再評価する。",
+    "unconfirmed": [
+      "throughput/accuracy値は著者報告で独立比較未確認。CPUでの実行可能性、速度、RAMは資料から不明。"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        true
+      ],
+      "all_quotes_exact": true,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2505.14638",
+          "coverage": "65018/65018 characters; truncated=False"
+        },
+        {
+          "url": "https://arxiv.org/abs/2505.14638",
+          "coverage": "4797/4797 characters; truncated=False"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2505.13840",
+    "decision": "defer",
+    "reason": "LLM効率化の横断ベンチマークで量子化・attention・PEFTを比較し、低資源推論の論点整理には有用。著者はint4で最大3.9倍のメモリ/電力削減と3–5%精度低下を報告するが、これは著者報告で独立実測ではない。評価は48 GH200/8 H200、0.5B–72B級で、0円・CPU20分・8GB/2GB条件の実行対象にならない。GitHubはライセンス未設定で、READMEの中核コード/API未公開TODOは2025年予定のまま（古い可能性あり）。まず小型CPUモデルを含む再現可能な評価資産が揃った時点で再検討。独立した二話題と具体的PoC仮説が足りずdeep_dive/large_effect推薦なし。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2505.13840",
+        "quote": "Conducted on a production-class cluster (48xGH200, 8xH200 GPUs)"
+      },
+      {
+        "source_url": "https://api.github.com/repos/DLYuanGod/EfficientLLM/readme",
+        "quote": "Code for the whole project including pre-training, PEFT, inference, etc."
+      },
+      {
+        "source_url": "https://api.github.com/repos/DLYuanGod/EfficientLLM",
+        "quote": "\"license\": null"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "CPUで扱える小型モデル用コード・評価手順が公開され、ライセンスが明示されたら再確認する。",
+    "unconfirmed": [
+      "arXiv HTML本文は切詰め。数値は抄録/収録抜粋の著者報告で、独立再測定していない。",
+      "READMEのTODOは予定日が過去で、現在の実装状況を代表しない可能性がある。"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        true,
+        true
+      ],
+      "all_quotes_exact": true,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2505.13840",
+          "coverage": "70000/333643 characters; truncated=True"
+        },
+        {
+          "url": "https://api.github.com/repos/DLYuanGod/EfficientLLM",
+          "coverage": "358/358 characters; truncated=False"
+        },
+        {
+          "url": "https://arxiv.org/abs/2505.13840",
+          "coverage": "5384/5384 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/DLYuanGod/EfficientLLM/readme",
+          "coverage": "861/861 characters; truncated=False"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2508.04405",
+    "decision": "defer",
+    "reason": "INT6重みと感度層だけINT8活性を保つ量子化に、専用GPUカーネルを組み合わせる研究で量子化の精度/速度 trade-off には関係する。著者はSmoothQuant比で推論1.33倍・メモリ1.21倍改善と報告するが、独立確認ではない。本文の実験モデルは概ね6.7B–70Bで、NVIDIA GPU/Tensor Core前提のためCPU20分・RAM8GB・DL2GBには入らず、今のPoC用途に直結しない。コードはApache-2.0で入手可能だがGPU・大きなモデルが必要。GPU評価環境か、小型CPU対応実装が必要になった場合だけ再訪する。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2508.04405",
+        "quote": "INT6 quantization offers a superior trade-off between model accuracy and inference efficiency"
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2508.04405",
+        "quote": "End-to-end, FlexQ delivers 1.33× inference acceleration and 1.21× memory savings over SmoothQuant."
+      },
+      {
+        "source_url": "https://api.github.com/repos/FlyFoxPlayer/FlexQ",
+        "quote": "\"key\": \"apache-2.0\""
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "GPU実機または8GB以下CPU向けの対応モデル/実装が整った場合に再評価。",
+    "unconfirmed": [
+      "本文HTMLは一部切詰め。速度・メモリ改善値は著者報告で、こちらの環境で再現していない。",
+      "推奨GPUの最低要件と小型モデル対応は収録資料から確認できない。"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        false,
+        true
+      ],
+      "all_quotes_exact": false,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2508.04405",
+          "coverage": "70000/89663 characters; truncated=True"
+        },
+        {
+          "url": "https://api.github.com/repos/FlyFoxPlayer/FlexQ",
+          "coverage": "595/595 characters; truncated=False"
+        },
+        {
+          "url": "https://arxiv.org/abs/2508.04405",
+          "coverage": "5096/5096 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/FlyFoxPlayer/FlexQ/readme",
+          "coverage": "7273/7273 characters; truncated=False"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2406.12925",
+    "decision": "defer",
+    "reason": "軽量な汎用情報抽出モデルをNER・関係抽出・QA・要約へ広げる研究で、SKU抽出を含む利用目的との適合性は高い。論文本文は読めるが、この候補資料には実装repo/モデル配布元がなく、2GB以内の取得量やCPU速度/RAMは不明。GLiNERのSKU12件は既に別担当で誤抽出保留の実測中なので、重複介入せずその結果を待つ。新規性を別モデルの独立評価で確認できれば検討価値があるが、今は条件付き。著者評価は論文記載で本件の品質根拠には転用しない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/html/2406.12925",
+        "quote": "GLiNER multi-task: Generalist Lightweight Model for Various Information Extraction Tasks"
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2406.12925",
+        "quote": "Information extraction tasks require both accurate, efficient, and generalisable models."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "進行中のGLiNER SKU評価が完了し、配布元・ライセンス・モデル容量・CPU要件を確認できた後に再判定。",
+    "unconfirmed": [
+      "候補資料にコードrepo/重み配布元/商用ライセンスが示されていない。",
+      "資料からCPU速度・RAM・ダウンロード容量は不明。"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        true
+      ],
+      "all_quotes_exact": true,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2406.12925",
+          "coverage": "42129/42129 characters; truncated=False"
+        },
+        {
+          "url": "https://arxiv.org/abs/2406.12925",
+          "coverage": "4660/4660 characters; truncated=False"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2605.20315",
+    "decision": "defer",
+    "reason": "長文エージェント推論でprefillだけNVFP4量子化し、decodeはBF16維持する段階別設計。2026年の話題として新しく、agentic推論の入力側ボトルネックという仮説は具体的。著者はprefill最大3倍速を報告するが、独立比較済みの効果ではない。公開例はQwen3-8B-NVFP4とGPUを指定する2段servingで、0円・CPU20分・8GB/2GBに適合しない。repoは更新/ライセンス情報が限定的で、商用条件も不明。GPU環境が使える場合に限り評価候補とする。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2605.20315",
+        "quote": "achieving up to a 3x speedup during prefilling"
+      },
+      {
+        "source_url": "https://api.github.com/repos/haiquanlu/Mix-Quant/readme",
+        "quote": "--prefill-model-name RedHatAI/Qwen3-8B-NVFP4"
+      },
+      {
+        "source_url": "https://api.github.com/repos/haiquanlu/Mix-Quant/readme",
+        "quote": "--prefill-gpu 0"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "GPU機とモデル配布条件/ライセンスが利用可能になったら、prefill速度とタスク劣化を同一条件で比較する。",
+    "unconfirmed": [
+      "論文の速度・品質保持は著者報告で、独立測定ではない。",
+      "repoの商用ライセンスと最低GPUメモリ要件は収録資料で確認できない。"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        true,
+        true,
+        true
+      ],
+      "all_quotes_exact": true,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2605.20315",
+          "coverage": "48297/48297 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/haiquanlu/Mix-Quant",
+          "coverage": "352/352 characters; truncated=False"
+        },
+        {
+          "url": "https://arxiv.org/abs/2605.20315",
+          "coverage": "4722/4722 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/haiquanlu/Mix-Quant/readme",
+          "coverage": "6763/6763 characters; truncated=False"
+        }
+      ]
+    }
+  },
+  {
+    "candidate_id": "2405.04532",
+    "decision": "reject",
+    "reason": "QoQのW4A8KV4量子化とCUDAシステム協調設計で、大規模GPU serving向け。著者はA100/L40S上でTensorRT-LLM比のthroughput向上を報告するが、GPU比較の著者値であり、CPUローカル分類/抽出とは用途が異なる。さらに候補のqserve repo URLは現在OmniServeを返し、QServeに加え長文向けLServeも統合した後継的な上位入口で、候補名のまま導入案内するのは誤り。Apache-2.0はrepo記載だがモデルごとの条件は別途必要。既にTensorRT-LLM統合も記載され、0円CPU枠での試行価値はない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2405.04532",
+        "quote": "QServe achieves 1.2-2.4× higher throughput"
+      },
+      {
+        "source_url": "https://api.github.com/repos/mit-han-lab/qserve",
+        "quote": "\"full_name\": \"mit-han-lab/omniserve\""
+      },
+      {
+        "source_url": "https://api.github.com/repos/mit-han-lab/qserve/readme",
+        "quote": "OmniServe has integrated optimizations from both QServe and LServe"
+      },
+      {
+        "source_url": "https://api.github.com/repos/mit-han-lab/qserve/readme",
+        "quote": "QServe has been integrated into NVIDIA [TensorRT-LLM]"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "なし。将来GPU serving基盤を選定する場合はOmniServe/TensorRT-LLM側から現行状況を確認。",
+    "unconfirmed": [
+      "論文HTML本文は切詰め。性能値は著者のA100/L40S実験であり、このCPU環境での結果ではない。",
+      "モデル個別の商用利用条件はrepo資料から確定できない。"
+    ],
+    "parent_checks": {
+      "quotes_exact": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "all_quotes_exact": false,
+      "coverage": [
+        {
+          "url": "https://arxiv.org/html/2405.04532",
+          "coverage": "70000/86208 characters; truncated=True"
+        },
+        {
+          "url": "https://api.github.com/repos/mit-han-lab/qserve",
+          "coverage": "685/685 characters; truncated=False"
+        },
+        {
+          "url": "https://arxiv.org/abs/2405.04532",
+          "coverage": "5927/5927 characters; truncated=False"
+        },
+        {
+          "url": "https://api.github.com/repos/mit-han-lab/qserve/readme",
+          "coverage": "20000/33464 characters; truncated=True"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,982 @@
+[
+  {
+    "id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+    "title": "Qwen2.5-Coder-1.5B-Instruct",
+    "source": "huggingface",
+    "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+    "published_at": null,
+    "score": 35.0,
+    "mode": "interest",
+    "topic_hits": {
+      "cpu_small_models": [
+        "cpu inference",
+        "quantized"
+      ],
+      "ai_driven_development": [
+        "coding agent",
+        "repository-level"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "cpu_small_models+12",
+      "ai_driven_development+12",
+      "has_model+3",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "discovery": {}
+  },
+  {
+    "id": "2412.14219",
+    "title": "A Survey on Inference Optimization Techniques for Mixture of Experts\n  Models",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2412.14219",
+    "published_at": "2024-12-18T14:11:15.000Z",
+    "score": 34.0,
+    "mode": "interest",
+    "topic_hits": {
+      "nlp_summary_classification": [
+        "distillation",
+        "quantization"
+      ],
+      "cpu_small_models": [
+        "pruning",
+        "throughput"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "nlp_summary_classification+10",
+      "cpu_small_models+12",
+      "has_code+4",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2412.14219",
+      "arxiv_id": "2412.14219",
+      "title": "A Survey on Inference Optimization Techniques for Mixture of Experts\n  Models",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2412.14219",
+      "abstract": "The emergence of large-scale Mixture of Experts (MoE) models has marked a\nsignificant advancement in artificial intelligence, offering enhanced model\ncapacity and computational efficiency through conditional computation. However,\nthe deployment and inference of these models present substantial challenges in\nterms of computational resources, latency, and energy efficiency. This\ncomprehensive survey systematically analyzes the current landscape of inference\noptimization techniques for MoE models across the entire system stack. We first\nestablish a taxonomical framework that categorizes optimization approaches into\nmodel-level, system-level, and hardware-level optimizations. At the model\nlevel, we examine architectural innovations including efficient expert design,\nattention mechanisms, various compression techniques such as pruning,\nquantization, and knowledge distillation, as well as algorithm improvement\nincluding dynamic routing strategies and expert merging methods. At the system\nlevel, we investigate distributed computing approaches, load balancing\nmechanisms, and efficient scheduling algorithms that enable scalable\ndeployment. Furthermore, we delve into hardware-specific optimizations and\nco-design strategies that maximize throughput and energy efficiency. This\nsurvey not only provides a structured overview of existing solutions but also\nidentifies key challenges and promising research directions in MoE inference\noptimization. Our comprehensive analysis serves as a valuable resource for\nresearchers and practitioners working on large-scale deployment of MoE models\nin resource-constrained environments. To facilitate ongoing updates and the\nsharing of cutting-edge advances in MoE inference optimization research, we\nhave established a repository accessible at\nhttps://github.com/MoE-Inf/awesome-moe-inference/.",
+      "published_at": "2024-12-18T14:11:15.000Z",
+      "has_code": true,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": "https://github.com/moe-inf/awesome-moe-inference",
+      "discovered_via": [
+        "query-9"
+      ],
+      "evidence_file": "sources/query-9.json",
+      "evidence_position": 35
+    }
+  },
+  {
+    "id": "2211.11014",
+    "title": "Understanding and Improving Knowledge Distillation for\n  Quantization-Aware Training of Large Transformer Encoders",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2211.11014",
+    "published_at": "2022-11-20T16:23:23.000Z",
+    "score": 34.0,
+    "mode": "interest",
+    "topic_hits": {
+      "nlp_summary_classification": [
+        "distillation",
+        "quantization"
+      ],
+      "cpu_small_models": [
+        "lightweight model",
+        "quantized"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "nlp_summary_classification+10",
+      "cpu_small_models+12",
+      "has_code+4",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2211.11014",
+      "arxiv_id": "2211.11014",
+      "title": "Understanding and Improving Knowledge Distillation for\n  Quantization-Aware Training of Large Transformer Encoders",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2211.11014",
+      "abstract": "Knowledge distillation (KD) has been a ubiquitous method for model\ncompression to strengthen the capability of a lightweight model with the\ntransferred knowledge from the teacher. In particular, KD has been employed in\nquantization-aware training (QAT) of Transformer encoders like BERT to improve\nthe accuracy of the student model with the reduced-precision weight parameters.\nHowever, little is understood about which of the various KD approaches best\nfits the QAT of Transformers. In this work, we provide an in-depth analysis of\nthe mechanism of KD on attention recovery of quantized large Transformers. In\nparticular, we reveal that the previously adopted MSE loss on the attention\nscore is insufficient for recovering the self-attention information. Therefore,\nwe propose two KD methods; attention-map and attention-output losses.\nFurthermore, we explore the unification of both losses to address\ntask-dependent preference between attention-map and output losses. The\nexperimental results on various Transformer encoder models demonstrate that the\nproposed KD methods achieve state-of-the-art accuracy for QAT with sub-2-bit\nweight quantization.",
+      "published_at": "2022-11-20T16:23:23.000Z",
+      "has_code": true,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": "https://github.com/marsjacobs/kd-qat-large-enc",
+      "discovered_via": [
+        "query-8"
+      ],
+      "evidence_file": "sources/query-8.json",
+      "evidence_position": 21
+    }
+  },
+  {
+    "id": "2207.01405",
+    "title": "I-ViT: Integer-only Quantization for Efficient Vision Transformer\n  Inference",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2207.01405",
+    "published_at": "2022-07-04T13:37:38.000Z",
+    "score": 33.0,
+    "mode": "interest",
+    "topic_hits": {
+      "nlp_summary_classification": [
+        "quantization"
+      ],
+      "vision_pattern_recognition": [
+        "computer vision"
+      ],
+      "cpu_small_models": [
+        "int8",
+        "quantized"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "nlp_summary_classification+5",
+      "vision_pattern_recognition+4",
+      "cpu_small_models+12",
+      "has_code+4",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2207.01405",
+      "arxiv_id": "2207.01405",
+      "title": "I-ViT: Integer-only Quantization for Efficient Vision Transformer\n  Inference",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2207.01405",
+      "abstract": "Vision Transformers (ViTs) have achieved state-of-the-art performance on\nvarious computer vision applications. However, these models have considerable\nstorage and computational overheads, making their deployment and efficient\ninference on edge devices challenging. Quantization is a promising approach to\nreducing model complexity, and the dyadic arithmetic pipeline can allow the\nquantized models to perform efficient integer-only inference. Unfortunately,\ndyadic arithmetic is based on the homogeneity condition in convolutional neural\nnetworks, which is not applicable to the non-linear components in ViTs, making\ninteger-only inference of ViTs an open issue. In this paper, we propose I-ViT,\nan integer-only quantization scheme for ViTs, to enable ViTs to perform the\nentire computational graph of inference with integer arithmetic and\nbit-shifting, and without any floating-point arithmetic. In I-ViT, linear\noperations (e.g., MatMul and Dense) follow the integer-only pipeline with\ndyadic arithmetic, and non-linear operations (e.g., Softmax, GELU, and\nLayerNorm) are approximated by the proposed light-weight integer-only\narithmetic methods. More specifically, I-ViT applies the proposed Shiftmax and\nShiftGELU, which are designed to use integer bit-shifting to approximate the\ncorresponding floating-point operations. We evaluate I-ViT on various benchmark\nmodels and the results show that integer-only INT8 quantization achieves\ncomparable (or even slightly higher) accuracy to the full-precision (FP)\nbaseline. Furthermore, we utilize TVM for practical hardware deployment on the\nGPU's integer arithmetic units, achieving 3.72sim4.11times inference\nspeedup compared to the FP model. Code of both Pytorch and TVM is released at\nhttps://github.com/zkkli/I-ViT.",
+      "published_at": "2022-07-04T13:37:38.000Z",
+      "has_code": true,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": "https://github.com/zkkli/i-vit",
+      "discovered_via": [
+        "query-7"
+      ],
+      "evidence_file": "sources/query-7.json",
+      "evidence_position": 98
+    }
+  },
+  {
+    "id": "2505.03113",
+    "title": "Image Recognition with Online Lightweight Vision Transformer: A Survey",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2505.03113",
+    "published_at": "2025-05-06T02:07:54.000Z",
+    "score": 31.0,
+    "mode": "interest",
+    "topic_hits": {
+      "nlp_summary_classification": [
+        "distillation"
+      ],
+      "vision_pattern_recognition": [
+        "computer vision",
+        "lightweight vision"
+      ],
+      "cpu_small_models": [
+        "throughput"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "nlp_summary_classification+5",
+      "vision_pattern_recognition+8",
+      "cpu_small_models+6",
+      "has_code+4",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2505.03113",
+      "arxiv_id": "2505.03113",
+      "title": "Image Recognition with Online Lightweight Vision Transformer: A Survey",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2505.03113",
+      "abstract": "The Transformer architecture has achieved significant success in natural language processing, motivating its adaptation to computer vision tasks. Unlike convolutional neural networks, vision transformers inherently capture long-range dependencies and enable parallel processing, yet lack inductive biases and efficiency benefits, facing significant computational and memory challenges that limit its real-world applicability. This paper surveys various online strategies for generating lightweight vision transformers for image recognition, focusing on three key areas: Efficient Component Design, Dynamic Network, and Knowledge Distillation. We evaluate the relevant exploration for each topic on the ImageNet-1K benchmark, analyzing trade-offs among precision, parameters, throughput, and more to highlight their respective advantages, disadvantages, and flexibility. Finally, we propose future research directions and potential challenges in the lightweighting of vision transformers with the aim of inspiring further exploration and providing practical guidance for the community. Project Page: https://github.com/ajxklo/Lightweight-VIT",
+      "published_at": "2025-05-06T02:07:54.000Z",
+      "has_code": true,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": "https://github.com/IBM/CrossViT",
+      "discovered_via": [
+        "query-3"
+      ],
+      "evidence_file": "sources/query-3.json",
+      "evidence_position": 9
+    }
+  },
+  {
+    "id": "2607.25180",
+    "title": "Bekko Embedding: Parameter-Efficient Multilingual Retrieval with Ultra-Compact Encoders",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2607.25180",
+    "published_at": "2026-07-28T00:00:00.000Z",
+    "score": 30.0,
+    "mode": "interest",
+    "topic_hits": {
+      "nlp_summary_classification": [
+        "distillation",
+        "quantization"
+      ],
+      "cpu_small_models": [
+        "int8",
+        "onnx"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "nlp_summary_classification+10",
+      "cpu_small_models+12",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2607.25180",
+      "arxiv_id": "2607.25180",
+      "title": "Bekko Embedding: Parameter-Efficient Multilingual Retrieval with Ultra-Compact Encoders",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2607.25180",
+      "abstract": "How small can a competitive multilingual retrieval model be? We present Bekko Embedding: its smallest model, bekko-embedding-v1-a8m, has just under 8M Active Parameters (AP) -- the non-embedding parameters that dominate inference compute -- yet on official MMTEB Multilingual v2 Retrieval (nDCG@10) it scores 56.2, above the multilingual-e5 family and BGE-M3 (40x the AP) in our comparison. The higher-quality bekko-embedding-v1-a25m (just under 25M AP) reaches 57.5, on par with gte-multilingual-base, and Multilingual NanoBEIR (14 languages) confirms the trend. Both models handle inputs of up to 8192 tokens, and on long-input retrieval (NanoLongEmbed) a25m is the strongest dense model in our comparison. The recipe is deliberately simple. We prune the 22-layer multilingual encoder mmBERT-small to 4 / 13 layers and train the pruned models in two stages -- large-scale contrastive learning on about 1.1 billion multilingual pairs from our public corpus, followed by hard-negative fine-tuning with 8192-token long-document negatives -- with a masked contrastive loss whose direction depends on pair type, plus the Matryoshka objective. No teacher distillation is used, and all training completes on a single GPU in about 3 days for a8m. Small AP pays off directly in speed: among the compared models measured under identical conditions, a8m is the fastest on both CPU and GPU -- 1.6x multilingual-e5-small on x86 CPU -- and the fastest on a Raspberry Pi 5. The 384-dimensional output (truncatable to 256/128/64) keeps similarity search and indexing cheap, and row-wise int8 quantization of the vocabulary embedding shrinks the a8m ONNX / OpenVINO build to 124 MiB, which runs in the browser via Transformers.js. To support reproducible research, we release the model weights, the complete stage-1 corpus, and the independently mined stage-2 hard negatives.",
+      "published_at": "2026-07-28T00:00:00.000Z",
+      "has_code": false,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": null,
+      "discovered_via": [
+        "query-8"
+      ],
+      "evidence_file": "sources/query-8.json",
+      "evidence_position": 56
+    }
+  },
+  {
+    "id": "2604.04979",
+    "title": "Squeez: Task-Conditioned Tool-Output Pruning for Coding Agents",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2604.04979",
+    "published_at": "2026-04-04T00:00:00.000Z",
+    "score": 30.0,
+    "mode": "interest",
+    "topic_hits": {
+      "cpu_small_models": [
+        "pruning"
+      ],
+      "ai_driven_development": [
+        "coding agent",
+        "swe-bench"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "cpu_small_models+6",
+      "ai_driven_development+12",
+      "has_code+4",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2604.04979",
+      "arxiv_id": "2604.04979",
+      "title": "Squeez: Task-Conditioned Tool-Output Pruning for Coding Agents",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2604.04979",
+      "abstract": "Coding agents repeatedly consume long tool observations even though only a small fraction of each observation matters for the next step. We study task-conditioned tool-output pruning: given a focused query and one tool output, return the smallest verbatim evidence block the agent should inspect next. We introduce a benchmark of 11,477 examples built from SWE-bench repository interactions and synthetic multi-ecosystem tool outputs, with a manually curated 618-example test set. We fine-tune Qwen 3.5 2B with LoRA and compare it against larger zero-shot models and heuristic pruning baselines. Our model reaches 0.86 recall and 0.80 F1 while removing 92% of input tokens, outperforming zero-shot Qwen 3.5 35B A3B by 11 recall points and all heuristic baselines by a wide margin.",
+      "published_at": "2026-04-04T00:00:00.000Z",
+      "has_code": true,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": "https://github.com/KRLabsOrg/squeez",
+      "discovered_via": [
+        "query-4"
+      ],
+      "evidence_file": "sources/query-4.json",
+      "evidence_position": 18
+    }
+  },
+  {
+    "id": "2601.16746",
+    "title": "SWE-Pruner: Self-Adaptive Context Pruning for Coding Agents",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2601.16746",
+    "published_at": "2026-01-23T13:51:59.000Z",
+    "score": 30.0,
+    "mode": "interest",
+    "topic_hits": {
+      "cpu_small_models": [
+        "pruning"
+      ],
+      "ai_driven_development": [
+        "coding agent",
+        "swe-bench"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "cpu_small_models+6",
+      "ai_driven_development+12",
+      "has_code+4",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2601.16746",
+      "arxiv_id": "2601.16746",
+      "title": "SWE-Pruner: Self-Adaptive Context Pruning for Coding Agents",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2601.16746",
+      "abstract": "LLM agents have demonstrated remarkable capabilities in software development, but their performance is hampered by long interaction contexts, which incur high API costs and latency. While various context compression approaches such as LongLLMLingua have emerged to tackle this challenge, they typically rely on fixed metrics such as PPL, ignoring the task-specific nature of code understanding. As a result, they frequently disrupt syntactic and logical structure and fail to retain critical implementation details. In this paper, we propose SWE-Pruner, a self-adaptive context pruning framework tailored for coding agents. Drawing inspiration from how human programmers \"selectively skim\" source code during development and debugging, SWE-Pruner performs task-aware adaptive pruning for long contexts. Given the current task, the agent formulates an explicit goal (e.g., \"focus on error handling\") as a hint to guide the pruning targets. A lightweight neural skimmer (0.6B parameters) is trained to dynamically select relevant lines from the surrounding context given the goal. Evaluations across four benchmarks and multiple models validate SWE-Pruner's effectiveness in various scenarios, achieving 23-54% token reduction on agent tasks like SWE-Bench Verified and up to 14.84x compression on single-turn tasks like LongCodeQA with minimal performance impact.",
+      "published_at": "2026-01-23T13:51:59.000Z",
+      "has_code": true,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": "https://github.com/Ayanami1314/swe-pruner",
+      "discovered_via": [
+        "query-4"
+      ],
+      "evidence_file": "sources/query-4.json",
+      "evidence_position": 95
+    }
+  },
+  {
+    "id": "2606.26488",
+    "title": "What Survives When You Compress a Recursive Reasoner for the Edge?",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2606.26488",
+    "published_at": "2026-06-25T00:00:00.000Z",
+    "score": 30.0,
+    "mode": "interest",
+    "topic_hits": {
+      "nlp_summary_classification": [
+        "distillation",
+        "quantization"
+      ],
+      "cpu_small_models": [
+        "int4",
+        "int8",
+        "pruning"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "nlp_summary_classification+10",
+      "cpu_small_models+12",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2606.26488",
+      "arxiv_id": "2606.26488",
+      "title": "What Survives When You Compress a Recursive Reasoner for the Edge?",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2606.26488",
+      "abstract": "Recursive reasoning models can solve complex structured tasks with only a few million parameters by repeatedly updating a latent state. Deploying these models on edge hardware requires significant compression, but unlike conventional sequence models, quantization errors compound across recursive reasoning cycles rather than across output tokens. As a result, standard intuitions about compression fail to apply. In this work, we ask what survives when recursive reasoners are compressed. Across a full precision sweep, three tasks, and two recursive architectures, we find that aggressive compression preserves local prediction but destroys global reasoning: cell accuracy holds while puzzle-exact accuracy collapses to zero under naive INT4 pruning, distillation, and linear attention alike. Token-level objectives, including quantization-aware training, cannot repair it. The collapse is architectural -- it strikes MLP-mixing recursion but not attention on the same task -- and we reverse it with per-channel calibrated INT4 without retraining. We also introduce carry-trajectory fidelity, the cosine similarity to the full-precision reasoning path, as a label-free signal that predicts this damage and its recovery before a task evaluation. The combined result is a deployment recipe: flash-streamed embeddings remove a 99.4MB bottleneck, INT8 at one cycle matches full-depth accuracy at 6x fewer FLOPs (8MB SoC), and calibrated INT4 fits a 4MB microcontroller.",
+      "published_at": "2026-06-25T00:00:00.000Z",
+      "has_code": false,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": null,
+      "discovered_via": [
+        "query-7"
+      ],
+      "evidence_file": "sources/query-7.json",
+      "evidence_position": 115
+    }
+  },
+  {
+    "id": "2206.01861",
+    "title": "ZeroQuant: Efficient and Affordable Post-Training Quantization for Large-Scale Transformers",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2206.01861",
+    "published_at": "2022-06-04T00:00:00.000Z",
+    "score": 30.0,
+    "mode": "interest",
+    "topic_hits": {
+      "nlp_summary_classification": [
+        "distillation",
+        "quantization"
+      ],
+      "cpu_small_models": [
+        "int4",
+        "int8"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "nlp_summary_classification+10",
+      "cpu_small_models+12",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2206.01861",
+      "arxiv_id": "2206.01861",
+      "title": "ZeroQuant: Efficient and Affordable Post-Training Quantization for Large-Scale Transformers",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2206.01861",
+      "abstract": "How to efficiently serve ever-larger trained natural language models in practice has become exceptionally challenging even for powerful cloud servers due to their prohibitive memory/computation requirements. In this work, we present an efficient and affordable post-training quantization approach to compress large Transformer-based models, termed as ZeroQuant. ZeroQuant is an end-to-end quantization and inference pipeline with three main components: (1) a fine-grained hardware-friendly quantization scheme for both weight and activations; (2) a novel affordable layer-by-layer knowledge distillation algorithm (LKD) even without the access to the original training data; (3) a highly-optimized quantization system backend support to remove the quantization/dequantization overhead. As such, we are able to show that: (1) ZeroQuant can reduce the precision for weights and activations to INT8 in a cost-free way for both BERT and GPT3-style models with minimal accuracy impact, which leads to up to 5.19x/4.16x speedup on those models compared to FP16 inference; (2) ZeroQuant plus LKD affordably quantize the weights in the fully-connected module to INT4 along with INT8 weights in the attention module and INT8 activations, resulting in 3x memory footprint reduction compared to the FP16 model; (3) ZeroQuant can be directly applied to two of the largest open-sourced language models, including GPT-J6B and GPT-NeoX20, for which our INT8 model achieves similar accuracy as the FP16 model but achieves up to 5.2x better efficiency.",
+      "published_at": "2022-06-04T00:00:00.000Z",
+      "has_code": false,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": null,
+      "discovered_via": [
+        "query-7"
+      ],
+      "evidence_file": "sources/query-7.json",
+      "evidence_position": 12
+    }
+  },
+  {
+    "id": "2408.08554",
+    "title": "ABQ-LLM: Arbitrary-Bit Quantized Inference Acceleration for Large\n  Language Models",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2408.08554",
+    "published_at": "2024-08-16T06:39:08.000Z",
+    "score": 29.0,
+    "mode": "interest",
+    "topic_hits": {
+      "nlp_summary_classification": [
+        "quantization"
+      ],
+      "cpu_small_models": [
+        "int4",
+        "int8",
+        "quantized"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "nlp_summary_classification+5",
+      "cpu_small_models+12",
+      "has_code+4",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2408.08554",
+      "arxiv_id": "2408.08554",
+      "title": "ABQ-LLM: Arbitrary-Bit Quantized Inference Acceleration for Large\n  Language Models",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2408.08554",
+      "abstract": "Large Language Models (LLMs) have revolutionized natural language processing\ntasks. However, their practical application is constrained by substantial\nmemory and computational demands. Post-training quantization (PTQ) is\nconsidered an effective method to accelerate LLM inference. Despite its growing\npopularity in LLM model compression, PTQ deployment faces two major challenges.\nFirst, low-bit quantization leads to performance degradation. Second,\nrestricted by the limited integer computing unit type on GPUs, quantized matrix\noperations with different precisions cannot be effectively accelerated. To\naddress these issues, we introduce a novel arbitrary-bit quantization algorithm\nand inference framework, ABQ-LLM. It achieves superior performance across\nvarious quantization settings and enables efficient arbitrary-precision\nquantized inference on the GPU. ABQ-LLM introduces several key innovations: (1)\na distribution correction method for transformer blocks to mitigate\ndistribution differences caused by full quantization of weights and\nactivations, improving performance at low bit-widths. (2) the bit balance\nstrategy to counteract performance degradation from asymmetric distribution\nissues at very low bit-widths (e.g., 2-bit). (3) an innovative quantization\nacceleration framework that reconstructs the quantization matrix multiplication\nof arbitrary precision combinations based on BTC (Binary TensorCore)\nequivalents, gets rid of the limitations of INT4/INT8 computing units. ABQ-LLM\ncan convert each component bit width gain into actual acceleration gain,\nmaximizing performance under mixed precision(e.g., W6A6, W2A8). Based on W2*A8\nquantization configuration on LLaMA-7B model, it achieved a WikiText2\nperplexity of 7.59 (2.17downarrow  vs 9.76 in AffineQuant). Compared to\nSmoothQuant, we realized 1.6times acceleration improvement and 2.7times\nmemory compression gain.",
+      "published_at": "2024-08-16T06:39:08.000Z",
+      "has_code": true,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": "https://github.com/bytedance/abq-llm",
+      "discovered_via": [
+        "query-7"
+      ],
+      "evidence_file": "sources/query-7.json",
+      "evidence_position": 11
+    }
+  },
+  {
+    "id": "2603.28765",
+    "title": "Adaptive Block-Scaled Data Types",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2603.28765",
+    "published_at": "2026-03-30T00:00:00.000Z",
+    "score": 29.0,
+    "mode": "interest",
+    "topic_hits": {
+      "nlp_summary_classification": [
+        "quantization"
+      ],
+      "cpu_small_models": [
+        "int4",
+        "quantized"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "nlp_summary_classification+5",
+      "cpu_small_models+12",
+      "has_code+4",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2603.28765",
+      "arxiv_id": "2603.28765",
+      "title": "Adaptive Block-Scaled Data Types",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2603.28765",
+      "abstract": "NVFP4 has grown increasingly popular as a 4-bit format for quantizing large language models due to its hardware support and its ability to retain useful information with relatively few bits per parameter. However, the format is not without limitations: recent work has shown that NVFP4 suffers from its error distribution, resulting in large amounts of quantization error on near-maximal values in each group of 16 values. In this work, we leverage this insight to design new Adaptive Block-Scaled Data Types that can adapt to the distribution of their input values. For four-bit quantization, our proposed IF4 (Int/Float 4) data type selects between FP4 and INT4 representations for each group of 16 values, which are then scaled by an E4M3 scale factor as is done with NVFP4. The selected data type is denoted using the scale factor's sign bit, which is currently unused in NVFP4, and we apply the same insight to design formats for other bit-widths, including IF3 and IF6. When used to quantize language models, we find that IF4 outperforms existing 4-bit block-scaled formats, achieving lower loss during quantized training and achieving higher accuracy on many tasks in post-training quantization. We additionally design and evaluate an IF4 Multiply-Accumulate (MAC) unit to demonstrate that IF4 can be implemented efficiently in next-generation hardware accelerators. Our code is available at https://github.com/mit-han-lab/fouroversix.",
+      "published_at": "2026-03-30T00:00:00.000Z",
+      "has_code": true,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": "https://github.com/mit-han-lab/fouroversix",
+      "discovered_via": [
+        "query-7"
+      ],
+      "evidence_file": "sources/query-7.json",
+      "evidence_position": 16
+    }
+  },
+  {
+    "id": "2603.19635",
+    "title": "BEAVER: A Training-Free Hierarchical Prompt Compression Method via Structure-Aware Page Selection",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2603.19635",
+    "published_at": "2026-03-20T04:35:04.000Z",
+    "score": 29.0,
+    "mode": "interest",
+    "topic_hits": {
+      "information_extraction": [
+        "document understanding"
+      ],
+      "cpu_small_models": [
+        "pruning",
+        "throughput"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "information_extraction+5",
+      "cpu_small_models+12",
+      "has_code+4",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2603.19635",
+      "arxiv_id": "2603.19635",
+      "title": "BEAVER: A Training-Free Hierarchical Prompt Compression Method via Structure-Aware Page Selection",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2603.19635",
+      "abstract": "The exponential expansion of context windows in LLMs has unlocked capabilities for long-document understanding but introduced severe bottlenecks in inference latency and information utilization. Existing compression methods often suffer from high training costs or semantic fragmentation due to aggressive token pruning. In this paper, we propose BEAVER, a novel training-free framework that shifts compression from linear token removal to structure-aware hierarchical selection. BEAVER maximizes hardware parallelism by mapping variable-length contexts into dense page-level tensors via dual-path pooling, and preserves discourse integrity through a hybrid planner combining semantic and lexical dual-branch selection with sentence smoothing. Extensive evaluations on four long-context benchmarks demonstrate that BEAVER achieves comparable performance to state-of-the-art (SOTA) methods like LongLLMLingua. Notably, on the RULER benchmark, BEAVER maintains high fidelity in multi-needle retrieval where baselines deteriorate. Regarding efficiency, BEAVER reduces latency by 26.4x on 128k contexts, offering a scalable solution for high-throughput applications. Our code is available at https://cslikai.cn/BEAVER/.",
+      "published_at": "2026-03-20T04:35:04.000Z",
+      "has_code": true,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": "https://github.com/JusperLee/BEAVER",
+      "discovered_via": [
+        "query-6"
+      ],
+      "evidence_file": "sources/query-6.json",
+      "evidence_position": 101
+    }
+  },
+  {
+    "id": "2512.07921",
+    "title": "DeepCode: Open Agentic Coding",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2512.07921",
+    "published_at": "2025-12-08T16:07:13.000Z",
+    "score": 29.0,
+    "mode": "interest",
+    "topic_hits": {
+      "nlp_summary_classification": [
+        "distillation"
+      ],
+      "ai_driven_development": [
+        "agentic coding",
+        "coding agent"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "nlp_summary_classification+5",
+      "ai_driven_development+12",
+      "has_code+4",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2512.07921",
+      "arxiv_id": "2512.07921",
+      "title": "DeepCode: Open Agentic Coding",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2512.07921",
+      "abstract": "Recent advances in large language models (LLMs) have given rise to powerful coding agents, making it possible for code assistants to evolve into code engineers. However, existing methods still face significant challenges in achieving high-fidelity document-to-codebase synthesis--such as scientific papers to code--primarily due to a fundamental conflict between information overload and the context bottlenecks of LLMs. In this work, we introduce DeepCode, a fully autonomous framework that fundamentally addresses this challenge through principled information-flow management. By treating repository synthesis as a channel optimization problem, DeepCode seamlessly orchestrates four information operations to maximize task-relevant signals under finite context budgets: source compression via blueprint distillation, structured indexing using stateful code memory, conditional knowledge injection via retrieval-augmented generation, and closed-loop error correction. Extensive evaluations on the PaperBench benchmark demonstrate that DeepCode achieves state-of-the-art performance, decisively outperforming leading commercial agents such as Cursor and Claude Code, and crucially, surpassing PhD-level human experts from top institutes on key reproduction metrics. By systematically transforming paper specifications into production-grade implementations comparable to human expert quality, this work establishes new foundations for autonomous scientific reproduction that can accelerate research evaluation and discovery.",
+      "published_at": "2025-12-08T16:07:13.000Z",
+      "has_code": true,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": "https://github.com/HKUDS/DeepCode",
+      "discovered_via": [
+        "query-4"
+      ],
+      "evidence_file": "sources/query-4.json",
+      "evidence_position": 93
+    }
+  },
+  {
+    "id": "2505.14638",
+    "title": "Dual Precision Quantization for Efficient and Accurate Deep Neural\n  Networks Inference",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2505.14638",
+    "published_at": "2025-05-20T17:26:12.000Z",
+    "score": 29.0,
+    "mode": "interest",
+    "topic_hits": {
+      "nlp_summary_classification": [
+        "quantization"
+      ],
+      "vision_pattern_recognition": [
+        "computer vision"
+      ],
+      "cpu_small_models": [
+        "quantized",
+        "throughput"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "nlp_summary_classification+5",
+      "vision_pattern_recognition+4",
+      "cpu_small_models+12",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2505.14638",
+      "arxiv_id": "2505.14638",
+      "title": "Dual Precision Quantization for Efficient and Accurate Deep Neural\n  Networks Inference",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2505.14638",
+      "abstract": "Deep neural networks have achieved state-of-the-art results in a wide range\nof applications, from natural language processing and computer vision to speech\nrecognition. However, as tasks become increasingly complex, model sizes\ncontinue to grow, posing challenges in latency and memory efficiency. To meet\nthese constraints, post-training quantization has emerged as a promising\nsolution. In this paper, we propose a novel hardware-efficient quantization and\ninference scheme that exploits hardware advantages with minimal accuracy\ndegradation. Specifically, we introduce a W4A8 scheme, where weights are\nquantized and stored using 4-bit integer precision, and inference computations\nare performed using 8-bit floating-point arithmetic, demonstrating significant\nspeedups and improved memory utilization compared to 16-bit operations,\napplicable on various modern accelerators. To mitigate accuracy loss, we\ndevelop a novel quantization algorithm, dubbed Dual Precision Quantization\n(DPQ), that leverages the unique structure of our scheme without introducing\nadditional inference overhead. Experimental results demonstrate improved\nperformance (i.e., increased throughput) while maintaining tolerable accuracy\ndegradation relative to the full-precision model.",
+      "published_at": "2025-05-20T17:26:12.000Z",
+      "has_code": false,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": null,
+      "discovered_via": [
+        "query-7"
+      ],
+      "evidence_file": "sources/query-7.json",
+      "evidence_position": 17
+    }
+  },
+  {
+    "id": "2505.13840",
+    "title": "EfficientLLM: Efficiency in Large Language Models",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2505.13840",
+    "published_at": "2025-05-20T02:27:08.000Z",
+    "score": 29.0,
+    "mode": "interest",
+    "topic_hits": {
+      "nlp_summary_classification": [
+        "quantization"
+      ],
+      "cpu_small_models": [
+        "int4",
+        "throughput"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "nlp_summary_classification+5",
+      "cpu_small_models+12",
+      "has_code+4",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2505.13840",
+      "arxiv_id": "2505.13840",
+      "title": "EfficientLLM: Efficiency in Large Language Models",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2505.13840",
+      "abstract": "Large Language Models (LLMs) have driven significant progress, yet their\ngrowing parameter counts and context windows incur prohibitive compute, energy,\nand monetary costs. We introduce EfficientLLM, a novel benchmark and the first\ncomprehensive empirical study evaluating efficiency techniques for LLMs at\nscale. Conducted on a production-class cluster (48xGH200, 8xH200 GPUs), our\nstudy systematically explores three key axes: (1) architecture pretraining\n(efficient attention variants: MQA, GQA, MLA, NSA; sparse Mixture-of-Experts\n(MoE)), (2) fine-tuning (parameter-efficient methods: LoRA, RSLoRA, DoRA), and\n(3) inference (quantization methods: int4, float16). We define six fine-grained\nmetrics (Memory Utilization, Compute Utilization, Latency, Throughput, Energy\nConsumption, Compression Rate) to capture hardware saturation,\nlatency-throughput balance, and carbon cost. Evaluating over 100\nmodel-technique pairs (0.5B-72B parameters), we derive three core insights: (i)\nEfficiency involves quantifiable trade-offs: no single method is universally\noptimal; e.g., MoE reduces FLOPs and improves accuracy but increases VRAM by\n40%, while int4 quantization cuts memory/energy by up to 3.9x at a 3-5%\naccuracy drop. (ii) Optima are task- and scale-dependent: MQA offers optimal\nmemory-latency trade-offs for constrained devices, MLA achieves lowest\nperplexity for quality-critical tasks, and RSLoRA surpasses LoRA efficiency\nonly beyond 14B parameters. (iii) Techniques generalize across modalities: we\nextend evaluations to Large Vision Models (Stable Diffusion 3.5, Wan 2.1) and\nVision-Language Models (Qwen2.5-VL), confirming effective transferability. By\nopen-sourcing datasets, evaluation pipelines, and leaderboards, EfficientLLM\nprovides essential guidance for researchers and engineers navigating the\nefficiency-performance landscape of next-generation foundation models.",
+      "published_at": "2025-05-20T02:27:08.000Z",
+      "has_code": true,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": "https://github.com/DLYuanGod/EfficientLLM",
+      "discovered_via": [
+        "query-2",
+        "query-7"
+      ],
+      "evidence_file": "sources/query-2.json",
+      "evidence_position": 117
+    }
+  },
+  {
+    "id": "2508.04405",
+    "title": "FlexQ: Efficient Post-training INT6 Quantization for LLM Serving via\n  Algorithm-System Co-Design",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2508.04405",
+    "published_at": "2025-08-06T12:47:05.000Z",
+    "score": 29.0,
+    "mode": "interest",
+    "topic_hits": {
+      "nlp_summary_classification": [
+        "quantization"
+      ],
+      "cpu_small_models": [
+        "int4",
+        "int8"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "nlp_summary_classification+5",
+      "cpu_small_models+12",
+      "has_code+4",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2508.04405",
+      "arxiv_id": "2508.04405",
+      "title": "FlexQ: Efficient Post-training INT6 Quantization for LLM Serving via\n  Algorithm-System Co-Design",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2508.04405",
+      "abstract": "Large Language Models (LLMs) demonstrate exceptional performance but entail\nsignificant memory and computational costs, restricting their practical\ndeployment. While existing INT4/INT8 quantization reduces these costs, they\noften degrade accuracy or lack optimal efficiency. INT6 quantization offers a\nsuperior trade-off between model accuracy and inference efficiency, but lacks\nhardware support in modern GPUs, forcing emulation via higher-precision\narithmetic units that limit acceleration.\n  In this paper, we propose FlexQ, a novel post-training INT6 quantization\nframework combining algorithmic innovation with system-level optimizations.\nFlexQ employs uniform 6-bit weight quantization across all layers, with\nadaptive retention of 8-bit activations in layers identified through layer-wise\nsensitivity analysis. To maximize hardware efficiency, we develop a specialized\nhigh-performance GPU kernel supporting matrix multiplication for W6A6 and W6A8\nrepresentations via Binary Tensor Core (BTC) equivalents, effectively bypassing\nthe lack of native INT6 tensor cores. Evaluations on LLaMA models show FlexQ\nmaintains near-FP16 accuracy, with perplexity increases of no more than 0.05.\nThe proposed kernel achieves an average 1.39times speedup over ABQ-LLM on\nLLaMA-2-70B linear layers. End-to-end, FlexQ delivers 1.33times inference\nacceleration and 1.21times memory savings over SmoothQuant. Code is released\nat https://github.com/FlyFoxPlayer/FlexQ.",
+      "published_at": "2025-08-06T12:47:05.000Z",
+      "has_code": true,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": "https://github.com/FlyFoxPlayer/FlexQ",
+      "discovered_via": [
+        "query-7"
+      ],
+      "evidence_file": "sources/query-7.json",
+      "evidence_position": 92
+    }
+  },
+  {
+    "id": "2406.12925",
+    "title": "GLiNER multi-task: Generalist Lightweight Model for Various Information\n  Extraction Tasks",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2406.12925",
+    "published_at": "2024-06-14T13:54:29.000Z",
+    "score": 29.0,
+    "mode": "interest",
+    "topic_hits": {
+      "nlp_summary_classification": [
+        "summarization"
+      ],
+      "information_extraction": [
+        "information extraction",
+        "named entity recognition"
+      ],
+      "cpu_small_models": [
+        "lightweight model"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "nlp_summary_classification+5",
+      "information_extraction+10",
+      "cpu_small_models+6",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2406.12925",
+      "arxiv_id": "2406.12925",
+      "title": "GLiNER multi-task: Generalist Lightweight Model for Various Information\n  Extraction Tasks",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2406.12925",
+      "abstract": "Information extraction tasks require both accurate, efficient, and\ngeneralisable models. Classical supervised deep learning approaches can achieve\nthe required performance, but they need large datasets and are limited in their\nability to adapt to different tasks. On the other hand, large language models\n(LLMs) demonstrate good generalization, meaning that they can adapt to many\ndifferent tasks based on user requests. However, LLMs are computationally\nexpensive and tend to fail to generate structured outputs. In this article, we\nwill introduce a new kind of GLiNER model that can be used for various\ninformation extraction tasks while being a small encoder model. Our model\nachieved SoTA performance on zero-shot NER benchmarks and leading performance\non question-answering, summarization and relation extraction tasks.\nAdditionally, in this article, we will cover experimental results on\nself-learning approaches for named entity recognition using GLiNER models.",
+      "published_at": "2024-06-14T13:54:29.000Z",
+      "has_code": false,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": null,
+      "discovered_via": [
+        "query-1"
+      ],
+      "evidence_file": "sources/query-1.json",
+      "evidence_position": 11
+    }
+  },
+  {
+    "id": "2605.20315",
+    "title": "Mix-Quant: Quantized Prefilling, Precise Decoding for Agentic LLMs",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2605.20315",
+    "published_at": "2026-05-19T00:00:00.000Z",
+    "score": 29.0,
+    "mode": "interest",
+    "topic_hits": {
+      "nlp_summary_classification": [
+        "quantization"
+      ],
+      "cpu_small_models": [
+        "quantized",
+        "throughput"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "nlp_summary_classification+5",
+      "cpu_small_models+12",
+      "has_code+4",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2605.20315",
+      "arxiv_id": "2605.20315",
+      "title": "Mix-Quant: Quantized Prefilling, Precise Decoding for Agentic LLMs",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2605.20315",
+      "abstract": "LLM agents have recently emerged as a powerful paradigm for solving complex tasks through planning, tool use, memory retrieval, and multi-step interaction. However, these agentic workflows often introduce substantial input-side overhead, making the compute-intensive prefilling stage a key bottleneck in long-context, multi-turn inference. In this work, we propose Mix-Quant, a simple and effective phase-aware quantization framework for fast agentic inference. We first investigate FP4 quantization in agentic LLM workflows and observe that quantizing the entire inference process can incur significant performance degradation. In contrast, the prefilling stage exhibits substantial quantization redundancy and can therefore be quantized with minimal accuracy loss, despite being the dominant source of computation. Based on this insight, we apply high-throughput NVFP4 quantization to the prefilling phase while preserving BF16 precision for decoding. By decoupling prefilling acceleration from decoding quality, Mix-Quant combines phase-aware algorithmic quantization with hardware-efficient NVFP4 execution to alleviate the inference bottleneck in LLM agents. Extensive experiments across long-context and agentic benchmarks demonstrate that Mix-Quant largely preserves task performance while delivering significant efficiency improvements, achieving up to a 3x speedup during prefilling.",
+      "published_at": "2026-05-19T00:00:00.000Z",
+      "has_code": true,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": "https://github.com/haiquanlu/Mix-Quant",
+      "discovered_via": [
+        "query-7"
+      ],
+      "evidence_file": "sources/query-7.json",
+      "evidence_position": 60
+    }
+  },
+  {
+    "id": "2405.04532",
+    "title": "QServe: W4A8KV4 Quantization and System Co-design for Efficient LLM\n  Serving",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2405.04532",
+    "published_at": "2024-05-07T17:59:30.000Z",
+    "score": 29.0,
+    "mode": "interest",
+    "topic_hits": {
+      "nlp_summary_classification": [
+        "quantization"
+      ],
+      "cpu_small_models": [
+        "int4",
+        "int8",
+        "throughput"
+      ]
+    },
+    "reasons": [
+      "source+5",
+      "nlp_summary_classification+5",
+      "cpu_small_models+12",
+      "has_code+4",
+      "cpu_feasible+3"
+    ],
+    "requires_gpu": false,
+    "estimated_check_minutes": 20.0,
+    "reason": "run_time_budget",
+    "discovery": {
+      "id": "2405.04532",
+      "arxiv_id": "2405.04532",
+      "title": "QServe: W4A8KV4 Quantization and System Co-design for Efficient LLM\n  Serving",
+      "source": "huggingface",
+      "url": "https://arxiv.org/abs/2405.04532",
+      "abstract": "Quantization can accelerate large language model (LLM) inference. Going\nbeyond INT8 quantization, the research community is actively exploring even\nlower precision, such as INT4. Nonetheless, state-of-the-art INT4 quantization\ntechniques only accelerate low-batch, edge LLM inference, failing to deliver\nperformance gains in large-batch, cloud-based LLM serving. We uncover a\ncritical issue: existing INT4 quantization methods suffer from significant\nruntime overhead (20-90%) when dequantizing either weights or partial sums on\nGPUs. To address this challenge, we introduce QoQ, a W4A8KV4 quantization\nalgorithm with 4-bit weight, 8-bit activation, and 4-bit KV cache. QoQ stands\nfor quattuor-octo-quattuor, which represents 4-8-4 in Latin. QoQ is implemented\nby the QServe inference library that achieves measured speedup. The key insight\ndriving QServe is that the efficiency of LLM serving on GPUs is critically\ninfluenced by operations on low-throughput CUDA cores. Building upon this\ninsight, in QoQ algorithm, we introduce progressive quantization that can allow\nlow dequantization overhead in W4A8 GEMM. Additionally, we develop\nSmoothAttention to effectively mitigate the accuracy degradation incurred by\n4-bit KV quantization. In the QServe system, we perform compute-aware weight\nreordering and take advantage of register-level parallelism to reduce\ndequantization latency. We also make fused attention memory-bound, harnessing\nthe performance gain brought by KV4 quantization. As a result, QServe improves\nthe maximum achievable serving throughput of Llama-3-8B by 1.2x on A100, 1.4x\non L40S; and Qwen1.5-72B by 2.4x on A100, 3.5x on L40S, compared to\nTensorRT-LLM. Remarkably, QServe on L40S GPU can achieve even higher throughput\nthan TensorRT-LLM on A100. Thus, QServe effectively reduces the dollar cost of\nLLM serving by 3x. Code is available at https://github.com/mit-han-lab/qserve.",
+      "published_at": "2024-05-07T17:59:30.000Z",
+      "has_code": true,
+      "has_model": false,
+      "requires_gpu": false,
+      "estimated_cpu_minutes": 20,
+      "resource_status": "unverified; execution prohibited until inspection",
+      "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+      "github_url": "https://github.com/mit-han-lab/qserve",
+      "discovered_via": [
+        "query-7"
+      ],
+      "evidence_file": "sources/query-7.json",
+      "evidence_position": 4
+    }
+  }
+]

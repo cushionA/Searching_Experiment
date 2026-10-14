@@ -1,0 +1,90 @@
+[
+  {
+    "id": "2502.11880",
+    "arxiv_id": "2502.11880",
+    "title": "Bitnet.cpp: Efficient Edge Inference for Ternary LLMs",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2502.11880",
+    "abstract": "The advent of 1-bit large language models (LLMs), led by BitNet b1.58, has\nspurred interest in ternary LLMs. Despite this, research and practical\napplications focusing on efficient edge inference for ternary LLMs remain\nscarce. To bridge this gap, we introduce Bitnet.cpp, an inference system\noptimized for BitNet b1.58 and ternary LLMs. Given that mixed-precision matrix\nmultiplication (mpGEMM) constitutes the bulk of inference time in ternary LLMs,\nBitnet.cpp incorporates a novel mpGEMM library to facilitate\nsub-2-bits-per-weight, efficient and lossless inference. The library features\ntwo core solutions: Ternary Lookup Table (TL), which addresses spatial\ninefficiencies of previous bit-wise methods, and Int2 with a Scale (I2_S),\nwhich ensures lossless edge inference, both enabling high-speed inference. Our\nexperiments show that Bitnet.cpp achieves up to a 6.25x increase in speed over\nfull-precision baselines and up to 2.32x over low-bit baselines, setting new\nbenchmarks in the field. Additionally, we expand TL to element-wise lookup\ntable (ELUT) for low-bit LLMs in the appendix, presenting both theoretical and\nempirical evidence of its considerable potential. Bitnet.cpp is publicly\navailable at https://github.com/microsoft/BitNet/tree/paper , offering a\nsophisticated solution for the efficient and practical deployment of edge LLMs.",
+    "published_at": "2025-02-17T15:06:28.000Z",
+    "has_code": true,
+    "has_model": false,
+    "requires_gpu": false,
+    "estimated_cpu_minutes": 20,
+    "resource_status": "unverified; execution prohibited until inspection",
+    "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+    "github_url": "https://github.com/microsoft/BitNet",
+    "discovered_via": [
+      "trending"
+    ],
+    "evidence_file": "sources/trending.json",
+    "evidence_position": 5,
+    "trend_rank": 5
+  },
+  {
+    "id": "2610.08699",
+    "arxiv_id": "2610.08699",
+    "title": "nanoMuse: An Open-Source Personal Agent for Every Device You Own",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2610.08699",
+    "abstract": "Assistants from 2011 answered and waited, and agents from 2023 did a task and stopped. In September 2026 Meta's Muse showed an agent for one person, with accounts, devices, memory and a conversation that lasts, closed, in a vendor's cloud, in one country. Such an agent is expected to act on a person's accounts and devices, remember them across weeks, speak first when it is worth it, and answer for what it did. It is a kind of software, not a model, and until now had no open counterpart. This report defines the personal agent in five questions and three horizons. It reads how Muse is built from Meta's public record and a copy of its production prompt, each statement marked by its source. It then presents nanoMuse, the open-source counterpart under the GPL-3.0, one agent on every device a person owns, with hands on the phone's screen and the computer's. They share one conversation over a relay anyone can run; every action goes through a Sentinel, memory is files the person can read, and the model is their choice. Its size and cost are given as estimates. What is open, memory with provenance, an evaluation suite for the hands and an open model for them, is set out as a roadmap.",
+    "published_at": "2026-10-06T00:00:00.000Z",
+    "has_code": true,
+    "has_model": false,
+    "requires_gpu": false,
+    "estimated_cpu_minutes": 20,
+    "resource_status": "unverified; execution prohibited until inspection",
+    "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+    "github_url": "https://github.com/nano-muse/nanoMuse",
+    "discovered_via": [
+      "trending"
+    ],
+    "evidence_file": "sources/trending.json",
+    "evidence_position": 8,
+    "trend_rank": 8
+  },
+  {
+    "id": "2606.23050",
+    "arxiv_id": "2606.23050",
+    "title": "Unlimited OCR Works",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2606.23050",
+    "abstract": "Recently, end-to-end OCR models, exemplified by DeepSeek OCR, have once again thrust OCR into the spotlight. A widely held view is that employing a large language model (LLM) as the decoder allows the model to leverage the prior distribution of language, leading to improved OCR performance. However, the downside is equally evident: as the output sequence lengthens, the accumulated KV cache drives up memory consumption and progressively slows down generation. This stands in stark contrast to humans, who exhibit no such decline in efficiency during long-horizon copying tasks. In this technical report, we propose Unlimited OCR, a model designed to emulate human parsing working memory. Taking DeepSeek OCR as the baseline, we replace all attention layers in the decoder with our proposed Reference Sliding Window Attention (R-SWA), which reduces attention computation costs while maintaining a constant KV cache throughout the entire decoding process. By combining the high compression rate of DeepSeek OCR's encoder with our constant KV cache design, Unlimited OCR can transcribe dozens of pages of documents in a single forward pass under a standard maximum length of 32K. More importantly, R-SWA is a general-purpose parsing attention mechanism - beyond OCR, it is equally applicable to tasks such as ASR, translation, etc. Codes and model weights are publicly available at http://github.com/baidu/Unlimited-OCR.",
+    "published_at": "2026-06-22T00:00:00.000Z",
+    "has_code": true,
+    "has_model": false,
+    "requires_gpu": false,
+    "estimated_cpu_minutes": 20,
+    "resource_status": "unverified; execution prohibited until inspection",
+    "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+    "github_url": "https://github.com/baidu/Unlimited-OCR",
+    "discovered_via": [
+      "trending"
+    ],
+    "evidence_file": "sources/trending.json",
+    "evidence_position": 9,
+    "trend_rank": 9
+  },
+  {
+    "id": "2609.18063",
+    "arxiv_id": "2609.18063",
+    "title": "The Other Half of the Memory Wall: Serving 35B MoEs from SSD with Trained Routing Prediction",
+    "source": "huggingface",
+    "url": "https://arxiv.org/abs/2609.18063",
+    "abstract": "Mixture-of-experts (MoE) inference on consumer hardware is bounded by weight memory: a 35B-class model is 19.5GB at 4-bit, and sparsity shrinks the compute per token, not the bytes that must be held. Naive offloading to SSD does not help on its own, because layer N+1's experts must be chosen before layer N's output exists, so the reads cannot start early enough to hide behind compute. We present Edge0, a streaming MoE inference engine that closes the gap with a prerouter: a per-layer head predicts the next layer's routing one token ahead, and the prediction is consumed as the routing itself, so the staged expert set equals the routed set and nothing is dropped. An unmerged recovery LoRA, trained on the student path, pays back the quality lost to int4 quantization and routing replacement. On a single 24GB machine, Edge0\n  serves a 35B MoE at 20tok/s inside 3GiB of peak active memory, within a few points of its fp16 teacher on average across five public benchmarks. An 8B tier runs on the same framework, and the framework, checkpoints, and adapters are open source.",
+    "published_at": "2026-09-16T00:00:00.000Z",
+    "has_code": true,
+    "has_model": false,
+    "requires_gpu": false,
+    "estimated_cpu_minutes": 20,
+    "resource_status": "unverified; execution prohibited until inspection",
+    "estimate_basis": "20 minute maximum bounded check allocation; not measured runtime",
+    "github_url": "https://github.com/Edge0-AI/edge0",
+    "discovered_via": [
+      "trending"
+    ],
+    "evidence_file": "sources/trending.json",
+    "evidence_position": 6,
+    "trend_rank": 6
+  }
+]
