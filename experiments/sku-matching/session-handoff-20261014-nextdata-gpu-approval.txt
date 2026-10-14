@@ -51,3 +51,17 @@ GitHub pushは以前別のauto-reviewでデータ外部転送の明示承認不�
 並行したsource-only修正候補（GPU/Luna既存入力・判定・12coreは不変）：sku_embedded_json_source_spans_v1.py。原本script#item-page-app-data内のJSON文字列leafをrawSHA/encoding/scriptID/JSONPath/axis/memberで確認し、raw JSON escape表記の再構築を避ける。importだけで有効化されず、別候補processのinstall_adapter contextで使う。
 旧3カラーケース54sourcefacts：既検証36+unknown18→source検証54。元source/条件/選択値を変更せず、原本は既存EUC-JP原HTML。モデル精度改善・再推論の主張なし。コード/7tests/原本2ファイル/54条件/原行SHA/訂正auditv1-v3/最終QAをresults/20261014-sku-embedded-json-source-candidate-v1.zipにCRC/memberSHA検査して保存。Claude追加共有依頼は原本発見により不要、依頼書に追記。
 最終required1497/failure0/error14既存fixture不足/skip37。独立レビューのbool offset型指摘を修正し、同型エラーケースを追加検証後76.768sで再確認。旧12coreのSHAは07872d2と一致、商品/カテゴリ規則追加0。
+
+最優先更新（2026-10-14 JST / 分割GPUパイロット・採点・保存完了）
+- 固定resume-s000 version1正常完了、actualTeslaT4/CUDA/FP32/eager/innerbatch16、前回と全runtime一致。新15616firstrecords=7808/model、technical0。driver最終elapsed1533.065秒。新job追加/monitor残留なし。
+- 元saved68690件・旧cache38686件のscore/origin変更0、mergecache54302。source graph231872requests412052occurrences不変。全行/条件完了の38商品324ケース5818行22004条件、17ML商品152ケース/21literal商品172ケースを4view全freeze後に採点。
+- ML152の既知108=正例33/負例75、未知44。JEV full/table両方20TP36FP13FN39TN・正しい行20/33（60.6061%）。NLI両方0TP0FP33FN75TN。全文→新説明で全324の採否/採用行変更0。
+- literal172既知164正例全correct/未知8。全体184/197等にはこの164が含まれるため、モデル性能として報告しない。JEV誤採用36/NLI正例全見送りのため固定小型構成を569件へ拡大せず、追加閾値/カテゴリ規則/再推論は行わない。
+- Lunaとのexact overlap：全文29ケース、既知正例9でGPU JEV/NLI0対Luna3、負例4誤採用全0、未知16。新説明36、正例16でJEV4/NLI0対Luna7、負例4誤採用全0、未知16。2集合は異なるため入力変化のpaired比較には使わない。
+- Luna主108も分解：literal31（既知正例23/未知8）、残るML商品77（既知正例9/負例4/未知64）。主全文26/32→説明28/32にはliteral23成功が含まれ、モデル部分は3/9→5/9（55.5556%）。従来87.5%は全体正例再現率であってモデル部分の性能ではない。
+- ClaudeHaiku5.5機械参照、人手goldではない。既読diagnostic/コスト選択/代表性・独立性なし、scope unproved/citation semantics false、本番採用不可。出力/参照/閾値は変更0。
+- 最新人向けreportはresults/20261014-sku-nextdata-bounded-gpu-result-v2.txt。raw/model-runtime/全4freeze/元rowset採点/MLstrata/Luna共通比較/Rootaudit/helper失敗履歴はresults/20261014-sku-nextdata-bounded-gpu-complete-v1.zip（13719435bytes、SHA64737e117629df81ea18d4bf48409da75567c68b32f8c194fbb3c36750037914、81members全CRC/SHA済）。
+- merge後SQLite306438144bytes SHA5d6d11ad17974a1af688e7052529f4f3b519f7e40bee05a1604a133e7d3312dcはresults/20261014-sku-nextdata-s000-merged-index-v1.chunks.jsonの3partsから86933306byteZIPを復元する。全part/ZIP/member SHA検査済み。元worker-state/source bundleは既保存ready-payload3parts。Luna literal分解補足は20261014-sku-nextdata-luna-main-stratum-supplement-v1.zip/json。
+- source JSON escape修正候補は前項の別ZIPと新adapter。54sourcefacts中18unknown解消の原本検証のみ、モデル精度改善は未判定。今回GPU/Luna入力には未適用。Claude既存原本共有依頼は原本発見で不要。
+- 最終required1497/failure0/error14既存fixture欠落/skip37、candidate7pass、旧12corebyte同一、商品/カテゴリ例外追加0。Kaggle残quota88882.487048sec/reserved0。
+- すべてローカルコミット保存、GitHub未push。過去承認待ち記述は解消済み（120.7MB具体許可「いいよ」＋適宜retry/完了指示で実行済み）。この構成の追加GPUジョブは判断上不要。未完なのは一般的なSKU精度改善/別source候補の次推論であり、このGPU試験の未回収/未採点ではない。

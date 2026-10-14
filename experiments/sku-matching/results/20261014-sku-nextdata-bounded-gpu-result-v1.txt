@@ -1,0 +1,51 @@
+Kaggle NEXT_DATA 商品説明入力比較・分割GPUパイロット完了（2026-10-14 JST）
+
+結論：この固定した小型モデル構成の全件拡大・採用は見送る。
+JEVは既知負例75件中36件を誤採用し、NLIは既知正例33件をすべて見送った。
+全文と新商品説明で、両モデルとも324ケースの最終採否/採用行変更0。追加閾値調整・カテゴリ規則追加はしない。
+
+評価範囲は完了38商品324ケース/5818行/22004条件、元の商品単位の全行・全条件を保持。
+17 ML商品152ケースと、21 literal-only商品172ケースを分離した。
+ML商品152ケースの参照既知108（正例33、負例75）、参照未確定44。
+方式                  正しいAU行  FN   FP   TN  exact-row recall
+JEV 全文              20/33       13   36   39  60.6061%
+JEV 新商品説明        20/33       13   36   39  60.6061%
+NLI 全文              0/33        33    0   75   0%
+NLI 新商品説明        0/33        33    0   75   0%
+既知での正例の別行誤採用0。JEV未確定44件で採用12、NLI0だが正しさは採点できない。
+literal-only172件は既知164件すべて正しい行を採用、未確定8件。これはモデル性能ではない。
+全体JEV184/197、NLI164/197という値にはliteral成功164件が含まれるため、小型モデル単体成績として使わない。
+
+Lunaと同じMLケースに限定した参考比較：
+全文：共通29（正例9/負例4/未確定16）、JEV0/9、NLI0/9、Luna3/9、既知誤採用は全方式0。
+新説明：共通36（正例16/負例4/未確定16）、JEV4/16、NLI0/16、Luna7/16、既知誤採用は全方式0。
+全文29件と新説明36件は異なる集合であり、この2行を入力変更のpaired比較に使わない。
+先のLuna主108件28/32=87.5%はliteral処理も含む全体の正例再現率で、モデル部分だけの性能ではない。
+Lunaも十分に完成したとは言えない。上記はscope緩和の小型モデル診断で、厳格な引用/scope証明までLunaと同等の方式ではない。
+
+公開商品データの凍結版と元のClaude Haiku5.5機械注釈による消費済診断。人手gold・独立test・代表標本とは主張しない。
+計算コストだけで小さい商品から選び、ラベルで選抜/閾値を調整しなかった。未確定参照は負例扱いしない。
+元46商品569ケース/13159行/62252条件/971MLpairの全件完了ではない。残る大きい8ML商品はこの方式では実行しない。
+
+固定job: superbigzabuton/sku-nextdata-table-fp32-20261013-resume-s000 version1
+private Dataset: superbigzabuton/sku-nextdata-table-fp32-20261013-v1-inputs version2
+actual CUDA TeslaT4, FP32/eager, batch16, threads4, autocast/TF32off。前runと実GPU/全runtimeが一致。
+JEV argos1111/modernbert-ja-310m-jev（315203329params, rev07cda23579443e7a33c0f474114279fa032340d6）
+NLI 0x3/bert-base-japanese-v3_nli-jsnli-jnli-jsick（111209475params, rev21df45469d02809dc430e3ac5f5d6f67b63aabf3）
+新規15616exact-input records（7808/model）、31232model sequences、technical failures0、今回shard完了。
+最終group後のdriver壁時計1533.065秒。Python準備/保存を含む推論区間でGPU純計算時間ではなく、CPU/Lunaとの同条件速度比較でもない。
+旧original occurrence68690件/旧cache38686件は値・originとも変更0。merge後cache54302、request231872、occurrence412052。
+原occurrence値を優先し、未書込みだけ最初のexact入力記録を再利用。未知/技術失敗の意味的再試行・再採点による修正なし。
+完了商品だけ171pair×2入力view=342paired inputs/808option predictionsを組み立て、4モデルviewを全freeze後に元の複数正解行集合を読む。
+
+別候補としてJSON出典確認を修正：原本の \u003d とデコード値 = のraw引用表記差が、3ケース18source条件をunknownにしていた。
+script内JSONの元SHA/encoding/明示path/axis/memberで文字列leafを検証する別候補を実装。
+54sourcefactsの36valid+18unknown→54source検証可能を確認。モデル判断/精度改善は未検証、今回のGPU/Luna凍結入力には未適用。
+原本が見つかったためClaudeへ既存カラー原本共有の追加依頼は不要。新カテゴリ規則は依頼しない。
+旧12semantic coreは07872d2とbyte一致、商品/カテゴリ例外追加0。新adapterはimportだけで有効化されない。
+最終required1497tests：assertion failure0、既存fixture欠落14errors、37skip。新adapter7tests成功。全greenとは言わない。
+
+成果物はローカルブランチに保存。GitHubへはpushしていない。Kaggleへの追加転送とGPU実行はユーザー「いいよ」とretry/完了指示に基づき実施済み。
+raw cache/model-runtime/全4freeze/元rowset採点/ML-strata/Luna共通比較/全訂正記録はGPU完了checkpoint。
+元worker-stateは既保存ready-payload3parts、merge後のSQLiteはs000-merged-index3partsで完全なbyte/SHAを復元可能。
+GPU新ジョブ/監視/推論workerは残っていない。quota remaining88882.487048秒、reserved0（終了後観測）。
