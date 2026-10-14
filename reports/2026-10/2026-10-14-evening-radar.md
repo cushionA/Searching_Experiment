@@ -63,3 +63,7 @@ HF trending/new各50件＋関心別10検索の全応答を取得、HF一意1,220
 検証: Skill unit tests 74件成功、native gate 3件成功、carry保持の重複・casefold・冪等性確認。remote保存/復元の結果は同run `remote-roundtrip.json` を参照。
 
 成果: `experiments/research-repro-radar/runs/2026-10-14-evening/`（取得/採点/読解/台帳）、`benchmarks/research-repro-radar/2026-10-14-evening/`（数値/失敗）、`experiments/research-repro-radar/staging/squeez-poc/`（未実行コード/公開合成入力）。
+
+## remote保存確認
+
+研究commit `ae08d577f31652ae927bf947cc66cee0873149c5` を正規branchへpush後、GitHub raw APIから別ディレクトリへ4JSONを取り直し、全byte/hash一致・queue1,072件を確認。確認時点のchecksはvalidate/optional-toolsとも進行中で、CI成功とは報告しない。確認時刻とURLは `remote-roundtrip.json` に保存。
