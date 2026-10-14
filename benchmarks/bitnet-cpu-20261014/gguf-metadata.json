@@ -1,0 +1,40 @@
+{
+  "version": 3,
+  "tensor_count": 332,
+  "metadata_count": 24,
+  "metadata_keys": [
+    "general.architecture",
+    "general.name",
+    "bitnet-b1.58.vocab_size",
+    "bitnet-b1.58.context_length",
+    "bitnet-b1.58.embedding_length",
+    "bitnet-b1.58.block_count",
+    "bitnet-b1.58.feed_forward_length",
+    "bitnet-b1.58.rope.dimension_count",
+    "bitnet-b1.58.attention.head_count",
+    "bitnet-b1.58.attention.head_count_kv",
+    "tokenizer.ggml.add_bos_token",
+    "bitnet-b1.58.attention.layer_norm_rms_epsilon",
+    "bitnet-b1.58.rope.freq_base",
+    "general.file_type",
+    "tokenizer.ggml.model",
+    "tokenizer.ggml.tokens",
+    "tokenizer.ggml.scores",
+    "tokenizer.ggml.token_type",
+    "tokenizer.ggml.merges",
+    "tokenizer.ggml.bos_token_id",
+    "tokenizer.ggml.eos_token_id",
+    "tokenizer.ggml.padding_token_id",
+    "tokenizer.chat_template",
+    "general.quantization_version"
+  ],
+  "selected": {
+    "general.architecture": "bitnet-b1.58",
+    "general.name": "bitnet2b",
+    "tokenizer.ggml.model": "gpt2",
+    "tokenizer.ggml.bos_token_id": 128000,
+    "tokenizer.ggml.eos_token_id": 128001,
+    "tokenizer.chat_template": "{% for message in messages %}{% if loop.first %}{{ bos_token }}{% endif %}{% if message['role'] == 'user' %}{{ 'Human: ' + message['content'] + '\\n\\nBITNETAssistant: ' + eos_token }}{% elif message['role'] == 'assistant' %}{{ message['content'] + eos_token }}{% endif %}{% endfor %}"
+  },
+  "pre_tokenizer_key_present": false
+}

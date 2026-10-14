@@ -1,0 +1,538 @@
+-- The C compiler identification is Clang 18.1.3
+-- The CXX compiler identification is Clang 18.1.3
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/clang-18 - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/clang++-18 - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+CMAKE_BUILD_TYPE=Release
+-- Found Git: /usr/bin/git (found version "2.43.0") 
+fatal: not a git repository (or any of the parent directories): .git
+fatal: not a git repository (or any of the parent directories): .git
+-- The ASM compiler identification is Clang with GNU-like command-line
+-- Found assembler: /usr/bin/clang-18
+-- Warning: ccache not found - consider installing it for faster compilation or disable this warning with GGML_CCACHE=OFF
+-- CMAKE_SYSTEM_PROCESSOR: x86_64
+-- GGML_SYSTEM_ARCH: x86
+-- Including CPU backend
+-- x86 detected
+-- Adding CPU backend variant ggml-cpu: -march=native 
+-- ggml version: 0.15.3
+-- ggml commit:  unknown
+CMake Warning at 3rdparty/llama.cpp/common/CMakeLists.txt:33 (message):
+  Git repository not found; to enable automatic generation of build info,
+  make sure Git is installed and the project is a Git repository.
+
+
+-- Could NOT find OpenSSL, try to set the path to OpenSSL root folder in the system variable OPENSSL_ROOT_DIR (missing: OPENSSL_CRYPTO_LIBRARY OPENSSL_INCLUDE_DIR) 
+CMake Warning at 3rdparty/llama.cpp/vendor/cpp-httplib/CMakeLists.txt:152 (message):
+  OpenSSL not found, HTTPS support disabled
+
+
+-- Configuring done (2.0s)
+-- Generating done (0.2s)
+-- Build files have been written to: /tmp/BitNet/build
+[  0%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common-base.dir/build-info.cpp.o
+[  0%] Building C object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml.c.o
+[  0%] Building CXX object 3rdparty/llama.cpp/vendor/cpp-httplib/CMakeFiles/cpp-httplib.dir/httplib.cpp.o
+[  0%] Building CXX object 3rdparty/llama.cpp/tools/ui/CMakeFiles/llama-ui-embed.dir/embed.cpp.o
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml.c:931:24: warning: initializer overrides prior initialization of this subobject [-Winitializer-overrides]
+  931 |     [GGML_TYPE_I2_S] = {
+      |                        ^
+  932 |         .type_name                = "i2_s",
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  933 |         .blck_size                = 1,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  934 |         .type_size                = sizeof(int8_t),
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  935 |         .is_quantized             = true,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  936 |         .to_float                 = (ggml_to_float_t) dequantize_row_i2_s,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  937 |     },
+      |     ~
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml.c:913:12: note: previous initialization is here
+  913 |     [36] = { // GGML_TYPE_IQ4_NL_4_4
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~
+  914 |         .type_name                = "TYPE_IQ4_NL_4_4 REMOVED, use IQ4_NL with runtime repacking",
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  915 |         .blck_size                = 0,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  916 |         .type_size                = 0,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  917 |         .is_quantized             = false,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  918 |     },
+      |     ~
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml.c:938:24: warning: initializer overrides prior initialization of this subobject [-Winitializer-overrides]
+  938 |     [GGML_TYPE_I8_S] = {
+      |                        ^
+  939 |         .type_name                = "i8_s",
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  940 |         .blck_size                = 1,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  941 |         .type_size                = sizeof(int8_t),
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  942 |         .is_quantized             = true,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  943 |     },
+      |     ~
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml.c:919:12: note: previous initialization is here
+  919 |     [37] = { // GGML_TYPE_IQ4_NL_4_8
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~
+  920 |         .type_name                = "TYPE_IQ4_NL_4_8 REMOVED, use IQ4_NL with runtime repacking",
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  921 |         .blck_size                = 0,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  922 |         .type_size                = 0,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  923 |         .is_quantized             = false,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  924 |     },
+      |     ~
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml.c:944:23: warning: initializer overrides prior initialization of this subobject [-Winitializer-overrides]
+  944 |     [GGML_TYPE_TL1] = {
+      |                       ^
+  945 |         .type_name                = "tl1",
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  946 |         .blck_size                = 1,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  947 |         .type_size                = sizeof(int8_t),
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  948 |         .is_quantized             = false,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  949 |     },
+      |     ~
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml.c:925:12: note: previous initialization is here
+  925 |     [38] = { // GGML_TYPE_IQ4_NL_8_8
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~
+  926 |         .type_name                = "TYPE_IQ4_NL_8_8 REMOVED, use IQ4_NL with runtime repacking",
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  927 |         .blck_size                = 0,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  928 |         .type_size                = 0,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  929 |         .is_quantized             = false,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  930 |     },
+      |     ~
+[  0%] Linking CXX static library libllama-common-base.a
+[  0%] Built target llama-common-base
+[  0%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml.cpp.o
+[  0%] Building C object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-alloc.c.o
+[  1%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-backend.cpp.o
+[  1%] Linking CXX executable llama-ui-embed
+[  1%] Built target llama-ui-embed
+[  1%] Provisioning UI assets
+-- UI: downloading from b0: https://huggingface.co/buckets/ggml-org/llama-ui/resolve/b0/dist.tar.gz
+-- UI: download dist.tar.gz from b0 failed: "Couldn't connect to server"
+-- UI: downloading from latest: https://huggingface.co/buckets/ggml-org/llama-ui/resolve/latest/dist.tar.gz
+CMake Warning at /tmp/BitNet/3rdparty/llama.cpp/scripts/ui-assets.cmake:353 (message):
+  UI: no assets available - building without an embedded UI.  In a
+  disconnected environment, download the pre-built UI from a llama.cpp
+  release at https://github.com/ggml-org/llama.cpp/releases and extract to
+  tools/ui/dist.
+
+
+-- UI: download dist.tar.gz from latest failed: "Couldn't connect to server"
+-- UI: HF download failed
+embed: write output file /tmp/BitNet/build/3rdparty/llama.cpp/tools/ui/ui.h
+embed: write output file /tmp/BitNet/build/3rdparty/llama.cpp/tools/ui/ui.cpp
+[  1%] Built target llama-ui-assets
+[  1%] Building CXX object 3rdparty/llama.cpp/tools/ui/CMakeFiles/llama-ui.dir/ui.cpp.o
+3 warnings generated.
+[  2%] Linking CXX static library libllama-ui.a
+[  2%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-backend-meta.cpp.o
+[  2%] Built target llama-ui
+[  2%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-opt.cpp.o
+[  2%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-threading.cpp.o
+[  4%] Building C object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-quants.c.o
+[  4%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/gguf.cpp.o
+[  4%] Linking CXX shared library ../../../../bin/libggml-base.so
+[  4%] Built target ggml-base
+[  4%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/repack.cpp.o
+[  4%] Building C object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.c.o
+[  5%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.cpp.o
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/repack.cpp:4862:16: warning: 'return' will never be executed [-Wunreachable-code-return]
+ 4862 |         return true;
+      |                ^~~~
+[  5%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/hbm.cpp.o
+[  5%] Building C object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/quants.c.o
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/quants.c:1392:39: warning: cast from 'const void *' to 'unsigned char *' drops const qualifier [-Wcast-qual]
+ 1392 |     const uint8_t *    x = (uint8_t *)vx;
+      |                                       ^
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/quants.c:1393:38: warning: cast from 'const void *' to 'signed char *' drops const qualifier [-Wcast-qual]
+ 1393 |     const int8_t  *    y = (int8_t *)vy;
+      |                                      ^
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/quants.c:1390:63: warning: unused parameter 'bs' [-Wunused-parameter]
+ 1390 | static void ggml_vec_dot_i2_i8_s_1x1(int n, float * s, size_t bs, const void * vx, size_t bx, const void * vy, size_t by, int nrc) {
+      |                                                               ^
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/quants.c:1390:119: warning: unused parameter 'by' [-Wunused-parameter]
+ 1390 | static void ggml_vec_dot_i2_i8_s_1x1(int n, float * s, size_t bs, const void * vx, size_t bx, const void * vy, size_t by, int nrc) {
+      |                                                                                                                       ^
+[  6%] Building C object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu-i2s.c.o
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/ggml-cpu-i2s.c:25:63: warning: unused parameter 'bs' [-Wunused-parameter]
+   25 | void ggml_gemv_i2_i8_s(int n, float * GGML_RESTRICT s, size_t bs, const void * GGML_RESTRICT vx, const void * GGML_RESTRICT vy, int nr, int nc) {
+      |                                                               ^
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/ggml-cpu-i2s.c:25:133: warning: unused parameter 'nr' [-Wunused-parameter]
+   25 | void ggml_gemv_i2_i8_s(int n, float * GGML_RESTRICT s, size_t bs, const void * GGML_RESTRICT vx, const void * GGML_RESTRICT vy, int nr, int nc) {
+      |                                                                                                                                     ^
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/ggml-cpu-i2s.c:25:6: warning: no previous prototype for function 'ggml_gemv_i2_i8_s' [-Wmissing-prototypes]
+   25 | void ggml_gemv_i2_i8_s(int n, float * GGML_RESTRICT s, size_t bs, const void * GGML_RESTRICT vx, const void * GGML_RESTRICT vy, int nr, int nc) {
+      |      ^
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/ggml-cpu-i2s.c:25:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   25 | void ggml_gemv_i2_i8_s(int n, float * GGML_RESTRICT s, size_t bs, const void * GGML_RESTRICT vx, const void * GGML_RESTRICT vy, int nr, int nc) {
+      | ^
+      | static 
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/ggml-cpu-i2s.c:53:19: warning: unused variable 'one16' [-Wunused-variable]
+   53 |     const __m256i one16 = _mm256_set1_epi16(1);
+      |                   ^~~~~
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/ggml-cpu-i2s.c:38:6: warning: no previous prototype for function 'ggml_gemm_i2_i8_s' [-Wmissing-prototypes]
+   38 | void ggml_gemm_i2_i8_s(int n, float * GGML_RESTRICT s, size_t bs, const void * GGML_RESTRICT vx, const void * GGML_RESTRICT vy, int nr, int nc) {
+      |      ^
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/ggml-cpu-i2s.c:38:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   38 | void ggml_gemm_i2_i8_s(int n, float * GGML_RESTRICT s, size_t bs, const void * GGML_RESTRICT vx, const void * GGML_RESTRICT vy, int nr, int nc) {
+      | ^
+      | static 
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/ggml-cpu-i2s.c:262:19: warning: unused variable 'one16' [-Wunused-variable]
+  262 |     const __m256i one16 = _mm256_set1_epi16(1);
+      |                   ^~~~~
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/ggml-cpu-i2s.c:233:6: warning: no previous prototype for function 'ggml_gemm_i2_i8_s_interleaved' [-Wmissing-prototypes]
+  233 | void ggml_gemm_i2_i8_s_interleaved(int n, float * GGML_RESTRICT s, size_t bs,
+      |      ^
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/ggml-cpu-i2s.c:233:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+  233 | void ggml_gemm_i2_i8_s_interleaved(int n, float * GGML_RESTRICT s, size_t bs,
+      | ^
+      | static 
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/ggml-cpu-i2s.c:428:6: warning: no previous prototype for function 'ggml_gemv_i2_i8_s_interleaved' [-Wmissing-prototypes]
+  428 | void ggml_gemv_i2_i8_s_interleaved(int n, float * GGML_RESTRICT s, size_t bs,
+      |      ^
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/ggml-cpu-i2s.c:428:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+  428 | void ggml_gemv_i2_i8_s_interleaved(int n, float * GGML_RESTRICT s, size_t bs,
+      | ^
+      | static 
+8 warnings generated.
+[  6%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/traits.cpp.o
+[  6%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/amx.cpp.o
+4 warnings generated.
+[  6%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/mmq.cpp.o
+[  8%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/binary-ops.cpp.o
+[  8%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/unary-ops.cpp.o
+1 warning generated.
+[  8%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/vec.cpp.o
+[  8%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ops.cpp.o
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/ops.cpp:4795:21: warning: unused variable 'type' [-Wunused-variable]
+ 4795 |     const ggml_type type = src0->type;
+      |                     ^~~~
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/ops.cpp:5726:13: warning: 4 enumeration values not handled in switch: 'GGML_TYPE_I2_S', 'GGML_TYPE_I8_S', 'GGML_TYPE_TL1'... [-Wswitch]
+ 5726 |     switch (src0->type) {
+      |             ^~~~~~~~~~
+[  9%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/__/__/__/__/src/ggml-bitnet-lut.cpp.o
+[  9%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/llamafile/sgemm.cpp.o
+[  9%] Building C object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/x86/quants.c.o
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/llamafile/sgemm.cpp:1415:23: warning: unused variable 'one16' [-Wunused-variable]
+ 1415 |         const __m256i one16 = _mm256_set1_epi16(1);
+      |                       ^~~~~
+[  9%] Linking CXX static library libcpp-httplib.a
+/tmp/BitNet/3rdparty/llama.cpp/ggml/src/ggml-cpu/llamafile/sgemm.cpp:1498:16: warning: private field 'lda' is not used [-Wunused-private-field]
+ 1498 |     int64_t k, lda, ldb, ldc;
+      |                ^
+[  9%] Built target cpp-httplib
+[  9%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/x86/repack.cpp.o
+2 warnings generated.
+2 warnings generated.
+[ 11%] Linking CXX shared library ../../../../bin/libggml-cpu.so
+[ 11%] Built target ggml-cpu
+[ 11%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml.dir/ggml-backend-reg.cpp.o
+[ 11%] Building CXX object 3rdparty/llama.cpp/ggml/src/CMakeFiles/ggml.dir/ggml-backend-dl.cpp.o
+[ 12%] Linking CXX shared library ../../../../bin/libggml.so
+[ 12%] Built target ggml
+[ 13%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-batch.cpp.o
+[ 13%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-adapter.cpp.o
+[ 13%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama.cpp.o
+[ 13%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-arch.cpp.o
+[ 13%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-chat.cpp.o
+[ 13%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-context.cpp.o
+[ 13%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-cparams.cpp.o
+[ 15%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-grammar.cpp.o
+[ 15%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-graph.cpp.o
+[ 15%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-hparams.cpp.o
+[ 15%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-impl.cpp.o
+[ 16%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-io.cpp.o
+[ 16%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache.cpp.o
+[ 16%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-iswa.cpp.o
+[ 16%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-dsa.cpp.o
+[ 18%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-dsv4.cpp.o
+[ 18%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-memory.cpp.o
+[ 18%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-memory-hybrid.cpp.o
+[ 18%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-memory-hybrid-iswa.cpp.o
+[ 19%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-memory-recurrent.cpp.o
+[ 19%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-mmap.cpp.o
+[ 19%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-model-loader.cpp.o
+[ 19%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-model-saver.cpp.o
+[ 20%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-model.cpp.o
+[ 20%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-quant.cpp.o
+[ 20%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-sampler.cpp.o
+[ 20%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/llama-vocab.cpp.o
+[ 22%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/unicode-data.cpp.o
+[ 22%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/unicode.cpp.o
+[ 22%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/afmoe.cpp.o
+[ 22%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/apertus.cpp.o
+[ 23%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/arcee.cpp.o
+[ 23%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/arctic.cpp.o
+[ 23%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/arwkv7.cpp.o
+[ 23%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/baichuan.cpp.o
+[ 25%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/bailingmoe.cpp.o
+[ 25%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/bailingmoe2.cpp.o
+[ 25%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/bert.cpp.o
+[ 25%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/bitnet.cpp.o
+[ 26%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/bloom.cpp.o
+[ 26%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/chameleon.cpp.o
+[ 26%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/chatglm.cpp.o
+[ 26%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/codeshell.cpp.o
+[ 27%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/cogvlm.cpp.o
+[ 27%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/cohere2.cpp.o
+[ 27%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/cohere2moe.cpp.o
+[ 27%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/command-r.cpp.o
+[ 29%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/dbrx.cpp.o
+[ 29%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/deci.cpp.o
+[ 29%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/deepseek.cpp.o
+[ 29%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/deepseek2.cpp.o
+[ 29%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/deepseek2ocr.cpp.o
+[ 30%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/deepseek32.cpp.o
+[ 30%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/deepseek4.cpp.o
+[ 30%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/delta-net-base.cpp.o
+[ 30%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/dflash.cpp.o
+[ 31%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/dots1.cpp.o
+[ 31%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/dream.cpp.o
+[ 31%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/eagle3.cpp.o
+[ 31%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/ernie4-5-moe.cpp.o
+[ 33%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/ernie4-5.cpp.o
+[ 33%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/eurobert.cpp.o
+[ 33%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/exaone-moe.cpp.o
+[ 33%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/exaone.cpp.o
+[ 34%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/exaone4.cpp.o
+[ 34%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/falcon-h1.cpp.o
+[ 34%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/falcon.cpp.o
+[ 34%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/gemma-embedding.cpp.o
+[ 36%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/gemma.cpp.o
+[ 36%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/gemma2.cpp.o
+[ 36%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/gemma3.cpp.o
+[ 36%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/gemma3n.cpp.o
+[ 37%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/gemma4-assistant.cpp.o
+[ 37%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/gemma4.cpp.o
+[ 37%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/glm-dsa.cpp.o
+[ 37%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/glm4-moe.cpp.o
+[ 38%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/glm4.cpp.o
+[ 38%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/gpt2.cpp.o
+[ 38%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/gptneox.cpp.o
+[ 38%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/granite-hybrid.cpp.o
+[ 40%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/granite-moe.cpp.o
+[ 40%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/granite.cpp.o
+[ 40%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/grok.cpp.o
+[ 40%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/grovemoe.cpp.o
+[ 41%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/hunyuan-dense.cpp.o
+[ 41%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/hunyuan-moe.cpp.o
+[ 41%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/hunyuan-vl.cpp.o
+[ 41%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/internlm2.cpp.o
+[ 43%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/jais.cpp.o
+[ 43%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/jais2.cpp.o
+[ 43%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/jamba.cpp.o
+[ 43%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/jina-bert-v2.cpp.o
+[ 44%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/jina-bert-v3.cpp.o
+[ 44%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/kimi-linear.cpp.o
+[ 44%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/lfm2.cpp.o
+[ 44%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/lfm2moe.cpp.o
+[ 45%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/llada-moe.cpp.o
+[ 45%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/llada.cpp.o
+[ 45%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/llama-embed.cpp.o
+[ 45%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/llama.cpp.o
+[ 47%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/llama4.cpp.o
+[ 47%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/maincoder.cpp.o
+[ 47%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/mamba-base.cpp.o
+[ 47%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/mamba.cpp.o
+[ 48%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/mamba2.cpp.o
+[ 48%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/mellum.cpp.o
+[ 48%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/mimo2.cpp.o
+[ 48%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/minicpm.cpp.o
+[ 50%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/minicpm3.cpp.o
+[ 50%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/minimax-m2.cpp.o
+[ 50%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/mistral3.cpp.o
+[ 50%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/mistral4.cpp.o
+[ 51%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/modern-bert.cpp.o
+[ 51%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/mpt.cpp.o
+[ 51%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/nemotron-h-moe.cpp.o
+[ 51%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/nemotron-h.cpp.o
+[ 52%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/nemotron.cpp.o
+[ 52%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/neo-bert.cpp.o
+[ 52%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/nomic-bert-moe.cpp.o
+[ 52%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/nomic-bert.cpp.o
+[ 54%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/olmo.cpp.o
+[ 54%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/olmo2.cpp.o
+[ 54%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/olmoe.cpp.o
+[ 54%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/openai-moe.cpp.o
+[ 55%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/openelm.cpp.o
+[ 55%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/orion.cpp.o
+[ 55%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/paddleocr.cpp.o
+[ 55%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/pangu-embed.cpp.o
+[ 56%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/phi2.cpp.o
+[ 56%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/phi3.cpp.o
+[ 56%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/phimoe.cpp.o
+[ 56%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/plamo.cpp.o
+[ 56%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/plamo2.cpp.o
+[ 58%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/plamo3.cpp.o
+[ 58%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/plm.cpp.o
+[ 58%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/qwen.cpp.o
+[ 58%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/qwen2.cpp.o
+[ 59%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/qwen2moe.cpp.o
+[ 59%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/qwen2vl.cpp.o
+[ 59%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/qwen3.cpp.o
+[ 59%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/qwen35.cpp.o
+[ 61%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/qwen35moe.cpp.o
+[ 61%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/qwen3moe.cpp.o
+[ 61%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/qwen3next.cpp.o
+[ 61%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/qwen3vl.cpp.o
+[ 62%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/qwen3vlmoe.cpp.o
+[ 62%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/refact.cpp.o
+[ 62%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/rnd1.cpp.o
+[ 62%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/rwkv6-base.cpp.o
+[ 63%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/rwkv6.cpp.o
+[ 63%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/rwkv6qwen2.cpp.o
+[ 63%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/rwkv7-base.cpp.o
+[ 63%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/rwkv7.cpp.o
+[ 65%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/seed-oss.cpp.o
+[ 65%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/smallthinker.cpp.o
+[ 65%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/smollm3.cpp.o
+[ 65%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/stablelm.cpp.o
+[ 66%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/starcoder.cpp.o
+[ 66%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/starcoder2.cpp.o
+[ 66%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/step35.cpp.o
+[ 66%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/t5.cpp.o
+[ 68%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/t5encoder.cpp.o
+[ 68%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/talkie.cpp.o
+[ 68%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/wavtokenizer-dec.cpp.o
+[ 68%] Building CXX object 3rdparty/llama.cpp/src/CMakeFiles/llama.dir/models/xverse.cpp.o
+[ 69%] Linking CXX shared library ../../../bin/libllama.so
+[ 69%] Built target llama
+[ 70%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/chat-auto-parser-helpers.cpp.o
+[ 70%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/chat-auto-parser-generator.cpp.o
+[ 70%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/arg.cpp.o
+[ 70%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/mtmd.cpp.o
+[ 70%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/mtmd-audio.cpp.o
+[ 70%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/chat-diff-analyzer.cpp.o
+[ 72%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/mtmd-image.cpp.o
+[ 72%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/chat-peg-parser.cpp.o
+[ 72%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/mtmd-helper.cpp.o
+[ 72%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/clip.cpp.o
+[ 72%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/cogvlm.cpp.o
+[ 73%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/conformer.cpp.o
+[ 73%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/dotsocr.cpp.o
+[ 75%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/chat.cpp.o
+[ 75%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/exaone4_5.cpp.o
+[ 75%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/gemma4a.cpp.o
+[ 75%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/common.cpp.o
+[ 76%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/gemma4v.cpp.o
+[ 76%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/gemma4ua.cpp.o
+[ 76%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/console.cpp.o
+[ 76%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/gemma4uv.cpp.o
+[ 76%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/debug.cpp.o
+[ 76%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/glm4v.cpp.o
+[ 77%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/granite-speech.cpp.o
+[ 77%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/granite4-vision.cpp.o
+[ 79%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/download.cpp.o
+[ 79%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/hunyuanvl.cpp.o
+[ 79%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/fit.cpp.o
+[ 79%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/internvl.cpp.o
+[ 80%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/kimivl.cpp.o
+[ 80%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/hf-cache.cpp.o
+[ 80%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/kimik25.cpp.o
+[ 80%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/nemotron-v2-vl.cpp.o
+[ 80%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/llama4.cpp.o
+[ 81%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/llava.cpp.o
+[ 81%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/imatrix-loader.cpp.o
+[ 81%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/minicpmv.cpp.o
+[ 83%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/json-schema-to-grammar.cpp.o
+[ 83%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/paddleocr.cpp.o
+[ 83%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/llguidance.cpp.o
+[ 83%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/pixtral.cpp.o
+[ 83%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/log.cpp.o
+[ 84%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/qwen2vl.cpp.o
+[ 84%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/qwen3vl.cpp.o
+[ 84%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/mimovl.cpp.o
+[ 84%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/ngram-cache.cpp.o
+[ 84%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/qwen3a.cpp.o
+[ 86%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/step3vl.cpp.o
+[ 87%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/ngram-map.cpp.o
+[ 87%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/siglip.cpp.o
+[ 87%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/ngram-mod.cpp.o
+[ 87%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/peg-parser.cpp.o
+[ 87%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/whisper-enc.cpp.o
+[ 87%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/preset.cpp.o
+[ 87%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/deepseekocr.cpp.o
+[ 88%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/deepseekocr2.cpp.o
+[ 88%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/mobilenetv5.cpp.o
+[ 88%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/youtuvl.cpp.o
+[ 88%] Building CXX object 3rdparty/llama.cpp/tools/mtmd/CMakeFiles/mtmd.dir/models/yasa2.cpp.o
+[ 90%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/reasoning-budget.cpp.o
+[ 91%] Linking CXX shared library ../../../../bin/libmtmd.so
+[ 91%] Built target mtmd
+[ 91%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/sampling.cpp.o
+[ 91%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/speculative.cpp.o
+[ 91%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/unicode.cpp.o
+[ 93%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/jinja/lexer.cpp.o
+[ 93%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/jinja/parser.cpp.o
+[ 93%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/jinja/runtime.cpp.o
+[ 93%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/jinja/value.cpp.o
+[ 94%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/jinja/string.cpp.o
+[ 94%] Building CXX object 3rdparty/llama.cpp/common/CMakeFiles/llama-common.dir/jinja/caps.cpp.o
+[ 94%] Linking CXX shared library ../../../bin/libllama-common.so
+[ 94%] Built target llama-common
+[ 95%] Building CXX object 3rdparty/llama.cpp/tools/server/CMakeFiles/server-context.dir/server-queue.cpp.o
+[ 95%] Building CXX object 3rdparty/llama.cpp/tools/server/CMakeFiles/server-context.dir/server-common.cpp.o
+[ 95%] Building CXX object 3rdparty/llama.cpp/tools/server/CMakeFiles/server-context.dir/server-task.cpp.o
+[ 95%] Building CXX object 3rdparty/llama.cpp/tools/server/CMakeFiles/server-context.dir/server-chat.cpp.o
+[ 95%] Building CXX object 3rdparty/llama.cpp/tools/server/CMakeFiles/server-context.dir/server-context.cpp.o
+[ 95%] Building CXX object 3rdparty/llama.cpp/tools/server/CMakeFiles/server-context.dir/server-stream.cpp.o
+[ 95%] Building CXX object 3rdparty/llama.cpp/tools/server/CMakeFiles/server-context.dir/server-tools.cpp.o
+[ 97%] Building CXX object 3rdparty/llama.cpp/tools/server/CMakeFiles/server-context.dir/server-schema.cpp.o
+[ 97%] Linking CXX static library libserver-context.a
+[ 97%] Built target server-context
+[ 97%] Building CXX object 3rdparty/llama.cpp/tools/server/CMakeFiles/llama-server-impl.dir/server.cpp.o
+[ 97%] Building CXX object 3rdparty/llama.cpp/tools/server/CMakeFiles/llama-server-impl.dir/server-http.cpp.o
+[ 97%] Building CXX object 3rdparty/llama.cpp/tools/server/CMakeFiles/llama-server-impl.dir/server-models.cpp.o
+[ 98%] Linking CXX shared library ../../../../bin/libllama-server-impl.so
+[ 98%] Built target llama-server-impl
+[ 98%] Building CXX object 3rdparty/llama.cpp/tools/server/CMakeFiles/llama-server.dir/main.cpp.o
+[100%] Linking CXX executable ../../../../bin/llama-server
+[100%] Built target llama-server
+	Command being timed: "cmake --build build --target llama-server --config Release -j 4"
+	User time (seconds): 1012.17
+	System time (seconds): 50.70
+	Percent of CPU this job got: 340%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 5:12.56
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 506000
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 238
+	Minor (reclaiming a frame) page faults: 7648737
+	Voluntary context switches: 5830
+	Involuntary context switches: 143130
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 197072
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

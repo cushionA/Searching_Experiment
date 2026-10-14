@@ -41,18 +41,23 @@ def main():
     ap.add_argument('--out', type=pathlib.Path)
     ap.add_argument('--threads', type=int, default=4, choices=[1,2,4])
     ap.add_argument('--repeats', type=int, default=3, choices=[1,2,3])
+    ap.add_argument('--budget-seconds', type=int, default=600, choices=range(60,1201))
+    ap.add_argument('--prompt-style', choices=['hf','gguf'], default='hf')
+    ap.add_argument('--smoke', action='store_true')
     ap.add_argument('--validate-only', action='store_true')
     args = ap.parse_args()
     cases, input_hash = read_cases(args.cases)
     if args.validate_only:
         print(json.dumps({'cases':len(cases),'input_sha256':input_hash,'inference_runs':0})); return
+    if args.smoke:
+        cases = [cases[i] for i in [0,6,12,18]]
     if not all([args.model, args.server, args.out]):
         ap.error('--server --model --out required')
     with args.model.open('rb') as f:
         actual = hashlib.file_digest(f, 'sha256').hexdigest()
     assert actual == MODEL_SHA, 'Model hash differs'
     args.out.mkdir(parents=True, exist_ok=False)
-    command = [str(args.server.resolve()), '-m', str(args.model.resolve()), '-t', str(args.threads), '-tb', str(args.threads), '-c', '2048', '-n', '96', '-ngl', '0', '--host', '127.0.0.1', '--port', '18080']
+    command = [str(args.server.resolve()), '-m', str(args.model.resolve()), '-t', str(args.threads), '-tb', str(args.threads), '-c', '2048', '-n', '96', '-ngl', '0', '-np', '1', '--host', '127.0.0.1', '--port', '18080']
     # Never send these synthetic prompts through environment-configured HTTP proxies.
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     def request(path, payload=None):
@@ -60,8 +65,8 @@ def main():
         req = urllib.request.Request('http://127.0.0.1:18080'+path, data=data, headers={'Content-Type':'application/json'})
         with opener.open(req, timeout=min(120,max(1,deadline-time.monotonic()))) as response:
             return json.load(response)
-    start = time.monotonic(); deadline = start+1200
-    records=[]; summary={'input_sha256':input_hash,'model_sha256':actual,'command':command,'seed':SEED,'status':'running'}
+    start = time.monotonic(); deadline = start+args.budget_seconds
+    records=[]; summary={'input_sha256':input_hash,'model_sha256':actual,'command':command,'seed':SEED,'prompt_style':args.prompt_style,'smoke':args.smoke,'status':'running'}
     with (args.out/'server.log').open('w') as log:
         proc = subprocess.Popen(command, stdout=log, stderr=log)
         try:
@@ -75,6 +80,8 @@ def main():
             def run(case, phase, rep):
                 if time.monotonic()>=deadline: raise TimeoutError('20 minute compute limit')
                 prompt='User: '+case['prompt']+'<|eot_id|>Assistant: '
+                if args.prompt_style == 'gguf':
+                    prompt=request('/apply-template',{'messages':[{'role':'user','content':case['prompt']}],'add_generation_prompt':True})['prompt']
                 t=time.monotonic()
                 raw=request('/completion',{'prompt':prompt,'n_predict':96,'temperature':0,'seed':SEED,'cache_prompt':False,'stop':['<|eot_id|>'],'stream':False})
                 row={'id':case['id'],'language':case['language'],'task':case['task'],'phase':phase,'repeat':rep,'wall_s':time.monotonic()-t,'raw':raw,**score(raw.get('content',''),case['gold'])}

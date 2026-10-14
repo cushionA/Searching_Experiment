@@ -1,0 +1,72 @@
+{
+  "input_sha256": "63bb56cc62dfa05b5367e8f3e5f8b25d6170e92926d52ff42c694db641b64afe",
+  "model_sha256": "4221b252fdd5fd25e15847adfeb5ee88886506ba50b8a34548374492884c2162",
+  "command": [
+    "/tmp/BitNet/build/bin/llama-server",
+    "-m",
+    "/tmp/models/ggml-model-i2_s.gguf",
+    "-t",
+    "4",
+    "-tb",
+    "4",
+    "-c",
+    "2048",
+    "-n",
+    "96",
+    "-ngl",
+    "0",
+    "-np",
+    "1",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18080"
+  ],
+  "seed": 42,
+  "prompt_style": "gguf",
+  "smoke": true,
+  "status": "complete_smoke_only",
+  "startup_ready_s": 9.051454227000022,
+  "groups": {
+    "ja/classification": {
+      "unique_examples": 1,
+      "requests": 1,
+      "format_rate": 0,
+      "exact_rate": 0,
+      "field_accuracy": 0.0,
+      "median_wall_s": 8.531808447000003,
+      "max_wall_s": 8.531808447000003
+    },
+    "ja/extraction": {
+      "unique_examples": 1,
+      "requests": 1,
+      "format_rate": 0,
+      "exact_rate": 0,
+      "field_accuracy": 0.0,
+      "median_wall_s": 13.101952865000158,
+      "max_wall_s": 13.101952865000158
+    },
+    "en/classification": {
+      "unique_examples": 1,
+      "requests": 1,
+      "format_rate": 0,
+      "exact_rate": 0,
+      "field_accuracy": 0.0,
+      "median_wall_s": 10.901559378000002,
+      "max_wall_s": 10.901559378000002
+    },
+    "en/extraction": {
+      "unique_examples": 1,
+      "requests": 1,
+      "format_rate": 0,
+      "exact_rate": 0,
+      "field_accuracy": 0.0,
+      "median_wall_s": 8.819121781999911,
+      "max_wall_s": 8.819121781999911
+    }
+  },
+  "server_peak_rss_bytes": 1474981888,
+  "peak_scope": "Linux server child RSS; excludes Python, container, shared page-cache accounting",
+  "cgroup_memory_peak_bytes": 1674125312,
+  "elapsed_s": 102.89118274900011
+}

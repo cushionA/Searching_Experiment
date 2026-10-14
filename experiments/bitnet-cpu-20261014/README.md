@@ -1,37 +1,40 @@
-# BitNet CPU PoC（準備済み・推論未実行）
+# BitNet CPU PoC（2026-10-14）
 
-2026-10-14、独立依頼「A試してみて」。分類・構造化抽出を各言語6件、計24件の独自合成入力で検査する。正解は事前に手書きし、モデル生成や学習を使わない。日本語・英語は別集計。seed=42、temperature=0、CPU4 threads、context=2048、最大96生成tokens、各3反復。厳密JSON（余分なキー・コードフェンスを拒否）、分類exact、抽出全項目exact／field accuracyを測る。各反復を独立した正解件数として水増ししない。
-
-`benchmark.py` は標準ライブラリのみ。スコア処理と入力検証はテスト済みだが、llama-serverとの統合は未検証。Dockerfileは依存用ベースの準備段階のみで、完成した再現環境ではない。依存解決・コンパイル・モデルダウンロードは開始していない。
+CPU推論まで実行し、日本語／英語の短い分類・構造化抽出を測定した。品質はsmokeで不合格。最新の結論・数値は [レポート](../../reports/2026-10/2026-10-14-bitnet-cpu-poc.md)、生出力と環境は [benchmarks](../../benchmarks/bitnet-cpu-20261014/) を参照。
 
 ## 固定対象
 
 - engine: microsoft/BitNet `0b341e582afbf9e1011f24744b554c96a3477eb5`
+- 公式submodule: isHuangXin/llama.cpp `390c307752ab78fd8189f359d6954c9ba1be74af`
 - model: microsoft/bitnet-b1.58-2B-4T `04c3b9ad9361b824064a1f25ea60a8be9599b127`
 - CPU用公式GGUF: microsoft/bitnet-b1.58-2B-4T-gguf `a1f2f1c765812aa8af3f6eda4a313707064bba15`
-- `ggml-model-i2_s.gguf`: 1,187,801,280 bytes、SHA256 `4221b252fdd5fd25e15847adfeb5ee88886506ba50b8a34548374492884c2162`（API宣言値、未取得）
-- input SHA256 `63bb56cc62dfa05b5367e8f3e5f8b25d6170e92926d52ff42c694db641b64afe`
+- GGUF実取得1,187,801,280 bytes、SHA256 `4221b252fdd5fd25e15847adfeb5ee88886506ba50b8a34548374492884c2162`
+- 入力SHA256 `63bb56cc62dfa05b5367e8f3e5f8b25d6170e92926d52ff42c694db641b64afe`
 
-## 再開条件と手順
+## 評価方法
 
-まず通常の承認済みDocker build環境をプラットフォーム側で利用可能にする。現在の `/home/agent/.docker/buildx` 読み取り専用エラーの迂回、設定移設、認証コピー、権限変更はしない。本記録の同一環境でリトライしない。
+独自合成24件＝日本語／英語×分類／抽出×各6。正解は事前固定、学習やモデル生成を使わない。分類はshipping/billing/account、抽出はitem文字列とquantity整数。厳密JSON（余分なキー・コードフェンスを拒否）、exact、field accuracyを採点。品質は各入力1回のみ、反復は速度評価用。
 
-その後、2GB総ダウンロード枠にベースイメージ・依存・source・重みが収まることを取得前に確認。公式requirements全体は変換用途を含むため、フル導入が枠内とは確認できていない。容量を超えるなら停止。公式READMEのrecursive clone、依存導入、上記revisionのGGUF取得、`python setup_env.py -md models/BitNet-b1.58-2B-4T -q i2_s` を基本とする。submoduleは公式.gitmodulesが参照する isHuangXin/llama.cpp（Microsoft組織外）なので、固定gitlinkと内容を検査してから実行。未知の任意ソースを追加して動かさない。
+seed42、temperature0、4threads（batchも4）、parallel1、context2048、最大96tokens、prompt cache=false。初回要求とwarmup1を分け、定常は最大3反復。主runの600秒上限は延長しない。途中反復が出た場合は主要速度表から除き、生出力を保持する。server child RSSとcgroup全体peakを区別。OS cache完全coldは測っていない。tokens/sは失敗出力も含み、有用な処理件数/sと同一ではない。
 
-ビルド後にengine/submodule SHA、compiler/CMake/Python/pip freeze、重み実SHA、ダウンロード実bytesを保存。現状はこれらを測定済みと扱わない。
+主run `hf` は公式HF tokenizerの `User: ...<|eot_id|>Assistant: ` 形式。公式GGUF metadataが異なるtemplateを持つことが判明したため、`gguf` 条件の追加4件smokeではserver `/apply-template` を使用。入力・正解を変えず、別runに分離。tokenizer警告とtemplate差の因果関係は未確定。
 
-推論はネットワークなし、nonroot、root read-only、cap-drop ALL、no-new-privileges、RAM8GiB・swap無効・CPU4・pids上限、専用 `/tmp` のコンテナ内で行う。全workspaceやHOME、資格情報、個人ファイルをマウントしない。必要な公開source/binary/model、合成入力、評価コード、空の出力フォルダーだけを渡す。そこで例えば:
+24件は短いsmokeで、有意な導入・汎化性能の評価ではない。baseline比較未確認。
 
-```sh
-python3 -B benchmark.py --server /opt/BitNet/build/bin/llama-server \
-  --model /models/ggml-model-i2_s.gguf --out /output/run-001 --threads 4 --repeats 3
-```
+## 再現・検証
 
-serverは127.0.0.1のみにbindし、GPU layers=0。起動ready時間、最初の要求、明示的warmup、定常要求を区別。最初の要求はOSキャッシュ完全coldを意味しない。prompt cache=false。生JSON／server timings／wall時間を保存。Linux child peak RSSとcgroup memory.peakを区別して保存し、重みのファイルサイズからRAMを推定しない。20分の全体締切、各HTTP最大120秒、起動最大180秒を設定。失敗時もログとsummaryを残す。新規出力先のみ許可。
+環境の修復経緯、公式手順との差分、隔離方法、実行コマンドは [reproduce.md](reproduce.md)。初回buildのread-onlyエラーと修復成功の両ログを保存。修復は追加許可された空の一時BUILDX_CONFIG指定1回のみ。認証ファイル、Docker接続先、host権限、セキュリティ設定を変更しない。
 
-24件はAPI・書式・簡単な品質のsmokeに限る。採用判断には別の未使用テスト集合（日本語の曖昧表現、否定、欠損、多品番を含む）、実ワークロードを反映した件数、同条件baseline、反復・thread sweepが必要。今回は既存baselineなし、比較未確認。
+- `fetch_public.py`: 固定公開source／GGUF取得、SHA照合、2GB枠のうち400MBをOS等に予約。実測取得処理を整理した版で、追加ダウンロードによる全体再試験はしていない。
+- `compile.sh`: 実測した公式codegen/CMake経路。変換用pip依存を不要にするため直接呼出し。
+- `benchmark.py`: ローカルserver起動・固定入力実行・採点・時間／RAM・生JSON保存。
+- `inspect_gguf.py`: 実ファイルのmetadata読取り専用検査。
+- `analyze_results.py`: 完了反復の集計。raw、summaryを持つrun directoryを引数にする。
 
 ```sh
 python3 -B -m unittest discover -s experiments/bitnet-cpu-20261014 -p 'test_*.py'
 python3 -B experiments/bitnet-cpu-20261014/benchmark.py --validate-only
+python3 -B experiments/bitnet-cpu-20261014/analyze_results.py benchmarks/bitnet-cpu-20261014/run-hf
 ```
+
+実用不合格のためdraft PR・merge・deployなし。次は公式配布物の対応版とtokenizer/template整合性を確認し、その後に同一固定集合、別の未使用日本語入力、baselineで再評価する。
