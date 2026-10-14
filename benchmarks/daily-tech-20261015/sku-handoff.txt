@@ -1,0 +1,133 @@
+SKU matching 最終引き継ぎ（2026-10-14）
+
+このファイルを最初に読む。branch: codex-sku-generic-model-gates-20261010。
+実験完了時点のcommitは410b9d02a8d85c1e4443d3b3401dabd0fd76ddf0。
+その後の引き継ぎ保存commitとremote HEADはgit log / git ls-remoteで確認する。
+旧handoffの「承認待ち」「GPU待機中」「未採点」は過去の時点。現在の状態は本書を優先。
+
+ユーザーの最新方針
+- 今後の主題は「小型モデルだけでやれるか」「一部の処理を小型モデルに移譲できるか」。
+- Lunaの追加精度検証はしばらく休止。高性能側の全選択肢・引用・適用範囲のタスク構造は
+  後のGemini検証用に保存する。今回の引き継ぎ中にGeminiは実行していない。
+- 商品/カテゴリ条件分岐を増やしすぎない。原値が違うcore/residualを自動証明へ戻さない。
+- GPUが速ければ継続利用可、問題があればCPUへ戻す。大きめGPUテスト・適宜retryを許可済み。
+  通信/待機失敗を理由に、状態不明の同じjobを新規submitしない。
+- 結果と失敗履歴を残し、次セッションが続けられる状態でリモートへpushする指示を受領。
+  以前のGitHub転送のauto-review拒否を隠さず記録する。今のpush指示と混同しない。
+
+再開時に読むもの（すべてexperiments/sku-matching/以下）
+1. session-failures-20261014.txt：Kaggle/出力保存/採点/誤診/承認/復元の失敗台帳。
+2. results/20261014-sku-nextdata-bounded-gpu-result-v2.txt：今回GPUの採点とstratum分離。
+3. results/20261014-sku-nli-zero-task-design-review-v1.txt：旧方式と今回の入力/判定差。
+4. gemini-sku-task-structure-20261014.txt：将来用に保存した全選択肢・引用・scope契約。
+5. results/20261013-sku-volume-unused-test-report-v1.txt：以前のLuna全量569件と限界。
+6. session-restore-20261014.txt：ZIPと索引の検証・復元。最終handoff ZIPのmanifestも参照。
+
+完了した実験と結果
+
+A. 以前のLuna全量（2026-10-13、今回GPUとは別の実験）
+46商品569ケース、全13159原AU行/62252条件を保持。既知439=正例332/負例107、未確定130。
+indexed-body-invariant-v3全体は281TP/51FN/0FP/107TN、正しいAU行再現281/332=84.64%。
+literal-onlyは164/332。全体にはliteral成功が含まれる。未確定採用54件は正誤不明。
+初回欠落/構造不正/packet958作者帰属不明などは台帳と元reportに残す。
+これはClaude Haiku5.5機械注釈による当時の固定集合評価。現在は既読の診断集合。
+元TEST106商品は全て消費済みで、独立な改善主張には別の固定評価集合が必要。
+
+B. 今回のNEXT_DATA商品説明 vs 全文の小型GPU完了パイロット
+元母集団46商品569ケース、1976pair=1005literal保護+971MLpair。元入力は不変。
+計算費用だけで小さい商品から選び、全元行/全条件が両モデル・両viewで完了した商品だけ採点。
+完了38商品324ケース=17ML商品152ケース+21literal-only商品172ケース。
+5818行/22004条件。ML171pair×2view=342paired inputs、808候補予測（404/view）。
+
+ML152ケースの既知108=正例33/負例75、未確定44：
+JEV 全文/説明とも 20TP/13FN/36FP/39TN、正しいAU行20/33=60.6061%。未確定採用12。
+NLI 全文/説明とも 0TP/33FN/0FP/75TN、正しいAU行0/33。未確定採用0。
+全324ケースで全文→説明の採否/採用行変更0（両モデル）。
+literal172件は既知164正例全て正しい行、未確定8。全体の184/197等をモデル単体性能と呼ばない。
+JEVの誤採用36件とNLI正例全見送りから、この構成のまま残り8ML商品245ケースへ拡大しない。
+全569ケース/971MLpairをGPUで完了したわけではない。
+
+C. Luna fresh全文/説明の対照（追加検証は休止）
+固定主108ケース=既知正例32/負例4/未確定72。
+全体はfresh全文26/32=81.25%→fresh説明28/32=87.5%、既知誤採用0、回収2/悪化0。
+このうちliteral31（既知正例23/未確定8）。ML商品77（正例9/負例4/未確定64）に限ると
+全文3/9→説明5/9、双方既知誤採用0。全体87.5%はモデル部分だけの指標ではない。
+別の誤り8件対照は双方2/8、回収1/悪化1。主集計へ混ぜない。
+主説明194packetは188raw/6missing/2invalid、185assigned pair中166validated/19unknown。
+fresh全文166packetは160raw/6missing。同実験内の既存5pair再利用込み172assigned、155valid/17unknown。
+missing/invalid/unknownを意味補修/再推論していない。原rawと失敗をそのまま保持。
+新説明には出典付き商品名も加えたため、純粋にHTMLゴミだけを除いた効果とは言わない。
+
+小型/Lunaの比較には同一MLケースだけを使う：
+全文共通29=正例9/負例4/未確定16：JEV0/9、NLI0/9、Luna3/9。既知誤採用は全方式0。
+説明共通36=正例16/負例4/未確定16：JEV4/16、NLI0/16、Luna7/16。既知誤採用は全方式0。
+29件と36件は違う集合で、これを全文→説明のpaired比較にしない。
+
+NLI 0件について確定したこと
+- 今回の完了171pair/404候補では、全文0support/329conflict/75unknown、説明0/350/54。
+  断片×候補もsupport0。最終SKU gateの前からNLI由来supportがない。
+- ML条件にあるsupport314は全てstrict_literal_family。NLIが314支持したわけではない。
+- 旧打切りv2全体の1418候補/11supportとは別集合。この11を今回の中間判定へ混ぜない。
+- クラス順とpremise/hypothesisの向きに具体的な入れ替え不具合は見つからなかった。
+- 以前は短い商品名+実選択行、候補の相対含意質量>=0.5でもsupportを許すchoice。
+  今回は本文/参照/在庫断片を用いた独立3クラスで絶対confidence>=0.90のみ。
+  最終目的は同じでも中間タスクは同じではなく、「小型は無理」の証拠にはならない。
+- 旧「NLIのみ27TP/1FP」も共有80条件はJEVを残した混合方式。全条件NLIの成績ではない。
+
+Kaggleの実モデル・固定job・計算状態
+JEV: argos1111/modernbert-ja-310m-jev、315203329params、rev07cda23579443e7a33c0f474114279fa032340d6。
+NLI: 0x3/bert-base-japanese-v3_nli-jsnli-jnli-jsick、111209475params、rev21df45469d02809dc430e3ac5f5d6f67b63aabf3。
+KaggleでLunaは使っていない。Lunaは別のhosted実行。
+初回Notebook v1はkernelspec欠落で開始前失敗。metadataだけ修正したv2はCUDAで動いたが
+7200秒上限でcancelled。34345raw scores/modelを回収。全量完了ではない。
+追加120674508byte公開payload転送は当初auto-review拒否→ユーザー「いいよ」等で具体許可→
+同privateDataset superbigzabuton/sku-nextdata-table-fp32-20261013-v1-inputs version2へ更新。
+固定Notebook superbigzabuton/sku-nextdata-table-fp32-20261013-resume-s000 version1を一度提出し正常完了。
+source signature de7c1af1390f6f435f97aaa16ae56c54242e8f705d414ff926c8a34918cbad88。
+Tesla T4/CUDA12.8/torch2.11.0+cu128/Python3.13.15/FP32 eager/batch16/threads4/autocast・TF32off。
+旧v2と全runtime一致。新15616exact入力記録=7808/model、31232model sequences、技術失敗0。
+driver最終elapsed1533.065秒は準備/保存を含む壁時計で、純GPU時間やCPUとの速度比較ではない。
+旧68690occurrenceと旧cache38686の値/origin変更0。merge cache54302、graph231872requests/412052occurrences不変。
+原occurrence優先、未書込みだけ最初のexactcache利用。新batch groupingのFP32差はあり得る。
+今回jobは終了、監視/推論worker残留なし。終了後quota残88882.487048秒/reserved0。
+別の古い83系jobはsubmission_unknown履歴があり、未受付と決め付けて再送しない。
+READY payloadは履歴再現用で、完了済みs000をもう一度実行する指示ではない。
+planning previewはnumeric_continuation_allowed=false。これを実行用に使わない。
+
+AU説明収集・別source修正候補・Claude
+ユーザー提示のCheerio収集器で、__NEXT_DATA__内itemInfoのextraItemComment、
+extraItemCommentWithVideo、itemComment、detailCommentを全て収集、同一HTMLは重複除去。
+46商品HTTP200/id一致/collected46、全文fallback0。画像はmetadataのみ、OCRなし。
+collectedは全仕様や購入オプションが分かったという意味ではない。
+別source修正候補 sku_embedded_json_source_spans_v1.py は、JSON内のraw \u003d と
+デコードした = の引用表記差を、原SHA/encoding/JSONPath/axis/memberで確認する。
+3カラーケースの54sourcefactsは36valid+18unknown→54source検証可能。精度改善は未検証。
+既存GPU/Luna凍結入力には未適用。importだけで有効化されずinstall_adapter context内のみ。
+元EUC-JP原本が見つかったため、Claudeへ既存カラー原本共有の追加依頼は不要。
+現在Claudeに新カテゴリ規則・新判定器の追加依頼はない。必要な場合だけ具体的に報告する。
+旧12semantic coreは07872d2とbyte一致、商品/カテゴリ固有の判定分岐追加0。
+
+評価・検証・復元上の制約
+- 参照はClaude Haiku5.5の機械注釈、人手goldではない。今回の集合は既読diagnosticで代表性なし。
+- 元複数正解行集合を採点。historical singleton-derived accepted-row cacheをgoldにしない。
+- 今回小型はscope unproved/citation semantics false。本番採用を検証したものではない。
+- 最終必須test_lab*:1497tests、assertion failure0、旧fixture欠落14errors、37skip。
+  新JSON adapter7tests成功。全greenとは言わない。引き継ぎ中は文書/保存物とoffline復元helperを
+  追加し、16archiveの実復元・再実行時の作成0を確認。意味判定・モデル出力の変更はない。
+- 原raw/重み/400M索引/古いZIPを移動・削除・上書きしない。新規workspace復元はSHA照合。
+- 最終ZIPは小さな引き継ぎ・failure evidence・Gemini用公開protocol/sampleを保存し、
+  大きいsource/results/indexは既存の分割ZIPをSHA付き依存として参照する。
+- 推論workerにgrade/参照/過去回答を渡さない。Kaggle公開入力payloadと採点入りhandoff ZIPは別。
+
+次セッションで進める順番
+1. remote branchと最新commitを確認。本書/失敗台帳/設計差/復元案を読み、既存成果を検証する。
+2. 小型単独の可能性を調べる前に、旧短文相対choiceと今回本文独立3クラスの差を切り分ける。
+   同じDEVケース/公開入力/元全行・全条件で比較し、既読testへ合わせた閾値探索はしない。
+3. 部分移譲は、単純な同属性・同対象の照合など汎用の処理単位で候補を出す。
+   supportの誤採用だけでなくconflictで正解候補を消す誤りを測る。分岐はカテゴリ別に増やさない。
+   coverage/誤採用/正解行の誤除外/unknown/費用/速度を別集計し、残りを上位方式へ残す。
+4. Lunaを追加実行しない。後にGeminiを試す場合は保存した同じ全選択肢・引用・scope契約と
+   元公開packetを使い、モデル変更とタスク変更を同時に行わない。
+5. この失敗した小型構成の無変更拡大や、初回失敗出力の意味的retryで数字を上げる作業はしない。
+
+次セッションへ貼る短い依頼文はsession-resume-prompt-20261014.txt。
