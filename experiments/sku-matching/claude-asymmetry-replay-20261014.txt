@@ -1,0 +1,45 @@
+Claudeの非対称条件抽出を再開（2026-10-14）
+
+ユーザーが指していた処理は、商品名寄せではなくClaude軸対応v7。
+入口は保存済みproducer/v7/align_sku_conditions.pyの
+value_pairs → axis_pairs → conditions → row_states。
+両方向の保存済みreranker類似度を再利用し、全原AU行に対して条件を分解する。
+
+出力
+- one_sided: 相手側の対応軸が見つからない条件、AUだけの可変軸。
+- residual: coreが共通に見える値で片側に残る追加条件。元値と方向を保持。
+- model_candidate: モデルの順位で結び付けた未確認候補。
+- aligned/contradiction/symmetric_unresolvedも元のheuristic出力として保持。
+  これらの語は採用・除外の意味的証明ではない。core一致で残条件を落とさない。
+
+2026-10-14の再生検証
+新しい .lab-output/sku-v7-asymmetry-replay-20261014-v2/ で元コードを変更せず実行した。
+1370 DEVケース、全32325 case×AU候補行を保持。
+all-row-trace.jsonl 99634360 bytes、SHA256
+5bd220069b0774a88ce634c93b2d70713fea3967608b77021db074044fdb4ad9。
+元traceとbyte一致。新しいモデル推論・Luna精度検証・採点・カテゴリ分岐追加なし。
+行状態: aligned454、pending_description_check1031、
+symmetric_unresolved465、contradiction30375。件数はheuristicで精度指標ではない。
+case×行×条件の延べone_sidedは楽天側8464/AU側636、residual1063、model_candidate1376。
+延べ件数を独立した商品/属性数として扱わない。
+
+例
+- タイプ「5分袖」「長袖」: one_sided。相手に同じ軸が見つからないので本文確認へ。
+- 「アクアマリン」/「アクアマリン（3月誕生石）」:
+  「3月誕生石」をAU側のresidualとして保持し、楽天側で確認する。
+- 「L」/「Lサイズ」: model_candidate。対応候補だが、この出力だけで同値確定しない。
+
+初回v1はtrace自体が元bytesと一致した後、元公開cases.jsonlが未復元で
+source-line provenanceのmanifest作成に失敗した。初回出力/失敗logは保持。
+元SHA付きv2/v3 archiveから公開cases.jsonlだけを復元し、新規v2で正常終了した。
+原trace/類似度/モデル出力/旧receiptは上書きしていない。
+
+次の小型単体検証はこの前処理が出す非対称条件・残条件・未確認候補を入口にする。
+元原条件と全候補行も保持し、対応付けの誤りや分解で情報が落ちる問題を別計測する。
+heuristic contradictionで正解候補を先に消す構成にはしない。
+
+依存は既存 results/20261013-sku-next-dev-checkpoint.zip（SHA
+b585408001f7755fb6bec6cd167fec119f6ed3bbb00724b4fba91a7b4c76b19c）と、
+session-restore-20261014.txtの元公開入力archive。
+機械集計/例/入力SHA/失敗と完了の履歴は
+results/20261014-sku-v7-asymmetry-replay-v1.json。

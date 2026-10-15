@@ -1,0 +1,9 @@
+再現手順
+1. Repository base commit ebf04ae を用意する。
+2. experiments/sku-matching/results/20261015-sku-library-axis-domains-v2.zip のSHA256が c2797784133fd8f983420559ae980f2a1aff3ffc9fcf0220998aa9820fa4ff8b と一致することを確認する（このbundleには重複収録しない）。
+3. ZIP内の凍結prepared inputsとsourceを使い、prepare_library_volume_v1.py / run_library_volume_v1.py に記録されたCLIで予測runを再現する。
+   既存の専用venvを使う場合（なければPython3.12以上のvenvにrequirements-axis-domains-v1.txtを導入する）:
+   .deps/sku-classical-venv/bin/python -B experiments/sku-matching/run_library_volume_v1.py --source .lab-output/sku-library-volume-20261015-v1/prepared-test-v1/population-inputs --original .lab-output/sku-library-volume-20261015-v1/source-test-v2/inputs --views .lab-output/sku-library-volume-20261015-v1/prepared-test-v1/views/views-price-free.json --output .lab-output/sku-library-volume-20261015-v1/replay-new
+   --outputは存在しない保存先にする。入力だけ確認する場合は--preflight-onlyを付ける。
+4. grade_library_volume_v1.py の再実行には別途private reference archiveが必要で、このbundleには含めない。
+5. 環境と依存versionはRUN_FREEZE.json、requirements、テストログを参照する。モデル呼び出しは不要。

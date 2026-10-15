@@ -1,0 +1,66 @@
+仕様表がある場合だけ表を使う変更（2026-10-15 JST、準備完了・GPU未実行）
+
+ユーザー指示
+「ある場合はそっちだけ使うようにできる？ ノイズが少ないので」。
+仕様表を識別した文書だけbody_textを表の内容に置換し、見つからない文書は
+元description.textを完全一致で保持する。モデル、閾値、集約、原SKU候補は変更しない。
+
+実装
+experiments/sku-matching/sku_spec_table_first_v1.py
+experiments/sku-matching/prepare_v7_spec_table_first_v1.py
+tests/test_lab_sku_spec_table_first.py
+原AU JSON/楽天HTMLのSHAを確認し、原JSON leaf、decode encoding、DOM table/row/cellの
+正確なUnicode spanとquoteを保持。楽天はspan.item_desc内だけを対象とする。
+項目/値の二列構造（row header、又は明示仕様caption/heading）を仕様表候補とする。
+レイアウトの親tableは採らず、内部の独立した表を候補にできる。
+複雑rowspan/colspanで対応不明な文書は元本文へ戻す。
+原値、単位、条件行、表内の商品説明/注意事項は削除せず、同一表の重複だけを整理する。
+これは一般構造による仕様表候補の選択で、意味やSKU適用範囲の証明ではない。
+カテゴリ、商品ID、参照ラベルに合わせた分岐はない。
+
+固定入力
+.lab-output/sku-v7-small-nli-spec-first-20261014-v1/
+元比較対象 .lab-output/sku-v7-small-nli-single-20261014-v2/（回収・採点完了済み）。
+同じDEV40/20商品、504 AU行、1924条件、1045 request、543 model contexts。
+40doc中11をspec_table、29をfull_body_fallback（AU8/20、楽天3/20を表へ置換）。
+543context中185を置換、358は元本文完全一致。本文684938→561444文字（約18%減）。
+全nonbody public fields（prefix/axes/options/context_ref/document identity）は不変。
+NLI model/revision、CUDA FP32設定、0.90閾値、chunk/row/accept集約コードを変えていない。
+private Dataset向けpublic ZIPは341098bytes、旧回答・参照・host joins・重み・秘密情報なし。
+hostに全入力、表選定sidecar、policy、source/selector/preparation SHAと比較元pinsを凍結。
+全40docの選定再生がsidecarと一致、全543contextのnonbody fields一致を確認。
+
+検証
+新しい境界テスト13件＋既存単独NLI8件＝21件pass。
+必須test_lab*は1488 tests、failures5/errors49/skipped42。
+前回1475 testsの既存failures5/errors49/skipped42と同じで、新13件は全pass。
+全文suite成功とは報告しない。原logをexperiment内に保存した。
+
+Kaggleの状態
+Notebook/Datasetアップロード用フォルダは作成済み。送信・再測定は未実施。
+2026-10-15 JST時点の確認ではjob/job.json、network-*.log、稼働batch processは存在しない。
+新しい精度の数値・terminal version・GPU実行完了はない。
+旧Kaggle version2の0/36を、仕様表優先方式の成績として扱わない。
+
+権限要求
+実コマンド: python3 -B /tmp/sku_spec_first_kaggle_run_20261014.py
+cwd /workspace/Searching_Experiment。
+exec_command sandbox_permissions=with_additional_permissions、network.enabled=trueのみ。
+追加filesystem権限、require_escalated、request_permissions、MCP/Appは使用していない。
+この要求は655.1秒後にuser abortで中断。実行開始・外部送信を示すreceiptはない。
+Auto-reviewの判定/拒否理由は返されておらず、auto-review rejectionとは断定しない。
+同じ承認要求は再発行していない。通常execのネットワーク制約を迂回しない。
+必要なのは許可したKaggle helperによる一括処理へのexec network権限。
+
+再開手順（未実行）
+保存したbatchを通常の権限管理で1回起動する。内部処理は以下を順次実行する。
+.deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py doctor
+.deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py quota
+.deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py dataset-update --folder .lab-output/sku-v7-small-nli-spec-first-20261014-v1/dataset-upload --message 'DEV40 specification tables when available; same NLI model and decision rules'
+.deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py submit --folder .lab-output/sku-v7-small-nli-spec-first-20261014-v1/notebook-upload --output .lab-output/sku-v7-small-nli-spec-first-20261014-v1/job
+.deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py wait --job .lab-output/sku-v7-small-nli-spec-first-20261014-v1/job/job.json --output .lab-output/sku-v7-small-nli-spec-first-20261014-v1/job --wait-seconds 7200
+元private Dataset/Notebookを更新するが、元versionsは消さない。
+GPU残量確認、input hash確認、job未作成の確認を行ってから一度だけsubmit。
+submit不明なら同じjobを照合し、再submitしない。
+waitは同じ固定versionのstatus/log/recoveryを一つの監視にまとめる。
+回収後は既存grade_v7_small_nli_single_v1.pyで全行/全条件をfreezeし採点する。

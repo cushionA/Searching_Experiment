@@ -1,0 +1,56 @@
+小型モデル再開・判定規則の切り分け（2026-10-14）
+
+再開元: codex-sku-generic-model-gates-20261010 / ebf04ae。
+session-handoff-20261014-final.txt、session-failures-20261014.txt、session-restore-20261014.txtを確認。
+SHA付き17archiveから11604ファイルを新規復元、52同一を再利用。
+physical capture91件SHA一致、89件を元配置へ複製。DEV checkpointも714memberを追加復元。
+既存raw・索引・archiveを上書き/移動/削除していない。
+
+今回完了した比較
+同じ旧DEV40ケース/20商品、全504行/1924条件/1045要求/8577原候補を保持した。
+モデルは固定NLI 0x3/bert-base-japanese-v3_nli-jsnli-jnli-jsick、
+revision21df45469d02809dc430e3ac5f5d6f67b63aabf3、元CPU FP32スコアを変更せず再生。
+商品名+実選択行のpremise、旧hypothesis、モデル出力を固定し、判定規則だけを比較した。
+相対choiceは既定0.5、一意首位、別候補首位はunknown。絶対3クラスは既定0.90。
+これは本文断片タスクを再現した比較ではない。新推論・閾値探索・カテゴリ例外追加なし。
+元実行にはJEV unknown controlによる11要求/43候補の未計算がある。
+両規則ともその元skipをunknownに保持した。NLI単独の全件完了評価とは呼ばない。
+
+方式                    要求support/conflict/unknown   行support/conflict/unknown
+旧相対choice                 105 / 0 / 940                  12 / 0 / 492
+絶対3クラス                     0 / 31 / 1014                 0 / 43 / 461
+要求単位のdecisive coverage: 10.05% / 2.97%。literal overlayなし。
+厳格な行組立では、1行が全条件support、残る全行がconflictの時だけ診断上の採用。
+unknown競合行を除外しないため、双方とも最終採用0、既知正例36件を全て見送った。
+同じscoreに対して規則だけで105support→0になる。以前と今回の数字の差を
+モデル能力だけに帰属させない。ただし本文/仮説/metadata/断片集約の影響はまだ分離していない。
+
+元の複数正解行集合を、両規則の出力freeze後に原answer envelopeから読み込んだ。
+Claude Haiku5.5機械注釈で、人手goldではない。既知正例36/既知負例0/未確定4。
+元の既知正解36行をconflictで消した件数は双方0、正解全消失ケース0。
+全supportの12行は部分処理候補だが、適用scope/引用の意味は未証明。
+負例がないのでFP0や誤除外0を、安全な移譲や本番採用の証明にしない。
+費用/速度は今回測定していない。offline再生の所要時間をモデル速度として扱わない。
+
+次の検証構成
+1. 同じ固定DEV40、全元行/条件/選択肢を保持し、JEV事前選別なしで小型単独の入力をfreeze。
+   元skipを補う新推論は別runにする。既存rawへ追記/意味的retryしない。
+2. NLI pin/FP32/環境/閾値を固定し、まず同じ短文premiseで旧/現hypothesisだけを比較。
+   次に同じ現hypothesis/絶対規則で、metadataを固定した短文/本文断片を比較する。
+   同じnative公開sourceから実選択・在庫・参照本文を区別し、全選択肢を保持する。
+   本文追加・文言変更・規則変更・断片集約変更を一度に行わない。
+3. 部分移譲は同属性/同対象の照合という汎用単位で、support候補提示とconflict除外を別計測。
+   scope未証明の数値supportを自動採用せず、unknownと残条件を上位方式へ残す。
+   coverage、誤採用、正解行の誤除外、正解全消失、unknown、実計算費用/速度を別記録する。
+   消費済みTESTや既読DEVへ合わせて閾値/カテゴリ例外を増やさない。
+4. Luna追加精度検証は休止。Geminiは将来用に保存した契約を使い、今回は実行しない。
+
+実行入口
+python3 -B experiments/sku-matching/replay_dev_nli_policies_v1.py --output <新しい空の出力先>
+最終結果: .lab-output/sku-small-model-dev-policy-ablation-20261014-v3/
+初回v1/v2は履歴保存。v1は候補集合完全性チェックと採用行fieldの不足、
+v2は元archiveの独立pinを追加する前。最終v3では非skip候補の完全被覆、
+11要求/43候補の元skipと理由、archive/manifest SHA、全条件bindingを検証する。
+実データではv1/v2/v3の判定件数/最終採用数の差0。旧ファイルを上書きしていない。
+結果ZIPは新しいfreeze/grade/規則別出力/code/test receiptを保存し、大きい旧入力は
+既存DEV checkpointと元ラベルarchiveをSHA付き依存として参照する。

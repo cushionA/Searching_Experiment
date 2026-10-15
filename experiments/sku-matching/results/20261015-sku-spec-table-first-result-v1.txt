@@ -1,0 +1,100 @@
+仕様表優先NLI比較（2026-10-15 JST、回収・採点完了）
+
+結果
+仕様表を識別できた文書では表だけを使い、ない文書では元本文をそのまま使う変更を実装し、
+同じDEV40でKaggle比較まで完了した。正解SKU確定は0/36のまま。
+本文viewの正解行conflictは27/36（75.0%）から23/36（63.9%）へ減った。
+4つの正解行がconflictからunknownに変わり、新しい正解行conflictは0。
+支持された行は依然0。誤除外は軽減したが、確定力の改善ではない。
+
+固定比較
+基点branch codex-sku-generic-model-gates-20261010、commit ebf04ae。
+同一DEV40/20商品、全504 AU行、双方向1924条件、1045 requests、543 contexts。
+全原選択肢3785/view、7570 candidate viewsを保持。
+比較元 .lab-output/sku-v7-small-nli-single-20261014-v2、Kaggle version2。
+新実験 .lab-output/sku-v7-small-nli-spec-first-20261014-v1、Kaggle version3。
+ref superbigzabuton/sku-v7-nli-single-20261014-v1。
+v3 source_signature a1499a8f2bb4228635d76bae92716e1901908b39c19e7a54141cba9d2ee12938。
+private Dataset更新成功、Notebookを1回だけsubmit。status/log/outputは同じwaitで回収。
+terminal complete、NOTEBOOK_RECEIPT returncode0、ready_for_verification=true。
+
+変更した入力
+原AU JSONの出典leaf、楽天HTMLのspan.item_descから、一般的な項目/値の二列表を選ぶ。
+raw SHA、JSON lexeme、encoding、DOM table/row/cell/linkのsource span/quoteを保持。
+row-header構造又は明示仕様caption/headingがない表、レイアウト親tableは採らない。
+複雑なrowspan/colspanは元本文へfallback。表内の条件、注意、複合値、単位は落とさない。
+表内に含まれる商品説明・関連商品・配送記載を意味で削る処理は追加していない。
+この構造選択は意味や現在SKUへの適用の証明ではない。画像の仕様表はOCRしていない。
+識別した11/40docだけ表へ置換（AU8/20、楽天3/20）。残る29docは元本文完全一致。
+185/543contextが変更、358contextは不変。本文684938→561444文字（18.03%減）。
+変更context内の本文だけでは203170→79676文字。
+context_ref、順序、prefix、axis、全option vector、原document identityは全543件で不変。
+元hostの全10入力pinsが一致し、membership/全case/全row/全conditionを保持。
+表を選んだ文書は343 requests、184 rows、16 casesに影響した。
+
+モデル・規則
+NLI 0x3/bert-base-japanese-v3_nli-jsnli-jnli-jsick、111209475 params。
+revision21df45469d02809dc430e3ac5f5d6f67b63aabf3、全6model file SHA一致。
+実ロードnliのみ、Tesla T4/CUDA FP32/eager、batch16/threads4、autocast/TF32 off。
+両runのGPU runtime metadataも一致。CPU推論、旧score再利用、新Luna推論なし。
+同じ11worker code SHA、同じhypothesis、0.90閾値、800char/512token chunk規則、
+同じsupport/conflict/unknown集約と最終unique-support/all-competitors-conflict gate。
+literal overlay/JEV prefilter/Claude v7 stateによる候補除外は追加していない。
+変更はbody選定と表の行列を項目/値としてテキスト化する部分だけ。
+
+採点とpaired transitions
+                                  v2 全文       v3 仕様表優先
+既知正例                             36              36
+正しいSKU確定                         0               0
+FN                                   36              36
+正解行をconflict                     27              23
+request support                       0               0
+request conflict                    379             237
+request unknown                     666             808
+row support                           0               0
+row conflict                        344             281
+row unknown                         160             223
+全option support                      0               0
+全option conflict                  1010             468
+全option unknown                   2775            3317
+
+変更185contextのbody option1265件:
+conflict→unknown542、conflict→conflict15、unknown→unknown708。
+unknown→conflict0、supportへの遷移0。変更なし358contextのoption state変化0。
+変更先の343 requests: conflict→unknown142、conflict維持12、unknown維持189。
+変更先の184 rows: conflict→unknown63、conflict維持17、unknown維持104。
+商品名＋実選択行だけのtitle_row viewは全candidate states・request/row/case判定不変。
+title_rowの正解行conflict0、正解確定0/36。両viewとも最終case decision変化0。
+
+conflictを解除できた元正解行
+case-67b87a0ef024f16977e7 / au:252214953:188718598:3:0
+case-e431b2c238f831825799 / au:252214953:188718598:19:0
+case-d9e75473d512441c060e / au:665599752:191423068:2:1
+case-dff6d8feb6e000f7fce5 / au:665599752:191423068:1:1
+解除はunknownへの移行で、support証明や採用の復元ではない。
+
+評価範囲
+Claude Haiku5.5の機械注釈とのDEV比較。人手gold・独立TEST・一般性能ではない。
+参照既知36は全positive、残る4ケースは未確定で採点外。既知negative0。
+precisionは未定義。FP0は全件見送りの結果で、不一致商品の安全性を実証しない。
+全predictionsをOUTPUT_FREEZEに凍結してから元の全正解行集合を参照した。
+旧literal＋Luna35/36とは別タスク。この結果をClaude非対称抽出の精度とは呼ばない。
+
+技術検証
+raw11303 records、unique exact pairs11299、全7570 option statesを再計算して一致。
+technical failure/preparation issue/unscored/partial selected-text coverageは全て0。
+raw coverageは今回選定した本文についての一致で、除いた全文を推論した主張ではない。
+model/runtime/code/source/host/output freezes、Notebook archive CRC/size/SHAを検証した。
+新boundary tests13＋既存NLI tests8＝21pass。
+必須1488 testsの既存failures5/errors49/skipped42は保存し、full greenとは報告しない。
+実成果物grading/paired比較はexit0。独立のローカル監査でもpins/件数/遷移が一致。
+実GPU推論319.70秒、worker528.67秒、Notebook568.69秒。
+
+成果物
+grade: .lab-output/sku-v7-small-nli-spec-first-20261014-v1/grade-v1/grade.json
+paired比較: .lab-output/sku-v7-small-nli-spec-first-20261014-v1/comparison-v1.json
+raw ZIP1999927bytes、SHA065b34f2d11145288defa235c6d360e931f96eaee5db33a7b326ddd35647ee2b。
+同名result-v1.jsonにpaired比較、同名result-v1.zipに両runの再開用入力/出力/codeと
+仕様表選定の原本40ファイルを保存。元raw/過去checkpoint/途中失敗は上書きしていない。
+今後仕様表優先入力を作る入口はprepare_v7_spec_table_first_v1.py。
+この回収で追加ジョブ・モデル・閾値調整・カテゴリ例外は実行していない。

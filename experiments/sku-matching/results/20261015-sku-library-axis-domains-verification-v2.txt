@@ -1,0 +1,44 @@
+軸対応実験 v2 の最終検証と再実行（2026-10-15 UTC）
+
+対象ブランチ: codex-sku-generic-model-gates-20261010
+基準HEAD: ebf04aed9b5a747f5db8961b9c96fef7be81adef
+成果物: 20261015-sku-library-axis-domains-v2.zip
+SHA256: c2797784133fd8f983420559ae980f2a1aff3ffc9fcf0220998aa9820fa4ff8b
+
+同じHEADのPythonソースだけを別の空フォルダーへ展開し、上記ZIPを追加した。
+PR、remote ref、他ブランチからの取得は行っていない。
+ZIPの109 member、台帳の108ファイル、凍結された依存71ファイルをSHA256とサイズで確認した。
+基準入力を元workspaceから読むことなく、ZIP内の全入力だけでpreflightが成功した。
+30,169要求 / 214文書 / 107商品 / 32,325候補行 / 1,370ケース / 132,136条件を確認。
+参照・grade・traceはpreflightで読んでいない。新しい予測やモデル推論も行っていない。
+
+再実行には上記HEADのリポジトリとPython 3.12以上が必要。
+ZIPを別の作業コピーへ展開し、requirements-axis-domains-v1.txtの固定ライブラリを導入する。
+同じvenvを使う場合の確認コマンド（リポジトリrootから）:
+
+.deps/sku-classical-venv/bin/python -B experiments/sku-matching/run_library_axis_domains_v1.py --preflight-only --output .lab-output/axis-domain-preflight-new
+
+--outputには存在しない保存先を指定する。初回のcold検証は、既存結果を含む既定保存先に
+FileExistsErrorで停止した。その記録を保持し、新しい保存先を指定した確認で成功した。
+preflightは保存先を作成しない。予測を再実行する場合は--preflight-onlyを外し、別の新規保存先を使う。
+再採点にはZIPに含めていない元の私有DEV参照archiveが必要。
+
+v1の保存物は履歴として保持した。v1 JSONのall_original_condition_bindingsは要求数30,169を
+誤って入れていたため、全方向付き条件数はv2 JSONのall_directional_condition_bindings=132,136を使う。
+v1 ZIPにはbaselineの一部view出力が不足していた。v2では全12出力とfreezeを収録した。
+予測・採点・判定規則はv1から変えていない。
+
+主方式: mutual_unique_raw_components。
+既知正解の一致350→458件、既知正解の一致なし58→59件。
+機械DEV参照に対する誤判定0件、既知正例904行の誤除外0件。
+追加一致108件は11商品、そのうち56件は1商品に集中。
+全一致478件中20件、全一致なし83件中24件は参照不明。809件は保留。
+残余文脈1,926→1,320（31.46%減）は処理量の試算。AI呼出数・token・料金は未測定。
+約5.80秒は入力読込後のCPU実行・出力保存の経過時間であり、プロセッサ使用時間ではない。
+関連67テスト成功。必須全体1,554テストには4失敗・66エラー・60skipが残る。
+機械注釈の既探索DEVであり、独立評価や意味的一致の保証ではない。本番判定は変更していない。
+
+確認記録:
+.lab-output/sku-library-axis-domains-20261015-v1/COLD_EXTRACTION_VERIFIED_V2.json
+.lab-output/sku-library-axis-domains-20261015-v1/COLD_PREFLIGHT_VERIFIED_V2.json（初回停止）
+.lab-output/sku-library-axis-domains-20261015-v1/COLD_PREFLIGHT_NEW_OUTPUT_VERIFIED_V2.json（成功）

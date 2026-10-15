@@ -1,0 +1,29 @@
+非対称抽出に関係する保存済みLuna評価（2026-10-14）
+
+新しいLuna推論や再注釈・再採点は行わず、既存reports/score/receiptを調査した。
+Claude v7の対称/one_sided/core/residual検出そのもののprecision/recallは確認できなかった。
+v7再生1370ケース/32325候補行の件数はheuristic状態の集計であり、精度ではない。
+歴史的v5にもalignment replayはあるがlabels_read=false。最終SKU評価とは区別する。
+
+最も近い保存済み最終結果
+fresh-dev-choice-nli-result-20261013.txtとresults/20261013-sku-next-dev-checkpoint.zip内
+.lab-output/sku-next-dev-checkpoint-build-20261013-v1/dev-score.json。
+DEV20商品×2ケース=40、Claude Haiku5.5機械参照が既知の正例36、負例0、未確定4。
+literalとLuna全選択肢判定を含む最終方式: 正しいSKU行35/36=97.22%、取りこぼし1。
+別AU行誤採用0、既知負例がないのでFP0は誤接続耐性の証明ではない。
+独立TESTではなく、production_adoption_allowed=false。
+既存scoreでは35TPのliteral/Lunaの寄与はcase単位に分離されていない。
+task/context段階のliteral305、Luna238、最終task source literal1076/choice_nli848は
+case正解数ではなく、35TPの内訳として使わない。
+
+以前の残条件だけの小さなLuna機械注釈
+results/20261010-sku-generic-residual-checkpoint.zip内の
+.lab-output/sku-generic-residual-blind-annotations-20261010-v1/manifest.json と
+.lab-output/sku-generic-residual-machine-comparison-20261010-v1.json。
+重複除去後の先頭32条件でsupport17/conflict14/unknown1、人手検証なし。
+当時のJEV/NLI/GLiNERは支持再現0/17、3クラス一致1/32。
+現在のv7検出精度や今回GPU実験の結果ではない。母集団/入力/判定の異なる数字を混ぜない。
+
+今回の小型実験は同じDEV40の全原行・原条件でNLI単体を使い、literal overlayなし。
+Lunaの保存済み最終方式とはモデル数、literal経路、引用/scope契約が異なる。
+比較する際はその差を明記し、小型のsupport/誤conflict/最終SKU結果を別集計する。

@@ -1,0 +1,38 @@
+BitNet.cppによる生成モデルへの部分移譲の可能性（2026-10-15 JST、資料調査のみ）
+
+判断
+今回失敗した111M NLIとは別に、数Bの指示追従生成モデルで軸/値の対応候補を
+作る検証は可能。BitNet.cppは対応する低bitモデルのCPU推論を軽くする選択肢になる。
+SKU最終採用や候補除外の根拠としての品質は未検証であり、モデル出力は候補扱いにする。
+CPU/GPU推論、モデル重みdownload、install/build、新Luna精度検証は行っていない。
+
+公式一次資料の確認
+https://github.com/microsoft/BitNet/blob/main/README.md
+- Microsoft公式BitNet-b1.58-2B-4Tは2.4B。CPU x86/ARMの対応kernelを掲載。
+- community modelsにはBitNet 0.7B/3.3B、1.58bit Llama3 8B、Falcon3 1B-10B、Falcon-E 1B-3B。
+- 2026年のCPU kernel改善とembeddingモデルも掲載されている。embeddingは生成モデルと別用途。
+- BF16からの変換例はBitNetモデルのmaster weightsで、任意Qwenの一般1bit化を保証しない。
+
+https://huggingface.co/microsoft/bitnet-b1.58-2B-4T
+- native ternary（1.58bit）weightsで最初から学習、4T tokens、SFTとDPOを経た生成モデル。
+- context4096。languageタグEnglish、limitationsは非英語対応が限定的と明記。
+- 日本語SKU・全原選択肢の同値/不一致・JSON厳密出力の性能はカードから確立できない。
+- benchmarkのmemory0.4GBはNon-embで、embedding/KV cache/実行buffer込みRAMではない。
+- 速度/省電力の利点には専用C++ kernelが必要。通常Transformersで同じ効果を期待しない。
+
+比較候補の一次資料
+https://huggingface.co/Qwen/Qwen2.5-7B-Instruct-GGUF
+- 日本語を含む29超言語、structured outputs/JSON生成の改善を明記した通常GGUFモデル。
+- llama.cppの4bitモデルとして比較可能。BitNet専用kernelの対応モデルではない。
+https://huggingface.co/Qwen/Qwen3-4B
+- 4.0B、100+言語/方言、thinking/non-thinking切替、llama.cpp対応を記載。
+- SKUタスクの実精度は未評価。少数の候補作りでは出力長/思考生成も計算量に含める必要がある。
+
+将来検証する際の切り分け
+生成runtimeの効率と、日本語のタスク性能を別に測る。
+まず仕様表を使う少数の未確定条件で、原軸/原値への対応候補と原文根拠箇所を出力させる。
+対応先の実選択正解はmodel入力へ渡さず、全原選択肢を保持する。
+モデル候補だけで候補SKUを除外・採用しない。literal証明/元の全条件gateをコードで保持。
+日本語原値・複合条件・残条件の保持、候補coverage、根拠の原文一致、誤除外、時間/RAMを評価する。
+今回のNLI0/36やLuna+literal35/36と、モデル/タスク両方が変わる比較を同条件ablationと呼ばない。
+既存の仕様表優先入力とGemini用タスク構造は保持し、カテゴリ例外や個別商品規則を増やさない。

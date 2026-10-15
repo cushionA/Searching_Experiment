@@ -1,0 +1,27 @@
+SKUライブラリ・ボリューム検証（凍結済み履歴データ）
+
+主方式はmutual_unique_raw_components。既存手法で評価済みの履歴コホートを使った診断であり、独立テストではありません。
+参照はClaude Haiku5.5 machine annotation, not human gold。参照内訳: {"matched": 897, "review": 251, "unmatched": 144}。Claude Haikuの機械注釈で、人手goldではありません。
+追加の履歴テスト母集団: 106商品・1292ケース、30177行、135198方向付き条件。元の商品行と条件を全件保持し、価格spanだけ凍結済みライブラリ検出器で評価viewから除外しました。
+
+主方式の結果:
+  accept/reject/review = 597/3/692
+  既知参照で正しいaccept/reject = 576/3
+  既知参照で誤ったaccept/reject = 0/0
+  既知正例の正解候補の誤除外 = 0/897
+  一致あり参照897ケースのうち、正しいSKU行を確定したのは576ケース。残りは保留・未確定として扱う。
+  参照unknownのままaccept/reject = 21/0
+全方式: baseline_raw: 正しいaccept/reject 461/3, 誤り 0/0; previous_components: 正しいaccept/reject 551/3, 誤り 0/0; mutual_unique_raw_components: 正しいaccept/reject 576/3, 誤り 0/0
+各方式のAI対象context推定（全体→残り）: baseline_raw 4742→1948; previous_components 4742→1498; mutual_unique_raw_components 4742→1214
+context数は推定で、実際のAI呼び出し回数・token数・費用ではありません。production gateは変更していません。
+
+負荷試験:
+  重複を含むreplayは50690ケース / 1196025行 / 4889032条件binding、gate再組立2.561318259000359秒、peak RSS 164753408 bytes。
+  重複なしで巡回したDEV母集団は1370ケースです。50k目標に届くため同一母集団を再巡回しており、重複は速度測定だけで精度データではありません。新しいテストの1292ケースとは別の数です。
+  新母集団のnative full-run phase別wall time: {"axis_domain": 0.08942887900002461, "baseline_raw": 0.11054687499995453, "components": 2.716429468000115, "hypothesis_assembly": 0.1796111789999486, "load": 8.105400422999992, "total": 13.602494039000021, "validation": 0.750961825999866, "write_outputs": 1.335837655999967}。peak RSS 1969799168 bytes（約2GB）。生成処理のCPU時間は未計測。既存DEVでの生成参考値: {"axis_compound_main": {"basis": "frozen axis-graph run with diagnostic component overlay; fixed native DEV population", "full_run_seconds_in_frozen_freeze": 5.802318355999887, "native_population_cases": 1370, "not_replayed_at_volume_targets": true}, "compound_helper": {"basis": "frozen phrase-component run; fixed native DEV population", "full_run_seconds_in_frozen_freeze": 5.025397028999578, "native_population_cases": 1370, "not_replayed_at_volume_targets": true}, "price_free_raw": {"basis": "frozen normalization/selection run; no graph/phrase parsing", "full_run_seconds_in_frozen_freeze": 1.8221405730000697, "native_population_cases": 1370, "not_replayed_at_volume_targets": true}}。
+
+テスト: 関連focused tests 52件pass。必須venv suiteは1558件中fail 4 / error 66 / skip 60。旧system Python実行は1570件中fail 4 / error 46 / skip 116で、networkx等の環境依存import失敗を含みます。ログは両方同梱します。
+
+再現ベースはrepository commit ebf04ae と axis-domains v2 ZIP SHA256 c2797784133fd8f983420559ae980f2a1aff3ffc9fcf0220998aa9820fa4ff8b（大きなZIP自体は重複収録しません）。凍結済みprepared inputsは収録し、同じ内容を含むunmodified preparer staging snapshotは省略します。grade再現にはbundle外のprivate reference archiveが必要です。
+Source audit: All 1292 cases/106 products retained; native DEV fields equivalent for107 products after normalizing path separators only. Original product-file byte SHA mismatch recorded.
+原ケース行は保存済み入力から複写し、商品コンテキストは既存抽出器でraw captureから再構築した。元productsファイル全体とはSHAが一致していない。旧DEV107商品の行・軸・値・引用・原本SHAは、参照パス区切りだけを比較用に正規化すると全107商品で一致した。値や引用そのものは正規化していない。

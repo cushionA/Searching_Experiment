@@ -1,0 +1,253 @@
+{
+  "schema": "sku-v7-asymmetry-replay-result-v1",
+  "branch": "codex-sku-generic-model-gates-20261010",
+  "resume_commit": "ebf04ae",
+  "source_producer": "Claude axis alignment v7",
+  "source_producer_sha256": "173c9c90157278147740f3c885ba5fae9144152b0d20493a19056eb3efba5a7e",
+  "source_archive": {
+    "path": "experiments/sku-matching/results/20261013-sku-next-dev-checkpoint.zip",
+    "sha256": "b585408001f7755fb6bec6cd167fec119f6ed3bbb00724b4fba91a7b4c76b19c"
+  },
+  "new_model_inference": false,
+  "original_code_changed": false,
+  "labels_read": false,
+  "model_accuracy_measured": false,
+  "heuristic_outputs_are_not_proof": true,
+  "case_count": 1370,
+  "all_original_case_row_count": 32325,
+  "row_states": {
+    "contradiction": 30375,
+    "aligned": 454,
+    "pending_description_check": 1031,
+    "symmetric_unresolved": 465
+  },
+  "case_reasons": {
+    "all_conditions_aligned_on_one_row": 454,
+    "pending_description_check": 807,
+    "symmetric_condition_unresolved": 109
+  },
+  "condition_instances_by_kind_and_state": {
+    "rakuten:contradiction": 46384,
+    "rakuten:aligned": 10727,
+    "rakuten:residual": 1063,
+    "rakuten:one_sided": 8464,
+    "rakuten:symmetric_unresolved": 1725,
+    "rakuten:model_candidate": 1376,
+    "au_only:one_sided": 636
+  },
+  "condition_count_unit": "case x AU row x condition; these are not unique product-level attributes",
+  "examples": {
+    "residual": [
+      {
+        "case_id": "case-dd1468dbcb1d1c3e20dd",
+        "au_row_key": "au:311776385:80206320:1:0",
+        "kind": "rakuten",
+        "axis_key": "天然石タイプ",
+        "axis_label": "天然石タイプ",
+        "value": "アクアマリン",
+        "au_axis": "カラー",
+        "au_value": "アクアマリン（3月誕生石）",
+        "status": "residual",
+        "core": {
+          "identical": true,
+          "rakuten": [
+            "アクアマリン"
+          ],
+          "au": [
+            "アクアマリン"
+          ]
+        },
+        "residual": [
+          {
+            "side": "au",
+            "text": "3月誕生石",
+            "source_value": "アクアマリン（3月誕生石）",
+            "verify_with": "rakuten"
+          }
+        ]
+      },
+      {
+        "case_id": "case-3f874d419d439b15248b",
+        "au_row_key": "au:311776385:80206320:2:0",
+        "kind": "rakuten",
+        "axis_key": "天然石タイプ",
+        "axis_label": "天然石タイプ",
+        "value": "ガーネット",
+        "au_axis": "カラー",
+        "au_value": "ガーネット（1月誕生石）",
+        "status": "residual",
+        "core": {
+          "identical": true,
+          "rakuten": [
+            "ガーネット"
+          ],
+          "au": [
+            "ガーネット"
+          ]
+        },
+        "residual": [
+          {
+            "side": "au",
+            "text": "1月誕生石",
+            "source_value": "ガーネット（1月誕生石）",
+            "verify_with": "rakuten"
+          }
+        ]
+      },
+      {
+        "case_id": "case-32a376e703f702fdedf9",
+        "au_row_key": "au:311776385:80206320:0:0",
+        "kind": "rakuten",
+        "axis_key": "天然石タイプ",
+        "axis_label": "天然石タイプ",
+        "value": "ムーンストーン",
+        "au_axis": "カラー",
+        "au_value": "ムーンストーン（６月誕生石）",
+        "status": "residual",
+        "core": {
+          "identical": true,
+          "rakuten": [
+            "ムーンストーン"
+          ],
+          "au": [
+            "ムーンストーン"
+          ]
+        },
+        "residual": [
+          {
+            "side": "au",
+            "text": "6月誕生石",
+            "source_value": "ムーンストーン（６月誕生石）",
+            "verify_with": "rakuten"
+          }
+        ]
+      }
+    ],
+    "one_sided": [
+      {
+        "case_id": "case-2005f458935f61409085",
+        "au_row_key": "au:321039323:323861103:1:0",
+        "kind": "rakuten",
+        "axis_key": "Key0",
+        "axis_label": "タイプ",
+        "value": "5分袖",
+        "au_axis": null,
+        "au_value": null,
+        "status": "one_sided",
+        "core": null,
+        "residual": null
+      },
+      {
+        "case_id": "case-c00089a71a4000b8bb04",
+        "au_row_key": "au:321039323:323861103:1:0",
+        "kind": "rakuten",
+        "axis_key": "Key0",
+        "axis_label": "タイプ",
+        "value": "長袖",
+        "au_axis": null,
+        "au_value": null,
+        "status": "one_sided",
+        "core": null,
+        "residual": null
+      },
+      {
+        "case_id": "case-764e201776e210125bf7",
+        "au_row_key": "au:524519746:139374315:0:0",
+        "kind": "rakuten",
+        "axis_key": "お選びください",
+        "axis_label": "お選びください",
+        "value": "-",
+        "au_axis": null,
+        "au_value": null,
+        "status": "one_sided",
+        "core": null,
+        "residual": null
+      }
+    ],
+    "model_candidate": [
+      {
+        "case_id": "case-163fa1792c386ae5e726",
+        "au_row_key": "au:379580385:88157962:1:0",
+        "kind": "rakuten",
+        "axis_key": "サイズ",
+        "axis_label": "サイズ",
+        "value": "L",
+        "au_axis": "サイズ",
+        "au_value": "Lサイズ",
+        "status": "model_candidate",
+        "core": {
+          "identical": false,
+          "rakuten": [
+            "L"
+          ],
+          "au": [
+            "Lサイズ"
+          ]
+        },
+        "residual": []
+      },
+      {
+        "case_id": "case-87fc00decbf4cfc9cc5d",
+        "au_row_key": "au:379580385:88157962:2:0",
+        "kind": "rakuten",
+        "axis_key": "サイズ",
+        "axis_label": "サイズ",
+        "value": "LL",
+        "au_axis": "サイズ",
+        "au_value": "LLサイズ",
+        "status": "model_candidate",
+        "core": {
+          "identical": false,
+          "rakuten": [
+            "LL"
+          ],
+          "au": [
+            "LLサイズ"
+          ]
+        },
+        "residual": []
+      },
+      {
+        "case_id": "case-057bab902128ab4a6b9a",
+        "au_row_key": "au:379580385:88157962:0:0",
+        "kind": "rakuten",
+        "axis_key": "サイズ",
+        "axis_label": "サイズ",
+        "value": "M",
+        "au_axis": "サイズ",
+        "au_value": "Mサイズ",
+        "status": "model_candidate",
+        "core": {
+          "identical": false,
+          "rakuten": [
+            "M"
+          ],
+          "au": [
+            "Mサイズ"
+          ]
+        },
+        "residual": []
+      }
+    ]
+  },
+  "fresh_trace": {
+    "path": ".lab-output/sku-v7-asymmetry-replay-20261014-v2/out/trace/all-row-trace.jsonl",
+    "bytes": 99634360,
+    "sha256": "5bd220069b0774a88ce634c93b2d70713fea3967608b77021db074044fdb4ad9",
+    "exact_bytes_equal_to_original_trace": true
+  },
+  "replay_input_freeze_sha256": "0e83b120eec823992298912cd8107fccd797c3f34c783620de57e81112b09131",
+  "trace_manifest_sha256": "3b47d1d9dabf4aa2fb28bb710a2d791ce23c89dbb7aa74719f5d980947b76d68",
+  "attempt_history": [
+    {
+      "attempt": "v1",
+      "trace_exactly_reproduced": true,
+      "terminal_error": "public source cases.jsonl for original source-line provenance absent; trace already saved, original output untouched"
+    },
+    {
+      "attempt": "v2",
+      "terminal": "complete",
+      "change": "restore only the two original public source case members with original SHA from original pinned archives; no semantic or score change"
+    }
+  ]
+}

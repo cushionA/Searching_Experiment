@@ -1,0 +1,21 @@
+branch codex-sku-generic-model-gates-20261010 / HEAD ebf04ae unchanged
+Latest checkpoint: experiments/sku-matching/results/20261015-sku-installed-library-guards-v1.zip
+Report: same prefix .txt/.json; current run .lab-output/sku-installed-library-matching-20261015-v1
+User: prioritize installed libraries, speed/generality/maintenance; no bespoke SKU parser or expanding dictionary.
+Use standalone only where supported; otherwise guards/auxiliary to reduce AI. Bulk Luna accuracy still paused.
+Final features: price-free/{selection-v1,ranking-v1}; helper-queue-v1 raw catalogue gate + spaCy/token_set priority.
+Raw:296 known accepts+58 explicit rejects, 0 known wrong, 34 auto reference-unknown, review982.
+spaCy:298 known accepts+58 explicit rejects, review980. Gain2 beyond raw; +50 raw gain is task-design change.
+Guard21378/32325 conflicts, 904 matching rows kept; contexts2088/4778, estimates not actual tokens/cost.
+Positive904 top3 retention904 with spaCy/Sudachi token_set; do not permanently prune rest or certify absence.
+All original rows and132136 directional conditions retained. Queue has all backfill and unknown competitor checks.
+Text v1 INVALID original body source; v2 uses selection.text, validates public context equality. Never body-fallback on table miss.
+333/391 lexical hits only. PhraseMatcher extra text reduction0; previous table-first policy accounts for all char savings.
+Model SKU inference0. No new neural model or dedicated alias dictionary/grammar. CPU native calls only.
+Dedicated19 tests pass; required1544 fail5/error49/skip91 existing groups; git diff --check clean.
+Prediction reproduction: run_installed_library_selection_v1.py --source POPULATION_INPUTS --views views-price-free.json --output NEW_DIR
+Ranking: run_installed_library_ranking_v1.py --source ORIGINAL_CASE_PRODUCT_DIR --views views-price-free-ranking.json --view-modes width_jaconv sudachi_norm spacy_norm --output NEW_DIR
+Original inputs are in ZIP at prior .lab-output paths. Gate uses repository base code; private original DEV reference archives needed to regrade.
+Reinstall dedicated .deps/sku-classical-venv from requirements-classical-v1.txt only if needed; no new network work was required.
+External80 report method reference only; its case CSV/ZIP not received, reported accuracy unverified.
+Next: evaluate existing body AI on residual queue and actual sent tokens, then independent evaluation before deployment.

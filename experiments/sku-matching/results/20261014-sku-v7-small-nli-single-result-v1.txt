@@ -1,0 +1,94 @@
+Claude v7後の小型NLI単独・固定DEV40検証（2026-10-14、完了）
+
+結果
+今回の固定タスクではNLI単独で正解SKUを確定できなかった。
+title_row/bodyともTP0、FN36、全40ケースを見送り。
+bodyでは機械参照上の正解行27/36（75%）をconflictと判定した。
+技術エラー、入力欠落、body原文の未処理部分は0。実行障害による0点ではない。
+閾値調整、カテゴリ例外、literalによる補完、モデル追加は行っていない。
+
+固定対象
+branch codex-sku-generic-model-gates-20261010、基点ebf04ae。
+Kaggle ref superbigzabuton/sku-v7-nli-single-20261014-v1、version2、terminal complete。
+source_signature dc624fed1640a88682aee97147cefca87b788e64bb97bf17ea2e3234c68e90f4。
+version1はoption_count metadata不一致で推論前にerror。version2はそのfield修正のみで、
+同一のpublic contextsを用いた。一度提出したversion2を再投入していない。
+元DEV40、20商品、AU全504行、双方向全1,924条件、1,045 requestを保持。
+543 unique contexts、各viewで原選択肢3,785件、両viewで7,570 option states。
+相手側の実選択値はmodelに渡すが、判定対象側の正解selected optionはhost joinで保持。
+Claude v7 state/core/residualは監査用strataにだけ保持し、証明・候補除外には使わない。
+以前実行したv7の非対称抽出replayは別成果物として保存済み。
+
+モデル・実行
+0x3/bert-base-japanese-v3_nli-jsnli-jnli-jsick、111,209,475 parameters。
+revision 21df45469d02809dc430e3ac5f5d6f67b63aabf3、全model file SHA検証済み。
+実際にロードしたmodelはnliのみ。Tesla T4、CUDA FP32/eager、batch16、threads4、
+autocast/TF32 off。CPU推論・旧CPU score再利用・JEV prefilter・Luna新規推論はなし。
+raw records12,392、同一ジョブのunique exact pairs12,388。
+推論322.57秒、worker550.62秒、notebook589.73秒。
+
+タスク
+title_row: 商品名＋実際の現在選択行をpremiseとする。
+body: 同じprefix＋body原文を最大800文字、全候補hypothesis込み512token以内の
+連続・非重複chunkにする。全文coverageを検証し、truncateしない。
+各原選択肢のhypothesisは「この商品の〈axis〉は〈option〉である。」。
+各pairの3-class argmaxが0.90以上ならsupport/conflict/unknownを使い、それ以外unknown。
+複数chunkでsupportとconflictが混在ならunknown。supportなしでconflictが一つでもあればconflict。
+全条件supportの行だけsupport、どれかconflictなら行conflict、それ以外unknown。
+一意のsupport行があり、全競合行がconflictの場合だけ採用する。
+引用の意味・適用範囲の証明はないため、数値判定をproductionの根拠にしない。
+
+採点（元の全正解行集合を使用）
+                         title_row      body
+既知正例                    36           36
+正しいSKU行採用               0            0
+見送りFN                    36           36
+request support              0            0
+request conflict            33          379
+request unknown          1,012          666
+AU行 support                 0            0
+AU行 conflict               44          344
+AU行 unknown               460          160
+正解行をconflict判定         0/36        27/36
+全候補option support          0            0
+全候補option conflict       171        1,010
+全候補option unknown      3,614        2,775
+
+参照はClaude Haiku5.5の機械注釈。人手gold・独立TESTではない。
+残る4ケースは参照未確定で採点外。既知負例0なので誤採用率や負例性能は評価できない。
+FP0は全件見送りの結果であり、precisionは未定義。
+全予測とraw outputをfreezeし、元annotation archivesを開く前にhashを記録した。
+
+旧結果との切り分け
+Luna＋strict literalの既存35/36と、今回NLIの40 case IDsは完全一致。
+membership SHA ab90d19dc4065be564acb8fe7d57d966d9c82f8018b1482de515083ab39f3a58。
+同じcohortだが、旧35/36はLuna単独ではない。全選択肢＋引用・scope判定とliteral証明を
+合成した結果。今回は全条件をNLI pair taskに通し、literal証明を重ねていない。
+この差からモデル単体の優劣や、v7非対称抽出自体の精度を断定しない。
+以前のbounded TEST小型0/33は別cohort・別設計の結果であり、今回と混ぜない。
+旧CPU DEV scoreのrelative-choice/absolute-policy replayも別成果物として保持。
+
+失敗の観測
+全raw pairでsupport確定0。supportがargmaxの951件も固定0.90に到達していない。
+body conflict option1,010件のうち797件はconflict chunkとunknown chunkの混在。
+本文の一部分だけのconflictが全体の不一致を決める集約で、正解行の誤除外が増えた。
+集約は凍結した仕様どおり。hypothesis/本文の適用範囲/集約のどれが主因かは未分離。
+今回の本文追加は有効な改善ではない。条件分岐追加や閾値変更で数字を上げていない。
+将来の検証では同じcohortと原候補を保ち、実選択の表現・NLI仮説・scope/集約を
+別々に比較する。新ジョブはこの結果回収では投入していない。
+
+検証・保存
+固定versionのstatus/log/outputを単一waitで回収。userの明示承認後、
+exec with_additional_permissionsでnetwork.enabled=trueだけを要求した。
+完全sandbox解除・proxy解除・別サービスへの転送は行っていない。
+NOTEBOOK_RECEIPT、archive CRC/size/SHA、model/runtime/code pins、host pinsを検証。
+rawから全7,570 option statesを再計算して一致。全3,785 body optionのcoverage一致。
+対象8 testsとpolicy replay6 testsは既に成功。required full suiteは1,475 tests、
+failures5/errors49/skipped42（既存fixture/dependency/path/sandbox環境問題）。full greenとは報告しない。
+graderの実成果物検証・全行採点はexit0で完了。
+
+ローカル保存
+.lab-output/sku-v7-small-nli-single-20261014-v2/job/{job.json,continuation.json,persisted.log,artifacts/}
+.lab-output/sku-v7-small-nli-single-20261014-v2/grade-v1/{grade.json,OUTPUT_FREEZE.json,first-pass-raw/}
+同名result-v1.jsonに採点結果、同名result-v1.zipに再開用inputs/code/receipts/raw/gradeをexport。
+raw・旧checkpoint・旧失敗版は移動、削除、上書きしていない。

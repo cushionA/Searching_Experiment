@@ -1,0 +1,52 @@
+branch codex-sku-generic-model-gates-20261010 / HEAD ebf04aed9b5a747f5db8961b9c96fef7be81adef
+ユーザー依頼: 古典的手法の精度をボリュームテスト。新規辞書・例外・閾値調整なし。
+
+追加実データは旧DEVとcase/product/dossier/両サイトraw SHAの重複0。
+旧TESTの106商品1292ケース、30177元候補行、135198方向付き条件を全件保持。
+主方式 mutual_unique_raw_components。予測・規則・入力を凍結後に元機械参照を照合した。
+参照はClaude Haiku5.5機械注釈、過去に別方式で評価した履歴コホートで、独立goldではない。
+参照内訳は一致897/一致なし144/未確定251。
+今回: 一致確定597（参照一致576/参照不明21）、一致なし3（参照一致3）、保留692。
+既知誤突合0/誤った一致なし0、正解候補の誤除外0/897。
+一致再現率576/897=64.2%。既知正解の一致確定は55商品に存在する。
+raw baseline正解461/一致なし3、複合属性補助551/3、主方式576/3。
+AI残余文脈の試算: raw1948、複合属性補助1498、主方式1214。実際の呼出数・料金は未測定。
+
+前回DEV1370ケースと今回1292ケースを合計すると213商品2662ケース。
+元62502候補行/267334方向付き条件。参照一致の自動確定1096（SKU一致1034/一致なし62）、
+既知誤判定0、既知正解候補の誤除外0/1801。自動確定65件は参照不明、1501件は保留。
+同じ方式の次回評価で、この集合を新規独立評価と呼ばない。
+
+負荷試験: 旧DEV1370ケースを巡回し50690ケース/1196025行/4889032条件を再生。
+cached条件判定から元gateで最終判定を組み直す時間2.561秒、peak約165MB、状態の相違0。
+重複再生は速度だけの評価で、精度の標本数には加えない。
+今回実データ全runは13.602秒（load8.105秒、component2.716秒、axis0.089秒、保存1.336秒）。
+peak RSS1969799168 bytes。初期importと開始前hash読込はこのrun計時の外。
+input準備14.491秒は別計測。SKUモデル推論・新GPU jobなし。本番判定の変更なし。
+
+入力の復元:
+source-test-v2/inputsに元case行をCRLF保持で保存し、商品contextは既存の
+pseudo_dossier/build_product_contextで417のpinされたraw captureから再構築した。
+元productsファイル全体のSHAは一致せず、新生成入力として扱う。
+既存DEV107商品の行キー・軸・値・引用・variant tokens・原本SHAは、pathフィールドの
+区切りだけを比較用に正規化すると107/107一致した。値や引用は書き換えていない。
+source v1 manifestのケースSHAはLF計算で誤記、実ケースファイルは当初からCRLF保持。
+source v2は実ファイルSHAを検証し訂正。v1/source/preparedは履歴として保持。
+v1/v2のcases/productsバイト列が同一だったためprepared-test-v1を再利用した。
+当初のsource-audit.jsonは復元前の調査記録、最新状態はsource-audit-final.json。
+
+LAB .lab-output/sku-library-volume-20261015-v1
+primary run LAB/test-run-v1（RUN_FREEZE.json、grade.json）
+source LAB/source-test-v2 / preparation LAB/prepared-test-v1
+benchmark .lab-output/sku-library-volume-benchmark-20261015-v1
+DEV互換性は全3方式の全条件・候補行・最終状態が旧frozen出力と同一。
+関連52テスト成功。必須venv suite1558件: fail4/error66/skip60（全greenではない）。
+旧system Python suite1570件の別環境失敗ログも保持。通常は専用library venvを使用。
+
+成果物 experiments/sku-matching/results/20261015-sku-library-volume-v1.{txt,json,zip,zip.sha256}
+ZIP 77596301bytes、SHA256 45f95b08aa26042bf056537f9b9371653dc1f9e3511ae3d3f2f9c0cb55e180db。
+517membersをbytes/SHA照合。private元参照archive・モデル重みは含めていない。
+再現にはbase ebf04aeと以前のaxis-domains-v2.zip（SHA c2797784133fd8f983420559ae980f2a1aff3ffc9fcf0220998aa9820fa4ff8b）を使用。
+再採点には別途私有の元参照archiveが必要。予測/preflightだけなら参照不要。
+old source、model、400M索引、旧ZIP、branch/HEADは変更・移動・削除していない。
+PR/remote/別branchからのcode取得なし。commit/push/PRは行っていない。

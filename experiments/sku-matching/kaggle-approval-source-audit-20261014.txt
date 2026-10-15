@@ -1,0 +1,105 @@
+Kaggle監視の承認要求調査（2026-10-14）
+
+結論
+今回のKaggle状態確認・待機・ログ取得・回収の承認要求は、exec_commandへの
+sandbox_permissions指定が発生源。request_permissions、Kaggle MCP/Appは使っていない。
+SDK/helper/SKILLから人間承認を要求したのではなく、親がexecの昇格を明示した。
+監視でrequire_escalatedを繰り返し指定したのは過剰だった。
+
+確認できた指定
+1. 初期のsetup/doctor/quota/Dataset操作:
+   sandbox_permissions=with_additional_permissions
+   additional_permissions={network:{enabled:true}}
+   追加のfilesystem権限は要求していない。
+2. 後続のNotebook提出と監視・回収:
+   sandbox_permissions=require_escalated
+   justificationに「許可しますか？」という承認質問を指定。
+   prefix_rule=['.deps/kaggle-venv/bin/python','-B',
+                '.agents/skills/kaggle-ops/scripts/kaggle_ops.py']を提案。
+   このprefixの永続保存/通常execへの適用を確認できるgrant receiptは返されていない。
+   prefixを提案したことを、承認ルールが適用済みという証拠にしない。
+
+監視・回収で要求した実コマンド（cwd /workspace/Searching_Experiment）
+.deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py quota
+.deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py kernel-status --ref superbigzabuton/sku-v7-nli-single-20261014-v1 --version 1
+.deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py wait --job .lab-output/sku-v7-small-nli-single-20261014-v1/job/job.json --output .lab-output/sku-v7-small-nli-single-20261014-v1/job --wait-seconds 60
+.deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py kernel-output --ref superbigzabuton/sku-v7-nli-single-20261014-v1 --output .lab-output/sku-v7-small-nli-single-20261014-v1/failure-artifacts-v1
+.deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py kernel-status --ref superbigzabuton/sku-v7-nli-single-20261014-v1 --version 2
+.deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py wait --job .lab-output/sku-v7-small-nli-single-20261014-v2/job/job.json --output .lab-output/sku-v7-small-nli-single-20261014-v2/job --wait-seconds 60
+waitはhelper内部で同じ固定versionのstatus、stream log、terminal log、完了時の
+出力回収をまとめて行う。60秒waitを再起動していたためexec権限要求も繰り返された。
+
+Auto-reviewについて確定できる範囲
+「代わりに承認」は利用者が有効にしているとの指示を受けた。
+しかし、今回のexec結果にはAuto-reviewの判定ID/採否/人間へ回した理由が付いていない。
+アクセス可能なtoolsに実行承認のauditを読む機能は見つからない。
+/workspace/.codex/config.tomlは存在せず、repoの.codex/config.tomlには
+approval_policy/sandbox_mode/permissionsの指定がない。
+従ってAuto-reviewが対象外だった、拒否した、設定が反映されなかった等は断定できない。
+旧セッションの外部転送auto-review rejectionを、今回の理由として流用しない。
+
+実行サンドボックスとCloudのネットワーク許可の区別
+cloud_environment.environment_status: spec_revision20、observations_current=true、
+HTTP policy unrestricted/enforced、KAGGLE_API_TOKEN ready。
+非秘密/etc/codex/network-policy.jsonもHTTP unrestricted、HTTP_PROXYはproxy:8080。
+これはdestination policy/認証の準備状態であり、通常execのnetwork権限とは別。
+通常execでproxy:8080へのconnectだけを試すとPermissionError/errno1:
+Operation not permitted。認証値やHTTPリクエストは送っていない。
+通常execにはネットワーク接続権限が与えられていないことを確認した。
+workspace/tmpへのログ保存は既存filesystem許可内。監視で完全sandbox解除は不要。
+
+統合監視の通常権限試行（1回のみ）
+.deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py wait --job .lab-output/sku-v7-small-nli-single-20261014-v2/job/job.json --output .lab-output/sku-v7-small-nli-single-20261014-v2/job --wait-seconds 7200
+sandbox_permissions未指定（use_default）、追加権限・justificationなし。
+結果: exit2、{"error":"ProxyError","http_status":null,"errno":null}、約0.14秒。
+同じ承認要求を繰り返さず、require_escalatedへの再切替もしない。
+
+必要な設定
+許可済みKaggle監視helperに対するexecのnetwork許可をセッションで付与するか、
+当該helper/waitコマンドへ適用される実行許可ルールを設定する必要がある。
+HTTP宛先許可やKaggle認証の再設定は現在の観測では必要ない。
+設定変更の方法/Auto-reviewのUI理由はこのworkerから操作・確認できない。
+approval_policy=never、proxy解除、直接外向き接続、別資格情報/サービスへの転送で
+制約を迂回しない。network-policyファイルを書き換えて権限を得ようとしない。
+設定反映後は上記7200秒の単一waitを1回起動し、以後は既存sessionをpollする。
+
+ユーザーの完了報告後の確認
+ユーザーから「終わった」と連絡を受け、固定version2に対する上記7200秒waitを
+通常exec（use_default、追加権限なし）で1回試した。
+結果はexit2、{"error":"ProxyError","http_status":null,"errno":null}、約0.124秒。
+新しい承認要求、昇格、追加network権限要求、ジョブ再投入はしていない。
+ローカルにはv2のCOMPLETION.json、option-states.jsonl、raw-scores.jsonl、
+結果ZIPがないことも確認。採点用のhost inputsは揃っているが採点は未開始。
+ユーザーの完了報告と、こちらで検証できたterminal状態・回収完了を区別する。
+
+その後の明示承認と回収完了
+ユーザーが「承認してやるからほれ取ってこい」と明示したため、同じ固定version2の
+7200秒waitをwith_additional_permissions、network.enabled=trueのみで1回起動した。
+追加filesystem権限・require_escalated・justification・prefix_ruleは使用していない。
+exec session19394として実行され、terminal complete、ready_for_verification=true、
+status/log/7成果物を同じ監視処理で回収してexit0。以後の採点は通常権限で実行した。
+result archive bytes2240854、SHA6f70b879a30eb2a7bcc3283687a7b8799d287ba67b852069effcd2161ba6a8c9。
+結果は results/20261014-sku-v7-small-nli-single-result-v1.txt に記録。
+この成功でもAuto-reviewの判断理由/永続grant receiptは返されていないため、
+後続セッションのnetwork権限やAuto-review設定反映まで推定しない。
+
+仕様表優先比較（2026-10-15 JST）
+最初のbatchへのnetwork追加権限要求はuser abortで中断し、実行/送信/job記録がなかった。
+その後ユーザーが「承認出して」と明示したため、同じ作成済みbatchへの要求を再発行した。
+command python3 -B /tmp/sku_spec_first_kaggle_run_20261014.py、cwd同repo。
+with_additional_permissions、network.enabled=trueだけを要求。完全昇格は使用していない。
+exec session49837でdoctor/quota/private Dataset更新/submit/fixed waitが順に実行された。
+固定refは同じ、version3、source_signature a1499a8f2bb4228635d76bae92716e1901908b39c19e7a54141cba9d2ee12938。
+状態確認・ログ・回収を単一waitにまとめ、同じexec sessionのpollだけでterminal completeまで進めた。
+後続の採点/比較は通常権限で実行。新たな権限要求やジョブ再submitは行っていない。
+結果は results/20261015-sku-spec-table-first-result-v1.txt。
+今回もAuto-review判定IDや処理理由の詳細は返されておらず、永続grantを推測しない。
+
+継続対象と状態
+ref superbigzabuton/sku-v7-nli-single-20261014-v1、version2。
+source_signature dc624fed1640a88682aee97147cefca87b788e64bb97bf17ea2e3234c68e90f4。
+job .lab-output/sku-v7-small-nli-single-20261014-v2/job/job.json。
+最後の固定version観測はrunning、最後に回収済みのcontext進捗は529/543。
+完了の現在状態・新成果物は通常execのnetwork権限で停止したため未確認。
+remoteジョブをcancel/再submitしていない。v1は推論前のmetadata不一致でerror、
+修正版v2を既に一度提出した履歴を保持し、v2を再投入しない。
