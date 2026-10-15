@@ -1,0 +1,185 @@
+{
+  "purpose": "Synthetic integration contract probe, not OCR or speed benchmark. documented cases check source promises. adoption_guard cases express our desired lossless/fail-closed consumer behavior, NOT upstream promises or real model error rates. Invalid geometry desired policy: no accepted blocks, caller retains raw evidence. Unknown custom model should require explicit grounding profile for our adoption. Expectations fixed before execution; do not edit after seeing outcomes.",
+  "parser_cases": [
+    {
+      "id": "two_blocks",
+      "group": "documented",
+      "raw": "![title](0,0,1000,100)\n# 商品\n![text](0,100,1000,1000)\n本文",
+      "expected": {
+        "blocks": 2,
+        "markdown": "# 商品\n\n本文",
+        "pixels": [
+          [
+            0.0,
+            0.0,
+            600.0,
+            80.0
+          ],
+          [
+            0.0,
+            80.0,
+            600.0,
+            800.0
+          ]
+        ]
+      },
+      "pixels": [
+        600,
+        800
+      ]
+    },
+    {
+      "id": "continuation",
+      "group": "documented",
+      "raw": "![text](0,0,500,500)前半\n![text+](500,0,1000,500)後半",
+      "expected": {
+        "blocks": 2,
+        "markdown": "前半 後半"
+      }
+    },
+    {
+      "id": "multiline_table",
+      "group": "documented",
+      "raw": "![table](0,0,1000,1000)\n<table>\n<tr><td>12</td></tr>\n</table>",
+      "expected": {
+        "blocks": 1,
+        "markdown": "<table>\n<tr><td>12</td></tr>\n</table>"
+      }
+    },
+    {
+      "id": "unknown_label",
+      "group": "documented",
+      "raw": "![new_region](0,0,10,10)将来のラベル",
+      "expected": {
+        "blocks": 1,
+        "markdown": "将来のラベル"
+      }
+    },
+    {
+      "id": "default_preserves_footnote",
+      "group": "documented",
+      "raw": "![text](0,0,900,900)本文\n![footnote](0,900,900,1000)※税込",
+      "expected": {
+        "blocks": 2,
+        "markdown": "本文\n\n※税込"
+      }
+    },
+    {
+      "id": "explicit_filter_drops_footnote",
+      "group": "documented",
+      "raw": "![text](0,0,900,900)本文\n![footnote](0,900,900,1000)※税込",
+      "expected": {
+        "blocks": 2,
+        "markdown": "本文"
+      },
+      "drop_header_footer": true
+    },
+    {
+      "id": "out_of_range",
+      "group": "adoption_guard",
+      "raw": "![text](0,0,1001,1000)本文",
+      "expected": {
+        "blocks": 0,
+        "markdown": ""
+      }
+    },
+    {
+      "id": "inverted",
+      "group": "adoption_guard",
+      "raw": "![text](900,900,10,10)本文",
+      "expected": {
+        "blocks": 0,
+        "markdown": ""
+      }
+    },
+    {
+      "id": "unmarked_text",
+      "group": "adoption_guard",
+      "raw": "マーカーなしの重要本文",
+      "expected": {
+        "blocks": 0,
+        "markdown": "マーカーなしの重要本文"
+      }
+    },
+    {
+      "id": "preamble",
+      "group": "adoption_guard",
+      "raw": "前置の重要本文\n![text](0,0,10,10)本文",
+      "expected": {
+        "blocks": 1,
+        "markdown": "前置の重要本文\n\n本文"
+      }
+    },
+    {
+      "id": "literal_in_code",
+      "group": "adoption_guard",
+      "raw": "![code](0,0,900,900)\n```md\n![text](1,2,3,4)\n```",
+      "expected": {
+        "blocks": 1,
+        "markdown": "```md\n![text](1,2,3,4)\n```"
+      }
+    }
+  ],
+  "model_cases": [
+    {
+      "model": "lightonai/LightOnOCR-1B-1025",
+      "expected": {
+        "generation": 1,
+        "grounding": false,
+        "longest_edge": 1540,
+        "top_p": 0.9,
+        "grounding_allowed": false
+      }
+    },
+    {
+      "model": "lightonai/LightOnOCR-2-1B",
+      "expected": {
+        "generation": 2,
+        "grounding": false,
+        "longest_edge": 1540,
+        "top_p": 0.9,
+        "grounding_allowed": false
+      }
+    },
+    {
+      "model": "lightonai/LightOnOCR-3-1B",
+      "expected": {
+        "generation": 3,
+        "grounding": true,
+        "longest_edge": 1540,
+        "top_p": 1.0,
+        "grounding_allowed": true
+      }
+    },
+    {
+      "model": "lightonai/LightOnOCR-3-0.8B",
+      "expected": {
+        "generation": 3,
+        "grounding": true,
+        "longest_edge": 2048,
+        "top_p": 1.0,
+        "grounding_allowed": true
+      }
+    },
+    {
+      "model": "lightonai/LightOnOCR-3-4B",
+      "expected": {
+        "generation": 3,
+        "grounding": true,
+        "longest_edge": 2048,
+        "top_p": 1.0,
+        "grounding_allowed": true
+      }
+    },
+    {
+      "model": "custom-ocr-server",
+      "expected": {
+        "generation": null,
+        "grounding": false,
+        "longest_edge": 2048,
+        "top_p": 1.0,
+        "grounding_allowed": false
+      }
+    }
+  ]
+}

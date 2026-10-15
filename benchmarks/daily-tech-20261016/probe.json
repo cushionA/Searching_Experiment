@@ -1,0 +1,502 @@
+{
+  "python": "3.12.15",
+  "source_sha256": {
+    "grounding.py": "93b5a810bb5358622c9f40439c0d029a619f7bc839c2eb853c824f1e07f9ae19",
+    "models.py": "1a0828c328a89f1125ec6f4fedadcb0cda734ebba92f9cfbae5fa8f0612817a5",
+    "probe.py": "f409db261818b9d36ce932d374f23c3860d70a9c23fee4cdaa99de021a052a57",
+    "protocol.json": "1625e73e2ab21afe2627fc15cf966021fdedca81e9b96c13007aa4c3dae58a85"
+  },
+  "parser": [
+    {
+      "id": "two_blocks",
+      "group": "documented",
+      "input": "![title](0,0,1000,100)\n# 商品\n![text](0,100,1000,1000)\n本文",
+      "expected": {
+        "blocks": 2,
+        "markdown": "# 商品\n\n本文",
+        "pixels": [
+          [
+            0.0,
+            0.0,
+            600.0,
+            80.0
+          ],
+          [
+            0.0,
+            80.0,
+            600.0,
+            800.0
+          ]
+        ]
+      },
+      "actual": {
+        "blocks": 2,
+        "markdown": "# 商品\n\n本文",
+        "pixels": [
+          [
+            0.0,
+            0.0,
+            600.0,
+            80.0
+          ],
+          [
+            0.0,
+            80.0,
+            600.0,
+            800.0
+          ]
+        ]
+      },
+      "pass": true,
+      "parsed": [
+        {
+          "label": "title",
+          "bbox": [
+            0,
+            0,
+            1000,
+            100
+          ],
+          "text": "# 商品",
+          "continues": false
+        },
+        {
+          "label": "text",
+          "bbox": [
+            0,
+            100,
+            1000,
+            1000
+          ],
+          "text": "本文",
+          "continues": false
+        }
+      ],
+      "seconds": 3.2227000019702245e-05
+    },
+    {
+      "id": "continuation",
+      "group": "documented",
+      "input": "![text](0,0,500,500)前半\n![text+](500,0,1000,500)後半",
+      "expected": {
+        "blocks": 2,
+        "markdown": "前半 後半"
+      },
+      "actual": {
+        "blocks": 2,
+        "markdown": "前半 後半"
+      },
+      "pass": true,
+      "parsed": [
+        {
+          "label": "text",
+          "bbox": [
+            0,
+            0,
+            500,
+            500
+          ],
+          "text": "前半",
+          "continues": false
+        },
+        {
+          "label": "text",
+          "bbox": [
+            500,
+            0,
+            1000,
+            500
+          ],
+          "text": "後半",
+          "continues": true
+        }
+      ],
+      "seconds": 1.3779999960661371e-05
+    },
+    {
+      "id": "multiline_table",
+      "group": "documented",
+      "input": "![table](0,0,1000,1000)\n<table>\n<tr><td>12</td></tr>\n</table>",
+      "expected": {
+        "blocks": 1,
+        "markdown": "<table>\n<tr><td>12</td></tr>\n</table>"
+      },
+      "actual": {
+        "blocks": 1,
+        "markdown": "<table>\n<tr><td>12</td></tr>\n</table>"
+      },
+      "pass": true,
+      "parsed": [
+        {
+          "label": "table",
+          "bbox": [
+            0,
+            0,
+            1000,
+            1000
+          ],
+          "text": "<table>\n<tr><td>12</td></tr>\n</table>",
+          "continues": false
+        }
+      ],
+      "seconds": 8.242000035352248e-06
+    },
+    {
+      "id": "unknown_label",
+      "group": "documented",
+      "input": "![new_region](0,0,10,10)将来のラベル",
+      "expected": {
+        "blocks": 1,
+        "markdown": "将来のラベル"
+      },
+      "actual": {
+        "blocks": 1,
+        "markdown": "将来のラベル"
+      },
+      "pass": true,
+      "parsed": [
+        {
+          "label": "new_region",
+          "bbox": [
+            0,
+            0,
+            10,
+            10
+          ],
+          "text": "将来のラベル",
+          "continues": false
+        }
+      ],
+      "seconds": 5.5079999583540484e-06
+    },
+    {
+      "id": "default_preserves_footnote",
+      "group": "documented",
+      "input": "![text](0,0,900,900)本文\n![footnote](0,900,900,1000)※税込",
+      "expected": {
+        "blocks": 2,
+        "markdown": "本文\n\n※税込"
+      },
+      "actual": {
+        "blocks": 2,
+        "markdown": "本文\n\n※税込"
+      },
+      "pass": true,
+      "parsed": [
+        {
+          "label": "text",
+          "bbox": [
+            0,
+            0,
+            900,
+            900
+          ],
+          "text": "本文",
+          "continues": false
+        },
+        {
+          "label": "footnote",
+          "bbox": [
+            0,
+            900,
+            900,
+            1000
+          ],
+          "text": "※税込",
+          "continues": false
+        }
+      ],
+      "seconds": 8.332000049904309e-06
+    },
+    {
+      "id": "explicit_filter_drops_footnote",
+      "group": "documented",
+      "input": "![text](0,0,900,900)本文\n![footnote](0,900,900,1000)※税込",
+      "expected": {
+        "blocks": 2,
+        "markdown": "本文"
+      },
+      "actual": {
+        "blocks": 2,
+        "markdown": "本文"
+      },
+      "pass": true,
+      "parsed": [
+        {
+          "label": "text",
+          "bbox": [
+            0,
+            0,
+            900,
+            900
+          ],
+          "text": "本文",
+          "continues": false
+        },
+        {
+          "label": "footnote",
+          "bbox": [
+            0,
+            900,
+            900,
+            1000
+          ],
+          "text": "※税込",
+          "continues": false
+        }
+      ],
+      "seconds": 7.430999971802521e-06
+    },
+    {
+      "id": "out_of_range",
+      "group": "adoption_guard",
+      "input": "![text](0,0,1001,1000)本文",
+      "expected": {
+        "blocks": 0,
+        "markdown": ""
+      },
+      "actual": {
+        "blocks": 1,
+        "markdown": "本文"
+      },
+      "pass": false,
+      "parsed": [
+        {
+          "label": "text",
+          "bbox": [
+            0,
+            0,
+            1001,
+            1000
+          ],
+          "text": "本文",
+          "continues": false
+        }
+      ],
+      "seconds": 4.366999974081409e-06
+    },
+    {
+      "id": "inverted",
+      "group": "adoption_guard",
+      "input": "![text](900,900,10,10)本文",
+      "expected": {
+        "blocks": 0,
+        "markdown": ""
+      },
+      "actual": {
+        "blocks": 1,
+        "markdown": "本文"
+      },
+      "pass": false,
+      "parsed": [
+        {
+          "label": "text",
+          "bbox": [
+            900,
+            900,
+            10,
+            10
+          ],
+          "text": "本文",
+          "continues": false
+        }
+      ],
+      "seconds": 4.637000017737591e-06
+    },
+    {
+      "id": "unmarked_text",
+      "group": "adoption_guard",
+      "input": "マーカーなしの重要本文",
+      "expected": {
+        "blocks": 0,
+        "markdown": "マーカーなしの重要本文"
+      },
+      "actual": {
+        "blocks": 0,
+        "markdown": ""
+      },
+      "pass": false,
+      "parsed": [],
+      "seconds": 2.263999988372234e-06
+    },
+    {
+      "id": "preamble",
+      "group": "adoption_guard",
+      "input": "前置の重要本文\n![text](0,0,10,10)本文",
+      "expected": {
+        "blocks": 1,
+        "markdown": "前置の重要本文\n\n本文"
+      },
+      "actual": {
+        "blocks": 1,
+        "markdown": "本文"
+      },
+      "pass": false,
+      "parsed": [
+        {
+          "label": "text",
+          "bbox": [
+            0,
+            0,
+            10,
+            10
+          ],
+          "text": "本文",
+          "continues": false
+        }
+      ],
+      "seconds": 4.477000004499132e-06
+    },
+    {
+      "id": "literal_in_code",
+      "group": "adoption_guard",
+      "input": "![code](0,0,900,900)\n```md\n![text](1,2,3,4)\n```",
+      "expected": {
+        "blocks": 1,
+        "markdown": "```md\n![text](1,2,3,4)\n```"
+      },
+      "actual": {
+        "blocks": 2,
+        "markdown": "```md\n\n```"
+      },
+      "pass": false,
+      "parsed": [
+        {
+          "label": "code",
+          "bbox": [
+            0,
+            0,
+            900,
+            900
+          ],
+          "text": "```md",
+          "continues": false
+        },
+        {
+          "label": "text",
+          "bbox": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "text": "```",
+          "continues": false
+        }
+      ],
+      "seconds": 6.791999999222753e-05
+    }
+  ],
+  "models": [
+    {
+      "model": "lightonai/LightOnOCR-1B-1025",
+      "expected": {
+        "generation": 1,
+        "grounding": false,
+        "longest_edge": 1540,
+        "top_p": 0.9,
+        "grounding_allowed": false
+      },
+      "actual": {
+        "generation": 1,
+        "grounding": false,
+        "longest_edge": 1540,
+        "top_p": 0.9,
+        "grounding_allowed": false
+      },
+      "pass": true
+    },
+    {
+      "model": "lightonai/LightOnOCR-2-1B",
+      "expected": {
+        "generation": 2,
+        "grounding": false,
+        "longest_edge": 1540,
+        "top_p": 0.9,
+        "grounding_allowed": false
+      },
+      "actual": {
+        "generation": 2,
+        "grounding": false,
+        "longest_edge": 1540,
+        "top_p": 0.9,
+        "grounding_allowed": false
+      },
+      "pass": true
+    },
+    {
+      "model": "lightonai/LightOnOCR-3-1B",
+      "expected": {
+        "generation": 3,
+        "grounding": true,
+        "longest_edge": 1540,
+        "top_p": 1.0,
+        "grounding_allowed": true
+      },
+      "actual": {
+        "generation": 3,
+        "grounding": true,
+        "longest_edge": 1540,
+        "top_p": 1.0,
+        "grounding_allowed": true
+      },
+      "pass": true
+    },
+    {
+      "model": "lightonai/LightOnOCR-3-0.8B",
+      "expected": {
+        "generation": 3,
+        "grounding": true,
+        "longest_edge": 2048,
+        "top_p": 1.0,
+        "grounding_allowed": true
+      },
+      "actual": {
+        "generation": 3,
+        "grounding": true,
+        "longest_edge": 2048,
+        "top_p": 1.0,
+        "grounding_allowed": true
+      },
+      "pass": true
+    },
+    {
+      "model": "lightonai/LightOnOCR-3-4B",
+      "expected": {
+        "generation": 3,
+        "grounding": true,
+        "longest_edge": 2048,
+        "top_p": 1.0,
+        "grounding_allowed": true
+      },
+      "actual": {
+        "generation": 3,
+        "grounding": true,
+        "longest_edge": 2048,
+        "top_p": 1.0,
+        "grounding_allowed": true
+      },
+      "pass": true
+    },
+    {
+      "model": "custom-ocr-server",
+      "expected": {
+        "generation": null,
+        "grounding": false,
+        "longest_edge": 2048,
+        "top_p": 1.0,
+        "grounding_allowed": false
+      },
+      "actual": {
+        "generation": null,
+        "grounding": true,
+        "longest_edge": 2048,
+        "top_p": 1.0,
+        "grounding_allowed": true
+      },
+      "pass": false
+    }
+  ],
+  "wall_seconds": 0.003496002000019871,
+  "peak_rss_kib": 23312
+}

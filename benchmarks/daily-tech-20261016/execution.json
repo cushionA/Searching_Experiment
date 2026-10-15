@@ -1,0 +1,38 @@
+{
+  "started_utc": "2026-10-15T22:06:15.761161+00:00",
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-i",
+    "--network=none",
+    "--read-only",
+    "--user=1000:1000",
+    "--cap-drop=ALL",
+    "--security-opt=no-new-privileges",
+    "--pids-limit=32",
+    "--cpus=1",
+    "--memory=256m",
+    "--memory-swap=256m",
+    "--tmpfs=/input:rw,noexec,nosuid,size=16m,mode=1777",
+    "--workdir=/input",
+    "--env=PYTHONDONTWRITEBYTECODE=1",
+    "python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+    "sh",
+    "-c",
+    "tar --no-same-owner -xf - && python -B probe.py"
+  ],
+  "exit_code": 0,
+  "wall_seconds_including_container": 0.703662358000031,
+  "input_sha256": {
+    "probe.py": "f409db261818b9d36ce932d374f23c3860d70a9c23fee4cdaa99de021a052a57",
+    "protocol.json": "1625e73e2ab21afe2627fc15cf966021fdedca81e9b96c13007aa4c3dae58a85",
+    "grounding.py": "93b5a810bb5358622c9f40439c0d029a619f7bc839c2eb853c824f1e07f9ae19",
+    "models.py": "1a0828c328a89f1125ec6f4fedadcb0cda734ebba92f9cfbae5fa8f0612817a5"
+  },
+  "archive_bytes": 20480,
+  "repairs": 0,
+  "candidate_execution_network": false,
+  "host_mounts": [],
+  "credentials_passed": false
+}
