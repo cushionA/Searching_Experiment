@@ -1,0 +1,174 @@
+{
+  "run_id": "2026-10-15-evening",
+  "date": "2026-10-15",
+  "recommended": [],
+  "digest": [
+    {
+      "id": "2610.20193",
+      "title": "SWE-Stream: Scaling Executable Training Data for SWE Agents via Progressive Construction and Elastic Streaming",
+      "url": "https://arxiv.org/abs/2610.20193v1",
+      "priority": "C",
+      "why_chosen": "SWE agent向けに開発履歴から実行可能な学習タスクと軌跡を段階構築し、ストリーミング実行する研究。本文では10,728リポジトリ、80,874タスクなどを報告するが、著者報告値で独立再現ではない。",
+      "why_pending": "training prohibitedの制約に合わず、ユーザーの主用途からも距離がある。掲載された数値は論文の主張であり、今回の環境での実測ではない。",
+      "verified_inference": false
+    },
+    {
+      "id": "github:cacacacc/local-swe-agent-eval",
+      "title": "cacacacc/local-swe-agent-eval",
+      "url": "https://github.com/cacacacc/local-swe-agent-eval",
+      "priority": "B",
+      "why_chosen": "ローカル配備LLM coding agentをSWE-Bench Verifiedで評価する実験用framework。タスクの隔離、モデル呼出し記録、再開可能な評価などを扱う。",
+      "why_pending": "model callとSWE-bench実行は時間・計算資源を要する。loopback制限は直接socketを開くプログラムを完全には防がない、と抜粋が明記。評価品質の独立再現なし。",
+      "verified_inference": false
+    },
+    {
+      "id": "github:divyanshu4501/fixpilot",
+      "title": "divyanshu4501/fixpilot",
+      "url": "https://github.com/Divyanshu4501/fixpilot",
+      "priority": "B",
+      "why_chosen": "title上はissueからPRを作るcoding agentで、SWE-bench Liteを評価対象とする。添付資料にREADME本文や実装詳細がなく、機能範囲の確認は限定的。",
+      "why_pending": "タイトルとURL以外の一次資料が不足。SWE-bench Liteの実測主張や再現手順は確認できず、20分の予算で評価可能かも不明。",
+      "verified_inference": false
+    },
+    {
+      "id": "github:harper3105/dm-code-agent",
+      "title": "harper3105/dm-code-agent",
+      "url": "https://github.com/Harper3105/DM-Code-Agent",
+      "priority": "B",
+      "why_chosen": "ローカル先行・監査可能なPython code agentと30 taskのhidden-test benchmarkを提供するとするrepository。README抜粋はテスト、trace、checkpoint、評価手順を説明する。",
+      "why_pending": "候補の独自性、READMEとrepositoryの対応、licenseの不一致が大きな確認点。30題・hidden tests等はREADME上の記述で今回実行していない。",
+      "verified_inference": false
+    },
+    {
+      "id": "github:jasonpolyakov44995/dm-code-agent",
+      "title": "jasonpolyakov44995/dm-code-agent",
+      "url": "https://github.com/JasonPolyakov44995/DM-Code-Agent",
+      "priority": "C",
+      "why_chosen": "前候補とほぼ同じ説明・README内容を持つDM-Code-Agent候補。GitHub metadataでは別owner JasonPolyakov44995のrepo、同じ30 task benchmark等をうたう。",
+      "why_pending": "近似候補と同一README記載のため独自性、実装の出所、メンテナンス責任が分からない。二つのrepoや作者記載を独立した研究信号として数えられない。",
+      "verified_inference": false
+    },
+    {
+      "id": "github:kingjone0/mini-claude-code",
+      "title": "kingjone0/mini-claude-code",
+      "url": "https://github.com/kingjone0/mini-claude-code",
+      "priority": "B",
+      "why_chosen": "Claude Agent SDKを使う手書きmini coding agentとSWE-bench風評価基盤をうたう。README抜粋ではpytestの通過数、benchmark上の方法論上の制約、MIT等を説明。",
+      "why_pending": "READMEは自作注入欠陥やissue文面の代理など評価手法上の制約を明記。768 tests passed等はREADMEの主張で、未実行。外部Claude API利用なら無課金条件に合わない可能性。",
+      "verified_inference": false
+    },
+    {
+      "id": "github:kkolvin/sim-agentic-grpo",
+      "title": "kkolvin/sim-agentic-grpo",
+      "url": "https://github.com/KKolvin/sim-agentic-grpo",
+      "priority": "C",
+      "why_chosen": "SWE-bench coding agentをmulti-turn GRPOで訓練し、そのtraining stepをtraceから再生するsimulatorを提供。",
+      "why_pending": "高価なGPU trainingのtraceから成る研究で、simulator結果もmeasured cost model/priorsに依存する。現ユーザーのCPU小型モデルと入力前処理には距離がある。",
+      "verified_inference": false
+    },
+    {
+      "id": "github:mdsubhanpasha/k8s-neural-collapse-manifold",
+      "title": "mdsubhanpasha/k8s-neural-collapse-manifold",
+      "url": "https://github.com/mdsubhanpasha/k8s-neural-collapse-manifold",
+      "priority": "C",
+      "why_chosen": "Kubernetes本番障害をNeural manifoldとして分析しcoding-agent学習用SWE-bench風datasetにする、という候補。titleは76% autonomous fix rateを主張する。",
+      "why_pending": "76% fix rateは候補タイトルだけにあり、提供された本文から方法、標本、独立評価の証拠を確認できない。K8s障害特化で適用範囲が狭い。",
+      "verified_inference": false
+    },
+    {
+      "id": "github:muvon/octobench",
+      "title": "muvon/octobench",
+      "url": "https://github.com/Muvon/octobench",
+      "priority": "B",
+      "why_chosen": "coding agent構成を共通benchmark caseで比較するharness。real-commit tasks、SWE-bench-Live、複数domainのbenchmarkを扱う。",
+      "why_pending": "多くのbenchmarkの本実行はmodel provider、Docker、データ取得に依存。candidate自身のoctomindも含まれるため、fairness設定や同一条件を確認する必要がある。測定結果はREADME claimのみ。",
+      "verified_inference": false
+    },
+    {
+      "id": "github:openmoss/swe-bench-science",
+      "title": "openmoss/swe-bench-science",
+      "url": "https://github.com/OpenMOSS/SWE-bench-Science",
+      "priority": "C",
+      "why_chosen": "scientific software向けcoding-agent benchmark。科学分野の契約・数値挙動を持つtaskをDocker runnerで評価する。READMEは20 domain、license gate等を説明。",
+      "why_pending": "科学ソフト領域に特化し、20 domain/96 unrestricted tasks等はREADMEの説明。task-level licenseが分かれ、model/providerの実行費も未確認。今回は未実行。",
+      "verified_inference": false
+    },
+    {
+      "id": "github:paultrust26/trot",
+      "title": "paultrust26/trot",
+      "url": "https://github.com/paultrust26/TROT",
+      "priority": "B",
+      "why_chosen": "coding agentの観測履歴を規則・学習ゲート・選択要約で圧縮し、コンテキスト費用を抑える提案。",
+      "why_pending": "SWE-bench解決率・46–55%節約はREADME記載の主張で追試未確認。独立した話題信号が2件確認できず、深掘り分類要件を満たさない。",
+      "verified_inference": false
+    },
+    {
+      "id": "github:piaoyun2022/coding-harness",
+      "title": "piaoyun2022/coding-harness",
+      "url": "https://github.com/piaoyun2022/coding-harness",
+      "priority": "B",
+      "why_chosen": "DeepSeekベースの最小coding agentとSWE-bench評価ハーネス。",
+      "why_pending": "SWE-benchは最大300件評価を記載するが実測完了を示す証拠とは扱わない。独立した話題信号2件なし。",
+      "verified_inference": false
+    },
+    {
+      "id": "github:riamunshi/quantized-slm",
+      "title": "riamunshi/quantized-slm",
+      "url": "https://github.com/riamunshi/quantized-SLM",
+      "priority": "B",
+      "why_chosen": "量子化小型LMの推論時手法で推論忠実度を回復する研究コード。",
+      "why_pending": "中心的な学習工程はGPU/Colabと学習済みcheckpointを要する。重み取得条件とダウンロード量不明。",
+      "verified_inference": false
+    },
+    {
+      "id": "github:shiva-shivanibokka/codepilot-swe",
+      "title": "shiva-shivanibokka/codepilot-swe",
+      "url": "https://github.com/shiva-shivanibokka/CodePilot-SWE",
+      "priority": "B",
+      "why_chosen": "SWE-bench Liteでagentとagentlessを比較するcoding agent兼ベンチマークハーネス。",
+      "why_pending": "README自身が小規模試験の限界・未提出例を記す。記載の評価値は独立検証ではない。依存する外部モデルの費用が制約。",
+      "verified_inference": false
+    },
+    {
+      "id": "github:shlokgoel/fixpoint",
+      "title": "shlokgoel/fixpoint",
+      "url": "https://github.com/ShlokGoel/fixpoint",
+      "priority": "B",
+      "why_chosen": "Anthropic Messages API上のcoding agentとSWE-bench Lite評価、失敗分類・reward-hacking検出。",
+      "why_pending": "独自性は派生元との比較確認が必要。API費用とモデル条件が不明でゼロ予算適合は未確定。",
+      "verified_inference": false
+    }
+  ],
+  "completed_ids": [],
+  "counts": {
+    "collected_unique": 23721,
+    "rank_input_including_carry": 23872,
+    "ranked": 5128,
+    "review_pool_read": 20,
+    "candidate_inferences": 0,
+    "candidate_execution_attempts": 1,
+    "container_launch_attempts": 2,
+    "baseline_cases": 10,
+    "pending_before": 1072,
+    "pending_after_record": 5133
+  },
+  "conclusion": "候補モデルの推論成功0。上位20の読解で独立話題信号/資源/商用性の不足を記録。大きな効果・深掘り推薦の確定0。",
+  "state_policy": "NativeのC/rejectも親の確定見送りとせず、既存未完了を全保持。digest/読解/初期化失敗を完了扱いにしない。",
+  "violations": [
+    {
+      "constraint": "max_automatic_repair_attempts=1",
+      "actual": 2,
+      "candidate": "KRLabsOrg/verbatim-rag-modern-bert-v2",
+      "action": "network-wheel repair then permissions repair; detected by parent audit; all further candidate execution stopped"
+    }
+  ],
+  "limitations": [
+    "HF trending430 pages budget stop, not exhaustive; new initial page only plus10 queries",
+    "OpenReview5 requests HTTP403",
+    "official abstract/README/model-card reading, no full paper reproduction",
+    "candidate runtime performance and cloud/API savings unmeasured"
+  ],
+  "cost_comparison": "推論成功がなくthroughput/1万件CPU時間/現在API価格との優劣は未評価。profileの参考価格を現在価格と断定しない。",
+  "persistence_status_at_report_creation": "awaiting commit and remote hash/check verification; final conversation will provide exact pushed commit and CI state",
+  "created_at": "2026-10-15T09:23:37.151123+00:00"
+}

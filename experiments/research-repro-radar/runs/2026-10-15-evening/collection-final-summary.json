@@ -1,0 +1,128 @@
+{
+  "run": "2026-10-15-evening",
+  "backend": "native",
+  "native_probe_validation_exit": 0,
+  "skill_latest_files_match": true,
+  "skill_commit": "55ceed634506c5942d6a8e84c71d7e80acc103ff",
+  "canonical_state_commit": "f197d9d181e59998cfb61040ed763d308e512fa5",
+  "sources": {
+    "huggingface_initial_first_pages": {
+      "requests": 12,
+      "trending": 50,
+      "new": 50,
+      "interest_queries": 10,
+      "unique_before_supplement": 1219
+    },
+    "huggingface_pagination": {
+      "pages": 430,
+      "trending_pages": 430,
+      "new_pages": 0,
+      "downloaded_bytes": 113105419,
+      "duplicate_hashes": 0,
+      "complete": false,
+      "next_continuation": [
+        {
+          "feed": "trending",
+          "url": "https://huggingface.co/api/daily_papers?sort=trending&p=430",
+          "status": "inferred from observed rel=next pattern; not fetched"
+        },
+        {
+          "feed": "new",
+          "url": "https://huggingface.co/api/daily_papers?sort=publishedAt",
+          "status": "first page not fetched in pagination continuation"
+        }
+      ]
+    },
+    "arxiv_api": {
+      "queries": 5,
+      "results": 500,
+      "failures": 0
+    },
+    "mdpi_rss": {
+      "queries": 2,
+      "records": 200
+    },
+    "crossref": {
+      "queries": 5,
+      "raw_records": 491,
+      "unique_records_in_candidate_pool": 484
+    },
+    "github": {
+      "queries": 4,
+      "records": 134,
+      "detail_requests": 2,
+      "dm_code_agent_fork_checks": [
+        {
+          "full_name": "Harper3105/DM-Code-Agent",
+          "fork": false,
+          "parent": null,
+          "source": null
+        },
+        {
+          "full_name": "JasonPolyakov44995/DM-Code-Agent",
+          "fork": false,
+          "parent": null,
+          "source": null
+        }
+      ]
+    },
+    "openreview": {
+      "queries": 5,
+      "successes": 0,
+      "failures": 5
+    }
+  },
+  "candidates": {
+    "canonical_unique_after_arxiv_version_dedup": 23721,
+    "ranking_input_including_active_carry": 23872,
+    "ranked": 5128,
+    "review_pool": 20,
+    "scheduled_checks": 1,
+    "deferred": 5127,
+    "rejected": 18744,
+    "invalid": 0,
+    "already_reported": 2,
+    "candidate_inferences_or_executions": 0
+  },
+  "unfinished_state": {
+    "baseline_candidates": 1072,
+    "baseline_all_present": true,
+    "final_queue_candidates": 5133,
+    "final_queue_unique": 5133,
+    "initial_exact_hashes": {
+      "seen": "3efe0332430602be8b2951c917776eca53ccc4ebd841bc57056aa0e230dca6e4",
+      "mail": "857c7786769a9a4e2d5ce0389316bd399a40d81fbe2a23122764fe09418550a3",
+      "freshness": "9c2ba8bf23bfc238b0792314f8bc2b66a5566a7a394872e193007cf4a3191f38"
+    },
+    "record_run_called": false
+  },
+  "evidence": {
+    "candidates": "candidates.json",
+    "all_candidates": "all-candidates.json",
+    "final_ranking": "ranking-final.json",
+    "HF_page_ledger": "hf-pagination-ledger.json",
+    "non_HF_ledger": "supplement-ledger.json",
+    "arXiv_ledger": "arxiv-supplement-ledger.json",
+    "primary_review_ledger": "primary-ledger.json",
+    "retention": "retention-final.json"
+  },
+  "total_downloaded_source_bytes": 125948851,
+  "canonical_state_hashes_at_restore": {
+    "seen": "3efe0332430602be8b2951c917776eca53ccc4ebd841bc57056aa0e230dca6e4",
+    "queue": "0b5cac51c9ca729b2dfe1f7b6dfb74975b4de2fbe6eb6d625dff399fc76c42c7",
+    "mail": "857c7786769a9a4e2d5ce0389316bd399a40d81fbe2a23122764fe09418550a3",
+    "freshness": "9c2ba8bf23bfc238b0792314f8bc2b66a5566a7a394872e193007cf4a3191f38"
+  },
+  "canonical_state_hashes_match_checkpoint": true,
+  "source_files_after_ranking": {
+    "queue_unique": 5133,
+    "baseline_1072_all_retained": true
+  },
+  "installed_skill_manifest": {
+    "upstream_commit": "55ceed634506c5942d6a8e84c71d7e80acc103ff",
+    "compared_files": 26,
+    "all_non_state_files_match": true,
+    "file_tree_sha256": "8b5f903338b904ed071a9f3922d28b483e719d9f8e610d38374ddffa02b84f57"
+  },
+  "scope": "Collection/ranking subtask only. Squeez execution attempts are documented separately in benchmark and final report."
+}

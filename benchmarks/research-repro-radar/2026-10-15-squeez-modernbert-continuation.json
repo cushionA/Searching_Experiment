@@ -1,0 +1,528 @@
+{
+  "recorded_utc": "2026-10-15T09:14:42Z",
+  "candidate": "Squeez extractive alternative (ModernBERT)",
+  "status": "inference_blocked_before_model_load",
+  "label": "bounded synthetic PoC attempted; no model inference or quality result",
+  "model": {
+    "id": "KRLabsOrg/verbatim-rag-modern-bert-v2",
+    "revision": "6a967332efedfe5aca9b85b8310cc68d9ac6f881",
+    "revision_metadata_checked_utc": "2026-10-15",
+    "repo_last_modified": "2026-06-02T13:23:11Z",
+    "parameters": "150M per official card",
+    "license_card": "Apache-2.0",
+    "hf_api_license": null,
+    "weight_bytes": 598439784,
+    "weight_sha256": "3127f7ead12786b4ab740191105d8a8e0febe6f8109e479ea0c1e9238fd79398"
+  },
+  "successor_separation": {
+    "id": "KRLabsOrg/squeez-2b",
+    "revision": "9d38282ae6174c180fc4c92c2214420503050b98",
+    "repo_last_modified": "2026-04-27T13:39:55Z",
+    "parameters": "2B per official card",
+    "license_card": "Apache 2.0",
+    "hf_api_license": null,
+    "tested": false,
+    "note": "Current Squeez README describes this as generative model and ModernBERT as smaller extractive alternative; this PoC uses only the separate ModernBERT repository."
+  },
+  "synthetic_input": {
+    "path": "experiments/research-repro-radar/staging/squeez-poc/synthetic-tool-logs.json",
+    "sha256": "c39961a913916eea229d9f1106f5e9d203c6c9e807dd864d7a57c1e4e4ee8ecc",
+    "cases": 10,
+    "clean_noisy_pairs": 5
+  },
+  "execution": {
+    "planned_container": "python:3.12-slim-bookworm@sha256:34386ef0cb081344d7ec1c103ba398e6e9f64e9ab3a1509accc92a4e24a07258",
+    "image": "radar-squeez-modernbert:20261015",
+    "image_id": "sha256:16187f3f10d31a977fe1c2706d6c92303c42ef74dfe5aae4cf824b955746f62a",
+    "runtime_limits": {
+      "network": "none",
+      "read_only_root": true,
+      "cap_drop": "ALL",
+      "no_new_privileges": true,
+      "uid_gid": "10001:10001",
+      "cpus": 2,
+      "memory_bytes": 8589934592,
+      "pids_limit": 64,
+      "host_mounts": []
+    },
+    "torch": "2.7.1+cpu",
+    "transformers": "4.53.3",
+    "safetensors": "0.5.3",
+    "docker_build_network_issue": "initial build RUN networking unreachable; exact public CPU wheels downloaded on host then installed offline in image",
+    "wheels_bytes": 224607959,
+    "wheels": [
+      {
+        "path": "certifi-2026.7.22-py3-none-any.whl",
+        "bytes": 136983,
+        "sha256": "62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775"
+      },
+      {
+        "path": "charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+        "bytes": 257601,
+        "sha256": "3d31298449090ab8d47b7b1b2a555ff73cac7ed438a08b7ac160980c7ebed649"
+      },
+      {
+        "path": "filelock-4.2.0-py3-none-any.whl",
+        "bytes": 135032,
+        "sha256": "2ff5690882e8cdb00ef31fb3d01a3094c29f30985426c59495afb1733f3b7238"
+      },
+      {
+        "path": "fsspec-2026.9.0-py3-none-any.whl",
+        "bytes": 221738,
+        "sha256": "8dd6e646e99ea382bd85f97a45e6b526a442d79423a7dc673f1e2756d05fcb5f"
+      },
+      {
+        "path": "hf_xet-1.7.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+        "bytes": 4212180,
+        "sha256": "2814a6e999d13464c4d679b788cc5d784eb5a4edfc638a31f10e9a11ab531ef8"
+      },
+      {
+        "path": "huggingface_hub-0.36.2-py3-none-any.whl",
+        "bytes": 566395,
+        "sha256": "48f0c8eac16145dfce371e9d2d7772854a4f591bcb56c9cf548accf531d54270"
+      },
+      {
+        "path": "idna-3.20-py3-none-any.whl",
+        "bytes": 69583,
+        "sha256": "ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c"
+      },
+      {
+        "path": "jinja2-3.1.6-py3-none-any.whl",
+        "bytes": 134899,
+        "sha256": "85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67"
+      },
+      {
+        "path": "markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+        "bytes": 22985,
+        "sha256": "8e124f974786f831d6043728e38296969d3579db8896fe004682f5758e613581"
+      },
+      {
+        "path": "mpmath-1.3.0-py3-none-any.whl",
+        "bytes": 536198,
+        "sha256": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c"
+      },
+      {
+        "path": "networkx-3.7-py3-none-any.whl",
+        "bytes": 2142205,
+        "sha256": "e3fd2c13a7814cee3746340d8d7f8598a67f16a58bf47fb7f8793fab6efca1b0"
+      },
+      {
+        "path": "numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+        "bytes": 16727283,
+        "sha256": "fbde6962867ee75b48b0ee29b2b9372ec5d617799dbaf38e82dc0596f2f7738a"
+      },
+      {
+        "path": "packaging-26.3-py3-none-any.whl",
+        "bytes": 129956,
+        "sha256": "d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c"
+      },
+      {
+        "path": "pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+        "bytes": 807870,
+        "sha256": "ba1cc08a7ccde2d2ec775841541641e4548226580ab850948cbfda66a1befcdc"
+      },
+      {
+        "path": "regex-2026.9.29-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+        "bytes": 807783,
+        "sha256": "39ab5894d971f9ac68baa6eca5c50387db579cfcacf36ae8df3feceb1815e6d0"
+      },
+      {
+        "path": "requests-2.34.2-py3-none-any.whl",
+        "bytes": 73075,
+        "sha256": "2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0"
+      },
+      {
+        "path": "safetensors-0.5.3-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "bytes": 471642,
+        "sha256": "cead1fa41fc54b1e61089fa57452e8834f798cb1dc7a09ba3524f1eb08e0317a"
+      },
+      {
+        "path": "setuptools-84.0.0-py3-none-any.whl",
+        "bytes": 818216,
+        "sha256": "51a52592b3b99e102b609654876bd65f19f999935166d1352678931132b0c670"
+      },
+      {
+        "path": "sympy-1.14.0-py3-none-any.whl",
+        "bytes": 6299353,
+        "sha256": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5"
+      },
+      {
+        "path": "tokenizers-0.21.4-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "bytes": 3115426,
+        "sha256": "51b7eabb104f46c1c50b486520555715457ae833d5aee9ff6ae853d1130506ff"
+      },
+      {
+        "path": "torch-2.7.1+cpu-cp312-cp312-manylinux_2_28_x86_64.whl",
+        "bytes": 175833687,
+        "sha256": "8f8b3cfc53010a4b4a3c7ecb88c212e9decc4f5eeb6af75c3c803937d2d60947"
+      },
+      {
+        "path": "tqdm-4.70.1-py3-none-any.whl",
+        "bytes": 80199,
+        "sha256": "c293e525e6fef9c20e8728fd4612df02a0aa31bb5fe91ecd93e123b1b7bffa73"
+      },
+      {
+        "path": "transformers-4.53.3-py3-none-any.whl",
+        "bytes": 10826382,
+        "sha256": "5aba81c92095806b6baf12df35d756cf23b66c356975fb2a7fa9e536138d7c75"
+      },
+      {
+        "path": "typing_extensions-4.16.0-py3-none-any.whl",
+        "bytes": 45571,
+        "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"
+      },
+      {
+        "path": "urllib3-2.8.0-py3-none-any.whl",
+        "bytes": 135717,
+        "sha256": "0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3"
+      }
+    ],
+    "known_download_bytes": 874229538,
+    "known_download_note": "model repo exact bytes + wheel files + observed base image layer payload (28.25+3.34+15.97 MB). Upper bound excludes small registry metadata, but total is far below 1.8GB cap.",
+    "attempts": [
+      {
+        "ordinal": 1,
+        "stage": "candidate container attempt 1",
+        "command": "docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --user 10001:10001 --cpus 2 --memory 8g --pids-limit 64 --tmpfs /tmp:rw,noexec,nosuid,size=16m radar-squeez-modernbert:20261015",
+        "result": "blocked before candidate Python script opened",
+        "error": "python: can't open file '/app/run_poc.py': [Errno 13] Permission denied",
+        "container_wall_seconds": 30.863
+      },
+      {
+        "ordinal": 2,
+        "stage": "candidate container attempt 2 after repair 2",
+        "command": "same isolated docker run with network none, read-only root, UID:GID 10001:10001, 2 CPUs, 8 GiB memory, no host mounts",
+        "result": "blocked during model initialization; no sample inference",
+        "error": "KeyError: getpwuid(): uid not found: 10001, raised in getpass.getuser() while torch.compile dynamically accesses torch Inductor cache_dir",
+        "container_wall_seconds": 25.424,
+        "inference_cases_completed": 0,
+        "performance_measurement": "none; wall time is failed initialization attempt only, not inference performance"
+      }
+    ],
+    "one_repair_used": "made copied /opt/model and /app tree readable to UID 10001; second failure not repaired per bounded limit",
+    "model_load_seconds": null,
+    "inference_seconds": null,
+    "peak_rss_mib": null,
+    "exit_code": 1,
+    "repair_accounting": {
+      "authorized_repair_cap": 1,
+      "actual_repairs_performed": 2,
+      "cap_exceeded": true,
+      "note": "Chronological audit: the offline-wheel path change after Docker build networking failed was repair 1; the permission chmod after container run failed was repair 2. No further repairs or candidate runs were made after the UID/getpass failure.",
+      "repairs": [
+        {
+          "ordinal": 1,
+          "trigger": "Docker build RUN pip install failed: NewConnectionError, [Errno 101] Network is unreachable, at download.pytorch.org/whl/cpu/torch/.",
+          "action": "Host-side pip download of exact torch==2.7.1+cpu, transformers==4.53.3, safetensors==0.5.3 and dependencies; changed temporary Dockerfile to COPY wheels and pip install --no-index. This altered install method to bridge build network unavailability.",
+          "downloaded_wheels_bytes": 224607959
+        },
+        {
+          "ordinal": 2,
+          "trigger": "First candidate container invocation failed before Python could open /app/run_poc.py: PermissionError [Errno 13] because staged copy had owner-only mode.",
+          "action": "Added RUN chmod -R a+rX /opt/model /app to temporary Dockerfile, rebuilt image, then retried once."
+        }
+      ],
+      "non_candidate_tool_failures": [
+        {
+          "action": "First build command used a relative --file path from /workspace and failed to locate Dockerfile; rerun with absolute Dockerfile path."
+        },
+        {
+          "action": "First timing wrapper used absent /usr/bin/time and did not launch the container; switched to Python subprocess monotonic timer."
+        }
+      ]
+    },
+    "candidate_cpu_performance_measured": false,
+    "candidate_inference_cases_completed": 0,
+    "init_wall_seconds_before_failure": 25.424,
+    "repair_cap_status": "exceeded: two setup/runtime repairs were performed although the limit was one; this is disclosed here. No additional action taken."
+  },
+  "baselines": {
+    "metric": "synthetic gold-line overlap; characters only (no tokenizer counts)",
+    "clean": {
+      "full_context": {
+        "n": 5,
+        "cases": [
+          {
+            "id": "pytest-clean",
+            "input_chars": 221,
+            "retained_chars": 221,
+            "char_retention": 1.0,
+            "selected_line_count": 7,
+            "gold_line_hits": 2,
+            "gold_line_count": 2,
+            "precision": 0.2857142857142857,
+            "recall": 1.0
+          },
+          {
+            "id": "build-clean",
+            "input_chars": 140,
+            "retained_chars": 140,
+            "char_retention": 1.0,
+            "selected_line_count": 3,
+            "gold_line_hits": 1,
+            "gold_line_count": 1,
+            "precision": 0.3333333333333333,
+            "recall": 1.0
+          },
+          {
+            "id": "git-clean",
+            "input_chars": 96,
+            "retained_chars": 96,
+            "char_retention": 1.0,
+            "selected_line_count": 3,
+            "gold_line_hits": 1,
+            "gold_line_count": 1,
+            "precision": 0.3333333333333333,
+            "recall": 1.0
+          },
+          {
+            "id": "kube-clean",
+            "input_chars": 134,
+            "retained_chars": 134,
+            "char_retention": 1.0,
+            "selected_line_count": 6,
+            "gold_line_hits": 3,
+            "gold_line_count": 3,
+            "precision": 0.5,
+            "recall": 1.0
+          },
+          {
+            "id": "pip-clean",
+            "input_chars": 157,
+            "retained_chars": 157,
+            "char_retention": 1.0,
+            "selected_line_count": 4,
+            "gold_line_hits": 2,
+            "gold_line_count": 2,
+            "precision": 0.5,
+            "recall": 1.0
+          }
+        ],
+        "input_chars_total": 748,
+        "retained_chars_total": 748,
+        "char_retention": 1.0,
+        "compression_ratio": 0.0,
+        "gold_line_hits": 9,
+        "gold_lines": 9,
+        "gold_recall": 1.0
+      },
+      "task_conditioned_substring_keywords": {
+        "n": 5,
+        "cases": [
+          {
+            "id": "pytest-clean",
+            "input_chars": 221,
+            "retained_chars": 45,
+            "char_retention": 0.20361990950226244,
+            "selected_line_count": 1,
+            "gold_line_hits": 1,
+            "gold_line_count": 2,
+            "precision": 1.0,
+            "recall": 0.5
+          },
+          {
+            "id": "build-clean",
+            "input_chars": 140,
+            "retained_chars": 125,
+            "char_retention": 0.8928571428571429,
+            "selected_line_count": 2,
+            "gold_line_hits": 1,
+            "gold_line_count": 1,
+            "precision": 0.5,
+            "recall": 1.0
+          },
+          {
+            "id": "git-clean",
+            "input_chars": 96,
+            "retained_chars": 74,
+            "char_retention": 0.7708333333333334,
+            "selected_line_count": 2,
+            "gold_line_hits": 1,
+            "gold_line_count": 1,
+            "precision": 0.5,
+            "recall": 1.0
+          },
+          {
+            "id": "kube-clean",
+            "input_chars": 134,
+            "retained_chars": 58,
+            "char_retention": 0.43283582089552236,
+            "selected_line_count": 2,
+            "gold_line_hits": 0,
+            "gold_line_count": 3,
+            "precision": 0.0,
+            "recall": 0.0
+          },
+          {
+            "id": "pip-clean",
+            "input_chars": 157,
+            "retained_chars": 0,
+            "char_retention": 0.0,
+            "selected_line_count": 0,
+            "gold_line_hits": 0,
+            "gold_line_count": 2,
+            "precision": 0,
+            "recall": 0.0
+          }
+        ],
+        "input_chars_total": 748,
+        "retained_chars_total": 302,
+        "char_retention": 0.4037433155080214,
+        "compression_ratio": 0.5962566844919786,
+        "gold_line_hits": 3,
+        "gold_lines": 9,
+        "gold_recall": 0.3333333333333333
+      }
+    },
+    "noisy": {
+      "full_context": {
+        "n": 5,
+        "cases": [
+          {
+            "id": "pytest-noisy",
+            "input_chars": 385,
+            "retained_chars": 385,
+            "char_retention": 1.0,
+            "selected_line_count": 13,
+            "gold_line_hits": 2,
+            "gold_line_count": 2,
+            "precision": 0.15384615384615385,
+            "recall": 1.0
+          },
+          {
+            "id": "build-noisy",
+            "input_chars": 290,
+            "retained_chars": 290,
+            "char_retention": 1.0,
+            "selected_line_count": 9,
+            "gold_line_hits": 1,
+            "gold_line_count": 1,
+            "precision": 0.1111111111111111,
+            "recall": 1.0
+          },
+          {
+            "id": "git-noisy",
+            "input_chars": 228,
+            "retained_chars": 228,
+            "char_retention": 1.0,
+            "selected_line_count": 9,
+            "gold_line_hits": 1,
+            "gold_line_count": 1,
+            "precision": 0.1111111111111111,
+            "recall": 1.0
+          },
+          {
+            "id": "kube-noisy",
+            "input_chars": 293,
+            "retained_chars": 293,
+            "char_retention": 1.0,
+            "selected_line_count": 13,
+            "gold_line_hits": 3,
+            "gold_line_count": 3,
+            "precision": 0.23076923076923078,
+            "recall": 1.0
+          },
+          {
+            "id": "pip-noisy",
+            "input_chars": 304,
+            "retained_chars": 304,
+            "char_retention": 1.0,
+            "selected_line_count": 9,
+            "gold_line_hits": 2,
+            "gold_line_count": 2,
+            "precision": 0.2222222222222222,
+            "recall": 1.0
+          }
+        ],
+        "input_chars_total": 1500,
+        "retained_chars_total": 1500,
+        "char_retention": 1.0,
+        "compression_ratio": 0.0,
+        "gold_line_hits": 9,
+        "gold_lines": 9,
+        "gold_recall": 1.0
+      },
+      "task_conditioned_substring_keywords": {
+        "n": 5,
+        "cases": [
+          {
+            "id": "pytest-noisy",
+            "input_chars": 385,
+            "retained_chars": 45,
+            "char_retention": 0.11688311688311688,
+            "selected_line_count": 1,
+            "gold_line_hits": 1,
+            "gold_line_count": 2,
+            "precision": 1.0,
+            "recall": 0.5
+          },
+          {
+            "id": "build-noisy",
+            "input_chars": 290,
+            "retained_chars": 125,
+            "char_retention": 0.43103448275862066,
+            "selected_line_count": 2,
+            "gold_line_hits": 1,
+            "gold_line_count": 1,
+            "precision": 0.5,
+            "recall": 1.0
+          },
+          {
+            "id": "git-noisy",
+            "input_chars": 228,
+            "retained_chars": 74,
+            "char_retention": 0.32456140350877194,
+            "selected_line_count": 2,
+            "gold_line_hits": 1,
+            "gold_line_count": 1,
+            "precision": 0.5,
+            "recall": 1.0
+          },
+          {
+            "id": "kube-noisy",
+            "input_chars": 293,
+            "retained_chars": 96,
+            "char_retention": 0.32764505119453924,
+            "selected_line_count": 3,
+            "gold_line_hits": 0,
+            "gold_line_count": 3,
+            "precision": 0.0,
+            "recall": 0.0
+          },
+          {
+            "id": "pip-noisy",
+            "input_chars": 304,
+            "retained_chars": 36,
+            "char_retention": 0.11842105263157894,
+            "selected_line_count": 1,
+            "gold_line_hits": 0,
+            "gold_line_count": 2,
+            "precision": 0.0,
+            "recall": 0.0
+          }
+        ],
+        "input_chars_total": 1500,
+        "retained_chars_total": 376,
+        "char_retention": 0.25066666666666665,
+        "compression_ratio": 0.7493333333333334,
+        "gold_line_hits": 3,
+        "gold_lines": 9,
+        "gold_recall": 0.3333333333333333
+      }
+    }
+  },
+  "interpretation": "No model quality, latency, or memory conclusion is possible because runtime failed before model load. Baseline outputs are deterministic reference only and do not support generalization.",
+  "sources": {
+    "model": "https://huggingface.co/KRLabsOrg/verbatim-rag-modern-bert-v2",
+    "successor": "https://huggingface.co/KRLabsOrg/squeez-2b",
+    "official_readme": "https://github.com/KRLabsOrg/squeez"
+  },
+  "reproducibility_files": {
+    "baseline_code": "experiments/research-repro-radar/runs/2026-10-15-evening/squeez-baselines.py",
+    "candidate_runner_copy": "experiments/research-repro-radar/runs/2026-10-15-evening/squeez-run_poc.py",
+    "final_temporary_dockerfile_copy": "experiments/research-repro-radar/runs/2026-10-15-evening/squeez-Dockerfile",
+    "synthetic_input_source": "experiments/research-repro-radar/staging/squeez-poc/synthetic-tool-logs.json",
+    "source_evidence": "experiments/research-repro-radar/runs/2026-10-15-evening/squeez-source-evidence.json",
+    "attempt_log": "experiments/research-repro-radar/runs/2026-10-15-evening/squeez-attempt-log.txt"
+  }
+}

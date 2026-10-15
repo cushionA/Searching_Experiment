@@ -1,0 +1,2270 @@
+{
+  "generated_at": "2026-10-15T09:10:10.992873+00:00",
+  "scope": "primary-source review evidence; not a verdict; ranking review_pool as recorded",
+  "cutoff_date": "2026-10-15",
+  "review_pool": [
+    {
+      "candidate": {
+        "id": "2610.18862",
+        "title": "DoubtLess: Training-Free Contrastive Decoding for Efficient Reasoning",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.18862",
+        "published_at": "2026-10-13T00:00:00.000Z",
+        "score": 39.0,
+        "mode": "interest",
+        "topic_hits": {
+          "cpu_small_models": [
+            "small model"
+          ],
+          "ai_driven_development": [
+            "coding agent"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "cpu_small_models+6",
+          "ai_driven_development+6",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0
+      },
+      "publication_date_primary": "2026/10/13",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2610.18862",
+        "fetched_at": "2026-10-15T09:07:31.823915+00:00",
+        "http_status": 200,
+        "bytes": 42491,
+        "sha256": "8509272da27ce6dbd39ef5468ac43951febd1a4de4e86b4c508917ba965ad43c",
+        "file": "primary/arxiv-2610.18862.html"
+      },
+      "abstract_primary": "Reasoning models achieve strong performance through long chains of thought (CoT), but often spend more tokens than needed to solve a problem. Existing ways to shorten the CoT require additional training for each model, add a fixed steering vector to the model's hidden states, or use decoding heuristics such as stopping early or banning words like \"wait\", which can reduce accuracy. We propose DoubtLess, a training-free decoding method in which a much smaller reasoning model steers the large one towards brevity. The small model reads the large model's CoT so far twice, once prompted to be brief (the brief thinker) and once prompted to be verbose (the verbose thinker), and the difference between its two logit vectors, scaled by a strength, is added to the large model's logits at every step of the CoT. On seven benchmarks of competition mathematics, graduate-level science and competitive programming, DoubtLess shortens the CoT of Qwen3-32B by 31% with unchanged accuracy, outperforming five inference-time baselines. We also show that DoubtLess reduces thinking tokens per turn by 20% in a self-debugging coding agent with unchanged task performance. It also generalizes to two other model families with unchanged accuracy. When combined with training-based compression, it further shortens the CoT of a model already trained for brevity. Ablations and behavioral analysis show that DoubtLess reduces repeated checking, with most token savings coming after the correct answer first appears in the CoT. Our code is available at https://github.com/leoluolol/DoubtLess.",
+      "github_links_from_paper_or_model_page": [
+        "https://github.com/leoluolol/DoubtLess"
+      ],
+      "official_repository_facts": [
+        {
+          "key": "leoluolol/doubtless",
+          "url": "https://api.github.com/repos/leoluolol/doubtless",
+          "fetched_at": "2026-10-15T09:09:01.843666+00:00",
+          "status": 200,
+          "bytes": 5576,
+          "sha256": "64f4bc2e8e38dc471767304b88057cfb08155f28b30dcff29281d3e72155e68f",
+          "file": "supplement/leoluolol_doubtless-repo.json",
+          "full_name": "leoluolol/DoubtLess",
+          "html_url": "https://github.com/leoluolol/DoubtLess",
+          "description": "Training-free contrastive decoding for efficient LLM reasoning: shorter chain-of-thought (CoT), less overthinking, and fewer reasoning tokens.",
+          "created_at": "2026-10-08T06:57:18Z",
+          "updated_at": "2026-10-15T08:32:30Z",
+          "pushed_at": "2026-10-15T08:32:26Z",
+          "stargazers_count": 0,
+          "forks_count": 0,
+          "open_issues_count": 1,
+          "default_branch": "main",
+          "license": {
+            "key": "apache-2.0",
+            "name": "Apache License 2.0",
+            "spdx_id": "Apache-2.0",
+            "url": "https://api.github.com/licenses/apache-2.0"
+          },
+          "archived": false,
+          "disabled": false,
+          "topics": [
+            "chain-of-thought",
+            "contrastive-decoding",
+            "cot-compression",
+            "efficient-reasoning",
+            "overthinking",
+            "reasoning-models",
+            "training-free"
+          ],
+          "tag_name": null,
+          "published_at": null,
+          "open_issue_sample": null
+        }
+      ],
+      "paper_claims_and_method": "Reasoning models achieve strong performance through long chains of thought (CoT), but often spend more tokens than needed to solve a problem. Existing ways to shorten the CoT require additional training for each model, add a fixed steering vector to the model's hidden states, or use decoding heuristics such as stopping early or banning words like \"wait\", which can reduce accuracy. We propose DoubtLess, a training-free decoding method in which a much smaller reasoning model steers the large one towards brevity. The small model reads the large model's CoT so far twice, once prompted to be brief (the brief thinker) and once prompted to be verbose (the verbose thinker), and the difference between its two logit vectors, scaled by a strength, is added to the large model's logits at every step of the CoT. On seven benchmarks of competition mathematics, graduate-level science and competitive programming, DoubtLess shortens the CoT of Qwen3-32B by 31% with unchanged accuracy, outperforming five inference-time baselines. We also show that DoubtLess reduces thinking tokens per turn by 20% in a self-debugging coding agent with unchanged task performance. It also generalizes to two other model families with unchanged accuracy. When combined with training-based compression, it further shortens the CoT of a model already trained for brevity. Ablations and behavioral analysis show that DoubtLess reduces repeated checking, with most token savings coming after the correct answer first appears in the CoT. Our code is available at https://github.com/leoluolol/DoubtLess.",
+      "license_commercial_use": {
+        "status": "see_repo_license",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [
+        {
+          "repository": "leoluolol/doubtless",
+          "readme_source": {
+            "url": "https://api.github.com/repos/leoluolol/doubtless/readme",
+            "fetched_at": "2026-10-15T09:09:01.844383+00:00",
+            "status": 200,
+            "bytes": 3492,
+            "sha256": "39c26a3060e12227f7c8c1e505e6555377c74a2034fb29be73941e3eeffaf4c5",
+            "file": "supplement/leoluolol_doubtless-README.md",
+            "raw_blob_api_file": "supplement/leoluolol_doubtless-readme.json"
+          },
+          "hf_ids_or_urls_in_readme": [],
+          "relevant_readme_excerpts": [
+            "5: [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)",
+            "7: DoubtLess is a training-free contrastive decoding method for efficient LLM reasoning. It shortens chain-of-thought (CoT) traces and reduces overthinking. This repository contains the code for the paper [DoubtLess: Training-Free Contrastive Decoding for Efficient Reasoning](https://arxiv.org/abs/2610.18862).",
+            "9: At every step of the large model's thinking, a small model reads the prompt and the thinking so far twice, once with a **brief** instruction and once with a **verbose** one. The difference between its two logit vectors steers the large model:",
+            "15: Steering applies inside `<think>...</think>`, using the base model's top-p candidates. EOS and `</think>` keep the base logits.",
+            "17: ## Install",
+            "19: Requires Linux, an NVIDIA GPU and vLLM 0.29.0.",
+            "22: pip install -e \".[vllm]\"",
+            "27: Generate with Qwen3-32B and Qwen3-0.6B on one 80 GB GPU. Model names can also be local paths.",
+            "36: max_model_len=4096,",
+            "48: See [examples/generate.py](examples/generate.py). `alpha` controls steering strength; `alpha=0` keeps the base logits. Set `small=None` for ordinary generation and `tensor_parallel_size` for multiple GPUs.",
+            "56: | Import | Implementation | Model pairs |",
+            "58: | `from doubtless import ContrastEngine` | Both models in vLLM | Qwen3 |",
+            "59: | `from doubtless.processor import ContrastEngine` | vLLM base model + Transformers small model | Qwen3, EXAONE-4.0, Granite-4.2 |",
+            "61: Both use the same API. The model pair must share token-to-ID mappings and use a thinking closing tag (default `</think>`). The processor backend uses a full-attention small model.",
+            "67: CPU checks for the contrast formula, prompts, request state and small-model KV cache:",
+            "70: pip install -e .",
+            "71: bash tests/run_cpu_tests.sh",
+            "74: On a GPU, check the instruction-attention kernel with `python tests/gpu_test_instruction_attn.py`.",
+            "80: title         = {DoubtLess: Training-Free Contrastive Decoding for Efficient Reasoning},",
+            "92: ## License",
+            "94: [Apache 2.0](LICENSE)."
+          ]
+        }
+      ],
+      "hardware_and_install_excerpts": [
+        "17: ## Install",
+        "19: Requires Linux, an NVIDIA GPU and vLLM 0.29.0.",
+        "22: pip install -e \".[vllm]\"",
+        "27: Generate with Qwen3-32B and Qwen3-0.6B on one 80 GB GPU. Model names can also be local paths.",
+        "48: See [examples/generate.py](examples/generate.py). `alpha` controls steering strength; `alpha=0` keeps the base logits. Set `small=None` for ordinary generation and `tensor_parallel_size` for multiple GPUs.",
+        "67: CPU checks for the contrast formula, prompts, request state and small-model KV cache:",
+        "70: pip install -e .",
+        "71: bash tests/run_cpu_tests.sh",
+        "74: On a GPU, check the instruction-attention kernel with `python tests/gpu_test_instruction_attn.py`."
+      ]
+    },
+    {
+      "candidate": {
+        "id": "2610.13113",
+        "title": "Continually Post-training Small Models via Synthetic Self-distillation",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.13113",
+        "published_at": "2026-10-09T00:00:00.000Z",
+        "score": 35.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "distillation"
+          ],
+          "cpu_small_models": [
+            "on-device",
+            "small model"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "nlp_summary_classification+5",
+          "cpu_small_models+12",
+          "recency+10(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2026/10/09",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2610.13113",
+        "fetched_at": "2026-10-15T09:07:31.826342+00:00",
+        "http_status": 200,
+        "bytes": 43224,
+        "sha256": "b6f3298e2f71b6a258f7fa6f1b9ba63a88e8cde00085032fd2ff21e4d5e7eff9",
+        "file": "primary/arxiv-2610.13113.html"
+      },
+      "abstract_primary": "Continual post-training faces a dual challenge of acquisition and retention: models must learn new capabilities while preserving prior knowledge. While Self-Distillation Fine-Tuning (SDFT) mitigates this using self-supervision with in-context demonstrations, it relies on strong in-context learning and instruction-following abilities. Consequently, SDFT fails on smaller models critical for low-latency, on-device use. To enable continual learning at smaller scales, we first identify the root cause of failure. We show that poor acquisition and forgetting correlate linearly with the post-trained model's distribution shift, revealing the necessity of in-distribution learning. We thus introduce Synthetic Self-Distillation (SynthSelf), imitating SDFT's in-distribution rewrite by outsourcing the task to a minimally larger, same-family aligner. Coupled with off-policy supervision and rejection sampling, this provides the high-quality supervision small models require without breaking their original distribution. Evaluations spanning 4 acquisition datasets (including a mixture) and 14 retention benchmarks show SynthSelf consistently outperforms 6 methods (including off- and on-policy distillation) across 3 small model scales. Extensive further analyses confirm SynthSelf paves the way toward effective small-model continual learning.",
+      "github_links_from_paper_or_model_page": [],
+      "official_repository_facts": [],
+      "paper_claims_and_method": "Continual post-training faces a dual challenge of acquisition and retention: models must learn new capabilities while preserving prior knowledge. While Self-Distillation Fine-Tuning (SDFT) mitigates this using self-supervision with in-context demonstrations, it relies on strong in-context learning and instruction-following abilities. Consequently, SDFT fails on smaller models critical for low-latency, on-device use. To enable continual learning at smaller scales, we first identify the root cause of failure. We show that poor acquisition and forgetting correlate linearly with the post-trained model's distribution shift, revealing the necessity of in-distribution learning. We thus introduce Synthetic Self-Distillation (SynthSelf), imitating SDFT's in-distribution rewrite by outsourcing the task to a minimally larger, same-family aligner. Coupled with off-policy supervision and rejection sampling, this provides the high-quality supervision small models require without breaking their original distribution. Evaluations spanning 4 acquisition datasets (including a mixture) and 14 retention benchmarks show SynthSelf consistently outperforms 6 methods (including off- and on-policy distillation) across 3 small model scales. Extensive further analyses confirm SynthSelf paves the way toward effective small-model continual learning.",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [],
+      "hardware_and_install_excerpts": []
+    },
+    {
+      "candidate": {
+        "id": "2610.14448",
+        "title": "KV4-RL: Unlocking Faster Asynchronous Rollouts for RLVR with INT4 KV Cache Quantization",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.14448",
+        "published_at": "2026-10-10T00:00:00.000Z",
+        "score": 35.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "quantization"
+          ],
+          "cpu_small_models": [
+            "int4",
+            "int8"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "nlp_summary_classification+5",
+          "cpu_small_models+12",
+          "recency+10(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2026/10/10",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2610.14448",
+        "fetched_at": "2026-10-15T09:07:31.827814+00:00",
+        "http_status": 200,
+        "bytes": 42869,
+        "sha256": "5a6043f97aff62fb6a876dab1eaf4e0686d1603dc68293209efbf0e23aae4301",
+        "file": "primary/arxiv-2610.14448.html"
+      },
+      "abstract_primary": "Asynchronous rollout improves the efficiency of reinforcement learning with verifiable rewards (RLVR) by reducing under-utilization during long-tail generation. Sustained concurrency also concentrates context processing into fewer decode steps, increasing the KV workload per step. We characterize this \\emph{KV concentration} and find that KV cache quantization delivers substantially greater acceleration than weight-only and weight-activation quantization in our matched-workload comparisons. However, INT4 KV rollout can degrade learning even with token-level truncated importance sampling (TIS). We propose \\emph{KV4-RL}, which combines calibration-free INT4 KV quantization with selective INT8 protection of attention sinks and recent context. Protecting a bounded number of positions reduces sampler mismatch while retaining most of the speedup from INT4. Across 400 iterations of Qwen3-8B-Base GRPO training, KV4-RL achieves $1.80\\times$ cumulative rollout speedup and $1.27\\times$ cumulative full-iteration speedup over BF16 rollout, reaching $1.97\\times$ rollout speedup over the final 50 iterations. Under a common BF16 evaluator, its final six-benchmark mean accuracy is within 0.5 percentage points of BF16-rollout training for both Qwen3-4B-Base and Qwen3-8B-Base.",
+      "github_links_from_paper_or_model_page": [],
+      "official_repository_facts": [],
+      "paper_claims_and_method": "Asynchronous rollout improves the efficiency of reinforcement learning with verifiable rewards (RLVR) by reducing under-utilization during long-tail generation. Sustained concurrency also concentrates context processing into fewer decode steps, increasing the KV workload per step. We characterize this \\emph{KV concentration} and find that KV cache quantization delivers substantially greater acceleration than weight-only and weight-activation quantization in our matched-workload comparisons. However, INT4 KV rollout can degrade learning even with token-level truncated importance sampling (TIS). We propose \\emph{KV4-RL}, which combines calibration-free INT4 KV quantization with selective INT8 protection of attention sinks and recent context. Protecting a bounded number of positions reduces sampler mismatch while retaining most of the speedup from INT4. Across 400 iterations of Qwen3-8B-Base GRPO training, KV4-RL achieves $1.80\\times$ cumulative rollout speedup and $1.27\\times$ cumulative full-iteration speedup over BF16 rollout, reaching $1.97\\times$ rollout speedup over the final 50 iterations. Under a common BF16 evaluator, its final six-benchmark mean accuracy is within 0.5 percentage points of BF16-rollout training for both Qwen3-4B-Base and Qwen3-8B-Base.",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [],
+      "hardware_and_install_excerpts": []
+    },
+    {
+      "candidate": {
+        "id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+        "title": "Qwen2.5-Coder-1.5B-Instruct",
+        "source": "huggingface",
+        "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+        "published_at": null,
+        "score": 35.0,
+        "mode": "interest",
+        "topic_hits": {
+          "cpu_small_models": [
+            "cpu inference",
+            "quantized"
+          ],
+          "ai_driven_development": [
+            "coding agent",
+            "repository-level"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "cpu_small_models+12",
+          "ai_driven_development+12",
+          "has_model+3",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": null,
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+        "fetched_at": "2026-10-15T09:07:31.828289+00:00",
+        "http_status": 200,
+        "bytes": 265488,
+        "sha256": "e87b1cdf8b196ba345f57c0320ebd8c4471f8aabad4f5e6e8ea337fd11672f0d",
+        "file": "primary/model-hf:qwen_qwen2.5-coder-1.5b-instruct.html"
+      },
+      "abstract_primary": "UNKNOWN: candidate is a model rather than a paper. Official model card says this instruction-tuned model has 1.54B parameters, 28 layers, 32,768-token context, and covers code generation/reasoning/fixing; its text also describes the series sizes and training corpus. No independent benchmark measurement was performed here.",
+      "github_links_from_paper_or_model_page": [
+        "https://github.com/huggingface",
+        "https://github.com/QwenLM/Qwen2.5-Coder"
+      ],
+      "official_repository_facts": [
+        {
+          "key": "qwenlm/qwen2.5-coder",
+          "status": "unavailable/unknown",
+          "reason": "No verified repository metadata retrieved."
+        }
+      ],
+      "paper_claims_and_method": "UNKNOWN: source abstract unavailable.",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [],
+      "hardware_and_install_excerpts": [],
+      "candidate_model_metadata": "See official Qwen/Qwen2.5-Coder repo snapshots in source supplement; HF model API exact candidate ID additionally included below.",
+      "model_card_primary": {
+        "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+        "raw_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct/raw/main/README.md",
+        "fetched_at": "2026-10-15T09:12:00.261969+00:00",
+        "http_status": 200,
+        "bytes": 5258,
+        "sha256": "a8504fd3e1247c90e4fe640d84df963237134bf29db02b0de7d502eed6c93c33",
+        "file": "supplement/hf-card-Qwen_Qwen2.5-Coder-1.5B-Instruct.md",
+        "license": "Apache-2.0",
+        "exact_id": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+        "parameter_count_card_claim": "1.54B",
+        "context_length_card_claim": 32768,
+        "successor_record": "Qwen/Qwen3-Coder-Next is a distinct current Qwen model artifact recorded in practical_neighbor_models; it is much larger (40 safetensors shards; HF card/API evidence in supplement)."
+      }
+    },
+    {
+      "candidate": {
+        "id": "2412.14219",
+        "title": "A Survey on Inference Optimization Techniques for Mixture of Experts\n  Models",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2412.14219",
+        "published_at": "2024-12-18T14:11:15.000Z",
+        "score": 34.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "distillation",
+            "quantization"
+          ],
+          "cpu_small_models": [
+            "pruning",
+            "throughput"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "nlp_summary_classification+10",
+          "cpu_small_models+12",
+          "has_code+4",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2024/12/18",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2412.14219",
+        "fetched_at": "2026-10-15T09:07:32.019462+00:00",
+        "http_status": 200,
+        "bytes": 46140,
+        "sha256": "1179f7031c8959d09a19a5ff1212b760d98879080bb5f77cb93f8dfe376f1f7e",
+        "file": "primary/arxiv-2412.14219.html"
+      },
+      "abstract_primary": "The emergence of large-scale Mixture of Experts (MoE) models represents a significant advancement in artificial intelligence, offering enhanced model capacity and computational efficiency through conditional computation. However, deploying and running inference on these models presents significant challenges in computational resources, latency, and energy efficiency. This comprehensive survey analyzes optimization techniques for MoE models across the entire system stack. We first establish a taxonomical framework that categorizes optimization approaches into model-level, system-level, and hardware-level optimizations. At the model level, we examine architectural innovations including efficient expert design, attention mechanisms, various compression techniques such as pruning, quantization, and knowledge distillation, as well as algorithm improvement including dynamic routing strategies and expert merging methods. At the system level, we investigate distributed computing approaches, load balancing mechanisms, and efficient scheduling algorithms that enable scalable deployment. Furthermore, we delve into hardware-specific optimizations and co-design strategies that maximize throughput and energy efficiency. This survey provides both a structured overview of existing solutions and identifies key challenges and promising research directions in MoE inference optimization. To facilitate ongoing updates and the sharing of cutting-edge advances in MoE inference optimization research, we have established a repository accessible at https://github.com/MoE-Inf/awesome-moe-inference/.",
+      "github_links_from_paper_or_model_page": [
+        "https://github.com/MoE-Inf/awesome-moe-inference/"
+      ],
+      "official_repository_facts": [
+        {
+          "key": "moe-inf/awesome-moe-inference",
+          "url": "https://api.github.com/repos/moe-inf/awesome-moe-inference",
+          "fetched_at": "2026-10-15T09:09:01.845730+00:00",
+          "status": 200,
+          "bytes": 6600,
+          "sha256": "a3184bb73c0513cee7948c6fb91413741a1fa2ef0d8819b0cb6e1e845be016b3",
+          "file": "supplement/moe-inf_awesome-moe-inference-repo.json",
+          "full_name": "MoE-Inf/awesome-moe-inference",
+          "html_url": "https://github.com/MoE-Inf/awesome-moe-inference",
+          "description": "Curated collection of papers in MoE model inference ",
+          "created_at": "2024-12-18T08:23:24Z",
+          "updated_at": "2026-10-01T05:46:54Z",
+          "pushed_at": "2026-03-12T01:59:19Z",
+          "stargazers_count": 428,
+          "forks_count": 19,
+          "open_issues_count": 1,
+          "default_branch": "main",
+          "license": null,
+          "archived": false,
+          "disabled": false,
+          "topics": [],
+          "tag_name": null,
+          "published_at": null,
+          "open_issue_sample": null
+        }
+      ],
+      "paper_claims_and_method": "The emergence of large-scale Mixture of Experts (MoE) models represents a significant advancement in artificial intelligence, offering enhanced model capacity and computational efficiency through conditional computation. However, deploying and running inference on these models presents significant challenges in computational resources, latency, and energy efficiency. This comprehensive survey analyzes optimization techniques for MoE models across the entire system stack. We first establish a taxonomical framework that categorizes optimization approaches into model-level, system-level, and hardware-level optimizations. At the model level, we examine architectural innovations including efficient expert design, attention mechanisms, various compression techniques such as pruning, quantization, and knowledge distillation, as well as algorithm improvement including dynamic routing strategies and expert merging methods. At the system level, we investigate distributed computing approaches, load balancing mechanisms, and efficient scheduling algorithms that enable scalable deployment. Furthermore, we delve into hardware-specific optimizations and co-design strategies that maximize throughput and energy efficiency. This survey provides both a structured overview of existing solutions and identifies key challenges and promising research directions in MoE inference optimization. To facilitate ongoing updates and the sharing of cutting-edge advances in MoE inference optimization research, we have established a repository accessible at https://github.com/MoE-Inf/awesome-moe-inference/.",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [
+        {
+          "repository": "moe-inf/awesome-moe-inference",
+          "readme_source": {
+            "url": "https://api.github.com/repos/moe-inf/awesome-moe-inference/readme",
+            "fetched_at": "2026-10-15T09:09:01.847122+00:00",
+            "status": 200,
+            "bytes": 34027,
+            "sha256": "5ab3eb0254fa6db679261b90e20ed35eaf2354ca0edff8787694fbe3cbf22d11",
+            "file": "supplement/moe-inf_awesome-moe-inference-README.md",
+            "raw_blob_api_file": "supplement/moe-inf_awesome-moe-inference-readme.json"
+          },
+          "hf_ids_or_urls_in_readme": [
+            "https://huggingface.co/IEITYuan/Yuan2-M32-hf",
+            "https://huggingface.co/MiniMaxAI/MiniMax-Text-01",
+            "https://huggingface.co/OrionZheng/openmoe-base",
+            "https://huggingface.co/Qwen/Qwen1.5-MoE-A2.7B",
+            "https://huggingface.co/Qwen/Qwen2-57B-A14B",
+            "https://huggingface.co/Qwen/Qwen3-235B-A22B-Thinking-2507",
+            "https://huggingface.co/Skywork/Skywork-MoE-Base",
+            "https://huggingface.co/Snowflake/snowflake-arctic-base",
+            "https://huggingface.co/ai21labs/Jamba-v0.1",
+            "https://huggingface.co/allenai/OLMoE-1B-7B-0924",
+            "https://huggingface.co/baidu/ERNIE-4.5-300B-A47B-PT",
+            "https://huggingface.co/databricks/dbrx-base",
+            "https://huggingface.co/deepseek-ai/DeepSeek-R1",
+            "https://huggingface.co/deepseek-ai/DeepSeek-V2",
+            "https://huggingface.co/deepseek-ai/DeepSeek-V3-Base",
+            "https://huggingface.co/deepseek-ai/deepseek-moe-16b-base",
+            "https://huggingface.co/facebook/nllb-moe-54b",
+            "https://huggingface.co/jetmoe/jetmoe-8b",
+            "https://huggingface.co/meituan-longcat/LongCat-Flash-Chat",
+            "https://huggingface.co/meta-llama/Llama-4-Maverick-17B-128E-Instruct",
+            "https://huggingface.co/microsoft/GRIN-MoE",
+            "https://huggingface.co/microsoft/Phi-3.5-MoE-instruct",
+            "https://huggingface.co/mistralai/Mixtral-8x22B-v0.1",
+            "https://huggingface.co/mistralai/Mixtral-8x7B-v0.1",
+            "https://huggingface.co/moonshotai/Kimi-K2-Instruct-0905",
+            "https://huggingface.co/openai/gpt-oss-120b",
+            "https://huggingface.co/tencent/Hunyuan-A13B-Instruct",
+            "https://huggingface.co/tencent/Tencent-Hunyuan-Large/tree/main/Hunyuan-A52B-Pretrain",
+            "https://huggingface.co/xai-org/grok-1",
+            "https://huggingface.co/zai-org/GLM-4.5"
+          ],
+          "relevant_readme_excerpts": [
+            "11: - [Model-Level Optimizations](#model-level-optimizations)",
+            "15: - [Model Compression](#model-compression)",
+            "27: - [Hardware-Level Optimization](#hardware-level-optimization)",
+            "37: [Arxiv'22] [A Review of Sparse Expert Models in Deep Learning](https://arxiv.org/abs/2209.01667)",
+            "41: |                                                             Reference                                                            | Para. | Experts | \\#L | \\#H | $d_{model}$ | $d_{ffn}$ | $d_{expert}$ | Affiliation |   Time  |",
+            "49: |                     [JetMoE](https://huggingface.co/jetmoe/jetmoe-8b) <br />    [[Tech Report](https://arxiv.org/abs/2404.07413)]                    | 8.52B |  2/8/0  |  24 |  32 |     2048    |    5632   |     5632     |  MIT et al. | 2024.03 |",
+            "53: |                  [Arctic](https://huggingface.co/Snowflake/snowflake-arctic-base) <br />   [[Tech Report](https://www.snowflake.com/en/blog/arctic-open-efficient-foundation-language-models-snowflake/) ]                   |  482B | 2/128/0 |  35 |  56 |     7168    |    4864   |     4864     |  Snowflake  | 2024.04 |",
+            "62: | [Hunyuan-Large](https://huggingface.co/tencent/Tencent-Hunyuan-Large/tree/main/Hunyuan-A52B-Pretrain)<br /> [[Tech Report](https://arxiv.org/abs/2411.02265)] |  389B |  1/16/1 |  64 |  80 |     6400    |   18304   |     18304    |   Tencent   | 2024.11 |",
+            "76: ## Model-Level Optimizations",
+            "82: [Arxiv'24.8] [BAM! Just Like That: Simple and Efficient Parameter Upcycling for Mixture of Experts](https://arxiv.org/abs/2408.08274)",
+            "86: [Arxiv'24.4] [Dense Training, Sparse Inference: Rethinking Training of Mixture-of-Experts Language Models](https://arxiv.org/abs/2404.05567)",
+            "106: [Arxiv'24.2] [MoELoRA: Contrastive Learning Guided Mixture of Experts on Parameter-Efficient Fine-Tuning for Large Language Models](https://arxiv.org/abs/2402.12851)",
+            "114: [KDD'23] [COMET: Learning Cardinality Constrained Mixture of Experts with Trees and Local Search](https://dl.acm.org/doi/pdf/10.1145/3580305.3599278)",
+            "120: ### Model Compression",
+            "124: [Arxiv'24.10] [MoE-Pruner: Pruning Mixture-of-Experts Large Language Model using the Hints from Its Router](https://arxiv.org/abs/2410.12013)",
+            "132: [Arxiv'24.7] [Efficient Expert Pruning for Sparse Mixture-of-Experts Language Models: Enhancing Performance and Reducing Inference Costs](https://arxiv.org/abs/2407.00945) [[Code](https://github.com/imagination-research/EEP)]",
+            "135: [ACL'24.5] [Not All Experts are Equal: Efficient Expert Pruning and Skipping for Mixture-of-Experts Large Language Models](https://arxiv.org/abs/2402.14800) [[Code](https://github.com/Lucky-Lance/Expert_Sparsity)]",
+            "137: [Arxiv'24.9] [Revisiting SMoE Language Models by Evaluating Inefficiencies with Task Specific Expert Pruning](https://arxiv.org/abs/2409.01483)",
+            "141: [Arxiv'24.6] [Demystifying the Compression of Mixture-of-Experts Through a Unified Framework](https://arxiv.org/abs/2406.02500) [[Code](https://github.com/DaizeDong/Unified-MoE-Compression)]",
+            "146: [Arxiv'24.11] [MoE-I2: Compressing Mixture of Experts Models through Inter-Expert Pruning and Intra-Expert Low-Rank Decomposition](https://arxiv.org/abs/2411.01016) [[Code](https://github.com/xiaochengsky/MoEI-2)]",
+            "155: [SENSYS '24] [LiteMoE: Customizing On-device LLM Serving via Proxy Submodel Tuning](https://dl.acm.org/doi/abs/10.1145/3666025.3699355)",
+            "163: [Arxiv'23] [QMoE: Practical Sub-1-Bit Compression of Trillion-Parameter Models](https://arxiv.org/abs/2310.16795) [[Code](http://github.com/IST-DASLab/qmoe)]",
+            "171: [Arxiv'24.6] [Examining Post-Training Quantization for Mixture-of-Experts: A Benchmark](https://arxiv.org/abs/2406.08155) [[Code](https://github.com/UNITES-Lab/moe-quantization)]",
+            "174: [INTERSPEECH'23] [Compressed MoE ASR Model Based on Knowledge Distillation and Quantization](https://www.isca-archive.org/interspeech_2023/yuan23c_interspeech.pdf)",
+            "176: [Arxiv'23] [EdgeMoE: Fast On-Device Inference of MoE-based Large Language Models](https://arxiv.org/abs/2308.14352) [Quantization]",
+            "179: [EMNLP'22] [Who Says Elephants Can't Run: Bringing Large Scale MoE Models into Cloud Scale Production](https://arxiv.org/abs/2211.10017)",
+            "183: [arXiv'25] [QuantMoE-Bench: Examining Post-Training Quantization for Mixture-of-Experts](https://arxiv.org/abs/2406.08155)",
+            "191: [arXiv'25] [MoQa: Rethinking MoE Quantization with Multi-stage Data-model Distribution Awareness](https://arxiv.org/abs/2503.21135v1)",
+            "195: [arXiv'25] [MoEQuant: Enhancing Quantization for Mixture-of-Experts Large Language Models via Expert-Balanced Sampling](https://arxiv.org/abs/2505.03804)",
+            "197: [arXiv'26] [EAQuant: Enhancing Post-Training Quantization for MoE Models via Expert-Aware Optimization](https://arxiv.org/abs/2506.13329)",
+            "209: [INTERSPEECH'23] [Compressed MoE ASR Model Based on Knowledge Distillation and Quantization](https://www.isca-archive.org/interspeech_2023/yuan23c_interspeech.pdf)",
+            "212: [ICML'22] [DeepSpeed-MoE: Advancing Mixture-of-Experts Inference and Training to Power Next-Generation AI Scale](https://proceedings.mlr.press/v162/rajbhandari22a.html) [[Code](https://github.com/microsoft/DeepSpeed)]",
+            "214: [MICROSOFT'22] [Knowledge distillation for mixture of experts models in speech recognition](https://www.microsoft.com/en-us/research/uploads/prod/2022/05/MainzSpeech_Interspeech2022_KD_MoE_Network.pdf)",
+            "219: [JMLR'22] [Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity](https://www.jmlr.org/papers/volume23/21-0998/21-0998.pdf)",
+            "221: [Arxiv'21] [Efficient Large Scale Language Modeling with Mixtures of Experts](https://arxiv.org/pdf/2112.10684)",
+            "225: [Arxiv'24.11] [MoE-I2: Compressing Mixture of Experts Models through Inter-Expert Pruning and Intra-Expert Low-Rank Decomposition](https://arxiv.org/abs/2411.01016) [[Code](https://github.com/xiaochengsky/MoEI-2)]",
+            "229: [Arxiv'22] [Parameter-Efficient Mixture-of-Experts Architecture for Pre-trained Language Models](https://arxiv.org/abs/2203.01104) [[Code](https://github.com/RUCAIBox/MPOE)]",
+            "237: [ACL'24.8] [XMoE: Sparse Models with Fine-grained and Adaptive Expert Selection](https://aclanthology.org/2024.findings-acl.694/)",
+            "239: [Arxiv'23] [Dynamic Mixture of Experts: An Auto-Tuning Approach for Efficient Transformer Models](https://arxiv.org/abs/2405.14297) [[Code](https://github.com/LINs-lab/DynMoE)]",
+            "241: [Arxiv'23] [Adaptive Gating in Mixture-of-Experts based Language Models](https://arxiv.org/abs/2310.07188)",
+            "243: [Arxiv'23] [Towards MoE Deployment: Mitigating Inefficiencies in Mixture-of-Expert (MoE) Inference](https://arxiv.org/abs/2303.06182)",
+            "245: [Arxiv'24.8] [AdaMoLE: Fine-Tuning Large Language Models with Adaptive Mixture of Low-Rank Adaptation Experts](https://arxiv.org/abs/2405.00361)",
+            "251: [Arxiv'24.10] [Retraining-Free Merging of Sparse Mixture-of-Experts via Hierarchical Clustering](https://arxiv.org/abs/2410.08589)",
+            "255: [Arxiv'24.3] [Branch-Train-MiX:Mixing Expert LLMs into a Mixture-of-Experts LLM](https://arxiv.org/abs/2403.07816)",
+            "257: [Arxiv'22] [Branch-Train-Merge: Embarrassingly Parallel Training of Expert Language Models](https://arxiv.org/abs/2208.03306)",
+            "259: [ICLR'24.5] [Fusing Models with Complementary Expertise](https://openreview.net/pdf?id=PhMrGCMIRL)",
+            "263: [Arxiv'24.9] [DA-MoE: Towards Dynamic Expert Allocation for Mixture-of-Experts Models](https://arxiv.org/abs/2409.06669)",
+            "269: [Arxiv'23] [Moduleformer: Learning modular large language models from uncurated data](https://arxiv.org/abs/2306.04640)",
+            "272: [Arxiv'23] [Experts weights averaging: A new general training scheme for vision transformers](https://arxiv.org/pdf/2308.06093)",
+            "274: [JMLR'22] [Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity](https://www.jmlr.org/papers/volume23/21-0998/21-0998.pdf)"
+          ]
+        }
+      ],
+      "hardware_and_install_excerpts": [
+        "27: - [Hardware-Level Optimization](#hardware-level-optimization)",
+        "82: [Arxiv'24.8] [BAM! Just Like That: Simple and Efficient Parameter Upcycling for Mixture of Experts](https://arxiv.org/abs/2408.08274)",
+        "106: [Arxiv'24.2] [MoELoRA: Contrastive Learning Guided Mixture of Experts on Parameter-Efficient Fine-Tuning for Large Language Models](https://arxiv.org/abs/2402.12851)",
+        "141: [Arxiv'24.6] [Demystifying the Compression of Mixture-of-Experts Through a Unified Framework](https://arxiv.org/abs/2406.02500) [[Code](https://github.com/DaizeDong/Unified-MoE-Compression)]",
+        "163: [Arxiv'23] [QMoE: Practical Sub-1-Bit Compression of Trillion-Parameter Models](https://arxiv.org/abs/2310.16795) [[Code](http://github.com/IST-DASLab/qmoe)]",
+        "219: [JMLR'22] [Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity](https://www.jmlr.org/papers/volume23/21-0998/21-0998.pdf)",
+        "229: [Arxiv'22] [Parameter-Efficient Mixture-of-Experts Architecture for Pre-trained Language Models](https://arxiv.org/abs/2203.01104) [[Code](https://github.com/RUCAIBox/MPOE)]",
+        "274: [JMLR'22] [Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity](https://www.jmlr.org/papers/volume23/21-0998/21-0998.pdf)"
+      ]
+    },
+    {
+      "candidate": {
+        "id": "2610.14726",
+        "title": "LightVAE: Towards Compact and Efficient Video Autoencoders",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.14726",
+        "published_at": "2026-10-10T00:00:00.000Z",
+        "score": 34.0,
+        "mode": "interest",
+        "topic_hits": {
+          "cpu_small_models": [
+            "pruning",
+            "throughput"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "cpu_small_models+12",
+          "has_code+4",
+          "recency+10(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2026/10/10",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2610.14726",
+        "fetched_at": "2026-10-15T09:07:32.023946+00:00",
+        "http_status": 200,
+        "bytes": 43985,
+        "sha256": "7e8c2c4dcfc45830b462c0fc2e6b3870ed331a39c4b7ba9a8c63b8a4e33c168b",
+        "file": "primary/arxiv-2610.14726.html"
+      },
+      "abstract_primary": "Latent diffusion models enable high-quality video generation, but video VAE encoding and decoding remain computationally expensive. Existing methods use stage-specific lightweight operators, yet either constrain spatial and temporal computation jointly or remove temporal computation altogether, without distinguishing their compression sensitivities in pretrained Conv3D. To address these limitations, we present LightVAE, a compression framework that exploits redundancy in temporal modeling and network depth. LightVAE exactly reparameterizes eligible causal Conv3D layers into an aggregate spatial response and a difference-driven temporal correction. Based on their distinct compression sensitivities, temporal low-rank compression (TLR) keeps the aggregate spatial kernel dense and applies layer-specific low-rank approximation only to the temporal correction. An algebraically equivalent folded implementation converts the arithmetic savings into practical acceleration. LightVAE further uses width-preserving block pruning to reduce depth and probe-guided feature alignment, guided by feedback from a frozen teacher suffix, to recover quality after compression. The framework also extends to video encoders. Across three video VAE backbones and two GPU platforms, LightVAE consistently accelerates decoding. For the Wan VAE family, it achieves up to $2.24\\times$ and $1.11\\times$ the decoding throughput of state-of-the-art efficient VAE decoders on NVIDIA H100 and RTX~5090, respectively, with higher DAVIS PSNR and lower LPIPS. On MiniMax-H3, it achieves up to $2.97\\times$ the original decoding throughput while retaining 99.51\\% of the original model's overall VBench-2.0 score. Our code is available at https://github.com/ModelTC/LightVAE.",
+      "github_links_from_paper_or_model_page": [
+        "https://github.com/ModelTC/LightVAE",
+        "https://github.com/ModelTC/LightVAE"
+      ],
+      "official_repository_facts": [
+        {
+          "key": "modeltc/lightvae",
+          "url": "https://api.github.com/repos/modeltc/lightvae",
+          "fetched_at": "2026-10-15T09:09:02.320494+00:00",
+          "status": 200,
+          "bytes": 6254,
+          "sha256": "e95e3c7ab076c5c4a78c6f3c1fe5fe05be52bf1760f636d747b4470494697487",
+          "file": "supplement/modeltc_lightvae-repo.json",
+          "full_name": "ModelTC/LightVAE",
+          "html_url": "https://github.com/ModelTC/LightVAE",
+          "description": "LightVAE: Fast video VAE decoders for Wan2.1, Wan2.2, and MiniMax-H3, plus a compressed H3 reference encoder. Pretrained weights and ComfyUI workflows.",
+          "created_at": "2026-10-10T07:16:00Z",
+          "updated_at": "2026-10-15T07:53:07Z",
+          "pushed_at": "2026-10-14T15:26:08Z",
+          "stargazers_count": 26,
+          "forks_count": 0,
+          "open_issues_count": 1,
+          "default_branch": "main",
+          "license": null,
+          "archived": false,
+          "disabled": false,
+          "topics": [
+            "comfyui",
+            "comfyui-custom-node",
+            "minimax-h3",
+            "video-generation",
+            "video-vae",
+            "wan21",
+            "wan22"
+          ],
+          "tag_name": null,
+          "published_at": null,
+          "open_issue_sample": null
+        }
+      ],
+      "paper_claims_and_method": "Latent diffusion models enable high-quality video generation, but video VAE encoding and decoding remain computationally expensive. Existing methods use stage-specific lightweight operators, yet either constrain spatial and temporal computation jointly or remove temporal computation altogether, without distinguishing their compression sensitivities in pretrained Conv3D. To address these limitations, we present LightVAE, a compression framework that exploits redundancy in temporal modeling and network depth. LightVAE exactly reparameterizes eligible causal Conv3D layers into an aggregate spatial response and a difference-driven temporal correction. Based on their distinct compression sensitivities, temporal low-rank compression (TLR) keeps the aggregate spatial kernel dense and applies layer-specific low-rank approximation only to the temporal correction. An algebraically equivalent folded implementation converts the arithmetic savings into practical acceleration. LightVAE further uses width-preserving block pruning to reduce depth and probe-guided feature alignment, guided by feedback from a frozen teacher suffix, to recover quality after compression. The framework also extends to video encoders. Across three video VAE backbones and two GPU platforms, LightVAE consistently accelerates decoding. For the Wan VAE family, it achieves up to $2.24\\times$ and $1.11\\times$ the decoding throughput of state-of-the-art efficient VAE decoders on NVIDIA H100 and RTX~5090, respectively, with higher DAVIS PSNR and lower LPIPS. On MiniMax-H3, it achieves up to $2.97\\times$ the original decoding throughput while retaining 99.51\\% of the original model's overall VBench-2.0 score. Our code is available at https://github.com/ModelTC/LightVAE.",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [
+        {
+          "repository": "modeltc/lightvae",
+          "readme_source": {
+            "url": "https://api.github.com/repos/modeltc/lightvae/readme",
+            "fetched_at": "2026-10-15T09:09:02.330871+00:00",
+            "status": 200,
+            "bytes": 8512,
+            "sha256": "d1763464233408d74238a3d88505eae190b3cc161935b5e2fe42e15621fd0e8d",
+            "file": "supplement/modeltc_lightvae-README.md",
+            "raw_blob_api_file": "supplement/modeltc_lightvae-readme.json"
+          },
+          "hf_ids_or_urls_in_readme": [
+            "https://huggingface.co/lightx2v/LightVAE"
+          ],
+          "relevant_readme_excerpts": [
+            "9: [📄 Paper](https://arxiv.org/abs/2610.14726) · [🤗 Models](https://huggingface.co/lightx2v/LightVAE) · [🧩 ComfyUI](comfyui/README.md) · [⚡ LightX2V](https://github.com/ModelTC/LightX2V)",
+            "15: **LightVAE** accelerates pretrained video autoencoders while preserving their original latent interfaces.",
+            "19: - **Compatible latents** — compressed components can be paired with their corresponding original components. Wan models retain their original encoders.",
+            "21: This repository provides reconstruction examples, decoder benchmarks and H3 ComfyUI workflows. For video generation with LightVAE, see [LightX2V](https://github.com/ModelTC/LightX2V).",
+            "33: **NVIDIA H200 · PyTorch 2.11.0 · CUDA 12.8 · BF16**",
+            "34: **3 clips × 124 frames · 768p · 24 FPS**",
+            "58: The **Load H3 LightVAE** node reuses ComfyUI’s native H3 VAE. No LightVAE package installation, TLR or custom Triton kernels are needed.",
+            "60: - **FL2V:** replace the decoder; keep original first/last-frame encoding.",
+            "65: > Use the [installer](comfyui/README.md#install)—do not clone the entire repository directly into `custom_nodes`. Connect the original H3 video VAE to **`base_vae`**, then select Lite components through **Load H3 LightVAE**, not the standard Load VAE node.",
+            "67: [Installation guide](comfyui/README.md) · [FL2V workflow](comfyui/workflows/h3_fl2v_lightvae.json) · [Image-reference workflow](comfyui/workflows/h3_ref_image_lightvae.json) · [Video-reference workflow](comfyui/workflows/h3_ref_video_lightvae.json)",
+            "69: The current ComfyUI node is **H3-only**. For ComfyUI usage, skip the Python installation below.",
+            "71: ## 🛠️ Python Installation",
+            "73: Tested with **Python 3.11** and **PyTorch 2.11.0 / CUDA 12.8**.",
+            "76: git clone https://github.com/ModelTC/LightVAE.git",
+            "78: python -m pip install -r requirements.txt",
+            "81: For model-only installation, use `python -m pip install .`; for development, use `python -m pip install -e \".[cli]\"`.",
+            "92: Download LightVAE checkpoints:",
+            "98: Use standard, non-INT8 checkpoints with `infer.py` and `benchmark.py`.",
+            "117: > **Wan2.2 model selection:** 14B models use the **Wan2.1 VAE**; TI2V-5B uses the **Wan2.2 VAE**.",
+            "123: `infer.py` accepts independent **`--encoder`** and **`--decoder`** checkpoints. Examples use BF16 and produce an **MP4 + JSON report** containing PSNR and timings.",
+            "128: CUDA_VISIBLE_DEVICES=0 python infer.py \\",
+            "129: --model wan21 --variant lite \\",
+            "132: --input demo.mp4 --frames 81 --height 480 --width 832 \\",
+            "139: CUDA_VISIBLE_DEVICES=0 python infer.py \\",
+            "140: --model wan22 --variant lite \\",
+            "143: --input demo.mp4 --frames 81 --height 704 --width 1280 \\",
+            "154: CUDA_VISIBLE_DEVICES=0 python infer.py \\",
+            "155: --model h3 --variant lite \\",
+            "158: --input demo.mp4 --frames 124 --height 768 --width 1344 \\",
+            "165: CUDA_VISIBLE_DEVICES=0 python infer.py \\",
+            "166: --model h3 --variant lite --encoder-variant lite \\",
+            "169: --input demo.mp4 --frames 124 --height 768 --width 1344 \\",
+            "176: - `--frames` limits input length. Omit both size arguments to retain the input resolution; specifying both applies resize-to-cover and center cropping.",
+            "185: CUDA_VISIBLE_DEVICES=0 python benchmark.py \\",
+            "186: --model wan21 --weights-dir weights/LightVAE \\",
+            "188: --frames 81 --height 480 --width 832 \\",
+            "192: CUDA_VISIBLE_DEVICES=0 python benchmark.py \\",
+            "193: --model wan22 --weights-dir weights/LightVAE \\",
+            "195: --frames 81 --height 704 --width 1280 \\",
+            "199: CUDA_VISIBLE_DEVICES=0 python benchmark.py \\",
+            "200: --model h3 --weights-dir weights/LightVAE \\",
+            "202: --frames 124 --height 768 --width 1344 \\",
+            "226: If you find this useful, please star [LightVAE](https://github.com/ModelTC/LightVAE) and [LightX2V](https://github.com/ModelTC/LightX2V)!"
+          ]
+        }
+      ],
+      "hardware_and_install_excerpts": [
+        "33: **NVIDIA H200 · PyTorch 2.11.0 · CUDA 12.8 · BF16**",
+        "34: **3 clips × 124 frames · 768p · 24 FPS**",
+        "58: The **Load H3 LightVAE** node reuses ComfyUI’s native H3 VAE. No LightVAE package installation, TLR or custom Triton kernels are needed.",
+        "60: - **FL2V:** replace the decoder; keep original first/last-frame encoding.",
+        "65: > Use the [installer](comfyui/README.md#install)—do not clone the entire repository directly into `custom_nodes`. Connect the original H3 video VAE to **`base_vae`**, then select Lite components through **Load H3 LightVAE**, not the standard Load VAE node.",
+        "67: [Installation guide](comfyui/README.md) · [FL2V workflow](comfyui/workflows/h3_fl2v_lightvae.json) · [Image-reference workflow](comfyui/workflows/h3_ref_image_lightvae.json) · [Video-reference workflow](comfyui/workflows/h3_ref_video_lightvae.json)",
+        "69: The current ComfyUI node is **H3-only**. For ComfyUI usage, skip the Python installation below.",
+        "71: ## 🛠️ Python Installation",
+        "73: Tested with **Python 3.11** and **PyTorch 2.11.0 / CUDA 12.8**.",
+        "78: python -m pip install -r requirements.txt",
+        "81: For model-only installation, use `python -m pip install .`; for development, use `python -m pip install -e \".[cli]\"`.",
+        "128: CUDA_VISIBLE_DEVICES=0 python infer.py \\",
+        "132: --input demo.mp4 --frames 81 --height 480 --width 832 \\",
+        "139: CUDA_VISIBLE_DEVICES=0 python infer.py \\",
+        "143: --input demo.mp4 --frames 81 --height 704 --width 1280 \\",
+        "154: CUDA_VISIBLE_DEVICES=0 python infer.py \\",
+        "158: --input demo.mp4 --frames 124 --height 768 --width 1344 \\",
+        "165: CUDA_VISIBLE_DEVICES=0 python infer.py \\",
+        "169: --input demo.mp4 --frames 124 --height 768 --width 1344 \\",
+        "176: - `--frames` limits input length. Omit both size arguments to retain the input resolution; specifying both applies resize-to-cover and center cropping.",
+        "185: CUDA_VISIBLE_DEVICES=0 python benchmark.py \\",
+        "188: --frames 81 --height 480 --width 832 \\",
+        "192: CUDA_VISIBLE_DEVICES=0 python benchmark.py \\",
+        "195: --frames 81 --height 704 --width 1280 \\",
+        "199: CUDA_VISIBLE_DEVICES=0 python benchmark.py \\",
+        "202: --frames 124 --height 768 --width 1344 \\"
+      ]
+    },
+    {
+      "candidate": {
+        "id": "2211.11014",
+        "title": "Understanding and Improving Knowledge Distillation for\n  Quantization-Aware Training of Large Transformer Encoders",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2211.11014",
+        "published_at": "2022-11-20T16:23:23.000Z",
+        "score": 34.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "distillation",
+            "quantization"
+          ],
+          "cpu_small_models": [
+            "lightweight model",
+            "quantized"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "nlp_summary_classification+10",
+          "cpu_small_models+12",
+          "has_code+4",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2022/11/20",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2211.11014",
+        "fetched_at": "2026-10-15T09:07:32.083109+00:00",
+        "http_status": 200,
+        "bytes": 41784,
+        "sha256": "2f169dd56e37dfc369df14a59e793bcc702a125552c55c5b4bf51c78155ca062",
+        "file": "primary/arxiv-2211.11014.html"
+      },
+      "abstract_primary": "Knowledge distillation (KD) has been a ubiquitous method for model compression to strengthen the capability of a lightweight model with the transferred knowledge from the teacher. In particular, KD has been employed in quantization-aware training (QAT) of Transformer encoders like BERT to improve the accuracy of the student model with the reduced-precision weight parameters. However, little is understood about which of the various KD approaches best fits the QAT of Transformers. In this work, we provide an in-depth analysis of the mechanism of KD on attention recovery of quantized large Transformers. In particular, we reveal that the previously adopted MSE loss on the attention score is insufficient for recovering the self-attention information. Therefore, we propose two KD methods; attention-map and attention-output losses. Furthermore, we explore the unification of both losses to address task-dependent preference between attention-map and output losses. The experimental results on various Transformer encoder models demonstrate that the proposed KD methods achieve state-of-the-art accuracy for QAT with sub-2-bit weight quantization.",
+      "github_links_from_paper_or_model_page": [],
+      "official_repository_facts": [],
+      "paper_claims_and_method": "Knowledge distillation (KD) has been a ubiquitous method for model compression to strengthen the capability of a lightweight model with the transferred knowledge from the teacher. In particular, KD has been employed in quantization-aware training (QAT) of Transformer encoders like BERT to improve the accuracy of the student model with the reduced-precision weight parameters. However, little is understood about which of the various KD approaches best fits the QAT of Transformers. In this work, we provide an in-depth analysis of the mechanism of KD on attention recovery of quantized large Transformers. In particular, we reveal that the previously adopted MSE loss on the attention score is insufficient for recovering the self-attention information. Therefore, we propose two KD methods; attention-map and attention-output losses. Furthermore, we explore the unification of both losses to address task-dependent preference between attention-map and output losses. The experimental results on various Transformer encoder models demonstrate that the proposed KD methods achieve state-of-the-art accuracy for QAT with sub-2-bit weight quantization.",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [],
+      "hardware_and_install_excerpts": []
+    },
+    {
+      "candidate": {
+        "id": "2610.17953",
+        "title": "Agent-Reflex: Teaching Language Agents to Act Reflectively",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.17953",
+        "published_at": "2026-10-13T00:00:00.000Z",
+        "score": 33.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "distillation"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "nlp_summary_classification+5",
+          "trend_rank+1",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2026/10/13",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2610.17953",
+        "fetched_at": "2026-10-15T09:07:32.195655+00:00",
+        "http_status": 200,
+        "bytes": 44233,
+        "sha256": "e360e351239945de92edf047b55fd6426f9d2b49a4df577e33c3926a4dacec25",
+        "file": "primary/arxiv-2610.17953.html"
+      },
+      "abstract_primary": "Large language models have evolved from single-turn chatbots into interactive agents capable of long-horizon reasoning. In real deployments, MCP tool services can return noisy feedback and users may intervene to correct the agent, but existing methods provide limited supervision for reflection learning and failure recovery. To bridge this gap, we propose Agent-Reflex, a general training framework for incentivizing proactive reflection in agents. Specifically, Agent-Reflex comprises three stages. First, Environment Reflection Skill Discovery (RSD) injects grounded tool-feedback perturbations into environment scaling, samples a capability-diverse LLM pool, mines matched success-failure pairs, and summarizes reusable reflection meta-skills. Building on this skill library, we then apply Reflective Supervised Fine-Tuning (ReSFT) that converts each skill into supervision for self-reflection, skill recovery, and user-centric correction, strengthening complementary reflective behaviors. Finally, we propose On-Policy Reflective Policy Optimization (ORPO) to combine agentic reinforcement learning under noisy interactions with reflection-guided on-policy distillation to further elicit proactive reflection. Built on Qwen3-8B, Agent-Reflex reaches 58.6 overall on five long-horizon tool-use benchmarks and 29.1 on AgentNoiseBench, surpassing strong environment-scaling and reflection baselines. Experiments on six challenging agent benchmark suites demonstrate the effectiveness of Agent-Reflex. Further analyses show that Agent-Reflex improves agents' robustness to noise while maintaining stable training dynamics, supporting scalable agent training. Our code is available at https://github.com/RUC-NLPIR/Agent-Reflex.",
+      "github_links_from_paper_or_model_page": [
+        "https://github.com/RUC-NLPIR/Agent-Reflex"
+      ],
+      "official_repository_facts": [
+        {
+          "key": "ruc-nlpir/agent-reflex",
+          "url": "https://api.github.com/repos/ruc-nlpir/agent-reflex",
+          "fetched_at": "2026-10-15T09:09:02.384468+00:00",
+          "status": 200,
+          "bytes": 6453,
+          "sha256": "c2860482887cbc6bdffd3036fd203a11df50d010c82398dbcb1eedb0a8838d52",
+          "file": "supplement/ruc-nlpir_agent-reflex-repo.json",
+          "full_name": "RUC-NLPIR/Agent-Reflex",
+          "html_url": "https://github.com/RUC-NLPIR/Agent-Reflex",
+          "description": "Official code for Agent-Reflex: Teaching Language Agents to Act Reflectively",
+          "created_at": "2026-10-06T14:08:37Z",
+          "updated_at": "2026-10-15T09:01:00Z",
+          "pushed_at": "2026-10-14T14:46:39Z",
+          "stargazers_count": 73,
+          "forks_count": 2,
+          "open_issues_count": 0,
+          "default_branch": "main",
+          "license": {
+            "key": "mit",
+            "name": "MIT License",
+            "spdx_id": "MIT",
+            "url": "https://api.github.com/licenses/mit"
+          },
+          "archived": false,
+          "disabled": false,
+          "topics": [],
+          "tag_name": null,
+          "published_at": null,
+          "open_issue_sample": null
+        }
+      ],
+      "paper_claims_and_method": "Large language models have evolved from single-turn chatbots into interactive agents capable of long-horizon reasoning. In real deployments, MCP tool services can return noisy feedback and users may intervene to correct the agent, but existing methods provide limited supervision for reflection learning and failure recovery. To bridge this gap, we propose Agent-Reflex, a general training framework for incentivizing proactive reflection in agents. Specifically, Agent-Reflex comprises three stages. First, Environment Reflection Skill Discovery (RSD) injects grounded tool-feedback perturbations into environment scaling, samples a capability-diverse LLM pool, mines matched success-failure pairs, and summarizes reusable reflection meta-skills. Building on this skill library, we then apply Reflective Supervised Fine-Tuning (ReSFT) that converts each skill into supervision for self-reflection, skill recovery, and user-centric correction, strengthening complementary reflective behaviors. Finally, we propose On-Policy Reflective Policy Optimization (ORPO) to combine agentic reinforcement learning under noisy interactions with reflection-guided on-policy distillation to further elicit proactive reflection. Built on Qwen3-8B, Agent-Reflex reaches 58.6 overall on five long-horizon tool-use benchmarks and 29.1 on AgentNoiseBench, surpassing strong environment-scaling and reflection baselines. Experiments on six challenging agent benchmark suites demonstrate the effectiveness of Agent-Reflex. Further analyses show that Agent-Reflex improves agents' robustness to noise while maintaining stable training dynamics, supporting scalable agent training. Our code is available at https://github.com/RUC-NLPIR/Agent-Reflex.",
+      "license_commercial_use": {
+        "status": "see_repo_license",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [
+        {
+          "repository": "ruc-nlpir/agent-reflex",
+          "readme_source": {
+            "url": "https://api.github.com/repos/ruc-nlpir/agent-reflex/readme",
+            "fetched_at": "2026-10-15T09:09:02.408135+00:00",
+            "status": 200,
+            "bytes": 15459,
+            "sha256": "4269534c08121f67e31af1baa3f8750858c52480a8ed33bffa2c76384f1acc84",
+            "file": "supplement/ruc-nlpir_agent-reflex-README.md",
+            "raw_blob_api_file": "supplement/ruc-nlpir_agent-reflex-readme.json"
+          },
+          "hf_ids_or_urls_in_readme": [
+            "https://huggingface.co/collections/dongguanting/agent-reflex",
+            "https://huggingface.co/datasets/dongguanting/Agent-Reflex-RL-2K",
+            "https://huggingface.co/datasets/dongguanting/Agent-Reflex-SFT-54K",
+            "https://huggingface.co/dongguanting/Agent-Reflex-8B",
+            "https://huggingface.co/papers/2610.17953"
+          ],
+          "relevant_readme_excerpts": [
+            "3: <img src=\"assets/cover.gif\" alt=\"Agent-Reflex learns to observe, reflect, and recover from tool failures and user corrections through RSD, ReSFT, and ORPO training.\" width=\"100%\">",
+            "11: [![Model](https://img.shields.io/badge/🤗%20Model-Agent--Reflex--8B-ffc107.svg)](https://huggingface.co/dongguanting/Agent-Reflex-8B)",
+            "16: [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)",
+            "18: *A training framework that elicits **proactive reflection** in tool-using LLM agents: noticing noisy tool feedback and user corrections, and recovering from them.*",
+            "20: [Demo](#-demo) · [Overview](#-overview) · [Framework](#-agent-reflex-framework) · [Results](#-benchmarks--results) · [Installation](#-installation) · [Data](#-data) · [Quick Start](#-quick-start) · [Citation](#-citation)",
+            "27: * **[2026-10]** 🤗 The **[Agent-Reflex-8B](https://huggingface.co/dongguanting/Agent-Reflex-8B)** checkpoint (Qwen3-8B, ReSFT + ORPO) is released.",
+            "28: * **[2026-10]** 🚀 Full codebase released: the RSD skill library (1,170 meta-skills), ReSFT and ORPO training recipes, and evaluation on six benchmarks.",
+            "41: **Agents are trained in idealized environments but deployed into noisy ones.** Two gaps follow:",
+            "43: * **(1) No noisy feedback.** Real MCP tools time out, reject permissions or return malformed results, yet training environments return clean feedback, so agents never learn to detect and recover from failures.",
+            "54: ## ✨ Agent-Reflex Framework",
+            "70: Combine Noisy Agent RL with same-token, skill-guided on-policy distillation (OPD) to provide dense reflection supervision. Skills are used only in training; the deployed agent is skill-free.",
+            "79: * [BFCL V4](https://gorilla.cs.berkeley.edu/leaderboard.html) ([paper](https://proceedings.mlr.press/v267/patil25a.html)): the Berkeley Function Calling Leaderboard extended to agentic evaluation (web search, memory, multi-turn, live / non-live, irrelevance); 5,217 tasks.",
+            "108: ## 🔧 Installation",
+            "112: Each part has its own environment, built by one script with [uv](https://github.com/astral-sh/uv) (`pip install uv`) from a pinned `requirements.txt`:",
+            "118: | Model serving | 3.12 | vLLM 0.27.1 | `bash evaluation/shared/setup_vllm.sh` |",
+            "119: | Benchmarks | 3.10 / 3.12 | one venv per benchmark; upstream code cloned at pinned commits | `bash evaluation/<Bench>/setup.sh` |",
+            "121: * **Hardware**: NVIDIA 80 GB GPUs with a driver supporting CUDA 12.8. ReSFT uses 2 × 8 GPUs; ORPO and evaluation use 1 × 8.",
+            "126: Training needs no API keys. Evaluation reads them from `evaluation/.env` (git-ignored):",
+            "139: > By default our evaluation calls these models through Boyue, a third-party OpenAI-compatible API service. Any OpenAI-compatible endpoint works: to use the official OpenAI / Anthropic APIs or your own gateway, point the base URL and key in `evaluation/.env` (and the client setup in each benchmark's `run.sh` / config) to your provider. A coding agent can make this change in a few minutes.",
+            "157: | [`ORPO/`](ORPO) | ORPO from the ReSFT checkpoint on 1 × 8 GPUs | [README](ORPO/README.md) · [reproduce](ORPO/reproduce_skills.md) |",
+            "164: | Agent-Reflex-8B (Qwen3-8B, ReSFT + ORPO) | 16 GB | [🤗 HuggingFace](https://huggingface.co/dongguanting/Agent-Reflex-8B) | any path, pass as `MODEL_PATH` |",
+            "165: | ReSFT data, 54,663 trajectories | 2.6 GB | [🤗 HuggingFace](https://huggingface.co/datasets/dongguanting/Agent-Reflex-SFT-54K) | `LLaMA-Factory/data/agent_reflex_resft/train/` |",
+            "171: pip install -U huggingface_hub",
+            "172: hf download dongguanting/Agent-Reflex-SFT-54K --repo-type dataset --include \"train/*\" \\",
+            "174: hf download dongguanting/Agent-Reflex-RL-2K train_envscaler_2550_with_skills.jsonl \\",
+            "185: NNODES=2 NODE_RANK=<0|1> MASTER_ADDR=<node0> MODEL_PATH=/path/to/Qwen3-8B \\",
+            "191: Start from the ReSFT model checkpoint:",
+            "195: python scripts/prepare_init_checkpoint.py /path/to/resft_checkpoint --apply",
+            "196: MODEL_PATH=/path/to/resft_checkpoint bash scripts/run_orpo_qwen3_8b.sh",
+            "205: MODEL_PATH=/path/to/Agent-Reflex-8B RUN_NAME=agent-reflex bash run_all.sh",
+            "208: `run_all.sh` serves the model with vLLM and runs all six benchmarks; set `BENCHES=\"Tau2 BFCL-v4\"` to run a subset. Per-benchmark details are in [`evaluation/README.md`](evaluation/README.md).",
+            "214: ## 📄 License",
+            "216: Agent-Reflex code and the RSD skill library are released under the [MIT License](LICENSE). Vendored components keep their own licenses:",
+            "218: | Component | License |",
+            "220: | `ORPO/` (verl), `LLaMA-Factory/` | Apache-2.0 |",
+            "221: | `evaluation/BFCL-v4/` (BFCL data, from [gorilla](https://github.com/ShishirPatil/gorilla)) | Apache-2.0 |",
+            "222: | `evaluation/Tau2/data/`, `evaluation/AgentNoiseBench/repo/tau2-bench-main/` ([tau2-bench](https://github.com/sierra-research/tau2-bench)) | MIT |",
+            "223: | `evaluation/VitaBench/data/`, `evaluation/AgentNoiseBench/repo/vitabench/` ([VitaBench](https://github.com/meituan-longcat/vitabench)) | MIT |",
+            "224: | `evaluation/ACEBench/interact_with_env/` ([EnvScaler](https://github.com/RUC-NLPIR/EnvScaler), [tau-bench](https://github.com/sierra-research/tau-bench)) | MIT |"
+          ]
+        }
+      ],
+      "hardware_and_install_excerpts": [
+        "18: *A training framework that elicits **proactive reflection** in tool-using LLM agents: noticing noisy tool feedback and user corrections, and recovering from them.*",
+        "20: [Demo](#-demo) · [Overview](#-overview) · [Framework](#-agent-reflex-framework) · [Results](#-benchmarks--results) · [Installation](#-installation) · [Data](#-data) · [Quick Start](#-quick-start) · [Citation](#-citation)",
+        "54: ## ✨ Agent-Reflex Framework",
+        "79: * [BFCL V4](https://gorilla.cs.berkeley.edu/leaderboard.html) ([paper](https://proceedings.mlr.press/v267/patil25a.html)): the Berkeley Function Calling Leaderboard extended to agentic evaluation (web search, memory, multi-turn, live / non-live, irrelevance); 5,217 tasks.",
+        "108: ## 🔧 Installation",
+        "112: Each part has its own environment, built by one script with [uv](https://github.com/astral-sh/uv) (`pip install uv`) from a pinned `requirements.txt`:",
+        "121: * **Hardware**: NVIDIA 80 GB GPUs with a driver supporting CUDA 12.8. ReSFT uses 2 × 8 GPUs; ORPO and evaluation use 1 × 8.",
+        "157: | [`ORPO/`](ORPO) | ORPO from the ReSFT checkpoint on 1 × 8 GPUs | [README](ORPO/README.md) · [reproduce](ORPO/reproduce_skills.md) |",
+        "171: pip install -U huggingface_hub"
+      ]
+    },
+    {
+      "candidate": {
+        "id": "2610.20344",
+        "title": "Doc2Harness: Benchmarking LLMs on Long-Horizon Harness Engineering of Coding Agents",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.20344",
+        "published_at": "2026-10-14T00:00:00.000Z",
+        "score": 33.0,
+        "mode": "interest",
+        "topic_hits": {
+          "ai_driven_development": [
+            "coding agent"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "ai_driven_development+6",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2026/10/14",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2610.20344",
+        "fetched_at": "2026-10-15T09:07:32.199167+00:00",
+        "http_status": 200,
+        "bytes": 44167,
+        "sha256": "a9fedef1b6660c207a0494d9a800068b99cd6e3266d86225622e689ad85837cd",
+        "file": "primary/arxiv-2610.20344.html"
+      },
+      "abstract_primary": "Agents driven by large language models are increasingly deployed on long-horizon tasks, where they use tools and modify real workspaces. How well they perform depends as much on the harness around the model as on the model itself. Existing benchmarks measure downstream task success under a fixed harness, leaving harness engineering itself unexplored. We propose Doc2Harness, a two-stage benchmark that evaluates long-horizon harness engineering directly. In Stage 1, a build model operating inside a fixed builder harness receives an interface-only contract skeleton and a development document that consolidates behavior across twelve frontier harnesses, and then constructs a complete candidate harness in an isolated container. In Stage 2, the frozen candidate harness runs in containers separate from the construction environment, one per test case, and is driven end to end by a scripted mock model. We score each test case using four observable channels, namely the requests sent to the model, the files on disk, the process exit code, and the command output; positive controls rule out vacuous passes. Across nineteen frontier models, each evaluated with three independent builds on 328 test cases, GPT-6 Astra achieves the highest pass rate at 53.05%, while the weakest model reaches 27.44%, a gap of roughly twenty-six percentage points. Even the strongest model fails nearly half of the test cases, and failures cluster around how cross-cutting functionality is split across modules. To our knowledge, Doc2Harness provides the first deterministic benchmark for measuring long-horizon harness engineering.",
+      "github_links_from_paper_or_model_page": [],
+      "official_repository_facts": [],
+      "paper_claims_and_method": "Agents driven by large language models are increasingly deployed on long-horizon tasks, where they use tools and modify real workspaces. How well they perform depends as much on the harness around the model as on the model itself. Existing benchmarks measure downstream task success under a fixed harness, leaving harness engineering itself unexplored. We propose Doc2Harness, a two-stage benchmark that evaluates long-horizon harness engineering directly. In Stage 1, a build model operating inside a fixed builder harness receives an interface-only contract skeleton and a development document that consolidates behavior across twelve frontier harnesses, and then constructs a complete candidate harness in an isolated container. In Stage 2, the frozen candidate harness runs in containers separate from the construction environment, one per test case, and is driven end to end by a scripted mock model. We score each test case using four observable channels, namely the requests sent to the model, the files on disk, the process exit code, and the command output; positive controls rule out vacuous passes. Across nineteen frontier models, each evaluated with three independent builds on 328 test cases, GPT-6 Astra achieves the highest pass rate at 53.05%, while the weakest model reaches 27.44%, a gap of roughly twenty-six percentage points. Even the strongest model fails nearly half of the test cases, and failures cluster around how cross-cutting functionality is split across modules. To our knowledge, Doc2Harness provides the first deterministic benchmark for measuring long-horizon harness engineering.",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [],
+      "hardware_and_install_excerpts": []
+    },
+    {
+      "candidate": {
+        "id": "2610.17552",
+        "title": "FlashVSR+: Efficient Video Super-Resolution via Hybrid Attention and Reward-Yield Distribution Matching",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.17552",
+        "published_at": "2026-10-13T00:00:00.000Z",
+        "score": 33.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "distillation"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "nlp_summary_classification+5",
+          "trend_rank+1",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2026/10/13",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2610.17552",
+        "fetched_at": "2026-10-15T09:07:32.326029+00:00",
+        "http_status": 200,
+        "bytes": 43466,
+        "sha256": "85ee37acd81931e23406aa200241c3ea0b09c494c45c80c007cb733a34c2432e",
+        "file": "primary/arxiv-2610.17552.html"
+      },
+      "abstract_primary": "Recent video super-resolution (VSR) models achieve efficient one-step generation through diffusion distillation. However, high-resolution inference remains costly, and distilled models are difficult to align with human preferences. These challenges call for improvements in both model architecture and training strategy. We present \\textbf{FlashVSR+} to address both limitations. On the architecture side, we introduce hybrid attention based on the strong locality observed in pretrained VSR models, while retaining sparse global interaction for long-range consistency. It achieves up to $2\\times$ DiT speedup and 45\\% lower peak memory, enabling spatially untiled 4K VSR on a single 24GB RTX 4090. On the training side, we propose Reward-Yield Distribution Matching Distillation (Ry-DMD) for preference-aligned one-step generation. Ry-DMD uses reward-weighted teacher rollouts to incorporate black-box rewards into distribution matching, without backpropagating through the reward model. We further show that Ry-DMD generalizes beyond VSR to T2I generation. Together, FlashVSR+ delivers stronger restoration quality and substantially improves high-resolution efficiency, with consistent gains in user preference. We release our code, models, and training data at \\href{https://www.flashvsr.tech}{\\textcolor{FlashBlue}{\\textbf{www.flashvsr.tech}}}.",
+      "github_links_from_paper_or_model_page": [],
+      "official_repository_facts": [],
+      "paper_claims_and_method": "Recent video super-resolution (VSR) models achieve efficient one-step generation through diffusion distillation. However, high-resolution inference remains costly, and distilled models are difficult to align with human preferences. These challenges call for improvements in both model architecture and training strategy. We present \\textbf{FlashVSR+} to address both limitations. On the architecture side, we introduce hybrid attention based on the strong locality observed in pretrained VSR models, while retaining sparse global interaction for long-range consistency. It achieves up to $2\\times$ DiT speedup and 45\\% lower peak memory, enabling spatially untiled 4K VSR on a single 24GB RTX 4090. On the training side, we propose Reward-Yield Distribution Matching Distillation (Ry-DMD) for preference-aligned one-step generation. Ry-DMD uses reward-weighted teacher rollouts to incorporate black-box rewards into distribution matching, without backpropagating through the reward model. We further show that Ry-DMD generalizes beyond VSR to T2I generation. Together, FlashVSR+ delivers stronger restoration quality and substantially improves high-resolution efficiency, with consistent gains in user preference. We release our code, models, and training data at \\href{https://www.flashvsr.tech}{\\textcolor{FlashBlue}{\\textbf{www.flashvsr.tech}}}.",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [],
+      "hardware_and_install_excerpts": []
+    },
+    {
+      "candidate": {
+        "id": "2207.01405",
+        "title": "I-ViT: Integer-only Quantization for Efficient Vision Transformer\n  Inference",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2207.01405",
+        "published_at": "2022-07-04T13:37:38.000Z",
+        "score": 33.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "quantization"
+          ],
+          "vision_pattern_recognition": [
+            "computer vision"
+          ],
+          "cpu_small_models": [
+            "int8",
+            "quantized"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "nlp_summary_classification+5",
+          "vision_pattern_recognition+4",
+          "cpu_small_models+12",
+          "has_code+4",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2022/07/04",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2207.01405",
+        "fetched_at": "2026-10-15T09:07:32.340559+00:00",
+        "http_status": 200,
+        "bytes": 43250,
+        "sha256": "f5ef3b9f6a5cde2b3d5f650e61b715cb5039197324511ce4c5045a6bd030d2b8",
+        "file": "primary/arxiv-2207.01405.html"
+      },
+      "abstract_primary": "Vision Transformers (ViTs) have achieved state-of-the-art performance on various computer vision applications. However, these models have considerable storage and computational overheads, making their deployment and efficient inference on edge devices challenging. Quantization is a promising approach to reducing model complexity, and the dyadic arithmetic pipeline can allow the quantized models to perform efficient integer-only inference. Unfortunately, dyadic arithmetic is based on the homogeneity condition in convolutional neural networks, which is not applicable to the non-linear components in ViTs, making integer-only inference of ViTs an open issue. In this paper, we propose I-ViT, an integer-only quantization scheme for ViTs, to enable ViTs to perform the entire computational graph of inference with integer arithmetic and bit-shifting, and without any floating-point arithmetic. In I-ViT, linear operations (e.g., MatMul and Dense) follow the integer-only pipeline with dyadic arithmetic, and non-linear operations (e.g., Softmax, GELU, and LayerNorm) are approximated by the proposed light-weight integer-only arithmetic methods. More specifically, I-ViT applies the proposed Shiftmax and ShiftGELU, which are designed to use integer bit-shifting to approximate the corresponding floating-point operations. We evaluate I-ViT on various benchmark models and the results show that integer-only INT8 quantization achieves comparable (or even slightly higher) accuracy to the full-precision (FP) baseline. Furthermore, we utilize TVM for practical hardware deployment on the GPU's integer arithmetic units, achieving 3.72$\\sim$4.11$\\times$ inference speedup compared to the FP model. Code of both Pytorch and TVM is released at https://github.com/zkkli/I-ViT.",
+      "github_links_from_paper_or_model_page": [
+        "https://github.com/zkkli/I-ViT"
+      ],
+      "official_repository_facts": [
+        {
+          "key": "zkkli/i-vit",
+          "url": "https://api.github.com/repos/zkkli/i-vit",
+          "fetched_at": "2026-10-15T09:09:02.652664+00:00",
+          "status": 200,
+          "bytes": 4978,
+          "sha256": "e62288ba04fe9a3dd5993225ba20c54b801997daabe14fbdbcd13a7c2c4502ab",
+          "file": "supplement/zkkli_i-vit-repo.json",
+          "full_name": "zkkli/I-ViT",
+          "html_url": "https://github.com/zkkli/I-ViT",
+          "description": "[ICCV 2023] I-ViT: Integer-only Quantization for Efficient Vision Transformer Inference",
+          "created_at": "2022-12-22T08:42:38Z",
+          "updated_at": "2026-07-28T05:29:22Z",
+          "pushed_at": "2024-09-02T02:19:37Z",
+          "stargazers_count": 207,
+          "forks_count": 26,
+          "open_issues_count": 13,
+          "default_branch": "main",
+          "license": {
+            "key": "apache-2.0",
+            "name": "Apache License 2.0",
+            "spdx_id": "Apache-2.0",
+            "url": "https://api.github.com/licenses/apache-2.0"
+          },
+          "archived": false,
+          "disabled": false,
+          "topics": [],
+          "tag_name": null,
+          "published_at": null,
+          "open_issue_sample": null
+        }
+      ],
+      "paper_claims_and_method": "Vision Transformers (ViTs) have achieved state-of-the-art performance on various computer vision applications. However, these models have considerable storage and computational overheads, making their deployment and efficient inference on edge devices challenging. Quantization is a promising approach to reducing model complexity, and the dyadic arithmetic pipeline can allow the quantized models to perform efficient integer-only inference. Unfortunately, dyadic arithmetic is based on the homogeneity condition in convolutional neural networks, which is not applicable to the non-linear components in ViTs, making integer-only inference of ViTs an open issue. In this paper, we propose I-ViT, an integer-only quantization scheme for ViTs, to enable ViTs to perform the entire computational graph of inference with integer arithmetic and bit-shifting, and without any floating-point arithmetic. In I-ViT, linear operations (e.g., MatMul and Dense) follow the integer-only pipeline with dyadic arithmetic, and non-linear operations (e.g., Softmax, GELU, and LayerNorm) are approximated by the proposed light-weight integer-only arithmetic methods. More specifically, I-ViT applies the proposed Shiftmax and ShiftGELU, which are designed to use integer bit-shifting to approximate the corresponding floating-point operations. We evaluate I-ViT on various benchmark models and the results show that integer-only INT8 quantization achieves comparable (or even slightly higher) accuracy to the full-precision (FP) baseline. Furthermore, we utilize TVM for practical hardware deployment on the GPU's integer arithmetic units, achieving 3.72$\\sim$4.11$\\times$ inference speedup compared to the FP model. Code of both Pytorch and TVM is released at https://github.com/zkkli/I-ViT.",
+      "license_commercial_use": {
+        "status": "see_repo_license",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [
+        {
+          "repository": "zkkli/i-vit",
+          "readme_source": {
+            "url": "https://api.github.com/repos/zkkli/i-vit/readme",
+            "fetched_at": "2026-10-15T09:09:02.777625+00:00",
+            "status": 200,
+            "bytes": 2453,
+            "sha256": "dfa12d39d083d14b76099b9086a9a679197308c6f9d8ec9fb01ecf10265bad8b",
+            "file": "supplement/zkkli_i-vit-README.md",
+            "raw_blob_api_file": "supplement/zkkli_i-vit-readme.json"
+          },
+          "hf_ids_or_urls_in_readme": [],
+          "relevant_readme_excerpts": [
+            "10: Below are instructions of Pytorch code to reproduce the accuracy results of quantization-aware training (QAT). [**TVM benchmark**](https://github.com/zkkli/I-ViT/tree/main/TVM_benchmark)",
+            "13: ## Installation",
+            "16: - **To install I-ViT** and develop locally:",
+            "25: - You can quantize and fine-tune a single model using the following command:",
+            "28: python quant_train.py [--model] [--data] [--epochs] [--lr]",
+            "31: --model: Model architecture, the choises can be:",
+            "41: python quant_train.py --model deit_tiny --data <YOUR_DATA_DIR> --epochs 30 --lr 5e-7",
+            "48: | Model  | FP32  | INT8 (I-ViT) | Diff. |"
+          ]
+        }
+      ],
+      "hardware_and_install_excerpts": [
+        "13: ## Installation",
+        "16: - **To install I-ViT** and develop locally:"
+      ]
+    },
+    {
+      "candidate": {
+        "id": "2610.19026",
+        "title": "Joint Subspace Sparse Attention for Efficient Long-Context Decoding",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.19026",
+        "published_at": "2026-10-13T00:00:00.000Z",
+        "score": 33.0,
+        "mode": "interest",
+        "topic_hits": {
+          "cpu_small_models": [
+            "throughput"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "cpu_small_models+6",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2026/10/13",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2610.19026",
+        "fetched_at": "2026-10-15T09:07:32.342650+00:00",
+        "http_status": 200,
+        "bytes": 42395,
+        "sha256": "f8f37b9e54370db5a6a32f2c046c6dc5dbc0b35c89fb81961fa2786bfc7ad646",
+        "file": "primary/arxiv-2610.19026.html"
+      },
+      "abstract_primary": "Sparse attention reduces the KV-cache traffic that dominates long-context LLM decoding, but practical methods largely operate at coarse granularity. Token-level selection offers finer control, yet presents two challenges: low-dimensional scoring may lose query--key structure needed for accurate ranking, while gathering scattered selected tokens can offset the resulting latency benefit. We introduce Joint Subspace Sparse Attention (JSSA) to address both challenges. For selection quality, JSSA learns a shared low-dimensional query--key subspace by minimizing token-score preservation error. We upper-bound the resulting non-convex objective with a tractable marginal objective that admits a closed-form spectral solution; direct refinement of the exact objective provides no measurable improvement in the tested settings. For execution efficiency, we develop a gather-free token-level indexed-attention kernel that supports distinct per-KV-head selections under the standard grouped-query attention (GQA) KV-cache layout. Across standard GQA, hybrid sliding-window/global attention, and Multi-head Latent Attention (MLA) models, JSSA consistently remains close to full-KV accuracy while avoiding the substantial generation-length inflation and architecture-dependent failures observed with competing methods. On an NVIDIA B200 GPU, JSSA achieves up to $6.43\\times$ the decoding throughput of full-KV attention at 128K context. JSSA achieves reasoning accuracy comparable to model-native DSA without model training and reaches 96--99\\% of its decoding throughput even at 700B scale large models.",
+      "github_links_from_paper_or_model_page": [],
+      "official_repository_facts": [],
+      "paper_claims_and_method": "Sparse attention reduces the KV-cache traffic that dominates long-context LLM decoding, but practical methods largely operate at coarse granularity. Token-level selection offers finer control, yet presents two challenges: low-dimensional scoring may lose query--key structure needed for accurate ranking, while gathering scattered selected tokens can offset the resulting latency benefit. We introduce Joint Subspace Sparse Attention (JSSA) to address both challenges. For selection quality, JSSA learns a shared low-dimensional query--key subspace by minimizing token-score preservation error. We upper-bound the resulting non-convex objective with a tractable marginal objective that admits a closed-form spectral solution; direct refinement of the exact objective provides no measurable improvement in the tested settings. For execution efficiency, we develop a gather-free token-level indexed-attention kernel that supports distinct per-KV-head selections under the standard grouped-query attention (GQA) KV-cache layout. Across standard GQA, hybrid sliding-window/global attention, and Multi-head Latent Attention (MLA) models, JSSA consistently remains close to full-KV accuracy while avoiding the substantial generation-length inflation and architecture-dependent failures observed with competing methods. On an NVIDIA B200 GPU, JSSA achieves up to $6.43\\times$ the decoding throughput of full-KV attention at 128K context. JSSA achieves reasoning accuracy comparable to model-native DSA without model training and reaches 96--99\\% of its decoding throughput even at 700B scale large models.",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [],
+      "hardware_and_install_excerpts": []
+    },
+    {
+      "candidate": {
+        "id": "2610.18206",
+        "title": "SWE-MISBEHAVIOR: Benchmarking and Mitigating Boundary Violations in Software Coding Agents",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.18206",
+        "published_at": "2026-10-13T00:00:00.000Z",
+        "score": 33.0,
+        "mode": "interest",
+        "topic_hits": {
+          "ai_driven_development": [
+            "coding agent"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "ai_driven_development+6",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2026/10/13",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2610.18206",
+        "fetched_at": "2026-10-15T09:07:32.351054+00:00",
+        "http_status": 200,
+        "bytes": 43863,
+        "sha256": "b862f99e71065639b3780171ce73fe15504f4e8f703e282a70a6a0948dc536b0",
+        "file": "primary/arxiv-2610.18206.html"
+      },
+      "abstract_primary": "We present SWE-MISBEHAVIOR, the first taxonomy and evaluation framework for diagnosing boundary-violating misbehaviors in coding agents. It contains 7.4K human-in-the-loop synthesized samples spanning three layers of agent action space: (i) Code Generation, (ii) File Management, and (iii) System Interaction. Across these categories, SWE-MISBEHAVIOR covers 11 distinct misbehaviors with a fully automated evaluation protocol, including coding-action violations, Create/Read/Update/Delete (CRUD) file misbehaviors, system integrity and abuse violations, and task-goal misalignment. Experiments on state-of-the-art open-source coding agents (e.g., OpenHands, smolagents) reveal substantial misaligned behaviors, including dependency misinterpretation (up to 98.5% of cases), unintended modification of user inputs (50.5%), and silent compromise of environment integrity (53%). Motivated by these findings, we further propose CODE-KIT, a lightweight adaptive framework that combines misbehavior-aware guidelines with novel tools to help agents avoid such failures. CODE-KIT reduces misbehaviors by 52% for smolagents and 34% for OpenHands, while simultaneously improving task completion performance.",
+      "github_links_from_paper_or_model_page": [
+        "https://github.com/dxlong2000/SWE-Misbehavior"
+      ],
+      "official_repository_facts": [
+        {
+          "key": "dxlong2000/swe-misbehavior",
+          "url": "https://api.github.com/repos/dxlong2000/swe-misbehavior",
+          "fetched_at": "2026-10-15T09:09:02.863225+00:00",
+          "status": 200,
+          "bytes": 5447,
+          "sha256": "21b37f13f9a91185d28b578b1598396d6cecb411e1ab739de2577303443fef8f",
+          "file": "supplement/dxlong2000_swe-misbehavior-repo.json",
+          "full_name": "dxlong2000/SWE-Misbehavior",
+          "html_url": "https://github.com/dxlong2000/SWE-Misbehavior",
+          "description": null,
+          "created_at": "2026-10-04T13:00:46Z",
+          "updated_at": "2026-10-14T07:55:42Z",
+          "pushed_at": "2026-10-04T13:00:47Z",
+          "stargazers_count": 1,
+          "forks_count": 0,
+          "open_issues_count": 1,
+          "default_branch": "main",
+          "license": null,
+          "archived": false,
+          "disabled": false,
+          "topics": [],
+          "tag_name": null,
+          "published_at": null,
+          "open_issue_sample": null
+        }
+      ],
+      "paper_claims_and_method": "We present SWE-MISBEHAVIOR, the first taxonomy and evaluation framework for diagnosing boundary-violating misbehaviors in coding agents. It contains 7.4K human-in-the-loop synthesized samples spanning three layers of agent action space: (i) Code Generation, (ii) File Management, and (iii) System Interaction. Across these categories, SWE-MISBEHAVIOR covers 11 distinct misbehaviors with a fully automated evaluation protocol, including coding-action violations, Create/Read/Update/Delete (CRUD) file misbehaviors, system integrity and abuse violations, and task-goal misalignment. Experiments on state-of-the-art open-source coding agents (e.g., OpenHands, smolagents) reveal substantial misaligned behaviors, including dependency misinterpretation (up to 98.5% of cases), unintended modification of user inputs (50.5%), and silent compromise of environment integrity (53%). Motivated by these findings, we further propose CODE-KIT, a lightweight adaptive framework that combines misbehavior-aware guidelines with novel tools to help agents avoid such failures. CODE-KIT reduces misbehaviors by 52% for smolagents and 34% for OpenHands, while simultaneously improving task completion performance.",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [],
+      "hardware_and_install_excerpts": []
+    },
+    {
+      "candidate": {
+        "id": "2610.19820",
+        "title": "ActionOPD: Distilling Decisions, Not Tokens",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.19820",
+        "published_at": "2026-10-14T00:00:00.000Z",
+        "score": 32.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "distillation"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "nlp_summary_classification+5",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2026/10/14",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2610.19820",
+        "fetched_at": "2026-10-15T09:07:32.450331+00:00",
+        "http_status": 200,
+        "bytes": 43423,
+        "sha256": "e5a9afc138e3a97a6f3b99dfb52db9708892221737e8818a1035d441178cbd17",
+        "file": "primary/arxiv-2610.19820.html"
+      },
+      "abstract_primary": "Distilling capable language-model agents into smaller models requires aligning the student's behavior with the teacher's. This raises a fundamental question: at which states and at what granularity should this alignment be performed? Offline imitation provides dense but token-specific supervision and can suffer from state-distribution mismatch. Token-level on-policy distillation (OPD) addresses this mismatch but typically requires teacher token probabilities and compatible tokenization. We argue that semantic actions provide a natural unit of supervision for agent distillation. We introduce ActionOPD, an action-level on-policy distillation method motivated by maximizing expected teacher-action likelihood at student-encountered states. At each such state, ActionOPD samples actions from both the student and a black-box teacher, rewarding student actions according to their semantic agreement with the sampled teacher actions. Through policy optimization, ActionOPD aligns the student's action-level behavior with the teacher's decisions without requiring reproduction of teacher-written reasoning or access to teacher token probabilities. Training Qwen3-4B and Qwen3-8B with two teachers on diverse, curated tool-use tasks yields average gains of 3.3-6.9 percentage points across four out-of-distribution benchmarks. ActionOPD scales favorably with student size and teacher capability, without requiring the teacher and student to share a model family or tokenizer. On $\\tau^2$-bench, ActionOPD achieves competitive performance against offline distillation and token-level OPD. We further explore Self-ActionOPD with a same-model teacher and privileged context. These results establish ActionOPD as a promising approach to agent distillation.",
+      "github_links_from_paper_or_model_page": [],
+      "official_repository_facts": [],
+      "paper_claims_and_method": "Distilling capable language-model agents into smaller models requires aligning the student's behavior with the teacher's. This raises a fundamental question: at which states and at what granularity should this alignment be performed? Offline imitation provides dense but token-specific supervision and can suffer from state-distribution mismatch. Token-level on-policy distillation (OPD) addresses this mismatch but typically requires teacher token probabilities and compatible tokenization. We argue that semantic actions provide a natural unit of supervision for agent distillation. We introduce ActionOPD, an action-level on-policy distillation method motivated by maximizing expected teacher-action likelihood at student-encountered states. At each such state, ActionOPD samples actions from both the student and a black-box teacher, rewarding student actions according to their semantic agreement with the sampled teacher actions. Through policy optimization, ActionOPD aligns the student's action-level behavior with the teacher's decisions without requiring reproduction of teacher-written reasoning or access to teacher token probabilities. Training Qwen3-4B and Qwen3-8B with two teachers on diverse, curated tool-use tasks yields average gains of 3.3-6.9 percentage points across four out-of-distribution benchmarks. ActionOPD scales favorably with student size and teacher capability, without requiring the teacher and student to share a model family or tokenizer. On $\\tau^2$-bench, ActionOPD achieves competitive performance against offline distillation and token-level OPD. We further explore Self-ActionOPD with a same-model teacher and privileged context. These results establish ActionOPD as a promising approach to agent distillation.",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [],
+      "hardware_and_install_excerpts": []
+    },
+    {
+      "candidate": {
+        "id": "2610.20220",
+        "title": "Glance Forcing: Making Bidirectional Diffusion Autoregressive at a Glance",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.20220",
+        "published_at": "2026-10-14T00:00:00.000Z",
+        "score": 32.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "distillation"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "nlp_summary_classification+5",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2026/10/14",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2610.20220",
+        "fetched_at": "2026-10-15T09:10:00Z",
+        "http_status": 200,
+        "bytes": 43793,
+        "sha256": "4d79bcb4c87c38b80deee589bfe9a9bce741985d7621ccda5bc2f980c502cc89",
+        "file": "primary/arxiv-2610.20220.html"
+      },
+      "abstract_primary": "Autoregressive generation underlies real-time, causal video synthesis and is the backbone of video world models. Today's dominant approach distills a bidirectional diffusion model into a causal few-step student, but existing pipelines make this conversion prohibitively expensive, requiring offline Probability Flow ODE} (PF-ODE) trajectories that cost tens of thousands of GPU-hours and terabytes of storage. We show it can be made dramatically more efficient. Pushing this efficiency to its extreme, we reduce trajectory supervision to a single sample, the strictest setting possible, and find that it causes severe quality collapse. We trace this to the teacher's trajectory geometry: the high-noise regime, governing semantic layout and motion, and the low-noise regime, governing fine texture exhibit fundamentally different curvature and optimization behavior, so a single monolithic student cannot jointly fit both, causing severe representation interference. Motivated by this, we propose Glance Forcing, a lightweight distillation framework that decouples the denoising trajectory into two complementary slow and fast experts, each guided by a tailored, stage-specific objective, while keeping the pretrained teacher entirely frozen. This decoupling further reveals a general mechanism underlying few-step distillation: PF-ODE distillation mainly straightens the few-step trajectory geometry, while the subsequent distribution-matching stage independently governs distributional quality. Using only one PF-ODE trajectory, Glance Forcing already surpasses the fully-trained state-of-the-art baseline, raising the VBench Total score from 84.04 to 84.22 while cutting trajectory-collection cost from thousands of GPU-hours to about one A100-GPU-hour, with markedly larger gains in dynamic degree, VisionReward, and instruction-following, and consistent preference from human raters over strong baselines.",
+      "github_links_from_paper_or_model_page": [],
+      "official_repository_facts": [],
+      "paper_claims_and_method": "Autoregressive generation underlies real-time, causal video synthesis and is the backbone of video world models. Today's dominant approach distills a bidirectional diffusion model into a causal few-step student, but existing pipelines make this conversion prohibitively expensive, requiring offline Probability Flow ODE} (PF-ODE) trajectories that cost tens of thousands of GPU-hours and terabytes of storage. We show it can be made dramatically more efficient. Pushing this efficiency to its extreme, we reduce trajectory supervision to a single sample, the strictest setting possible, and find that it causes severe quality collapse. We trace this to the teacher's trajectory geometry: the high-noise regime, governing semantic layout and motion, and the low-noise regime, governing fine texture exhibit fundamentally different curvature and optimization behavior, so a single monolithic student cannot jointly fit both, causing severe representation interference. Motivated by this, we propose Glance Forcing, a lightweight distillation framework that decouples the denoising trajectory into two complementary slow and fast experts, each guided by a tailored, stage-specific objective, while keeping the pretrained teacher entirely frozen. This decoupling further reveals a general mechanism underlying few-step distillation: PF-ODE distillation mainly straightens the few-step trajectory geometry, while the subsequent distribution-matching stage independently governs distributional quality. Using only one PF-ODE trajectory, Glance Forcing already surpasses the fully-trained state-of-the-art baseline, raising the VBench Total score from 84.04 to 84.22 while cutting trajectory-collection cost from thousands of GPU-hours to about one A100-GPU-hour, with markedly larger gains in dynamic degree, VisionReward, and instruction-following, and consistent preference from human raters over strong baselines.",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [],
+      "hardware_and_install_excerpts": []
+    },
+    {
+      "candidate": {
+        "id": "2610.20582",
+        "title": "Latent Compaction with Test-Time Training",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.20582",
+        "published_at": "2026-10-14T00:00:00.000Z",
+        "score": 32.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "distillation"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "nlp_summary_classification+5",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2026/10/14",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2610.20582",
+        "fetched_at": "2026-10-15T09:07:32.493544+00:00",
+        "http_status": 200,
+        "bytes": 42005,
+        "sha256": "8e35c2de4959b1408839f33154bbe628b625d4ba9121cbcd3896d82a82aef2be",
+        "file": "primary/arxiv-2610.20582.html"
+      },
+      "abstract_primary": "Long contexts enlarge key--value (KV) caches, increasing memory use and attention costs during generation. Compressing these caches must preserve information for unseen questions. We introduce **Latent Compaction**, which learns a compact document-specific cache through test-time training. We initialize cache entries using reconstruction importance, teacher attention, and key-space diversity. Training first fits attention outputs and log-normalizers to those of the full cache, with reconstruction-selected entries held fixed. It then jointly optimizes the entire cache through end-to-end distillation from the full-cache model. Model weights remain frozen throughout, and training uses only generic prompts about the document, without access to downstream questions or answers. Experiments on RULER, LongBench, and Phonebook Lookup demonstrate substantial gains over budget-matched compression baselines. On a RULER, for example, our method achieves 96.7% accuracy at 32$\\times$ compression, compared with 40.0% for KVZip+. The method also transfers across model scales and families, with retrieval gains on both Qwen3 and MiniCPM5. These results show that treating the KV cache as a neural network and optimizing it with test-time training can preserve retrieval accuracy under aggressive compression. The code is released at https://www.github.com/THUNLP/latent-compaction",
+      "github_links_from_paper_or_model_page": [
+        "https://www.github.com/THUNLP/latent-compaction"
+      ],
+      "official_repository_facts": [
+        {
+          "key": "thunlp/latent-compaction",
+          "status": "unavailable/unknown",
+          "reason": "No verified repository metadata retrieved."
+        }
+      ],
+      "paper_claims_and_method": "Long contexts enlarge key--value (KV) caches, increasing memory use and attention costs during generation. Compressing these caches must preserve information for unseen questions. We introduce **Latent Compaction**, which learns a compact document-specific cache through test-time training. We initialize cache entries using reconstruction importance, teacher attention, and key-space diversity. Training first fits attention outputs and log-normalizers to those of the full cache, with reconstruction-selected entries held fixed. It then jointly optimizes the entire cache through end-to-end distillation from the full-cache model. Model weights remain frozen throughout, and training uses only generic prompts about the document, without access to downstream questions or answers. Experiments on RULER, LongBench, and Phonebook Lookup demonstrate substantial gains over budget-matched compression baselines. On a RULER, for example, our method achieves 96.7% accuracy at 32$\\times$ compression, compared with 40.0% for KVZip+. The method also transfers across model scales and families, with retrieval gains on both Qwen3 and MiniCPM5. These results show that treating the KV cache as a neural network and optimizing it with test-time training can preserve retrieval accuracy under aggressive compression. The code is released at https://www.github.com/THUNLP/latent-compaction",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [],
+      "hardware_and_install_excerpts": []
+    },
+    {
+      "candidate": {
+        "id": "2610.17246",
+        "title": "LLM-to-Flow Distillation: Teaching Natural Language Goals to Scientific Generators",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.17246",
+        "published_at": "2026-10-12T00:00:00.000Z",
+        "score": 32.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "distillation"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "nlp_summary_classification+5",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2026/10/12",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2610.17246",
+        "fetched_at": "2026-10-15T09:07:32.506561+00:00",
+        "http_status": 200,
+        "bytes": 44666,
+        "sha256": "87eb063c161277923f0e4398f583578ba9a9ce530fb31b09788d75b81167a63a",
+        "file": "primary/arxiv-2610.17246.html"
+      },
+      "abstract_primary": "Generative discovery in science requires coupling high-level scientific reasoning with the ability to generate samples respecting the structure of a design space. Yet these capabilities remain largely separated: foundation LLMs encode broad chemical and biological knowledge, while domain-specific flow- and diffusion-based generators capture the priors needed to produce valid sequences and geometries. We study how to align such scientific generators to high-level natural-language discovery goals without requiring an explicit proxy reward, which is often unavailable or poorly captured by learned predictors in experimental sciences. We introduce LLM-to-Flow Distillation (LFD), where a frozen LLM acts as an adaptive teacher for a domain-specific generator. Given a goal such as 'generate peptides with promising anticancer activity', the teacher constructs a curriculum of intermediate sub-goals aware of the flow's current capabilities, and progressively directs them toward the original discovery goal. At each round, the LLM judges sampled candidates under the current objective. These judgments induce preferences that are iteratively distilled into the generator through DPO. This procedure provides dense learning signals even when the initial model places negligible probability on designs satisfying the final goal, enabling adaptation toward poorly covered, out-of-distribution regions. Experiments on therapeutic peptides and small-molecule structure design demonstrate that LFD enables a new form of generative control: aligning arbitrary domain-specific scientific generators to scientific discovery tasks expressed via high-level natural-language goals.",
+      "github_links_from_paper_or_model_page": [],
+      "official_repository_facts": [],
+      "paper_claims_and_method": "Generative discovery in science requires coupling high-level scientific reasoning with the ability to generate samples respecting the structure of a design space. Yet these capabilities remain largely separated: foundation LLMs encode broad chemical and biological knowledge, while domain-specific flow- and diffusion-based generators capture the priors needed to produce valid sequences and geometries. We study how to align such scientific generators to high-level natural-language discovery goals without requiring an explicit proxy reward, which is often unavailable or poorly captured by learned predictors in experimental sciences. We introduce LLM-to-Flow Distillation (LFD), where a frozen LLM acts as an adaptive teacher for a domain-specific generator. Given a goal such as 'generate peptides with promising anticancer activity', the teacher constructs a curriculum of intermediate sub-goals aware of the flow's current capabilities, and progressively directs them toward the original discovery goal. At each round, the LLM judges sampled candidates under the current objective. These judgments induce preferences that are iteratively distilled into the generator through DPO. This procedure provides dense learning signals even when the initial model places negligible probability on designs satisfying the final goal, enabling adaptation toward poorly covered, out-of-distribution regions. Experiments on therapeutic peptides and small-molecule structure design demonstrate that LFD enables a new form of generative control: aligning arbitrary domain-specific scientific generators to scientific discovery tasks expressed via high-level natural-language goals.",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [],
+      "hardware_and_install_excerpts": []
+    },
+    {
+      "candidate": {
+        "id": "2610.19789",
+        "title": "More Methods, Better Agents? A Reality Check on Self-Distillation in Agentic Reinforcement Learning",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.19789",
+        "published_at": "2026-10-14T00:00:00.000Z",
+        "score": 32.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "distillation"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "nlp_summary_classification+5",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2026/10/14",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2610.19789",
+        "fetched_at": "2026-10-15T09:07:32.563048+00:00",
+        "http_status": 200,
+        "bytes": 43419,
+        "sha256": "3e3a4bb8067bdecd5a0449c2c19689179f26611c0e27990fd505d86074e1c389",
+        "file": "primary/arxiv-2610.19789.html"
+      },
+      "abstract_primary": "Self-distillation in agentic reinforcement learning has produced a growing number of methods. However, existing evaluations often reuse published baseline scores under differing experimental conditions, provide few direct comparisons among contemporaneous methods, and give limited attention to training stability and computational cost. These limitations obscure the source of reported gains and the practical strengths and weaknesses of competing methods. Costly agent training further motivates a common basis for comparison. To address these gaps, we compare ten representative methods against GRPO on ALFWorld, ScienceWorld, Search-QA, and WebShop across three model sizes. Our study comprises 132 training runs totaling 12,124.4 recorded H800 GPU-hours, with repeated evaluations over eight rollout seeds for the pretrained backbones and all eleven trained methods. Beyond final task performance, we examine training progress, stability, and measured computational cost. Our evaluation yields three key findings. First, gains over GRPO remain limited in scope, with no method consistently outperforming it across settings. Second, strong final performance can mask unstable training. Third, additional training cost does not consistently translate into better performance. We establish this benchmark to support fair, comprehensive comparison and guide future research toward reliable and cost-effective improvements in agent training. Project page: https://aim-uofa.github.io/Self-Distillation-AgentRL/",
+      "github_links_from_paper_or_model_page": [],
+      "official_repository_facts": [],
+      "paper_claims_and_method": "Self-distillation in agentic reinforcement learning has produced a growing number of methods. However, existing evaluations often reuse published baseline scores under differing experimental conditions, provide few direct comparisons among contemporaneous methods, and give limited attention to training stability and computational cost. These limitations obscure the source of reported gains and the practical strengths and weaknesses of competing methods. Costly agent training further motivates a common basis for comparison. To address these gaps, we compare ten representative methods against GRPO on ALFWorld, ScienceWorld, Search-QA, and WebShop across three model sizes. Our study comprises 132 training runs totaling 12,124.4 recorded H800 GPU-hours, with repeated evaluations over eight rollout seeds for the pretrained backbones and all eleven trained methods. Beyond final task performance, we examine training progress, stability, and measured computational cost. Our evaluation yields three key findings. First, gains over GRPO remain limited in scope, with no method consistently outperforming it across settings. Second, strong final performance can mask unstable training. Third, additional training cost does not consistently translate into better performance. We establish this benchmark to support fair, comprehensive comparison and guide future research toward reliable and cost-effective improvements in agent training. Project page: https://aim-uofa.github.io/Self-Distillation-AgentRL/",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [],
+      "hardware_and_install_excerpts": []
+    },
+    {
+      "candidate": {
+        "id": "2610.20572",
+        "title": "Recovering Reliable Supervision via Critique-Guided On-Policy Distillation",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.20572",
+        "published_at": "2026-10-14T00:00:00.000Z",
+        "score": 32.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "distillation"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "nlp_summary_classification+5",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2026/10/14",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2610.20572",
+        "fetched_at": "2026-10-15T09:07:32.577924+00:00",
+        "http_status": 200,
+        "bytes": 42105,
+        "sha256": "21919d220eb755ba1662167b1c1c5d53413a26844edc029f69d3ab7faa483fa2",
+        "file": "primary/arxiv-2610.20572.html"
+      },
+      "abstract_primary": "On-policy distillation (OPD) trains a student model on its own rollouts with token-level supervision from a teacher, assuming that the teacher can reach a correct answer from any prefix the student writes. We call this property the recoverability of the teacher and show it fails on incorrect rollouts: the teacher follows student errors, although it recognizes them. We propose CriticOPD, using error recognition to restore recoverability. The teacher critiques an incorrect rollout, allowing the student to rewrite its solution following the error. The resulting output, including the critique as privileged information, is scored by the teacher while the student uses the revision without the critique for training. On two Qwen3 students and six mathematical reasoning benchmarks, CriticOPD improves OPD, with the largest gains on competition problems.",
+      "github_links_from_paper_or_model_page": [
+        "https://github.com/kzhao5/CriticOPD"
+      ],
+      "official_repository_facts": [
+        {
+          "key": "kzhao5/criticopd",
+          "url": "https://api.github.com/repos/kzhao5/criticopd",
+          "fetched_at": "2026-10-15T09:09:02.919232+00:00",
+          "status": 200,
+          "bytes": 5112,
+          "sha256": "8581a5df00dfef3850fa83ec2670441b87561e30e9c10e0e452ed46ba23f9fff",
+          "file": "supplement/kzhao5_criticopd-repo.json",
+          "full_name": "kzhao5/CriticOPD",
+          "html_url": "https://github.com/kzhao5/CriticOPD",
+          "description": null,
+          "created_at": "2026-10-03T21:33:06Z",
+          "updated_at": "2026-10-15T03:35:58Z",
+          "pushed_at": "2026-10-15T02:41:35Z",
+          "stargazers_count": 2,
+          "forks_count": 0,
+          "open_issues_count": 0,
+          "default_branch": "main",
+          "license": {
+            "key": "apache-2.0",
+            "name": "Apache License 2.0",
+            "spdx_id": "Apache-2.0",
+            "url": "https://api.github.com/licenses/apache-2.0"
+          },
+          "archived": false,
+          "disabled": false,
+          "topics": [],
+          "tag_name": null,
+          "published_at": null,
+          "open_issue_sample": null
+        }
+      ],
+      "paper_claims_and_method": "On-policy distillation (OPD) trains a student model on its own rollouts with token-level supervision from a teacher, assuming that the teacher can reach a correct answer from any prefix the student writes. We call this property the recoverability of the teacher and show it fails on incorrect rollouts: the teacher follows student errors, although it recognizes them. We propose CriticOPD, using error recognition to restore recoverability. The teacher critiques an incorrect rollout, allowing the student to rewrite its solution following the error. The resulting output, including the critique as privileged information, is scored by the teacher while the student uses the revision without the critique for training. On two Qwen3 students and six mathematical reasoning benchmarks, CriticOPD improves OPD, with the largest gains on competition problems.",
+      "license_commercial_use": {
+        "status": "see_repo_license",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [
+        {
+          "repository": "kzhao5/criticopd",
+          "readme_source": {
+            "url": "https://api.github.com/repos/kzhao5/criticopd/readme",
+            "fetched_at": "2026-10-15T09:09:03.142538+00:00",
+            "status": 200,
+            "bytes": 14131,
+            "sha256": "0799b3e59c3c42a804b2019ffd758b96f5b85514bc8f397a985e6410f24351df",
+            "file": "supplement/kzhao5_criticopd-README.md",
+            "raw_blob_api_file": "supplement/kzhao5_criticopd-readme.json"
+          },
+          "hf_ids_or_urls_in_readme": [
+            "https://huggingface.co/datasets/BytedTsinghua-SIA/DAPO-Math-17k",
+            "https://huggingface.co/papers/2610.20572"
+          ],
+          "relevant_readme_excerpts": [
+            "15: [![Framework](https://img.shields.io/badge/Built%20on-verl%20%7C%20Relay--OPD-6f42c1.svg)](https://github.com/zju-real/Relay-OPD)",
+            "17: [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)",
+            "22: <p align=\"center\"><em>Overview of CriticOPD (Figure 2): (a) the student writes a rollout; (b) if it is wrong or truncated, the teacher critiques it with the reference answer as a guide; (c) the student keeps its prefix up to the last critiqued error and rewrites the rest with the critique in its context; (d) the teacher scores the rewrite with the critique in its context, and the student learns from the sequence without the critique. Correct rollouts are trained with standard OPD.</em></p>",
+            "26: On-policy distillation (OPD) trains a student model on its own rollouts with token-level supervision from a teacher. This supervision assumes that the teacher can reach a correct answer from any prefix that the student writes. We call this property the **recoverability** of the teacher.",
+            "44: <p align=\"center\"><em>Left (Figure 6): recoverability of the teacher and the student on original rollouts (dashed) and critique-guided rewrites (solid). Right (Figure 8): (a) with the critique in its context, the teacher assigns a large advantage to a continuation that corrects the error; (b) the trained student recovers more often from prefixes of incorrect rollouts.</em></p>",
+            "64: CriticOPD reaches its selected step after 40 steps and uses 17.2 A100 GPU-hours, 0.42 times the training compute of OPD at step 80.",
+            "72: ## ⚙️ Installation",
+            "74: CriticOPD builds on [Relay-OPD](https://github.com/zju-real/Relay-OPD), which is built on [verl](https://github.com/volcengine/verl). This repository holds only the files that CriticOPD adds or changes; `setup.sh` copies them onto Relay-OPD at a pinned commit.",
+            "79: bash setup.sh                         # -> ./Relay-OPD (base commit eab2145) with CriticOPD added",
+            "84: pip install -c environment/vllm-constraints.txt vllm==0.21.0",
+            "86: pip install -e .",
+            "87: pip install -r requirements-relay-opd.txt",
+            "88: python ../environment/verify_install.py",
+            "94: | PyTorch | 2.11 (CUDA 13.0) |",
+            "100: A run on Qwen3-1.7B uses one node with four NVIDIA A100-80GB GPUs: two for the student and two for the teacher.",
+            "104: All commands run from `Relay-OPD/relay-opd`. The six evaluation benchmarks are in [`data/bench`](data/bench), and `data/prepare_dapo.py` creates the training prompts from [DAPO-Math-17k](https://huggingface.co/datasets/BytedTsinghua-SIA/DAPO-Math-17k).",
+            "109: export STUDENT_MODEL=Qwen/Qwen3-1.7B",
+            "110: export TEACHER_MODEL=Qwen/Qwen3-4B-Instruct-2507",
+            "111: export TRAIN_DATA=$PWD/../../data/dapo-math-17k.parquet",
+            "114: # train CriticOPD (40 steps, checkpoints every 20 steps)",
+            "115: SEED=42 OUTPUT_DIR=$PWD/runs/criticopd_seed42 bash opd/scripts/criticopd/train.sh",
+            "117: # evaluate the checkpoint at step 40",
+            "118: MODEL=runs/criticopd_seed42/global_step_40/actor/huggingface DATA_DIR=$BENCH \\",
+            "122: `train.sh` reproduces the final configuration of the paper on Qwen3-1.7B. Its behavior is set by environment variables:",
+            "129: | `CRITIC_OPD_CRITIC_TOKENS` | `2048` | length limit of the critique; an incomplete last error is discarded |",
+            "135: During training, the log reports the share of rollouts that are rewritten (`critic_opd/repair_seq_frac`) and the share of training tokens that come from rewrites (`critic_opd/repair_tok_frac`).",
+            "155: | FastOPD | `fastopd` | 60 / 40 | training responses of at most 8,192 tokens |",
+            "159: | CriticOPD | `train.sh` | 40 / 40 | |",
+            "161: SFT and KD train on one teacher solution per prompt, and TRD trains on teacher rewrites of student solutions. Create these files first and pass them in `OFFLINE_DATA`:",
+            "183: | `limit512`, `limit1024`, `limit4096` | length limit of the critique |",
+            "196: setup.sh                              clones Relay-OPD at the pinned commit and adds the files below",
+            "201: verl/trainer/ppo/                   Critique-GRPO advantage and loss, rewrite metrics",
+            "202: verl/trainer/distillation/          distillation losses",
+            "205: train.sh                          CriticOPD with the final configuration",
+            "210: opd/scripts/baselines/, relay_opd/  baseline training scripts of Relay-OPD with our changes",
+            "213: prepare_dapo.py                     training prompts: one copy of each DAPO-Math-17k problem (17,917)",
+            "233: Training builds on [Relay-OPD](https://github.com/zju-real/Relay-OPD) and [verl](https://github.com/volcengine/verl), with rollouts served by [vLLM](https://github.com/vllm-project/vllm) and answers graded by [Math-Verify](https://github.com/huggingface/Math-Verify). We thank the authors of the baselines for releasing their implementations.",
+            "235: ## 📄 License",
+            "237: This project is released under the [Apache License 2.0](LICENSE). The files in `overlay/` are derived from Relay-OPD and verl and are distributed under the same license."
+          ]
+        }
+      ],
+      "hardware_and_install_excerpts": [
+        "15: [![Framework](https://img.shields.io/badge/Built%20on-verl%20%7C%20Relay--OPD-6f42c1.svg)](https://github.com/zju-real/Relay-OPD)",
+        "64: CriticOPD reaches its selected step after 40 steps and uses 17.2 A100 GPU-hours, 0.42 times the training compute of OPD at step 80.",
+        "72: ## ⚙️ Installation",
+        "84: pip install -c environment/vllm-constraints.txt vllm==0.21.0",
+        "86: pip install -e .",
+        "87: pip install -r requirements-relay-opd.txt",
+        "88: python ../environment/verify_install.py",
+        "94: | PyTorch | 2.11 (CUDA 13.0) |",
+        "100: A run on Qwen3-1.7B uses one node with four NVIDIA A100-80GB GPUs: two for the student and two for the teacher."
+      ]
+    },
+    {
+      "candidate": {
+        "id": "2610.16354",
+        "title": "Self-Distillation with Verbal Regularization",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.16354",
+        "published_at": "2026-10-12T00:00:00.000Z",
+        "score": 32.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "distillation"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "nlp_summary_classification+5",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2026/10/12",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2610.16354",
+        "fetched_at": "2026-10-15T09:07:32.609164+00:00",
+        "http_status": 200,
+        "bytes": 41917,
+        "sha256": "aa6a505e68a272ee3c6ba95e97c5e55791e80c313f703015b9ae01be34aa9e34",
+        "file": "primary/arxiv-2610.16354.html"
+      },
+      "abstract_primary": "On-policy self-distillation (OPSD) trains a large language model using supervision from a teacher instantiated from the same model as the student. The teacher is conditioned on privileged information (PI), such as verified solutions. The student, which does not observe PI, learns from the teacher's next-token distributions along its own sampled responses. However, PI can bias supervision toward shortcut reasoning with limited verification or reconsideration, accompanied by a sharp drop in the entropy of the output distribution. To address this challenge, we introduce self-distillation with verbal regularization (VRSD), which uses system prompts to regulate how the teacher uses PI, thereby encouraging rethinking and exploration to counteract premature commitment. Theoretically, we model prompting as attenuating the influence of PI on the teacher distribution and derive conditions for entropy preservation. Across three models and four tasks, VRSD improves Pass@1 over OPSD in 11 of 12 model-task settings, by 3.9 percentage points on average, while generally maintaining higher token entropy.",
+      "github_links_from_paper_or_model_page": [],
+      "official_repository_facts": [],
+      "paper_claims_and_method": "On-policy self-distillation (OPSD) trains a large language model using supervision from a teacher instantiated from the same model as the student. The teacher is conditioned on privileged information (PI), such as verified solutions. The student, which does not observe PI, learns from the teacher's next-token distributions along its own sampled responses. However, PI can bias supervision toward shortcut reasoning with limited verification or reconsideration, accompanied by a sharp drop in the entropy of the output distribution. To address this challenge, we introduce self-distillation with verbal regularization (VRSD), which uses system prompts to regulate how the teacher uses PI, thereby encouraging rethinking and exploration to counteract premature commitment. Theoretically, we model prompting as attenuating the influence of PI on the teacher distribution and derive conditions for entropy preservation. Across three models and four tasks, VRSD improves Pass@1 over OPSD in 11 of 12 model-task settings, by 3.9 percentage points on average, while generally maintaining higher token entropy.",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [],
+      "hardware_and_install_excerpts": []
+    }
+  ],
+  "practical_neighbor_models": [
+    {
+      "id": "Qwen/Qwen3-Coder-Next",
+      "url": "https://huggingface.co/api/models/Qwen/Qwen3-Coder-Next",
+      "fetched_at": "2026-10-15T09:10:32.455572+00:00",
+      "http_status": 200,
+      "bytes": 19214,
+      "sha256": "8413f9e4376a0cdcf0d7ee8d041c4010cce5cb4bcc89298dc9308e8f02573cd1",
+      "file": "supplement/Qwen_Qwen3-Coder-Next-hf-full.json",
+      "pipeline_tag": "text-generation",
+      "downloads_snapshot": 588526,
+      "likes_snapshot": 1695,
+      "last_modified": "2026-02-03T16:16:38.000Z",
+      "created_at": "2026-01-30T15:08:18.000Z",
+      "license": "apache-2.0",
+      "tags": [
+        "transformers",
+        "safetensors",
+        "qwen3_next",
+        "text-generation",
+        "conversational",
+        "license:apache-2.0",
+        "eval-results",
+        "endpoints_compatible",
+        "deploy:sagemaker",
+        "deploy:azure",
+        "region:us"
+      ],
+      "weights_files": [
+        {
+          "name": "model-00001-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00002-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00003-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00004-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00005-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00006-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00007-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00008-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00009-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00010-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00011-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00012-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00013-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00014-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00015-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00016-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00017-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00018-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00019-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00020-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00021-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00022-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00023-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00024-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00025-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00026-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00027-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00028-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00029-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00030-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00031-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00032-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00033-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00034-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00035-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00036-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00037-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00038-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00039-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model-00040-of-00040.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "model.safetensors.index.json",
+          "size_bytes": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "id": "answerdotai/ModernBERT-base",
+      "url": "https://huggingface.co/api/models/answerdotai/ModernBERT-base",
+      "fetched_at": "2026-10-15T09:10:32.625417+00:00",
+      "http_status": 200,
+      "bytes": 5021,
+      "sha256": "8b164c1b8a3454c906e376d6a9d1e373673d1dbbe01692aaf78613bc0168e469",
+      "file": "supplement/answerdotai_ModernBERT-base-hf-full.json",
+      "pipeline_tag": "fill-mask",
+      "downloads_snapshot": 3973079,
+      "likes_snapshot": 1134,
+      "last_modified": "2025-01-15T20:11:48.000Z",
+      "created_at": "2024-12-11T11:38:06.000Z",
+      "license": "apache-2.0",
+      "tags": [
+        "transformers",
+        "pytorch",
+        "onnx",
+        "safetensors",
+        "modernbert",
+        "fill-mask",
+        "masked-lm",
+        "long-context",
+        "en",
+        "arxiv:2412.13663",
+        "license:apache-2.0",
+        "deploy:azure",
+        "region:us"
+      ],
+      "weights_files": [
+        {
+          "name": "model.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "onnx/model.onnx",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "onnx/model_bnb4.onnx",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "onnx/model_fp16.onnx",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "onnx/model_int8.onnx",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "onnx/model_q4.onnx",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "onnx/model_q4f16.onnx",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "onnx/model_quantized.onnx",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "onnx/model_uint8.onnx",
+          "size_bytes": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "id": "hotchpotch/bekko-embedding-v1-a25m",
+      "url": "https://huggingface.co/api/models/hotchpotch/bekko-embedding-v1-a25m",
+      "fetched_at": "2026-10-15T09:10:32.856366+00:00",
+      "http_status": 200,
+      "bytes": 2847,
+      "sha256": "f8e7b90b5fc98842b6544faa96a66cafa05b737d007c657afbcbd1b563c9428d",
+      "file": "supplement/hotchpotch_bekko-embedding-v1-a25m-hf-full.json",
+      "pipeline_tag": "sentence-similarity",
+      "downloads_snapshot": 24811,
+      "likes_snapshot": 32,
+      "last_modified": "2026-08-05T01:30:34.000Z",
+      "created_at": "2026-07-19T11:30:28.000Z",
+      "license": "mit",
+      "tags": [
+        "sentence-transformers",
+        "onnx",
+        "safetensors",
+        "openvino",
+        "modernbert",
+        "embeddings",
+        "feature-extraction",
+        "matryoshka",
+        "multilingual",
+        "retrieval",
+        "sentence-similarity",
+        "arxiv:2607.25180",
+        "base_model:hotchpotch/bekko-embedding-v1-a25m-pt",
+        "base_model:finetune:hotchpotch/bekko-embedding-v1-a25m-pt",
+        "license:mit",
+        "text-embeddings-inference",
+        "endpoints_compatible",
+        "region:us"
+      ],
+      "weights_files": [
+        {
+          "name": "model.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "onnx/model.onnx",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "onnx/model_O1_fp32_not_recommended.onnx",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "onnx/model_O2_fp32_not_recommended.onnx",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "onnx/model_O3_fp32_not_recommended.onnx",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "onnx/model_fp16_not_default.onnx",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "onnx/model_fp32_not_recommended.onnx",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "onnx/model_qint8_arm64_not_recommended.onnx",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "onnx/model_qint8_avx512_not_recommended.onnx",
+          "size_bytes": null,
+          "sha256": null
+        },
+        {
+          "name": "onnx/model_quint8_avx2_not_recommended.onnx",
+          "size_bytes": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "id": "timm/mobilenetv4_conv_small.e2400_r224_in1k",
+      "url": "https://huggingface.co/api/models/timm/mobilenetv4_conv_small.e2400_r224_in1k",
+      "fetched_at": "2026-10-15T09:10:32.957962+00:00",
+      "http_status": 200,
+      "bytes": 1054,
+      "sha256": "0e5d812e6beb8af874c1444e3067df05f03900794a20ece22786eab6049d9e7e",
+      "file": "supplement/timm_mobilenetv4_conv_small.e2400_r224_in1k-hf-full.json",
+      "pipeline_tag": "image-classification",
+      "downloads_snapshot": 135234,
+      "likes_snapshot": 12,
+      "last_modified": "2025-01-21T21:57:19.000Z",
+      "created_at": "2024-06-16T17:48:56.000Z",
+      "license": "apache-2.0",
+      "tags": [
+        "timm",
+        "pytorch",
+        "safetensors",
+        "image-classification",
+        "transformers",
+        "dataset:imagenet-1k",
+        "arxiv:2404.10518",
+        "license:apache-2.0",
+        "region:us"
+      ],
+      "weights_files": [
+        {
+          "name": "model.safetensors",
+          "size_bytes": null,
+          "sha256": null
+        }
+      ]
+    }
+  ],
+  "independent_signal_note": "Paper and author repository are one linked evidence cluster and do not count as independent popularity signals. HF catalog metadata is included as separate artifact evidence, not an independent validation of paper claims.",
+  "topic_fit_observation": "Pool includes numerous self-distillation, RL training, long-context decoding and video generation items. Their abstracts chiefly describe training or generative workloads; applicability to no-GPU batch extraction/classification/summarization is not established by abstract alone. A direct focused follow-up search for CPU-friendly classification/extraction and lightweight vision is warranted.",
+  "method_scope": "No code/model was executed; no quality, speed, memory, or cost measurements were generated. Missing data are marked UNKNOWN.",
+  "supplemental_model_note": "Current exact HF model repositories are factual neighbors, not recommendations and not replacements for the 20-item review pool. They give primary artifact-level evidence for practical classification / multilingual embedding / lightweight vision and a current Qwen coding successor. Snapshot counts are dynamic and are not independent evidence of research quality.",
+  "resource_scope_note": "Model/API listing and GitHub metadata requests transferred under 1 MB total; no model weights downloaded.",
+  "primary_artifact_policy": "Saved raw official arXiv abstract HTML for 19 paper candidates plus one recovered after initial 503. Full PDFs were not downloaded. Official GitHub repository API/README evidence is saved where linked; missing repositories/readmes remain UNKNOWN.",
+  "pool_integrity": {
+    "candidate_ids_match_ranking_json": true,
+    "source_reference": "ranking.json review_pool",
+    "abstract_available_for_papers": true,
+    "model_cards_available_for_model_candidate": true,
+    "future_publication_dates_after_cutoff": []
+  }
+}

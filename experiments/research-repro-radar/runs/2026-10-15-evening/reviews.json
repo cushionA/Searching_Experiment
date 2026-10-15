@@ -1,0 +1,660 @@
+[
+  {
+    "purpose": "SWE agent向けに開発履歴から実行可能な学習タスクと軌跡を段階構築し、ストリーミング実行する研究。本文では10,728リポジトリ、80,874タスクなどを報告するが、著者報告値で独立再現ではない。",
+    "novelty": "既存artifactの再利用、必要箇所だけの補完、elastic schedulerによる構築をまとめた点が主題。SWE agent学習向けで、推論時の要約・抽出や軽量モデル活用とは目的が異なる。",
+    "publication_update": "arXiv v1、2026-10-14公開。今回与えられた資料内に改訂・後続発表情報なし。",
+    "community": "論文情報のみ。stars、push、release、issue情報は未確認。",
+    "license_commercial": "論文のライセンスは資料に明記なし。学習データ、コード、Qwen3-30B-A3B-Thinking-2507重みの利用条件もそれぞれ未確認。",
+    "installation": "公式repositoryや配布手順は添付情報になく、導入手順を評価できない。",
+    "cpu_gpu_ram": "CPU/GPU/RAMは未測定・未確認。Qwen3-30B-A3Bのfine-tuning報告はあるが、必要GPUや実行費を示す資料なし。",
+    "limitations": "training prohibitedの制約に合わず、ユーザーの主用途からも距離がある。掲載された数値は論文の主張であり、今回の環境での実測ではない。",
+    "fit": "大量のSWE agent学習データ構築という周辺知識にはなるが、低コスト入力の要約・分類・抽出、CPU小型モデル、既存開発支援には直接適合しにくい。",
+    "validation_value": "候補者が実際に学習する計画を立てる際の設計参考として読む価値はある。今すぐ20分の環境試行をする価値は低く、効果判定にもならない。",
+    "judgment": {
+      "candidate_id": "2610.20193",
+      "decision": "defer",
+      "reason": "学習データ生成の研究としては参考になるが、学習禁止と現在の要約・抽出優先から外れる。資料内の大規模結果は著者報告であり、手元の改善を示す証拠ではない。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.20193v1",
+          "quote": "SWE-Stream progressively validates and refines task candidates, reusing existing artifacts when possible"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "コードとデータの公開状況・ライセンス",
+        "重みのライセンスと利用条件",
+        "CPU/GPU/RAM要件、実行費用",
+        "後続版・successor"
+      ]
+    },
+    "priority": "C"
+  },
+  {
+    "purpose": "ローカル配備LLM coding agentをSWE-Bench Verifiedで評価する実験用framework。タスクの隔離、モデル呼出し記録、再開可能な評価などを扱う。",
+    "novelty": "添付README抜粋ではtask snapshot、clean repo、再現用fingerprint、network制限の設計が目立つ。ベンチマークframeworkであり、要約・抽出モデルそのものではない。",
+    "publication_update": "GitHub repositoryの最終pushは2026-10-14。releaseはなし。",
+    "community": "stars 0、forks 0、open issues 0、push 2026-10-14、releaseなし。数値は独立利用・品質の証明ではない。",
+    "license_commercial": "repository licenseはUNKNOWN。ローカルOllama以外のproviderやmodel/API利用料は不明。",
+    "installation": "READMEは`python -m pip install -e \".[dev]\"`、HF extrasも別途案内。Python依存、Ollama/model導入コスト、データ取得量は未確認。",
+    "cpu_gpu_ram": "CPU/GPU/RAM実測なし。READMEはserial実行やGPU memory配慮、32K context assumptionを述べるが、対象モデル次第で8GiB制約に合わない可能性がある。",
+    "limitations": "model callとSWE-bench実行は時間・計算資源を要する。loopback制限は直接socketを開くプログラムを完全には防がない、と抜粋が明記。評価品質の独立再現なし。",
+    "fit": "AI駆動開発の検証・agent評価には関連するが、今回のNLP要約・抽出改善や低コスト前処理には間接的。",
+    "validation_value": "オフラインのmanifest/config確認や少数の手順読解なら設計参考になる。完全なbenchmark実行は20分・8GiB・無課金内と確認できず、licenseとmodel要件確認後に判断する。",
+    "judgment": {
+      "candidate_id": "github:cacacacc/local-swe-agent-eval",
+      "decision": "defer",
+      "reason": "評価基盤としては関心に合うが、licenseが不明で、モデル・データ・resourceの実行条件が固まっていない。現時点でbenchmark実行を勧める根拠が不足。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/cacacacc/local-swe-agent-eval/main/README.md",
+          "quote": "routes model requests only to the loopback Ollama endpoint."
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "repository licenseと商用利用条件",
+        "指定Ollama model、必要RAM/GPU、取得サイズ",
+        "実行時間とAPI費",
+        "successor"
+      ]
+    },
+    "priority": "B"
+  },
+  {
+    "purpose": "title上はissueからPRを作るcoding agentで、SWE-bench Liteを評価対象とする。添付資料にREADME本文や実装詳細がなく、機能範囲の確認は限定的。",
+    "novelty": "issue-to-PRというAI駆動開発用途は明確だが、具体的なagent構成、既存agentとの差、独自機能を示す本文情報がないため原著性・新規性は判断不能。",
+    "publication_update": "GitHub候補のpublished_atは2026-10-13。push、release、stars等の詳細は添付資料にない。",
+    "community": "stars、push、release、issue数は未確認。",
+    "license_commercial": "コードlicense、モデルlicense、provider/APIの商用条件はいずれも未確認。",
+    "installation": "READMEや手順抜粋がなく、依存関係・model取得・API設定・導入時間を判定できない。",
+    "cpu_gpu_ram": "CPU/GPU/RAMの記載や測定なし。",
+    "limitations": "タイトルとURL以外の一次資料が不足。SWE-bench Liteの実測主張や再現手順は確認できず、20分の予算で評価可能かも不明。",
+    "fit": "coding agentはAI駆動開発に直接関係する一方、低コスト要約・抽出、分類、構造化、軽量visionの用途との直接的な接点は資料から確認できない。",
+    "validation_value": "まず公式README、license、モデル/API前提を確認する価値はあるが、現資料から安全に試す手順や期待できる比較軸を設計できない。",
+    "judgment": {
+      "candidate_id": "github:divyanshu4501/fixpilot",
+      "decision": "defer",
+      "reason": "対象領域は関係するが、添付一次情報がタイトルとURLに限られ、機能、再現性、license、実行負荷の確認ができない。判断材料を得るまで保留。",
+      "evidence": [
+        {
+          "source_url": "https://github.com/Divyanshu4501/fixpilot",
+          "quote": "Issue-to-PR coding agent, evaluated on SWE-bench Lite"
+        }
+      ],
+      "verification_level": "unreviewed",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "READMEと実装内容、評価手順",
+        "コード・モデルのlicenseと商用利用",
+        "installation、API費用、CPU/GPU/RAM/download",
+        "community、release、successor"
+      ]
+    },
+    "priority": "B"
+  },
+  {
+    "purpose": "ローカル先行・監査可能なPython code agentと30 taskのhidden-test benchmarkを提供するとするrepository。README抜粋はテスト、trace、checkpoint、評価手順を説明する。",
+    "novelty": "hidden-test benchmarkや検証可能なtraceは有用そうだが、候補metadataのrepoはHarper3105、README内license/commitリンクはhwfengcsを指す。近似DM-Code-Agent reposの原著性は添付情報から未確認。",
+    "publication_update": "GitHub push 2026-10-14、release 2.4.0は同日。READMEの複数記載は候補側の独立検証結果ではない。",
+    "community": "stars 0、forks 0、issues 0、2026-10-14 push、2.4.0 release。これらは再現性・独立採用を証明しない。",
+    "license_commercial": "GitHub API metadataはNOASSERTION/Other。READMEはMITとするがLICENSE参照先が別repoのhwfengcs/DM-Code-Agent。コード、モデル（DeepSeek Chat記載）、データの条件を分けて確認が必要。",
+    "installation": "READMEは`uv sync --frozen --extra dev`またはeditable installを示す。実モデル利用ではDeepSeek Chat/providerのAPI費が発生する可能性があり、費用は不明。",
+    "cpu_gpu_ram": "CPU/GPU/RAMの測定値なし。テスト・決定論的eval・manifest確認はAPI key不要とのREADME記載だが、agent実行の資源要件は別途不明。",
+    "limitations": "候補の独自性、READMEとrepositoryの対応、licenseの不一致が大きな確認点。30題・hidden tests等はREADME上の記述で今回実行していない。",
+    "fit": "agentのtrace、長い文脈管理、evalはAI開発の運用には参考になる。要約・抽出、軽量モデルそのものの改善には間接的。",
+    "validation_value": "ゼロAPIの決定論的eval/manifest検査が実際に利用できるなら低コストで検証可能。ただしまずrepositoryとlicenseの同一性、upstream関係を解消すべき。",
+    "judgment": {
+      "candidate_id": "github:harper3105/dm-code-agent",
+      "decision": "defer",
+      "reason": "READMEには低コスト評価の価値があるが、metadataのlicenseとREADMEのMIT表示・別repositoryへの参照に齟齬があり、類似DM-Code-Agent候補との原著性も未確認。",
+      "evidence": [
+        {
+          "source_url": "https://github.com/Harper3105/DM-Code-Agent",
+          "quote": "测试、确定性 eval 和 benchmark manifest 检查**完全不需要 API key**。"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "候補repoとREADME内hwfengcs参照の関係・原著性",
+        "コード、モデル、データの個別licenseと商用可否",
+        "agent実行時のAPI費用、CPU/GPU/RAM要件",
+        "successor"
+      ]
+    },
+    "priority": "B"
+  },
+  {
+    "purpose": "前候補とほぼ同じ説明・README内容を持つDM-Code-Agent候補。GitHub metadataでは別owner JasonPolyakov44995のrepo、同じ30 task benchmark等をうたう。",
+    "novelty": "先行候補とREADME抜粋が一致し、両方の抜粋がhwfengcs/DM-Code-Agentを参照する。候補 instructionも類似repoの原著性未確認として扱うことを指定。独立実装やfork関係は不明。",
+    "publication_update": "pushは2026-10-14、release 1.5.907。直近更新は分かるが、誰が何を作成したかは確認できない。",
+    "community": "stars 0、forks 0、issues 0、push 2026-10-14、release 1.5.907。community指標は独立検証ではない。",
+    "license_commercial": "MetadataはNOASSERTION/Other。一方README抜粋はMITとし別repoのlicenseを参照。コードとモデル/API、データの商用条件が不明。",
+    "installation": "前候補と同じREADME記載の`uv sync --frozen --extra dev`等。候補固有のinstallation成功、外部API/model費用は未検証。",
+    "cpu_gpu_ram": "CPU/GPU/RAM測定なし。API不要とされるのはtests/eval/manifest checksに限る。",
+    "limitations": "近似候補と同一README記載のため独自性、実装の出所、メンテナンス責任が分からない。二つのrepoや作者記載を独立した研究信号として数えられない。",
+    "fit": "AI駆動開発向けの運用・評価基盤という関連性はあるが、別候補と重複する可能性が高く、現時点では追加価値を判断できない。",
+    "validation_value": "先行候補との差分、git history/upstream関係、license provenanceを確認すること自体が先。並行して試すと限られた20分を重複消費する。",
+    "judgment": {
+      "candidate_id": "github:jasonpolyakov44995/dm-code-agent",
+      "decision": "reject",
+      "reason": "現資料では前候補とREADMEが実質同じで、独立性や権利関係が確認できない。重複を解消するまで別候補として試す優先度はない。",
+      "evidence": [
+        {
+          "source_url": "https://github.com/JasonPolyakov44995/DM-Code-Agent",
+          "quote": "uv sync --frozen --extra dev        # 或 pip install -e \".[dev]\""
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "前候補とのfork/upstream・原著性",
+        "license provenanceと商用条件",
+        "実装差分、資源要件、API費用",
+        "successor"
+      ]
+    },
+    "priority": "C"
+  },
+  {
+    "purpose": "Claude Agent SDKを使う手書きmini coding agentとSWE-bench風評価基盤をうたう。README抜粋ではpytestの通過数、benchmark上の方法論上の制約、MIT等を説明。",
+    "novelty": "isolated MCP tool service、permission sandbox、context management、trace等を組み合わせる実装例。README自身が一部benchmarkは真のGitHub issueではないと説明し、限界を明示する。",
+    "publication_update": "push 2026-10-14。releaseなし。",
+    "community": "stars 0、forks 0、issues 0、push 2026-10-14、releaseなし。",
+    "license_commercial": "Repository metadataはMIT。依存libraryは各上流licenseとの記載あり。Claude Agent SDK/APIの商用条件・費用は別途未確認で、コードlicenseとモデル/service条件を混同しない。",
+    "installation": "README excerptは`conda ... python -m pip install -r requirements.txt`を示す。requirementsの取得サイズ、追加モデル/API設定は未確認。",
+    "cpu_gpu_ram": "CPU/GPU/RAM測定なし。主なagentはClaude SDKに依存しそうで、local small modelだけで動くとは資料から確認できない。",
+    "limitations": "READMEは自作注入欠陥やissue文面の代理など評価手法上の制約を明記。768 tests passed等はREADMEの主張で、未実行。外部Claude API利用なら無課金条件に合わない可能性。",
+    "fit": "AI agentの安全境界、trace、評価方法は開発運用の学びになる。要約・抽出を低コスト化する直接候補ではない。",
+    "validation_value": "methodology sectionを読む価値が高い。実行は依存/API条件を確認してから。限られた計算予算で得るのはagent設計学習であって、NLP pipeline効果の測定ではない。",
+    "judgment": {
+      "candidate_id": "github:kingjone0/mini-claude-code",
+      "decision": "defer",
+      "reason": "agent安全・再現性の実装は参考になるが、Claude SDK/API費用と20分内の実行条件が不明。benchmark上の留保もあり、今すぐ導入する判断は保留する。",
+      "evidence": [
+        {
+          "source_url": "https://github.com/kingjone0/mini-claude-code",
+          "quote": "测试 **768 passed / 21,202 subtests**，MIT，零运行时依赖。"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "Claude SDK/APIの必要性、費用、商用条件",
+        "依存関係と総download量",
+        "CPU/GPU/RAMと実行時間",
+        "successor"
+      ]
+    },
+    "priority": "B"
+  },
+  {
+    "purpose": "SWE-bench coding agentをmulti-turn GRPOで訓練し、そのtraining stepをtraceから再生するsimulatorを提供。",
+    "novelty": "measured training trace、cost model、discrete-event replayを使うシミュレーションが主題。訓練自体を再実行せず別の並列度等でstep timeを推定する設計。",
+    "publication_update": "GitHub push 2026-10-13。releaseなし。",
+    "community": "stars 0、forks 0、issues 0、push 2026-10-13、releaseなし。",
+    "license_commercial": "license UNKNOWN。Qwen3-30B-A3B-Instruct-2507重みやデータ、verl/SGLang等の個別条件も未確認。",
+    "installation": "TRAINING.md、測定・fit用script、SGLang/verl構成に言及。完全環境のinstallation時間や依存サイズは不明。",
+    "cpu_gpu_ram": "記載されたtraining runは8× NVIDIA B200。trainingは禁止なので再現不可。simulatorの軽いunit testsはCUDAなしで動作しうるとの記載だが、RAM/CPU所要量は未測定。",
+    "limitations": "高価なGPU trainingのtraceから成る研究で、simulator結果もmeasured cost model/priorsに依存する。現ユーザーのCPU小型モデルと入力前処理には距離がある。",
+    "fit": "LLM agent training cost modelingには関係するものの、AI駆動開発の試用にもtraining不可が障壁。前処理・NLPやvision用途には適合しない。",
+    "validation_value": "simulatorの設計を読む参考はあるが、実行検証の価値は低い。CUDAなしunit testが可能というREADME記載だけでは現在のタスクの判断は変わらない。",
+    "judgment": {
+      "candidate_id": "github:kkolvin/sim-agentic-grpo",
+      "decision": "reject",
+      "reason": "中心用途が8×B200でのagent学習で、training禁止・資源上限と合わない。CUDAなしtestの記載はあるが、ユーザー課題への実用的な価値を示さない。",
+      "evidence": [
+        {
+          "source_url": "https://github.com/KKolvin/sim-agentic-grpo",
+          "quote": "| Hardware | 8× NVIDIA B200 |"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "licenseと商用利用条件",
+        "CPU-only simulatorの資源・時間",
+        "重みとdatasetの利用条件",
+        "successor"
+      ]
+    },
+    "priority": "C"
+  },
+  {
+    "purpose": "Kubernetes本番障害をNeural manifoldとして分析しcoding-agent学習用SWE-bench風datasetにする、という候補。titleは76% autonomous fix rateを主張する。",
+    "novelty": "実障害をtraining dataにする発想は興味を引くが、与えられたREADME excerptは導入・dataset・method・比較条件を示さず、noveltyを実証できない。",
+    "publication_update": "GitHub push 2026-10-14。添付にrelease情報なし。",
+    "community": "stars 0、forks 0、issues 0、push 2026-10-14、releaseなし。",
+    "license_commercial": "repository/data/modelのlicenseはいずれもUNKNOWN。実障害ログに第三者・顧客情報が含まれる可能性や利用権も資料から分からない。",
+    "installation": "導入手順・依存・downloadサイズを確認できるexcerptなし。",
+    "cpu_gpu_ram": "CPU/GPU/RAMは未確認。",
+    "limitations": "76% fix rateは候補タイトルだけにあり、提供された本文から方法、標本、独立評価の証拠を確認できない。K8s障害特化で適用範囲が狭い。",
+    "fit": "Kubernetes障害のcode-agent開発に限定すれば関連するが、要約・抽出の一般的な大量入力、軽量vision、CPU modelには直接つながらない。",
+    "validation_value": "一次資料のmethod、dataset provenance、licenseが得られない限り、試行で学べる点を設定しにくい。",
+    "judgment": {
+      "candidate_id": "github:mdsubhanpasha/k8s-neural-collapse-manifold",
+      "decision": "reject",
+      "reason": "具体的なmethod/benchmark evidenceが提供されず、headlineの改善値を判断材料にできない。一般的な低コストNLP用途との距離もあり、今の20分を使う優先度は低い。",
+      "evidence": [
+        {
+          "source_url": "https://github.com/mdsubhanpasha/k8s-neural-collapse-manifold",
+          "quote": "Neural manifold analysis of 50 real-world K8s production failures"
+        }
+      ],
+      "verification_level": "unreviewed",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "76%主張の評価方法と独立比較",
+        "datasetの由来・privacy・license",
+        "code/model licenseと商用条件",
+        "実行資源、installation、successor"
+      ]
+    },
+    "priority": "C"
+  },
+  {
+    "purpose": "coding agent構成を共通benchmark caseで比較するharness。real-commit tasks、SWE-bench-Live、複数domainのbenchmarkを扱う。",
+    "novelty": "モデル単体でなくtool/config/promptを評価単位にし、offline selftestと公平性ルールを含むのが特徴。候補は自身のagent octomindも同じ規則で評価する。",
+    "publication_update": "GitHub pushは2026-10-14。releaseなし。",
+    "community": "stars 3、forks 1、open issues 1、push 2026-10-14、releaseなし。小さい利用シグナルであり、独立再現の証明ではない。",
+    "license_commercial": "コードlicenseはApache-2.0。benchmark datasets、vendored checker、各provider/modelのlicenseと商用条件は個別に確認が必要。READMEはprovider/modelを選択する方式で、一部実行は有料APIの可能性。",
+    "installation": "Python 3.11+、`pip install -r requirements.txt`。offline validationに`python3 scripts/bench_selftest.py`がある。依存サイズ・download量は未確認。",
+    "cpu_gpu_ram": "CPU/GPU/RAM実測なし。offline selftestはmodel API不要とREADMEにあるため資源上限内で試す余地はあるが、全benchmark/agentsの実行負荷は不明。",
+    "limitations": "多くのbenchmarkの本実行はmodel provider、Docker、データ取得に依存。candidate自身のoctomindも含まれるため、fairness設定や同一条件を確認する必要がある。測定結果はREADME claimのみ。",
+    "fit": "AI driven developmentを評価する直接的な隣接領域で、条件を揃えたagent比較はユーザーの開発支援研究にも応用可能。要約・抽出性能の直接ベンチマークではない。",
+    "validation_value": "APIを使わないoffline selftestを20分枠で先に試すのは合理的。モデル実行をせず、install成立、依存download、test時間を測れば明確な低リスク情報が得られる。",
+    "judgment": {
+      "candidate_id": "github:muvon/octobench",
+      "decision": "test",
+      "reason": "AI開発agentを比較する用途が隣接し、READMEにoffline selftestが明記される。API不要の短い検査なら低コストでharnessの再現性と依存負荷を判定できる。これは効果測定や採用完了の主張ではない。",
+      "evidence": [
+        {
+          "source_url": "https://github.com/Muvon/octobench",
+          "quote": "Validate the whole framework offline (no network/API) with"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "Python 3.11+の隔離環境でoffline selftestのみ実行し、download量、CPU/RAM、所要時間を記録する。20分、8 GiB RAM、2 GB download枠を超える前に停止し、model/provider benchmarkは別途条件確認まで実施しない。",
+      "unconfirmed": [
+        "offline selftestの実時間・資源",
+        "benchmark dataset各々のlicenseと取得サイズ",
+        "provider/model実行費用と商用条件",
+        "successor"
+      ]
+    },
+    "priority": "B"
+  },
+  {
+    "purpose": "scientific software向けcoding-agent benchmark。科学分野の契約・数値挙動を持つtaskをDocker runnerで評価する。READMEは20 domain、license gate等を説明。",
+    "novelty": "scientific contractsを通常のcode benchmarkから分け、restricted-license taskを既定除外し、offline network policyやclean rebuildを使う設計。",
+    "publication_update": "GitHub push 2026-10-01、候補published_at 2026-10-12。最新releaseなし。",
+    "community": "stars 85、forks 4、issues 2、push 2026-10-01、releaseなし。starsは独立validationを意味しない。",
+    "license_commercial": "Repository codeはMIT。READMEが明記する通りtask source/papers/figures/fixturesはupstream licenseのままなので、repo MITを全benchmark/dataの商用許諾と解釈できない。model/provider条件も不明。",
+    "installation": "Docker Engine 28+、Python 3.12、huggingface_hub、datacurve-pier等を案内。特定task/materializationやmodel gateway設定も必要で、2GB/20分内のinstallationは不明。",
+    "cpu_gpu_ram": "CPU/GPU/RAM未測定。約120秒のagent-stage smokeとの記載があるが、これはmodel呼出しやDockerを含む作業全体の所要時間ではない。",
+    "limitations": "科学ソフト領域に特化し、20 domain/96 unrestricted tasks等はREADMEの説明。task-level licenseが分かれ、model/providerの実行費も未確認。今回は未実行。",
+    "fit": "scientific software agentを扱う場合は有用だが、一般的なNLPの要約/抽出や入力コスト削減への直接性は薄い。",
+    "validation_value": "READMEを読む価値はあるが、Docker・Python環境・task素材・model連携の確認が先。限られた予算で全体smokeを始める優先度は低い。",
+    "judgment": {
+      "candidate_id": "github:openmoss/swe-bench-science",
+      "decision": "defer",
+      "reason": "scientific coding-agent評価という専門用途では興味深いが、現在の主用途に近くなく、runnerと素材のlicense/resource確認が必要。READMEの設計を読む段階に留める。",
+      "evidence": [
+        {
+          "source_url": "https://github.com/OpenMOSS/SWE-bench-Science",
+          "quote": "Use Docker Engine 28+ for the benchmark's enforced offline network policy."
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "各task/source/figure/fixture licenseと商用条件",
+        "model/providerの費用と要件",
+        "installation download、CPU/RAM、全run時間",
+        "independent external validation、successor"
+      ]
+    },
+    "priority": "C"
+  },
+  {
+    "purpose": "coding agentの観測履歴を規則・学習ゲート・選択要約で圧縮し、コンテキスト費用を抑える提案。",
+    "novelty": "履歴全体の要約でなく、各ツール出力を重要度別に扱う構成が関心に合う。優位性の記述はREADME上の主張で未検証。",
+    "publication_update": "GitHub記録では2026-10-11作成・最終push。論文/独立評価は提示資料で未確認。",
+    "community": "★0、fork 0。最終push 2026-10-11。releaseなし、issue 0。採用実績や再現性を示す独立信号はない。",
+    "license_commercial": "リポジトリコードはMIT。依存先/APIやモデルの商用条件は別途不明。",
+    "installation": "README抜粋に具体的導入手順なし。依存関係・設定・実行経路を確認してから試す。",
+    "cpu_gpu_ram": "CPU/GPU/RAMいずれも実測・要件不明。学習ゲートは事前学習済みか、利用APIと費用も不明。",
+    "limitations": "SWE-bench解決率・46–55%節約はREADME記載の主張で追試未確認。独立した話題信号が2件確認できず、深掘り分類要件を満たさない。",
+    "fit": "観測要約はAI開発に有用な可能性があるが、ユーザーの汎用大量入力NLP処理への直接適合は限定的。実行条件と費用が不明。",
+    "validation_value": "READMEの手法とセットアップを読む価値はある。未実施なので効果や実測値はない。",
+    "judgment": {
+      "candidate_id": "github:paultrust26/trot",
+      "decision": "defer",
+      "reason": "着想は有望だが、導入・依存・API費用と独立検証が不明。CPU制約内で動く経路が判明してから候補に戻す。",
+      "evidence": [
+        {
+          "source_url": "https://github.com/paultrust26/TROT",
+          "quote": "**Deterministic rules (zero cost).**"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "README全体で導入、ゲートモデル、外部API依存を確認する。",
+      "unconfirmed": [
+        "解決率とトークン節約の再現性",
+        "CPU/RAM要件",
+        "依存/APIの費用と商用条件"
+      ]
+    },
+    "priority": "B"
+  },
+  {
+    "purpose": "DeepSeekベースの最小coding agentとSWE-bench評価ハーネス。",
+    "novelty": "明示的コンテキスト管理とpatch toolを備えた評価可能な実装。ただし類似agent群に対する独自性は未確認。",
+    "publication_update": "GitHub記録では2026-10-15に作成・push。論文・外部評価は提示資料で未確認。",
+    "community": "★0、fork 0。最終push 2026-10-15。releaseなし、issue 0。",
+    "license_commercial": "リポジトリlicense宣言なし（UNKNOWN）。コードの商用利用条件は要確認。DeepSeek/APIモデル条件も別途確認。",
+    "installation": "READMEにpip install -e .、評価コマンドあり。依存導入が要る。",
+    "cpu_gpu_ram": "必要CPU/GPU/RAMは未測定。DeepSeek提供元/API接続条件・料金不明で、現金ゼロ制約への適合は未確認。",
+    "limitations": "SWE-benchは最大300件評価を記載するが実測完了を示す証拠とは扱わない。独立した話題信号2件なし。",
+    "fit": "評価ハーネス設計の参考にはなるが、外部モデルAPIの費用・利用可能性が不明。少量の自前開発補助としての実用性も要確認。",
+    "validation_value": "再現可能な評価コマンドが記載され、手順監査の価値はある。実行・性能検証は未実施。",
+    "judgment": {
+      "candidate_id": "github:piaoyun2022/coding-harness",
+      "decision": "defer",
+      "reason": "API費用とライセンスが判明せず、ゼロ予算条件で試す判断ができない。",
+      "evidence": [
+        {
+          "source_url": "https://github.com/piaoyun2022/coding-harness",
+          "quote": "pip install -e ."
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "licenseとモデル/API設定・無料実行方法を確認する。",
+      "unconfirmed": [
+        "商用ライセンス",
+        "API料金",
+        "CPU/RAM要件",
+        "SWE-bench実測結果"
+      ]
+    },
+    "priority": "B"
+  },
+  {
+    "purpose": "量子化小型LMの推論時手法で推論忠実度を回復する研究コード。",
+    "novelty": "量子化と推論時処理の組合せが主題。提供抜粋では精度表の詳細や方法の独自差分を評価できない。",
+    "publication_update": "リポジトリ作成は2026-06-02、最終push 2026-10-14。論文URLは資料で未確認。",
+    "community": "★0、fork 0。最終push 2026-10-14。releaseなし、issue 0。",
+    "license_commercial": "コードlicense未宣言。重みはLlama 3.2 1B等に言及しゲート条件あり。コードと重みの商用権を混同できず、要確認。",
+    "installation": "transformers/datasets/accelerate等のpip依存を記載。Llama重みはHF tokenが必要。学習notebookはColab/Drive前提。",
+    "cpu_gpu_ram": "README記載の実験環境はT4 GPU・15GB VRAM。ローカルCPU/RAM測定なし。分析notebookにはGPU不要の記載もあるが、学習は禁止条件に不適合。",
+    "limitations": "中心的な学習工程はGPU/Colabと学習済みcheckpointを要する。重み取得条件とダウンロード量不明。",
+    "fit": "量子化小型モデルの原理読解は関連するが、提案作業環境では再現できる根拠がなく、今すぐの実行候補にはしにくい。",
+    "validation_value": "READMEと評価表の設計を読むことは可能。実験値は著者記載で、独立追試なし。",
+    "judgment": {
+      "candidate_id": "github:riamunshi/quantized-slm",
+      "decision": "defer",
+      "reason": "学習禁止・現金ゼロ・CPU/RAM上限の制約と、中心工程のT4利用が合わない。推論時の原理読解には限定価値。",
+      "evidence": [
+        {
+          "source_url": "https://github.com/riamunshi/quantized-SLM",
+          "quote": "GPU: NVIDIA T4 (Google Colab free tier)"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "学習を使わずに検証可能な推論手法と配布checkpointの容量・ライセンスを確認する。",
+      "unconfirmed": [
+        "推論のみの再現可否",
+        "checkpoint容量と配布条件",
+        "CPU/RAM所要量",
+        "コードの商用条件"
+      ]
+    },
+    "priority": "B"
+  },
+  {
+    "purpose": "SWE-bench Liteでagentとagentlessを比較するcoding agent兼ベンチマークハーネス。",
+    "novelty": "支出上限とagentless比較を明示し、結果の caveat も記述する評価姿勢が特徴。",
+    "publication_update": "GitHub作成2026-10-05、最終push 2026-10-14。独立論文/再現は資料で未確認。",
+    "community": "★0、fork 0。最終push 2026-10-14。releaseなし、issue 0。",
+    "license_commercial": "リポジトリコードMIT。モデル/APIは複数事業者向けに配線され、各サービスの商用条件・料金は別途。",
+    "installation": "READMEにrequirements.txt、.envでprovider keyを設定。SWE-benchは未導入との記載があり、実行構成に差がある。",
+    "cpu_gpu_ram": "ローカル要件の測定なし。外部APIモデルを使うため現金ゼロ条件は無料枠の可否次第。",
+    "limitations": "README自身が小規模試験の限界・未提出例を記す。記載の評価値は独立検証ではない。依存する外部モデルの費用が制約。",
+    "fit": "AI駆動開発や評価設計には比較的関連。外部API無料利用の確認が先。大量NLP/vision向けではない。",
+    "validation_value": "具体的な結果・ caveat ・評価コードの確認に価値。実行性能は未測定。",
+    "judgment": {
+      "candidate_id": "github:shiva-shivanibokka/codepilot-swe",
+      "decision": "defer",
+      "reason": "評価設計は参考になるが、キー/API費用と多数依存のセットアップが現金ゼロ・20分枠に対して不透明。",
+      "evidence": [
+        {
+          "source_url": "https://github.com/shiva-shivanibokka/CodePilot-SWE",
+          "quote": "one key, for the provider of the model you use"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "無料providerの実際の制限、依存導入時間とローカル実行要件を確認する。",
+      "unconfirmed": [
+        "無料APIの継続利用可否",
+        "CPU/RAM要件",
+        "README記載結果の再現性"
+      ]
+    },
+    "priority": "B"
+  },
+  {
+    "purpose": "Anthropic Messages API上のcoding agentとSWE-bench Lite評価、失敗分類・reward-hacking検出。",
+    "novelty": "跨セッションmemory MCPや大きなファイルの部分読み取りを追加。記述上は原著より派生・拡張。",
+    "publication_update": "GitHub候補は新規。資料中READMEにオリジナル由来を示す記述があり、発表物は確認されない。",
+    "community": "★0、fork 0。提示資料からpush日時・release・issue件数は確認できず、未確認扱い。",
+    "license_commercial": "この候補のコードlicenseは資料から未確認。Anthropic API/モデル利用条件と料金も要確認。",
+    "installation": "raw Anthropic APIを利用する設計。API keyと利用料が必要となる可能性があり、具体的install手順と費用は要確認。",
+    "cpu_gpu_ram": "CPU/GPU/RAM要件未確認。モデル/API利用と費用が不明。",
+    "limitations": "独自性は派生元との比較確認が必要。API費用とモデル条件が不明でゼロ予算適合は未確定。",
+    "fit": "AI駆動開発には関連。MCP記憶機能・大規模ファイル読み込みは興味深いが、ユーザーのバッチNLP用途とは別領域。",
+    "validation_value": "追加機能のコードと依存関係を比較読解する価値はある。機能有効性・品質は未実測。",
+    "judgment": {
+      "candidate_id": "github:shlokgoel/fixpoint",
+      "decision": "defer",
+      "reason": "類似DM-Code-Agentの原著性とAPI費用、実行条件が未確認。機能説明だけでは試験優先度を上げにくい。",
+      "evidence": [
+        {
+          "source_url": "https://github.com/shlokgoel/fixpoint",
+          "quote": "npm install"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "派生元との差分、provider選択、無料利用条件とメモリ保存方式を確認する。",
+      "unconfirmed": [
+        "候補ID/READMEの引用の対応確認",
+        "API費用",
+        "コード商用条件と由来",
+        "CPU/RAM"
+      ]
+    },
+    "priority": "B"
+  },
+  {
+    "purpose": "Claude Code風のコーディングエージェントを日本語説明付きで実装・改変し、独自機能を足す素材。",
+    "novelty": "クロスセッション記憶MCP、read_fileのoffset/limitなど実用的追加を主張。既存MIT実装の二次開発と明記。",
+    "publication_update": "GitHub候補のREADMEはraw Anthropic Messages APIと評価機能を説明。更新日時・外部評価は未確認。",
+    "community": "★・push・release・issueはいずれも資料から未確認。",
+    "license_commercial": "READMEは派生元をMITとし、本体もMITと記載。外部モデル/APIの利用・商用条件は別途不明。",
+    "installation": "npm installの記載あり。モデル設定例・各種REPLコマンドもあるがAPI keyと料金の明確な説明は抜粋にない。",
+    "cpu_gpu_ram": "CPU/GPU/RAM要件は未確認。外部LLM/API前提なら料金ゼロは確認できない。",
+    "limitations": "派生実装で原著性に限界。類似リポジトリ間の独立性・品質や追加機能のテスト状況は未確認。",
+    "fit": "AI開発支援に直接関係し、機能差分の読解には価値がある。自身の大量文書処理とは用途が異なり、費用条件も保留。",
+    "validation_value": "memory MCPと部分読み取りの実装を読むことができる。README上の説明のみで品質検証なし。",
+    "judgment": {
+      "candidate_id": "github:xinyunll/xycode",
+      "decision": "defer",
+      "reason": "評価設計は関心に合うが、Anthropic APIの現金費用が不明でゼロ予算適合を確認できない。",
+      "evidence": [
+        {
+          "source_url": "https://github.com/xinyunll/xycode",
+          "quote": "跨会话记忆 MCP"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "licenseファイル、provider接続費用、テストと派生元の差分を確認する。",
+      "unconfirmed": [
+        "GitHubコミュニティ指標",
+        "API費用",
+        "追加機能のテスト/品質",
+        "原著性"
+      ]
+    },
+    "priority": "B"
+  },
+  {
+    "purpose": "エネルギー関連のオンライン資料から分類・NER・時間/イベント・感情・要約を行い、検索・蓄積・根拠付きQAに接続するバックエンド案。",
+    "novelty": "収集・正規化・意味処理・知識整理・SQLite保存を分離し、ライブ検索/保存コーパス/設定資料のQA経路を統合。",
+    "publication_update": "arXiv 2610.17243v1、掲載資料の日付2026-10-12。",
+    "community": "論文候補。リポジトリが提示されず、GitHub stars/push/release/issuesは未確認。",
+    "license_commercial": "コード・モデル・データのライセンスはいずれも未確認。LLM設定時のAPI条件・費用も不明。",
+    "installation": "論文要旨に実装説明はあるが、公開コードや依存・インストール手順は提示されていない。",
+    "cpu_gpu_ram": "CPU/GPU/RAMの記載・測定なし。LLMを設定しない場合は決定論的抽出出力にfallbackするとの記載。",
+    "limitations": "エネルギー領域特化。多言語大規模評価は将来課題。検索統合は有用だが、既存基盤への導入可能性・ライセンスが不明。",
+    "fit": "情報抽出・構造化・要約と根拠付きQAは目的に近い。特に収集からSQLite知識蓄積までの設計が参考。即時利用にはartifact未提示が障害。",
+    "validation_value": "論文要旨は設計とsmoke validation内容を述べるが、ここでは論文読解のみ。実測を独立再現していない。",
+    "judgment": {
+      "candidate_id": "2610.17243",
+      "decision": "defer",
+      "reason": "目的適合性は高いが、独立話題信号・利用可能コード・license・導入条件の確認が不足。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.17243v1",
+          "quote": "relational persistence in SQLite."
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "論文付属artifactと独立した引用/議論信号を確認し、依存・license・検索経路を評価する。",
+      "unconfirmed": [
+        "公開実装と利用条件",
+        "APIコスト",
+        "CPU/RAM要件",
+        "多言語精度と処理量"
+      ]
+    },
+    "priority": "B"
+  },
+  {
+    "purpose": "小型モデルを合成自己蒸留で継続post-trainingし、新能力獲得と既存知識保持を両立する研究。",
+    "novelty": "わずかに大きい同系列alignerへin-distribution書換えを委ね、off-policy教師信号とrejection samplingを組み合わせる提案。",
+    "publication_update": "arXiv 2610.13113、資料上の日付2026-10-09。公式コードURL提示なし。",
+    "community": "リポジトリなし。stars/push/release/issuesは未確認。独立シグナルも確認されていない。",
+    "license_commercial": "論文・学習データ・モデル重みの商用条件は未確認。",
+    "installation": "実行コード、依存、手順が提示されていない。要旨から再現環境を特定できない。",
+    "cpu_gpu_ram": "CPU/GPU/RAM要件の記載なし。学習研究のため学習禁止条件下での再現可能性も未確認。",
+    "limitations": "多データ・多ベンチマークでの優位性は著者abstractの主張で未検証。配布artifactなし。",
+    "fit": "小型モデル研究としてCPU小型モデル関心に関連するが、実際のモデル利用や即時NLP適用は確認できない。",
+    "validation_value": "abstractの課題設定・手法・評価設計を読む価値。効果を実測したものとして扱えない。",
+    "judgment": {
+      "candidate_id": "2610.13113",
+      "decision": "defer",
+      "reason": "研究テーマは関連するものの、コード/モデル/ライセンスと実行資源の根拠がなく、手元での検証経路がない。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.13113",
+          "quote": "outsourcing the task to a minimally larger, same-family aligner."
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "論文本文と補足資料でartifact、実験ハードウェア、学習データ/重みの条件を確認する。",
+      "unconfirmed": [
+        "独立した話題信号",
+        "コード・モデル公開",
+        "必要なGPU/RAM/費用",
+        "商用条件"
+      ]
+    },
+    "priority": "B"
+  },
+  {
+    "purpose": "非同期RLVR rolloutのKV cacheをINT4化し、一部attention sinkと直近contextをINT8保護して速度と学習品質を両立する研究。",
+    "novelty": "重み量子化でなくKV負荷に焦点を当てた混合精度保護。",
+    "publication_update": "arXiv 2610.14448、資料上の日付2026-10-10。コードリンク/公式リポジトリの確認なし。",
+    "community": "公開リポジトリ未確認。stars/push/release/issues不明。",
+    "license_commercial": "論文実装・モデル重みのライセンスは未確認。Qwen3モデル条件も別途必要。",
+    "installation": "コード・実行手順・依存は提示なし。",
+    "cpu_gpu_ram": "Qwen3-4B/8BのRL学習評価を記載し、CPU20分/RAM8GiB/学習禁止の制約では実行対象外。具体的hardware未提示。",
+    "limitations": "RL rollout最適化は目的の分類・要約・軽量vision用途にほぼ無関係。性能数値はabstractの主張で未検証。",
+    "fit": "量子化技法の一般知識としては読めるが、実装可能性・目的適合性とも低い。",
+    "validation_value": "abstractから手法と報告指標を把握するだけ。独立比較証拠が与えられていないためlarge_effect判断不可。",
+    "judgment": {
+      "candidate_id": "2610.14448",
+      "decision": "reject",
+      "reason": "対象が大規模RL学習のKV最適化で、ユーザーのタスク・資源・学習禁止制約から外れる。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.14448",
+          "quote": "Across 400 iterations of Qwen3-8B-Base GRPO training"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "実験ハードウェア",
+        "公式実装",
+        "論文主張の再現性",
+        "コード/重みのlicense"
+      ]
+    },
+    "priority": "C"
+  },
+  {
+    "purpose": "1.54B・32,768 contextのinstruction-tuned coding model。コード生成、reasoning、修正向け。",
+    "novelty": "1.5B級でCPU候補になり得る一方、候補自体は旧Qwen2.5系。提供資料はQwen3-Coder-Nextを別の、より大きい後継候補と記録するため最新扱いしない。",
+    "publication_update": "モデルカードに独立した発表日なし。提供資料のsuccessor metadataはQwen3-Coder-Nextを別モデルとして記載。",
+    "community": "提供snapshotからGitHub stars/push/release/issuesは確認できない。HFモデルカードあり。",
+    "license_commercial": "モデルカード記載のweights licenseはApache-2.0。コードlicenseとは別。利用データ・派生物の条件は該当カード/規約確認が必要。",
+    "installation": "Transformers経由の取得/実行可能性はモデルカードから想定できるが、手元向け導入コマンドと依存固定は資料に不足。HF downloadが必要。",
+    "cpu_gpu_ram": "1.54B級でも未量子化重みだけでおおよそ数GiB級となり得るが、配布形式/容量はここでは未確認。CPU/RAM実測なし。2GB総download枠への適合不明。",
+    "limitations": "性能・速度・量子化版・正確なdownload容量/依存未確認。Qwen3-Coder-Next metadataにより、最新候補としてではなく比較対象として評価。",
+    "fit": "小型CPU coding補助モデルとして関連。2GB download/8GiB RAM/20分を満たす適切な量子化配布物が確認できれば有力な試験候補。",
+    "validation_value": "一次モデルカードと仕様から適合性を絞れる。推論・ベンチマークは未実施。",
+    "judgment": {
+      "candidate_id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+      "decision": "defer",
+      "reason": "用途は合う可能性があるが、総download2GB制約に対する実ファイル容量とCPU/RAM実行経路が未確認。",
+      "evidence": [
+        {
+          "source_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+          "quote": "1.54B parameters"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "モデルファイル合計容量、量子化版の配布条件、CPUで8GiB RAM以内の実行方法を確認し、Qwen3-Coder-Nextとの現実的な比較を行う。",
+      "unconfirmed": [
+        "正確なdownload容量",
+        "CPU token速度/RAM",
+        "量子化チェックポイントのlicense",
+        "独立性能評価"
+      ]
+    },
+    "priority": "B"
+  }
+]

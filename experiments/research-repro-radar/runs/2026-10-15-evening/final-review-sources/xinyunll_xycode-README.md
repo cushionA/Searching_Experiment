@@ -1,0 +1,118 @@
+# xycode
+
+一个基于 claude-code-from-scratch 二次开发的 coding agent，加入自我纠错、本地 embedding 记忆等原创特性。
+
+基于 [claude-code-from-scratch](https://github.com/Windy3f3f3f3f/claude-code-from-scratch)（MIT License）二次开发：在读懂内核的基础上，加入自己的原创特性，并用数据验证它们的价值。
+
+📖 系统架构见 [`docs/architecture.md`](./docs/architecture.md)。
+
+> ⚖️ 声明：本项目是学习 / 二次开发项目，"Claude Code" 是 Anthropic 的商标，本项目与 Anthropic 无关联。
+
+## 定位
+
+不是「又一个 Claude Code 克隆」，而是三件事：
+
+1. **搞懂内核** —— 读懂 agent loop、流式输出、上下文压缩、工具调用、权限、子 agent、MCP 这些核心机制；
+2. **加自己的东西** —— 加入原版没有的原创特性；
+3. **用数据验证** —— 用自建 eval 量化每个改动的价值。
+
+## 它能做什么
+
+- **Agentic loop**：模型「点菜」（要工具），循环「做菜」（执行工具并回喂结果）
+- **成熟 agent 行为链**：读（改前先读）→ 改 → 验证（自动跑测试）→ 评审（Critic 子 agent 审 diff），失败自动迭代
+- **工具**：读 / 写 / 编辑文件、列目录、grep 搜索、执行 shell、调用子 agent、MCP 工具等
+- **流式输出** + **并行工具执行** + **prompt 缓存**
+- **4 层上下文压缩**：budget → snip → microcompact → auto-compact
+- **多种权限模式**：默认逐条确认 / `--yolo` / `--plan` / `--accept-edits` / `--dont-ask` / `--auto`
+- **子 agent、MCP、记忆、skills、`/goal` 自主模式**
+- **多 provider**：Anthropic 格式 + OpenAI 兼容格式
+
+## 相对原版的改动
+
+### 新增
+
+- **`.env` 自动加载**：启动时自动读 `.env`（先查当前目录，再查程序所在目录），且不覆盖已设置的环境变量。原版的 `.env.example` 形同虚设——编译出来的 CLI 根本不读它。
+- **GitHub 发布 MCP**：新增 `create_repo` / `push_current_repo` 两个 MCP 工具（`mcp/github-server.mjs`，裸 JSON-RPC 实现、零依赖），让 agent 能一键建仓库、推送项目到 GitHub。
+- **跨会话记忆 MCP**：新增 `add_note` / `list_notes` 两个 MCP 工具（`mcp/memory-server.mjs`，裸 JSON-RPC、零依赖），让 agent 能跨会话记住用户偏好、结论和待办。
+- **自建 eval harness**：迷你 SWE-bench，16 道题（合成 / 实现 / bug 三类）、确定性判卷（Node 布尔表达式 + 隐藏测试脚本，不靠 LLM 当裁判），采集解决率 / 轮数 / 成本（`npm run eval`）。
+- **自动验证回路**：改完代码自动运行测试验证，失败则带着报错继续修（写文件标记"未验证"，跑测试命令清除）。
+- **Critic 自审回路**：改完 + 验证后，fork 一个只读评审子 agent 审 `git diff`，发现 bug 就回喂主 agent 继续修——「改 → 测 → 审」三级闭环。
+- **Read-before-write**：改代码前必须先读（`edit_file` 拦截未读过的文件），减少盲改。
+- **undo/回滚**：写/改文件前自动记录旧内容，`undo_edit` 工具可撤销最近一次编辑（恢复旧版或删除新建文件）。
+- **`read_file` 支持 offset/limit**：读大文件指定行范围（原版只能读整个文件、再被截断开头）。
+- **embedding 语义记忆**：本地 `bge-small-zh` 模型做向量检索召回记忆（设 `XYCODE_EMBED_PYTHON` / `XYCODE_EMBED_SCRIPT` 启用；未设则回退模型召回）。
+- **TodoWrite 任务清单**：`todo_write` 工具让 agent 维护打勾清单，复杂任务时规划步骤、逐步勾掉（轻量规划，不阻塞编辑）。
+- **并行探索子 agent**：`parallel_explore` 工具把一个探索问题拆成若干子问题，fork 多个只读 explore 子 agent **并行**搜代码库、再合并成带 `file:line` 的摘要——改代码前先并行摸清代码库，而不是串行读文件。
+- **A/B 对照开关**：`--baseline` 参数一键关掉整条自我纠错链（read-before-write / 自动验证 / Critic 评审 / undo / todo），用于量化这些特性到底带来多少解决率提升——否则无法证明「不是白加的」。
+
+### 修复（Windows 兼容）
+
+- **教程 runner 崩溃**（`steps/run.mjs`）：原版用 `spawnSync(node_modules/.bin/tsc)` 调编译器，Windows 的 Node(≥20) 因 CVE-2024-27980 拒绝 spawn 无 `.exe` 的 shell 脚本，报错打印 `NaN`。改为直接调用 `typescript/lib/tsc.js`。
+- **mock server 退出断言崩溃**：undici 流式连接 + `process.exit(0)` 触发 libuv `UV_HANDLE_CLOSING` 断言。加 `Connection: close` + `closeAllConnections` + 自然退出。
+
+### Roadmap
+
+- [x] 加 `--baseline` A/B 开关，能一键关掉自我纠错链
+- [ ] 用 A/B 量化「读 → 改 → 测 → 审」对解决率的提升（scikit-learn 9 题 + 更难的 django/sympy）
+
+## 快速开始
+
+```bash
+# 1. 安装依赖并编译
+npm install
+npm run build
+
+# 2. 在项目根目录建 .env（已被 .gitignore 忽略）
+#    ANTHROPIC_API_KEY=你的key
+#    ANTHROPIC_BASE_URL=你的代理地址   # 若走中转，必填
+#    XYCODE_MODEL=claude-sonnet-5       # 可选，覆盖默认模型
+#    GITHUB_TOKEN=你的token             # 可选，启用 GitHub 发布 MCP（需 repo 权限）
+
+# 3. 注册全局命令（可选，之后任何目录都能敲 xycode）
+npm link
+
+# 4. 跑起来
+xycode "看看这个目录是什么项目"   # 一次性任务
+xycode                            # 交互式 REPL
+```
+
+## 用法
+
+**权限模式**：默认逐条确认；`--yolo` 全自动；`--plan` 只读；`--accept-edits` 自动放行编辑；`--auto` 用 LLM 判断每个动作。
+
+**REPL 命令**：`/clear` 清历史 · `/plan` 切只读 · `/cost` 看成本 · `/compact` 手动压缩 · `/goal` 自主追目标 · `/memory` 看记忆 · `/skills` 看技能 · `/<技能名>` 调用技能。
+
+完整参数见 `xycode --help`。
+
+## 评测
+
+### 自建 eval harness（16 题，确定性判卷）
+
+```bash
+npm run eval
+```
+
+16 道题（10 合成 / 3 实现 / 3 bug），用 Node 布尔表达式 + 隐藏测试脚本判卷，不靠 LLM 当裁判。
+
+结果：**16/16 = 100%**。
+
+### SWE-bench（真实 GitHub issue）
+
+在 Windows 上跑通了 SWE-bench 官方 harness（修了 3 个跨平台 bug：CRLF、resume 复用旧日志、GBK 编码），评测脚本在仓库外的 `../swebench/` 目录。
+
+| 子集 | 解决率 |
+|---|---|
+| flask / requests（8 实例，简单） | 8/8 = 100% |
+| scikit-learn（9 实例，中等） | 8/9 ≈ 88.9% |
+
+### 一条诚实的结论
+
+当前 relay 模型（DeepSeek-v4-pro，前沿水平）在自包含任务和简单 SWE-bench 实例上几乎全对，解决率没有区分度；scikit-learn 才掉到 88.9%（其中 1 个是稳定复现的真失败）。要量化「自我纠错」等特性的价值，需要换更难的 django / sympy 实例做 A/B 对比——这正是 Roadmap 里下一步要做的事。
+
+## 致谢
+
+本项目基于 [Windy3f3f3f3f/claude-code-from-scratch](https://github.com/Windy3f3f3f3f/claude-code-from-scratch)，其 13 章分步教程完整保留在 [`docs/`](./docs) 目录，每一章都能一条命令跑起来、无需 API key。
+
+## License
+
+[MIT](./LICENSE)

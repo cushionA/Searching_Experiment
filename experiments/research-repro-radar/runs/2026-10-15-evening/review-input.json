@@ -1,0 +1,2319 @@
+{
+  "generated_at": "2026-10-15T09:15:25.255519+00:00",
+  "ranking_source": "ranking-final.json (canonical frozen pool)",
+  "review_pool": [
+    {
+      "candidate": {
+        "id": "2610.20193",
+        "title": "SWE-Stream: Scaling Executable Training Data for SWE Agents via Progressive Construction and Elastic Streaming",
+        "source": "arxiv",
+        "url": "https://arxiv.org/abs/2610.20193v1",
+        "published_at": "2026-10-14T13:41:49Z",
+        "score": 40.0,
+        "mode": "interest",
+        "topic_hits": {
+          "cpu_small_models": [
+            "throughput"
+          ],
+          "ai_driven_development": [
+            "software engineering agent",
+            "swe-bench"
+          ]
+        },
+        "reasons": [
+          "source+4",
+          "cpu_small_models+6",
+          "ai_driven_development+12",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0
+      },
+      "primary_source": {
+        "tag": "2610.20193v1-paper",
+        "url": "https://arxiv.org/abs/2610.20193v1",
+        "final_url": "https://arxiv.org/abs/2610.20193v1",
+        "fetched_at": "2026-10-15T09:15:24.121039+00:00",
+        "status": 200,
+        "bytes": 43657,
+        "sha256": "933dd463935b609e494ed21fbba1c9c3c8648a7c9d890c8e60a1a62e99da63cb",
+        "file": "final-review-sources/2610.20193v1-paper.body",
+        "paper_metadata": {
+          "title": "SWE-Stream: Scaling Executable Training Data for SWE Agents via Progressive Construction and Elastic Streaming",
+          "abstract": "Software engineering agents have advanced rapidly, but scaling their training remains constrained by the limited availability of high-quality executable tasks. Development histories contain valuable signals for constructing such tasks, yet they often require substantial reconstruction due to incomplete environments, missing tests, and inconsistent artifacts. We present SWE-Stream, a system for scaling executable SWE training data through progressive construction and elastic streaming execution. SWE-Stream progressively validates and refines task candidates, reusing existing artifacts when possible and applying targeted completion only when necessary. An elastic scheduler asynchronously coordinates construction stages under shared resource constraints, adapting execution budgets based on observed workload demands. Using development histories from 10,728 repositories across six programming languages, SWE-Stream constructs 80,874 validated tasks and collects 118,688 successful trajectories. Fine-tuning Qwen3-30B-A3B-Thinking-2507 on these trajectories achieves resolve rates of 69.0%, 49.3%, and 45.42% on SWE-bench Verified, Multilingual, and Pro, respectively. In a controlled comparison with approximately matched training budgets, SWE-Stream achieves a 45.6% resolve rate on SWE-bench Verified, outperforming three existing data sources. Moreover, its streaming construction strategy improves efficiency, delivering $1.45\\times$ the accepted-task throughput of batch construction and accepting 13.2% more tasks than fixed-limit streaming.",
+          "publication_date": "2026/10/14",
+          "arxiv_id": "2610.20193"
+        }
+      },
+      "abstract_primary": "Software engineering agents have advanced rapidly, but scaling their training remains constrained by the limited availability of high-quality executable tasks. Development histories contain valuable signals for constructing such tasks, yet they often require substantial reconstruction due to incomplete environments, missing tests, and inconsistent artifacts. We present SWE-Stream, a system for scaling executable SWE training data through progressive construction and elastic streaming execution. SWE-Stream progressively validates and refines task candidates, reusing existing artifacts when possible and applying targeted completion only when necessary. An elastic scheduler asynchronously coordinates construction stages under shared resource constraints, adapting execution budgets based on observed workload demands. Using development histories from 10,728 repositories across six programming languages, SWE-Stream constructs 80,874 validated tasks and collects 118,688 successful trajectories. Fine-tuning Qwen3-30B-A3B-Thinking-2507 on these trajectories achieves resolve rates of 69.0%, 49.3%, and 45.42% on SWE-bench Verified, Multilingual, and Pro, respectively. In a controlled comparison with approximately matched training budgets, SWE-Stream achieves a 45.6% resolve rate on SWE-bench Verified, outperforming three existing data sources. Moreover, its streaming construction strategy improves efficiency, delivering $1.45\\times$ the accepted-task throughput of batch construction and accepting 13.2% more tasks than fixed-limit streaming.",
+      "official_repository": null,
+      "official_readme": null,
+      "license": "UNKNOWN unless attached primary repository or model card explicitly declares it",
+      "community": {
+        "stars": "UNKNOWN",
+        "pushed_at": "UNKNOWN",
+        "release": "UNKNOWN",
+        "open_issues": "UNKNOWN"
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement"
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "publication_date_primary": "2026/10/14"
+    },
+    {
+      "candidate": {
+        "id": "github:cacacacc/local-swe-agent-eval",
+        "title": "cacacacc/local-swe-agent-eval — A lightweight experimental framework for evaluating a locally deployed LLM coding agent on SWE-Bench Verified.",
+        "source": "github",
+        "url": "https://github.com/cacacacc/local-swe-agent-eval",
+        "published_at": "2026-10-14T16:36:07Z",
+        "score": 39.0,
+        "mode": "interest",
+        "topic_hits": {
+          "ai_driven_development": [
+            "coding agent",
+            "swe-bench"
+          ]
+        },
+        "reasons": [
+          "source+3",
+          "ai_driven_development+12",
+          "hot+2",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "primary_source": null,
+      "abstract_primary": null,
+      "official_repository": {
+        "tag": "cacacacc/local-swe-agent-eval-repo",
+        "url": "https://api.github.com/repos/cacacacc/local-swe-agent-eval",
+        "final_url": "https://api.github.com/repos/cacacacc/local-swe-agent-eval",
+        "fetched_at": "2026-10-15T09:15:21.693071+00:00",
+        "status": 200,
+        "bytes": 5666,
+        "sha256": "3ed9303513fe489fcefdac1ed60e1ab8dc0b0b7fd8972f96ac6de3911bbc3b4f",
+        "file": "final-review-sources/cacacacc_local-swe-agent-eval-repo.body",
+        "repo_facts": {
+          "full_name": "cacacacc/local-swe-agent-eval",
+          "html_url": "https://github.com/cacacacc/local-swe-agent-eval",
+          "description": "A lightweight experimental framework for evaluating a locally deployed LLM coding agent on SWE-Bench Verified.",
+          "created_at": "2026-09-23T04:21:08Z",
+          "updated_at": "2026-10-14T16:36:07Z",
+          "pushed_at": "2026-10-14T16:36:02Z",
+          "stargazers_count": 0,
+          "watchers_count": 0,
+          "forks_count": 0,
+          "open_issues_count": 0,
+          "default_branch": "main",
+          "archived": false,
+          "disabled": false,
+          "topics": []
+        },
+        "license": null
+      },
+      "official_readme": {
+        "tag": "cacacacc/local-swe-agent-eval-readme",
+        "url": "https://api.github.com/repos/cacacacc/local-swe-agent-eval/readme",
+        "final_url": "https://api.github.com/repos/cacacacc/local-swe-agent-eval/readme",
+        "fetched_at": "2026-10-15T09:15:21.693941+00:00",
+        "status": 200,
+        "bytes": 26742,
+        "sha256": "36447c9ef7524480de96129f3cab7c7c69284b3c5185c168f6783bbf1454fa01",
+        "file": "final-review-sources/cacacacc_local-swe-agent-eval-readme.body",
+        "readme_file": "final-review-sources/cacacacc_local-swe-agent-eval-README.md",
+        "readme_bytes": 18794,
+        "readme_sha256": "f7863796e6991d66fff572642bd3086adba8959c2f1ff69e6a35d30150b675bb",
+        "readme_url": "https://raw.githubusercontent.com/cacacacc/local-swe-agent-eval/main/README.md",
+        "readme_metadata": {
+          "name": "README.md",
+          "path": "README.md",
+          "html_url": "https://github.com/cacacacc/local-swe-agent-eval/blob/main/README.md",
+          "download_url": "https://raw.githubusercontent.com/cacacacc/local-swe-agent-eval/main/README.md",
+          "size": 18794,
+          "encoding": "base64"
+        }
+      },
+      "license": "UNKNOWN",
+      "community": {
+        "stars": 0,
+        "watchers": 0,
+        "forks": 0,
+        "pushed_at": "2026-10-14T16:36:02Z",
+        "open_issues_count_including_prs": 0,
+        "issues_api_sample": [],
+        "latest_release": [],
+        "release_endpoint_status": 200
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement",
+        "source_excerpt_only": "See readme_excerpts; no local execution."
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "readme_excerpts": [
+        "4: running an open-weight language model with a coding agent on SWE-bench Verified.",
+        "10: 1. `benchmark.swebench_loader` validates dataset records and exposes only the",
+        "12: 2. `benchmark.repo_manager` uses a shared repository cache only as a trusted",
+        "13: preparation source. It exports the task's exact `base_commit` tree and",
+        "14: initializes a new one-commit repository with no remote or shared Git object",
+        "24: python -m pip install -e \".[dev]\"",
+        "31: python -m pip install -e \".[dev,huggingface]\"",
+        "39: from benchmark.repo_manager import RepositoryManager",
+        "40: from benchmark.swebench_loader import SWEbenchLoader",
+        "89: established the final model, prompt, timeout, context, and evaluation policy.",
+        "94: routes model requests only to the loopback Ollama endpoint. It fixes the model,",
+        "95: 32K context assumption, 8K per-response output limit, 30-turn limit, and wall-clock timeout from the validated",
+        "97: and session persistence are disabled for each run. Observable model messages and",
+        "102: not block a program that deliberately opens a direct socket and are not a",
+        "103: kernel-level network namespace. This limitation must be disclosed in the final",
+        "115: The task snapshot must contain only `instance_id`, `repo`, `base_commit`, and",
+        "130: Each real run also records the project commit and dirty state, prompt SHA-256,",
+        "131: Python/Claude/Docker versions, and the exact Ollama model digest. The normalized",
+        "165: serial to protect GPU memory; the ten predictions are then evaluated together",
+        "213: Resume validates the config fingerprint, model, frozen task order, and completed",
+        "219: The launcher can start the installed Windows applications, but it reports the",
+        "228: Dev v2 gives the same local model a 40-turn hard limit split across two fresh",
+        "243: Django test app) without asking another model session.",
+        "254: turns become Recovery. A multi-file gate exposes only `Read,Edit`, permits the",
+        "255: model to repair more than one existing product-source file, and requires every",
+        "263: compaction from consuming the verification context. The v2 prompt also limits",
+        "265: characters. Source-read size is currently an auditable prompt constraint; the",
+        "266: visible-test wrapper enforces its output limit in code.",
+        "268: The parent writes a cumulative `handoff.json` after every model and scheduled-test",
+        "270: earlier stage summaries; the next model stage receives a bounded summary. Test",
+        "272: pending until parent-owned tests run again. Model-reported findings are labeled",
+        "275: Implementation may submit one issue-derived assertion in `.agent-issue-repro.py`",
+        "277: control file with a replaceable placeholder so the model can submit with the CLI's real",
+        "287: The model may also replace the placeholder in `.agent-test-file.txt` with one existing",
+        "299: their fingerprints differ without changing test selection, model, or turn budgets.",
+        "313: `--network none`, limits CPU, memory,",
+        "322: New v2 runs also impose a 30-minute wall-clock budget across all model and Docker",
+        "324: regression command is limited to 300 seconds. Within one task, unchanged baseline",
+        "353: not a reliable sandbox boundary for a small local model.",
+        "360: 1. Agent repositories contain one isolated baseline commit and no remote. The"
+      ],
+      "readme_hf_model_urls": []
+    },
+    {
+      "candidate": {
+        "id": "github:divyanshu4501/fixpilot",
+        "title": "Divyanshu4501/fixpilot — Issue-to-PR coding agent, evaluated on SWE-bench Lite",
+        "source": "github",
+        "url": "https://github.com/Divyanshu4501/fixpilot",
+        "published_at": "2026-10-13T09:14:59Z",
+        "score": 39.0,
+        "mode": "interest",
+        "topic_hits": {
+          "ai_driven_development": [
+            "coding agent",
+            "swe-bench"
+          ]
+        },
+        "reasons": [
+          "source+3",
+          "ai_driven_development+12",
+          "hot+2",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "primary_source": null,
+      "abstract_primary": null,
+      "official_repository": {
+        "tag": "divyanshu4501/fixpilot-repo",
+        "url": "https://api.github.com/repos/divyanshu4501/fixpilot",
+        "final_url": "https://api.github.com/repos/divyanshu4501/fixpilot",
+        "fetched_at": "2026-10-15T09:15:21.697223+00:00",
+        "status": 200,
+        "bytes": 5355,
+        "sha256": "d91bfbbc8e68d5b012f8a4746af23f31d11c831d470b07c6c9cdef84b6d350a3",
+        "file": "final-review-sources/divyanshu4501_fixpilot-repo.body",
+        "repo_facts": {
+          "full_name": "Divyanshu4501/fixpilot",
+          "html_url": "https://github.com/Divyanshu4501/fixpilot",
+          "description": "Issue-to-PR coding agent, evaluated on SWE-bench Lite",
+          "created_at": "2026-10-11T14:01:43Z",
+          "updated_at": "2026-10-13T09:14:59Z",
+          "pushed_at": "2026-10-13T09:14:54Z",
+          "stargazers_count": 0,
+          "watchers_count": 0,
+          "forks_count": 0,
+          "open_issues_count": 0,
+          "default_branch": "main",
+          "archived": false,
+          "disabled": false,
+          "topics": []
+        },
+        "license": null
+      },
+      "official_readme": {
+        "tag": "divyanshu4501/fixpilot-readme",
+        "url": "https://api.github.com/repos/divyanshu4501/fixpilot/readme",
+        "final_url": "https://api.github.com/repos/divyanshu4501/fixpilot/readme",
+        "fetched_at": "2026-10-15T09:15:21.697667+00:00",
+        "status": 404,
+        "bytes": 128,
+        "sha256": "cd06f5cb22929a0bc5fb340149daaab49796a37572df0b2fcb8ac3dfafbae4c9",
+        "file": "final-review-sources/divyanshu4501_fixpilot-readme.body",
+        "readme_metadata": {
+          "name": null,
+          "path": null,
+          "html_url": null,
+          "download_url": null,
+          "size": null,
+          "encoding": null
+        }
+      },
+      "license": "UNKNOWN",
+      "community": {
+        "stars": 0,
+        "watchers": 0,
+        "forks": 0,
+        "pushed_at": "2026-10-13T09:14:54Z",
+        "open_issues_count_including_prs": 0,
+        "issues_api_sample": [],
+        "latest_release": [],
+        "release_endpoint_status": 200
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement",
+        "source_excerpt_only": "See readme_excerpts; no local execution."
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "readme_excerpts": [],
+      "readme_hf_model_urls": []
+    },
+    {
+      "candidate": {
+        "id": "github:harper3105/dm-code-agent",
+        "title": "Harper3105/DM-Code-Agent — Local-first, auditable Python code agent. Ships its own 30-task hidden-test benchmark plus SWE-bench Verified scored by the official harness -- every number reproducible, negative results included.",
+        "source": "github",
+        "url": "https://github.com/Harper3105/DM-Code-Agent",
+        "published_at": "2026-10-14T06:42:58Z",
+        "score": 39.0,
+        "mode": "interest",
+        "topic_hits": {
+          "ai_driven_development": [
+            "code agent",
+            "swe-bench"
+          ]
+        },
+        "reasons": [
+          "source+3",
+          "ai_driven_development+12",
+          "hot+2",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "primary_source": null,
+      "abstract_primary": null,
+      "official_repository": {
+        "tag": "harper3105/dm-code-agent-repo",
+        "url": "https://api.github.com/repos/harper3105/dm-code-agent",
+        "final_url": "https://api.github.com/repos/harper3105/dm-code-agent",
+        "fetched_at": "2026-10-15T09:15:21.719167+00:00",
+        "status": 200,
+        "bytes": 5771,
+        "sha256": "c18cfc04275524f0b17310e90e2eb16ce1438f1379926e706e05600076f62ff8",
+        "file": "final-review-sources/harper3105_dm-code-agent-repo.body",
+        "repo_facts": {
+          "full_name": "Harper3105/DM-Code-Agent",
+          "html_url": "https://github.com/Harper3105/DM-Code-Agent",
+          "description": "Local-first, auditable Python code agent. Ships its own 30-task hidden-test benchmark plus SWE-bench Verified scored by the official harness -- every number reproducible, negative results included.",
+          "created_at": "2026-10-14T06:40:48Z",
+          "updated_at": "2026-10-14T06:42:58Z",
+          "pushed_at": "2026-10-14T06:42:54Z",
+          "stargazers_count": 0,
+          "watchers_count": 0,
+          "forks_count": 0,
+          "open_issues_count": 0,
+          "default_branch": "main",
+          "archived": false,
+          "disabled": false,
+          "topics": [
+            "agent",
+            "agent-evaluation",
+            "agent-skills",
+            "code-agent",
+            "llm",
+            "llm-agent",
+            "mcp",
+            "rag",
+            "react-agent",
+            "reflexion-agent",
+            "swe-bench"
+          ]
+        },
+        "license": {
+          "key": "other",
+          "name": "Other",
+          "spdx_id": "NOASSERTION",
+          "url": null
+        }
+      },
+      "official_readme": {
+        "tag": "harper3105/dm-code-agent-readme",
+        "url": "https://api.github.com/repos/harper3105/dm-code-agent/readme",
+        "final_url": "https://api.github.com/repos/harper3105/dm-code-agent/readme",
+        "fetched_at": "2026-10-15T09:15:21.720059+00:00",
+        "status": 200,
+        "bytes": 25253,
+        "sha256": "d4e8ee79e0a31eeca07598a176a45eb3596c5337a7c0503185ae261cc92a018c",
+        "file": "final-review-sources/harper3105_dm-code-agent-readme.body",
+        "readme_file": "final-review-sources/harper3105_dm-code-agent-README.md",
+        "readme_bytes": 17739,
+        "readme_sha256": "494556486a12b5234f369ddb9c0fdf23d5888d49868d45df53901042cd4dee61",
+        "readme_url": "https://raw.githubusercontent.com/Harper3105/DM-Code-Agent/main/README.md",
+        "readme_metadata": {
+          "name": "README.md",
+          "path": "README.md",
+          "html_url": "https://github.com/Harper3105/DM-Code-Agent/blob/main/README.md",
+          "download_url": "https://raw.githubusercontent.com/Harper3105/DM-Code-Agent/main/README.md",
+          "size": 17739,
+          "encoding": "base64"
+        }
+      },
+      "license": {
+        "key": "other",
+        "name": "Other",
+        "spdx_id": "NOASSERTION",
+        "url": null
+      },
+      "community": {
+        "stars": 0,
+        "watchers": 0,
+        "forks": 0,
+        "pushed_at": "2026-10-14T06:42:54Z",
+        "open_issues_count_including_prs": 0,
+        "issues_api_sample": [],
+        "latest_release": [
+          {
+            "tag_name": "2.4.0",
+            "name": "2.4.0",
+            "published_at": "2026-10-14T06:41:24Z",
+            "html_url": "https://github.com/Harper3105/DM-Code-Agent/releases/tag/2.4.0"
+          }
+        ],
+        "release_endpoint_status": 200
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement",
+        "source_excerpt_only": "See readme_excerpts; no local execution."
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "readme_excerpts": [
+        "10: [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/hwfengcs/DM-Code-Agent/blob/main/LICENSE)",
+        "12: [![Last commit](https://img.shields.io/github/last-commit/hwfengcs/DM-Code-Agent?color=informational)](https://github.com/hwfengcs/DM-Code-Agent/commits/main)",
+        "37: uv sync --frozen --extra dev        # 或 pip install -e \".[dev]\"",
+        "49: **先试不掏钱**：测试、确定性 eval 和 benchmark manifest 检查**完全不需要 API key**。",
+        "86: （memory、cadence、摘要状态全部还原）。已证明正收益的折叠会跨请求、跨 run 粘性复用，",
+        "145: | `--checkpoint` / `--resume` run 级断点续跑 | |",
+        "161: | 质量门禁 | ruff（`E F I UP B SIM TID RUF`）+ black + mypy + `uv lock --check` + pre-commit |",
+        "176: 记分牌是自带的 **coding + maintenance benchmark**：**30 道题**（coding 15 + maintenance 15），隐藏测试判 pass/fail，",
+        "208: Model: deepseek-chat",
+        "276: | 自带 hidden-test benchmark | ✅ 30 题，可出分 | ❌ | ❌ | SWE-bench | ❌ |",
+        "279: | License | MIT | Apache-2.0 | MIT | MIT | Apache-2.0 |",
+        "296: | [会话与 trace](https://github.com/hwfengcs/DM-Code-Agent/blob/main/docs/tracing.md) | 会话树、隐私分档、checkpoint、fork |",
+        "316: ## License",
+        "318: MIT License. See [LICENSE](https://github.com/hwfengcs/DM-Code-Agent/blob/main/LICENSE)."
+      ],
+      "readme_hf_model_urls": []
+    },
+    {
+      "candidate": {
+        "id": "github:jasonpolyakov44995/dm-code-agent",
+        "title": "JasonPolyakov44995/DM-Code-Agent — Local-first, auditable Python code agent. Ships its own 30-task hidden-test benchmark plus SWE-bench Verified scored by the official harness -- every number reproducible, negative results included.",
+        "source": "github",
+        "url": "https://github.com/JasonPolyakov44995/DM-Code-Agent",
+        "published_at": "2026-10-14T15:49:58Z",
+        "score": 39.0,
+        "mode": "interest",
+        "topic_hits": {
+          "ai_driven_development": [
+            "code agent",
+            "swe-bench"
+          ]
+        },
+        "reasons": [
+          "source+3",
+          "ai_driven_development+12",
+          "hot+2",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "primary_source": null,
+      "abstract_primary": null,
+      "official_repository": {
+        "tag": "jasonpolyakov44995/dm-code-agent-repo",
+        "url": "https://api.github.com/repos/jasonpolyakov44995/dm-code-agent",
+        "final_url": "https://api.github.com/repos/jasonpolyakov44995/dm-code-agent",
+        "fetched_at": "2026-10-15T09:15:22.205529+00:00",
+        "status": 200,
+        "bytes": 6211,
+        "sha256": "d1a7ac23956a51a883205a7cd8fb89e5d844e323da6357e94a235d008c724ff3",
+        "file": "final-review-sources/jasonpolyakov44995_dm-code-agent-repo.body",
+        "repo_facts": {
+          "full_name": "JasonPolyakov44995/DM-Code-Agent",
+          "html_url": "https://github.com/JasonPolyakov44995/DM-Code-Agent",
+          "description": "Local-first, auditable Python code agent. Ships its own 30-task hidden-test benchmark plus SWE-bench Verified scored by the official harness -- every number reproducible, negative results included.",
+          "created_at": "2026-10-14T15:49:22Z",
+          "updated_at": "2026-10-14T15:49:58Z",
+          "pushed_at": "2026-10-14T15:49:48Z",
+          "stargazers_count": 0,
+          "watchers_count": 0,
+          "forks_count": 0,
+          "open_issues_count": 0,
+          "default_branch": "main",
+          "archived": false,
+          "disabled": false,
+          "topics": [
+            "agent",
+            "agent-evaluation",
+            "agent-skills",
+            "code-agent",
+            "llm",
+            "llm-agent",
+            "mcp",
+            "rag",
+            "react-agent",
+            "reflexion-agent",
+            "swe-bench"
+          ]
+        },
+        "license": {
+          "key": "other",
+          "name": "Other",
+          "spdx_id": "NOASSERTION",
+          "url": null
+        }
+      },
+      "official_readme": {
+        "tag": "jasonpolyakov44995/dm-code-agent-readme",
+        "url": "https://api.github.com/repos/jasonpolyakov44995/dm-code-agent/readme",
+        "final_url": "https://api.github.com/repos/jasonpolyakov44995/dm-code-agent/readme",
+        "fetched_at": "2026-10-15T09:15:22.210306+00:00",
+        "status": 200,
+        "bytes": 25309,
+        "sha256": "9aceee7c21a8db5b1a9e8967aedec76d20f11adbd031a10b208fcb11affb1a0e",
+        "file": "final-review-sources/jasonpolyakov44995_dm-code-agent-readme.body",
+        "readme_file": "final-review-sources/jasonpolyakov44995_dm-code-agent-README.md",
+        "readme_bytes": 17739,
+        "readme_sha256": "494556486a12b5234f369ddb9c0fdf23d5888d49868d45df53901042cd4dee61",
+        "readme_url": "https://raw.githubusercontent.com/JasonPolyakov44995/DM-Code-Agent/main/README.md",
+        "readme_metadata": {
+          "name": "README.md",
+          "path": "README.md",
+          "html_url": "https://github.com/JasonPolyakov44995/DM-Code-Agent/blob/main/README.md",
+          "download_url": "https://raw.githubusercontent.com/JasonPolyakov44995/DM-Code-Agent/main/README.md",
+          "size": 17739,
+          "encoding": "base64"
+        }
+      },
+      "license": {
+        "key": "other",
+        "name": "Other",
+        "spdx_id": "NOASSERTION",
+        "url": null
+      },
+      "community": {
+        "stars": 0,
+        "watchers": 0,
+        "forks": 0,
+        "pushed_at": "2026-10-14T15:49:48Z",
+        "open_issues_count_including_prs": 0,
+        "issues_api_sample": [],
+        "latest_release": [
+          {
+            "tag_name": "1.5.907",
+            "name": "1.5.907",
+            "published_at": "2026-10-14T15:49:58Z",
+            "html_url": "https://github.com/JasonPolyakov44995/DM-Code-Agent/releases/tag/1.5.907"
+          }
+        ],
+        "release_endpoint_status": 200
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement",
+        "source_excerpt_only": "See readme_excerpts; no local execution."
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "readme_excerpts": [
+        "10: [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/hwfengcs/DM-Code-Agent/blob/main/LICENSE)",
+        "12: [![Last commit](https://img.shields.io/github/last-commit/hwfengcs/DM-Code-Agent?color=informational)](https://github.com/hwfengcs/DM-Code-Agent/commits/main)",
+        "37: uv sync --frozen --extra dev        # 或 pip install -e \".[dev]\"",
+        "49: **先试不掏钱**：测试、确定性 eval 和 benchmark manifest 检查**完全不需要 API key**。",
+        "86: （memory、cadence、摘要状态全部还原）。已证明正收益的折叠会跨请求、跨 run 粘性复用，",
+        "145: | `--checkpoint` / `--resume` run 级断点续跑 | |",
+        "161: | 质量门禁 | ruff（`E F I UP B SIM TID RUF`）+ black + mypy + `uv lock --check` + pre-commit |",
+        "176: 记分牌是自带的 **coding + maintenance benchmark**：**30 道题**（coding 15 + maintenance 15），隐藏测试判 pass/fail，",
+        "208: Model: deepseek-chat",
+        "276: | 自带 hidden-test benchmark | ✅ 30 题，可出分 | ❌ | ❌ | SWE-bench | ❌ |",
+        "279: | License | MIT | Apache-2.0 | MIT | MIT | Apache-2.0 |",
+        "296: | [会话与 trace](https://github.com/hwfengcs/DM-Code-Agent/blob/main/docs/tracing.md) | 会话树、隐私分档、checkpoint、fork |",
+        "316: ## License",
+        "318: MIT License. See [LICENSE](https://github.com/hwfengcs/DM-Code-Agent/blob/main/LICENSE)."
+      ],
+      "readme_hf_model_urls": []
+    },
+    {
+      "candidate": {
+        "id": "github:kingjone0/mini-claude-code",
+        "title": "kingjone0/mini-claude-code — 手写 mini Coding Agent（Claude Agent SDK）：独立进程 MCP 工具服务 + 权限沙箱 + 上下文管理 + subagent 分工 + 全链路 trace；成败由独立 pytest 退出码判定，不采信 agent 自述。附容器无关（不依赖 Docker）的 SWE-bench 式评测基础设施与三臂消融结果。",
+        "source": "github",
+        "url": "https://github.com/kingjone0/mini-claude-code",
+        "published_at": "2026-10-14T14:50:18Z",
+        "score": 39.0,
+        "mode": "interest",
+        "topic_hits": {
+          "ai_driven_development": [
+            "coding agent",
+            "swe-bench"
+          ]
+        },
+        "reasons": [
+          "source+3",
+          "ai_driven_development+12",
+          "hot+2",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "primary_source": null,
+      "abstract_primary": null,
+      "official_repository": {
+        "tag": "kingjone0/mini-claude-code-repo",
+        "url": "https://api.github.com/repos/kingjone0/mini-claude-code",
+        "final_url": "https://api.github.com/repos/kingjone0/mini-claude-code",
+        "fetched_at": "2026-10-15T09:15:22.278916+00:00",
+        "status": 200,
+        "bytes": 5968,
+        "sha256": "d55231ef69bdbc1246943ca4bd7dc940cdd9de7b9455b2c1139f21df08f058cd",
+        "file": "final-review-sources/kingjone0_mini-claude-code-repo.body",
+        "repo_facts": {
+          "full_name": "kingjone0/mini-claude-code",
+          "html_url": "https://github.com/kingjone0/mini-claude-code",
+          "description": "手写 mini Coding Agent（Claude Agent SDK）：独立进程 MCP 工具服务 + 权限沙箱 + 上下文管理 + subagent 分工 + 全链路 trace；成败由独立 pytest 退出码判定，不采信 agent 自述。附容器无关（不依赖 Docker）的 SWE-bench 式评测基础设施与三臂消融结果。",
+          "created_at": "2026-10-14T14:18:30Z",
+          "updated_at": "2026-10-14T14:50:18Z",
+          "pushed_at": "2026-10-14T14:50:11Z",
+          "stargazers_count": 0,
+          "watchers_count": 0,
+          "forks_count": 0,
+          "open_issues_count": 0,
+          "default_branch": "main",
+          "archived": false,
+          "disabled": false,
+          "topics": [
+            "agent-evaluation",
+            "ai-agent",
+            "claude-agent-sdk",
+            "coding-agent",
+            "llm-agent",
+            "mcp",
+            "python",
+            "swe-bench"
+          ]
+        },
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit"
+        }
+      },
+      "official_readme": {
+        "tag": "kingjone0/mini-claude-code-readme",
+        "url": "https://api.github.com/repos/kingjone0/mini-claude-code/readme",
+        "final_url": "https://api.github.com/repos/kingjone0/mini-claude-code/readme",
+        "fetched_at": "2026-10-15T09:15:22.305496+00:00",
+        "status": 200,
+        "bytes": 36373,
+        "sha256": "8de750bf78f591cd5042cd45dd59deeda7657fb16933543d7cf479d9300b2e4d",
+        "file": "final-review-sources/kingjone0_mini-claude-code-readme.body",
+        "readme_file": "final-review-sources/kingjone0_mini-claude-code-README.md",
+        "readme_bytes": 25800,
+        "readme_sha256": "fd0d4764fc26dad5e134e72368ba584a4a7423ce62acb502c92b34d9d86a6ad2",
+        "readme_url": "https://raw.githubusercontent.com/kingjone0/mini-claude-code/main/README.md",
+        "readme_metadata": {
+          "name": "README.md",
+          "path": "README.md",
+          "html_url": "https://github.com/kingjone0/mini-claude-code/blob/main/README.md",
+          "download_url": "https://raw.githubusercontent.com/kingjone0/mini-claude-code/main/README.md",
+          "size": 25800,
+          "encoding": "base64"
+        }
+      },
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT",
+        "url": "https://api.github.com/licenses/mit"
+      },
+      "community": {
+        "stars": 0,
+        "watchers": 0,
+        "forks": 0,
+        "pushed_at": "2026-10-14T14:50:11Z",
+        "open_issues_count_including_prs": 0,
+        "issues_api_sample": [],
+        "latest_release": [],
+        "release_endpoint_status": 200
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement",
+        "source_excerpt_only": "See readme_excerpts; no local execution."
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "readme_excerpts": [
+        "29: | 靶场 commit 前后 | `d21dd31` → `d21dd31`，工作区干净 |",
+        "32: 测试 **768 passed / 21,202 subtests**，MIT，零运行时依赖。",
+        "182: D:\\Anaconda3\\Scripts\\conda.exe run -n aicoding python -m pip install -r requirements.txt",
+        "238: - **`problem_statement` 取自提交信息**（commit message），**不是**官方 issue 原文。",
+        "287: （`git diff` 对 `PREREGISTRATION.md` 为空，差异写在抽样日志与各实例的 `known_limits` 里，",
+        "297: 按 §3.1 分类规则第 3 条「非 `.py` 一律丢弃并记入 `known_limits`」处理。",
+        "300: 2 条 tabulate **reserve**（`README.md`，`known_limits` 原文已写明）。",
+        "301: ⚠ **方法论坑**：tabulate 的 `known_limits` 固定条目里含 `--doctest-glob=README.md` 这类文本，",
+        "363: - **不是 benchmark。** 缺陷全是**我自己注入**的，我当然知道它在哪 —— 真实 GitHub issue",
+        "386: 本项目代码以 [MIT](LICENSE) 发布（Copyright © 2026 kingjone0）。",
+        "392: [pluggy](https://github.com/pytest-dev/pluggy)），版权归各自作者，按 MIT / BSD-3-Clause 分发；",
+        "393: 每个实例文件都带 `source_repo_url` 与 `fix_commit` 字段可溯源。"
+      ],
+      "readme_hf_model_urls": []
+    },
+    {
+      "candidate": {
+        "id": "github:kkolvin/sim-agentic-grpo",
+        "title": "KKolvin/sim-agentic-grpo — Multi-turn GRPO for a SWE-bench coding agent, and a trace-driven simulator of one training step.",
+        "source": "github",
+        "url": "https://github.com/KKolvin/sim-agentic-grpo",
+        "published_at": "2026-10-13T20:48:36Z",
+        "score": 39.0,
+        "mode": "interest",
+        "topic_hits": {
+          "ai_driven_development": [
+            "coding agent",
+            "swe-bench"
+          ]
+        },
+        "reasons": [
+          "source+3",
+          "ai_driven_development+12",
+          "hot+2",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "primary_source": null,
+      "abstract_primary": null,
+      "official_repository": {
+        "tag": "kkolvin/sim-agentic-grpo-repo",
+        "url": "https://api.github.com/repos/kkolvin/sim-agentic-grpo",
+        "final_url": "https://api.github.com/repos/kkolvin/sim-agentic-grpo",
+        "fetched_at": "2026-10-15T09:15:22.383456+00:00",
+        "status": 200,
+        "bytes": 5427,
+        "sha256": "525163b3e96b0b4b63baa6fc7c65462b3f80face7c25ea4053d680de89ec0adb",
+        "file": "final-review-sources/kkolvin_sim-agentic-grpo-repo.body",
+        "repo_facts": {
+          "full_name": "KKolvin/sim-agentic-grpo",
+          "html_url": "https://github.com/KKolvin/sim-agentic-grpo",
+          "description": "Multi-turn GRPO for a SWE-bench coding agent, and a trace-driven simulator of one training step.",
+          "created_at": "2026-06-26T02:36:16Z",
+          "updated_at": "2026-10-13T20:48:36Z",
+          "pushed_at": "2026-10-13T20:48:32Z",
+          "stargazers_count": 0,
+          "watchers_count": 0,
+          "forks_count": 0,
+          "open_issues_count": 0,
+          "default_branch": "main",
+          "archived": false,
+          "disabled": false,
+          "topics": []
+        },
+        "license": null
+      },
+      "official_readme": {
+        "tag": "kkolvin/sim-agentic-grpo-readme",
+        "url": "https://api.github.com/repos/kkolvin/sim-agentic-grpo/readme",
+        "final_url": "https://api.github.com/repos/kkolvin/sim-agentic-grpo/readme",
+        "fetched_at": "2026-10-15T09:15:22.447494+00:00",
+        "status": 200,
+        "bytes": 6850,
+        "sha256": "7948714b6b5fb3020825a6d5edf6fe728b6e80cb350cccb0b5872c95cd8ddc91",
+        "file": "final-review-sources/kkolvin_sim-agentic-grpo-readme.body",
+        "readme_file": "final-review-sources/kkolvin_sim-agentic-grpo-README.md",
+        "readme_bytes": 4381,
+        "readme_sha256": "491e810031df6aa98842c8549cbf698b75c8907d076e6df5f1b9e55467d73949",
+        "readme_url": "https://raw.githubusercontent.com/KKolvin/sim-agentic-grpo/main/README.md",
+        "readme_metadata": {
+          "name": "README.md",
+          "path": "README.md",
+          "html_url": "https://github.com/KKolvin/sim-agentic-grpo/blob/main/README.md",
+          "download_url": "https://raw.githubusercontent.com/KKolvin/sim-agentic-grpo/main/README.md",
+          "size": 4381,
+          "encoding": "base64"
+        }
+      },
+      "license": "UNKNOWN",
+      "community": {
+        "stars": 0,
+        "watchers": 0,
+        "forks": 0,
+        "pushed_at": "2026-10-13T20:48:32Z",
+        "open_issues_count_including_prs": 0,
+        "issues_api_sample": [],
+        "latest_release": [],
+        "release_endpoint_status": 200
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement",
+        "source_excerpt_only": "See readme_excerpts; no local execution."
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "readme_excerpts": [
+        "3: This repository trains a multi-turn coding agent with synchronous GRPO on SWE-bench, and simulates how long one of those training steps takes when the system around the agent changes.",
+        "5: The training run is the workload. It produces the traces, timelines, and cost-model measurements. The simulator replays that work on a different machine, parallelism, or concurrency and reports the step time and the timeline, without launching another run.",
+        "7: ## Training",
+        "15: | Model | Qwen3-30B-A3B-Instruct-2507 |",
+        "17: | Hardware | 8× NVIDIA B200 |",
+        "18: | Agent | [mini-swe-agent](https://github.com/SWE-agent/mini-swe-agent) tools (`bash`, editor, `submit`) |",
+        "21: Every episode records tokens, turn timings, and a timestamped timeline of rollout and training. Those records are what the simulator is checked against. Setup and the launch script are in [TRAINING.md](TRAINING.md). What each logged number means is in [METRICS.md](METRICS.md).",
+        "25: `src/simulator` is a trace-driven discrete-event simulator of one GRPO step. A trace says what work there was. An adapter turns it into an IR of sessions, requests, tool tasks, and resource leases. A config bundle says what system runs that work: SGLang replicas, tensor-parallel size, KV cache, concurrency caps, container and eval slots, and a cost model fitted on a measured grid. The engine then runs the work on that system.",
+        "27: The scheduler is SGLang's own scheduler, with the model worker stubbed out. Each forward is priced by the cost model. Container starts, tool calls, and grading take their durations from the trace, or from priors when the trace did not record them. The clock follows SGLang's overlap schedule: a request's arrival is when the previous turn finished generating plus the tool time from the trace, not a timestamp copied out of a previous run.",
+        "42: | `src/simulator/` | Trace adapters, IR, cost model, and the timeline engine |",
+        "43: | `configs/grpo_swebench.yaml` | verl trainer config for the 8× B200 run |",
+        "45: | `scripts/run_grpo.sh` | Launch training |",
+        "46: | `scripts/measure_cost_grid.py`, `scripts/fit_cost_model.py` | Measure and fit the forward-pass cost model |",
+        "57: The agent-loop tests stub verl when it is not installed, so they run without CUDA. The scheduler tests that drive a real SGLang `Scheduler` skip themselves unless the model config is on disk."
+      ],
+      "readme_hf_model_urls": []
+    },
+    {
+      "candidate": {
+        "id": "github:mdsubhanpasha/k8s-neural-collapse-manifold",
+        "title": "mdsubhanpasha/k8s-neural-collapse-manifold — Neural manifold analysis of 50 real-world K8s production failures (OOMKilled, Karpenter). SWE-bench style dataset for training next-gen coding agents. Inspired by DeepMind Polaris. 76% autonomous fix rate.",
+        "source": "github",
+        "url": "https://github.com/mdsubhanpasha/k8s-neural-collapse-manifold",
+        "published_at": "2026-10-14T10:50:29Z",
+        "score": 39.0,
+        "mode": "interest",
+        "topic_hits": {
+          "ai_driven_development": [
+            "coding agent",
+            "swe-bench"
+          ]
+        },
+        "reasons": [
+          "source+3",
+          "ai_driven_development+12",
+          "hot+2",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "primary_source": null,
+      "abstract_primary": null,
+      "official_repository": {
+        "tag": "mdsubhanpasha/k8s-neural-collapse-manifold-repo",
+        "url": "https://api.github.com/repos/mdsubhanpasha/k8s-neural-collapse-manifold",
+        "final_url": "https://api.github.com/repos/mdsubhanpasha/k8s-neural-collapse-manifold",
+        "fetched_at": "2026-10-15T09:15:22.558773+00:00",
+        "status": 200,
+        "bytes": 6395,
+        "sha256": "0785d0783f11de9705955580aec87c7f84264ce61334fb31764bda77da03b2de",
+        "file": "final-review-sources/mdsubhanpasha_k8s-neural-collapse-manifold-repo.body",
+        "repo_facts": {
+          "full_name": "mdsubhanpasha/k8s-neural-collapse-manifold",
+          "html_url": "https://github.com/mdsubhanpasha/k8s-neural-collapse-manifold",
+          "description": "Neural manifold analysis of 50 real-world K8s production failures (OOMKilled, Karpenter). SWE-bench style dataset for training next-gen coding agents. Inspired by DeepMind Polaris. 76% autonomous fix rate.",
+          "created_at": "2026-10-14T10:20:59Z",
+          "updated_at": "2026-10-14T10:50:29Z",
+          "pushed_at": "2026-10-14T10:50:25Z",
+          "stargazers_count": 0,
+          "watchers_count": 0,
+          "forks_count": 0,
+          "open_issues_count": 0,
+          "default_branch": "main",
+          "archived": false,
+          "disabled": false,
+          "topics": []
+        },
+        "license": null
+      },
+      "official_readme": {
+        "tag": "mdsubhanpasha/k8s-neural-collapse-manifold-readme",
+        "url": "https://api.github.com/repos/mdsubhanpasha/k8s-neural-collapse-manifold/readme",
+        "final_url": "https://api.github.com/repos/mdsubhanpasha/k8s-neural-collapse-manifold/readme",
+        "fetched_at": "2026-10-15T09:15:22.605680+00:00",
+        "status": 200,
+        "bytes": 2201,
+        "sha256": "561b666fb4244c3441ad539a0c1fe425e14844d98b94da0e1ddeaf5063541cf2",
+        "file": "final-review-sources/mdsubhanpasha_k8s-neural-collapse-manifold-readme.body",
+        "readme_file": "final-review-sources/mdsubhanpasha_k8s-neural-collapse-manifold-README.md",
+        "readme_bytes": 918,
+        "readme_sha256": "b7a42bfa3aade2ad182478aae8b924d5d85a33d2c3268bd70afc0bf2acd7f735",
+        "readme_url": "https://raw.githubusercontent.com/mdsubhanpasha/k8s-neural-collapse-manifold/main/README.md",
+        "readme_metadata": {
+          "name": "README.md",
+          "path": "README.md",
+          "html_url": "https://github.com/mdsubhanpasha/k8s-neural-collapse-manifold/blob/main/README.md",
+          "download_url": "https://raw.githubusercontent.com/mdsubhanpasha/k8s-neural-collapse-manifold/main/README.md",
+          "size": 918,
+          "encoding": "base64"
+        }
+      },
+      "license": "UNKNOWN",
+      "community": {
+        "stars": 0,
+        "watchers": 0,
+        "forks": 0,
+        "pushed_at": "2026-10-14T10:50:25Z",
+        "open_issues_count_including_prs": 0,
+        "issues_api_sample": [],
+        "latest_release": [],
+        "release_endpoint_status": 200
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement",
+        "source_excerpt_only": "See readme_excerpts; no local execution."
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "readme_excerpts": [
+        "5: > Real failures > Synthetic bugs. OOMKilled, Karpenter scaling failures - training data for autonomous coding agents. Polaris-inspired evaluation.",
+        "28: ## Benchmark"
+      ],
+      "readme_hf_model_urls": []
+    },
+    {
+      "candidate": {
+        "id": "github:muvon/octobench",
+        "title": "Muvon/octobench — Benchmark harness that compares coding agents — not just models — on real, contamination-resistant tasks: 80 fail-to-pass cases from merged OSS PRs, long-run sequences, SWE-bench-Live, and 25+ domain benchmarks. We benchmark our own agent, octomind, under the same rules.",
+        "source": "github",
+        "url": "https://github.com/Muvon/octobench",
+        "published_at": "2026-10-14T16:55:19Z",
+        "score": 39.0,
+        "mode": "interest",
+        "topic_hits": {
+          "ai_driven_development": [
+            "coding agent",
+            "swe-bench"
+          ]
+        },
+        "reasons": [
+          "source+3",
+          "ai_driven_development+12",
+          "hot+2",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "primary_source": null,
+      "abstract_primary": null,
+      "official_repository": {
+        "tag": "muvon/octobench-repo",
+        "url": "https://api.github.com/repos/muvon/octobench",
+        "final_url": "https://api.github.com/repos/muvon/octobench",
+        "fetched_at": "2026-10-15T09:15:22.724027+00:00",
+        "status": 200,
+        "bytes": 6496,
+        "sha256": "5bceb90d7ba6fa6a670d189ab4c2523ddacd224f3afcc4f6423dc9d53ce2bbb8",
+        "file": "final-review-sources/muvon_octobench-repo.body",
+        "repo_facts": {
+          "full_name": "Muvon/octobench",
+          "html_url": "https://github.com/Muvon/octobench",
+          "description": "Benchmark harness that compares coding agents — not just models — on real, contamination-resistant tasks: 80 fail-to-pass cases from merged OSS PRs, long-run sequences, SWE-bench-Live, and 25+ domain benchmarks. We benchmark our own agent, octomind, under the same rules.",
+          "created_at": "2026-02-14T10:55:22Z",
+          "updated_at": "2026-10-14T16:55:19Z",
+          "pushed_at": "2026-10-14T16:55:14Z",
+          "stargazers_count": 3,
+          "watchers_count": 3,
+          "forks_count": 1,
+          "open_issues_count": 1,
+          "default_branch": "master",
+          "archived": false,
+          "disabled": false,
+          "topics": [
+            "agent-evaluation",
+            "agentic",
+            "agents",
+            "ai",
+            "ai-workflow",
+            "anthropic",
+            "automation",
+            "benchmark",
+            "claude-code",
+            "codex",
+            "evaluation",
+            "llm",
+            "llm-evaluation",
+            "openai",
+            "opencode",
+            "swe-bench"
+          ]
+        },
+        "license": {
+          "key": "apache-2.0",
+          "name": "Apache License 2.0",
+          "spdx_id": "Apache-2.0",
+          "url": "https://api.github.com/licenses/apache-2.0"
+        }
+      },
+      "official_readme": {
+        "tag": "muvon/octobench-readme",
+        "url": "https://api.github.com/repos/muvon/octobench/readme",
+        "final_url": "https://api.github.com/repos/muvon/octobench/readme",
+        "fetched_at": "2026-10-15T09:15:22.726594+00:00",
+        "status": 200,
+        "bytes": 17300,
+        "sha256": "57826dc0deb415ff56e36df09aa55a26ae7438219418612df9a325ec64c87dd2",
+        "file": "final-review-sources/muvon_octobench-readme.body",
+        "readme_file": "final-review-sources/muvon_octobench-README.md",
+        "readme_bytes": 12006,
+        "readme_sha256": "7e892d631e12e943a545f848e9e3897bbbe9643c92fce7f06d8c89134487516e",
+        "readme_url": "https://raw.githubusercontent.com/Muvon/octobench/master/README.md",
+        "readme_metadata": {
+          "name": "README.md",
+          "path": "README.md",
+          "html_url": "https://github.com/Muvon/octobench/blob/master/README.md",
+          "download_url": "https://raw.githubusercontent.com/Muvon/octobench/master/README.md",
+          "size": 12006,
+          "encoding": "base64"
+        }
+      },
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0",
+        "url": "https://api.github.com/licenses/apache-2.0"
+      },
+      "community": {
+        "stars": 3,
+        "watchers": 3,
+        "forks": 1,
+        "pushed_at": "2026-10-14T16:55:14Z",
+        "open_issues_count_including_prs": 1,
+        "issues_api_sample": [
+          {
+            "number": 2,
+            "title": "Proposal: EvalPort adapter for octobench's case.yaml / results.json (open interchange format for eval data)",
+            "state": "open",
+            "created_at": "2026-08-29T21:15:11Z",
+            "updated_at": "2026-08-29T21:15:11Z",
+            "html_url": "https://github.com/Muvon/octobench/issues/2"
+          }
+        ],
+        "latest_release": [],
+        "release_endpoint_status": 200
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement",
+        "source_excerpt_only": "See readme_excerpts; no local execution."
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "readme_excerpts": [
+        "4: [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)",
+        "8: Benchmark framework to compare **LLM tool + config + prompt** setups across a shared set of cases.",
+        "10: **Latest results:** see [BENCHMARK.md](BENCHMARK.md) — the real-commit benchmark",
+        "17: > Note: `octomind` is Muvon's own coding agent — we benchmark it under the same",
+        "24: - [docs/EXTENDING.md](docs/EXTENDING.md) — adding cases and benchmarks",
+        "26: - [docs/HARNESS.md](docs/HARNESS.md) — real-commit case construction rules",
+        "37: 1. Create a venv and install deps (Python 3.11+):",
+        "42: pip install -r requirements.txt",
+        "103: ## Multi-domain benchmarks (`cli.bench`)",
+        "107: orchestration — by turning credible, contamination-resistant benchmarks into",
+        "108: octobench cases. Each benchmark is a YAML config (`configs/benchmarks/*.yaml`) bound",
+        "111: - **`qa`** — single-turn QA. Objective modes (`mcq` / `final_answer` / `constraint`)",
+        "114: in a container, derive a programmatic pass/fail (generalizes SWE-bench-Live).",
+        "119: # objective MCQ via the local claude login (no API key); --providers/--models pick the setup",
+        "120: python3 -m cli.bench --benchmark mmlu_pro --limit 5 --providers claude --models claude-sonnet-4",
+        "121: python3 -m cli.bench --benchmark aime25 --limit 10 --providers claude --models claude-sonnet-4   # math, post-cutoff",
+        "122: python3 -m cli.bench --benchmark ifeval --limit 10 --providers claude --models claude-sonnet-4 --no-judge",
+        "126: python3 -m cli.bench --benchmark financebench --limit 5 --providers octomind --models minimax-m3",
+        "127: python3 -m cli.bench --benchmark swebench_live --split lite --limit 1 --providers octomind --models minimax-m3",
+        "128: python3 -m cli.bench --benchmark ctf_smoke --executor docker   # self-contained Docker proof",
+        "132: Pick setups with `--providers/--models` (pair each model with a provider it maps to in",
+        "133: `configs/models.yaml`) or a run-matrix (`configs/run-matrix.bench.yaml`). `--no-judge`",
+        "140: vendored allenai checkers (from `requirements.txt`), and `tau2_bench` needs its image",
+        "142: `docs/USAGE.md` and `configs/benchmarks/README.md`.",
+        "145: Validate the whole framework offline (no network/API) with",
+        "146: `python3 scripts/bench_selftest.py`. See `configs/benchmarks/README.md` for the full",
+        "147: catalog and how to add a benchmark.",
+        "150: Install and enable pre-commit hooks:",
+        "153: pip install pre-commit",
+        "154: pre-commit install",
+        "155: pre-commit run --all-files",
+        "158: CI runs the same `pre-commit` checks on every pull request, plus a Python compile check.",
+        "192: ## Fairness model",
+        "193: Each framework runs **at its out-of-the-box default** — no benchmark-tuned prompts,",
+        "195: - **claude**: `claude -p --model <model> --dangerously-skip-permissions`",
+        "196: - **codex**: `codex exec -m <model> -s workspace-write`",
+        "197: - **octomind**: `octomind run developer:general -m <model>` — octomind's stock",
+        "206: cannot influence how the frameworks-under-test run.",
+        "208: The real-commit benchmark in [BENCHMARK.md](BENCHMARK.md) applies a stricter",
+        "210: disabled, and no route to upstream solutions. See its \"What this benchmark"
+      ],
+      "readme_hf_model_urls": []
+    },
+    {
+      "candidate": {
+        "id": "github:openmoss/swe-bench-science",
+        "title": "OpenMOSS/SWE-bench-Science — A benchmark for testing whether coding agents can resolve engineering tasks in scientific software",
+        "source": "github",
+        "url": "https://github.com/OpenMOSS/SWE-bench-Science",
+        "published_at": "2026-10-12T20:19:50Z",
+        "score": 39.0,
+        "mode": "interest",
+        "topic_hits": {
+          "ai_driven_development": [
+            "coding agent",
+            "swe-bench"
+          ]
+        },
+        "reasons": [
+          "source+3",
+          "ai_driven_development+12",
+          "hot+2",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "primary_source": null,
+      "abstract_primary": null,
+      "official_repository": {
+        "tag": "openmoss/swe-bench-science-repo",
+        "url": "https://api.github.com/repos/openmoss/swe-bench-science",
+        "final_url": "https://api.github.com/repos/openmoss/swe-bench-science",
+        "fetched_at": "2026-10-15T09:15:22.820972+00:00",
+        "status": 200,
+        "bytes": 6744,
+        "sha256": "bc6a7f74ac6fcb95138d851417a93c8ec555d0f81a365b4106ab9c8eb3f72ddd",
+        "file": "final-review-sources/openmoss_swe-bench-science-repo.body",
+        "repo_facts": {
+          "full_name": "OpenMOSS/SWE-bench-Science",
+          "html_url": "https://github.com/OpenMOSS/SWE-bench-Science",
+          "description": "A benchmark for testing whether coding agents can resolve engineering tasks in scientific software",
+          "created_at": "2026-08-14T08:32:47Z",
+          "updated_at": "2026-10-12T20:19:50Z",
+          "pushed_at": "2026-10-01T15:54:12Z",
+          "stargazers_count": 85,
+          "watchers_count": 85,
+          "forks_count": 4,
+          "open_issues_count": 2,
+          "default_branch": "main",
+          "archived": false,
+          "disabled": false,
+          "topics": [
+            "benchmark",
+            "coding-agents",
+            "llm-evaluation",
+            "scientific-computing",
+            "software-engineering"
+          ]
+        },
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit"
+        }
+      },
+      "official_readme": {
+        "tag": "openmoss/swe-bench-science-readme",
+        "url": "https://api.github.com/repos/openmoss/swe-bench-science/readme",
+        "final_url": "https://api.github.com/repos/openmoss/swe-bench-science/readme",
+        "fetched_at": "2026-10-15T09:15:22.837363+00:00",
+        "status": 200,
+        "bytes": 19653,
+        "sha256": "68da36c9c3275d0ded3d9825a90900ae4360baaa1e1b2385b0fe2d5445667b99",
+        "file": "final-review-sources/openmoss_swe-bench-science-readme.body",
+        "readme_file": "final-review-sources/openmoss_swe-bench-science-README.md",
+        "readme_bytes": 13665,
+        "readme_sha256": "fc243524e4182ca591a6c3b8f5a7e7fae00b1ea94e90e8d993e12d0b21e616cf",
+        "readme_url": "https://raw.githubusercontent.com/OpenMOSS/SWE-bench-Science/main/README.md",
+        "readme_metadata": {
+          "name": "README.md",
+          "path": "README.md",
+          "html_url": "https://github.com/OpenMOSS/SWE-bench-Science/blob/main/README.md",
+          "download_url": "https://raw.githubusercontent.com/OpenMOSS/SWE-bench-Science/main/README.md",
+          "size": 13665,
+          "encoding": "base64"
+        }
+      },
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT",
+        "url": "https://api.github.com/licenses/mit"
+      },
+      "community": {
+        "stars": 85,
+        "watchers": 85,
+        "forks": 4,
+        "pushed_at": "2026-10-01T15:54:12Z",
+        "open_issues_count_including_prs": 2,
+        "issues_api_sample": [
+          {
+            "number": 2,
+            "title": "Official DeepSeek v4 Pro Max Trajectories: 3 of 50 Passes Contaminated by Proxy-Bypass Network Exfiltration, Screened Score 47/119",
+            "state": "open",
+            "created_at": "2026-09-07T05:47:45Z",
+            "updated_at": "2026-10-09T07:48:24Z",
+            "html_url": "https://github.com/OpenMOSS/SWE-bench-Science/issues/2"
+          }
+        ],
+        "latest_release": [],
+        "release_endpoint_status": 200
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement",
+        "source_excerpt_only": "See readme_excerpts; no local execution."
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "readme_excerpts": [
+        "13: Scientific software is full of contracts that ordinary code benchmarks rarely expose:",
+        "24: <a href=\"https://github.com/harbor-framework/harbor\"><img src=\"https://img.shields.io/badge/Harbor_Format-2563eb?style=for-the-badge&amp;logo=github&amp;logoColor=white\" alt=\"Harbor format\"></a>",
+        "32: <img src=\"https://img.shields.io/badge/MIT_license-16a34a?style=flat-square&amp;logo=opensourceinitiative&amp;logoColor=white\" alt=\"MIT license\">",
+        "49: | Explore the benchmark and leaderboard | [swescience.github.io](https://swescience.github.io/) |",
+        "53: | Configure a gateway, model, or harness | [Batch runner reference](docs/run-batch.md) |",
+        "58: ## Why This Benchmark",
+        "63: programmatic verification.",
+        "65: - **Scientific contracts:** tasks cover numerical behavior, scientific data models,",
+        "81: | Scientific domains | 20 benchmark-level scientific domains |",
+        "82: | Default selection | 96 tasks without a restricted-license gate |",
+        "100: C --> E[\"Pier installs<br/>selected harness\"]",
+        "103: F --> G[\"model.patch\"]",
+        "105: H --> I[\"Clean rebuild<br/>and programmatic tests\"]",
+        "130: Use Docker Engine 28+ for the benchmark's enforced offline network policy. The",
+        "131: batch runner connects agents only to an isolated internal network and permits",
+        "135: ### 1. Install the runner",
+        "138: python3.12 -m pip install \"huggingface_hub[cli]\"",
+        "139: uv tool install --python 3.12 \"datacurve-pier==0.3.0\"",
+        "158: # Default selection: 96 unrestricted-license tasks.",
+        "175: model call:",
+        "201: profile and `--model`. For an approximately 120-second agent-stage smoke, add",
+        "221: MODEL=gpt-5",
+        "229: `CODEX_BASE_URL` selects the model gateway. `CODEX_WIRE_API` accepts `responses` or",
+        "235: ## Restricted Licenses",
+        "237: The default materialization excludes tasks that require an explicit license decision.",
+        "242: --allow-restricted-licenses \\",
+        "249: `035`, `101`, and `102`. The gate is named `--allow-restricted-licenses`; there",
+        "257: --allow-restricted-licenses \\",
+        "265: Pier version, agent/model settings, and a redacted command in `batch-run.json`.",
+        "284: The benchmark release does not include reference-answer patches, credentials, agent",
+        "286: the repository's [MIT license](LICENSE). Task source, papers, figures, fixtures, and",
+        "287: other third-party materials retain their upstream licenses; audited notices are",
+        "304: - [Architecture and runtime model](docs/architecture.md)",
+        "315: the task ID, commit or dataset revision, harness/model configuration, platform, and",
+        "318: For benchmark context, published scores, and the current leaderboard, visit"
+      ],
+      "readme_hf_model_urls": [
+        "https://huggingface.co/datasets/OpenMOSS-Team/SWE-bench-Science",
+        "https://huggingface.co/datasets/OpenMOSS-Team/SWE-bench-Science\"",
+        "https://huggingface.co/datasets/OpenMOSS-Team/SWE-bench-Science</a"
+      ]
+    },
+    {
+      "candidate": {
+        "id": "github:paultrust26/trot",
+        "title": "paultrust26/TROT — LLM coding agents accumulate observation histories that inflate context windows and inference cost. TROT triages each tool output with deterministic rules, a learned gate, and selective LLM summarization. On SWE-bench Verified it achieves the highest resolve rate with 46-55% token savings on Sonnet-4.6 and Devstral-24B.",
+        "source": "github",
+        "url": "https://github.com/paultrust26/TROT",
+        "published_at": "2026-10-11T15:38:30Z",
+        "score": 39.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "summarization"
+          ],
+          "ai_driven_development": [
+            "coding agent",
+            "swe-bench"
+          ]
+        },
+        "reasons": [
+          "source+3",
+          "nlp_summary_classification+5",
+          "ai_driven_development+12",
+          "hot+2",
+          "has_code+4",
+          "recency+10(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "primary_source": null,
+      "abstract_primary": null,
+      "official_repository": {
+        "tag": "paultrust26/trot-repo",
+        "url": "https://api.github.com/repos/paultrust26/trot",
+        "final_url": "https://api.github.com/repos/paultrust26/trot",
+        "fetched_at": "2026-10-15T09:15:23.056877+00:00",
+        "status": 200,
+        "bytes": 5450,
+        "sha256": "51cdde0712aae2921fd2d4668aa141605c932bbc67ef6033663f4097f020a4a4",
+        "file": "final-review-sources/paultrust26_trot-repo.body",
+        "repo_facts": {
+          "full_name": "paultrust26/TROT",
+          "html_url": "https://github.com/paultrust26/TROT",
+          "description": "LLM coding agents accumulate observation histories that inflate context windows and inference cost. TROT triages each tool output with deterministic rules, a learned gate, and selective LLM summarization. On SWE-bench Verified it achieves the highest resolve rate with 46-55% token savings on Sonnet-4.6 and Devstral-24B.",
+          "created_at": "2026-10-11T15:27:39Z",
+          "updated_at": "2026-10-11T15:38:30Z",
+          "pushed_at": "2026-10-11T15:38:27Z",
+          "stargazers_count": 0,
+          "watchers_count": 0,
+          "forks_count": 0,
+          "open_issues_count": 0,
+          "default_branch": "main",
+          "archived": false,
+          "disabled": false,
+          "topics": []
+        },
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit"
+        }
+      },
+      "official_readme": {
+        "tag": "paultrust26/trot-readme",
+        "url": "https://api.github.com/repos/paultrust26/trot/readme",
+        "final_url": "https://api.github.com/repos/paultrust26/trot/readme",
+        "fetched_at": "2026-10-15T09:15:23.099343+00:00",
+        "status": 200,
+        "bytes": 5590,
+        "sha256": "34bd4606631bb0f816072aee3f8d8190586499735175277bca568763f9c7ff96",
+        "file": "final-review-sources/paultrust26_trot-readme.body",
+        "readme_file": "final-review-sources/paultrust26_trot-README.md",
+        "readme_bytes": 3509,
+        "readme_sha256": "f7f9032744d125c73222395258b17d3ea7ce1ba8b83e9997ccc2f46d78d473b4",
+        "readme_url": "https://raw.githubusercontent.com/paultrust26/TROT/main/README.md",
+        "readme_metadata": {
+          "name": "README.md",
+          "path": "README.md",
+          "html_url": "https://github.com/paultrust26/TROT/blob/main/README.md",
+          "download_url": "https://raw.githubusercontent.com/paultrust26/TROT/main/README.md",
+          "size": 3509,
+          "encoding": "base64"
+        }
+      },
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT",
+        "url": "https://api.github.com/licenses/mit"
+      },
+      "community": {
+        "stars": 0,
+        "watchers": 0,
+        "forks": 0,
+        "pushed_at": "2026-10-11T15:38:27Z",
+        "open_issues_count_including_prs": 0,
+        "issues_api_sample": [],
+        "latest_release": [],
+        "release_endpoint_status": 200
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement",
+        "source_excerpt_only": "See readme_excerpts; no local execution."
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "readme_excerpts": [
+        "17: 1. **Deterministic rules (zero cost).** Veto compression for critical content such as error traces and first-time outputs, and apply pattern-based compression to known waste: stale file re-reads, submit boilerplate, and edit confirmations.",
+        "44: TROT is the only method that achieves both the highest resolve rate and the largest token savings on both models.",
+        "56: ## License",
+        "58: MIT. See [LICENSE](LICENSE)."
+      ],
+      "readme_hf_model_urls": []
+    },
+    {
+      "candidate": {
+        "id": "github:piaoyun2022/coding-harness",
+        "title": "piaoyun2022/coding-harness — Minimal DeepSeek coding agent with explicit context management, patch tools, and reproducible SWE-bench evaluation.",
+        "source": "github",
+        "url": "https://github.com/piaoyun2022/coding-harness",
+        "published_at": "2026-10-15T01:43:08Z",
+        "score": 39.0,
+        "mode": "interest",
+        "topic_hits": {
+          "ai_driven_development": [
+            "coding agent",
+            "swe-bench"
+          ]
+        },
+        "reasons": [
+          "source+3",
+          "ai_driven_development+12",
+          "hot+2",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "primary_source": null,
+      "abstract_primary": null,
+      "official_repository": {
+        "tag": "piaoyun2022/coding-harness-repo",
+        "url": "https://api.github.com/repos/piaoyun2022/coding-harness",
+        "final_url": "https://api.github.com/repos/piaoyun2022/coding-harness",
+        "fetched_at": "2026-10-15T09:15:23.219739+00:00",
+        "status": 200,
+        "bytes": 5571,
+        "sha256": "914ee6403575a18430574687caca5069d8055bf6571cb6e1041645870c9b1627",
+        "file": "final-review-sources/piaoyun2022_coding-harness-repo.body",
+        "repo_facts": {
+          "full_name": "piaoyun2022/coding-harness",
+          "html_url": "https://github.com/piaoyun2022/coding-harness",
+          "description": "Minimal DeepSeek coding agent with explicit context management, patch tools, and reproducible SWE-bench evaluation.",
+          "created_at": "2026-10-15T00:58:11Z",
+          "updated_at": "2026-10-15T01:43:08Z",
+          "pushed_at": "2026-10-15T01:43:04Z",
+          "stargazers_count": 0,
+          "watchers_count": 0,
+          "forks_count": 0,
+          "open_issues_count": 0,
+          "default_branch": "main",
+          "archived": false,
+          "disabled": false,
+          "topics": []
+        },
+        "license": null
+      },
+      "official_readme": {
+        "tag": "piaoyun2022/coding-harness-readme",
+        "url": "https://api.github.com/repos/piaoyun2022/coding-harness/readme",
+        "final_url": "https://api.github.com/repos/piaoyun2022/coding-harness/readme",
+        "fetched_at": "2026-10-15T09:15:23.251979+00:00",
+        "status": 200,
+        "bytes": 3524,
+        "sha256": "6afdbc2cf8ca987a9e54de8a85208ea7646ce3812aba1fa46288960f9ba93ded",
+        "file": "final-review-sources/piaoyun2022_coding-harness-readme.body",
+        "readme_file": "final-review-sources/piaoyun2022_coding-harness-README.md",
+        "readme_bytes": 1958,
+        "readme_sha256": "0b4c798e851742bd1c8c6d9e0d8fb89297e20c3a57ce92267a65269da7480d5f",
+        "readme_url": "https://raw.githubusercontent.com/piaoyun2022/coding-harness/main/README.md",
+        "readme_metadata": {
+          "name": "README.md",
+          "path": "README.md",
+          "html_url": "https://github.com/piaoyun2022/coding-harness/blob/main/README.md",
+          "download_url": "https://raw.githubusercontent.com/piaoyun2022/coding-harness/main/README.md",
+          "size": 1958,
+          "encoding": "base64"
+        }
+      },
+      "license": "UNKNOWN",
+      "community": {
+        "stars": 0,
+        "watchers": 0,
+        "forks": 0,
+        "pushed_at": "2026-10-15T01:43:04Z",
+        "open_issues_count_including_prs": 0,
+        "issues_api_sample": [],
+        "latest_release": [],
+        "release_endpoint_status": 200
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement",
+        "source_excerpt_only": "See readme_excerpts; no local execution."
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "readme_excerpts": [
+        "36: bash scripts/evaluate.sh --mode agent --limit 30 --workers 2",
+        "39: bash scripts/evaluate.sh --mode both --limit 300 --workers 2",
+        "47: pip install -e ."
+      ],
+      "readme_hf_model_urls": []
+    },
+    {
+      "candidate": {
+        "id": "github:riamunshi/quantized-slm",
+        "title": "riamunshi/quantized-SLM — Recovering Reasoning Fidelity in Quantized Small Language Models Through Inference-Time Techniques",
+        "source": "github",
+        "url": "https://github.com/riamunshi/quantized-SLM",
+        "published_at": "2026-10-14T05:11:40Z",
+        "score": 39.0,
+        "mode": "interest",
+        "topic_hits": {
+          "cpu_small_models": [
+            "quantized",
+            "small language model"
+          ]
+        },
+        "reasons": [
+          "source+3",
+          "cpu_small_models+12",
+          "hot+2",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "primary_source": null,
+      "abstract_primary": null,
+      "official_repository": {
+        "tag": "riamunshi/quantized-slm-repo",
+        "url": "https://api.github.com/repos/riamunshi/quantized-slm",
+        "final_url": "https://api.github.com/repos/riamunshi/quantized-slm",
+        "fetched_at": "2026-10-15T09:15:23.367941+00:00",
+        "status": 200,
+        "bytes": 5411,
+        "sha256": "f835f749af4b5e586321173c4fad2801af5e6bd77b232c6e40a4eb371df5a57f",
+        "file": "final-review-sources/riamunshi_quantized-slm-repo.body",
+        "repo_facts": {
+          "full_name": "riamunshi/quantized-SLM",
+          "html_url": "https://github.com/riamunshi/quantized-SLM",
+          "description": "Recovering Reasoning Fidelity in Quantized Small Language Models Through Inference-Time Techniques",
+          "created_at": "2026-06-02T12:09:03Z",
+          "updated_at": "2026-10-14T05:11:40Z",
+          "pushed_at": "2026-10-14T05:11:35Z",
+          "stargazers_count": 0,
+          "watchers_count": 0,
+          "forks_count": 0,
+          "open_issues_count": 0,
+          "default_branch": "main",
+          "archived": false,
+          "disabled": false,
+          "topics": []
+        },
+        "license": null
+      },
+      "official_readme": {
+        "tag": "riamunshi/quantized-slm-readme",
+        "url": "https://api.github.com/repos/riamunshi/quantized-slm/readme",
+        "final_url": "https://api.github.com/repos/riamunshi/quantized-slm/readme",
+        "fetched_at": "2026-10-15T09:15:23.368861+00:00",
+        "status": 200,
+        "bytes": 8401,
+        "sha256": "01e62784f088d8848ad2863bd0adc71e40d47896a689ae5760a61e44866e6579",
+        "file": "final-review-sources/riamunshi_quantized-slm-readme.body",
+        "readme_file": "final-review-sources/riamunshi_quantized-slm-README.md",
+        "readme_bytes": 5514,
+        "readme_sha256": "40eab5c1ce598e3f3426f87bc67c7dab4b0aadfadc5fcbad98995904398bba1e",
+        "readme_url": "https://raw.githubusercontent.com/riamunshi/quantized-SLM/main/README.md",
+        "readme_metadata": {
+          "name": "README.md",
+          "path": "README.md",
+          "html_url": "https://github.com/riamunshi/quantized-SLM/blob/main/README.md",
+          "download_url": "https://raw.githubusercontent.com/riamunshi/quantized-SLM/main/README.md",
+          "size": 5514,
+          "encoding": "base64"
+        }
+      },
+      "license": "UNKNOWN",
+      "community": {
+        "stars": 0,
+        "watchers": 0,
+        "forks": 0,
+        "pushed_at": "2026-10-14T05:11:35Z",
+        "open_issues_count_including_prs": 0,
+        "issues_api_sample": [],
+        "latest_release": [],
+        "release_endpoint_status": 200
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement",
+        "source_excerpt_only": "See readme_excerpts; no local execution."
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "readme_excerpts": [
+        "4: Recovering Reasoning Fidelity in Quantized Small Language Models",
+        "7: ## Hardware Used",
+        "8: - GPU: NVIDIA T4 (Google Colab free tier)",
+        "9: - VRAM: 15 GB",
+        "17: ### Install Dependencies",
+        "19: pip install transformers>=4.40.0 datasets>=2.19.0 accelerate>=0.29.0 \\",
+        "23: Or install from requirements file:",
+        "25: pip install -r requirements.txt",
+        "29: LLaMA 1B is a gated model and requires a HuggingFace token with",
+        "47: requirements.txt                   — all dependencies with versions",
+        "57: grpo_training.ipynb              — GRPO fine-tuning Qwen2 W8A16",
+        "62: inference_config.json            — all inference hyperparameters",
+        "63: grpo_config.json                 — GRPO training hyperparameters",
+        "102: ### 6. GRPO Training",
+        "103: Open `scripts/grpo_training.ipynb` in Google Colab.",
+        "104: Mount Google Drive in Cell 4 (checkpoints save to Drive).",
+        "112: Requires GRPO training to have completed first.",
+        "115: Open `scripts/cascade_analysis.ipynb` locally (no GPU needed).",
+        "120: Open `scripts/consistency_analysis.ipynb` locally (no GPU needed).",
+        "128: ### GSM8K (50 problems, same for both models)",
+        "145: | Model | Dataset | Quant | Strategy | Accuracy |"
+      ],
+      "readme_hf_model_urls": [
+        "https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct"
+      ]
+    },
+    {
+      "candidate": {
+        "id": "github:shiva-shivanibokka/codepilot-swe",
+        "title": "shiva-shivanibokka/CodePilot-SWE — Autonomous coding agent with a SWE-bench Lite evaluation harness: agent vs agentless under hard spend caps",
+        "source": "github",
+        "url": "https://github.com/shiva-shivanibokka/CodePilot-SWE",
+        "published_at": "2026-10-14T02:53:24Z",
+        "score": 39.0,
+        "mode": "interest",
+        "topic_hits": {
+          "ai_driven_development": [
+            "coding agent",
+            "swe-bench"
+          ]
+        },
+        "reasons": [
+          "source+3",
+          "ai_driven_development+12",
+          "hot+2",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "primary_source": null,
+      "abstract_primary": null,
+      "official_repository": {
+        "tag": "shiva-shivanibokka/codepilot-swe-repo",
+        "url": "https://api.github.com/repos/shiva-shivanibokka/codepilot-swe",
+        "final_url": "https://api.github.com/repos/shiva-shivanibokka/codepilot-swe",
+        "fetched_at": "2026-10-15T09:15:23.475556+00:00",
+        "status": 200,
+        "bytes": 6060,
+        "sha256": "29d7b0f15c772c87d608f9ca2a379e4199a4054ec78345d355f7e3627a10eb63",
+        "file": "final-review-sources/shiva-shivanibokka_codepilot-swe-repo.body",
+        "repo_facts": {
+          "full_name": "shiva-shivanibokka/CodePilot-SWE",
+          "html_url": "https://github.com/shiva-shivanibokka/CodePilot-SWE",
+          "description": "Autonomous coding agent with a SWE-bench Lite evaluation harness: agent vs agentless under hard spend caps",
+          "created_at": "2026-10-05T19:45:59Z",
+          "updated_at": "2026-10-14T02:53:24Z",
+          "pushed_at": "2026-10-14T02:53:20Z",
+          "stargazers_count": 0,
+          "watchers_count": 0,
+          "forks_count": 0,
+          "open_issues_count": 0,
+          "default_branch": "main",
+          "archived": false,
+          "disabled": false,
+          "topics": []
+        },
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit"
+        }
+      },
+      "official_readme": {
+        "tag": "shiva-shivanibokka/codepilot-swe-readme",
+        "url": "https://api.github.com/repos/shiva-shivanibokka/codepilot-swe/readme",
+        "final_url": "https://api.github.com/repos/shiva-shivanibokka/codepilot-swe/readme",
+        "fetched_at": "2026-10-15T09:15:23.496458+00:00",
+        "status": 200,
+        "bytes": 32571,
+        "sha256": "dae470af3dc82821ce9045a79ef5fefa10713306879773c82ace575bd80498f9",
+        "file": "final-review-sources/shiva-shivanibokka_codepilot-swe-readme.body",
+        "readme_file": "final-review-sources/shiva-shivanibokka_codepilot-swe-README.md",
+        "readme_bytes": 23008,
+        "readme_sha256": "df6dcaf05c718829be2b64dc10ab1bfba5be885665604e10e3074b4112c4eeba",
+        "readme_url": "https://raw.githubusercontent.com/shiva-shivanibokka/CodePilot-SWE/main/README.md",
+        "readme_metadata": {
+          "name": "README.md",
+          "path": "README.md",
+          "html_url": "https://github.com/shiva-shivanibokka/CodePilot-SWE/blob/main/README.md",
+          "download_url": "https://raw.githubusercontent.com/shiva-shivanibokka/CodePilot-SWE/main/README.md",
+          "size": 23008,
+          "encoding": "base64"
+        }
+      },
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT",
+        "url": "https://api.github.com/licenses/mit"
+      },
+      "community": {
+        "stars": 0,
+        "watchers": 0,
+        "forks": 0,
+        "pushed_at": "2026-10-14T02:53:20Z",
+        "open_issues_count_including_prs": 0,
+        "issues_api_sample": [],
+        "latest_release": [],
+        "release_endpoint_status": 200
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement",
+        "source_excerpt_only": "See readme_excerpts; no local execution."
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "readme_excerpts": [
+        "3: A coding agent that edits real git repositories, and a benchmark harness for",
+        "4: asking whether that kind of agent — a model choosing its own next step with",
+        "8: checkpoints every turn to a git ref so `codepilot undo` puts it back. It runs",
+        "9: on any model LiteLLM can reach: Anthropic, OpenAI, Gemini, Groq (free tiers",
+        "11: * **The benchmark** (`codepilot/bench/`) runs that agent and an Agentless",
+        "26: | model calls | 542 | 18 |",
+        "33: **The single largest caveat, stated before the result:** the baseline submitted",
+        "38: submitted. Two of the four are inherent to a pipeline with no feedback loop; two",
+        "63: is wired in but no run of it is recorded here, and `swebench` is not installed",
+        "66: installs inert placeholders for `datasets` and `modal` so swebench's pure",
+        "71: Further limits, all measured and listed in the study's RESULTS.md: a harness",
+        "73: 60-step limit on 1), and 3 of its 5 failures were cut off rather than wrong; the",
+        "74: baseline submitted nothing on **4 of 10**; two instances",
+        "94: eval suite with committed results.",
+        "109: ## Install",
+        "113: pip install -r requirements.txt",
+        "114: cp .env.example .env        # one key, for the provider of the model you use",
+        "121: codepilot run \"add retry logic to fetch.py\"                    # default model: claude-opus-5",
+        "122: codepilot run --model gemini/gemini-2.5-flash \"...\"            # any LiteLLM model string",
+        "139: ├── providers.py      provider registry (which key a model needs, which have free tiers)",
+        "141: ├── workspace.py      real files: containment, read-before-write, line endings, checkpoint/undo",
+        "148: │   ├── loop.py         the agent: the model chooses each step",
+        "151: │   ├── checkout.py     base-commit-only clone, baseline, diff, pristine restore",
+        "176: * the checkout holds the base commit only — no remote, no later history, so",
+        "194: ## The benchmark",
+        "197: # Check the harness on an instance: no model, no key. gold must resolve, empty must not.",
+        "203: --model gemini/gemini-2.5-flash --setups bench/setups.json --max-total-usd 2",
+        "207: --backend docker --image official --model ... --max-total-usd 20 --dry-run",
+        "217: **Spend controls** (MERGE_DECISIONS D25–D41). A paid model needs",
+        "219: (`bench.run.PROJECT_MAX_USD`), and a published price — an unpriced model is",
+        "224: any other 4xx, or a reply from a different model than requested, aborts the",
+        "234: provider keys removed from the environment — **no isolation**: the model's",
+        "237: the model's first command; `--image official` uses the instance's published",
+        "241: through it end to end (gold resolved, empty did not). No model has been run",
+        "250: Measured by CodePilot-Agent on 1–2 September 2026, with Anthropic models,",
+        "252: Read them with these limits: **20 author-written tasks** (15 small, 5 on one",
+        "291: The gold/empty check on the four smoke instances, no model calls",
+        "302: Both arms on the same four instances with a local 7B model,",
+        "306: resolved**, as expected of a 7B model. Each row records tokens, calls, wall",
+        "308: before the committed rows (MERGE_DECISIONS D23, D24)."
+      ],
+      "readme_hf_model_urls": []
+    },
+    {
+      "candidate": {
+        "id": "github:shlokgoel/fixpoint",
+        "title": "ShlokGoel/fixpoint — Coding agent built on the raw Anthropic Messages API, with a reproducible SWE-bench Lite evaluation harness, failure taxonomy and reward-hacking detection.",
+        "source": "github",
+        "url": "https://github.com/ShlokGoel/fixpoint",
+        "published_at": "2026-10-13T23:07:26Z",
+        "score": 39.0,
+        "mode": "interest",
+        "topic_hits": {
+          "ai_driven_development": [
+            "coding agent",
+            "swe-bench"
+          ]
+        },
+        "reasons": [
+          "source+3",
+          "ai_driven_development+12",
+          "hot+2",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "primary_source": null,
+      "abstract_primary": null,
+      "official_repository": {
+        "tag": "shlokgoel/fixpoint-repo",
+        "url": "https://api.github.com/repos/shlokgoel/fixpoint",
+        "final_url": "https://api.github.com/repos/shlokgoel/fixpoint",
+        "fetched_at": "2026-10-15T09:15:23.677025+00:00",
+        "status": 200,
+        "bytes": 5355,
+        "sha256": "9a597fdfe11a0b2a7273da835ae30725a5cb4af7456b901ef051af2de00990b3",
+        "file": "final-review-sources/shlokgoel_fixpoint-repo.body",
+        "repo_facts": {
+          "full_name": "ShlokGoel/fixpoint",
+          "html_url": "https://github.com/ShlokGoel/fixpoint",
+          "description": "Coding agent built on the raw Anthropic Messages API, with a reproducible SWE-bench Lite evaluation harness, failure taxonomy and reward-hacking detection.",
+          "created_at": "2026-10-13T23:02:13Z",
+          "updated_at": "2026-10-13T23:07:26Z",
+          "pushed_at": "2026-10-13T23:07:23Z",
+          "stargazers_count": 0,
+          "watchers_count": 0,
+          "forks_count": 0,
+          "open_issues_count": 0,
+          "default_branch": "main",
+          "archived": false,
+          "disabled": false,
+          "topics": []
+        },
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit"
+        }
+      },
+      "official_readme": {
+        "tag": "shlokgoel/fixpoint-readme",
+        "url": "https://api.github.com/repos/shlokgoel/fixpoint/readme",
+        "final_url": "https://api.github.com/repos/shlokgoel/fixpoint/readme",
+        "fetched_at": "2026-10-15T09:15:23.682110+00:00",
+        "status": 200,
+        "bytes": 18563,
+        "sha256": "9d86acbc9fd37c11e5c2586d44bcc6f236bd5ae21904fd88a910a3ce77b353cf",
+        "file": "final-review-sources/shlokgoel_fixpoint-readme.body",
+        "readme_file": "final-review-sources/shlokgoel_fixpoint-README.md",
+        "readme_bytes": 12914,
+        "readme_sha256": "f6f778277ababa4304853779bd756116b0dc3f1ea628f08ba879daf44e312bc1",
+        "readme_url": "https://raw.githubusercontent.com/ShlokGoel/fixpoint/main/README.md",
+        "readme_metadata": {
+          "name": "README.md",
+          "path": "README.md",
+          "html_url": "https://github.com/ShlokGoel/fixpoint/blob/main/README.md",
+          "download_url": "https://raw.githubusercontent.com/ShlokGoel/fixpoint/main/README.md",
+          "size": 12914,
+          "encoding": "base64"
+        }
+      },
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT",
+        "url": "https://api.github.com/licenses/mit"
+      },
+      "community": {
+        "stars": 0,
+        "watchers": 0,
+        "forks": 0,
+        "pushed_at": "2026-10-13T23:07:23Z",
+        "open_issues_count_including_prs": 0,
+        "issues_api_sample": [],
+        "latest_release": [],
+        "release_endpoint_status": 200
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement",
+        "source_excerpt_only": "See readme_excerpts; no local execution."
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "readme_excerpts": [
+        "7: A coding agent built from scratch on the raw Anthropic Messages API (no agent framework), with a reproducible evaluation harness for **SWE-bench Lite**. The harness covers per-task Docker sandboxes, full JSONL trajectories with a replay viewer, a failure taxonomy, reward-hacking detection and paired ablation statistics.",
+        "43: | `submit` | Ends the episode. |",
+        "47: - **Planning:** the task prompt asks the model to restate the issue and plan its search.",
+        "49: - **Self-verification gate:** `submit` is rejected once if no tests have run since the last edit. It only rejects once, so the agent can never deadlock.",
+        "53: Each iteration makes one model call and runs every tool call in that response. The loop continues while the model keeps calling tools. Every episode ends with exactly one of these causes, which is logged:",
+        "57: | `submit` | The model called `submit` and the scaffold accepted it. |",
+        "58: | `end_turn_no_submit` | The model stopped calling tools, was nudged once, and stopped again. |",
+        "63: | `refusal` | The model declined (`stop_reason: refusal`). |",
+        "69: - **Premature success** (submitting an untested change). Caught by the verification gate.",
+        "74: Current Claude models sign their thinking blocks over the conversation that comes before them, and the API rejects a request that replays those blocks after earlier history was edited. So this agent never trims or masks old tool outputs in place.",
+        "76: When the prompt passes the token budget, or the model reports `model_context_window_exceeded`, the conversation is **reset**. A fresh conversation starts with the original task plus a deterministic state summary that the harness tracks itself:",
+        "83: The summary costs no extra model call. Resets are capped and logged. See [`agent/context.py`](agent/context.py).",
+        "90: - **Pinned configuration.** The run fingerprint covers the model ID, thinking mode, effort level, budgets and pricing. Every prompt template is a checked-in file whose SHA-256 is logged in each trajectory. The exact model string the API reports is logged for every call. A run refuses to resume if its config changed.",
+        "91: - **Sampling is not seedable.** Current models reject non-default `temperature`/`top_p`/`top_k`, so runs are not bit-for-bit reproducible. Instead, behaviour is pinned through `thinking` and `effort`, and **run-to-run variance should be measured** by repeating the same subset (see [Repeats](#repeats-and-variance)). The seed controls which tasks go into the subset.",
+        "92: - **Isolation.** Each task gets its own container from the official per-instance image, with `--network none` and memory/CPU limits. The container is destroyed afterwards. Grading happens in a separate fresh container run by the official harness.",
+        "139: pip install -e \".[eval,dev]\"",
+        "142: python scripts/demo_toy.py --scripted    # offline end-to-end demo with a scripted fake model",
+        "145: The scripted demo replays a fixed set of tool calls on a tiny buggy repo. It checks that the loop, tools, gating, patch extraction and held-out grading work. It is **not** a model result.",
+        "147: ### With a real model",
+        "152: python scripts/demo_toy.py --docker fixpoint-toy        # real model, sandboxed",
+        "160: You need an x86_64 Docker host with plenty of disk, because each task pulls its own environment image. The official harness docs recommend roughly 120 GB free and 16 GB RAM for large runs.",
+        "225: ## Limitations",
+        "230: - A context reset keeps the state but drops the model's earlier reasoning. The `context_reset` tag lets you check whether resets correlate with failures.",
+        "231: - Results depend on the model version and on the API's default behaviour at run time. Both are logged, but they can't be frozen.",
+        "233: ## License",
+        "235: MIT. See [LICENSE](LICENSE)."
+      ],
+      "readme_hf_model_urls": []
+    },
+    {
+      "candidate": {
+        "id": "github:xinyunll/xycode",
+        "title": "XINYUNLL/xycode — 基于 claude-code-from-scratch 二次开发的 coding agent（TS）：加入自我纠错闭环、本地 embedding 记忆、MCP、SWE-bench 评测 | A coding agent (TS) built on claude-code-from-scratch, adding self-correction, local embedding memory, MCP, and SWE-bench eval",
+        "source": "github",
+        "url": "https://github.com/XINYUNLL/xycode",
+        "published_at": "2026-10-13T06:27:42Z",
+        "score": 39.0,
+        "mode": "interest",
+        "topic_hits": {
+          "ai_driven_development": [
+            "coding agent",
+            "swe-bench"
+          ]
+        },
+        "reasons": [
+          "source+3",
+          "ai_driven_development+12",
+          "hot+2",
+          "has_code+4",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "primary_source": null,
+      "abstract_primary": null,
+      "official_repository": {
+        "tag": "xinyunll/xycode-repo",
+        "url": "https://api.github.com/repos/xinyunll/xycode",
+        "final_url": "https://api.github.com/repos/xinyunll/xycode",
+        "fetched_at": "2026-10-15T09:15:23.781661+00:00",
+        "status": 200,
+        "bytes": 5428,
+        "sha256": "32fab2a2cc1229c04f356f2d762c89914fabc2ed436ade5c600db3c5d01ccc0d",
+        "file": "final-review-sources/xinyunll_xycode-repo.body",
+        "repo_facts": {
+          "full_name": "XINYUNLL/xycode",
+          "html_url": "https://github.com/XINYUNLL/xycode",
+          "description": "基于 claude-code-from-scratch 二次开发的 coding agent（TS）：加入自我纠错闭环、本地 embedding 记忆、MCP、SWE-bench 评测 | A coding agent (TS) built on claude-code-from-scratch, adding self-correction, local embedding memory, MCP, and SWE-bench eval",
+          "created_at": "2026-09-23T08:17:46Z",
+          "updated_at": "2026-10-13T06:27:42Z",
+          "pushed_at": "2026-10-13T06:27:37Z",
+          "stargazers_count": 1,
+          "watchers_count": 1,
+          "forks_count": 0,
+          "open_issues_count": 0,
+          "default_branch": "main",
+          "archived": false,
+          "disabled": false,
+          "topics": [
+            "agent",
+            "ai",
+            "claude-code",
+            "coding-agent",
+            "embedding",
+            "llm",
+            "mcp",
+            "swe-bench",
+            "typescript"
+          ]
+        },
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+          "spdx_id": "MIT",
+          "url": "https://api.github.com/licenses/mit"
+        }
+      },
+      "official_readme": {
+        "tag": "xinyunll/xycode-readme",
+        "url": "https://api.github.com/repos/xinyunll/xycode/readme",
+        "final_url": "https://api.github.com/repos/xinyunll/xycode/readme",
+        "fetched_at": "2026-10-15T09:15:23.803486+00:00",
+        "status": 200,
+        "bytes": 10751,
+        "sha256": "13e1806b1e82801428a7b115f7e39e13ffab4bbf7a3b85aa88218387e83fdf74",
+        "file": "final-review-sources/xinyunll_xycode-readme.body",
+        "readme_file": "final-review-sources/xinyunll_xycode-README.md",
+        "readme_bytes": 7260,
+        "readme_sha256": "db5d62fa496b6d03b457621f28deb32bbfc0df9248345e2e3745046c28eab56e",
+        "readme_url": "https://raw.githubusercontent.com/XINYUNLL/xycode/main/README.md",
+        "readme_metadata": {
+          "name": "README.md",
+          "path": "README.md",
+          "html_url": "https://github.com/XINYUNLL/xycode/blob/main/README.md",
+          "download_url": "https://raw.githubusercontent.com/XINYUNLL/xycode/main/README.md",
+          "size": 7260,
+          "encoding": "base64"
+        }
+      },
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT",
+        "url": "https://api.github.com/licenses/mit"
+      },
+      "community": {
+        "stars": 1,
+        "watchers": 1,
+        "forks": 0,
+        "pushed_at": "2026-10-13T06:27:37Z",
+        "open_issues_count_including_prs": 0,
+        "issues_api_sample": [],
+        "latest_release": [],
+        "release_endpoint_status": 200
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement",
+        "source_excerpt_only": "See readme_excerpts; no local execution."
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "readme_excerpts": [
+        "5: 基于 [claude-code-from-scratch](https://github.com/Windy3f3f3f3f/claude-code-from-scratch)（MIT License）二次开发：在读懂内核的基础上，加入自己的原创特性，并用数据验证它们的价值。",
+        "36: - **跨会话记忆 MCP**：新增 `add_note` / `list_notes` 两个 MCP 工具（`mcp/memory-server.mjs`，裸 JSON-RPC、零依赖），让 agent 能跨会话记住用户偏好、结论和待办。",
+        "42: - **`read_file` 支持 offset/limit**：读大文件指定行范围（原版只能读整个文件、再被截断开头）。",
+        "62: npm install",
+        "68: #    XYCODE_MODEL=claude-sonnet-5       # 可选，覆盖默认模型",
+        "83: **REPL 命令**：`/clear` 清历史 · `/plan` 切只读 · `/cost` 看成本 · `/compact` 手动压缩 · `/goal` 自主追目标 · `/memory` 看记忆 · `/skills` 看技能 · `/<技能名>` 调用技能。",
+        "116: ## License",
+        "118: [MIT](./LICENSE)"
+      ],
+      "readme_hf_model_urls": []
+    },
+    {
+      "candidate": {
+        "id": "2610.17243",
+        "title": "From Conceptual EneMonIE to an Executable Backend: A Modular Architecture for Energy Information Extractionand Grounded Question Answering",
+        "source": "arxiv",
+        "url": "https://arxiv.org/abs/2610.17243v1",
+        "published_at": "2026-10-12T18:09:35Z",
+        "score": 37.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "summarization"
+          ],
+          "information_extraction": [
+            "information extraction",
+            "named entity recognition"
+          ]
+        },
+        "reasons": [
+          "source+4",
+          "nlp_summary_classification+5",
+          "information_extraction+10",
+          "recency+15(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "primary_source": {
+        "tag": "2610.17243v1-paper",
+        "url": "https://arxiv.org/abs/2610.17243v1",
+        "final_url": "https://arxiv.org/abs/2610.17243v1",
+        "fetched_at": "2026-10-15T09:15:24.180334+00:00",
+        "status": 200,
+        "bytes": 44262,
+        "sha256": "e45887b5becb3852d68f5cf4f35205117ab27b144a3311ed6b9a070cdbc10fac",
+        "file": "final-review-sources/2610.17243v1-paper.body",
+        "paper_metadata": {
+          "title": "From Conceptual EneMonIE to an Executable Backend: A Modular Architecture for Energy Information Extractionand Grounded Question Answering",
+          "abstract": "The original EneMonIE proposal describes a Web-based semantic system for continuously monitoring energy trends through targeted information extraction from heterogeneous online media. This article presents EneMonIE-Backend, an implementation-derived redesign that converts that conceptual pipeline into a modular, executable, and application-independent backend. The architecture separates five concerns: data sources, acquisition and normalization, semantic processing, knowledge organization, and persistent storage. It operationalizes configurable connectors for RSS feeds, URL collections, arXiv, social-media JSON files, and open-data CSV files; it also introduces question-driven Web search and scraping. Relevant documents pass through energy categorization, named entity recognition, temporal and event extraction, source sensitive sentiment analysis, and extractive summarization. The resulting semantic representations support entity co-occurrence graphs, cross-document interlinking, cluster-level information fusion, and relational persistence in SQLite. Three grounded question-answering paths are exposed at the backend level: live Web evidence, the stored corpus, and selected configured resources. Answer generation uses a language model when configured and otherwise falls back to deterministic extractive output. Unlike the original proposal, the presented architecture deliberately excludes the user-interface and server-side application layers, allowing the semantic core to be embedded in different applications. A deterministic smoke validation confirms relevance filtering, persistence, clustering, evidence retrieval, and document deletion. The work provides a reproducible architectural basis for future evaluation on larger multilingual energy corpora.",
+          "publication_date": "2026/10/12",
+          "arxiv_id": "2610.17243"
+        }
+      },
+      "abstract_primary": "The original EneMonIE proposal describes a Web-based semantic system for continuously monitoring energy trends through targeted information extraction from heterogeneous online media. This article presents EneMonIE-Backend, an implementation-derived redesign that converts that conceptual pipeline into a modular, executable, and application-independent backend. The architecture separates five concerns: data sources, acquisition and normalization, semantic processing, knowledge organization, and persistent storage. It operationalizes configurable connectors for RSS feeds, URL collections, arXiv, social-media JSON files, and open-data CSV files; it also introduces question-driven Web search and scraping. Relevant documents pass through energy categorization, named entity recognition, temporal and event extraction, source sensitive sentiment analysis, and extractive summarization. The resulting semantic representations support entity co-occurrence graphs, cross-document interlinking, cluster-level information fusion, and relational persistence in SQLite. Three grounded question-answering paths are exposed at the backend level: live Web evidence, the stored corpus, and selected configured resources. Answer generation uses a language model when configured and otherwise falls back to deterministic extractive output. Unlike the original proposal, the presented architecture deliberately excludes the user-interface and server-side application layers, allowing the semantic core to be embedded in different applications. A deterministic smoke validation confirms relevance filtering, persistence, clustering, evidence retrieval, and document deletion. The work provides a reproducible architectural basis for future evaluation on larger multilingual energy corpora.",
+      "official_repository": null,
+      "official_readme": null,
+      "license": "UNKNOWN unless attached primary repository or model card explicitly declares it",
+      "community": {
+        "stars": "UNKNOWN",
+        "pushed_at": "UNKNOWN",
+        "release": "UNKNOWN",
+        "open_issues": "UNKNOWN"
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement"
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "publication_date_primary": "2026/10/12"
+    },
+    {
+      "candidate": {
+        "id": "2610.13113",
+        "title": "Continually Post-training Small Models via Synthetic Self-distillation",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.13113",
+        "published_at": "2026-10-09T00:00:00.000Z",
+        "score": 35.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "distillation"
+          ],
+          "cpu_small_models": [
+            "on-device",
+            "small model"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "nlp_summary_classification+5",
+          "cpu_small_models+12",
+          "recency+10(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "primary_source": {
+        "url": "https://arxiv.org/abs/2610.13113",
+        "fetched_at": "2026-10-15T09:07:31.826342+00:00",
+        "status": 200,
+        "bytes": 43224,
+        "sha256": "b6f3298e2f71b6a258f7fa6f1b9ba63a88e8cde00085032fd2ff21e4d5e7eff9",
+        "file": "final-review-sources/arxiv-2610.13113.html"
+      },
+      "abstract_primary": "Continual post-training faces a dual challenge of acquisition and retention: models must learn new capabilities while preserving prior knowledge. While Self-Distillation Fine-Tuning (SDFT) mitigates this using self-supervision with in-context demonstrations, it relies on strong in-context learning and instruction-following abilities. Consequently, SDFT fails on smaller models critical for low-latency, on-device use. To enable continual learning at smaller scales, we first identify the root cause of failure. We show that poor acquisition and forgetting correlate linearly with the post-trained model's distribution shift, revealing the necessity of in-distribution learning. We thus introduce Synthetic Self-Distillation (SynthSelf), imitating SDFT's in-distribution rewrite by outsourcing the task to a minimally larger, same-family aligner. Coupled with off-policy supervision and rejection sampling, this provides the high-quality supervision small models require without breaking their original distribution. Evaluations spanning 4 acquisition datasets (including a mixture) and 14 retention benchmarks show SynthSelf consistently outperforms 6 methods (including off- and on-policy distillation) across 3 small model scales. Extensive further analyses confirm SynthSelf paves the way toward effective small-model continual learning.",
+      "official_repository": null,
+      "official_readme": null,
+      "license": "UNKNOWN unless attached primary repository or model card explicitly declares it",
+      "community": {
+        "stars": "UNKNOWN",
+        "pushed_at": "UNKNOWN",
+        "release": "UNKNOWN",
+        "open_issues": "UNKNOWN"
+      },
+      "resources": {
+        "cpu": "UNKNOWN/no measurement",
+        "gpu": "UNKNOWN unless explicitly stated in official README/abstract",
+        "ram": "UNKNOWN/no measurement"
+      },
+      "review_note": "Factual evidence only; claims in README/abstract are source claims, not independently verified results.",
+      "publication_date_primary": "2026/10/09",
+      "official_repository_urls": []
+    },
+    {
+      "candidate": {
+        "id": "2610.14448",
+        "title": "KV4-RL: Unlocking Faster Asynchronous Rollouts for RLVR with INT4 KV Cache Quantization",
+        "source": "huggingface",
+        "url": "https://arxiv.org/abs/2610.14448",
+        "published_at": "2026-10-10T00:00:00.000Z",
+        "score": 35.0,
+        "mode": "interest",
+        "topic_hits": {
+          "nlp_summary_classification": [
+            "quantization"
+          ],
+          "cpu_small_models": [
+            "int4",
+            "int8"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "nlp_summary_classification+5",
+          "cpu_small_models+12",
+          "recency+10(freshness_boost x5)",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": "2026/10/10",
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://arxiv.org/abs/2610.14448",
+        "fetched_at": "2026-10-15T09:07:31.827814+00:00",
+        "http_status": 200,
+        "bytes": 42869,
+        "sha256": "5a6043f97aff62fb6a876dab1eaf4e0686d1603dc68293209efbf0e23aae4301",
+        "file": "primary/arxiv-2610.14448.html"
+      },
+      "abstract_primary": "Asynchronous rollout improves the efficiency of reinforcement learning with verifiable rewards (RLVR) by reducing under-utilization during long-tail generation. Sustained concurrency also concentrates context processing into fewer decode steps, increasing the KV workload per step. We characterize this \\emph{KV concentration} and find that KV cache quantization delivers substantially greater acceleration than weight-only and weight-activation quantization in our matched-workload comparisons. However, INT4 KV rollout can degrade learning even with token-level truncated importance sampling (TIS). We propose \\emph{KV4-RL}, which combines calibration-free INT4 KV quantization with selective INT8 protection of attention sinks and recent context. Protecting a bounded number of positions reduces sampler mismatch while retaining most of the speedup from INT4. Across 400 iterations of Qwen3-8B-Base GRPO training, KV4-RL achieves $1.80\\times$ cumulative rollout speedup and $1.27\\times$ cumulative full-iteration speedup over BF16 rollout, reaching $1.97\\times$ rollout speedup over the final 50 iterations. Under a common BF16 evaluator, its final six-benchmark mean accuracy is within 0.5 percentage points of BF16-rollout training for both Qwen3-4B-Base and Qwen3-8B-Base.",
+      "github_links_from_paper_or_model_page": [],
+      "official_repository_facts": [],
+      "paper_claims_and_method": "Asynchronous rollout improves the efficiency of reinforcement learning with verifiable rewards (RLVR) by reducing under-utilization during long-tail generation. Sustained concurrency also concentrates context processing into fewer decode steps, increasing the KV workload per step. We characterize this \\emph{KV concentration} and find that KV cache quantization delivers substantially greater acceleration than weight-only and weight-activation quantization in our matched-workload comparisons. However, INT4 KV rollout can degrade learning even with token-level truncated importance sampling (TIS). We propose \\emph{KV4-RL}, which combines calibration-free INT4 KV quantization with selective INT8 protection of attention sinks and recent context. Protecting a bounded number of positions reduces sampler mismatch while retaining most of the speedup from INT4. Across 400 iterations of Qwen3-8B-Base GRPO training, KV4-RL achieves $1.80\\times$ cumulative rollout speedup and $1.27\\times$ cumulative full-iteration speedup over BF16 rollout, reaching $1.97\\times$ rollout speedup over the final 50 iterations. Under a common BF16 evaluator, its final six-benchmark mean accuracy is within 0.5 percentage points of BF16-rollout training for both Qwen3-4B-Base and Qwen3-8B-Base.",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [],
+      "hardware_and_install_excerpts": []
+    },
+    {
+      "candidate": {
+        "id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+        "title": "Qwen2.5-Coder-1.5B-Instruct",
+        "source": "huggingface",
+        "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+        "published_at": null,
+        "score": 35.0,
+        "mode": "interest",
+        "topic_hits": {
+          "cpu_small_models": [
+            "cpu inference",
+            "quantized"
+          ],
+          "ai_driven_development": [
+            "coding agent",
+            "repository-level"
+          ]
+        },
+        "reasons": [
+          "source+5",
+          "cpu_small_models+12",
+          "ai_driven_development+12",
+          "has_model+3",
+          "cpu_feasible+3"
+        ],
+        "requires_gpu": false,
+        "estimated_check_minutes": 20.0,
+        "reason": "run_time_budget"
+      },
+      "publication_date_primary": null,
+      "publication_date_basis": "arXiv citation_date metadata; null/unknown when absent",
+      "paper_primary_source": {
+        "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+        "fetched_at": "2026-10-15T09:07:31.828289+00:00",
+        "http_status": 200,
+        "bytes": 265488,
+        "sha256": "e87b1cdf8b196ba345f57c0320ebd8c4471f8aabad4f5e6e8ea337fd11672f0d",
+        "file": "primary/model-hf:qwen_qwen2.5-coder-1.5b-instruct.html"
+      },
+      "abstract_primary": "UNKNOWN: candidate is a model rather than a paper. Official model card says this instruction-tuned model has 1.54B parameters, 28 layers, 32,768-token context, and covers code generation/reasoning/fixing; its text also describes the series sizes and training corpus. No independent benchmark measurement was performed here.",
+      "github_links_from_paper_or_model_page": [
+        "https://github.com/huggingface",
+        "https://github.com/QwenLM/Qwen2.5-Coder"
+      ],
+      "official_repository_facts": [
+        {
+          "key": "qwenlm/qwen2.5-coder",
+          "status": "unavailable/unknown",
+          "reason": "No verified repository metadata retrieved."
+        }
+      ],
+      "paper_claims_and_method": "UNKNOWN: source abstract unavailable.",
+      "license_commercial_use": {
+        "status": "UNKNOWN",
+        "notes": "Paper/model weights license was not inferred from code repository license; check exact model/data licenses separately."
+      },
+      "resources": {
+        "cpu": "UNKNOWN; no local measurements.",
+        "gpu": "Abstract describes training/evaluation on named large models where applicable; hardware requirements unspecified unless stated in abstract/README.",
+        "ram": "UNKNOWN; not measured or specified in sources."
+      },
+      "validation_value": {
+        "measured_here": false,
+        "what_could_be_checked": "Paper/repository benchmark design and artifact availability only; no model execution or performance measurement."
+      },
+      "readme_facts": [],
+      "hardware_and_install_excerpts": [],
+      "candidate_model_metadata": "See official Qwen/Qwen2.5-Coder repo snapshots in source supplement; HF model API exact candidate ID additionally included below.",
+      "model_card_primary": {
+        "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+        "raw_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct/raw/main/README.md",
+        "fetched_at": "2026-10-15T09:12:00.261969+00:00",
+        "http_status": 200,
+        "bytes": 5258,
+        "sha256": "a8504fd3e1247c90e4fe640d84df963237134bf29db02b0de7d502eed6c93c33",
+        "file": "supplement/hf-card-Qwen_Qwen2.5-Coder-1.5B-Instruct.md",
+        "license": "Apache-2.0",
+        "exact_id": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+        "parameter_count_card_claim": "1.54B",
+        "context_length_card_claim": 32768,
+        "successor_record": "Qwen/Qwen3-Coder-Next is a distinct current Qwen model artifact recorded in practical_neighbor_models; it is much larger (40 safetensors shards; HF card/API evidence in supplement)."
+      }
+    }
+  ],
+  "collection_scope": "Final 20 only; exact public primary source bytes saved in final-review-sources/ with URL/time/HTTP status/byte count/SHA256. Previous pool retained in review-input-initial.json.",
+  "source_counts": {
+    "paper_records": 4,
+    "github_records": 16
+  },
+  "interpretation_guard": "No LLM judgments. README/repository descriptions can be misleading or noisy; factual facts and author claims are distinguished. No code executed and no quality/speed/RAM measurements generated.",
+  "pool_integrity": {
+    "candidate_count": 20,
+    "candidate_ids_match_ranking_final": true,
+    "final_frozen_ids": true,
+    "publication_cutoff": "2026-10-15",
+    "future_dated_papers": []
+  },
+  "notes": [
+    "All 16 GitHub repos were queried from official GitHub API at fetch time for stars, push time, license metadata, forks/open issue counts; release and open-issue endpoints separately saved. Open issue count on repository API includes PRs.",
+    "README/API 404 means no readable root README through the API; license/release status stays UNKNOWN or no release as recorded, not inferred.",
+    "A README author claim (e.g. benchmark result) remains an unverified claim. No code was executed.",
+    "All paper sources are arXiv abstract pages, not PDFs/full text.",
+    "No model or weight files were downloaded; all transferred evidence files are metadata, HTML, or README text.",
+    "Canonical ranking uses versionless arXiv IDs 2610.20193 and 2610.17243; primary URLs/artifact filenames retain explicit v1 version.",
+    "DM-Code-Agent forks harper3105 and jasonpolyakov44995 were fetched and assessed as separate repositories; GitHub API reported fork=false for both, with no parent/source metadata, so no deduplication was applied.",
+    "Cashcoin and DoubtLess are excluded from this canonical final pool; their initial pool evidence remains in review-input-initial.json and source files."
+  ]
+}

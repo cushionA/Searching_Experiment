@@ -1,0 +1,10 @@
+Chronological attempt log (prepared UTC 2026-10-15T09:14:42Z)
+1. Fresh empty process-local BUILDX_CONFIG and DOCKER_CONFIG used, as parent authorized, avoiding the prior read-only ~/.docker/buildx path.
+2. Docker build with online pip RUN failed: `NewConnectionError: [Errno 101] Network is unreachable` at https://download.pytorch.org/whl/cpu/torch/.
+3. Repair 1: host pip download of torch==2.7.1+cpu, transformers==4.53.3, safetensors==0.5.3 and transitive dependencies (224,607,959 wheel bytes); temporary Dockerfile changed to COPY wheels and install with --no-index.
+4. Docker image built: radar-squeez-modernbert:20261015, image ID sha256:16187f3f10d31a977fe1c2706d6c92303c42ef74dfe5aae4cf824b955746f62a.
+5. First candidate container attempt used network none, read-only root, drop ALL caps, no-new-privileges, UID:GID 10001:10001, 2 CPUs, 8 GiB memory, no host mounts. It failed opening /app/run_poc.py with PermissionError [Errno 13] because source files had owner-only mode.
+6. Repair 2: temporary Dockerfile added `RUN chmod -R a+rX /opt/model /app`; image rebuilt.
+7. Second and final candidate container attempt under the same runtime constraints failed during model initialization: `KeyError: getpwuid(): uid not found: 10001` in getpass.getuser() while torch.compile dynamically accessed the Torch Inductor cache path. It processed 0/10 examples. Container wall time was 25.424 s, an initialization failure duration only, not a model performance measurement. No inference time or peak RSS measured.
+
+Repair cap was one; actual repairs were two, so the cap was exceeded. No further repair or candidate run was performed.
