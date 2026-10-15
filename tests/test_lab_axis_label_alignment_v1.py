@@ -106,7 +106,11 @@ class AxisAlignmentTests(unittest.TestCase):
             inp, out = root / "in.jsonl", root / "out"
             inp.write_text(json.dumps(record, ensure_ascii=False) + "\n")
             fake_manifest = {"repo": "fake", "revision": "pinned"}
-            with patch.object(axis, "_model", return_value=(FakeModel(), fake_manifest)):
+            def pure_predictions(records, _embeddings):
+                return [axis.align_pair(record, lambda _left, _right: .8) for record in records]
+
+            with (patch.object(axis, "_model", return_value=(FakeModel(), fake_manifest)),
+                  patch.object(axis, "align_records", side_effect=pure_predictions)):
                 summary = axis.run(inp, out, model_name="minilm")
             self.assertEqual(seen, [["カラー", "色"]])
             output = (out / "predictions.jsonl").read_text()
