@@ -1,0 +1,77 @@
+{
+  "run_id": "2026-10-16-evening",
+  "candidate_inferences": 0,
+  "measured_quality": null,
+  "measured_cpu_seconds": null,
+  "measured_peak_rss_bytes": null,
+  "gpu": null,
+  "author_claims_only": [
+    {
+      "id": "2610.21496",
+      "title": "OPRD",
+      "priority": "B",
+      "url": "https://arxiv.org/html/2610.21496v1",
+      "new_findings": "10月15日公開。局所/全体リマインダーを教師へ与え、推論時には使わない蒸留。著者の平均解決率は36.6→47.9%。",
+      "hold": "評価は1課題16CPU・32GiB。学習済みOPRD重み・再現コードの公開は確認できず、ベースQwen3.5-4Bとは区別。学習は禁止。"
+    },
+    {
+      "id": "2610.21436",
+      "title": "HyCo",
+      "priority": "B",
+      "url": "https://arxiv.org/html/2610.21436v1",
+      "new_findings": "10月15日公開。端末上のMTPヘッドと小型ドラフターを組み合わせ、著者報告ではGPU時間38.6%減。",
+      "hold": "単一端末Galaxy S26 Ultra＋RTX PRO 6000。分布を厳密保持する版は27.7%減、要約は11.9%減。品質同等・金銭コスト・CPU効果は未証明。"
+    },
+    {
+      "id": "10.3390/en19204893",
+      "title": "量子化とエネルギーの比較",
+      "priority": "B",
+      "url": "https://www.mdpi.com/1996-1073/19/20/4893",
+      "new_findings": "10月16日公開。4モデルのQ4/Q6/Q8/BF16をRTX4090/llama.cppで比較し、prefillと生成を分離。",
+      "hold": "生成時の動的エネルギー63.6–85.7%減は著者値。出力品質を評価しておらず、品質低下2%以内の採用条件は判定不能。CPUへ外挿しない。"
+    },
+    {
+      "id": "2609.18063",
+      "title": "Edge0",
+      "priority": "B",
+      "url": "https://github.com/Edge0-AI/edge0",
+      "new_findings": "当日5,248 stars、HF trending4。次層ルーティング予測によるSSDオフロード。現行READMEを再確認。",
+      "hold": "3GiBはMLX allocatorでRSSではない。8Bでも約4.2GB、35B約23GBの配布で2GB上限外。Apple Siliconの測定をCPU一般へ外挿しない。"
+    },
+    {
+      "id": "2610.11287",
+      "title": "REMORY",
+      "priority": "B",
+      "url": "https://github.com/1ring2rta/Remory",
+      "new_findings": "要約に学習済みsoft memoryを追加。今回、APIが返す現行IDはfudan-generative-ai/Qwen3.8-27B-REMORY-1.9Bと確認。",
+      "hold": "READMEの旧mocoV3リンクと区別。公開手順は最低2×80GB GPU。要約品質や5.2%入力位置という著者値をローカル効果と扱わない。"
+    },
+    {
+      "id": "2606.03748",
+      "title": "YOLO26n／YOLO27予告",
+      "priority": "A",
+      "url": "https://docs.ultralytics.com/models/yolo27/",
+      "new_findings": "公開済みYOLO26nは軽量画像処理の次の試行対象。後継YOLO27は公式に重み・コード未公開、公開日未定と確認。",
+      "hold": "YOLO26 CPU ONNX38.9msは著者環境の値。手元の推論/RAM未測定、AGPLと商用ライセンスの用途適合は別確認。"
+    },
+    {
+      "id": "2606.23050",
+      "title": "Unlimited OCR",
+      "priority": "B",
+      "url": "https://github.com/baidu/Unlimited-OCR",
+      "new_findings": "HF trending8、27,573 stars。R-SWAで長文デコードのKV増加を抑える。モデルAPIの10月14日更新revisionを確認。",
+      "hold": "3.336B BF16重みだけで約6.67GB相当、2GB枠外。朝のLightOnOCR3とは別候補。GPU利用条件未確認でアップロードなし。"
+    },
+    {
+      "id": "github:maximmulder1213/dm-code-agent",
+      "title": "DM-Code-Agentの新しい同一README候補",
+      "priority": "C",
+      "url": "https://github.com/MaximMulder1213/DM-Code-Agent",
+      "new_findings": "10月15日作成の追加候補も既存2候補とREADME SHA-256が完全一致。3件とも0stars、NOASSERTION。",
+      "hold": "READMEのclone先は別owner hwfengcs。独立した新規手法・採用実績として数えず、Jason/Maximの2候補を明示的に見送り。"
+    }
+  ],
+  "input_sha256": "f30db1eff8d69889231e90d9ce0c9fdf43e37d168af1e127581ab4613878248b",
+  "method": "public primary-source review; native JSON envelope and quote validation; no candidate model/code executed",
+  "expected_delta": "unknown; no measured improvement or current cost claim"
+}

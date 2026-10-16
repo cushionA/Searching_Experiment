@@ -1,0 +1,804 @@
+[
+  {
+    "id": "2610.20193",
+    "judgment": {
+      "candidate_id": "2610.20193",
+      "decision": "defer",
+      "reason": "目的は開発履歴から実行可能なSWE学習課題を段階構築し、ストリーム実行で受理量を上げること。10,728リポジトリ由来の大規模データ構築が新規性だが、論文の報告値は著者主張で、手元の20分CPU枠に収まる再現・導入手順や独立した注目シグナルが示されない。コード/小規模データとCPUでの再現手順が確認できた場合に再評価する。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.20193v1",
+          "quote": "SWE-Stream constructs 80,874 validated tasks and collects 118,688 successful trajectories."
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2610.20193v1",
+          "quote": "delivering $1.45\\times$ the accepted-task throughput of batch construction"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "公開コード・ライセンス・小規模CPU再現手順の有無を確認。",
+      "unconfirmed": [
+        "コード/データの公開先とライセンス、商用利用条件",
+        "導入依存関係・必要資源・モデルIDと後継版",
+        "著者外の独立した注目シグナル"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "B"
+  },
+  {
+    "id": "2610.21496",
+    "judgment": {
+      "candidate_id": "2610.21496",
+      "decision": "defer",
+      "reason": "目的は長いコーディング対話で既知の制約やツール結果を活用させる蒸留で、失敗ロールアウトに局所/全体リマインダーを与える点が新しい。論文はQwen3.5-4B比の改善を報告するが著者主張であり、蒸留には教師・学生の学習とSWE-bench評価が必要で、20分CPU枠の試行には合わない。独立した注目シグナルも提示されないため、学習済み重みと軽量な推論比較が確認できれば再評価する。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.21496v1",
+          "quote": "At inference, the student operates without Reminders."
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2610.21496v1",
+          "quote": "OPRD improves the benchmark-averaged task resolution rate by 11.3 points"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "学習済み学生モデル、配布条件、CPUでの単一タスク推論要件を確認。",
+      "unconfirmed": [
+        "コード/重みの入手先とライセンス・商用利用条件",
+        "教師モデル・学生モデルの実ID、サイズ、必要資源",
+        "導入手順と後継版、独立した注目シグナル"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "B"
+  },
+  {
+    "id": "2610.21436",
+    "judgment": {
+      "candidate_id": "2610.21436",
+      "decision": "defer",
+      "reason": "目的はモバイル端末とクラウドの投機的デコードを組み合わせ、サーバGPU時間を下げること。サーバMTPヘッドとSLMの役割分担が新規だが、評価はGalaxy S26 UltraとLTE/5G、クラウドGPUを要する構成で、本枠のCPU限定・課金なし条件では検証できない。性能値は著者報告で、独立した注目シグナルもない。端末のみの再現可能な実装が確認できれば再評価する。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.21436v1",
+          "quote": "with a Galaxy S26 Ultra over LTE/5G"
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2610.21436v1",
+          "quote": "reduces server GPU time per output token"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "公開実装がクラウドGPUなしで動く端末側評価を提供するか確認。",
+      "unconfirmed": [
+        "実装・ライセンス・商用利用条件",
+        "端末/モデルID、メモリ・計算資源、クラウド費用",
+        "導入手順、後継版、独立した注目シグナル"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "B"
+  },
+  {
+    "id": "10.3390/en19204893",
+    "judgment": {
+      "candidate_id": "10.3390/en19204893",
+      "decision": "defer",
+      "reason": "目的は、GPU上のLLM推論で量子化がエネルギーと速度に与える影響を、モデルと推論段階別に測ること。4種類の3–4Bモデルで生成時のQ4_K_M効果を示す点は実務的だが、結果はRTX 4090＋llama.cpp/CUDAの単一スタックに限られ、CPU優先の20分枠では再現できない。品質評価もなく、コードは提供資料で確認できないため、対象GPU/ランタイムで品質と電力を測れる条件が整えば再評価する。",
+      "evidence": [
+        {
+          "source_url": "https://www.mdpi.com/1996-1073/19/20/4893",
+          "quote": "We benchmarked four LLM families—Gemma 4 E4B IT, Qwen3.5 4B, Nemotron 3 Nano 4B, and Ministral 3 3B Instruct—across Q4_K_M, Q6_K, Q8_0, and BF16 weight representations on a single NVIDIA GeForce RTX 4090 using llama.cpp/CUDA."
+        },
+        {
+          "source_url": "https://www.mdpi.com/1996-1073/19/20/4893",
+          "quote": "output quality was not assessed"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "再現コード/測定データの公開状況を確認し、同じモデル・ランタイムでGPU計測できる環境がある場合に再評価。",
+      "unconfirmed": [
+        "コードと測定データは対応著者への合理的な請求で入手可能と記載。ライセンス/商用利用条件は未確認",
+        "各モデルID・ダウンロード量・導入手順と、手元環境の必要資源",
+        "後続/後継研究と独立した注目シグナル"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "B",
+    "initial_judgment": {
+      "candidate_id": "10.3390/en19204893",
+      "decision": "defer",
+      "reason": "題名からはGPU上の重み量子化とエネルギー/性能トレードオフ調査と分かり、低精度化が常に省電力とは限らない点を扱う可能性がある。ただし提供された一次資料は題名とページ装飾CSSが中心で、要旨・方法・結果が読めず、新規性や主張を確かめられない。GPU実験は本枠にも合わず、独立した注目シグナルもない。論文本文の有効な一次資料が得られた場合に判断する。",
+      "evidence": [
+        {
+          "source_url": "https://doi.org/10.3390/en19204893",
+          "quote": "Does Lower Precision Always Save Energy? Benchmarking Energy–Performance Trade-Offs in Weight-Quantized Large Language Model Inference on a GPU"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "要旨・実験条件・結果を含む論文一次資料を確認。",
+      "unconfirmed": [
+        "論文本文と実験結果、再現コード/データ",
+        "ライセンス・商用利用条件、導入/必要GPU資源",
+        "モデルIDと後継研究、独立した注目シグナル"
+      ]
+    },
+    "updated_with_additional_primary_evidence": true
+  },
+  {
+    "id": "github:harper3105/dm-code-agent",
+    "judgment": {
+      "candidate_id": "github:harper3105/dm-code-agent",
+      "decision": "defer",
+      "reason": "目的はローカル実行・監査ログ・拡張機構を備えるPythonコードエージェントで、trace再生/診断とプロセス品質計測を一体化した点は興味深い。READMEはテストやSWE-bench結果を掲げるが自己申告で未検証。API情報では星0・fork 0、ライセンスNOASSERTIONで、READMEのMIT表示と食い違うため採用条件を満たさない。権威あるライセンスと所有/成果物の整合性、独立利用の兆候を確認後に再評価する。",
+      "evidence": [
+        {
+          "source_url": "https://api.github.com/repos/harper3105/dm-code-agent",
+          "quote": "\"stargazers_count\": 0, \"forks_count\": 0"
+        },
+        {
+          "source_url": "https://api.github.com/repos/harper3105/dm-code-agent",
+          "quote": "\"spdx_id\": \"NOASSERTION\""
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/harper3105/dm-code-agent/HEAD/README.md",
+          "quote": "本地优先 · 全程可审计 · 内核只有一个 ReAct 循环"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "リポジトリの所有者・ライセンスファイル・依存関係を照合し、第三者利用の独立証拠を確認。",
+      "unconfirmed": [
+        "MIT表示とAPIのNOASSERTIONのどちらが正しいか、商用利用条件",
+        "インストール手順、依存・資源要件、利用するモデルID",
+        "異なる所有者名やREADME内リンクとの関係、後継版"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "B"
+  },
+  {
+    "id": "github:jasonpolyakov44995/dm-code-agent",
+    "judgment": {
+      "candidate_id": "github:jasonpolyakov44995/dm-code-agent",
+      "decision": "reject",
+      "reason": "目的は監査可能なローカルコードエージェントと評価基盤だが、提示証拠では新規性・再現性の裏付けが不足。README自身が「本项目不声明任何未实际运行过的评测分数提升」と記す一方、SWE-bench数値は著者主張で、独立な注目シグナルもない。0星・0 forkの新規repoに加え、READMEのhwfengcs参照とrepo所有者が不一致で来歴が不明。20分・CPU枠でも採用価値を判断できず、来歴とライセンス確認が先。",
+      "evidence": [
+        {
+          "source_url": "https://api.github.com/repos/jasonpolyakov44995/dm-code-agent",
+          "quote": "\"stargazers_count\": 0, \"forks_count\": 0"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/jasonpolyakov44995/dm-code-agent/HEAD/README.md",
+          "quote": "本项目不声明任何未实际运行过的评测分数提升。"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "READMEとrepo所有者の関係、MITライセンス実体および評価ログの一次資料を確認する。",
+      "unconfirmed": [
+        "記載されたMITとAPIのNOASSERTIONが不一致。商用利用可否は未確認",
+        "実際の依存・導入手順・CPU/メモリ/ダウンロード量は未確認",
+        "使用モデルID・性能数値の独立再現・後継関係は未確認"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "C"
+  },
+  {
+    "id": "github:kingjone0/mini-claude-code",
+    "judgment": {
+      "candidate_id": "github:kingjone0/mini-claude-code",
+      "decision": "defer",
+      "reason": "独立pytestで成否判定するコードエージェントとMCP権限境界、traceを検証する教材として目的が明瞭で、README記載の12回修復結果も興味深い。ただし全て著者の自己報告で、SDK経由のClaude CLI依存は0円・有料バックエンドなしの条件と合うか未確定。無料で再現できる環境と依存範囲が確認できた場合に小規模確認する。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/kingjone0/mini-claude-code/HEAD/README.md",
+          "quote": "自主修好 | **12 / 12**"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/kingjone0/mini-claude-code/HEAD/README.md",
+          "quote": "成败只认独立 `pytest` 的退出码"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "Claude SDK/CLIと認証に課金が必要か、固定版での依存・リソース要件をREADMEの実行手順で確認する。",
+      "unconfirmed": [
+        "MIT表記はrepo APIで確認、商用利用条件と依存ライセンスは未確認",
+        "Claude CLI/SDKの実行に有料認証が必要か未確認",
+        "Windows絶対パスを含む手順のためLinux/CPU枠で再現可能か不明",
+        "モデルID固定記載はあるが別モデル対応・後継は未確認"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "B"
+  },
+  {
+    "id": "github:maximmulder1213/dm-code-agent",
+    "judgment": {
+      "candidate_id": "github:maximmulder1213/dm-code-agent",
+      "decision": "reject",
+      "reason": "候補の目的・特徴・評価内容は先のDM-Code-Agent候補と実質同一で、独自価値を示す証拠がない。READMEが別所有者hwfengcsのrepoをclone先として掲示し、API上はlicense NOASSERTION、星・forkとも0で来歴・利用条件が不明。独立注目シグナルもなく、重複したコードエージェントを試す優先度はない。",
+      "evidence": [
+        {
+          "source_url": "https://api.github.com/repos/maximmulder1213/dm-code-agent",
+          "quote": "\"license\": {\"key\": \"other\", \"name\": \"Other\", \"spdx_id\": \"NOASSERTION\""
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/maximmulder1213/dm-code-agent/HEAD/README.md",
+          "quote": "git clone https://github.com/hwfengcs/DM-Code-Agent.git"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "MITバッジとAPIのNOASSERTIONが不一致。商用利用可否は未確認",
+        "依存・インストール・実行リソース・モデルIDは未確認",
+        "先行repoとの所有/後継関係は確認できない"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "C"
+  },
+  {
+    "id": "github:mdsubhanpasha/k8s-neural-collapse-manifold",
+    "judgment": {
+      "candidate_id": "github:mdsubhanpasha/k8s-neural-collapse-manifold",
+      "decision": "reject",
+      "reason": "Kubernetes障害からエージェント評価データを作る目的は面白いが、50件・76%という数値はREADMEの著者主張のみ。提示された成果物は説明と図で、個別事例データや評価手順の一次検証可能性が見えず、0星・0 forkで独立な注目シグナルもない。現状の20分CPU枠で試せる形のデータセット価値が確認できないため見送る。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/mdsubhanpasha/k8s-neural-collapse-manifold/HEAD/README.md",
+          "quote": "Total: 50 real K8s bugs"
+        },
+        {
+          "source_url": "https://api.github.com/repos/mdsubhanpasha/k8s-neural-collapse-manifold",
+          "quote": "\"stargazers_count\": 0, \"forks_count\": 0, \"open_issues_count\": 0, \"license\": null"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "ライセンス未設定で商用利用可否不明",
+        "データセットの形式・導入手順・容量と実行リソース不明",
+        "76%/22sの測定条件・モデルID・再現性・後継プロジェクト不明"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "C"
+  },
+  {
+    "id": "github:paultrust26/trot",
+    "judgment": {
+      "candidate_id": "github:paultrust26/trot",
+      "decision": "defer",
+      "reason": "観測履歴を決定的規則・軽量ゲート・選択的要約で圧縮する目的は、コードエージェントの文脈費用を下げる点で有用。READMEは89件・2モデル比較を示すが著者報告のみで、独立な注目シグナルはない。MIT表示はあるものの、選択的LLMの費用とDevstral-24B実行要件が0円・CPU限定枠に適合するか分からず、再現可能な無料経路が分かれば評価する。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/paultrust26/trot/HEAD/README.md",
+          "quote": "using the same agent loop, prompt, tools, and harness for every method."
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/paultrust26/trot/HEAD/README.md",
+          "quote": "TROT (ours)"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "実装の依存と実行経路を確認し、補助LLMなしの決定的層だけを0円・CPUで試せるか確認する。",
+      "unconfirmed": [
+        "repo APIとREADMEはMIT表記だが商用利用条件の実体は未確認",
+        "依存・導入手順・CPU/メモリ/ダウンロード量不明",
+        "Sonnet-4.6/Devstral-24Bでの著者数値の再現性と補助LLM費用不明",
+        "後継・モデルIDの現行性は未確認"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "B"
+  },
+  {
+    "id": "github:piaoyun2022/coding-harness",
+    "judgment": {
+      "candidate_id": "github:piaoyun2022/coding-harness",
+      "decision": "defer",
+      "reason": "目的はDeepSeek API連携のCoding AgentとSWE-bench評価。明示的な新規性は少ないが、独立な注目シグナルはなく、評価結果も提示されていない。Git/Python/Dockerは20分・8GiB枠での確認可能性がある一方、APIキー必須は0円条件と合わず、ライセンスも未設定。結果・ライセンス確認後、無料で可能な評価経路がある場合に再検討。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/piaoyun2022/coding-harness/HEAD/README.md",
+          "quote": "在 `.env` 文件中填写：`DEEPSEEK_API_KEY=你的密钥`"
+        },
+        {
+          "source_url": "https://api.github.com/repos/piaoyun2022/coding-harness",
+          "quote": "\"license\": null"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "評価結果とライセンスを確認し、0円で実行できる評価手順があるかを確認。",
+      "unconfirmed": [
+        "ライセンスと商用利用条件",
+        "実行時のAPI料金・必要モデルID",
+        "評価結果・実際のリソース量",
+        "後継版の有無"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "B"
+  },
+  {
+    "id": "github:shlokgoel/fixpoint",
+    "judgment": {
+      "candidate_id": "github:shlokgoel/fixpoint",
+      "decision": "defer",
+      "reason": "目的はClaudeベースのCoding Agent評価基盤で、失敗分類と報酬ハック検出が特徴。独立な注目シグナルはなく、SWE-bench実測結果は未報告。MITだがAnthropic APIの有料バックエンドを必要とし、評価には大量のディスク・RAMが必要で現行枠に合わない。費用不要の小規模経路とリソース適合が確認できれば再検討。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/shlokgoel/fixpoint/HEAD/README.md",
+          "quote": "No SWE-bench results are reported yet."
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/shlokgoel/fixpoint/HEAD/README.md",
+          "quote": "roughly 120 GB free and 16 GB RAM for large runs."
+        },
+        {
+          "source_url": "https://api.github.com/repos/shlokgoel/fixpoint",
+          "quote": "\"name\": \"MIT License\""
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "確認可能な無料toy/smoke経路と必要RAM・ディスクを特定し、実測SWE-bench結果の公開を待つ。",
+      "unconfirmed": [
+        "商用利用を含むライセンス詳細",
+        "現在のAPI料金と正確なClaudeモデルID",
+        "小規模実行の実資源・所要時間",
+        "後継版の有無"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "B"
+  },
+  {
+    "id": "2610.13113",
+    "judgment": {
+      "candidate_id": "2610.13113",
+      "decision": "reject",
+      "reason": "小型モデルの継続学習手法SynthSelfを扱う論文。新規手法と複数評価を主張するが、独立した注目シグナルはなく、候補の推論測定でもない。今回の0円・短時間・学習なしという運用条件では学習手法を採用する余地がないため対象外。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.13113",
+          "quote": "Continually Post-training Small Models via Synthetic Self-distillation"
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2610.13113",
+          "quote": "SynthSelf consistently outperforms 6 methods"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "実装・ライセンス・商用利用条件",
+        "必要な教師/alignerモデルIDと資源",
+        "後継版の有無"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "C"
+  },
+  {
+    "id": "2610.14448",
+    "judgment": {
+      "candidate_id": "2610.14448",
+      "decision": "reject",
+      "reason": "RLVR学習時の非同期rollout向けINT4 KV cache量子化手法。著者は高速化と精度維持を報告するが、独立シグナルはなく、重み推論ではなく大規模な学習ワークロードが対象。学習なし・8GiB・30分の条件に適合しないため対象外。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.14448",
+          "quote": "Across 400 iterations of Qwen3-8B-Base GRPO training"
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2610.14448",
+          "quote": "$1.27\\times$ cumulative full-iteration speedup"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "コード/実装の有無とライセンス・商用利用条件",
+        "必要GPU・メモリ・計算資源",
+        "厳密なモデル/ソフトウェア版と後継版"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "C"
+  },
+  {
+    "id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+    "judgment": {
+      "candidate_id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+      "decision": "defer",
+      "reason": "目的は1.54Bの指示調整済みコード生成モデル。Apache-2.0表示と標準Transformers利用例は確認できるが、独立な注目シグナルはなく、性能値は著者側の説明。配布物の使用容量は約6.17GBで2GB取得上限を超え、BF16重みのCPU適合性も根拠不足。上限内の量子化配布版とCPU適合が確認できた場合に再検討。",
+      "evidence": [
+        {
+          "source_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct/raw/main/README.md",
+          "quote": "Number of Parameters: 1.54B"
+        },
+        {
+          "source_url": "https://huggingface.co/api/models/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+          "quote": "\"usedStorage\":6174934288"
+        },
+        {
+          "source_url": "https://huggingface.co/api/models/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+          "quote": "\"license\":\"apache-2.0\""
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "2GB以下の量子化配布物とCPUメモリ要件を一次資料で確認。",
+      "unconfirmed": [
+        "商用利用条件の詳細確認",
+        "CPU推論の実測速度・品質・RAM",
+        "量子化形式/配布物と必要ソフトウェア版",
+        "後継モデルの有無"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "B"
+  },
+  {
+    "id": "2412.14219",
+    "judgment": {
+      "candidate_id": "2412.14219",
+      "decision": "defer",
+      "reason": "目的はMoE推論最適化の分類・展望整理。圧縮から分散実行までを横断する概観だが、新手法の実証や導入手順ではない。ローカル推論の制約に関する背景資料にはなるものの、現行業務でMoE運用の需要は提示されていないため今は見送る。MoE推論の具体案件が出た時に該当節と実装候補を確認する。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2412.14219",
+          "quote": "This survey provides both a structured overview of existing solutions and identifies key challenges and promising research directions in MoE inference optimization."
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "MoE推論案件が発生したら、対象モデル・ハードウェアに合う手法と実装を絞る。",
+      "unconfirmed": [
+        "ライセンス・商用利用条件は未確認",
+        "導入手順・実行資源・モデルIDは未確認",
+        "後継版・後継手法は未確認"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "B"
+  },
+  {
+    "id": "2602.09373",
+    "judgment": {
+      "candidate_id": "2602.09373",
+      "decision": "defer",
+      "reason": "目的はアフリカ諸語15組の軽量翻訳で、NLLB-200 600Mを枝刈り・量子化・蒸留して展開する点が特徴。対象言語の翻訳案件があれば業務適合し得るが、現行対象言語の需要は証拠にない。案件発生時に対応方向と品質を小規模評価する。速度・品質値は著者報告で独立検証なし。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2602.09373",
+          "quote": "AfriNLLB supports 15 language pairs (30 translation directions)"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "対象言語の翻訳需要が生じた場合、対応方向・配布形式・品質を確認する。",
+      "unconfirmed": [
+        "ライセンス・商用利用条件は未確認",
+        "モデルの実サイズ・導入要件・実行資源は未確認",
+        "具体的なモデルIDおよび後継モデルは未確認"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "B"
+  },
+  {
+    "id": "2610.17528",
+    "judgment": {
+      "candidate_id": "2610.17528",
+      "decision": "reject",
+      "reason": "目的はGPU上のLLM学習レシピを自動調整し、正当性ゲートで候補を選ぶこと。実験設定は64–128 GPUで、著者報告の性能向上も大規模学習向け。今回のCPU 20分・無学習・8GiBの枠では試せず、ローカル推論の改善にも直接適合しないため採用対象外。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.17528v1",
+          "quote": "On four held-out models at 64-128 GPUs"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "ライセンス・商用利用条件は未確認",
+        "GPU学習基盤での導入要件・費用は未確認",
+        "実行資源の詳細・具体的なモデルID・後継版は未確認"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "C"
+  },
+  {
+    "id": "2610.14216",
+    "judgment": {
+      "candidate_id": "2610.14216",
+      "decision": "defer",
+      "reason": "目的はコーディングエージェントの指示文を再実行タスクで評価し、効果があるものだけ保持すること。訂正の蓄積を測定で整理する発想は新しいが、実証は主にClaude Haiku 4.5と人工構成で、実OSSでは学習材料がなく何も見つからなかった。頻繁な反復訂正と再現タスクがある場合に限り検討する。性能結果は著者報告。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.14216",
+          "quote": "on a real open-source project, where the agent was rarely corrected, Cortex found nothing to learn."
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "同じ種類の訂正が繰り返され、再生可能なタスクを用意できる場合に対応エージェント互換性を確認する。",
+      "unconfirmed": [
+        "ライセンス・商用利用条件は未確認",
+        "導入手順・実行資源は未確認",
+        "検証対象モデルの具体的IDと後継版は未確認"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "B"
+  },
+  {
+    "id": "2610.18862",
+    "judgment": {
+      "candidate_id": "2610.18862",
+      "decision": "defer",
+      "reason": "目的は小型推論モデルの対照的な出力で大型モデルの推論を短縮する学習不要のデコード法。推論トークン削減が狙いだが、対象はQwen3-32B等の大型モデルで、毎段階の補助モデル推論も必要。現在のローカルCPU枠で大型モデル推論を行う根拠がなく、該当サービング環境ができた時に互換性と品質を評価する。数値は著者報告。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.18862v1",
+          "quote": "DoubtLess shortens the CoT of Qwen3-32B by 31% with unchanged accuracy"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "大型推論モデルと補助モデルを使う環境がある場合、実装条件とタスク品質を確認する。",
+      "unconfirmed": [
+        "ライセンス・商用利用条件は未確認",
+        "導入手順・補助モデルを含む実行資源は未確認",
+        "具体的なモデルIDと後継版は未確認"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "B"
+  },
+  {
+    "id": "2609.18063",
+    "judgment": {
+      "decision": "defer",
+      "reason": "MoEをSSDへ逃がし、次層ルーティングを先読みする推論基盤で、メモリ制約下のローカル推論には有用そう。ただし記載の35B重みは約23GBで2GB上限超過、READMEのPython版もmacOS Apple Silicon限定。現環境では試行条件を満たさず、モデル入手可能な対象機がある場合に再検討。数値は著者報告で未検証。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2609.18063",
+          "quote": "a per-layer head predicts the next layer's routing one token ahead"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/Edge0-AI/edge0/HEAD/README.md",
+          "quote": "the 4-bit checkpoints are ~23 GB (`edge0-35b`) and ~4.2 GB"
+        }
+      ],
+      "next_check": "2GB以下の配布物または適合する既存チェックポイントが確認できたら、導入手順・実メモリを再評価する。",
+      "unconfirmed": [
+        "35B/8Bのモデル配布ライセンスと商用利用条件は未確認。",
+        "CPU/GPU・ディスク・実行時間の実測は未実施。記載の性能値は著者報告。",
+        "統合フレームワークはREADMEでQ4 2026予定。対象モデル以外の互換性は未確認。"
+      ],
+      "candidate_id": "2609.18063",
+      "verification_level": "reading",
+      "recommended_category": null
+    },
+    "quote_checked": true,
+    "priority": "B"
+  },
+  {
+    "id": "2610.08699",
+    "judgment": {
+      "decision": "defer",
+      "reason": "端末横断の個人エージェントで、画面操作・記憶・確認ゲートを備える構想は新しいが、アカウントや端末へ作用する製品のため導入条件の確認が先。GPL-3.0-or-laterと複数の外部依存があり、提示範囲では安全性・運用費・モデル選択肢を評価しきれず、30分/無課金枠での試行適合も不明。用途と権限境界が合う場合に再検討。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.08699",
+          "quote": "every action goes through a Sentinel, memory is files the person can read"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/nano-muse/nanoMuse/HEAD/README.md",
+          "quote": "GPL-3.0-or-later"
+        }
+      ],
+      "next_check": "対象OS、実行モデル/API費用、Sentinelの承認動作とデータ保存先を確認し、無課金で隔離評価できる場合に絞って再判定。",
+      "unconfirmed": [
+        "個々の依存物のライセンス・商用利用条件は未確認。",
+        "インストール所要時間、CPU/RAM、モデルID・ダウンロード総量は未確認。",
+        "セキュリティ評価と端末権限の実動作は未確認。後続リリース有無も要確認。"
+      ],
+      "candidate_id": "2610.08699",
+      "verification_level": "reading",
+      "recommended_category": null
+    },
+    "quote_checked": true,
+    "priority": "B"
+  },
+  {
+    "id": "2606.23050",
+    "judgment": {
+      "candidate_id": "2606.23050",
+      "decision": "defer",
+      "reason": "目的は、Reference Sliding Window Attentionで長文OCRのデコーダKVキャッシュ増加を抑え、一度の実行で多数ページを扱うこと。OCRは今回の対象範囲で、通常のSWAとの差分も興味深い。だが提供READMEはNVIDIA GPU前提で、Hugging Faceの重み一式は約6.77GBと2GBダウンロード枠を超える。無料Kaggle環境も利用可能とは限らないため、2GB以下の配布形態または確保済み環境が確認できたら再評価する。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2606.23050",
+          "quote": "we replace all attention layers in the decoder with our proposed Reference Sliding Window Attention (R-SWA), which reduces attention computation costs while maintaining a constant KV cache throughout the entire decoding process."
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/baidu/Unlimited-OCR/HEAD/README.md",
+          "quote": "Inference using Huggingface transformers on NVIDIA GPUs."
+        },
+        {
+          "source_url": "https://huggingface.co/api/models/baidu/Unlimited-OCR",
+          "quote": "\"usedStorage\": 6767737257"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": "deep_dive_value",
+      "next_check": "重み容量を2GB以下に抑えられる公式量子化版または確保済みGPU環境があるか確認。",
+      "unconfirmed": [
+        "コードリポジトリはMIT。重み自体のライセンス/商用利用条件は未確認",
+        "必要GPUメモリ、推論時間、正確なモデル構成と後継版",
+        "無料Kaggle環境の利用可否。候補はtrending rank 8とGitHub 27,573 starsのシグナルがあるが、外部導入実績は未確認"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "B",
+    "initial_judgment": {
+      "decision": "reject",
+      "reason": "長文書OCRでKVキャッシュを一定に保つ研究で、技術目的は明瞭。ただし依頼で朝のLightOnOCR3作業とSKUは対象外と指定され、本候補もOCRモデルとして今回の検討範囲外。したがって今は不要と判断する。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2606.23050",
+          "quote": "reduces attention computation costs while maintaining a constant KV cache"
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2606.23050",
+          "quote": "Codes and model weights are publicly available at this http URL ."
+        }
+      ],
+      "next_check": null,
+      "unconfirmed": [
+        "指定された除外範囲のため、モデルサイズ、導入条件、ライセンス詳細、商用利用条件は評価していない。"
+      ],
+      "candidate_id": "2606.23050",
+      "verification_level": "reading",
+      "recommended_category": null
+    },
+    "updated_with_additional_primary_evidence": true
+  },
+  {
+    "id": "2610.19789",
+    "judgment": {
+      "decision": "reject",
+      "reason": "自己蒸留型Agent RLをGRPOと比較し、手法ごとの安定性・計算費を調べる研究。新規性は比較設計だが、主成果の再現は大規模学習そのもので、提示された予算（学習なし、20分CPU）に合わない。現時点でこの計算資源を使う用途も示されず、今回の枠では不要。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.19789",
+          "quote": "132 training runs totaling 12,124.4 recorded H800 GPU-hours"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/aim-uofa/Self-Distillation-AgentRL/HEAD/README.md",
+          "quote": "No method consistently outperforms GRPO across settings."
+        }
+      ],
+      "next_check": null,
+      "unconfirmed": [
+        "論文の全比較条件や個別手法の再現コストは未確認。",
+        "実行環境・追加データの必要量、商用利用条件は未確認。"
+      ],
+      "candidate_id": "2610.19789",
+      "verification_level": "reading",
+      "recommended_category": null
+    },
+    "quote_checked": true,
+    "priority": "C"
+  },
+  {
+    "id": "2606.03748",
+    "judgment": {
+      "candidate_id": "2606.03748",
+      "decision": "test",
+      "reason": "目的は、軽量検出器を含む単一系列でNMS不要の推論と検出/セグメンテーション等を扱うこと。小型YOLO26nとCPU ONNX指標が提示され、今回の軽量ビジョン範囲に合う。READMEにモデルIDと導入手順があり、学習不要で既存画像一枚の推論確認から始められるため、30分枠で試す価値がある。YOLO27は公式ページ上まだ未公開なので、現時点ではYOLO26nを対象にする。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/ultralytics/ultralytics/HEAD/README.md",
+          "quote": "pip install ultralytics"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/ultralytics/ultralytics/HEAD/README.md",
+          "quote": "38.9 ± 0.7"
+        },
+        {
+          "source_url": "https://docs.ultralytics.com/models/yolo27/",
+          "quote": "The models are not yet available, and no launch date has been set."
+        },
+        {
+          "source_url": "https://api.github.com/repos/ultralytics/ultralytics",
+          "quote": "\"stargazers_count\": 62563, \"forks_count\": 11864"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": "deep_dive_value",
+      "next_check": "既存のサンプル画像1枚でYOLO26nをCPU推論し、入力解像度・実測時間・出力を記録する。",
+      "unconfirmed": [
+        "コードのライセンスはAGPL-3.0。商用利用ではEnterprise Licenseが必要との案内があるが、用途別条件は要確認。重みの個別条件も未確認",
+        "YOLO26nの実ファイル容量、8GiB環境での使用量と手元CPUでの実時間",
+        "READMEにKaggleモデルリンクあり。利用できる無料Kaggle GPU環境は未確認。YOLO27は供給資料で未公開と確認"
+      ]
+    },
+    "quote_checked": true,
+    "priority": "A",
+    "initial_judgment": {
+      "decision": "defer",
+      "reason": "NMS-free検出器と軽量ヘッドを含むYOLO26群で、検出以外にsegmentation・pose等も扱う。用途が合えば候補だが、今回の課題に画像検出需要は示されず、配布量とAGPL条件も上限・利用形態に適合するか不明。READMEはYOLO27にも言及しており、採用前に現行モデルとの関係を確認する。性能値は著者報告で未検証。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2606.03748",
+          "quote": "YOLO26 uses a dual-head design for native NMS-free end-to-end inference"
+        },
+        {
+          "source_url": "https://api.github.com/repos/ultralytics/ultralytics",
+          "quote": "Ultralytics YOLO27, YOLO26, YOLO11, YOLOv8"
+        }
+      ],
+      "next_check": "具体的な画像タスクが生じた時点で、現行YOLO27との比較、モデル容量、AGPL/商用条件を確認する。",
+      "unconfirmed": [
+        "モデル重みごとのライセンス・商用利用条件とダウンロード量は未確認。",
+        "環境要件・20分内の実行可否・推論品質は未確認。",
+        "YOLO27とYOLO26の後継/互換関係は提示資料だけでは不明。"
+      ],
+      "candidate_id": "2606.03748",
+      "verification_level": "reading",
+      "recommended_category": null
+    },
+    "updated_with_additional_primary_evidence": true
+  },
+  {
+    "id": "2610.11287",
+    "judgment": {
+      "decision": "defer",
+      "reason": "要約の後ろに学習済みソフトメモリを付けて長期エージェントの文脈圧縮を補う方式。課題との関連はある一方、公開手順はQwen 27B＋Remoryに最低2×80GB GPUを求め、初回に重み取得とカーネルコンパイルも必要で、今回のCPU20分・8GiB・2GB・無課金枠を大きく超える。専用GPU環境と対象エージェントが整った場合に再検討。性能主張は著者報告。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.11287",
+          "quote": "using only 5.2% of the input positions"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/1ring2rta/Remory/HEAD/README.md",
+          "quote": "Plan for **at least 2 × 80 GB GPUs** to deploy **Qwen3.8-27B + Remory**"
+        }
+      ],
+      "next_check": "専用GPU環境が用意されたら配布物サイズと推論統合手順を確認し、小規模な実データ比較を再審査する。",
+      "unconfirmed": [
+        "公開モデルIDはQwen3.8-27B-REMORY-1.9BとGLM-5.3-Flash-REMORY-1.24B。重み総容量・追加費用は未確認。",
+        "MITのコードライセンスはrepo metadata記載。各チェックポイントのライセンス・商用利用条件は未確認。",
+        "実環境での品質・性能、他モデル/エージェントへの互換性、後継モデルは未確認。"
+      ],
+      "candidate_id": "2610.11287",
+      "verification_level": "reading",
+      "recommended_category": null
+    },
+    "quote_checked": true,
+    "priority": "B"
+  }
+]
