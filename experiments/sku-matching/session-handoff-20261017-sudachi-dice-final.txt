@@ -1,0 +1,28 @@
+SKU 文字2-gram /Sudachi Core・Full 最終引継ぎ（2026-10-17 JST）
+branch: codex-sku-generic-model-gates-20261010
+base commit: 21821f54e0f1a346723f5a1b5b0d2d7d540fd81e
+実験workspace: .lab-output/sku-sudachi-dice-20261017-v1
+結果: experiments/sku-matching/results/20261017-sku-sudachi-dice-v1.{txt,json,zip}
+候補順位要約CSV: 同prefix-rankings.csv
+
+ユーザー提示の80件元CSV/比較ZIPは未受領で、60/60・不一致20件11/6/3は未検証。
+既存1332件113商品26996候補行の履歴EVALデータで7順位方式と6追加ガード方式を固定して比較した。
+Core/Fullは同版20260723.1、SudachiPy0.7.0、A/B/C。Fullは別targetへ導入し旧venvは変更していない。
+辞書なし文字2-gramの先頭正解822/896=91.74%、既存矛盾ガード後857/896=95.65%。
+ガード後は同率1位群に正解を含む896/896だが、単独1位正解は848。100%の単独正解率ではない。
+Sudachi6方式は先頭正解数が同じで、単独1位正解853、同点1位ケース48→43。
+Core/Full全方式の追加自動判定・追加既知request・残AI context削減は0。
+既存辞書併用の参照一致自動判定414、既知誤り0、正解候補誤除外0/896、参照不明の自動判定56、保留862。
+残AI context1538のまま。これは数字/ASCII識別子の保護と衝突保留を維持した構成の結果。
+類似度で必ず1件選ぶと一致なし180件は誤採用、既存ガード後も131件には候補が残る。
+順位で一致なしを判断しない。商品固定仕様・数量・付属品の11/6/3分類は元CSVがないので検証していない。
+未知語数はCore C418token→Full C412token、未知語を含む値325→323（入力601種の文字列の集計）。
+Core/FullのC比較キー差9値はあったがSKU追加効果なし。バイナリはCore202MB/Full331MB。
+Fullを本番へ入れる採用根拠は今回ない。文字2-gramは候補順位・AIへ渡す順序の補助として残す。
+TypeScript本番の前提。Node標準機能でPythonとの正規化901文字列・Dice144組の一致を確認。
+AI推論0、本番gate変更なし。6新テスト成功、全suite1577 fail4/error66/skip60（失敗名は前回と同じ）。
+
+run_sudachi_dice_v1.py run→FREEZE→grade。固定済みPLAN・コード・辞書binary・全予測SHAを保存。
+評価後のルール追加や閾値調整なし。今後試すなら別版・別計画で行い、本v1を上書きしない。
+全順位・予測・辞書観測・参照経路・テスト・ログをZIPへexport、manifest全member検証する。
+旧巨大データや辞書binaryは重複同梱しない。再実行の依存・導入手順はZIP内READMEを参照。
