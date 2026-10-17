@@ -1,0 +1,63 @@
+{
+  "candidate": "2610.14224",
+  "official_repo": "https://github.com/google-research/harness2",
+  "commit": "1cfe254e8d25b15f37048c3730134686abe60335",
+  "version": "0.1.0",
+  "archive": {
+    "url": "https://api.github.com/repos/google-research/harness2/tarball/1cfe254e8d25b15f37048c3730134686abe60335",
+    "commit": "1cfe254e8d25b15f37048c3730134686abe60335",
+    "sha256": "cdc1721916381de47c4abba453451164548183fe9076fa71cfbfe821384c5fe6",
+    "bytes": 7056332
+  },
+  "image": "python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+  "image_uncompressed_bytes": 119431103,
+  "download_accounting": "Archive bytes + conservative full uncompressed image size; public metadata evidence bytes recorded separately. No candidate model downloaded.",
+  "prepared_source_bytes": 535990,
+  "attempted_candidates": 1,
+  "container_attempts": 2,
+  "candidate_code_started": false,
+  "candidate_inference_attempted": 0,
+  "candidate_inference_success": 0,
+  "repair_count": 1,
+  "status": "STOPPED_REPAIR_CAP",
+  "errors": [
+    {
+      "attempt": 1,
+      "error": "python cannot open /app/run_demo.py: Permission denied",
+      "cause_confirmed": "public source mount root mode0700; wrapper file0644 and package dirs0755",
+      "repair": "chmod755 public source root once; credentials/private dirs not touched"
+    },
+    {
+      "attempt": 2,
+      "error": "PermissionError stat /root/.codex in host-authored isolation assertion before run_module",
+      "repair": null
+    }
+  ],
+  "resume_requires": "New explicit user continuation; do not retry elsewhere or GPU.",
+  "isolation": {
+    "network": "none",
+    "rootfs": "read-only",
+    "user": "10001:10001",
+    "capabilities": "ALL dropped",
+    "no_new_privileges": true,
+    "memory_limit_bytes": 8589934592,
+    "cpus": 2,
+    "pids_limit": 128,
+    "timeout_seconds": 120,
+    "mounts": [
+      "public code readonly /app",
+      "empty output /out"
+    ],
+    "private_files_mounted": false,
+    "credentials_passed": false
+  },
+  "cpu_seconds": null,
+  "wall_seconds_candidate": null,
+  "peak_rss_bytes": null,
+  "throughput": null,
+  "quality": null,
+  "expected_delta": "Demo edits are scripted; even a successful run would NOT establish model quality or independent benefit.",
+  "actual_gpu_seconds": 0,
+  "money_jpy": 0,
+  "finished_at": "2026-10-17T09:09:24.385274+00:00"
+}

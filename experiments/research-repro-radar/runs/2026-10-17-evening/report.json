@@ -1,0 +1,142 @@
+{
+  "run_id": "2026-10-17-evening",
+  "date": "2026-10-17",
+  "recommended": [],
+  "reading_deep_dive_pending": [
+    {
+      "id": "2610.14224",
+      "priority": "B",
+      "category": "deep_dive_value",
+      "reason": "モデル重みを固定したまま、タスク用ハーネスの改良と経験の継続蓄積を二段階で行う枠組みで、AI開発の運用改善に直結する。HF trending rank 4とGitHub 744 starsという別プラットフォームの注目、および論文・公開実装が揃い深掘り価値はある。ただし既存Harness2実行はコード開始前に一修復上限で停止しており、入力でも再試行禁止。読解段階に留め、実行再開は新たなユーザー継続後の判断とする。"
+    },
+    {
+      "id": "2605.23904",
+      "priority": "B",
+      "category": "deep_dive_value",
+      "reason": "目的は、固定モデルに対するagent skill文書を評価ロールアウトで反復最適化し、検証スコアが上がる変更だけ採用すること。重み学習を伴わず、Codexを含む実行環境へ移植する報告はAI開発のskill運用に直接関係する。Hugging Face trendingとGitHub starsの独立シグナルがあり、論文と実装もあるため読解深掘り価値が高い。ただし最適化時のモデル呼び出し・費用と利用可能な無課金経路が不明なので、0円条件を満たす構成が確認できれば検討する。数値は著者報告で未検証。"
+    }
+  ],
+  "digest": [
+    {
+      "id": "2608.14658",
+      "title": "pico-type / ARTH V2",
+      "priority": "A",
+      "url": "https://huggingface.co/eulogik/pico-type",
+      "new_findings": "1.5M級のbyte分類器。現行ARTH V2は14種リスク用で、FP32 11,664,968 bytes、実験的INT8 4,277,268 bytesをAPIで確認。一般文書分類の代替ではない。",
+      "hold": "9 stars・3 likesの小規模ソース。未知ソース実行の事前承認未確認で未実行。まず公開固定入力で単純規則との比較が必要。Aは試す価値であり実行許可・採用ではない。"
+    },
+    {
+      "id": "2610.14726",
+      "title": "LightVAE",
+      "priority": "B",
+      "url": "https://github.com/ModelTC/LightVAE",
+      "new_findings": "10月10日公開、14日重み更新。Wan2.1 Lite decoderは70,875,748 bytes、H3 INT8は833,732,248 bytes。全配布物が2GB超という解釈は誤り。",
+      "hold": "主評価はGPU。CPU/RAM不足の実証も既存Kaggle無料枠等の確認もなくGPU利用条件未成立。モデルcard Apache-2.0、repoライセンスAPIはnullでコードの利用条件は別確認。"
+    },
+    {
+      "id": "2610.22200",
+      "title": "OpenGCUA",
+      "priority": "B",
+      "url": "https://github.com/Tongyi-MAI/OpenGCUA",
+      "new_findings": "10月15日公開、HF trending32／GitHub56 stars。GUI・コード実行・状態判断をまとめたスタック。現行READMEではGCUAモデル自体は今後公開の項目。",
+      "hold": "macOS14+実機セットアップとAPIキーを要求。モデルの実在・配布とハーネス公開を混同しない。Linux/無料推論・権限・RAM未確認。"
+    },
+    {
+      "id": "2610.22341",
+      "title": "3DCodeVerse",
+      "priority": "B",
+      "url": "https://github.com/gaoypeng/3dcodeverse",
+      "new_findings": "10月15日公開、HF trending31／63 stars。実行・幾何測定・視覚判定を分けるAI開発の評価設計。code Apache-2.0とdataset非商用CC-BY-NC-SAは別。",
+      "hold": "Python3.13/Node/ベンダーCLIなどが必要。学習は実行禁止、無課金でのモデル実行経路と資源は未確認。商用データ利用に転用しない。"
+    },
+    {
+      "id": "2610.18813",
+      "title": "Self-Evolving Agent Harness",
+      "priority": "B",
+      "url": "https://arxiv.org/abs/2610.18813",
+      "new_findings": "10月13日公開、HF trending10／145 stars。66頁のsurveyで、固定モデルの周辺状態の更新と改善の実証を区別する。",
+      "hold": "実行ツールではなく設計・評価の読解資料。CC-BY-4.0。サーベイの分類をそのまま性能向上の証拠にしない。"
+    },
+    {
+      "id": "2502.07286",
+      "title": "SeNER / Small Language Model Makes an Effective Long Text Extractor",
+      "priority": "B",
+      "url": "https://arxiv.org/abs/2502.07286",
+      "new_findings": "2025年2月公開の掘り起こし。長い固有表現のスパン相互作用を扱う。公式repoとbio_modelsの導入資料を照合した。",
+      "hold": "公式説明はPython3.8・旧CUDA/PyTorch、実行権利・推論専用重み・CPU資源量が未確認。古いことではなく導入条件未確定で保留。"
+    },
+    {
+      "id": "github:frank6948/dm-code-agent",
+      "title": "DM-Code-Agentの追加重複5件",
+      "priority": "C",
+      "url": "https://github.com/frank6948/DM-Code-Agent",
+      "new_findings": "当日確認した8 repoのREADME SHA-256が完全一致。新たに見つかった5コピーも0 stars/forks、NOASSERTION、README内のownerは別。",
+      "hold": "Harper代表を保持し、追加5件と既に見送った2件だけ理由付き除外。独立した研究・利用実績として重複加算しない。"
+    }
+  ],
+  "completed_ids": [
+    "github:frank6948/dm-code-agent",
+    "github:jasmijnramos37/dm-code-agent",
+    "github:jasonpolyakov44995/dm-code-agent",
+    "github:lferrara41942/dm-code-agent",
+    "github:maximmulder1213/dm-code-agent",
+    "github:samantha3782/dm-code-agent",
+    "github:zawadzki2791/dm-code-agent"
+  ],
+  "completion_reason": "Only seven byte-identical redundant repository IDs dismissed; five newly discovered duplicates and two previously dismissed IDs re-discovered. Harper representative retained. Survey C is priority only and not a terminal dismissal. No unrun, failed, or reading-only candidate completed.",
+  "counts": {
+    "collected_unique": 2512,
+    "processed_with_carry": 6040,
+    "ranked": 5186,
+    "review_pool_read": 20,
+    "additional_read": 8,
+    "unique_primary_reviewed": 28,
+    "native_candidate_judgments_validated": 43,
+    "candidate_attempted": 1,
+    "container_attempts": 2,
+    "candidate_code_executions": 0,
+    "candidate_inference_attempted": 0,
+    "candidate_inference_success": 0,
+    "pending_after_record": 5186,
+    "priorities": {
+      "B": 19,
+      "C": 8,
+      "A": 1
+    }
+  },
+  "constraints": {
+    "money_jpy": 0,
+    "run_minutes_cap": 30,
+    "cpu_candidate_minutes_cap": 20,
+    "ram_gib_cap": 8,
+    "download_gb_cap": 2,
+    "candidate_repairs": 1,
+    "gpu_used": false
+  },
+  "blockers": [
+    {
+      "action": "Harness2 deterministic demo",
+      "target": "google-research/harness2@1cfe254e8d25b15f37048c3730134686abe60335",
+      "status": "stopped_repair_cap",
+      "reason": "Second attempt wrapper PermissionError on stat /root/.codex, before candidate code; no further repair/retry without new explicit continuation."
+    },
+    {
+      "action": "pico-type model/code execution",
+      "target": "eulogik/pico-type",
+      "status": "not_attempted_pending_source_approval",
+      "reason": "Unknown-source preapproval not established; A does not authorize execution."
+    }
+  ],
+  "state_semantics": "recommended stays empty to avoid automatic completion of reading-only deep dives; digest and failures remain pending. Existing seen/mail preserved.",
+  "canonical_base": "1fd340259b665e953f174ac3e3706ff6f42cf582",
+  "upstream_skill": "55ceed634506c5942d6a8e84c71d7e80acc103ff",
+  "limitations": [
+    "No candidate inference or useful-function implementation completed.",
+    "HF/API response lists have backend ceilings; no total-field coverage claim.",
+    "OpenReview five requests403; no bypass.",
+    "239 partial/future publication values retained as unknown.",
+    "Serving model unknown; host accepted requested gpt-6-luna.",
+    "No API/GKE/AWS price comparison; no measured throughput/quality/RSS."
+  ],
+  "finished_research_at": "2026-10-17T09:12:12.084282+00:00"
+}

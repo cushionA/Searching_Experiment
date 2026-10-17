@@ -1,0 +1,964 @@
+[
+  {
+    "id": "2610.20193",
+    "request_index": 0,
+    "judgment": {
+      "candidate_id": "2610.20193",
+      "decision": "defer",
+      "reason": "目的は開発履歴から実行可能なSWE訓練タスクと軌跡を段階的に構築すること。漸進検証と弾力的なストリーミングが新規性だが、記載の成果は大規模データ構築と30B級モデルの調整に依存し、30分・CPU 20分・8GiBでは再現可能な採用確認に合わない。一次論文以外の独立した注目シグナルも提示されていないため、条件付きで保留。小規模な公開成果物とライセンス、CPU資源見積もりが確認できれば再評価する。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.20193v1",
+          "quote": "SWE-Stream constructs 80,874 validated tasks and collects 118,688 successful trajectories."
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2610.20193v1",
+          "quote": "Fine-tuning Qwen3-30B-A3B-Thinking-2507 on these trajectories achieves resolve rates"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "著者提供の一次成果物で、ライセンス、実行手順、データ規模を確認し、8GiB/CPUの範囲に収まる評価用サブセットがあるか調べる。",
+      "unconfirmed": [
+        "独立した第二の注目シグナル",
+        "コードとデータの公開先・ライセンスおよび商用利用条件",
+        "インストール要件とCPU/メモリ/ダウンロード資源",
+        "論文記載のモデルID・後継モデルの位置付け"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "2610.21496",
+    "request_index": 1,
+    "judgment": {
+      "candidate_id": "2610.21496",
+      "decision": "defer",
+      "reason": "長いリポジトリ作業で文脈情報を行動に反映するため、リマインダー条件付きの軌跡蒸留を行う提案。Global/Turn-local Reminderを使う点は新しいが、効果主張はモデル学習後の比較であり、今回の30分・CPU 20分・8GiB、学習なしの枠では採用を試せない。独立した注目シグナルもなく、蒸留可能な公開成果物とライセンスが確認できるまで条件付き保留。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.21496v1",
+          "quote": "A Global Reminder converts final-test diagnostics into trajectory-level guidance"
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2610.21496v1",
+          "quote": "OPRD improves the benchmark-averaged task resolution rate by 11.3 points over the open-source Qwen3.5-4B base model."
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "一次成果物の公開状況とライセンス、学習を伴わずに検証できる推論用チェックポイントがあるか確認する。",
+      "unconfirmed": [
+        "独立した第二の注目シグナル",
+        "コード・データ・チェックポイントの公開先とライセンス、商用利用条件",
+        "インストール要件と実行時のCPU/メモリ/ダウンロード資源",
+        "学生・教師モデルの完全なIDと後継モデル"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "2610.21436",
+    "request_index": 2,
+    "judgment": {
+      "candidate_id": "2610.21436",
+      "decision": "defer",
+      "reason": "モバイルNPUの軽量ドラフターとサーバー側MTPを組み合わせ、推測デコードのサーバー計算量を抑える方式。端末とサーバーの分担が新規だが、Galaxy S26 UltraとLTE/5Gを使う単一クライアント評価であり、今回のローカルCPU・無償・30分の作業には合わない。一次論文以外の独立した注目シグナルもないため、端末/バックエンド要件と公開実装を確認してから条件付き再評価。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.21436v1",
+          "quote": "HyCo reduces server GPU time per output token relative to server-side MTP self-speculation by 38.6% on Spec-Bench and 29.2% on 32K-token summarization."
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2610.21436v1",
+          "quote": "With the same acceptance rule, three Spec-Bench runs per system show 9.0 percentage points more saving and 1.9x delivery speed than an SLM-only drafter."
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "公開実装とモデルのライセンス、対応NPU・サーバー要件、無料で使える再現手順を一次資料で確認する。",
+      "unconfirmed": [
+        "独立した第二の注目シグナル",
+        "コード/モデルの公開先、ライセンスと商用利用条件",
+        "対応端末・NPU・サーバー構成および導入資源",
+        "使用モデルの完全なIDと後継モデル"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "10.3390/en19204893",
+    "request_index": 41,
+    "judgment": {
+      "candidate_id": "10.3390/en19204893",
+      "decision": "defer",
+      "reason": "目的は4系統のLLMについて、GPU推論時の重み量子化とエネルギー・速度の関係を統制比較すること。複数精度・モデルを同一backendで比較した設計は有用だが、単一RTX 4090上のGPU限定測定で、品質も評価していないため、当方のCPU環境や実運用判断へ直接外挿できない。既存の無料GPU利用資格も未確認なので試行は保留し、対象GPU・モデルに合う具体的な評価需要と無料実行条件が確認できた場合に再検討。",
+      "evidence": [
+        {
+          "source_url": "https://www.mdpi.com/1996-1073/19/20/4893",
+          "quote": "all experiments were conducted on a single NVIDIA GeForce RTX 4090"
+        },
+        {
+          "source_url": "https://www.mdpi.com/1996-1073/19/20/4893",
+          "quote": "response quality was not measured"
+        },
+        {
+          "source_url": "https://www.mdpi.com/1996-1073/19/20/4893",
+          "quote": "Q4_K_M reduced dynamic energy per token by 63.6–85.7%"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "自身のGPU/推論backendに対応する比較需要、再現資材のライセンス、無料Kaggle実行枠・認証・プライバシー条件を確認する。",
+      "unconfirmed": [
+        "再現用データ・コードと利用条件",
+        "他GPU/CPU・他backendでの再現性",
+        "品質保持を含めた量子化効果",
+        "無料Kaggle quota・認証・プライバシー条件",
+        "導入資源・所要時間",
+        "後続版の有無"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "github:frank6948/dm-code-agent",
+    "request_index": 33,
+    "judgment": {
+      "candidate_id": "github:frank6948/dm-code-agent",
+      "decision": "reject",
+      "reason": "目的はPythonコードエージェントの監査・追跡と決定的評価で、AI開発用途には適合し得る。しかし親確認では、このREADMEは8件すべて同一ハッシュで、保持対象はHarper版と指定されている。このFrank版は独立した実装・新規性を加えず、別候補として採用する増分価値がない。READMEは別所有者hwfengcsを参照し、APIライセンスもNOASSERTION。Frank版は採用対象外とする。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/frank6948/dm-code-agent/HEAD/README.md",
+          "quote": "[![CI](https://github.com/hwfengcs/DM-Code-Agent/actions/workflows/ci.yml/badge.svg)]"
+        },
+        {
+          "source_url": "https://api.github.com/repos/frank6948/dm-code-agent",
+          "quote": "\"full_name\": \"frank6948/DM-Code-Agent\""
+        },
+        {
+          "source_url": "https://api.github.com/repos/frank6948/dm-code-agent",
+          "quote": "\"license\": {\"key\": \"other\", \"name\": \"Other\", \"spdx_id\": \"NOASSERTION\""
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "親確認でREADMEの8件同一SHA256が示され、Harper版が保持代表。Frank版の独立コード差分は確認されていない。",
+        "GitHub APIのNOASSERTIONとREADMEのMIT表示が食い違い、適用ライセンス・商用利用条件は未確認。",
+        "インストール容量、8GiB RAMでの要件、モデルIDと後継候補は未確認。"
+      ]
+    },
+    "priority": "C",
+    "quote_checked": true
+  },
+  {
+    "id": "github:harper3105/dm-code-agent",
+    "request_index": 5,
+    "judgment": {
+      "candidate_id": "github:harper3105/dm-code-agent",
+      "decision": "defer",
+      "reason": "目的はPythonコードエージェントの実行過程を監査し、失敗診断や隠しテストで検証すること。追跡ログの分岐再実行と決定的評価は特徴的で、API不要の評価入口は20分CPU枠に合いそう。ただしREADMEは別所有者hwfengcsを参照する一方、GitHub APIのライセンス表示はNOASSERTIONで、出所・利用条件が未確認。独立した注目シグナルもないため、出所とライセンスを確認できたら無課金の小規模評価を検討する。",
+      "evidence": [
+        {
+          "source_url": "https://api.github.com/repos/harper3105/dm-code-agent",
+          "quote": "\"full_name\": \"Harper3105/DM-Code-Agent\""
+        },
+        {
+          "source_url": "https://api.github.com/repos/harper3105/dm-code-agent",
+          "quote": "\"license\": {\"key\": \"other\", \"name\": \"Other\", \"spdx_id\": \"NOASSERTION\""
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/harper3105/dm-code-agent/HEAD/README.md",
+          "quote": "确定性 eval | 14 个任务 × 4 个变体，scripted client 驱动，**零网络调用**"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "READMEに記載されたhwfengcsとの関係、ライセンスと商用利用条件、依存取得量を一次資料で確認する。",
+      "unconfirmed": [
+        "GitHub APIはNOASSERTIONだがREADMEはMITと主張しており、適用ライセンスと商用利用可否は未確認。",
+        "配布物・インストール依存の容量、8GiBでの実行条件、モデルIDと後継候補は未確認。"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "github:jasmijnramos37/dm-code-agent",
+    "request_index": 34,
+    "judgment": {
+      "candidate_id": "github:jasmijnramos37/dm-code-agent",
+      "decision": "reject",
+      "reason": "目的はPythonコードエージェントの監査・追跡と決定的評価で、AI開発用途には適合し得る。しかし親確認では、このREADMEは8件すべて同一ハッシュで、保持対象はHarper版と指定されている。このJasmijn版は独立した実装・新規性を加えず、別候補として採用する増分価値がない。READMEのclone先はhwfengcsを指し、APIライセンスはNOASSERTION。Jasmijn版は採用対象外とする。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/jasmijnramos37/dm-code-agent/HEAD/README.md",
+          "quote": "git clone https://github.com/hwfengcs/DM-Code-Agent.git && cd DM-Code-Agent"
+        },
+        {
+          "source_url": "https://api.github.com/repos/jasmijnramos37/dm-code-agent",
+          "quote": "\"full_name\": \"JasmijnRamos37/DM-Code-Agent\""
+        },
+        {
+          "source_url": "https://api.github.com/repos/jasmijnramos37/dm-code-agent",
+          "quote": "\"license\": {\"key\": \"other\", \"name\": \"Other\", \"spdx_id\": \"NOASSERTION\""
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "親確認でREADMEの8件同一SHA256が示され、Harper版が保持代表。Jasmijn版の独立コード差分は確認されていない。",
+        "GitHub APIのNOASSERTIONとREADMEのMIT表示が食い違い、適用ライセンス・商用利用条件は未確認。",
+        "インストール容量、8GiB RAMでの要件、モデルIDと後継候補は未確認。"
+      ]
+    },
+    "priority": "C",
+    "quote_checked": true
+  },
+  {
+    "id": "github:jasonpolyakov44995/dm-code-agent",
+    "request_index": 38,
+    "judgment": {
+      "candidate_id": "github:jasonpolyakov44995/dm-code-agent",
+      "decision": "reject",
+      "reason": "監査可能なコードエージェントは開発用途に関係するが、検証済みホストメモではREADMEが8リポジトリ間で完全一致し、既存代表候補の重複と確認済み。新規性・追加価値がなく、APIもライセンスをNOASSERTIONとしているため、この複製候補は対象外とする。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/jasonpolyakov44995/dm-code-agent/HEAD/README.md",
+          "quote": "**本地优先 · 全程可审计 · 内核只有一个 ReAct 循环**"
+        },
+        {
+          "source_url": "https://api.github.com/repos/jasonpolyakov44995/dm-code-agent",
+          "quote": "\"license\": {\"key\": \"other\", \"name\": \"Other\", \"spdx_id\": \"NOASSERTION\", \"url\": null, \"node_id\": \"MDc6TGljZW5zZTA=\"}"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "ライセンスと商用利用条件が不明（READMEはMIT、APIはNOASSERTION）",
+        "インストール・実行資源・モデルIDと後継候補は未確認",
+        "ベンチマーク結果は作者報告で独立検証なし"
+      ]
+    },
+    "priority": "C",
+    "quote_checked": true
+  },
+  {
+    "id": "github:kingjone0/mini-claude-code",
+    "request_index": 8,
+    "judgment": {
+      "candidate_id": "github:kingjone0/mini-claude-code",
+      "decision": "defer",
+      "reason": "目的は、Claude Agent SDKでコードエージェントを組み、独立pytest判定・権限境界・traceを検証すること。サンドボックスと反対対照を含む設計が特徴で、READMEは単純な修正靶場での作者実行結果を報告する。ただしClaude SDK/CLI依存のため、0円・有料バックエンドなしの枠で動かせるか不明。無料で互換の実行経路が確認できれば、小規模なオフライン評価を検討する。独立した注目シグナルは確認できない。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/kingjone0/mini-claude-code/HEAD/README.md",
+          "quote": "用 **Claude Agent SDK** 从零搭出 Coding Agent 的五个核心层"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/kingjone0/mini-claude-code/HEAD/README.md",
+          "quote": "在 **more-itertools** 上固定提交、注入一个**单行差一错误**"
+        },
+        {
+          "source_url": "https://api.github.com/repos/kingjone0/mini-claude-code",
+          "quote": "\"license\": {\"key\": \"mit\", \"name\": \"MIT License\", \"spdx_id\": \"MIT\""
+        },
+        {
+          "source_url": "https://api.github.com/repos/kingjone0/mini-claude-code",
+          "quote": "\"stargazers_count\": 0, \"forks_count\": 0"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "有料バックエンドなしで使える互換SDK/CLI経路と利用条件を一次資料で確認し、なければ見送る。",
+      "unconfirmed": [
+        "MIT表示は確認したが商用利用条件の詳細は未確認。",
+        "Claude Agent SDK/CLIの無課金利用可否、導入依存量、RAM要件は未確認。",
+        "使用モデルIDと後継候補は未確認。"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "github:lferrara41942/dm-code-agent",
+    "request_index": 35,
+    "judgment": {
+      "candidate_id": "github:lferrara41942/dm-code-agent",
+      "decision": "reject",
+      "reason": "監査可能なコードエージェントは開発用途に関係するが、検証済みホストメモではREADMEが8リポジトリ間で完全一致し、代表候補と重複すると確認済み。新規性・追加価値がなく、APIもライセンスをNOASSERTIONとしているため、この複製候補は対象外とする。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/lferrara41942/dm-code-agent/HEAD/README.md",
+          "quote": "**本地优先 · 全程可审计 · 内核只有一个 ReAct 循环**"
+        },
+        {
+          "source_url": "https://api.github.com/repos/lferrara41942/dm-code-agent",
+          "quote": "\"license\": {\"key\": \"other\", \"name\": \"Other\", \"spdx_id\": \"NOASSERTION\", \"url\": null, \"node_id\": \"MDc6TGljZW5zZTA=\"}"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "ライセンスと商用利用条件が不明（READMEはMIT、APIはNOASSERTION）",
+        "インストール・実行資源・モデルIDと後継候補は未確認",
+        "ベンチマーク結果は作者報告で独立検証なし"
+      ]
+    },
+    "priority": "C",
+    "quote_checked": true
+  },
+  {
+    "id": "github:maximmulder1213/dm-code-agent",
+    "request_index": 39,
+    "judgment": {
+      "candidate_id": "github:maximmulder1213/dm-code-agent",
+      "decision": "reject",
+      "reason": "監査可能なコードエージェントは開発用途に関係するが、検証済みホストメモではREADMEが8リポジトリ間で完全一致し、既存代表候補の重複と確認済み。新規性・追加価値がなく、APIもライセンスをNOASSERTIONとしているため、この複製候補は対象外とする。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/maximmulder1213/dm-code-agent/HEAD/README.md",
+          "quote": "**本地优先 · 全程可审计 · 内核只有一个 ReAct 循环**"
+        },
+        {
+          "source_url": "https://api.github.com/repos/maximmulder1213/dm-code-agent",
+          "quote": "\"license\": {\"key\": \"other\", \"name\": \"Other\", \"spdx_id\": \"NOASSERTION\", \"url\": null, \"node_id\": \"MDc6TGljZW5zZTA=\"}"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "ライセンスと商用利用条件が不明（READMEはMIT、APIはNOASSERTION）",
+        "インストール・実行資源・モデルIDと後継候補は未確認",
+        "ベンチマーク結果は作者報告で独立検証なし"
+      ]
+    },
+    "priority": "C",
+    "quote_checked": true
+  },
+  {
+    "id": "github:mdsubhanpasha/k8s-neural-collapse-manifold",
+    "request_index": 11,
+    "judgment": {
+      "candidate_id": "github:mdsubhanpasha/k8s-neural-collapse-manifold",
+      "decision": "defer",
+      "reason": "Kubernetes障害をコードエージェント向け評価に結ぶ題材は関連するが、既存の評価用途に対する新規性・実用性は未確認。76%等はREADME記載の作者値に限られ、独立した注目シグナルもない。ライセンス不明でデータの利用条件も判断できないため、採用は保留する。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/mdsubhanpasha/k8s-neural-collapse-manifold/HEAD/README.md",
+          "quote": "Neural manifold analysis of 50 real-world K8s production failures."
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/mdsubhanpasha/k8s-neural-collapse-manifold/HEAD/README.md",
+          "quote": "**76% fix rate | 22s avg | 654x faster than human**"
+        },
+        {
+          "source_url": "https://api.github.com/repos/mdsubhanpasha/k8s-neural-collapse-manifold",
+          "quote": "\"license\": null"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "ライセンスとデータ出所・評価手順が明示され、独立した利用・検証の証拠が出た場合に再評価する。",
+      "unconfirmed": [
+        "ライセンスと商用利用条件が不明",
+        "データの出所・利用権・入手方法が不明",
+        "76% fix rate等は未検証の作者主張",
+        "インストール・資源要件・モデルID・後継候補が不明"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "github:paultrust26/trot",
+    "request_index": 12,
+    "judgment": {
+      "candidate_id": "github:paultrust26/trot",
+      "decision": "defer",
+      "reason": "観測履歴を圧縮してエージェントの文脈量を抑える手法は開発エージェントに直結し、README上は決定的ルールと軽量ゲートを組み合わせる点が特徴。ただし公開結果は作者報告のみで、選択的な補助LLMと学習済みゲートは今回の無学習・無課金条件で再現できるか不明。独立シグナルもなく、実装・依存条件を確認してから判断する。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/paultrust26/trot/HEAD/README.md",
+          "quote": "We present TROT (Triage of Observation Tokens)"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/paultrust26/trot/HEAD/README.md",
+          "quote": "using the same agent loop, prompt, tools, and harness for every method"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/paultrust26/trot/HEAD/README.md",
+          "quote": "MIT. See [LICENSE](LICENSE)."
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "学習済みゲートと補助LLMを使わずに動かせる範囲、必要資源、再現可能な小規模評価手順を確認する。",
+      "unconfirmed": [
+        "ベンチマーク値はREADME上の作者報告で独立検証なし",
+        "ゲート学習データ・重み・訓練要件が不明",
+        "補助LLMの選択肢と無課金実行可否が不明",
+        "インストール・CPU/RAM/ダウンロード量とモデルID・後継候補が不明",
+        "MIT表記あり。商用利用条件の詳細は未確認"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "github:piaoyun2022/coding-harness",
+    "request_index": 13,
+    "judgment": {
+      "candidate_id": "github:piaoyun2022/coding-harness",
+      "decision": "defer",
+      "reason": "最小Coding Agentの文脈管理とパッチ適用は用途に合うが、既存手法との差は証拠から判断できず、採用条件に合わない。READMEはDeepSeek APIキーとDockerを要求し、無課金・無学習の20分CPU枠で評価可能とは確認できない。ライセンスも不明なため、実行条件と利用権が明確になるまで保留する。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/piaoyun2022/coding-harness/HEAD/README.md",
+          "quote": "依赖 Git、Python 3.11+ 和 Docker"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/piaoyun2022/coding-harness/HEAD/README.md",
+          "quote": "DEEPSEEK_API_KEY=你的密钥"
+        },
+        {
+          "source_url": "https://api.github.com/repos/piaoyun2022/coding-harness",
+          "quote": "\"license\": null"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "APIなしで可能な限定評価の有無、ベンチマーク資源要件、明示的なライセンスを確認する。",
+      "unconfirmed": [
+        "ライセンスと商用利用条件が不明",
+        "有料APIなしで実行できるか不明",
+        "SWE-bench実行の時間・RAM・ダウンロード要件が不明",
+        "モデルID・後継候補が不明",
+        "評価値の独立再現性は未確認"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "github:samantha3782/dm-code-agent",
+    "request_index": 36,
+    "judgment": {
+      "candidate_id": "github:samantha3782/dm-code-agent",
+      "decision": "reject",
+      "reason": "監査可能なコードエージェントは開発用途に関係するが、検証済みホストメモではREADMEが8リポジトリ間で完全一致し、既存代表候補の重複と確認済み。新規性・追加価値がなく、APIもライセンスをNOASSERTIONとしているため、この複製候補は対象外とする。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/samantha3782/dm-code-agent/HEAD/README.md",
+          "quote": "**本地优先 · 全程可审计 · 内核只有一个 ReAct 循环**"
+        },
+        {
+          "source_url": "https://api.github.com/repos/samantha3782/dm-code-agent",
+          "quote": "\"license\": {\"key\": \"other\", \"name\": \"Other\", \"spdx_id\": \"NOASSERTION\", \"url\": null, \"node_id\": \"MDc6TGljZW5zZTA=\"}"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "ライセンスと商用利用条件が不明（READMEはMIT、APIはNOASSERTION）",
+        "インストール・実行資源・モデルIDと後継候補は未確認",
+        "ベンチマーク結果は作者報告で独立検証なし"
+      ]
+    },
+    "priority": "C",
+    "quote_checked": true
+  },
+  {
+    "id": "github:zawadzki2791/dm-code-agent",
+    "request_index": 37,
+    "judgment": {
+      "candidate_id": "github:zawadzki2791/dm-code-agent",
+      "decision": "reject",
+      "reason": "監査可能なコードエージェントは開発用途に関係するが、検証済みホストメモではREADMEが8リポジトリ間で完全一致し、既存代表候補の重複と確認済み。新規性・追加価値がなく、APIもライセンスをNOASSERTIONとしているため、この複製候補は対象外とする。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/zawadzki2791/dm-code-agent/HEAD/README.md",
+          "quote": "**本地优先 · 全程可审计 · 内核只有一个 ReAct 循环**"
+        },
+        {
+          "source_url": "https://api.github.com/repos/zawadzki2791/dm-code-agent",
+          "quote": "\"license\": {\"key\": \"other\", \"name\": \"Other\", \"spdx_id\": \"NOASSERTION\", \"url\": null, \"node_id\": \"MDc6TGljZW5zZTA=\"}"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "ライセンスと商用利用条件が不明（READMEはMIT、APIはNOASSERTION）",
+        "インストール・実行資源・モデルIDと後継候補は未確認",
+        "ベンチマーク結果は作者報告で独立検証なし"
+      ]
+    },
+    "priority": "C",
+    "quote_checked": true
+  },
+  {
+    "id": "2610.14448",
+    "request_index": 16,
+    "judgment": {
+      "candidate_id": "2610.14448",
+      "decision": "defer",
+      "reason": "目的はRLVR学習時の非同期rolloutをINT4 KV cacheで高速化し、要所をINT8保護して学習精度低下を抑えること。手法は新規性があるが、報告値はQwenモデルを400 iteration訓練した著者結果で、当方の無償・無訓練・短時間枠では再現も導入もできない。論文以外の独立した注目シグナルや実装artifactも提示されず、今の採用根拠にならない。GPU学習基盤と公開コードが揃う場合に再評価。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.14448",
+          "quote": "We propose \\emph{KV4-RL}, which combines calibration-free INT4 KV quantization with selective INT8 protection"
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2610.14448",
+          "quote": "Across 400 iterations of Qwen3-8B-Base GRPO training"
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2610.14448",
+          "quote": "achieves $1.80\\times$ cumulative rollout speedup"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "著者実装・モデルID・必要GPU資源を確認し、独立した再現報告が現れた時点で評価する。",
+      "unconfirmed": [
+        "実装コードとインストール手順",
+        "ライセンス・商用利用条件",
+        "必要GPU/メモリ/ダウンロード量",
+        "利用するモデルIDと後継版",
+        "性能値の独立再現"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+    "request_index": 40,
+    "judgment": {
+      "candidate_id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+      "decision": "defer",
+      "reason": "目的はコード生成・修正向けの指示追従型1.5Bモデルで、CPU開発支援の候補として用途と規模は合う。通常重みはBF16約1.54B parametersだが、必須のmodel.safetensors単体が約3.09GBで2GB download上限を超える。repo総容量を理由にした以前の判断は誤りで、正確な重み容量で判断し直した。2GB以内の互換量子化artifactが確認できれば20分のCPU試行を検討する。",
+      "evidence": [
+        {
+          "source_url": "https://huggingface.co/api/models/Qwen/Qwen2.5-Coder-1.5B-Instruct?blobs=true",
+          "quote": "\"size\":3087467144"
+        },
+        {
+          "source_url": "https://huggingface.co/api/models/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+          "quote": "\"license:apache-2.0\""
+        },
+        {
+          "source_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct/raw/main/README.md",
+          "quote": "This repo contains the instruction-tuned 1.5B Qwen2.5-Coder model"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "互換量子化版の重みが2GB以内で、商用利用条件とCPU推論要件が確認できるか調べる。",
+      "unconfirmed": [
+        "2GB以内の互換量子化モデルの有無",
+        "商用利用条件の詳細",
+        "8GiB RAMでのCPU速度・品質",
+        "必要な追加依存と導入容量",
+        "後継モデルの有無"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "2412.14219",
+    "request_index": 18,
+    "judgment": {
+      "candidate_id": "2412.14219",
+      "decision": "reject",
+      "reason": "目的はMoE推論最適化研究をモデル・システム・ハードウェア別に整理するsurvey。分類の新規性は参考になるが、当面の小型CPUモデル評価や開発作業に直接適用する対象がなく、実装・比較artifactも提示 evidenceにはない。実行枠を使う価値はなく、MoE導入案件が具体化しない限り不要。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2412.14219",
+          "quote": "This comprehensive survey analyzes optimization techniques for MoE models across the entire system stack."
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2412.14219",
+          "quote": "At the model level, we examine architectural innovations"
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2412.14219",
+          "quote": "This survey provides both a structured overview"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "言及されたrepositoryのURLと内容",
+        "survey内で取り上げた手法の再現コード・ライセンス",
+        "特定手法の必要資源と当方環境適合性",
+        "将来版・更新状況"
+      ]
+    },
+    "priority": "C",
+    "quote_checked": true
+  },
+  {
+    "id": "2602.09373",
+    "request_index": 19,
+    "judgment": {
+      "candidate_id": "2602.09373",
+      "decision": "defer",
+      "reason": "目的はアフリカ諸語翻訳向けの剪定・量子化モデルを提供し、低資源環境での推論を可能にすること。対象言語と効率化は独自性がありCPU制約にも方向性は合うが、当面の翻訳ニーズは示されず、提示証拠は論文のみで独立した注目シグナルはない。モデル容量、ライセンス、導入容易性も不明のため、対象言語の具体的需要と資源条件が確認できるまで保留。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2602.09373",
+          "quote": "AfriNLLB supports 15 language pairs (30 translation directions)"
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2602.09373",
+          "quote": "We release two versions of the AfriNLLB models, a Transformers version"
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2602.09373",
+          "quote": "a CTranslate2 version for efficient inference"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "必要な対象言語方向、モデルartifact URL、2GB内の配布容量とCPU要件を確認する。",
+      "unconfirmed": [
+        "公開モデルartifactのURL・容量・モデルID",
+        "ライセンスおよび商用利用条件",
+        "8GiB RAMと20分枠でのCPU適合性",
+        "対象言語方向の品質と独立評価",
+        "インストール手順と依存容量",
+        "後継モデルの有無"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "2610.14224",
+    "request_index": 28,
+    "judgment": {
+      "candidate_id": "2610.14224",
+      "decision": "defer",
+      "reason": "モデル重みを固定したまま、タスク用ハーネスの改良と経験の継続蓄積を二段階で行う枠組みで、AI開発の運用改善に直結する。HF trending rank 4とGitHub 744 starsという別プラットフォームの注目、および論文・公開実装が揃い深掘り価値はある。ただし既存Harness2実行はコード開始前に一修復上限で停止しており、入力でも再試行禁止。読解段階に留め、実行再開は新たなユーザー継続後の判断とする。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.14224",
+          "quote": "Task-level recursion refines the current task's harness using a contrastive Propose-Probe-Compose step"
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2610.14224",
+          "quote": "Harnessing-level recursion then extracts experience from these edits to update a continual improvement harness"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/google-research/harness2/HEAD/README.md",
+          "quote": "The local demo runs both recursion modes with deterministic editors and real\nPython executions. It requires no model credentials."
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": "deep_dive_value",
+      "next_check": "コード実行なしで論文の評価条件とベンチマーク/実行環境の依存を読み、制約下での適用範囲を整理する。",
+      "unconfirmed": [
+        "API課金を伴うベンチマークで使用する具体的なモデルIDと費用。今回の無料枠では不可",
+        "ローカルdemoと候補実行器の権限分離要件。今回の実行はPermissionErrorで停止",
+        "全ベンチマーク依存・必要なメモリ/ダウンロード量",
+        "Apache-2.0の適用除外となる各第三者コード/データのライセンス",
+        "後継版・実装の更新状況"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "2610.18813",
+    "request_index": 29,
+    "judgment": {
+      "candidate_id": "2610.18813",
+      "decision": "defer",
+      "reason": "固定モデルの周辺ハーネスを継続更新する研究を整理し、探索理論・評価・安全策まで扱う。自己進化エージェントの設計/運用を理解する読解資料として有用で、HF trending rank 10と別プラットフォームのGitHub 145 starsも注目シグナルになる。一方、これは即時に使う軽量ツールというより66ページの調査・理論資料で、モデル評価やコード実行を伴う採用判断は現在の枠に合わない。読解深掘りに留める。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.18813",
+          "quote": "Harness self-evolution revises an agent's software scaffolding, including prompts, memory, workflows, and executable components, while keeping model weights fixed."
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2610.18813",
+          "quote": "Reliable deployment requires continual validation as task distributions and evaluators change, with independent safeguards for learning, runtime privileges, and consequential actions."
+        },
+        {
+          "source_url": "https://api.github.com/repos/zgcagi/Harness-RSI",
+          "quote": "\"stargazers_count\": 145"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": "deep_dive_value",
+      "next_check": "論文の評価分類と安全策を読解し、現行エージェントのハーネス設計に使える検証・権限制御の要件を整理する。",
+      "unconfirmed": [
+        "GitHub APIのlicense欄はCC-BY-4.0だが、論文・コード・第三者資料それぞれの適用範囲と商用条件",
+        "コード実行に必要な環境・依存・資源。今回は実行していない",
+        "モデルは提供物に含まれないため、論文中の実験モデルIDと後継モデル",
+        "独立再現の有無と更新後の後継資料"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "2610.22341",
+    "request_index": 30,
+    "judgment": {
+      "candidate_id": "2610.22341",
+      "decision": "defer",
+      "reason": "目的は、コード生成エージェントに3D成果物を作らせ、実行・幾何測定・描画結果で修正する評価ハーネスとデータ基盤。DAG型の反復検証はAI開発の評価手法として興味深く、Hugging Face trendingとGitHub starsの別プラットフォームで注目があり、論文とコードも提示されているため読解深掘り価値がある。一方、実行にはベンダーCLI、Python 3.13とNodeが必要で、データセットも別条件。20分CPU・無課金バックエンドでの実行適合は未確認なので、今回は読解に留め、導入・費用・データ条件を確認できたら再検討する。性能値は著者報告で未検証。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.22341",
+          "quote": "a multi-agent directed acyclic graph framework for generating and refining 3D content"
+        },
+        {
+          "source_url": "https://api.github.com/repos/gaoypeng/3dcodeverse",
+          "quote": "\"stargazers_count\": 63"
+        },
+        {
+          "source_url": "https://api.github.com/repos/gaoypeng/3dcodeverse",
+          "quote": "\"license\": {\"key\": \"apache-2.0\", \"name\": \"Apache License 2.0\", \"spdx_id\": \"Apache-2.0\""
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/gaoypeng/3dcodeverse/HEAD/README.md",
+          "quote": "The coding agent is always a vendor's CLI:"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/gaoypeng/3dcodeverse/HEAD/README.md",
+          "quote": "The code is licensed under [Apache-2.0](LICENSE)."
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": "deep_dive_value",
+      "next_check": "READMEのINSTALL/COSTとデータセットカードで、無課金CLI経路、CPU/RAM要件、単一取得容量、データ利用条件を確認する。",
+      "unconfirmed": [
+        "コードのApache-2.0表示は確認。データセットは別ライセンスで非商用条件と記載されるが、個別カードの条件は未確認。",
+        "依存取得量、単一ダウンロード量、8GiB RAMでの動作可否、ベンダーCLIの無課金利用可否は未確認。",
+        "READMEはQwen各モデルの評価を記載するが、今回の実行に使うモデルID・後継候補は未確認。",
+        "性能比較と勝率は著者報告であり、こちらで推論測定・再現をしていない。"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "2610.22200",
+    "request_index": 31,
+    "judgment": {
+      "candidate_id": "2610.22200",
+      "decision": "defer",
+      "reason": "目的はGUIとプログラム操作を組み合わせる汎用computer-use agentの公開スタックで、観測や状態判断をモデルへ移す設計が特徴。AI開発・エージェント評価に関連し、Hugging Face trendingとGitHub starsで別々の注目があり、論文と実装があるため読解深掘り価値はある。一方、掲載の実機ハーネスはmacOS 14+が必要で、構成例はAPI keyを要求する。無課金・CPU 20分の実行条件には現状合わないため読解に留め、利用可能な無課金モデル経路と権限・費用条件を確認できたら再検討する。性能値は著者報告。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.22200",
+          "quote": "moving selected observations and task-state decisions from fixed harness rules to the model"
+        },
+        {
+          "source_url": "https://api.github.com/repos/Tongyi-MAI/OpenGCUA",
+          "quote": "\"stargazers_count\": 56"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/Tongyi-MAI/OpenGCUA/HEAD/README.md",
+          "quote": "This is the shortest path from a clean clone to an interactive agent. It requires macOS 14+"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/Tongyi-MAI/OpenGCUA/HEAD/README.md",
+          "quote": "\"api_key\": \"YOUR_API_KEY\""
+        },
+        {
+          "source_url": "https://api.github.com/repos/Tongyi-MAI/OpenGCUA",
+          "quote": "\"license\": {\"key\": \"apache-2.0\", \"name\": \"Apache License 2.0\", \"spdx_id\": \"Apache-2.0\""
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": "deep_dive_value",
+      "next_check": "無課金で利用できる互換モデル経路、macOS実機ハーネスの権限・データ境界、依存取得量を一次資料で確認する。",
+      "unconfirmed": [
+        "Apache-2.0のコードライセンス表示は確認。モデルや軌跡データそれぞれの利用条件は未確認。",
+        "API keyなしで利用できるモデル経路、費用、8GiB RAMでの実行可否、依存取得量は未確認。",
+        "モデル構成は多数記載されるが、今回の条件で使えるモデルIDや後継候補は未確認。",
+        "掲載された改善値は著者報告であり、こちらで測定・比較していない。"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "2605.23904",
+    "request_index": 32,
+    "judgment": {
+      "candidate_id": "2605.23904",
+      "decision": "defer",
+      "reason": "目的は、固定モデルに対するagent skill文書を評価ロールアウトで反復最適化し、検証スコアが上がる変更だけ採用すること。重み学習を伴わず、Codexを含む実行環境へ移植する報告はAI開発のskill運用に直接関係する。Hugging Face trendingとGitHub starsの独立シグナルがあり、論文と実装もあるため読解深掘り価値が高い。ただし最適化時のモデル呼び出し・費用と利用可能な無課金経路が不明なので、0円条件を満たす構成が確認できれば検討する。数値は著者報告で未検証。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2605.23904",
+          "quote": "an edit is accepted only when it strictly improves a held-out validation score"
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2605.23904",
+          "quote": "adding zero inference-time model calls at deployment"
+        },
+        {
+          "source_url": "https://api.github.com/repos/microsoft/SkillOpt",
+          "quote": "\"stargazers_count\": 18496"
+        },
+        {
+          "source_url": "https://api.github.com/repos/microsoft/SkillOpt",
+          "quote": "\"license\": {\"key\": \"mit\", \"name\": \"MIT License\", \"spdx_id\": \"MIT\""
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/microsoft/SkillOpt/HEAD/README.md",
+          "quote": "with epochs, (mini-)batchsize, learning rates, and validation gates — but without touching model weights."
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": "deep_dive_value",
+      "next_check": "公式docsで最適化時に必要なモデル/API費用、無課金バックエンド、既存skillとの接続方法を確認する。",
+      "unconfirmed": [
+        "GitHub APIはMIT表示。商用利用条件の詳細は一次資料で確認していない。",
+        "最適化時に必要なモデルID・モデル提供者・呼び出し料金、無課金経路は未確認。",
+        "インストール依存量、RAM要件、後継バージョンは未確認。",
+        "ベンチマーク改善値は著者報告であり、こちらで測定・比較していない。"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "2608.14658",
+    "request_index": 25,
+    "judgment": {
+      "candidate_id": "2608.14658",
+      "decision": "test",
+      "reason": "生UTF-8バイトから言語・形式・リスクなど複数の属性を分類する小型モデルで、コード分類や抽出前の振り分けに使える。ONNX単体は約9MB、学習なしのCPU利用を想定した公開物があり、30分・2GB以内で試す候補として適合する。ただし一般テキスト分類は作者記載で弱く、性能値は未検証なので、用途を形式/コード分類に絞りApache 2.0の範囲で評価する。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2608.14658",
+          "quote": "The model, code, and pretrained weights are released under Apache 2.0."
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/eulogik/pico-type/HEAD/README.md",
+          "quote": "**~9MB single-file ONNX (FP32)**"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/eulogik/pico-type/HEAD/README.md",
+          "quote": "general-classification gates (AG/SST-2/Enron) stay at chance — this is a byte-pattern risk flagger, not a general text classifier."
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "公開ONNXを2GB以内で取得し、コード言語・形式分類と既知の誤検出を小さな非機密サンプルで確認する。",
+      "unconfirmed": [
+        "CPU/メモリ要件と依存導入の実測値",
+        "Apache 2.0が全依存・全データにも適用されるか",
+        "評価データと一般化性能の独立再現",
+        "モデルの完全な版IDと後継モデル"
+      ]
+    },
+    "priority": "A",
+    "quote_checked": true
+  },
+  {
+    "id": "2610.14726",
+    "request_index": 42,
+    "judgment": {
+      "candidate_id": "2610.14726",
+      "decision": "defer",
+      "reason": "目的は動画生成のvideo VAEを圧縮し、復元品質を保ちながらデコードを効率化すること。時間・深さと空間・時間カーネルを分けた設計に新規性があり、論文に加えてGitHub 30 starsとHF 819 downloads/33 likesという別基盤の活動シグナル、コードと重みが示されているため深掘り価値はある。ただし効果はH100/RTX 5090等での著者報告で、動画VAE作業にはGPUが必要。手元CPU/RAMで不足する具体的需要と無料GPU枠のquota・認証・プライバシーは未確認なので、試行は条件確認後。",
+      "evidence": [
+        {
+          "source_url": "https://api.github.com/repos/ModelTC/LightVAE",
+          "quote": "\"stargazers_count\": 30"
+        },
+        {
+          "source_url": "https://huggingface.co/api/models/lightx2v/LightVAE?blobs=true",
+          "quote": "\"downloads\":819,"
+        },
+        {
+          "source_url": "https://huggingface.co/api/models/lightx2v/LightVAE?blobs=true",
+          "quote": "\"likes\":33"
+        },
+        {
+          "source_url": "https://arxiv.org/abs/2610.14726",
+          "quote": "Our code is available at this https URL"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/ModelTC/LightVAE/HEAD/README.md",
+          "quote": "Tested with **Python 3.11** and **PyTorch 2.11.0 / CUDA 12.8**."
+        },
+        {
+          "source_url": "https://api.github.com/repos/ModelTC/LightVAE",
+          "quote": "\"license\": null"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": "deep_dive_value",
+      "next_check": "対象動画VAEの具体的なGPU需要と基準モデル容量を確認し、CPU/RAM不足が明らかな場合に限り、Kaggleの無料quota・認証・プライバシー条件と必要な重み容量を検証する。",
+      "unconfirmed": [
+        "コードrepoのライセンスと商用利用条件（GitHub APIでlicense null）",
+        "対応する利用モデルID・利用対象のWan/MiniMaxバージョン",
+        "基準VAEを含む総ダウンロード容量とVRAM要件",
+        "Kaggle無料quota・認証・プライバシー条件",
+        "当方GPU/backendでの速度・品質再現性",
+        "後継版の有無"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  },
+  {
+    "id": "2502.07286",
+    "request_index": 27,
+    "judgment": {
+      "candidate_id": "2502.07286",
+      "decision": "defer",
+      "reason": "長文からaward等の長い固有表現を抽出するSeNERで、長文抽出用途には合う。BiSPAで候補スパン間の計算重複を減らす点が新しいが、提供リポジトリの導入記載はCUDA/PyTorch前提で、データ・事前学習モデルの取得条件も今回のCPU/2GB枠に適合するか分からない。権利とCPU対応を確認できれば再評価する。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2502.07286",
+          "quote": "a novel bidirectional sliding-window plus-shaped attention (BiSPA) mechanism to reduce redundant candidate token-pair spans significantly"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/thudm/scholar-profiling/HEAD/README.md",
+          "quote": "- PyTorch 1.10.0+cu111"
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/thudm/scholar-profiling/HEAD/README.md",
+          "quote": "- pretrain_models.zip [[Aliyun Link]]"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "一次資料でSeNER専用コード/重み、ライセンス、CPU推論可否、必要データを確認し、2GB以内の単一評価手順があるか判断する。",
+      "unconfirmed": [
+        "GitHub APIのlicense欄はnullで、コード/モデル/データの商用利用条件が未確認",
+        "SeNER専用の現行インストール手順とCPU/メモリ要件",
+        "必要なpretrain_models.zipとデータの総ダウンロード量",
+        "評価設定と使用モデルの完全ID・後継モデル",
+        "独立した二つ目の注目シグナル"
+      ]
+    },
+    "priority": "B",
+    "quote_checked": true
+  }
+]

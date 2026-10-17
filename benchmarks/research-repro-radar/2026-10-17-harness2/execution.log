@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/app/run_demo.py", line 8, in <module>
+    assert not any(Path(p).exists() for p in ['/workspace','/home/agent','/root/.codex','/root/.aws'])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/run_demo.py", line 8, in <genexpr>
+    assert not any(Path(p).exists() for p in ['/workspace','/home/agent','/root/.codex','/root/.aws'])
+                   ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/pathlib.py", line 860, in exists
+    self.stat(follow_symlinks=follow_symlinks)
+  File "/usr/local/lib/python3.12/pathlib.py", line 840, in stat
+    return os.stat(self, follow_symlinks=follow_symlinks)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/root/.codex'
