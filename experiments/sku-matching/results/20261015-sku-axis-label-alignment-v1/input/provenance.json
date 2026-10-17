@@ -1,0 +1,53 @@
+{
+  "schema_version": "sku-axis-label-pairs-v1",
+  "input_files": {
+    "products": {
+      "path": ".lab-output/sku-next-dev-v7-runtime-20261013-v1/run/inputs/products.jsonl",
+      "sha256": "75353ed9c40333bef064109d8c99a0baf72c707564724ca1bd9481ccae539926",
+      "line_count": 107
+    },
+    "cases": {
+      "path": ".lab-output/sku-next-dev-v7-runtime-20261013-v1/run/inputs/cases.jsonl",
+      "sha256": "06898908758f6a6dfe3446ee63c7688c0e68d4928dde7dbfe05a821e2ef63a09",
+      "line_count": 1370
+    },
+    "membership": {
+      "path": ".lab-output/sku-next-dev-v7-adapter-20261013-v1/membership.jsonl",
+      "sha256": "ab90d19dc4065be564acb8fe7d57d966d9c82f8018b1482de515083ab39f3a58",
+      "line_count": 40
+    }
+  },
+  "source_pair_count": 107,
+  "selected_dev_subset_pair_count": 20,
+  "source_case_count": 1370,
+  "pairs_by_axis_count_gate": {
+    "au_le_rakuten": 103,
+    "au_gt_rakuten": 4
+  },
+  "missing_au_axis_label_count": 0,
+  "missing_rakuten_axis_label_count": 1,
+  "au_unique_label_count": 34,
+  "rakuten_unique_label_count": 47,
+  "source_split_values": [
+    "exploration"
+  ],
+  "selected_subset_source_split_values": [
+    "exploration"
+  ],
+  "selected_subset_is_independent_validation": false,
+  "model_inference_run": false,
+  "semantic_label_completion": false,
+  "model_input_fields": [
+    "au_axes[].label",
+    "rakuten_axes[].label"
+  ],
+  "excluded_from_model_input": [
+    "axis values",
+    "SKU values",
+    "product descriptions",
+    "source bodies",
+    "gold labels",
+    "prior predictions",
+    "grades"
+  ]
+}

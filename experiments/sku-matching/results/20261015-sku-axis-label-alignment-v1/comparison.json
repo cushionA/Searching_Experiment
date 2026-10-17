@@ -1,0 +1,602 @@
+{
+  "schema_version": "sku-axis-label-comparison-v1",
+  "semantic_accuracy_measured": false,
+  "automatic_adoption_allowed": false,
+  "scope": "historical exploratory source pairs; no training, threshold selection or new annotation",
+  "source_pair_count": 107,
+  "models": {
+    "minilm": {
+      "input_pairs": 107,
+      "eligible_pairs": 103,
+      "skipped_pairs": 4,
+      "mapped_axis_count": 165,
+      "collision_count": 6,
+      "tie_count": 4,
+      "asymmetry_candidate_count": 16,
+      "exact_baseline_matched_axis_count": 127,
+      "exact_baseline_unique_match_axis_count": 123,
+      "exact_baseline_tie_axis_count": 4,
+      "exact_baseline_agreement_count": 123,
+      "elapsed_total_seconds": 1.5144569309998133,
+      "encoded_unique_label_count": 52,
+      "collision_pairs": 3,
+      "tie_pairs": 2,
+      "selected_dev_subset": {
+        "pairs": 20,
+        "mapped_axes": 31,
+        "collision_axes": 0,
+        "asymmetry_candidates": 0
+      },
+      "value_candidate_combinations": {
+        "unrestricted_axis_cross_product": 8094,
+        "following_proposed_axis_mapping": 5734,
+        "reduction_fraction": 0.29157400543612555,
+        "interpretation": "arithmetic candidate count, not measured speed or correct SKU matches; collisions/uncertain mappings included"
+      },
+      "raw_equal_value_occurrences": {
+        "shared_distinct_per_axis_values": 521,
+        "au_distinct_per_axis_values": 725,
+        "interpretation": "literal strings only; no unit normalization, row matching or semantic accuracy"
+      },
+      "tie_target_count": 4,
+      "ambiguous_pair_count": 2,
+      "collision_definition": "Two or more AU axes share the same stable top1 Rakuten axis; co-leading tie candidates alone are not a collision.",
+      "asymmetry_definition": "not selected by any top1 or tied leading AU match; candidate only"
+    },
+    "ruri": {
+      "input_pairs": 107,
+      "eligible_pairs": 103,
+      "skipped_pairs": 4,
+      "mapped_axis_count": 165,
+      "collision_count": 14,
+      "tie_count": 4,
+      "asymmetry_candidate_count": 20,
+      "exact_baseline_matched_axis_count": 127,
+      "exact_baseline_unique_match_axis_count": 123,
+      "exact_baseline_tie_axis_count": 4,
+      "exact_baseline_agreement_count": 123,
+      "elapsed_total_seconds": 3.5410684470000433,
+      "encoded_unique_label_count": 52,
+      "collision_pairs": 7,
+      "tie_pairs": 2,
+      "selected_dev_subset": {
+        "pairs": 20,
+        "mapped_axes": 31,
+        "collision_axes": 2,
+        "asymmetry_candidates": 1
+      },
+      "value_candidate_combinations": {
+        "unrestricted_axis_cross_product": 8094,
+        "following_proposed_axis_mapping": 5815,
+        "reduction_fraction": 0.28156659253768224,
+        "interpretation": "arithmetic candidate count, not measured speed or correct SKU matches; collisions/uncertain mappings included"
+      },
+      "raw_equal_value_occurrences": {
+        "shared_distinct_per_axis_values": 512,
+        "au_distinct_per_axis_values": 725,
+        "interpretation": "literal strings only; no unit normalization, row matching or semantic accuracy"
+      },
+      "tie_target_count": 4,
+      "ambiguous_pair_count": 2,
+      "collision_definition": "Two or more AU axes share the same stable top1 Rakuten axis; co-leading tie candidates alone are not a collision.",
+      "asymmetry_definition": "not selected by any top1 or tied leading AU match; candidate only"
+    }
+  },
+  "model_disagreements": [
+    {
+      "pair_id": "raw-0c1516112a2be41f",
+      "au_axis_id": "au-position-1",
+      "au_label": "ワイズ",
+      "minilm": {
+        "axis_id": "rakuten-index-0-key-足囲",
+        "label": "足囲",
+        "score": 0.7364312284880032
+      },
+      "ruri": {
+        "axis_id": "rakuten-index-1-key-サイズ（cm）",
+        "label": "サイズ（cm）",
+        "score": 0.8221376449381347
+      },
+      "selected_dev_subset": false
+    },
+    {
+      "pair_id": "raw-14870a21b0b285e6",
+      "au_axis_id": "au-position-0",
+      "au_label": "種類",
+      "minilm": {
+        "axis_id": "rakuten-index-1-key-二つ目",
+        "label": "二つ目",
+        "score": 0.5647153102044281
+      },
+      "ruri": {
+        "axis_id": "rakuten-index-0-key-一つ目",
+        "label": "一つ目",
+        "score": 0.8726802885691466
+      },
+      "selected_dev_subset": false
+    },
+    {
+      "pair_id": "raw-6556876dbb9d86b2",
+      "au_axis_id": "au-position-1",
+      "au_label": "ワイズ",
+      "minilm": {
+        "axis_id": "rakuten-index-0-key-足囲",
+        "label": "足囲",
+        "score": 0.7364312284880032
+      },
+      "ruri": {
+        "axis_id": "rakuten-index-1-key-サイズ（cm）",
+        "label": "サイズ（cm）",
+        "score": 0.8221376449381347
+      },
+      "selected_dev_subset": false
+    },
+    {
+      "pair_id": "raw-738db4d617d48eb3",
+      "au_axis_id": "au-position-0",
+      "au_label": "カラー",
+      "minilm": {
+        "axis_id": "rakuten-index-2-key-Key2",
+        "label": "ヘアアクセサリー",
+        "score": 0.5858098162852466
+      },
+      "ruri": {
+        "axis_id": "rakuten-index-0-key-Key0",
+        "label": "サイズ",
+        "score": 0.8345206620608302
+      },
+      "selected_dev_subset": false
+    },
+    {
+      "pair_id": "raw-bc968dfa0d682b1a",
+      "au_axis_id": "au-position-1",
+      "au_label": "ワイズ",
+      "minilm": {
+        "axis_id": "rakuten-index-0-key-足囲",
+        "label": "足囲",
+        "score": 0.7364312284880032
+      },
+      "ruri": {
+        "axis_id": "rakuten-index-1-key-サイズ（cm）",
+        "label": "サイズ（cm）",
+        "score": 0.8221376449381347
+      },
+      "selected_dev_subset": true
+    }
+  ],
+  "source_spot_checks": [
+    {
+      "pair_id": "raw-0c1516112a2be41f",
+      "au_axes": [
+        {
+          "axis_id": "au-position-0",
+          "label": "サイズ",
+          "values": [
+            "21.0cm",
+            "21.5cm",
+            "22.0cm",
+            "22.5cm",
+            "23.0cm",
+            "23.5cm",
+            "24.0cm",
+            "24.5cm",
+            "25.0cm",
+            "25.5cm",
+            "26.0cm",
+            "26.5cm",
+            "27.0cm"
+          ]
+        },
+        {
+          "axis_id": "au-position-1",
+          "label": "ワイズ",
+          "values": [
+            "3E",
+            "4E",
+            "5E"
+          ]
+        }
+      ],
+      "rakuten_axes": [
+        {
+          "axis_id": "rakuten-index-0-key-足囲",
+          "label": "足囲",
+          "values": [
+            "3E",
+            "4E",
+            "5E"
+          ]
+        },
+        {
+          "axis_id": "rakuten-index-1-key-サイズ（cm）",
+          "label": "サイズ（cm）",
+          "values": [
+            "21.0",
+            "21.5",
+            "22.0",
+            "22.5",
+            "23.0",
+            "23.5",
+            "24.0",
+            "24.5",
+            "25.0",
+            "25.5",
+            "26.0",
+            "26.5",
+            "27.0"
+          ]
+        }
+      ],
+      "values_read_only_after_predictions_frozen": true,
+      "used_for_model_input": false
+    },
+    {
+      "pair_id": "raw-14870a21b0b285e6",
+      "au_axes": [
+        {
+          "axis_id": "au-position-0",
+          "label": "種類",
+          "values": [
+            "ディープモイスト シャンプー",
+            "ディープモイスト トリートメント",
+            "ハイドロリペア シャンプー",
+            "ハイドロリペア トリートメント",
+            "GD EX シャンプー",
+            "GD EX トリートメント"
+          ]
+        }
+      ],
+      "rakuten_axes": [
+        {
+          "axis_id": "rakuten-index-0-key-一つ目",
+          "label": "一つ目",
+          "values": [
+            "ディープモイスト シャンプー",
+            "ディープモイスト トリートメント",
+            "ハイドロリペア シャンプー",
+            "ハイドロリペア トリートメント",
+            "ゴールデンモイストシャンプー",
+            "ゴールデンモイストトリートメント"
+          ]
+        },
+        {
+          "axis_id": "rakuten-index-1-key-二つ目",
+          "label": "二つ目",
+          "values": [
+            "ディープモイスト シャンプー",
+            "ディープモイスト トリートメント",
+            "ハイドロリペア シャンプー",
+            "ハイドロリペア トリートメント",
+            "ゴールデンモイストシャンプー",
+            "ゴールデンモイストトリートメント"
+          ]
+        }
+      ],
+      "values_read_only_after_predictions_frozen": true,
+      "used_for_model_input": false
+    },
+    {
+      "pair_id": "raw-5c0aa587141c5f27",
+      "au_axes": [
+        {
+          "axis_id": "au-position-0",
+          "label": "V(018)_Crew(019)_Henly(020)/カラー",
+          "values": [
+            "Vネック_ブラック(10)",
+            "Vネック_グレー(20)",
+            "Vネック_ホワイト(30)",
+            "Vネック_チャコール(410)",
+            "Vネック_ネイビー(RY)(440)",
+            "クルーネック_ブラック(10)",
+            "クルーネック_グレー(20)",
+            "クルーネック_ホワイト(30)",
+            "クルーネック_チャコール(410)",
+            "クルーネック_ネイビー_(RY)(440)",
+            "ヘンリーネック_ブラック(10)",
+            "ヘンリーネック_グレー(20)",
+            "ヘンリーネック_ホワイト(30)",
+            "ヘンリーネック_チャコール(410)",
+            "ヘンリーネック_ネイビー_(RY)(440)"
+          ]
+        },
+        {
+          "axis_id": "au-position-1",
+          "label": "4930-018_019_020/サイズ",
+          "values": [
+            "S",
+            "M",
+            "L",
+            "XL"
+          ]
+        }
+      ],
+      "rakuten_axes": [
+        {
+          "axis_id": "rakuten-index-0-key-493-0003_0004_0005/サイズ",
+          "label": "4930-018_019_020/サイズ",
+          "values": [
+            "S",
+            "M",
+            "L",
+            "XL"
+          ]
+        },
+        {
+          "axis_id": "rakuten-index-1-key-V(0003)_Crew(0004)_Henly(0005)",
+          "label": "V(018)_Crew(019)_Henly(020)",
+          "values": [
+            "Vネック_ブラック(10)",
+            "Vネック_グレー(20)",
+            "Vネック_ホワイト(30)",
+            "Vネック_チャコール(410)",
+            "Vネック_ネイビー(RY)(440)",
+            "クルーネック_ブラック(10)",
+            "クルーネック_グレー(20)",
+            "クルーネック_ホワイト(30)",
+            "クルーネック_チャコール(410)",
+            "クルーネック_ネイビー_(RY)(440)",
+            "ヘンリーネック_ブラック(10)",
+            "ヘンリーネック_グレー(20)",
+            "ヘンリーネック_ホワイト(30)",
+            "ヘンリーネック_チャコール(410)",
+            "ヘンリーネック_ネイビー(RY)(440)"
+          ]
+        }
+      ],
+      "values_read_only_after_predictions_frozen": true,
+      "used_for_model_input": false
+    },
+    {
+      "pair_id": "raw-635b86c6e684e1d1",
+      "au_axes": [
+        {
+          "axis_id": "au-position-0",
+          "label": "カラー",
+          "values": [
+            "シルバー"
+          ]
+        },
+        {
+          "axis_id": "au-position-1",
+          "label": "サイズ",
+          "values": [
+            "21.5",
+            "22.0",
+            "22.5",
+            "23.0",
+            "23.5",
+            "24.0",
+            "24.5",
+            "25.0",
+            "25.5"
+          ]
+        }
+      ],
+      "rakuten_axes": [
+        {
+          "axis_id": "rakuten-index-0-key-サイズ",
+          "label": "サイズ",
+          "values": [
+            "21.5cm",
+            "22.0cm",
+            "22.5cm",
+            "23.0cm",
+            "23.5cm",
+            "24.0cm",
+            "24.5cm",
+            "25.0cm",
+            "25.5cm"
+          ]
+        },
+        {
+          "axis_id": "rakuten-index-1-key-ヒール",
+          "label": "ヒール",
+          "values": [
+            "5cm",
+            "8cm",
+            "10cm"
+          ]
+        }
+      ],
+      "values_read_only_after_predictions_frozen": true,
+      "used_for_model_input": false
+    },
+    {
+      "pair_id": "raw-6556876dbb9d86b2",
+      "au_axes": [
+        {
+          "axis_id": "au-position-0",
+          "label": "サイズ",
+          "values": [
+            "21.0cm",
+            "21.5cm",
+            "22.0cm",
+            "22.5cm",
+            "23.0cm",
+            "23.5cm",
+            "24.0cm",
+            "24.5cm",
+            "25.0cm",
+            "25.5cm",
+            "26.0cm",
+            "26.5cm",
+            "27.0cm"
+          ]
+        },
+        {
+          "axis_id": "au-position-1",
+          "label": "ワイズ",
+          "values": [
+            "3E",
+            "4E",
+            "5E"
+          ]
+        }
+      ],
+      "rakuten_axes": [
+        {
+          "axis_id": "rakuten-index-0-key-足囲",
+          "label": "足囲",
+          "values": [
+            "3E",
+            "4E",
+            "5E"
+          ]
+        },
+        {
+          "axis_id": "rakuten-index-1-key-サイズ（cm）",
+          "label": "サイズ（cm）",
+          "values": [
+            "21.0",
+            "21.5",
+            "22.0",
+            "22.5",
+            "23.0",
+            "23.5",
+            "24.0",
+            "24.5",
+            "25.0",
+            "25.5",
+            "26.0",
+            "26.5",
+            "27.0"
+          ]
+        }
+      ],
+      "values_read_only_after_predictions_frozen": true,
+      "used_for_model_input": false
+    },
+    {
+      "pair_id": "raw-738db4d617d48eb3",
+      "au_axes": [
+        {
+          "axis_id": "au-position-0",
+          "label": "カラー",
+          "values": [
+            "シャンパン色"
+          ]
+        },
+        {
+          "axis_id": "au-position-1",
+          "label": "サイズ",
+          "values": [
+            "S",
+            "M",
+            "L",
+            "XL",
+            "サイズ指定"
+          ]
+        }
+      ],
+      "rakuten_axes": [
+        {
+          "axis_id": "rakuten-index-0-key-Key0",
+          "label": "サイズ",
+          "values": [
+            "S",
+            "M",
+            "L",
+            "XL",
+            "サイズ指定"
+          ]
+        },
+        {
+          "axis_id": "rakuten-index-1-key-Key1",
+          "label": "パニエ（4段）",
+          "values": [
+            "つけない",
+            "つける"
+          ]
+        },
+        {
+          "axis_id": "rakuten-index-2-key-Key2",
+          "label": "ヘアアクセサリー",
+          "values": [
+            "つけない",
+            "つける"
+          ]
+        }
+      ],
+      "values_read_only_after_predictions_frozen": true,
+      "used_for_model_input": false
+    },
+    {
+      "pair_id": "raw-bc968dfa0d682b1a",
+      "au_axes": [
+        {
+          "axis_id": "au-position-0",
+          "label": "サイズ",
+          "values": [
+            "21.0cm",
+            "21.5cm",
+            "22.0cm",
+            "22.5cm",
+            "23.0cm",
+            "23.5cm",
+            "24.0cm",
+            "24.5cm",
+            "25.0cm",
+            "25.5cm",
+            "26.0cm",
+            "26.5cm",
+            "27.0cm"
+          ]
+        },
+        {
+          "axis_id": "au-position-1",
+          "label": "ワイズ",
+          "values": [
+            "3E",
+            "4E",
+            "5E"
+          ]
+        }
+      ],
+      "rakuten_axes": [
+        {
+          "axis_id": "rakuten-index-0-key-足囲",
+          "label": "足囲",
+          "values": [
+            "3E",
+            "4E",
+            "5E"
+          ]
+        },
+        {
+          "axis_id": "rakuten-index-1-key-サイズ（cm）",
+          "label": "サイズ（cm）",
+          "values": [
+            "21.0",
+            "21.5",
+            "22.0",
+            "22.5",
+            "23.0",
+            "23.5",
+            "24.0",
+            "24.5",
+            "25.0"
+          ]
+        }
+      ],
+      "values_read_only_after_predictions_frozen": true,
+      "used_for_model_input": false
+    }
+  ],
+  "model_agreement": {
+    "mapped_axes": 165,
+    "same_top1_axis_id": 160,
+    "different_top1_axis_id": 5,
+    "is_accuracy": false
+  },
+  "reproducibility": {
+    "base_branch": "codex-sku-generic-model-gates-20261010",
+    "base_commit": "ebf04aed9b5a747f5db8961b9c96fef7be81adef",
+    "prepared_input": "input/axis-pairs.jsonl",
+    "input_sha256": "29c003adc7b3e6adefe4a9ddf04b87e5f9861ec81df9e7e7129a54e4f9cde6a2",
+    "script_sha256": {
+      "align_axis_labels_v1.py": "02ed29e8dc2c25c854de17a85b28d1054fdb6c4b9e32b1b5b8c447c0e8e9ded0",
+      "prepare_axis_label_pairs_v1.py": "e376c5a44ea035b90e452a50a25ea502c76eae462854b0f6defb0e03c8e5b8ac"
+    },
+    "model_output_recomputed_after_tie_ambiguity_fix": true
+  }
+}
