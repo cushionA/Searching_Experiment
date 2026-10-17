@@ -1,0 +1,40 @@
+SKUボリューム検証 最終引継ぎ（2026-10-17 JST）
+branch codex-sku-generic-model-gates-20261010 /base90a1512
+workspace .lab-output/sku-dice-volume-20261017-v1
+結果 experiments/sku-matching/results/20261017-sku-dice-volume-v1.{txt,json,zip}
+
+全v2/v3の213商品2662ケースを確認。新規未使用の独立正解付きケース0。
+TRAIN1330とEVAL1332を分けて採点。全62502候補行・267334条件bindingを保持。
+原条件request55082件。元判定5ファイルのSHAは不変。新しい意味辞書・数量規則・閾値調整なし。
+
+Kaggle private CPU ref superbigzabuton/sku-dice-volume-20261017-v1 version2成功。
+private Dataset superbigzabuton/sku-dice-volume-input-20261017-v1 version1 ready。
+job-v2/job.json・continuation.json・monitor-events・persisted/session logs・artifacts保存。
+v1はgzip自動展開による入力名不一致で検証停止。v2は未圧縮原本SHAを照合する修正のみ。
+稼働中ログAPI timeoutはあったが同じjob監視を継続しcomplete後に全出力を回収した。
+全9方式のホスト条件→行→ケース再計算がKaggle出力と一致、旧EVAL18投影も一致。
+EVAL採点参照をKaggleへ送っていない。予測・host audit凍結後に選択参照を読んだ。
+
+全量の既知参照一致自動判定: exact818/current1096/dictionary2 1119/CoreFull1119。
+TRAIN: current684/dictionary705、EVAL: current412/dictionary414。学習側の+21を評価効果に足さない。
+全方式の既知誤判定0、正解候補誤除外0/1801。辞書までの自動判定1184のうち65件は参照不明。
+Core/FullはTRAINの参照不明1件をさらに自動化するが正解増とは数えない。EVAL改善0。
+EVAL残AIcontext1546→辞書1538、Core/Full1538で変化0。
+全量残context2534→辞書2474→Core/Full2470（最後の4はTRAINの参照不明自動化1件に由来）。
+実際のAI calls/token/料金は未測定。
+
+文字2gramの全一致1801件で先頭正解1625、ガード後1746。同率1位群に正解1785/1801=99.11%。
+追加TRAINの2商品16件で正解が同率1位にも残らない。例Bタイプ03.ライトグレーがAタイプ03に負ける。
+同率込み100%だった旧EVAL1332の結果を全商品へ外挿しない。Diceは並び順のみ、確定・hard prune禁止。
+
+50k負荷実数50004ケース・1174765候補行・5027643条件。全9負荷点で判定差0。
+Sudachiなし51.9638秒、CoreC86.5159秒、FullC86.5009秒。CPU1worker、peakRSS574062592B。
+語彙正規化表と元graph/phrase条件はキャッシュ。固定辞書照合・Dice・元gateを毎回再計算。
+元graph生成・転送/pip・採点は計時外。反復件数を精度標本に数えない。TS本番SLAではない。
+結論: 厳密照合→保守的古典guard→小さい固定辞書→残りAI/保留。Diceは順位補助。
+今回の経路にCore/Fullを追加する根拠なし。特にFullは評価改善0で負荷のみ増える。
+
+新3tests成功、必須1580tests fail4/error66/skip60（前回と失敗70名一致）。
+本番gate・古いraw/model/400M索引/ZIPは変更なし。他branchやPRからcode取得なし。
+全入力・snapshots・Notebook2版・監視/回収・host audit・選択参照・採点をZIPでexportする。
+以後の改善は別版・別PLAN。今回の凍結v1を評価結果に合わせて上書きしない。
