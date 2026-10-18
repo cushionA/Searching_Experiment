@@ -1,0 +1,192 @@
+{
+  "run_id": "2026-10-18-evening",
+  "date_jst": "2026-10-18",
+  "backend": "native",
+  "requested_model": "gpt-6-luna",
+  "actual_service_model": "unknown",
+  "canonical_base": "efd3c909d2d729cfc0e8f189a01dd213bd400257",
+  "upstream_skill": "55ceed634506c5942d6a8e84c71d7e80acc103ff",
+  "recommended": [],
+  "completed_ids": [],
+  "reading_deep_dive_pending": [
+    {
+      "id": "2609.18063",
+      "title": "The Other Half of the Memory Wall: Serving 35B MoEs from SSD with Trained Routing Prediction",
+      "url": "https://arxiv.org/abs/2609.18063",
+      "priority": "B",
+      "category": "deep_dive_value",
+      "verification_level": "reading",
+      "reason": "Edge0はMoE重みをSSDから読み、prerouterとRecover-LoRAで活性expertだけをRAMに置く推論方式。次層の経路を先読みする点が新規。2026-09-16公開、repoは09-08作成・10-16更新。実装・モデルともApache-2.0。HF trending 2位とGitHub 5,666 starsという別基盤の2注目信号に一次論文があり、深掘り基準を満たす（注目は再現証拠ではない）。ただし8Bの実model.safetensorsは4,508,697,328 bytes（base file単体、約4.51 GB/4.20 GiB）、READMEのcheckpoint概数は約4.2 GB。2GB取得枠を超えるため資源適合は保留し、却下とはしない。READMEの1–3 GiBはMLX allocator peakでprocess RSSではない。現時点Python版はApple Silicon/macOS向け。",
+      "next_check": "仮説: 対応端末と取得枠が整えば、8BのSSD streamingは8GiB内で実用になり得る。取得可能になった時点で実RSS（allocator値で代用しない）とCPU/実機速度を確認する。"
+    },
+    {
+      "id": "2606.23050",
+      "title": "Unlimited OCR Works",
+      "url": "https://arxiv.org/abs/2606.23050",
+      "priority": "B",
+      "category": "deep_dive_value",
+      "verification_level": "reading",
+      "reason": "Unlimited OCRはdecoder attentionをR-SWAに置き換え、長文書でもKV cacheを一定に保ち、複数ページを一括解析する狙い。2026-06-22公開、repoは06-18作成・10-12更新。GitHub/モデルカードはMITで商用利用可。HF trending 6位とGitHub 27,765 starsという異なる基盤の注目信号に一次論文があり、深掘り基準を満たす（注目数は再現証拠ではない）。一方、HFの実weight fileは6,672,547,120 bytes、READMEのTransformers手順はNVIDIA GPUを要求するため、2GB/CPU枠での採用は保留。朝のLightOnOCR3と重なるので今の検証は追加せず、将来の複数ページ処理ニーズ向けに保持する。",
+      "next_check": "仮説: LightOnOCR3の既存作業とは別に、複数ページを1回で扱う必要が出た場合、R-SWAが長文書のKV増加を抑えられる。将来、取得/GPU枠が変わりその用途が必要なら、最初に資源と既存評価との重複を見積もる。"
+    },
+    {
+      "id": "2610.08699",
+      "title": "nanoMuse: An Open-Source Personal Agent for Every Device You Own",
+      "url": "https://arxiv.org/abs/2610.08699",
+      "priority": "B",
+      "category": "deep_dive_value",
+      "verification_level": "reading",
+      "reason": "nanoMuseは複数端末を結ぶ個人エージェントで、ファイル型メモリ、定期実行、画面操作と実行前承認を備える。論文は2026-10-06。GitHub repoは09-23作成され、09-25に初回公開、10-18にも更新。現行リリース1.0.5。GPL-3.0-or-laterは商用利用自体を禁じないが、配布時にはコピーレフト条件がある。HF trending 7位とGitHub stars 1,414という別基盤の注目信号に一次論文があり、深掘り基準を満たす（注目は性能再現ではない）。アプリは複数OS向けだがモデル非同梱。無料community relayは開発者負担のバックエンドで、禁止条件に合わず、無料のローカルモデル経路も資料で確定できないため条件付き保留。採用条件は有料バックエンドなしで使えるモデル経路と、承認・データ保管動作の確認。",
+      "next_check": "READMEのself-hosting/provider文書で、外部有料relayを使わず2GB以内の既存ローカルモデルに接続できる経路があるか、データが端末外へ流れる条件と承認動作を確認する。"
+    }
+  ],
+  "digest": [
+    {
+      "id": "hf:hotchpotch/bekko-system-one-v0-17m",
+      "title": "Bekko System One v0-17m",
+      "url": "https://huggingface.co/hotchpotch/bekko-system-one-v0-17m",
+      "priority": "B",
+      "reason": "生成をせず候補を並列評価する英語typed decision encoder。Embeddingとは別。",
+      "hold": "重み67,198,244 bytes／browser ONNX29,023,607 bytes。ライセンス宣言未確定・未知ソース承認未確認・一般化弱い。"
+    },
+    {
+      "id": "2609.15779",
+      "title": "EvoOntology",
+      "url": "https://arxiv.org/abs/2609.15779",
+      "priority": "B",
+      "reason": "MCP意味層を評価ゲート付きで更新する設計。HF trending41／GitHub954 stars。",
+      "hold": "無課金LLM経路・公開固定データ・DBアクセス範囲が未確定。検索順位変更だけの実装はしない。"
+    },
+    {
+      "id": "2610.19789",
+      "title": "Self-Distillation AgentRL比較",
+      "url": "https://arxiv.org/abs/2610.19789",
+      "priority": "B",
+      "reason": "10手法とGRPOを同条件比較し、計算量増加と改善が一致しない点を検討。",
+      "hold": "著者の132run/12,124.4 H800 GPU-hoursの評価。学習禁止・資源超過のため読解のみ。"
+    },
+    {
+      "id": "2610.17953",
+      "title": "Agent-Reflex",
+      "url": "https://arxiv.org/abs/2610.17953",
+      "priority": "B",
+      "reason": "ツールノイズと訂正への反省をRSD/ReSFT/ORPOで教える。",
+      "hold": "実在Agent-Reflex-8Bは重み16,381,516,752 bytes。学習・多GPU再現は実施しない。"
+    },
+    {
+      "id": "2503.11576",
+      "title": "SmolDocling → GraniteDocling",
+      "url": "https://arxiv.org/abs/2503.11576",
+      "priority": "C",
+      "reason": "公式cardが後継を明記、旧IDはdocling-projectへ解決。",
+      "hold": "後継granite-docling-258Mは515,093,104-byte重み。日本語・表/数式品質とCPU/RAMは未検証、旧モデルの重複導入なし。"
+    },
+    {
+      "id": "2609.05334",
+      "title": "唐辛子病害ViT圧縮",
+      "url": "https://arxiv.org/abs/2609.05334v1",
+      "priority": "B",
+      "reason": "3分類・村を分離した評価と同容量student比較がある。",
+      "hold": "著者値では直接学習student94.87%も6.01MB。圧縮工程の追加価値・公開実行物・権利が未確認。"
+    },
+    {
+      "id": "2401.17919",
+      "title": "LOCOST",
+      "url": "https://arxiv.org/abs/2401.17919",
+      "priority": "B",
+      "reason": "state-space encoder-decoderで長文の抽象要約を扱う。",
+      "hold": "公開年で除外しないが、現在のモデルID・ライセンス・CPU要件と独立した話題性が未確認。"
+    },
+    {
+      "id": "2602.09373",
+      "title": "AfriNLLB",
+      "url": "https://arxiv.org/abs/2602.09373",
+      "priority": "B",
+      "reason": "層剪定した481Mの実モデルとCTranslate2配布形式を確認。",
+      "hold": "CC-BY-NC-4.0、商用利用は別許諾が必要。日本語対象でなくCPU実測もない。"
+    },
+    {
+      "id": "2607.25180",
+      "title": "Bekko Embedding",
+      "url": "https://arxiv.org/abs/2607.25180",
+      "priority": "B",
+      "reason": "a8m/a25mの実ID・MIT・ONNX配布を確認。",
+      "hold": "System Oneの多言語根拠にはならない。新規coverage/前処理短縮の具体的需要がないため検索追加をしない。"
+    }
+  ],
+  "counts": {
+    "collected_unique": 2516,
+    "processed_including_carry": 6049,
+    "ranked": 5198,
+    "review_pool_read": 20,
+    "primary_candidates_read": 29,
+    "primary_files_verified": 116,
+    "candidate_code_executions": 0,
+    "candidate_inferences": 0,
+    "comparisons": 0,
+    "pending_before": 5186,
+    "pending_after_record": 5204,
+    "priorities": {
+      "B": 20,
+      "C": 9
+    },
+    "native_candidate_judgments": 49
+  },
+  "blockers": [
+    {
+      "target": "Squeez",
+      "status": "stopped_repair_cap",
+      "action": "candidate execution",
+      "reason": "Prior repair cap exceeded; no restart or reset."
+    },
+    {
+      "target": "YOLO26n",
+      "status": "stopped_repair_cap",
+      "last_commit": "0c6ddaa7b3d82eff6b0e2a889f76f99009aeac63",
+      "action": "candidate inference",
+      "reason": "/app access failure remained after one repair, zero inference."
+    },
+    {
+      "target": "Harness2",
+      "status": "stopped_repair_cap",
+      "last_commit": "efd3c909d2d729cfc0e8f189a01dd213bd400257",
+      "action": "candidate demo",
+      "reason": "Isolation wrapper stat /root/.codex PermissionError after one repair; candidate code not reached."
+    },
+    {
+      "target": "PP-LCNet",
+      "status": "stopped_prior_failure",
+      "action": "candidate inference",
+      "reason": "Respect existing stop; no new trial."
+    },
+    {
+      "target": "BitNet",
+      "status": "on_hold",
+      "action": "candidate inference",
+      "reason": "Respect recorded compatibility hold."
+    },
+    {
+      "target": "unknown-source candidate code, including pico-type and Bekko System One",
+      "status": "approval_unconfirmed_not_attempted",
+      "action": "external code execution",
+      "reason": "No established source approval; no code execution, authentication copy, privilege relaxation or alternate backend."
+    }
+  ],
+  "constraints": {
+    "cash_jpy": 0,
+    "run_minutes": 30,
+    "cpu_candidate_minutes": 20,
+    "ram_gb": 8,
+    "download_gb": 2,
+    "repair_cap": 1,
+    "carry_days": 28
+  },
+  "semantics": "Reading and priority C alone do not complete existing pending work. All unfinished, failed, interrupted and digest-only items retained. No candidate execution; A does not require PoC but no A was supported this run.",
+  "source_limitations": [
+    "OpenReview 5 queries returned403; no bypass.",
+    "HF returned no next Link. Query result caps remain; no total coverage claim.",
+    "240 partial/future dates retained as unknown, original values retained.",
+    "Model family searches cover visible results, not proof that no successor exists."
+  ],
+  "research_completed_at": "2026-10-18T09:13:51.677952+00:00"
+}

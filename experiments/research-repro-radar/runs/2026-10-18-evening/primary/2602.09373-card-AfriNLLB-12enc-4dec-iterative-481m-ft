@@ -1,0 +1,286 @@
+---
+datasets:
+- AfriNLLB-train
+- AfriNLLB-train-distilled
+language:
+- ar
+- am
+- af
+- arz
+- es
+- en
+- fr
+- ha
+- ln
+- pt
+- so
+- sw
+- wo
+- yo
+- zu
+metrics:
+- bleu
+- chrf
+- comet
+library_name: transformers
+base_model:
+- facebook/nllb-200-distilled-600M
+- AfriNLP/AfriNLLB-12enc-12dec-full-ft-kd
+pipeline_tag: translation
+license: cc-by-nc-4.0
+tags:
+- pruning
+---
+
+
+
+# AfriNLLB
+
+[AfriNLLB](https://arxiv.org/abs/2602.09373) is a series of efficient multilingual open-source models for African languages. 
+
+## Model Description
+
+`AfriNLLB-12enc-4dec-iterative-481m-ft` is created using *iterative layer pruning* of `AfriNLLB-12enc-12dec-full-ft-kd`.
+It is fine-tuned on both the `AfriNLLB-train` and `AfriNLLB-train-distilled` datasets. Please refer to the paper for more details.
+
+## Supported Languages
+
+AfriNLLB supports 15 language pairs (30 translation directions), including Swahili, Hausa, Yoruba, Amharic, Somali, Zulu, Lingala, Afrikaans, Wolof, and Egyptian Arabic, 
+as well as other African Union official languages such as Arabic (MSA), French, Portuguese, and Spanish. 
+Our training data covers bidirectional translation between English and 13 languages, and between French and two languages (Lingala and Wolof).
+
+## Model Details
+
+- **Model type:** Translation
+- **Base model:** AfriNLP/AfriNLLB-12enc-12dec-full-ft-kd
+- **Training data:** AfriNLLB-train + AfriNLLB-train-distilled
+- **Test data:** facebook/flores
+- **Architecture:** 12 encoder layers, 4 decoder layers
+- **Pruning:** Iterative layer pruning of 8 decoder layers
+
+## Evaluation Results
+
+We benchmark AfriNLLB models, with diverse iterative layer pruning configurations, against the NLLB baseline across 13 language pairs to/from English and 2 pairs to/from French. 
+Results illustrate the trade-off between translation quality (BLEU, chrF++, COMET) and inference efficiency (output throughput tokens/second and time) 
+at various encoder-decoder layer depths, with and without float16 (FP16) quantization. 
+The current model is marked with 🟣 for the non-quantized version and 🟢 for the float16-quantized version.
+
+| **Lang** | **Model**      | **Enc** | **Dec** | **Params** | **V.** | **Quant** | <nobr>**BLEU ↑**</nobr> | <nobr>**chrF++ ↑**</nobr> | <nobr>**COMET ↑**</nobr> | <nobr>**Throughput ↑**</nobr> | <nobr>**Time ↓**</nobr> |
+|--------------|----------------|---------|---------|------------|-|-----------|------------|--------------|-------------|------------------|------------|
+| <nobr>**xx-en**</nobr>    | NLLB | 12      | 12      | 600M       | | n/a       | 33.81      | 56.22        | 71.11       | 1469.96          | 21.02      | 
+|              |                |         |         |                | | FP16      | 33.80      | 56.22        | 71.13       | 2834.69          | 10.92      | 
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-12enc-12dec-full-ft-kd) | 12 | 12 | 600M |  | n/a | 35.15 | 57.61 | 71.87 | 1530.94 | 20.39 |
+|              |               |         |         |            | | FP16      | 35.10      | 57.61        | 71.87       | 2808.90          | 11.15      |
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-12enc-8dec-iterative-548m-ft) | 12 | 8 | 548M |  | n/a | 34.01 | 56.98 | 71.20 | 1807.61 | 17.38 |
+|              |                                                                                  |    |   |      |  | FP16| 34.05 | 56.99 | 71.19 | 3513.32 | 8.96  | 
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-12enc-6dec-iterative-514m-ft) | 12 | 6 | 514M | | n/a | 33.35 | 56.48 | 70.79 | 2028.18 | 15.41 |
+|              |                |         |         |            | | FP16      | 33.32      | 56.45        | 70.79       | 4000.25          | 7.82       | 
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-12enc-4dec-iterative-481m-ft) | 12 | 4 | 481M | 🟣 | n/a | 32.03 | 55.62 | 69.71 | 2257.03 | 13.77 |
+|              |                |         |         |            | 🟢 | FP16      | 32.01      | 55.60        | 69.71       | 4589.42          | 6.79       | 
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-8enc-8dec-iterative-498m-ft) | 8 | 8 | 498M | | n/a | 30.89 | 54.32 | 68.08 | 1852.13 | 17.05 |
+|              |                |         |         |            | | FP16      | 30.86      | 54.30        | 68.08       | 3550.50          | 8.91       | 
+| <nobr>**en-xx**</nobr>    | NLLB  | 12      | 12      | 600M       | | n/a       | 22.70      | 47.89        | 69.36       | 1530.10          | 28.09      | 
+|              |                |         |         |            | | FP16      | 22.68      | 47.88        | 69.38       | 2898.38          | 15.33      | 
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-12enc-12dec-full-ft-kd) | 12 | 12 | 600M |  | n/a | 24.28 | 49.97 | 70.91 | 1610.23 | 26.98 |
+|              |                |         |         |            |  | FP16      | 24.14      | 49.84        | 70.90       | 2811.34          | 18.82      |
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-12enc-8dec-iterative-548m-ft) | 12 | 8 | 548M |  | n/a | 24.17 | 50.05 | 70.37 | 1946.61 | 22.51 |
+|              |                |         |         |            |  | FP16      | 24.15      | 50.06        | 70.41       | 3732.72          | 11.98      | 
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-12enc-6dec-iterative-514m-ft) | 12 | 6 | 514M | | n/a | 23.48 | 49.34 | 68.98 | 2265.87 | 18.50 |
+|              |                |         |         |            | | FP16      | 23.49      | 49.35        | 69.00       | 4428.68          | 9.65       | 
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-12enc-4dec-iterative-481m-ft) | 12 | 4 | 481M | 🟣 | n/a | 21.77 | 47.80 | 65.68 | 2489.35 | 17.31 |
+|              |                |         |         |            | 🟢 | FP16      | 21.77      | 47.81        | 65.68       | 4954.62          | 9.09       | 
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-8enc-8dec-iterative-498m-ft) | 8 | 8 | 498M | | n/a | 23.59 | 49.64 | 69.90 | 2015.53 | 21.34 |
+|              |                |         |         |            | | FP16      | 23.58      | 49.63        | 69.88       | 3851.13          | 11.34      | 
+| <nobr>**xx-fr**</nobr>    | NLLB  | 12      | 12      | 600M       | | n/a       | 16.41      | 38.83        | 17.34       | 1475.48          | 26.46      | 
+|              |                |         |         |            | | FP16      | 16.33      | 38.83        | 17.23       | 2850.66          | 13.71      | 
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-12enc-12dec-full-ft-kd) | 12 | 12 | 600M |  | n/a | 17.91 | 40.45 | 18.47 | 1524.32 | 26.12 |
+|              |                |         |         |            | | FP16      | 17.83      | 40.42        | 18.37       | 2749.45          | 14.68      |
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-12enc-8dec-iterative-548m-ft) | 12 | 8 | 548M |  | n/a | 17.43 | 40.21 | 14.52 | 1845.09 | 21.61 |
+|              |                |         |         |            |  | FP16      | 17.38      | 40.18        | 14.53       | 3569.23          | 11.17      | 
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-12enc-6dec-iterative-514m-ft) | 12 | 6 | 514M | | n/a | 16.52 | 39.44 | 11.78 | 2044.27 | 19.21 |
+|              |                |         |         |            | | FP16      | 16.54      | 39.42        | 11.68       | 3953.51          | 9.92       | 
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-12enc-4dec-iterative-481m-ft) | 12 | 4 | 481M | 🟣 | n/a | 14.96 | 38.21 | 5.67 | 2340.99 | 16.77 |
+|              |                |         |         |            | 🟢 | FP16      | 14.90      | 38.17        | 5.71        | 4766.12          | 8.24       | 
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-8enc-8dec-iterative-498m-ft) | 8 | 8 | 498M | | n/a | 14.42 | 37.05 | 3.14 | 1866.26 | 21.84 |
+|              |                |         |         |            | | FP16      | 14.34      | 36.97        | 3.14        | 3448.51          | 11.83      | 
+| <nobr>**fr-xx**</nobr>    | NLLB  | 12      | 12      | 600M       | | n/a       | 9.44       | 33.42        | 19.25       | 1047.18          | 49.92      | 
+|              |                |         |         |            | | FP16      | 9.52       | 33.40        | 19.38       | 1920.41          | 29.05      | 
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-12enc-12dec-full-ft-kd) | 12 | 12 | 600M |  | n/a | 10.98 | 35.68 | 21.33 | 1081.84 | 51.56 |
+|              |                |         |         |            |  | FP16      | 10.48      | 35.05        | 21.49       | 1700.25          | 51.31      |
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-12enc-8dec-iterative-548m-ft) | 12 | 8 | 548M |  | n/a | 10.20 | 35.21 | 20.04 | 1261.66 | 49.91 |
+|              |                |         |         |            |  | FP16      | 10.11      | 35.13        | 20.03       | 2313.85          | 31.15      | 
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-12enc-6dec-iterative-514m-ft) | 12 | 6 | 514M | | n/a | 10.07 | 35.14 | 19.83 | 1416.33 | 30.89 |
+|              |                |         |         |            | | FP16      | 9.99       | 35.08        | 19.78       | 2465.60          | 18.68      | 
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-12enc-4dec-iterative-481m-ft) | 12 | 4 | 481M | 🟣 | n/a | 7.57 | 32.42 | 14.16 | 1207.06 | 38.75 |
+|              |                |         |         |            | 🟢 | FP16      | 7.57       | 32.38        | 14.29       | 2069.52          | 23.25      | 
+|              | [AfriNLLB](https://huggingface.co/AfriNLP/AfriNLLB-8enc-8dec-iterative-498m-ft) | 8 | 8 | 498M | | n/a | 9.75 | 35.23 | 20.05 | 1222.83 | 45.33 |
+|              |                |         |         |            | | FP16      | 9.84       | 35.31        | 20.11       | 2186.73          | 25.97      | 
+
+
+![Translation performance (chrF++) from English/French to African languages](https://huggingface.co/AfriNLP/AfriNLLB-12enc-12dec-full-ft-kd/resolve/main/img/AfriNLLB-performance-to-african.jpg)
+
+![Translation performance (chrF++) from African languages to English/French](https://huggingface.co/AfriNLP/AfriNLLB-12enc-12dec-full-ft-kd/resolve/main/img/AfriNLLB-performance-from-african.jpg)
+
+
+
+## How to Use
+
+This model can be used for inference with either CTranslate2 or Transformers.
+The CTranslate2 models are faster and recommended for production.
+It has two versions, one with float16 quantization ("ct2-fp16") and one without quantization ("ct2").
+You can also try the Transformers version, but it is better suited for fine-tuning
+For detailed code, please refer to the [AfriNLLB repositories on GitHub](https://github.com/AfriNLLB).
+
+```
+pip3 install ctranslate2 sentencepiece transformers huggingface_hub
+```
+
+### CTranslate2 version
+```python
+import os
+import ctranslate2
+import sentencepiece as spm
+from huggingface_hub import snapshot_download, hf_hub_download
+
+src_lang = "eng_Latn"
+tgt_lang = "amh_Ethi"
+
+source_sentences = [
+    "How are you doing today?",
+    "Africa has a diverse history and beautiful nature.",
+]
+
+# Download the CTranslate2 model
+model_name = "AfriNLP/AfriNLLB-12enc-4dec-iterative-481m-ft"
+
+# Use "ct2" for the non-quantized version 
+# or "ct2-fp16" for the float16 quantized version
+ct2_dir = "ct2-fp16"
+
+model_dir = snapshot_download(
+    repo_id=model_name,
+    allow_patterns=[f"{ct2_dir}/*"]
+)
+ct2_model_path = os.path.join(model_dir, ct2_dir)
+
+# Download the SentencePiece BPE model
+spm_name = "sentencepiece.bpe.model"
+spm_path = os.path.join(ct2_model_path, "sentencepiece.bpe.model")
+if not os.path.exists(spm_path):
+    print("SP model cannot be found locally. Downloading from the baseline...")
+    hf_hub_download(
+        repo_id="facebook/nllb-200-distilled-600M", 
+        filename=spm_name, 
+        local_dir=ct2_model_path
+        )
+
+sp = spm.SentencePieceProcessor()
+sp.load(spm_path)
+translator = ctranslate2.Translator(ct2_model_path, device="cuda")
+
+print(f"Translating to {tgt_lang}..\n")
+
+# Tokenize the source texts
+encoded_source = sp.encode_as_pieces(source_sentences)
+encoded_source = [[src_lang] + s + ["</s>"] for s in encoded_source]
+
+# Translate
+results = translator.translate_batch(
+    encoded_source,
+    target_prefix = [[tgt_lang]] * len(encoded_source),
+    beam_size=5,
+    max_decoding_length=256,
+)
+
+# Decode the outputs and remove the language tag
+translations = []
+for res in results:
+    tokens = res.hypotheses[0]
+    if tokens and tokens[0] == tgt_lang:
+       tokens = tokens[1:]
+    text = sp.decode_pieces(tokens)
+    translations.append(text)
+
+for orig, trans in zip(source_sentences, translations):
+    print(f"Source ({src_lang}): {orig}\nTarget ({tgt_lang}): {trans}\n")
+```
+
+
+### Transformers version
+```python
+import torch
+from transformers import AutoModelForSeq2SeqLM, NllbTokenizerFast
+
+src_lang = "eng_Latn"
+tgt_lang = "amh_Ethi"
+
+source_sentences = [
+    "How are you doing today?",
+    "Africa has a diverse history and beautiful nature.",
+]
+
+# Load an AfriNLLB model
+model_name = "AfriNLP/AfriNLLB-12enc-4dec-iterative-481m-ft"
+model = AutoModelForSeq2SeqLM.from_pretrained(
+    model_name, 
+    device_map="auto",
+    )
+
+# Load the NLLB tokenizer
+base_model_name = "facebook/nllb-200-distilled-600M"
+tokenizer = NllbTokenizerFast.from_pretrained(
+    base_model_name,
+    src_lang=src_lang,
+    )
+
+print(f"\nUsing device: {model.device}")
+print(f"Translating to {tgt_lang}..\n")
+
+# Tokenize the source sentences
+inputs = tokenizer(
+    source_sentences, 
+    return_tensors="pt", 
+    padding=True).to(model.device)
+
+forced_bos_token_id = tokenizer.convert_tokens_to_ids(tgt_lang)
+
+# Translate
+with torch.inference_mode():
+    translated_tokens = model.generate(
+        **inputs,
+        forced_bos_token_id=forced_bos_token_id,
+        max_length=256,
+        num_beams=5,
+        use_cache=True,
+    )
+
+# Decode the outputs and remove the language tag
+translations = tokenizer.batch_decode(
+    translated_tokens, 
+    skip_special_tokens=True
+    )
+
+for orig, trans in zip(source_sentences, translations):
+    print(f"Source ({src_lang}): {orig}\nTarget ({tgt_lang}): {trans}\n")
+```
+
+
+
+## Citation
+
+If you use any of AfriNLLB models, datasets, or approaches, please cite the following paper:
+
+```bibtex
+@inproceedings{moslem-etal-2026-afrinllb,
+    title = "{A}fri{NLLB}: Efficient Translation Models for African Languages",
+    author = "Moslem, Yasmin  and
+      Wassie, Aman Kassahun  and
+      Gizachew, Amanuel",
+    booktitle = "Proceedings of the Seventh Workshop on African Natural Language Processing (AfricaNLP)",
+    month = mar,
+    year = "2026",
+    address = "Rabat, Morocco",
+    publisher = "Association for Computational Linguistics",
+    url = "https://openreview.net/forum?id=hVJZNUZBur",
+}
+```
