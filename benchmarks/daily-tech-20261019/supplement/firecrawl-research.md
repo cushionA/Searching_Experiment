@@ -1,0 +1,287 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.firecrawl.dev/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# Research Index
+
+> Search papers, read paper passages, and find related work
+
+Firecrawl Research is a purpose-built index for scientific and engineering research agents. It exposes a research-specific toolset for searching papers, inspecting paper metadata, reading relevant full-text passages, and discovering related papers through structural expansion.
+
+The index covers roughly 43 million paper abstracts. The majority of the corpus is biomedical and life sciences — **PubMed**, **bioRxiv**, and **medRxiv** — alongside **arXiv** for physics, mathematics, and computer science. Papers are addressable by their source ids, so `pmid:`, `pmcid:`, and `doi:` references work the same way `arxiv:` ones do.
+
+* Find papers by topic, method, benchmark, author, or category
+* Inspect canonical paper metadata and source ids
+* Read the passages in one paper that answer a specific question
+* Expand from strong seed papers to related papers, citers, or references
+
+<Note>
+  To give your agent access to the Research Index, we strongly recommend using our [CLI](/sdks/cli) or [MCP](/mcp-server), combined with our [**dedicated research skill**](https://github.com/firecrawl/skills/blob/main/skills/firecrawl-research-index/SKILL.md), which you can install with:
+
+  ```bash theme={null}
+  npx skills add firecrawl/skills@firecrawl-research-index
+  ```
+</Note>
+
+## How this relates to `/search`
+
+<Note>
+  From 2026-11-16, `categories: ["research"]` on `/search` searches this index and returns the same paper records in `data.research`. The table below describes its behavior until then. See [search categories](/features/search#search-categories).
+</Note>
+
+Firecrawl has two things named "research", and they are not the same feature:
+
+| | Research Index (this page) | `/search` with `categories: ["research"]` |
+| :- | - | - |
+| What it searches | A paper index of \~43M abstracts — PubMed, bioRxiv, medRxiv, arXiv | The open web, restricted to \~14 academic **websites** (arxiv.org, nature.com, pubmed.ncbi.nlm.nih.gov, …) |
+| What you get back | Ranked paper records: canonical `paperId`, `primaryId`, source ids, title, full abstract, score | Ordinary web results: URL, title, snippet |
+| Can it read inside a paper | Yes — passage-level reads via `GET /search/research/papers/{id}` | No |
+| Can it expand by citations | Yes — `GET /search/research/papers/{id}/similar` | No |
+| Endpoint | `GET /search/research/papers` | `POST /search` |
+
+Use the Research Index when you are doing literature work: finding papers, reading them, and following citations. Use [`categories: ["research"]`](/features/search#search-categories) when you want ordinary web pages that happen to live on academic domains.
+
+## Endpoints
+
+| Task | Endpoint |
+| - | - |
+| Search papers | [`GET /search/research/papers`](/api-reference/endpoint/research-search-papers) |
+| Inspect metadata or read passages | [`GET /search/research/papers/{id}`](/api-reference/endpoint/research-paper) |
+| Find related papers | [`GET /search/research/papers/{id}/similar`](/api-reference/endpoint/research-related-papers) |
+
+## Search papers
+
+Search paper abstracts with a natural-language query. The response returns ranked papers with canonical `paperId`, preferred `primaryId`, source ids, title, abstract, score, and optional ranking signals.
+
+<CodeGroup>
+  ```bash cURL theme={null}
+  # No API key needed to get started; add -H "Authorization: Bearer $FIRECRAWL_API_KEY" for higher rate limits:
+  curl -s "https://api.firecrawl.dev/v2/search/research/papers?query=diffusion%20image%20synthesis&k=20"
+  ```
+
+  ```bash CLI theme={null}
+  firecrawl research search-papers "diffusion image synthesis" --limit 20
+  ```
+
+  ```python Python theme={null}
+  from firecrawl import Firecrawl
+
+  firecrawl = Firecrawl(
+    # No API key needed to get started; add one for higher rate limits:
+    # api_key="fc-YOUR-API-KEY",
+  )
+
+  result = firecrawl.v2.search_papers("diffusion image synthesis", k=20)
+  print(result)
+  ```
+
+  ```js Node theme={null}
+  import { Firecrawl } from "firecrawl";
+
+  const firecrawl = new Firecrawl({
+    // No API key needed to get started; add one for higher rate limits:
+    // apiKey: "fc-YOUR-API-KEY",
+  });
+
+  const result = await firecrawl.research.searchPapers("diffusion image synthesis", {
+    k: 20,
+  });
+  console.log(result);
+  ```
+</CodeGroup>
+
+Optional filters:
+
+* `authors`: author substring filter; all filters must match
+* `categories`: paper category filter, such as `cs.LG`
+* `from`: inclusive created/updated lower bound, `YYYY-MM-DD`
+* `to`: inclusive created/updated upper bound, `YYYY-MM-DD`
+
+### Biomedical example
+
+Most of the index is life sciences, so clinical and molecular biology queries work the same way:
+
+<CodeGroup>
+  ```bash cURL theme={null}
+  # No API key needed to get started; add -H "Authorization: Bearer $FIRECRAWL_API_KEY" for higher rate limits:
+  curl -s "https://api.firecrawl.dev/v2/search/research/papers?query=CRISPR%20base%20editing%20off-target%20effects%20in%20primary%20human%20T%20cells&k=20"
+  ```
+
+  ```bash CLI theme={null}
+  firecrawl research search-papers "CRISPR base editing off-target effects in primary human T cells" --limit 20
+  ```
+
+  ```python Python theme={null}
+  from firecrawl import Firecrawl
+
+  firecrawl = Firecrawl(
+    # No API key needed to get started; add one for higher rate limits:
+    # api_key="fc-YOUR-API-KEY",
+  )
+
+  result = firecrawl.v2.search_papers(
+    "CRISPR base editing off-target effects in primary human T cells",
+    k=20,
+  )
+  print(result)
+  ```
+
+  ```js Node theme={null}
+  import { Firecrawl } from "firecrawl";
+
+  const firecrawl = new Firecrawl({
+    // No API key needed to get started; add one for higher rate limits:
+    // apiKey: "fc-YOUR-API-KEY",
+  });
+
+  const result = await firecrawl.research.searchPapers(
+    "CRISPR base editing off-target effects in primary human T cells",
+    { k: 20 },
+  );
+  console.log(result);
+  ```
+</CodeGroup>
+
+Results carry a `primaryId` in whichever namespace the source uses, so biomedical hits come back as `pmid:<id>`, `pmcid:<id>`, or `doi:<doi>`. Feed that value straight back into the inspect, read, and related endpoints below.
+
+## Inspect a paper
+
+Use a canonical `paperId` or a source-specific `primaryId`. Accepted `primaryId` forms are `arxiv:<id>`, `pmid:<id>`, `pmcid:<id>`, and `doi:<doi>` — for example `curl -s ".../v2/search/research/papers/pmid:<id>"` for a PubMed record.
+
+<CodeGroup>
+  ```bash cURL theme={null}
+  # No API key needed to get started; add -H "Authorization: Bearer $FIRECRAWL_API_KEY" for higher rate limits:
+  curl -s "https://api.firecrawl.dev/v2/search/research/papers/arxiv:1706.03762"
+  ```
+
+  ```bash CLI theme={null}
+  firecrawl research inspect-paper arxiv:1706.03762
+  ```
+
+  ```python Python theme={null}
+  from firecrawl import Firecrawl
+
+  firecrawl = Firecrawl(
+    # No API key needed to get started; add one for higher rate limits:
+    # api_key="fc-YOUR-API-KEY",
+  )
+
+  paper = firecrawl.v2.inspect_paper("arxiv:1706.03762")
+  print(paper)
+  ```
+
+  ```js Node theme={null}
+  import { Firecrawl } from "firecrawl";
+
+  const firecrawl = new Firecrawl({
+    // No API key needed to get started; add one for higher rate limits:
+    // apiKey: "fc-YOUR-API-KEY",
+  });
+
+  const paper = await firecrawl.research.getPaper("arxiv:1706.03762");
+  console.log(paper);
+  ```
+</CodeGroup>
+
+## Read paper passages
+
+Add `query` to the same paper path to retrieve the top full-text passages for a question. This is useful for verifying whether a candidate paper actually contains a method, dataset, constraint, or result before you include it.
+
+<CodeGroup>
+  ```bash cURL theme={null}
+  # No API key needed to get started; add -H "Authorization: Bearer $FIRECRAWL_API_KEY" for higher rate limits:
+  curl -s "https://api.firecrawl.dev/v2/search/research/papers/arxiv:1706.03762?query=what%20is%20the%20attention%20mechanism&k=4"
+  ```
+
+  ```bash CLI theme={null}
+  firecrawl research read-paper arxiv:1706.03762 --question "What is the attention mechanism?" --limit 4
+  ```
+
+  ```python Python theme={null}
+  from firecrawl import Firecrawl
+
+  firecrawl = Firecrawl(
+    # No API key needed to get started; add one for higher rate limits:
+    # api_key="fc-YOUR-API-KEY",
+  )
+
+  passages = firecrawl.v2.read_paper(
+      "arxiv:1706.03762",
+      "What is the attention mechanism?",
+      k=4,
+  )
+  print(passages)
+  ```
+
+  ```js Node theme={null}
+  import { Firecrawl } from "firecrawl";
+
+  const firecrawl = new Firecrawl({
+    // No API key needed to get started; add one for higher rate limits:
+    // apiKey: "fc-YOUR-API-KEY",
+  });
+
+  const passages = await firecrawl.research.getPaper("arxiv:1706.03762", {
+    query: "What is the attention mechanism?",
+    k: 4,
+  });
+  console.log(passages);
+  ```
+</CodeGroup>
+
+## Find related papers
+
+Expand from one or more seed papers through semantic expansion and rank the candidates against a natural-language `intent`.
+
+<CodeGroup>
+  ```bash cURL theme={null}
+  # No API key needed to get started; add -H "Authorization: Bearer $FIRECRAWL_API_KEY" for higher rate limits:
+  curl -s "https://api.firecrawl.dev/v2/search/research/papers/arxiv:1706.03762/similar?intent=efficient%20transformers&mode=similar&k=20"
+  ```
+
+  ```bash CLI theme={null}
+  firecrawl research related-papers arxiv:1706.03762 --intent "efficient transformers" --limit 20
+  ```
+
+  ```python Python theme={null}
+  from firecrawl import Firecrawl
+
+  firecrawl = Firecrawl(
+    # No API key needed to get started; add one for higher rate limits:
+    # api_key="fc-YOUR-API-KEY",
+  )
+
+  papers = firecrawl.v2.related_papers(
+      "arxiv:1706.03762",
+      "efficient transformers",
+      mode="similar",
+      k=20,
+  )
+  print(papers)
+  ```
+
+  ```js Node theme={null}
+  import { Firecrawl } from "firecrawl";
+
+  const firecrawl = new Firecrawl({
+    // No API key needed to get started; add one for higher rate limits:
+    // apiKey: "fc-YOUR-API-KEY",
+  });
+
+  const papers = await firecrawl.research.similarPapers("arxiv:1706.03762", {
+    intent: "efficient transformers",
+    mode: "similar",
+    k: 20,
+  });
+  console.log(papers);
+  ```
+</CodeGroup>
+
+Modes:
+
+* `similar`: co-citation and bibliographic-coupling neighborhood
+* `citers`: papers that cite the seed
+* `references`: papers cited by the seed
+
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.
