@@ -1,0 +1,164 @@
+{
+  "ambiguous_pair_count": 2,
+  "asymmetry_candidate_count": 16,
+  "automatic_adoption_allowed": false,
+  "batch_size": 8,
+  "candidate_only": true,
+  "collision_count": 6,
+  "collision_definition": "Two or more AU axes share the same stable top1 Rakuten axis; co-leading tie candidates alone are not a collision.",
+  "device": "cpu",
+  "elapsed_scope": "run start through predictions.jsonl serialization and SHA-256; excludes summary.json serialization",
+  "elapsed_total_seconds": 1.5144569309998133,
+  "eligible_pairs": 103,
+  "encoded_labels_exceeding_max_length": 0,
+  "encoded_unique_label_count": 52,
+  "exact_baseline_agreement_count": 123,
+  "exact_baseline_agreement_denominator": 123,
+  "exact_baseline_matched_axis_count": 127,
+  "exact_baseline_tie_axis_count": 4,
+  "exact_baseline_unique_match_axis_count": 123,
+  "input_pairs": 107,
+  "input_sha256": "29c003adc7b3e6adefe4a9ddf04b87e5f9861ec81df9e7e7129a54e4f9cde6a2",
+  "installed_package_versions": {
+    "numpy": "2.2.6",
+    "onnxruntime": "1.23.2",
+    "tokenizers": "0.23.3",
+    "torch": "2.7.1+cpu",
+    "transformers": "5.17.0"
+  },
+  "label_max_token_length": 21,
+  "label_only": true,
+  "label_token_lengths": [
+    3,
+    13,
+    7,
+    7,
+    19,
+    21,
+    5,
+    5,
+    5,
+    4,
+    4,
+    5,
+    4,
+    7,
+    4,
+    10,
+    4,
+    5,
+    8,
+    4,
+    4,
+    6,
+    6,
+    7,
+    9,
+    5,
+    4,
+    6,
+    5,
+    9,
+    5,
+    3,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    4,
+    6,
+    5,
+    4,
+    5,
+    4,
+    4,
+    7,
+    4,
+    6,
+    6,
+    5,
+    4
+  ],
+  "mapped_axis_count": 165,
+  "model": "minilm",
+  "model_manifest_sha256": {
+    "minilm": "25594e0110263b1560385023193ab5b48a999a6439113e08e79c63c84123e3f6",
+    "ruri": "06ff957db5bf2553f61847c637d573f543d518b211913e824bff70d767e70a7b"
+  },
+  "model_manifests": {
+    "minilm": {
+      "embedding_dimensions": 384,
+      "execution_provider": "CPUExecutionProvider",
+      "files": {
+        "onnx/model_quantized.onnx": {
+          "sha256": "66fc00f5f29afcaff34092e1bdd20008ca3918265a82fb9695a551e510cc4ebc",
+          "size_bytes": 118308126
+        },
+        "tokenizer.json": {
+          "sha256": "b60b6b43406a48bf3638526314f3d232d97058bc93472ff2de930d43686fa441",
+          "size_bytes": 17082913
+        }
+      },
+      "max_sequence_length": 128,
+      "pooling": "attention-mask mean pooling followed by L2 normalization",
+      "repo": "Xenova/paraphrase-multilingual-MiniLM-L12-v2",
+      "revision": "2c4055b12046f11709e9df2c122e59ffbdc2f900"
+    },
+    "ruri": {
+      "embedding_dimensions": 256,
+      "execution_provider": "CPU",
+      "files": {
+        "config.json": {
+          "sha256": "3230a8666ce50d245a0e68f5bff4682c419c541f1212ba001a497f327fb7a9e5",
+          "size_bytes": 1323
+        },
+        "model.safetensors": {
+          "sha256": "e94155e342cbfc33280c345c6e2912905fb5de6e1a3adeb938f395aafd2f8832",
+          "size_bytes": 146828152
+        },
+        "special_tokens_map.json": {
+          "sha256": "30bf8256f9a1eb3287af2a9b7940465e29a38aad4a459a3e773bb3a14bd34c0f",
+          "size_bytes": 968
+        },
+        "tokenizer.json": {
+          "sha256": "0a94ac9a0a02c067bdef25b72ae9f4ee33f48f552e55988d444f6d25eeb1d062",
+          "size_bytes": 6724873
+        },
+        "tokenizer_config.json": {
+          "sha256": "34004511993472f15c7202074284c57788c161fb6567de164b8e0c0266f155e4",
+          "size_bytes": 3779
+        }
+      },
+      "license": "Apache-2.0",
+      "max_sequence_length": 8192,
+      "pooling": "attention-mask mean pooling, followed by L2 normalization",
+      "repo": "cl-nagoya/ruri-v3-30m",
+      "revision": "24899e5de370b56d179604a007c0d727bf144504",
+      "usage": {
+        "retrieval_document": "検索文書: ",
+        "retrieval_query": "検索クエリ: ",
+        "similarity": "symmetric plain text; official Ruri v3 empty prefix"
+      }
+    }
+  },
+  "model_max_token_length": 128,
+  "model_revision": "2c4055b12046f11709e9df2c122e59ffbdc2f900",
+  "model_source": "Xenova/paraphrase-multilingual-MiniLM-L12-v2",
+  "predictions_file": "predictions.jsonl",
+  "predictions_sha256": "82f832a8277e82f904858f69b6ac438e895adf09e56d8fd8517fcd7e6161107c",
+  "python_version": "3.12.14",
+  "schema_version": "sku-axis-label-alignment-v1",
+  "script_sha256": "02ed29e8dc2c25c854de17a85b28d1054fdb6c4b9e32b1b5b8c447c0e8e9ded0",
+  "skipped_pairs": 4,
+  "skipped_reasons": {
+    "au_axis_count_exceeds_rakuten": 4
+  },
+  "threads": 2,
+  "tie_count": 4,
+  "tie_target_au_association_count": 8,
+  "tie_target_count": 4,
+  "unknown_label_axis_count": 0
+}
