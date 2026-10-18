@@ -1,0 +1,24 @@
+2026-10-18 JST 商品単位 通常ボリュームテスト用データ
+branch codex-sku-generic-model-gates-20261010 / HEAD d8fee1b7623d2ee38823542fc79f3b5ac4d6865b
+ユーザー依頼: 商品単位のテスト用データください 通常用途ボリュームテスト用。
+データ配布のみ。モデル分類、新規取得、Kaggle実行、Gemini呼出しなし。既存raw/モデル出力/索引/ZIPを変更していない。他ブランチ/PR取得なし。
+
+RUN .lab-output/sku-product-volume-normal-20261018-v1
+最終bundleは同ディレクトリ/bundle。旧作成途中版はbundle-first-build-failed-v0（pair_status欠損KeyErrorで停止したもの）とbundle-initial-extra-only-v0（初期のextraItemCommentのみ、最終版にしない）へ保存。
+配布ZIP experiments/sku-matching/results/20261018-sku-product-volume-normal-v1.zip（SHA/検査はsidecar）。
+
+本体は旧TRAINdict/EVALtest入力213商品から、両側原本と全nativeSKUを照合できる152ペアのみ。原本不足60商品、原本に対し楽天variant1件不足のTRAIN1商品を除外。元TRAIN72/EVAL80だが新しい独立評価ではない。
+152ユニークURLペア、楽天1934native variants、AU1600native dict cells、候補45454組、両側最大60SKU。36商品は軸数相違。商品名/URL/有限選択肢/全SKU条件/補助属性/仕様表優先本文。selector直積生成なし、価格/在庫でSKU行を落とさない。正解・予測・派生色辞書等はmodelinputsに入れない。
+main inputs/products.jsonlの1行=商品ペア、packets/*.jsonは同じ入力の別表現。二重実行しない。subsets.json: smoke10,normal50,all152,largest20。
+
+AU説明はitemComment/detailComment/extraItemComment全primary欄で既存sku_spec_table_first_v1を使い、適格表あれば表のみ。description.textを渡さずrawfallbackを動かし、リンク可視文言+hrefを残した。WithVideoは原本内に残すがmodeltext対象外（extraとの相違2商品）。Rは既存span.item_desc scope。本文テキストunavailable R10/AU1、原本は収録。画像OCRなし。SKU網羅と本文充足は別。
+non_sku_options has_paid/free flagsと未選択テキストは選択済み証拠ではない。complete_value_lists/current_selected_valuesはnull保持。有料旗true16、無料旗true137。必要追加条件を消さない。
+source_records/は原本対応/元record/監査用でmodelに渡さない。元recordに派生語彙あり。rawはSHA重複排除298blob。pairstatusは候補対応で人手同一性未確認。正解なし、annotation_template.csvは空欄。
+
+au_only_stress/は58実au商品2937SKU、最大300、楽天対応未取得。変換AUを楽天側へ複製しない。負荷のみ、突合精度に混ぜない。売切れ1351行も保持。sourcehash/native matrix一致済。
+
+新code build_product_volume_normal_v1.py と verify_product_volume_normal_v1.py（stdlib+既存ローカル抽出コード）。JSON Schema全152件検証、SKU原本と全本文再抽出一致、ZIPmember SHA/CRC確認。standalone: python3 -B scripts/verify_product_volume_normal_v1.py .
+JSONL/全152個別JSONの一致、rawblob SHA・AU/楽天全行被覆、未知オプションnullをチェック。
+全体suite1628tests/4fail66error60skip、失敗集合は前回基準と同じ70。ログchecks/。このデータ作成にモデル実行なし。
+
+推奨用途は通常の入力形状・負荷・SKU/商品処理比較。精度は別途注釈必要。過去利用済みの便宜標本で市場代表性や新規独立評価は主張しない。food/beauty/apparelは収集フォルダで厳密カテゴリではない。
