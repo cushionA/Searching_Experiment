@@ -1,12 +1,12 @@
 {
-  "status": "blocked_before_browser_execution",
+  "status": "blocked_moli_missing_shared_library_after_successful_docker_probe",
   "attempts": 0,
   "success_rate": null,
   "latency_ms": null,
   "rss_mib": null,
   "pss_mib": null,
-  "binary_download_bytes": 0,
-  "repairs_attempted": 0,
+  "binary_download_bytes": 120644466,
+  "repairs_attempted": 1,
   "public_site_attempts": 0,
   "preflight": {
     "attempts": 1,
@@ -25,18 +25,40 @@
     "cpu_max": "400000 100000",
     "memory_max_bytes": 17179869184,
     "requested_experiment_limit_bytes": 8589934592,
-    "experiment_limit_enforced": false,
+    "experiment_limit_enforced": true,
     "python": "3.12.14",
     "chromium_path": "/usr/bin/chromium",
     "chromium_executed": false
   },
   "missing": [
-    "isolated working-directory/UID probe success",
-    "enforced experiment RAM limit",
-    "downloaded binary hash verification",
-    "runtime compatibility",
+    "Moli shared-library runtime compatibility",
     "CDP adapter and benchmark runner",
     "browser measurements",
     "public-site external validity"
-  ]
+  ],
+  "browser_cli_checks": 4,
+  "benchmark_trials": 0,
+  "docker_probe": {
+    "status": "passed",
+    "returncode": 0,
+    "uid": 1000,
+    "gid": 1000,
+    "memory_max_bytes": 8589934592,
+    "cpu_quota": 2,
+    "network": "none",
+    "read_only_rootfs": true,
+    "input_mount_readonly": true,
+    "capabilities": "none",
+    "no_new_privileges": true,
+    "seccomp": "filter"
+  },
+  "blocker": {
+    "action": "execute official Moli binary in isolated container",
+    "target": "Moli v1.1.18 Linux x86_64",
+    "exit_code": 127,
+    "reason": "libfontconfig.so.1 missing in official python:3.12-slim image",
+    "denied": false,
+    "outcome": "failed before browser startup",
+    "additional_repair_attempted": false
+  }
 }

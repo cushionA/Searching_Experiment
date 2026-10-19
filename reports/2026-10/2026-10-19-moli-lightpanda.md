@@ -1,6 +1,21 @@
-# Moli / Lightpanda 比較 — 実測前の隔離疎通で停止
+# Moli / Lightpanda 比較 — Docker隔離成功、Moli依存不足で未測定
 
-## 結論・概要
+
+## 更新: 許可された修復1回の結果
+
+**現在の停止原因はMoliの共有ライブラリ不足。Docker隔離probeは成功したが、取得品質・速度・メモリの比較は依然未測定。** 以下の初回bwrap停止記録は履歴として保持する。
+
+親から同じ環境のDocker利用と公式最小イメージ取得の明示許可を受け、修復1回として実行した。公式 `python:3.12-slim` をdigest `sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1` に固定。UID/GID1000、network none、read-only rootfs/入力、cap-drop ALL、no-new-privileges、CPU2、RAM8 GiB、pids128を設定した。コンテナ内の自作probeでこれらの主要条件と作業ディレクトリ・入力の読み取り/実行権限、loopback bindを確認し終了0。秘密のパスを調査せず、socket/home/repo全体をマウントしていない。[probe生ログ](../../benchmarks/moli-lightpanda-20261019/docker-probe.stdout.log)。
+
+公式imageの圧縮layerは43,259,288 bytes、ブラウザ配布との合計payloadは163,903,754 bytes（約156.3 MiB）。2GB以内、追加有料サービスなし。manifest/README/API等の小さなメタデータ・HTTPヘッダ量は未計測。[download台帳](../../benchmarks/moli-lightpanda-20261019/download-budget.json)。公式Moli/Lightpanda配布を合計120,644,466 bytes取得し、両方の公式SHA-256に一致。Moliはarchive内の通常ファイルmoliだけを取り出し、実行ファイルhashも保存。ホストではバイナリを実行せず、ダウンロード権限と実行時のnetwork noneを分離した。
+
+隔離内でMoli `--version` / `serve --help` はともに終了127、`libfontconfig.so.1: cannot open shared object file`。Lightpanda `--version` は正しいサブコマンドでなく終了1、`serve --help` は終了0。ヘルプ成功を取得成功と扱わない。[互換性ログ](../../benchmarks/moli-lightpanda-20261019/compatibility.jsonl)。静的ELF解析ではMoliはlibstdc++、libfontconfig、libz、libgcc_s、libm、libc、ld-linuxを要求する。runtime依存を解消する追加導入は修復上限を越える可能性があるため実施せず、停止を維持した。OSや自動承認による拒否ではなく、既知のloaderエラー。既存テスト/ブラウザ計測の重複投入なし。
+
+現時点の再開に必要なのは、公式OS runtime依存を追加する初期セットアップを許可範囲とみなせるかの判断。今回の修復回数は1で、追加修復はしていない。比較runnerは未実装。CLI互換性チェックは4回だが**取得品質の試行は0件**である。
+
+再現入口: [run-isolated.sh](../../experiments/moli-lightpanda-20261019/run-isolated.sh)。これは検証済み入力stagingを必要とし、ホスト上の秘密/認証を渡さない。比較成功を再現するコマンドではない。
+
+## 初回時点の結論・概要
 
 **ブラウザ比較は未完了。速度・品質・成功率・RSS/PSSの新規実測値はない。** 2026-10-19、指定環境で自作の無害なPythonをbubblewrap内から実行する初回probeがUID map作成時に失敗した。隔離を外した実行、昇格、別環境への迂回は行っていない。双方の優劣や本番採用可否は判定できない。
 

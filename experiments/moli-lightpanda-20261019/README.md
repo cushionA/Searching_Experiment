@@ -1,6 +1,6 @@
 # Moli / Lightpanda ローカル比較準備（未測定）
 
-状態: namespace preflightで停止。fixture生成と隔離疎通コードのみ。CDP adapter・測定runnerは未実装なので、このディレクトリだけで性能比較は完走しません。
+状態: 初回namespace preflight失敗後、許可されたDocker修復1回のprobeは成功。現在はMoliのlibfontconfig.so.1不足で停止。fixture生成と隔離疎通コードのみ。CDP adapter・測定runnerは未実装なので、このディレクトリだけで性能比較は完走しません。
 
 ## 固定仕様
 

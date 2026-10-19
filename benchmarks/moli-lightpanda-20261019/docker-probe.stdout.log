@@ -1,0 +1,26 @@
+{
+  "uid": 1000,
+  "gid": 1000,
+  "cwd": "/work",
+  "cwd_read_execute": true,
+  "files_readable": {
+    "/work/docker_probe.py": true,
+    "/work/expected.json": true,
+    "/work/fixtures/static.html": true
+  },
+  "cap_eff": "0000000000000000",
+  "cap_bnd": "0000000000000000",
+  "no_new_privs": "1",
+  "seccomp": "2",
+  "interfaces": [
+    "lo"
+  ],
+  "memory_max": "8589934592",
+  "cpu_max": "200000 100000",
+  "mount_flags": {
+    "/": "ro,relatime,lowerdir=/run/kata-containers/erofs-multi-layer/f752752ada6145dbbb82d9dd63ffd733/lower-0,upperdir=/run/kata-containers/erofs-multi-layer/f752752ada6145dbbb82d9dd63ffd733/upper/upper,workdir=/run/kata-containers/erofs-multi-layer/f752752ada6145dbbb82d9dd63ffd733/upper/work,index=off,metacopy=off",
+    "/tmp": "rw,nosuid,nodev,noexec,relatime,size=262144k",
+    "/work": "ro,relatime"
+  },
+  "loopback_bind": true
+}
