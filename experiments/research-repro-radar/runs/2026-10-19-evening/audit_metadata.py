@@ -1,0 +1,12 @@
+import json,hashlib,re,sys,time
+from pathlib import Path
+root=Path('/workspace/evening-radar-20261019');r=root/'experiments/research-repro-radar/runs/2026-10-19-evening';e=json.loads((r/'review-evidence.json').read_text());reviews=json.loads((r/'reviews.json').read_text());b=root/'benchmarks/research-repro-radar/2026-10-19-evening';b.mkdir(parents=True,exist_ok=True)
+issues=[{'id':x['candidate_id'],'status':'not_accepted','reason':'Search-use gate incorrectly generalized to broader profile interests and/or resource uncertainty treated as C; A/B/C not adopted. Preserve pending.'}for x in reviews]
+issues += [{'id':'hf:qwen/qwen2.5-coder-1.5b-instruct','status':'factual_correction','reason':'Native response sums alternate serialization weights; approximately 6.17GB is not a necessary BF16 download. Use single selected weight file metadata, not aggregate.'},{'id':'2609.18063','status':'factual_correction','reason':'2026-09-30 event is not later than preceding evening 2026-10-18 report; no new development established.'},{'id':'2610.23787','status':'new_primary_discrepancy','reason':'README says Qwen3.5 weights pending; API lists model.safetensors 1290683952 bytes. Neither proves Python implementation support.'}]
+(r/'parent-review-audit.json').write_text(json.dumps(issues,ensure_ascii=False,indent=2)+'\n')
+files={}
+for x in e:
+ if 'file'not in x:continue
+ p=r/x['file'];raw=p.read_bytes();assert hashlib.sha256(raw).hexdigest()==x['sha256'];assert len(raw)==x['bytes'];files[x['file']]=len(raw)
+audit={'collected':len(json.loads((r/'all-candidates.json').read_text())),'native_schema_valid_candidates':len(reviews),'native_final_judgments_accepted':0,'review_pool_read':20,'additional_reading_targets':11,'reading_targets':31,'timeout_candidates':6,'candidate_code_executions':0,'model_inferences':0,'measured_quality_improvements':0,'candidate_weights_downloaded_bytes':0,'candidate_repairs':0,'money_jpy':0,'gpu_seconds':0,'primary_files':len(files),'primary_payload_bytes':sum(files.values()),'primary_errors':[{'id':x['id'],'kind':x['kind'],'error':x['error']}for x in e if 'error'in x],'pending':5236,'canonical_previous_pending':5204,'status':'partial_judgment_audit_failed','notes':'No final A/B/C adopted; all candidates retained; probe succeeded, later batch did not meet semantic audit. Metadata not performance.'}
+(b/'audit.json').write_text(json.dumps(audit,ensure_ascii=False,indent=2)+'\n');print(json.dumps(audit,ensure_ascii=False))

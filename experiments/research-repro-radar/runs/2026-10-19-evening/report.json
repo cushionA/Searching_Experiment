@@ -1,0 +1,131 @@
+{
+  "run_id": "2026-10-19-evening",
+  "date_jst": "2026-10-19",
+  "status": "partial_judgment_audit_failed",
+  "canonical_base": "55bcd617ae45f5d8a36bc618e7be05154713bf46",
+  "skill_commit": "55ceed634506c5942d6a8e84c71d7e80acc103ff",
+  "backend": "native",
+  "host_requested_model": "gpt-6-luna",
+  "actual_service_model": "unknown",
+  "recommended": [],
+  "reading_deep_dive_pending": [],
+  "digest": [
+    {
+      "id": "2610.14162",
+      "title": "Next-Concept Modeling: Fast, Parallel Coarse-to-Fine Text Generation",
+      "url": "https://arxiv.org/abs/2610.14162",
+      "reason_selected": "HF trending35位。階層VQコードを粗→細で並列生成し要約を高速化する設計。XSum用tokenizer+generatorは653,981,290 bytes、MIT。",
+      "deferred_reason": "CPU経路/RAM/日本語品質未検証。公式評価はGPU shard方式。追加判定が期限切れのためA/B/C未確定。",
+      "verification_level": "reading_only_not_inference",
+      "decision_status": "pending_audit"
+    },
+    {
+      "id": "2610.11287",
+      "title": "REMORY: Learning Residual Memory for Context Compaction",
+      "url": "https://arxiv.org/abs/2610.11287",
+      "reason_selected": "HF trending45位。要約に残差soft memoryを足す設計。MITコード、Qwen用memoryだけで8,023,041,444 bytes、2×80GB GPU推奨。",
+      "deferred_reason": "2GB取得・8GB RAM条件外。10/18のonline training追加は学習禁止のため試さない。A/B/C未確定。",
+      "verification_level": "reading_only_not_inference",
+      "decision_status": "pending_audit"
+    },
+    {
+      "id": "2610.23787",
+      "title": "DLite: History-free Speculative Decoding for Agentic AI",
+      "url": "https://arxiv.org/abs/2610.23787",
+      "reason_selected": "draft側の履歴KVを省く投機的復号。公式Qwen3.5-4B-DLiteに1,290,683,952-byte重みを確認、READMEのweights pendingと不一致。",
+      "deferred_reason": "target本体も必要。現行APIのQwen3.5対応/総取得/RAM/CPUは未確認。A/B/C未確定。",
+      "verification_level": "reading_only_not_inference",
+      "decision_status": "pending_audit"
+    },
+    {
+      "id": "2610.22428",
+      "title": "Embeddings Are Overpriced? A Frozen 16 MB Vocabulary for Small and Ternary Language Models",
+      "url": "https://arxiv.org/abs/2610.22428",
+      "reason_selected": "小型モデルの語彙を固定512-bit表にするCPU志向研究。配布kernel/armC.binは46,236,196 bytes。",
+      "deferred_reason": "非商用研究限定＋Gemma由来条件。BitNet保留維持、実行なし。独立性能比較・日本語品質・A/B/C未確定。",
+      "verification_level": "reading_only_not_inference",
+      "decision_status": "pending_audit"
+    },
+    {
+      "id": "2609.16161",
+      "title": "LLM Inference in a Flash!",
+      "url": "https://arxiv.org/abs/2609.16161",
+      "reason_selected": "整数量子化と辞書KV圧縮をFlash内演算へ組み合わせる一次論文。通常SSD offloadと異なる設計。",
+      "deferred_reason": "専用Compute-in-Flashの解析モデルが中心。公開実行物/対応hardware/商用条件/実測効果未確認。判定監査保留。",
+      "verification_level": "reading_only_not_inference",
+      "decision_status": "pending_audit"
+    }
+  ],
+  "completed_ids": [],
+  "counts": {
+    "collected": 2515,
+    "native_schema_valid_candidates": 25,
+    "native_final_judgments_accepted": 0,
+    "review_pool_read": 20,
+    "additional_reading_targets": 11,
+    "reading_targets": 31,
+    "timeout_candidates": 6,
+    "candidate_code_executions": 0,
+    "model_inferences": 0,
+    "measured_quality_improvements": 0,
+    "candidate_weights_downloaded_bytes": 0,
+    "candidate_repairs": 0,
+    "money_jpy": 0,
+    "gpu_seconds": 0,
+    "primary_files": 150,
+    "primary_payload_bytes": 6512353,
+    "primary_errors": [
+      {
+        "id": "2412.14219",
+        "kind": "license",
+        "error": "HTTPError: HTTP Error 404: Not Found"
+      },
+      {
+        "id": "2503.06029",
+        "kind": "license",
+        "error": "HTTPError: HTTP Error 404: Not Found"
+      },
+      {
+        "id": "2505.03113",
+        "kind": "license",
+        "error": "HTTPError: HTTP Error 404: Not Found"
+      },
+      {
+        "id": "2405.03144",
+        "kind": "license",
+        "error": "HTTPError: HTTP Error 404: Not Found"
+      },
+      {
+        "id": "2607.18213",
+        "kind": "license",
+        "error": "HTTPError: HTTP Error 404: Not Found"
+      }
+    ],
+    "pending": 5236,
+    "canonical_previous_pending": 5204,
+    "status": "partial_judgment_audit_failed",
+    "notes": "No final A/B/C adopted; all candidates retained; probe succeeded, later batch did not meet semantic audit. Metadata not performance."
+  },
+  "heartbeat": {
+    "days": 14,
+    "mail_state": {
+      "sent": []
+    },
+    "last_sent_at": "unknown",
+    "due": "cannot_determine_prior_delivery; digest_nonempty_so_empty_run_heartbeat_not_applicable",
+    "sent": false
+  },
+  "stopped_preserved": [
+    "Squeez repair cap",
+    "YOLO26n /app PermissionError 0c6ddaa",
+    "Harness2 isolation PermissionError efd3c909",
+    "PP-LCNet stopped",
+    "BitNet held"
+  ],
+  "notes": [
+    "Native probe succeeded; later schema and semantic audit failures are not probe failure.",
+    "25 schema-valid outputs not adopted as final A/B/C; 6 additional request timeout.",
+    "record_run records this zero-recommendation run without completing candidates.",
+    "Notification belongs to parent; no email/SMTP/cron or automation changes."
+  ]
+}
