@@ -1,0 +1,154 @@
+---
+base_model: google/gemma-3-270m
+datasets:
+- HuggingFaceFW/fineweb-edu
+language:
+- en
+license: other
+license_name: qlni-non-commercial-research
+license_link: LICENSE.md
+pipeline_tag: text-generation
+tags:
+- frozen-embedding
+- binary-codes
+- ternary
+- bitnet
+- gemma-3
+- small-language-model
+- cpu-inference
+- research
+---
+
+# Embeddings Are Overpriced?
+
+Code, data, checkpoints and every evaluation answer for the paper.
+
+**Paper:** [paper.pdf](https://huggingface.co/QLNI/embeddings-are-overpriced/resolve/main/docs/paper.pdf) (LaTeX source: [paper.tex](https://huggingface.co/QLNI/embeddings-are-overpriced/blob/main/docs/paper.tex)). Preprint DOI: [10.5281/zenodo.23382634](https://doi.org/10.5281/zenodo.23382634). arXiv: [2610.22428](https://arxiv.org/abs/2610.22428) (cs.CL).
+
+We trained three Gemma-3-270M-shaped language models from scratch on the same 2.05 billion FineWeb-Edu tokens, in the same order, with the same seed. They differ only in the vocabulary and the body.
+
+| arm | vocabulary | body | trainable | file |
+|---|---|---|---|---|
+| **A** | learned tied table, 262,144 x 640 | float | 268.1M | 543 MB (GGUF f16) |
+| **B** | **frozen 512-bit codes**, 16.8 MB, no trainable parameters | float | 101.0M | no kernel |
+| **C** | frozen 512-bit codes | ternary (BitNet b1.58) | 101.2M | **46 MB** (our kernel) |
+
+The frozen table gives each token one 512-bit code. We computed it once from Gemma 3 270M's embedding (the top 512 principal directions, then the sign of each), and the same codes serve the input and the output. We add a fixed per-token prior to the output scores: the log unigram frequency of each token in the training data, which we call the seal. Two small linear maps, 512 to 640 on the way in and 640 to 512 on the way out, connect the codes to the body.
+
+Everything the paper used is here, so any number in it can be checked: the training script with every setting, the table, the data with checksums, all checkpoints (every 800 steps, with optimiser state), the per-step logs, the evaluation scripts, every per-question result, and the CPU kernel.
+
+## Results
+
+Zero-shot accuracy in %, with the 95% bootstrap range over questions in brackets. Validation loss is in nats per token on 512 held-out sequences.
+
+| | LAMBADA | HellaSwag | ARC-Easy | PIQA | val loss |
+|---|---|---|---|---|---|
+| A learned table, float | 21.6 (20.5-22.7) | 30.4 (29.4-31.2) | 45.9 (43.9-47.9) | 60.6 (58.3-62.8) | 3.155 |
+| B frozen table, float | 23.2 (22.1-24.4) | 30.4 (29.4-31.2) | 42.5 (40.5-44.5) | 61.5 (59.2-63.8) | 3.358 |
+| C frozen table, ternary | 22.5 (21.3-23.6) | 29.4 (28.6-30.3) | 41.0 (39.0-43.0) | 59.5 (57.2-61.7) | 3.439 |
+
+Compared question by question, B beats A on LAMBADA by 1.6 points, ties on HellaSwag and PIQA, and loses ARC-Easy by 3.4. C ties A on LAMBADA and PIQA and loses HellaSwag by 0.9 and ARC-Easy by 4.9. So the learned table costs 2.6 times the trainable parameters and buys 0.20 nats of loss and one benchmark.
+
+On words seen 10 to 99 times in training, B and C are 1.7 to 2.3 nats better than A. On words seen a million times or more, A is ahead by 0.035 nats. Of Gemma's 262,144 tokens, 52,782 never appear in our training data. In A their rows stay random; in B and C they still carry Gemma's codes.
+
+We also added 10,000 biomedical words to the vocabulary after training, without any further training. A got 42.9% worse, B 3.3% and C 3.1% (nats per character). The tests where the frozen table did not help are reported as well, in `eval/CONTROL_TOKENS.md` and `eval/emoji_*.json`.
+
+### On a laptop CPU
+
+Intel Xeon W-11955M, 8 threads, greedy decoding, 128-token context, 16-bit KV cache for both. Arm A runs in llama.cpp b11515 from the GGUF files in `gguf/`. Arm C runs in `kernel/cgemma.c`.
+
+| model | runtime | file | peak RAM | tokens/s | perplexity (300k val tokens, ctx 512) |
+|---|---|---|---|---|---|
+| A | llama.cpp, GGUF f16 | 543 MB | 723 MB | 62 | 23.86 |
+| A | llama.cpp, GGUF Q8_0 | 292 MB | 471 MB | 116 | 23.86 |
+| A | llama.cpp, GGUF Q4_K_M | 253 MB | 446 MB | 130 | 23.97 |
+| **C** | **our kernel** | **46 MB** | **62 MB** | **615 to 740** | 31.2 |
+
+The 8-bit GGUF loses nothing against f16, so we compare C with A at Q8_0. C generates 5.3 to 6.4 times faster in 7.6 times less memory. A cannot go below 446 MB at any quantisation, because its 16-bit table alone is 250 MB. C's loss is 0.28 nats higher. We did not write a kernel for B.
+
+## What is where
+
+```
+README.md, LICENSE.md
+docs/            paper.pdf, paper.tex, figures/ (loss curves)
+code/            train.py (arms A/B/C), eval.py + bars.py (benchmarks, bootstrap CIs), freq_eval.py, domain_vocab.py,
+                 control_tokens.py, emoji_test.py, zeroshot_vocab.py, new_words.py, fastc.py (fast loader for C),
+                 export_arm_a.py (A to HF and GGUF), plot.py, prep_data.py, bitnet_schedule.json
+kernel/          cgemma.c (CPU kernel for C), armC.bin (C exported for it, 46 MB), export_arm_c.py, golden_c.py, ids.txt
+tables/          gemma3_270m_512bit_table.npz (the frozen table), unigram counts and the seal
+data/            21 shards of training tokens (2.05B Gemma 3 tokens of FineWeb-Edu), val.npy (10M), SHA256SUMS.txt
+A/  B/  C/       checkpoints every 800 steps and the final step 7,820 (weights + AdamW state), per-step training logs
+B2/              arm B with a trained prior, stopped at step 1,833 for budget (measures the prior's share, see paper)
+final/           weights-only safetensors of the three final checkpoints; armA_hf/ is arm A in Hugging Face Gemma3 format
+gguf/            arm A as GGUF f16, Q8_0 and Q4_K_M for llama.cpp
+logs/            A.jsonl, B.jsonl, C.jsonl: loss, learning rate, weight decay and tokens at every step
+eval/            every per-question benchmark result and every analysis the paper quotes (JSON and markdown)
+```
+
+## Using the models
+
+**Arm A** is a standard Gemma 3 270M and loads anywhere: `Gemma3ForCausalLM.from_pretrained("final/armA_hf")`, or any GGUF file in `gguf/` with llama.cpp.
+
+**Arms B and C** need this repository's code, because a frozen code table with a seal is not a Hugging Face layer type.
+
+```python
+import numpy as np, torch, sys; sys.path.insert(0, "code")
+import fastc                                             # loads a checkpoint; for C it rounds the ternary weights once
+counts = np.load("tables/unigram_counts_fineweb_edu_2.05B.npy")
+model, _ = fastc.load("C", "C/step_07820.pt", counts)    # or ("B", "B/step_07820.pt", counts)
+ids = torch.tensor([[2, 651, 6037, 576, 1385, 603]])     # Gemma 3 tokenizer ids, <bos> first
+with torch.no_grad():
+    logits = model.logits(model.hidden(ids))              # [1, 6, 262144]
+```
+
+Set `SAVED_TABLE=1` to read the table from `tables/` instead of rebuilding it from Gemma 3 270M. The rebuild gives the same bits; the file just saves the download. `final/armB` and `final/armC` hold the final weights without the optimiser state and without the table, which lives in `tables/`.
+
+**Arm C on a CPU**, no Python needed:
+
+```
+gcc -O3 -mavx2 -mfma -mf16c -DNT=8 -o cgemma kernel/cgemma.c -lm -lpthread      # add -lpsapi on Windows
+PIN=1 ./cgemma kernel/armC.bin bench 128 64             # prefill 128 tokens, generate 64; prints tokens/s and peak RAM
+./cgemma kernel/armC.bin golden kernel/ids.txt out.bin  # logits for the check against PyTorch (kernel/golden_c.py)
+```
+
+The kernel is a single C file. It does ternary matrix-vector products with int8 activations, attention with a 16-bit KV cache, and a readout that scores all 262,144 codes straight off the 1-bit table. The readout does a quick int8 pass over every row, then an exact second pass only over the rows that can still win. Its top token matches the PyTorch model at every position we tested.
+
+## Where the frozen table comes from
+
+We shipped this idea before we tested it properly. Two earlier QLNI models have no learned embedding at all; every token is a fixed 512-bit code.
+
+| model | what it is | code | weights |
+|---|---|---|---|
+| **SHADOW 250M Instruct** | 250M parameters, 131,072-token frozen table, body under 2 bits per weight, 100M-token archive on disk. 60 MB with the vocabulary, about 400 tokens/s and 80 MB RAM on a laptop CPU. Held-out perplexity 23.3; PIQA 0.60, HellaSwag 0.34, ARC-Easy 0.41 | [github.com/QLNI/SHADOW-250M-Instruct](https://github.com/QLNI/SHADOW-250M-Instruct) | [huggingface.co/QLNI/SHADOW-250M](https://huggingface.co/QLNI/SHADOW-250M) |
+| **SHADOW 50M Instruct** | 44M ternary parameters, 73,880-token frozen table, exact circuits for arithmetic, dates and units inside the forward pass, memory on disk. 19.8 MB, about 2,000 tokens/s in 40 MB RAM. Also runs in the browser | [github.com/QLNI/SHADOW-50M-Instruct](https://github.com/QLNI/SHADOW-50M-Instruct) | [huggingface.co/QLNI/shadow-50m-instruct](https://huggingface.co/QLNI/shadow-50m-instruct) |
+
+Both are MIT-licensed and both work, but neither was a controlled experiment. Each changed many things at once, and neither was ever trained with a learned table for comparison. This repository is that comparison: same body, same data, same steps, same seed, and only the vocabulary changes. The CPU kernel here is ported from the SHADOW 50M kernel.
+
+## What comes next
+
+A frozen table does not have to stop at words. In the next paper the same frozen code space carries text, images, audio and video into one small body, with no learned embedding anywhere, still running on a CPU. The numbers will come with that paper.
+
+## Reproducing the training
+
+`code/prep_data.py` tokenises FineWeb-Edu (or use `data/`, with checksums in `data/SHA256SUMS.txt`), then `python code/train.py --arm A|B|C` runs with the settings in the script: 2.05B tokens, sequence length 1,024, 262,144 tokens per step, 7,820 steps, AdamW 6e-4 with cosine decay to 10% for A and B, the BitNet two-stage schedule in `code/bitnet_schedule.json` for C, seed 0 and the same data order. One arm takes about 17 GPU-hours on an RTX 5090. For evaluation run `code/eval.py`, then `code/bars.py` for the paired bootstrap.
+
+## Licence
+
+Code, data derivatives, tables and checkpoints are for **non-commercial research use only**; see `LICENSE.md`. The frozen table and the checkpoints of arms B and C contain codes derived from Gemma 3 270M's embedding, so [Google's Gemma Terms of Use](https://ai.google.dev/gemma/terms) apply to them as well. The training tokens are a tokenised subset of FineWeb-Edu (ODC-By 1.0).
+
+## Citation
+
+```
+@misc{bathula2026embeddings,
+  title         = {Embeddings Are Overpriced? A Frozen 16 MB Vocabulary for Small and Ternary Language Models},
+  author        = {Bathula, Sai Kiran},
+  year          = {2026},
+  eprint        = {2610.22428},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2610.22428},
+  doi           = {10.5281/zenodo.23382634}
+}
+```
+
+Sai Kiran Bathula, QLNI, New South Wales, Australia. saikiranbathula@qlni.io

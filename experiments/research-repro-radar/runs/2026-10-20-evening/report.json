@@ -1,0 +1,181 @@
+{
+  "run_id": "2026-10-20-evening-native",
+  "date": "2026-10-20",
+  "status": "completed_with_partial_judgment_failures",
+  "recommended": [
+    {
+      "id": "2610.14162",
+      "title": "Next-Concept Modeling (NCM)",
+      "published_at": "2026-10-09",
+      "url": "https://arxiv.org/abs/2610.14162",
+      "category": "deep_dive_value",
+      "assessment": "A",
+      "verification_level": "reading",
+      "reason": "NCMは階層コードを段階生成して系列全体の反復を減らすテキスト生成法で、要約・生成の試験対象として今すぐ調べる価値がある。論文はXSumでROUGE-Lを保ち31倍高速と報告し、HFにはXSum用チェックポイントがある。加えて第三者issueは隔離CPU環境でSudoku評価が動いたと報告しており、CPU可否の検証優先度も上がる。ただしCPU実行は投稿者の報告で、当方の実測は0回。CPU対応PR6とメモリ修正PR4はopen・未マージで、性能値も著者/投稿者報告として扱う。次回は隔離を確認した上で小型XSum generator+tokenizerをCPUでロードし、短い要約の生成とピークRAMを確認する。",
+      "independent_signals": [
+        {
+          "kind": "platform-trending",
+          "url": "https://huggingface.co/papers/2610.14162",
+          "rank": 15
+        },
+        {
+          "kind": "third-party CPU report",
+          "url": "https://github.com/HazyResearch/ncm/issues/8",
+          "note": "Third-party Sudoku report, not our execution or XSum verification."
+        }
+      ],
+      "next_check": "承認された隔離環境で英語XSum固定文書5件をCPU推論し、品質・時間・ピークRAMを測る。日本語は別途未確認。",
+      "unconfirmed": [
+        "論文は2026-10-09提出。GitHubは2026-10-14最終push、2026-10-20更新、394 stars。MITライセンス表記あり（商用利用可否はライセンス本文に基づく確認が未実施）。",
+        "NCM issue #8の第三者はCPU実行成功を主張するが、これは当方の実行ではない。PR #6（CPU/MPS対応）とPR #4（メモリ修正）はいずれもopen・未マージ。今回の当方実測runs=0。",
+        "XSum generator 354,355,211 bytesとtokenizer 299,626,079 bytes（合計約654 MB）。依存関係、ピークRAM、CPU所要時間、商用条件の詳細、日本語品質は未確認。",
+        "保存されたHF API資料の最終更新は2026-10-16。保存資料だけでは最新後継モデルの実在IDを確認できない。"
+      ]
+    }
+  ],
+  "digest": [
+    {
+      "id": "2610.23787",
+      "title": "DLite: History-free Speculative Decoding for Agentic AI",
+      "url": "https://arxiv.org/abs/2610.23787",
+      "assessment": "A",
+      "why_picked": "長いagent文脈のdraft KVを省く。HF trending37位、READMEでQwen3.5推論API対応に更新。",
+      "deferred_reason": "target+draftの合計DL/RAM、独立した第2話題信号、実行動作は未確認。"
+    },
+    {
+      "id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+      "title": "Qwen2.5-Coder-1.5B-Instruct",
+      "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+      "assessment": "B",
+      "why_picked": "1.5Bコード生成・修正でAI開発に適合。",
+      "deferred_reason": "BF16単体約3.09GBで2GB超。公式GGUF等の個別形式を未確認。Qwen3-Coder-Nextなど後継IDは存在確認済み。"
+    },
+    {
+      "id": "2601.22709",
+      "title": "Gated Relational Alignment via Confidence-based Distillation for Efficient VLMs",
+      "url": "https://arxiv.org/abs/2601.22709",
+      "assessment": "A",
+      "why_picked": "GRACEの関係蒸留・INT4 VLMは軽量画像理解に合う。",
+      "deferred_reason": "CPU適性と独立話題信号未確認。ZeroGPU利用は今回承認されたKaggle枠ではなく実行しない。"
+    },
+    {
+      "id": "2412.14219",
+      "title": "A Survey on Inference Optimization Techniques for Mixture of Experts\n  Models",
+      "url": "https://arxiv.org/abs/2412.14219",
+      "assessment": "A",
+      "why_picked": "MoE推論最適化の俯瞰資料としてCPU小型化の手法選別に役立つ。",
+      "deferred_reason": "性能比較未実施、独立2信号未確認。repo更新日時をcode push日時と混同しない。"
+    },
+    {
+      "id": "2503.06029",
+      "title": "SmartBench: Is Your LLM Truly a Good Chinese Smartphone Assistant?",
+      "url": "https://arxiv.org/abs/2503.06029",
+      "assessment": "A",
+      "why_picked": "SmartBenchの中国語20タスクは要約・抽出評価の設計に使える。",
+      "deferred_reason": "データ公開状況・license・日本語適性・独立2信号未確認。"
+    },
+    {
+      "id": "2609.05334",
+      "title": "Lightweight Vision Transformer Compression for On-Device Plant Disease Detection in Resource-Constrained Agricultural Field Conditions",
+      "url": "https://arxiv.org/abs/2609.05334v1",
+      "assessment": "A",
+      "why_picked": "現場病害画像を対象とした小型ViT。著者の6.01MB報告が関心に合う。",
+      "deferred_reason": "重み・商用license・汎化性能・独立2信号未確認。学習は実施しない。"
+    },
+    {
+      "id": "2602.09373",
+      "title": "AfriNLLB: Efficient Translation Models for African Languages",
+      "url": "https://arxiv.org/abs/2602.09373",
+      "assessment": "B",
+      "why_picked": "AfriNLLBの圧縮とCTranslate2配布は翻訳NLPの候補。",
+      "deferred_reason": "CC-BY-NC-4.0、対象言語の需要とCPU実測未確認。"
+    },
+    {
+      "id": "2207.01405",
+      "title": "I-ViT: Integer-only Quantization for Efficient Vision Transformer\n  Inference",
+      "url": "https://arxiv.org/abs/2207.01405",
+      "assessment": "B",
+      "why_picked": "I-ViTの整数演算は軽量画像認識の効率化候補。",
+      "deferred_reason": "論文の速度測定はGPU。CPU経路は未確認。"
+    },
+    {
+      "id": "2211.11014",
+      "title": "Understanding and Improving Knowledge Distillation for\n  Quantization-Aware Training of Large Transformer Encoders",
+      "url": "https://arxiv.org/abs/2211.11014",
+      "assessment": "B",
+      "why_picked": "量子化encoderのattention蒸留は分類の小型化に関連。",
+      "deferred_reason": "QAT訓練中心で学習禁止。利用可能な推論重み未確認。"
+    },
+    {
+      "id": "2405.17890",
+      "title": "SLMRec: Distilling Large Language Models into Small for Sequential\n  Recommendation",
+      "url": "https://arxiv.org/abs/2405.17890",
+      "assessment": "B",
+      "why_picked": "SLMRecは逐次推薦モデルを小さくする設計。",
+      "deferred_reason": "推薦用途の需要とCPU推論経路未確認。SKUへ流用・再開しない。"
+    },
+    {
+      "id": "2607.18213",
+      "title": "SWE-Pruner Pro: The Coder LLM Already Knows What to Prune",
+      "url": "https://arxiv.org/abs/2607.18213",
+      "assessment": "判定保留",
+      "why_picked": "SWE-Pruner Proはhidden stateからコード行の削減を決める後継。",
+      "deferred_reason": "SGLang/CUDA依存、license本文未確認。native修復が保守的期限を超え正式A/B/C未採用。"
+    },
+    {
+      "id": "2601.16746",
+      "title": "SWE-Pruner: Self-Adaptive Context Pruning for Coding Agents",
+      "url": "https://arxiv.org/abs/2601.16746",
+      "assessment": "判定保留",
+      "why_picked": "SWE-Prunerは0.6Bの目標別コード行削減でAI開発に接点。",
+      "deferred_reason": "Pro後継を確認。CPU実測・コスト未確認、native修復期限超過。"
+    },
+    {
+      "id": "2607.25180",
+      "title": "Bekko Embedding: Parameter-Efficient Multilingual Retrieval with Ultra-Compact Encoders",
+      "url": "https://arxiv.org/abs/2607.25180",
+      "assessment": "判定保留",
+      "why_picked": "Bekkoは小型多言語encoderとONNX配布。",
+      "deferred_reason": "検索順位改善だけでは用途条件を満たさない。網羅性補完や前処理への具体的価値未確認。"
+    },
+    {
+      "id": "2610.22428",
+      "title": "Embeddings Are Overpriced? A Frozen 16 MB Vocabulary for Small and Ternary Language Models",
+      "url": "https://arxiv.org/abs/2610.22428",
+      "assessment": "判定保留",
+      "why_picked": "凍結16MB語彙表は小型モデル容量削減の着想。",
+      "deferred_reason": "非商用研究license・配布形式確認が必要。BitNet保留を迂回せず実行しない。"
+    }
+  ],
+  "completed_ids": [
+    "2603.11531"
+  ],
+  "counts": {
+    "collected_unique": 2521,
+    "ranking_input_with_carry": 6138,
+    "primary_read_review_pool": 20,
+    "primary_read_total": 26,
+    "candidate_code_executions": 0,
+    "candidate_model_inferences": 0,
+    "deadline_accepted_initial_candidates": 10,
+    "deadline_accepted_updated_candidates": 2,
+    "pending_before_record": 6138,
+    "pending_after_record": 6136
+  },
+  "limitations": [
+    "OpenReview API 403 for five queries.",
+    "Native bare-array envelope rejected; repaired once with unchanged candidate schema. Conservative 180-second cutoff excludes batches2-5; pending preserved.",
+    "No credential-isolated candidate runtime was verified. No unknown candidate code, model weights or GPU jobs executed.",
+    "API result ceilings and bounded queries mean coverage is not exhaustive."
+  ],
+  "budget": {
+    "money_jpy": 0,
+    "candidate_cpu_seconds": 0,
+    "candidate_weights_bytes": 0,
+    "gpu_seconds": 0,
+    "run_started_at": "2026-10-20T09:05:00Z",
+    "run_deadline": "2026-10-20T09:35:00Z",
+    "finished_analysis_at": "2026-10-20T09:21:17.958636+00:00"
+  },
+  "runtime_model": "unknown"
+}

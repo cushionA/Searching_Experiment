@@ -1,0 +1,68 @@
+---
+license: mit
+base_model: Qwen/Qwen3-8B
+library_name: transformers
+pipeline_tag: text-generation
+tags:
+- agent
+- tool-use
+- function-calling
+- reflection
+- reinforcement-learning
+- arxiv:2610.17953
+datasets:
+- dongguanting/Agent-Reflex-SFT-54K
+- dongguanting/Agent-Reflex-RL-2K
+---
+
+# Agent-Reflex-8B
+
+[![Paper](https://img.shields.io/badge/Paper-arXiv-b5212f.svg?logo=arxiv)](https://arxiv.org/abs/2610.17953)
+[![HF Paper](https://img.shields.io/badge/🤗%20Paper-2610.17953-ffc107.svg)](https://huggingface.co/papers/2610.17953)
+[![GitHub](https://img.shields.io/badge/GitHub-Agent--Reflex-181717.svg?logo=github)](https://github.com/RUC-NLPIR/Agent-Reflex)
+[![Collection](https://img.shields.io/badge/🤗%20Collection-Agent--Reflex-ffc107.svg)](https://huggingface.co/collections/dongguanting/agent-reflex)
+[![SFT Data](https://img.shields.io/badge/Data-SFT--54K-ffc107.svg?logo=huggingface)](https://huggingface.co/datasets/dongguanting/Agent-Reflex-SFT-54K)
+[![RL Data](https://img.shields.io/badge/Data-RL--2K-ffc107.svg?logo=huggingface)](https://huggingface.co/datasets/dongguanting/Agent-Reflex-RL-2K)
+
+**Paper:** [arXiv:2610.17953](https://arxiv.org/abs/2610.17953) · [Hugging Face Papers](https://huggingface.co/papers/2610.17953)
+
+Agent-Reflex-8B is Qwen3-8B trained with **Agent-Reflex**, a framework that elicits proactive reflection in tool-using agents: noticing noisy tool feedback and user corrections, and recovering from them.
+
+Training: Qwen3-8B → **ReSFT** (54,663 reflective trajectories, 5,127 steps) → **ORPO** (noisy agentic RL with skill-guided on-policy distillation). Skills are used only during training; the model runs skill-free.
+
+## Results
+
+| Model | VitaBench | τ²-Bench | BFCL V4 | ACEBench | ToolSandbox | **Overall** | AgentNoiseBench |
+| --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Qwen3-8B | 11.4 | 26.2 | 40.4 | 54.0 | 69.1 | 40.2 | 12.3 |
+| EnvScaler-8B | 15.8 | 37.9 | 47.6 | 72.5 | 80.5 | 50.9 | 18.2 |
+| Agent-World-8B | 14.5 | 54.6 | 51.4 | 72.0 | 75.6 | 53.6 | – |
+| **Agent-Reflex-8B** | **17.5** | **62.1** | **52.9** | **78.0** | **82.5** | **58.6** | **29.1** |
+
+Each benchmark is scored with its official metric. Overall is the unweighted mean of the five long-horizon tool-use benchmarks (Table 1 of the paper); AgentNoiseBench is the mean over its τ²-Bench and VitaBench noise settings (Table 2).
+
+## Usage
+
+Serve with vLLM (native function calling, thinking on), as in our evaluation:
+
+```bash
+vllm serve dongguanting/Agent-Reflex-8B --served-model-name Qwen/Qwen3-8B \
+  --tensor-parallel-size 8 --max-model-len 40960 \
+  --enable-auto-tool-choice --tool-call-parser hermes --reasoning-parser deepseek_r1
+```
+
+The full evaluation suite (τ²-Bench, BFCL V4, ACEBench, VitaBench, AgentNoiseBench, ToolSandbox) is in the [GitHub repo](https://github.com/RUC-NLPIR/Agent-Reflex/tree/main/evaluation).
+
+## Citation
+
+```bibtex
+@misc{dong2026agentreflex,
+  title={Agent-Reflex: Teaching Language Agents to Act Reflectively},
+  author={Guanting Dong and Xinyu Yang and Jiajie Jin and Yuyang Hu and Xiaoshuai Song and Yifei Chen and Xiaoxi Li and Jiejun Tan and Yutao Zhu and Tat-Seng Chua and Ji-Rong Wen and Zhicheng Dou},
+  year={2026},
+  eprint={2610.17953},
+  archivePrefix={arXiv},
+  primaryClass={cs.CL},
+  url={https://arxiv.org/abs/2610.17953},
+}
+```

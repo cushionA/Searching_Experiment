@@ -1,0 +1,68 @@
+{
+  "candidates": [
+    {
+      "candidate_id": "2610.14162",
+      "decision": "test",
+      "reason": "NCMは階層コードを段階生成して系列全体の反復を減らすテキスト生成法で、要約・生成の試験対象として今すぐ調べる価値がある。論文はXSumでROUGE-Lを保ち31倍高速と報告し、HFにはXSum用チェックポイントがある。加えて第三者issueは隔離CPU環境でSudoku評価が動いたと報告しており、CPU可否の検証優先度も上がる。ただしCPU実行は投稿者の報告で、当方の実測は0回。CPU対応PR6とメモリ修正PR4はopen・未マージで、性能値も著者/投稿者報告として扱う。次回は隔離を確認した上で小型XSum generator+tokenizerをCPUでロードし、短い要約の生成とピークRAMを確認する。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.14162",
+          "quote": "on XSum, it matches the strongest DLM's ROUGE-L while being $31\\times$ faster"
+        },
+        {
+          "source_url": "https://huggingface.co/hazyresearch/ncm-checkpoints/raw/main/README.md",
+          "quote": "`xsum/` | XSum summarization"
+        },
+        {
+          "source_url": "https://api.github.com/repos/HazyResearch/ncm/issues?state=all&per_page=100",
+          "quote": "Was able to get it to run fine and did the Sudoku tests in a basic firecracker (microvm)."
+        },
+        {
+          "source_url": "https://api.github.com/repos/HazyResearch/ncm/pulls/6",
+          "quote": "evaluate.py runs a single local shard when no CUDA GPU is visible"
+        },
+        {
+          "source_url": "https://api.github.com/repos/HazyResearch/ncm/pulls/4",
+          "quote": "it roughly doubles peak memory."
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": "deep_dive_value",
+      "next_check": "隔離環境を確認後、XSum用小型generatorとtokenizerをCPUでロードし、短い要約の生成可否・ピークRAM・日本語入力品質を確認する。",
+      "unconfirmed": [
+        "論文は2026-10-09提出。GitHubは2026-10-14最終push、2026-10-20更新、394 stars。MITライセンス表記あり（商用利用可否はライセンス本文に基づく確認が未実施）。",
+        "NCM issue #8の第三者はCPU実行成功を主張するが、これは当方の実行ではない。PR #6（CPU/MPS対応）とPR #4（メモリ修正）はいずれもopen・未マージ。今回の当方実測runs=0。",
+        "XSum generator 354,355,211 bytesとtokenizer 299,626,079 bytes（合計約654 MB）。依存関係、ピークRAM、CPU所要時間、商用条件の詳細、日本語品質は未確認。",
+        "保存されたHF API資料の最終更新は2026-10-16。保存資料だけでは最新後継モデルの実在IDを確認できない。"
+      ]
+    },
+    {
+      "candidate_id": "2610.23787",
+      "decision": "test",
+      "reason": "DLiteはターゲットモデルの文脈状態を再利用して履歴KVを持たずに投機デコードする方式で、エージェントの長文・多ターン推論での推論高速化を試す価値がある。論文とREADMEは有望な速度・受理長を報告し、現行READMEはQwen3/Qwen3.5向け推論APIとチェックポイントを示す。ただし性能値は論文/著者資料由来で当方の実測ではない。HF issue #1はTrending Papers経由の連絡と明記され、Trendingと独立した関心シグナルとして二重計上しない。2GB制限ではターゲットとdraft双方が必要な実行を保留し、今回の実測runs=0。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.23787",
+          "quote": "introduce DLite, a history-free speculative decoding framework for agentic AI."
+        },
+        {
+          "source_url": "https://raw.githubusercontent.com/SJTU-DAI-Sys/DLite/HEAD/README.md",
+          "quote": "The Python API and CLI support Qwen3 and text-only Qwen3.5 targets."
+        },
+        {
+          "source_url": "https://api.github.com/repos/SJTU-DAI-Sys/DLite/issues?state=all&per_page=100",
+          "quote": "I discovered your work through Hugging Face Daily Papers: https://huggingface.co/papers/2610.23787"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "隔離環境で2GB制限を満たす実行経路があるか、Qwen3.5 targetとdraftの重み・依存サイズを合算せず別々に確認し、可能なら短いプロンプトでAPI初期化のみ試す。",
+      "unconfirmed": [
+        "論文は2026-10-16提出。GitHubは2026-10-19最終push・2026-10-20更新、38 stars。READMEとAPI資料にMIT表記あり（ライセンス本文の商用条件は未確認）。",
+        "HF Qwen3-4B-DLiteは2026-10-19更新、draft重み1,206,651,952 bytes。Qwen3.5-4B-DLiteは同日更新、draft重み1,290,683,952 bytes。いずれも対応するtargetモデルも要し、2GB制限内での実行可否は未確認。基盤モデルとdraftのサイズを合算・代替扱いしていない。",
+        "READMEはQwen3.5 API対応を記載するが、これはコード/文書の読解で動作確認ではない。HF issue #1はHF Trending Papersからの連絡で、Trending由来の発見と独立した2件目のシグナルには数えない。",
+        "推論資源・実測スループット・今回の当方実測runs=0。保存資料だけでは最新後継モデルの実在IDを確認できない。"
+      ]
+    }
+  ]
+}
