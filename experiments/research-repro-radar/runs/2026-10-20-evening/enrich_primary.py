@@ -6,7 +6,7 @@ rows=json.loads((R/'review-targets.json').read_text()); ev=json.loads((R/'review
 existing={(x['id'],x['kind'])for x in ev}
 for e in ev:
  if e['kind']!='paper':continue
- 
+
  if 'file' not in e:continue
  raw=(R/e['file']).read_text();urls=re.findall(r'href=["\']([^"\']+)',raw)
  repos=[x.split('github.com/')[-1].strip('/').split('/')[:2]for x in urls if 'github.com/'in x]
