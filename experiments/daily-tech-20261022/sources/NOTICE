@@ -1,0 +1,27 @@
+This dataset builds on prior work. Attributions and upstream licenses:
+
+KILT-HotpotQA (kilt/)
+  - Questions & answers: HotpotQA (Yang et al., 2018), CC BY-SA 4.0.
+      https://hotpotqa.github.io/
+  - Documents: Wikipedia, CC BY-SA 4.0.
+  - Redistributed here in full under CC BY-SA 4.0 (share-alike), with attribution.
+
+LOONG (loong/)
+  - Questions & task structure: Loong benchmark, "Leave No Document Behind:
+    Benchmarking Long-Context LLMs with Extended Multi-Doc QA" (Wang et al., EMNLP 2024),
+    Apache-2.0. https://github.com/MozerWang/Loong
+  - Source documents are NOT redistributed here (no redistribution license for the
+    documents). We ship references, evidence offsets, and SHA-256 hashes only; rebuild
+    the documents from the Loong source (see loong/rebuild_docs.py).
+
+BrowseComp-Plus (browsecomp_plus/)
+  - We include ONLY our evidence-span annotations (offsets keyed by upstream query_id +
+    doc_id). We do NOT include questions, answers, or document/evidence text: BrowseComp
+    (OpenAI) asks that examples not be revealed in plain text online.
+  - Questions/answers: obfuscated download + decrypt from BrowseComp-Plus (MIT):
+      https://github.com/texttron/BrowseComp-Plus
+  - Corpus: HuggingFace Tevatron/browsecomp-plus-corpus.
+  - BrowseComp: https://openai.com/index/browsecomp/
+
+Our contributions (the gold-evidence annotations, the unified schema, and helper code):
+annotations under CC BY-SA 4.0; code under the MIT License.
