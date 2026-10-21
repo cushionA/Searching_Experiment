@@ -1,0 +1,171 @@
+[
+  {
+    "candidate_id": "2610.14224",
+    "decision": "test",
+    "reason": "目的はモデル重みではなく、AI駆動開発のエージェント実行ハーネスをタスク単位で改善し、その経験を次のタスクへ残す設計の評価。既存手法との差分は、正解ラベルなしの対照的なPropose–Probe–Composeと継続改善ハーネスの二層再帰。社内エージェントの指示・ツール・メモリ・スキル構成を改善する具体的な用途があり、論文は3ベンチマークで著者報告の改善を示す。無料・認証不要の決定論的demoも案内され、設計とデモを今すぐ吟味する価値があるためtest。これは著者報告であり独立再現実測ではない。GitHub issue #121は出力ファイル作成後に時間切れ/クラッシュしたJobBench rolloutを完了扱いし、軌跡に終了状況が残らないと報告。関連PR #122は2026-10-21時点でopen・未マージで、症状を修正済みとみなさない。今回は読解と無料demoの検討に限定し、実行は隔離確認後に行う。test判定は安全設定解除やAPI課金の許可ではない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.14224",
+        "quote": "Task-level recursion refines the current task's harness using a contrastive Propose-Probe-Compose step"
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2610.14224",
+        "quote": "a single step consistently improves GLM-5 and Gemini 3.5 Flash over their base harnesses"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/google-research/harness2/HEAD/README.md",
+        "quote": "The local demo runs both recursion modes with deterministic editors and real Python executions. It requires no model credentials."
+      },
+      {
+        "source_url": "https://api.github.com/repos/google-research/harness2/issues/121",
+        "quote": "The improver, the composer and the reflection then read a run that looks as if the agent chose to stop"
+      },
+      {
+        "source_url": "https://api.github.com/repos/google-research/harness2/pulls/122",
+        "quote": "#121 asks whether that is acceptable by default, and whether a cut-off rollout should be retried or flagged in `harness2-report` instead."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": "deep_dive_value",
+    "next_check": "隔離環境を確認した後、READMEの認証不要demoをCPU・RAM上限内で動かせるかを短時間で確認し、時間・最大RAM・生成物が再現するか記録する。",
+    "unconfirmed": [
+      "公開/更新: arXiv提出は2026-10-09、repoは2026-10-21更新、最終pushは2026-10-14（保存資料の記録）。これ以降の更新は未確認。",
+      "stars/活動: 保存資料時点で16,338 stars、1,511 forks、最終push 2026-10-14。以降の数値・活動は未確認。",
+      "license/商用: repo LICENSEはApache-2.0。コードの商用利用は同ライセンス条件内で可能と読めるが、同梱/取得する各ベンチマークやデータの個別ライセンス適合性は未確認。",
+      "導入: READMEのdemo手順はLinux、Python 3.12、uvとeditable install。モデルベンチマークはNode.js 20+、Google Cloud CLI等を要し、WorkBuddyはDockerを要する。実環境での導入確認は未実施。",
+      "資源: GPU不要は候補メタデータ上の情報。demoの実CPU時間・ピークRAM・ダウンロード量は未測定で、20分/8GB/2GB内に収まるか未確認。候補の20分は上限配分で実測値ではない。",
+      "制約: ベンチマーク実行はモデルAPI費用と認証を要し得る。Codex executorはsandbox無効と文書化されているため、今回は起動しない。issue #121の未修正評価問題とPR #122のopen・未マージ状態も残る。",
+      "最新後継の実在ID: 保存資料だけでは確認できず未確認。"
+    ]
+  },
+  {
+    "candidate_id": "2610.26754",
+    "decision": "test",
+    "reason": "長文・コードリポジトリを扱う既存LLMのprefillを、学習済み重みを捨てずに軽量adapterで効率化する提案。長い資料の分類・要約やAI駆動開発で入力費用を下げる具体的価値があり、著者公開のNIAH用gate+LoRA checkpointも確認できるため試す価値あり。論文の高速化数値は著者報告で、当方実測ではない。実行はコード隔離確認後。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/html/2610.26754",
+        "quote": "a small, drop-in component that extends existing trained models"
+      },
+      {
+        "source_url": "https://huggingface.co/liana313/tokengate-niah-qwen3-1.7b/raw/main/README.md",
+        "quote": "Files pair by name: `gate_step3000.pt` + `lora_step3000.pt`"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "隔離環境でQwen3-1.7Bの公開NIAH checkpointを読込み、CPU/RAM要件と同一入力での出力整合を確認する。",
+    "unconfirmed": [
+      "arXiv公開: 2026-10-19。HF checkpoint最終更新: 2026-10-20。",
+      "HF APIでdownloads=0・likes=0を確認。repo stars/活動値は提供資料で確認できず未確認。",
+      "公開checkpointはApache-2.0表示。RepoはApache-2.0。商用利用の個別条件は基盤モデルを含め未確認。",
+      "著者NIAH checkpointはgate 100,696,991 bytesとLoRA 12,881,635 bytes。完全な推論資源・CPU実行可能性は未確認。",
+      "READMEはTransformers/torch依存を示すが、推論の導入手順・対応版は隔離環境で未確認。",
+      "最新後継の実在IDは保存資料から特定できず未確認。論文はQwen3.5対応を記載するが製品後継IDとは断定しない。"
+    ]
+  },
+  {
+    "candidate_id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+    "decision": "test",
+    "reason": "AI駆動開発の独立経路に合う小型コード指示モデル。公式GGUFに単体2GB未満の形式があり、CPUでローカルなコード生成・修正を低コスト評価できる具体的価値がある。候補モデルは古めだが、公開実装と形式があり今すぐ比較対象にできる。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct/raw/main/README.md",
+        "quote": "real-world applications such as **Code Agents**"
+      },
+      {
+        "source_url": "https://huggingface.co/api/models/Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF?blobs=true",
+        "quote": "\"size\":1894532160"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "隔離環境で公式Q4_K_M GGUFをCPUでロードし、小さな既存修正タスクの生成品質と20分内の導入可否を確認する。",
+    "unconfirmed": [
+      "基本モデルの更新日時はHF APIで2025-01-12。GGUF repo更新日時は2024-11-12。",
+      "GGUF APIで217,365 downloads、145 likes。repoの最新活動頻度は保存資料で確認できず未確認。",
+      "公式repoはApache-2.0表示。商用条件は配布物と基盤モデルの規約を別途確認。",
+      "公式GGUF Q4_K_Mは1,117,320,768 bytes、Q8_0は1,894,532,160 bytes。これは候補となる各単一形式のサイズで、全形式合算ではない。8GB RAMでの実行資源・速度は未測定。",
+      "READMEにllama.cppと手動DLの手順あり。実環境への導入・CPU品質は未確認。",
+      "保存資料にQwen3-Coder-Nextという後継IDを確認。ただし総容量が大きく本候補のCPU小型用途を代替するか未確認。"
+    ]
+  },
+  {
+    "candidate_id": "2610.26825",
+    "decision": "defer",
+    "reason": "会話をまたぐ持続メモリや経験ベースのagentic codingはAI開発に具体的だが、確認できたNanoは35B-A3B基盤、Flashは288Bで、現行のRAM/DL/CPU予算で試す見込みが立たない。モデルcardはApache/MIT表示でもrepoソフトは非商用条件の記述があり、利用条件と実行資源を整理してから判断する。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/MemTensor/MemT-1.0-Nano/raw/main/README.md",
+        "quote": "Qwen3.6-35B-A3B"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/MemTensor/MemT-1.0/HEAD/README.md",
+        "quote": "The technical report and original paper materials are licensed under the"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "Nanoの公開重み総量・メモリ最低要件とrepoソフト商用条項を確認し、予算内の推論が可能か判定する。",
+    "unconfirmed": [
+      "論文は2026-10-20提出。repo APIは2026-10-21更新・2026-10-20 push、240 stars/7 forks。",
+      "HF Nanoは2026-10-20更新、50 downloads/59 likes。",
+      "Nano model cardはApache-2.0、Flash cardはMITと表示。repo READMEはrepo softwareとpaperを分け、paperはCC BY-NC-SA 4.0と明記。repo softwareの全文条件・商用可否は未確認。",
+      "NanoはQwen3.6-35B-A3B、active 3Bと資料にあり。FlashはDeepSeek-V4-Flash 288B/17B active。重みサイズ、最低RAM/GPU、CPU実行可能性は未確認。",
+      "Nano READMEはtrust_remote_code=Trueを使うロード例を提示。実際の導入・セキュリティ確認は未実施。",
+      "保存資料中の最新モデルIDはMemTensor/MemT-1.0-NanoとMemTensor/MemT-1.0-Flash。より新しい後継IDは未確認。"
+    ]
+  },
+  {
+    "candidate_id": "2601.22709",
+    "decision": "defer",
+    "reason": "画像入力に対するVLMの小型化とINT4展開という価値は関心(3)に合う。一方、確認したW4G128 HF repoは実パックINT4ではなくBF16 tensor主体のQAT研究checkpointで、主ファイル約4.88GBに加えてQAT artifact約2.84GB、通常のTransformers読込ではINT4省メモリ効果がない。実packed AWQ版の実行要件と用途適合を確認するまで保留。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/ForeverBlue/Qwen3-VL-2B-GRACE-W4G128/raw/main/README.md",
+        "quote": "plain Transformers loading does not provide INT4 memory"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/ForeverBlue816/GRACE/HEAD/README.md",
+        "quote": "The W4G128 student scores **75.0**, retaining **98%** of the GRACE BF16 average."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "READMEが示す実packed AWQ IDのファイルサイズとGPU/CPUロード要件を確認し、2GB DL枠で試せるか判定する。",
+    "unconfirmed": [
+      "arXivは2026-01-30提出、2026-06-26改訂。repo APIは2026-10-01 push、211 stars/7 forks、Apache-2.0。",
+      "HF QAT checkpointは2026-08-15更新、31 downloads/1 like。",
+      "repo LICENSEはApache-2.0表示。model cardもApache-2.0。商用条件は基盤Qwenモデルも含め未確認。",
+      "QAT checkpointのmodel.safetensorsは4,877,470,336 bytes、qat_quantized_weights.binは2,840,728,202 bytes。別ファイル形式を合算してモデルサイズとはしない。true packed AWQは別ID ForeverBlue/Qwen3-VL-2B-GRACE-W4G128-AWQ。GPU依存とRAMは未確認。",
+      "repoはCUDA/PyTorchを前提とするquickstart、HF Spaceのオンラインデモを掲載。ローカル実行は未確認。",
+      "資料中に実在する後継/別展開ID ForeverBlue/Qwen3-VL-2B-GRACE-W4G128-AWQを確認。より新しい後継は未確認。"
+    ]
+  },
+  {
+    "candidate_id": "2607.25180",
+    "decision": "reject",
+    "reason": "25M multilingual embeddingはCPUの多言語意味検索用として軽く、モデル自体に明確な別用途価値はある。しかし今回の「検索」採用条件は網羅性・前処理・新サイト発見の具体的進展であり、保存資料で確認できる主価値は検索ランキング/類似度品質と速度。単なる順位改善だけでは採用しないため、今回の目的では不要。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/hotchpotch/bekko-embedding-v1-a25m/raw/main/README.md",
+        "quote": "its retrieval quality is comparable to models with 3–10x more active parameters."
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2607.25180",
+        "quote": "keeps similarity search and indexing cheap"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "論文は2026-07-28提出。HF modelは2026-08-05更新。",
+      "HF APIで12,732 downloads/32 likesを確認。別repoの活動値は未確認。",
+      "HF model cardはMIT表示。商用利用条件の追加制限は未確認。",
+      "APIでsafetensors 492,945,504 bytes、ONNX主要ファイル199,300,251 bytes、INT8 ONNX約124MBを確認。著者はCPU対応を記すが当方環境の速度/資源は未測定。",
+      "READMEにSentence Transformers、ONNX、OpenVINOの利用方法とブラウザdemoが記載。実導入は未確認。",
+      "README中に小型派生の実在ID hotchpotch/bekko-embedding-v1-a8mを確認。これが最新後継かは未確認。"
+    ]
+  }
+]
