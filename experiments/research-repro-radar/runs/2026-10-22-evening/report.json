@@ -1,0 +1,198 @@
+{
+  "run_id": "2026-10-22-evening-native",
+  "date": "2026-10-22",
+  "status": "reading_completed_no_candidate_execution",
+  "recommended": [
+    {
+      "id": "2610.22732",
+      "title": "TokenEconomizer",
+      "url": "https://arxiv.org/abs/2610.22732",
+      "published_at": "2026-10-15",
+      "category": "deep_dive_value",
+      "assessment": "A",
+      "verification_level": "reading",
+      "reason": "AI駆動開発の独立した適合経路として、Codex等の繰り返し開発で失敗ループ介入・不要ツール整理・マイクロスキル注入により費用を抑える具体策がある。論文の著者評価は平均トークン費18.4–30.9%減・タスク成功同等を報告するが、これは外部実測ではない。HF trending 41位に加え、著者と別のAlena Panshinaの投稿とコメント議論があり、独立話題信号も2つ確認できるためdeep dive対象。公式READMEにはデフォルトで設定を自動変更する説明があり、LinkedIn投稿の「常に承認が必要」とする含意よりREADMEを優先する。",
+      "next_check": "隔離を確認したうえでREADMEの最小手順を読み、Codex向け設定変更が既存運用と衝突しないかを20分以内の静的確認で判定する。",
+      "independent_signals": [
+        {
+          "url": "https://huggingface.co/papers/2610.22732",
+          "kind": "HF trending",
+          "rank": 41
+        },
+        {
+          "url": "https://www.linkedin.com/posts/apanshina_uc-berkeley-and-microsoft-just-published-activity-7518598074869694465-VQJ5",
+          "kind": "Independent public discussion; not performance reproduction"
+        }
+      ],
+      "candidate_execution": false
+    },
+    {
+      "id": "2610.28577",
+      "title": "Cache Engineering for Agents / AKV",
+      "url": "https://arxiv.org/abs/2610.28577",
+      "published_at": "2026-10-20",
+      "category": "deep_dive_value",
+      "assessment": "A",
+      "verification_level": "reading",
+      "reason": "長いエージェント履歴でKV cacheを直接drop/repositionし、履歴書換えによる再prefillを避けるAKVは、AI駆動開発エージェントのserving費用・遅延に関する具体的価値がある。論文の著者実験では従来の閾値要約比で平均費用27.7%減等を報告するが、当環境での比較測定ではない。HF Paper of the day表示（1位・67 upvote）に加え、DAIR.AIの独立解説と第三者コメントがあり、独立話題信号2つ以上を満たす。従ってdeep dive候補として読む価値がある。",
+      "next_check": "隔離確認後、agent側のみの依存・導入経路と既存serving APIとの互換性をREADMEから短時間で確認し、GPU付き検証が必要かを切り分ける。",
+      "independent_signals": [
+        {
+          "url": "https://huggingface.co/papers/2610.28577",
+          "kind": "HF public interest",
+          "upvotes": 67
+        },
+        {
+          "url": "https://www.linkedin.com/posts/dair-ai_we-love-papers-that-go-deeper-down-the-stack-activity-7518733866879336448-FcTh",
+          "kind": "Independent DAIR.AI discussion; not performance reproduction"
+        }
+      ],
+      "candidate_execution": false
+    }
+  ],
+  "digest": [
+    {
+      "id": "2610.30067",
+      "title": "GoiBERT",
+      "url": "https://arxiv.org/abs/2610.30067v1",
+      "assessment": "B",
+      "why_picked": "ベトナム語raw text向け26.4M/49.4M encoder。語分割を省く分類・NERの候補。",
+      "deferred_reason": "S/M実重み105.6/197.5MBを確認。配布はtask head無し、商用license未確認。著者の53/99MB表はbf16条件で実配布量と異なる。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.11942",
+      "title": "LGWM",
+      "url": "https://arxiv.org/abs/2610.11942",
+      "assessment": "B",
+      "why_picked": "画面だけでなく行動後の遷移を潜在表現で検証する軽量GUI認識。",
+      "deferred_reason": "CPU指定あり、推論173M・重み約691.5MB。17msはA100著者値。CPU時間/RAM・独立話題2信号は未確認。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.20538",
+      "title": "PrismaCoder",
+      "url": "https://arxiv.org/abs/2610.20538",
+      "assessment": "B",
+      "why_picked": "コードと描画結果を分離したルーブリックで視覚コード生成を評価。",
+      "deferred_reason": "9B RL重み計18.82GBで2GB超。35B-A3B RLはID実在でも重み未掲載、SFTとは別。重みMIT表示、repoの商用条件未確認。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.17860",
+      "title": "Socratic Skill Learning",
+      "url": "https://arxiv.org/abs/2610.17860",
+      "assessment": "A",
+      "why_picked": "実践と教師の問いを交互に行い、Skillが未見課題へ転移するか測るAI開発手法。",
+      "deferred_reason": "Node22.19+/Docker/model endpointが必要。コードMIT、教材は個別条件。現金0での経路・独立話題2信号未確認。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.29545",
+      "title": "PACE",
+      "url": "https://arxiv.org/abs/2610.29545",
+      "assessment": "B",
+      "why_picked": "線形attentionの再帰stateを毎tokenでなく周期的に4bit化し誤差蓄積を抑える。",
+      "deferred_reason": "著者評価は4B–35B hybridモデル。公式実装/配布物/license/CPU適合未確認。state圧縮と重み圧縮は別。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.29680",
+      "title": "TraceForge",
+      "url": "https://arxiv.org/abs/2610.29680",
+      "assessment": "B",
+      "why_picked": "教師の答えからstudent系統に合う推論traceを生成する蒸留手法。",
+      "deferred_reason": "生成器・criticの学習が必要で今回対象外。公式配布・商用条件未確認。真正性scoreを正答率と解釈しない。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.27450",
+      "title": "Ask-to-Distill",
+      "url": "https://arxiv.org/abs/2610.27450",
+      "assessment": "B",
+      "why_picked": "正解ラベルなしの質問選別で蒸留効率を高め、既成studentも公開。",
+      "deferred_reason": "1.5B student実在・MIT表示、単一重み3,554,214,752 bytesで上限超。学習は行わず、小容量形式未確認。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.30090",
+      "title": "VX-One",
+      "url": "https://arxiv.org/abs/2610.30090",
+      "assessment": "B",
+      "why_picked": "unknownを持つ型付き判定headの小型分類。CPU低遅延と校正崩れを併せて報告。",
+      "deferred_reason": "ネットワーク侵入検知用でNLP分類器ではない。HF IDはコード配布のみ、重み未掲載。学習/資源・用途適合未確認。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2609.05334",
+      "title": "農作物病害の軽量ViT圧縮",
+      "url": "https://arxiv.org/abs/2609.05334v1",
+      "assessment": "A",
+      "why_picked": "村・端末を跨ぐ評価で圧縮パイプラインと同サイズstudent直接学習を比較。",
+      "deferred_reason": "直接学習studentでも近い精度という著者結果が重要。既成重み/商用条件/CPU実測・独立話題2信号未確認。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2606.26488",
+      "title": "Recursive Reasonerのエッジ圧縮",
+      "url": "https://arxiv.org/abs/2606.26488",
+      "assessment": "A",
+      "why_picked": "再帰過程の量子化誤差を追い、再学習なし校正で回復する小型化の仮説。",
+      "deferred_reason": "3.3MBは著者のbackbone値。入力埋込みを含む総資源・公開artifact・実測・独立話題2信号未確認。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.25519",
+      "title": "ATEST",
+      "url": "https://arxiv.org/abs/2610.25519",
+      "assessment": "B",
+      "why_picked": "GPU混雑時の電力費用をオンライン学習し、追加サンプリングの停止を選ぶ。",
+      "deferred_reason": "A100/L40S評価。低負荷短タスクではtail latency/throughputが悪化。実装とCPU適合未確認。",
+      "verification_level": "reading",
+      "measured": false
+    }
+  ],
+  "completed_ids": [],
+  "counts": {
+    "collected_unique": 2515,
+    "ranking_input_with_carry": 6310,
+    "ranked": 5350,
+    "primary_read_review_pool": 20,
+    "primary_read_total": 30,
+    "native_initial_candidates": 30,
+    "native_followup_candidates": 8,
+    "candidate_code_executions": 0,
+    "candidate_model_inferences": 0,
+    "pending_after_record_expected": 6309
+  },
+  "budget": {
+    "money_jpy": 0,
+    "candidate_cpu_seconds": 0,
+    "candidate_weights_bytes": 0,
+    "gpu_seconds": 0,
+    "candidate_repairs": 0,
+    "requested_start": "2026-10-22T09:04:00Z",
+    "deadline": "2026-10-22T09:34:00Z"
+  },
+  "host_requested_model": "gpt-6-luna",
+  "service_runtime_model_id": "unknown",
+  "limitations": [
+    "Metadata feeds and API response ceilings are not exhaustive coverage. All collected canonical candidate records were scored; no 40-item stopping rule.",
+    "OpenReview search returned HTTP403 for five queries. ArXiv metadata search succeeded for all five queries.",
+    "Initial native judgments contain eight quote mismatches; follow-up contains two. Mismatched quotes are not adopted. Metadata and feasibility errors are corrected only from saved primary evidence in review-validation.json. Raw native drafts remain audit artifacts.",
+    "No credential-isolated external-candidate execution environment confirmed. Existing pause maintained; no duplicate permission question, GPU fallback, training, new credentials, CLI fallback, email or schedule changes.",
+    "Morning task result was not accessed or rerun. No October22 report found under normally readable origin/main reports; duplicate check uses evening state and authorized history.",
+    "Detailed recommendations are reading-only and remain in unfinished queue. Historical source-confirmed rejects are not resurrected merely by rediscovery.",
+    "API-equivalent author costs are not measured cloud expenses; current pricing and practical throughput are unverified."
+  ]
+}

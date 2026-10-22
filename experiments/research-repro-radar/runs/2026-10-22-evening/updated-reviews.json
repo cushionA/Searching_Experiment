@@ -1,0 +1,214 @@
+[
+  {
+    "candidate_id": "2610.22732",
+    "decision": "test",
+    "reason": "AI駆動開発の独立した適合経路として、Codex等の繰り返し開発で失敗ループ介入・不要ツール整理・マイクロスキル注入により費用を抑える具体策がある。論文の著者評価は平均トークン費18.4–30.9%減・タスク成功同等を報告するが、これは外部実測ではない。HF trending 41位に加え、著者と別のAlena Panshinaの投稿とコメント議論があり、独立話題信号も2つ確認できるためdeep dive対象。公式READMEにはデフォルトで設定を自動変更する説明があり、LinkedIn投稿の「常に承認が必要」とする含意よりREADMEを優先する。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.22732",
+        "quote": "reduces the average token cost by 18.4-30.9% with comparable task success"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/microsoft/TokenEconomizer/HEAD/README.md",
+        "quote": "By default this happens without asking you"
+      },
+      {
+        "source_url": "https://www.linkedin.com/posts/apanshina_uc-berkeley-and-microsoft-just-published-activity-7518598074869694465-VQJ5",
+        "quote": "UC Berkeley and Microsoft just published how to cut Claude or Codex costs by 30%"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": "deep_dive_value",
+    "next_check": "隔離を確認したうえでREADMEの最小手順を読み、Codex向け設定変更が既存運用と衝突しないかを20分以内の静的確認で判定する。",
+    "unconfirmed": [
+      "論文公開は2026-10-15。保存されたGitHub API記録では168 stars、最終push 2026-10-22、Apache-2.0。これは保存時点の値で、現時点の最新更新・活動は未確認。",
+      "READMEとpyprojectに導入説明はあるが、当環境への導入・安全性・動作は未確認。",
+      "候補コードの実行は0。CPU 20分は割当上限で実測runtimeではない。RAM/DL実量と実際のserving費用は未確認。",
+      "最新後継の実在IDは未確認。"
+    ]
+  },
+  {
+    "candidate_id": "2610.28577",
+    "decision": "test",
+    "reason": "長いエージェント履歴でKV cacheを直接drop/repositionし、履歴書換えによる再prefillを避けるAKVは、AI駆動開発エージェントのserving費用・遅延に関する具体的価値がある。論文の著者実験では従来の閾値要約比で平均費用27.7%減等を報告するが、当環境での比較測定ではない。HF Paper of the day表示（1位・67 upvote）に加え、DAIR.AIの独立解説と第三者コメントがあり、独立話題信号2つ以上を満たす。従ってdeep dive候補として読む価値がある。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.28577",
+        "quote": "reduces average cost by 27.7%, compared with conventional threshold-triggered summarization"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/thu-nics/AKV/HEAD/README.md",
+        "quote": "AKV brings KV cache engineering to LLM agents."
+      },
+      {
+        "source_url": "https://www.linkedin.com/posts/dair-ai_we-love-papers-that-go-deeper-down-the-stack-activity-7518733866879336448-FcTh",
+        "quote": "This is a good example that shifts from agentic context engineering to agentic cache engineering."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": "deep_dive_value",
+    "next_check": "隔離確認後、agent側のみの依存・導入経路と既存serving APIとの互換性をREADMEから短時間で確認し、GPU付き検証が必要かを切り分ける。",
+    "unconfirmed": [
+      "論文公開は2026-10-20。保存されたGitHub API記録では27 stars、最終push 2026-10-21、Apache-2.0。保存時点以降の更新・活動は未確認。",
+      "READMEにはagent側とSGLang system側があり、Rust/C++20やGPU対応attention backend等のsystem要件がある。導入・互換性は未確認。",
+      "GPU/RAM/DL実量や当環境でのruntimeは未測定。候補実行は0。GPU前提の確認は隔離後に行う。",
+      "著者の論文・repo以外の再現成功は確認していない。著者報告のAPI換算費用を実serving費用と同一視できない。最新後継IDは未確認。"
+    ]
+  },
+  {
+    "candidate_id": "2610.30067",
+    "decision": "defer",
+    "reason": "ベトナム語raw textを直接扱う26.4M/49.4M encoderは分類・NERの候補として目的に合う。一方、配布READMEとモデル設定から確認できるのはbackboneで、task head付きモデルではない。学習は禁止されているため、既存の分類/抽出headと組み合わせられるかを先に確認する必要がある。論文＋著者repo以外の独立話題信号2つは確認できず、deep diveにはしない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.30067v1",
+        "quote": "26M and 49M parameters that operate directly on raw text"
+      },
+      {
+        "source_url": "https://huggingface.co/api/models/2HeartsVN/GoiBERT-S?blobs=true",
+        "quote": "\"architectures\":[\"RobertaModel\"]"
+      },
+      {
+        "source_url": "https://huggingface.co/api/models/2HeartsVN/GoiBERT-M?blobs=true",
+        "quote": "\"model.safetensors\""
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "READMEの評価コードで配布済みheadの有無を確認し、学習なしで試せる既存Vietnamese classification/NER headの実在IDを1つ特定する。",
+    "unconfirmed": [
+      "論文v1は2026-10-21。保存HF記録ではモデルID TwoheartsTechnologies/GoiBERT-Sと-GoiBERT-M、各3/4 downloads、0 likes、最終更新2026-09-28。保存時点以降の活動は未確認。",
+      "保存されたAPI結果にlicense表示がなく、商用利用条件は未確認。著者repoの最終pushは2026-10-21、stars 0、GitHub license欄なし。",
+      "重みファイルはS 105,609,040 bytes、M 197,486,112 bytes。配布記録上どちらも取得上限2GB未満だが、DL容量合計・RAM・CPU速度・実導入は未測定。",
+      "論文の推論効率/throughput値はCPU値と断定できない。最新後継の実在IDおよび、適合する既存task headは未確認。"
+    ]
+  },
+  {
+    "candidate_id": "2610.11942",
+    "decision": "defer",
+    "reason": "GUI agentの行動後状態を予測表現と観測表現の距離で照合し、同一画面でも遷移が不正なら検出する用途は、軽量画像認識系の独立した安全性価値がある。論文は学習不要スコアの著者評価を報告し、重みIDも実在するが、配布物は261M級backboneベースで、READMEの速度値はA100上の値。GPUを使えない今回の条件では実用速度を判断できず、独立話題信号2つも確認できないため、GPU検証環境がある場合まで保留する。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.11942",
+        "quote": "The training-free score reaches 0.987 AUC at 17 ms per decision"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/jiamingzhang94/lgwm/HEAD/README.md",
+        "quote": "17 ms per decision on one A100"
+      },
+      {
+        "source_url": "https://huggingface.co/api/models/jiamingzz/lgwm?blobs=true",
+        "quote": "\"id\":\"jiamingzz/lgwm\""
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "隔離確認後、学習不要の整合性スコアだけを評価する最小推論経路と必要GPUメモリをREADME/configから確認し、既存GPUで実行可能か判定する。",
+    "unconfirmed": [
+      "論文公開は2026-10-08。保存GitHub API記録では1 star、最終push 2026-10-10、Apache-2.0。保存時点以降の更新・活動は未確認。",
+      "HF ID jiamingzz/lgwmは存在するがdownloads 0、重み実取得や当環境での導入・動作は未確認。",
+      "論文は261M parameters、READMEの17msはA100測定。CPU性能およびRAM/GPUメモリ所要量は未確認。DL容量は保存情報から確定できない。",
+      "論文/著者repo以外の独立話題信号や第三者再現は確認できない。最新後継IDは未確認。"
+    ]
+  },
+  {
+    "candidate_id": "2610.20538",
+    "decision": "defer",
+    "reason": "視覚入力からWeb画面・図表などの成果物を作るAI開発用途には具体的な適合がある。ルーブリックでコード品質と描画結果を別々に評価し、データ選別と学習報酬に共用する設計も新規性がある。ただし配布済み9B重みと実行資源が予算内か確認できず、ライセンスも未記載なので、今すぐ試す条件は未充足。",
+    "evidence": [
+      {
+        "source_url": "https://raw.githubusercontent.com/QiushiSun/PrismaCoder/HEAD/README.md",
+        "quote": "family of open multimodal code models for generating and editing charts, webpages, diagrams, documents, and animations"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/QiushiSun/PrismaCoder/HEAD/README.md",
+        "quote": "The same criteria to curate training data and reward reinforcement learning."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "9B配布重みの実ファイル容量とCPU推論要件を確認し、予算内の短い既存HTML修正例を選べるか調べる。",
+    "unconfirmed": [
+      "公表日は2026-10-14（arXiv資料で確認）。",
+      "GitHubは33 stars、最終push 2026-10-22（保存済みAPI資料）。",
+      "READMEのライセンス欄は未確認、GitHub API license=null。商用利用可否は未確認。",
+      "導入手順と2GB以下の実行形態は未確認。9Bモデル重みの容量・RAM・CPU速度も未確認。35B-A3B RL重みはREADME上でuploading。",
+      "現行後継の実在IDは保存資料から未確認。実行提案はコード隔離確認後に限る。"
+    ]
+  },
+  {
+    "candidate_id": "2610.30090",
+    "decision": "defer",
+    "reason": "CPUで動く校正済み判定ヘッドを境界トリアージに使う提案は具体的だが、対象はネットワーク侵入検知であり、提示された用途との接続が確認できない。リポジトリに対応する重みIDがあるものの、性能は著者報告で、手元環境での適合性や導入コストは未確認。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.30090",
+        "quote": "temperature-calibrated per head (~0.7-1.7 ms p50 on CPU)"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/vectrayx/vx-one/HEAD/README.md",
+        "quote": "Tests require public datasets: - UNSW-NB15 - CIC-IDS2017 - EMBER2024"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "想定する入力ログを公開データの特徴量スキーマに写像できるか、論文のデータ列と照合する。",
+    "unconfirmed": [
+      "公表日は2026-10-21（arXiv資料で確認）。",
+      "GitHubは0 stars、最終push 2026-10-22（保存済みAPI資料）。",
+      "GitHub license=nullだが、READMEはコードApache-2.0と記載。商用利用条件の実際の適用範囲は未確認。",
+      "HFモデルID jsantillana/vx-one は資料に存在し、Apache-2.0表示。実重み容量、RAM、導入手順は未確認。",
+      "低レイテンシ値は論文著者報告であり独立実測ではない。後継モデルの実在IDは未確認。実行は隔離確認後に限る。"
+    ]
+  },
+  {
+    "candidate_id": "2610.27450",
+    "decision": "defer",
+    "reason": "学生・教師モデルの出力分布に合わせて蒸留用の質問を生成し、回答教師データなしの質問バンクで既存studentの推論を改善する発想は、推論時点の小型モデル改善に関係する。ただし主要な貢献は合成器のRL学習と蒸留パイプラインで、READMEはCUDA 12.8と大規模GPUを要求する。学習禁止・資源上限下で利用できる配布済みstudentの実用性は未確認。",
+    "evidence": [
+      {
+        "source_url": "https://raw.githubusercontent.com/GasolSun36/Ask_to_Distill/HEAD/README.md",
+        "quote": "Neither step needs ground-truth answers, reference solutions, external training questions or auxiliary models"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/GasolSun36/Ask_to_Distill/HEAD/README.md",
+        "quote": "Linux with CUDA 12.8 GPUs (developed on A100-80GB) and conda."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "配布済み1.5B studentの実重みサイズを確認し、学習せずCPUで短い推論ができる構成か判定する。",
+    "unconfirmed": [
+      "公表日は2026-10-20（arXiv資料で確認）。",
+      "GitHubは2 stars、最終push 2026-10-22（保存済みAPI資料）。",
+      "GitHub APIとREADMEはApache-2.0を示す。商用利用条件の詳細は未確認。",
+      "READMEにCUDA 12.8、OPDは8 GPU node、合成器RLは2 node×8 GPUと記載。studentの推論RAM・実ファイル容量・CPU速度・セットアップ時間は未確認。",
+      "student model IDは保存済みHF資料に存在するが、配布重みの容量は未確認。最新後継IDは未確認。実行は隔離確認後に限る。"
+    ]
+  },
+  {
+    "candidate_id": "2405.03144",
+    "decision": "defer",
+    "reason": "SAMの後学習量子化でメモリ・計算負荷を下げる技術は軽量画像認識に隣接する具体的価値がある。だが提供資料の再現手順はPyTorch 1系・古いmmcv/mmdet系依存とCUDA演算子のビルドを含み、GPU 40GB超を推奨するため、現金0・CPU20分・RAM8GBの条件で試す根拠がない。GPU要件だけで不要とは判断せず保留する。",
+    "evidence": [
+      {
+        "source_url": "https://raw.githubusercontent.com/chengtao-lv/PTQ4SAM/HEAD/README.md",
+        "quote": "the immense memory and computation costs hinder its practical deployment."
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/chengtao-lv/PTQ4SAM/HEAD/README.md",
+        "quote": "We recommend using a GPU with more than 40GB for experiments."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "既存のSAM重み・検証画像がある環境で、必要なCUDA演算子と量子化設定だけを短時間で確認できるか調べる。",
+    "unconfirmed": [
+      "公表日は2024-05-06（arXiv資料で確認）。",
+      "GitHubは85 stars、最終push 2024-06-26（保存済みAPI資料）。",
+      "GitHub API license=null、READMEに商用利用可能なライセンス表記を確認できず、商用利用可否は未確認。",
+      "READMEはPython 3.7、PyTorch/torchvision、mmcv-full<2.0、CUDA演算子のビルドとSAM/検出器重みを必要とする。現行環境との互換性、重み容量、RAM使用量は未確認。",
+      "GPU>40GB推奨は著者記載であり今回の実測ではない。最新後継の実在IDは保存資料から未確認。実行は隔離確認後に限る。"
+    ]
+  }
+]
