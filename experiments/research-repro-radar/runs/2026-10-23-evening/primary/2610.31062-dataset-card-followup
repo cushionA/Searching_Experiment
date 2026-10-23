@@ -1,0 +1,172 @@
+---
+license: mit
+task_categories:
+  - text-classification
+language:
+  - en
+configs:
+  - config_name: fitness_coaching
+    data_files:
+      - split: test
+        path: fitness_coaching/test-*
+      - split: train
+        path: fitness_coaching/train-*
+  - config_name: message_repetition_with_escalation
+    data_files:
+      - split: test
+        path: message_repetition_with_escalation/test-*
+      - split: train
+        path: message_repetition_with_escalation/train-*
+  - config_name: plan_verification
+    data_files:
+      - split: test
+        path: plan_verification/test-*
+      - split: train
+        path: plan_verification/train-*
+  - config_name: finance_tile_resolution
+    data_files:
+      - split: test
+        path: finance_tile_resolution/test-*
+      - split: train
+        path: finance_tile_resolution/train-*
+---
+
+# SCOPE: Compiling Natural-Language Policies into Neurosymbolic Predicate Programs
+
+The SCOPE benchmark evaluates guardrail classifiers on policies that are too compound to be checked in one step. Each task pairs a single natural-language rule with inputs that satisfy or violate it for distinct, often interacting reasons, so a correct verdict depends on resolving several sub-questions rather than matching a surface pattern. The tasks span recommendation output verification, conversational policy enforcement, agentic output verification, and best-match reference resolution.
+
+| Dataset | Domain | Input Type | Train | Test |
+|---|---|---|---|---|
+| `fitness_coaching` | Recommendation output verification | Profile + message + critic verdict | 103 | 71 |
+| `message_repetition_with_escalation` | Conversational policy enforcement | Multi-turn dialogue | 85 | 286 |
+| `plan_verification` | Agentic output verification | Full message trace | 82 | 81 |
+| `finance_tile_resolution` | Best-match reference resolution | Conversation + on-screen tile list | 39 | 124 |
+
+## Structure
+
+All four subsets use the same columns, so one loader reads them all.
+
+Each task's rule lives in [`task_definitions.json`](./task_definitions.json), keyed by config name, and in every parquet's schema metadata under `task_definition`. It is the same text for every row of a task, so it is stored once rather than repeated per row. An entry holds:
+
+- `cluster` — the full rule text the classifier is given
+- `labels` — the answer space, where it is fixed
+- `dynamic_labels` — how to derive the candidate set, where it is per-sample
+- `multi_labels` — whether an answer is a set rather than a single choice
+
+```python
+import json
+from datasets import load_dataset
+from huggingface_hub import hf_hub_download
+
+name = "fitness_coaching"
+ds = load_dataset("Plurai/SCOPE", name, split="test")
+tasks = json.load(open(hf_hub_download("Plurai/SCOPE", "task_definitions.json",
+                                       repo_type="dataset")))
+rule = tasks[name]["cluster"]
+```
+
+Per row:
+
+- **`sample`** — the input block, exactly the text the classifier is given. What a block contains differs by task and is described in each section below.
+- **`overall_label`** — the gold answer, always a string.
+- **`rationale`** — why the row carries its label. Generated from the human-annotated samples, not written by the annotators. On `train` only.
+- **auxiliary columns** (optional) — authors' notes, not shown to the classifier. On `test` only.
+
+## Fitness coaching
+
+A fitness recommendation system produces short coaching messages, and an automated critic judges each message against multiple style-and-safety dimensions, emitting verdict and reasoning. The task is to audit the critic: given a message and the critic's evaluation of it, decide whether the critic's judgment was correct.
+
+The rubric covers word count, sentence count, actionability, non-judgmental phrasing, absence of gamification, physical safety, and grounding in the user's system state. A sample is labeled `Pass` when the message satisfies every dimension and the critic accepted it, and `Fail` when the message genuinely violates a dimension and the critic rejected it citing that violation. Everything else is a `Bug`, which covers three distinct failure modes: a clean message rejected, a violating message accepted, and a correct rejection supported by an inapplicable reason. The `Bug` case is what makes the task hard: a classification model needs both to judge the coaching message and compare it with the critic's verdict and reasoning. An inconsistency between the judgments of the coaching message, the verdict and the reasoning is likely to lead to a wrong label.
+
+### Columns
+
+| column | description |
+|---|---|
+| `sample` | Four XML-style tags, one per line, each omitted when its value is empty:<br>`<system_state>` — the user's profile and state<br>`<coaching_message>` — the message being judged<br>`<eval_verdict>` — the critic's judgment of the message<br>`<eval_reasoning>` — the dimensions the critic cited, as a JSON list of `{Dimension, Evidence}` entries; empty when the critic accepted the message |
+| `overall_label` | The gold answer: `Pass`, `Fail`, `Bug`. |
+
+**Rule:** the `fitness_coaching` entry in [`task_definitions.json`](./task_definitions.json) — `cluster` and `labels`.
+
+<details><summary>Label distribution</summary>
+
+`train` — 103 rows. `Fail`: 43, `Bug`: 36, `Pass`: 24
+
+`test` — 71 rows. `Bug`: 29, `Fail`: 24, `Pass`: 18
+
+</details>
+
+## Message repetition with escalation
+
+Given a complete customer-support conversation of alternating user and agent turns, the dataset labels each conversation as `True` or `False`, depending on whether the agent handled escalation correctly. The task defines escalation as warranted when the user re-raises the same unresolved intent at least three times. The repetition can be either verbatim or rephrased. A conversation counts as escalated when the agent's final reply connects the user to a human. A label of `True` is given to a sample when the action taken by the agent matches what was warranted, in either direction, and `False` otherwise.
+
+This task presents two challenges. First, it requires computing two independent properties of the input and comparing their values. Second, one of these properties involves counting occurrences in a long and complex input, which is known to be particularly difficult for non-reasoning models.
+
+Inspired by [DynaGuard](https://arxiv.org/abs/2509.02563), this dataset contains 286 human-annotated test samples, distributed across four categories: by escalation, 73 with fewer than three repeated intents and no escalation, 69 with three or more repeated intents but no escalation, and 70 with escalation but fewer than three repeated intents. The first two categories are labeled `True`, as the agent's action matches whether escalation is warranted, while the latter two are labeled `False`.
+
+### Columns
+
+| column | description |
+|---|---|
+| `sample` | The full conversation as a string of alternating &lt;User&gt;...&lt;/User&gt; and &lt;Agent&gt;...&lt;/Agent&gt; turns; the FINAL turn is the agent's reply being judged. |
+| `overall_label` | The gold answer: `True`, `False`. |
+| `has_user_repetition` (`test` only) | Gold for the first sub-question — did the user re-raise the same unresolved intent at least three times. `1`/`0`. |
+| `is_escalated` (`test` only) | Gold for the second sub-question — did the agent actually escalate. `True`/`False`. |
+
+**Rule:** the `message_repetition_with_escalation` entry in [`task_definitions.json`](./task_definitions.json) — `cluster` and `labels`.
+
+<details><summary>Label distribution</summary>
+
+`train` — 85 rows. `False`: 44, `True`: 41
+
+`test` — 286 rows. `True`: 147, `False`: 139
+
+</details>
+
+## Plan verification
+
+This dataset, built upon the [GAIA](https://arxiv.org/abs/2311.12983) benchmark, contains full message traces of an agent tasked with constructing a research plan to solve a user request using a set of available tools. A plan is considered valid if it satisfies three independent conditions: it refers only to tools and collaborators present in the trace; it refers to tools abstractly rather than specifying explicit tool calls; and it terminates with an `<end_plan>` tag.
+
+Because the conditions are conjunctive and independent, a single violation of any one flips the label. The three conditions demand quite different competencies: semantic grounding against a tool list, a stylistic distinction between abstract and concrete reference, and near-lexical checking of a delimiter's position.
+
+The traces are long, with a median length of roughly 29,000 characters and a maximum exceeding 100,000, whereas the plans themselves contain only a few hundred characters. Consequently, the evidence that determines the label is concentrated in a small fraction of the input, making its identification a substantial part of the task.
+
+### Columns
+
+| column | description |
+|---|---|
+| `sample` | The full agent trace as a single JSON-encoded list of {role, content} messages; the FINAL message is the assistant's plan being judged. |
+| `overall_label` | The gold answer: `PASS`, `FAIL`. |
+| `violation_type` (`test` only) | Which failure mode was introduced, for a `FAIL` row; empty for a `PASS` row. |
+
+**Rule:** the `plan_verification` entry in [`task_definitions.json`](./task_definitions.json) — `cluster` and `labels`.
+
+<details><summary>Label distribution</summary>
+
+`train` — 82 rows. `FAIL`: 43, `PASS`: 39
+
+`test` — 81 rows. `FAIL`: 41, `PASS`: 40
+
+</details>
+
+## Finance tile resolution
+
+This task differs from the others in two key aspects: it has a dynamic label space and supports multi-label predictions. Each sample consists of a short conversation and a numbered list of tiles from a financial dashboard, and the goal is to identify the tiles referred to by the user's last message. The candidate labels are thus determined by the tiles present in each sample, so each sample defines its own label space. A message may refer to a single tile, multiple tiles, or none at all.
+
+### Columns
+
+| column | description |
+|---|---|
+| `sample` | Plain text with two '## '-prefixed sections. '## Conversation:' — turns each on their own line as 'user: ...' or 'ai: ...', optionally beginning with a '[context] The user is currently viewing the "X" tile.' line. '## Tiles:' — the numbered on-screen tile list, one per line as 'N. Title — summary' (summary optional), numbered 1..K; tile order is arbitrary and carries no meaning. |
+| `overall_label` | The gold answer: a comma-separated, ascending SET of labels; the empty string means the empty set (candidates are per-sample — see `dynamic_labels`). |
+
+**Rule:** the `finance_tile_resolution` entry in [`task_definitions.json`](./task_definitions.json) — `cluster`, `dynamic_labels` and `multi_labels`.
+
+> `overall_label` is the empty string where the message refers to no tile — a meaningful answer in this task, not a missing label.
+
+<details><summary>Label distribution</summary>
+
+`train` — 39 samples: 15 refer to several tiles, 14 to a single tile, and 10 to none at all.
+
+`test` — 124 samples: 45 refer to several tiles, 24 to a single tile, and 55 to none at all.
+
+</details>

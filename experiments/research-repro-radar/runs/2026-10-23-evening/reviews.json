@@ -1,0 +1,1045 @@
+[
+  {
+    "candidate_id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+    "decision": "reject",
+    "reason": "AI駆動開発向けの小型コードモデルとしては具体的価値がある（著者はCode Agentsを用途に挙げる）が、この候補は昨日すでに説明済みで、保存資料の更新日は2025-01-12、今回その後の有意な新規証拠を確認できない。重複報告を抑制する。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct/raw/main/README.md",
+        "quote": "A more comprehensive foundation for real-world applications such as Code Agents."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "HF資料の公表更新日: 2025-01-12。",
+      "stars・活動状況: モデルAPI資料にstarsや最近の活動指標なし。",
+      "商用利用ライセンス: API/カードにApache-2.0とあるが、利用条件の詳細は未確認。",
+      "導入: Transformers利用例あり。",
+      "資源: 1.54B parameters、最大32,768 contextとの記載。実測RAM/CPU速度は未確認。",
+      "制約: READMEはtransformers 4.37.0未満でKeyErrorを記載。",
+      "最新後継の実在ID: 保存資料内で未確認。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct/raw/main/README.md",
+        "exact_normalized_match": false
+      }
+    ]
+  },
+  {
+    "candidate_id": "2412.14219",
+    "decision": "test",
+    "reason": "MoE推論の最適化をモデル・システム・ハードウェア層に整理し、pruning、quantization、distillation等を横断するサーベイと更新中の文献リストがある。小型CPUモデルへの転用可能性は限定的で未確認だが、関心のある圧縮手法を20分の読解で発見できる価値がある。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2412.14219",
+        "quote": "This comprehensive survey analyzes optimization techniques for MoE models across the entire system stack."
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/MoE-Inf/awesome-moe-inference/HEAD/README.md",
+        "quote": "A curated list of awesome papers about optimizing the inference of MoE-based LLMs."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "20分で本文のtaxonomyと参考文献を確認し、CPU小型モデルにも使えるpruning/quantization/distillationの具体的手法を1つ抽出できるか調べる。",
+    "unconfirmed": [
+      "論文: 初版2024-12-18、最終改訂2025-01-22。arXiv記録にはACM CSUR 2026 journal referenceあり。",
+      "リストrepo: 2026-10-01更新、428 stars、最終push 2026-03-12。",
+      "商用利用ライセンス: repo APIでlicense=null。",
+      "導入: 論文・キュレーションリストであり、導入可能なソフトの導入手順は該当資料にない。",
+      "資源: 読解資源以外の実行RAM/CPU/GPU要件は未確認。",
+      "制約: MoE推論を対象としており、CPU小型モデルに各手法が適用可能か未確認。",
+      "最新後継の実在ID: 保存資料内で未確認。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2412.14219",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://raw.githubusercontent.com/MoE-Inf/awesome-moe-inference/HEAD/README.md",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2602.09373",
+    "decision": "defer",
+    "reason": "NLLB-200 600Mを剪定・量子化し、蒸留してアフリカ諸言語向け翻訳モデルと学習データを提供する点は小型モデルとして具体的。ただし提示された15言語ペアに日本語はなく、現時点で使う言語・翻訳案件との適合が分からないため保留。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2602.09373",
+        "quote": "AfriNLLB supports 15 language pairs (30 translation directions)"
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2602.09373",
+        "quote": "We release two versions of the AfriNLLB models, a Transformers version that allows further fine-tuning and a CTranslate2 version for efficient inference."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "モデル配布先とライセンスを特定し、対象言語ペアが実案件に含まれるかを照合する。",
+    "unconfirmed": [
+      "論文: 初版2026-02-10、最終改訂2026-08-07、AfricaNLP 2026掲載との記載。",
+      "stars・repo活動: arXiv資料に対応repoのID、stars、活動日時なし。",
+      "商用利用ライセンス: 未確認。",
+      "導入: 論文はTransformers版とCTranslate2版の公開を記すが、資料中に重みIDや導入手順なし。",
+      "資源: ベースがNLLB-200 600M。CPU/RAM/実測速度・サイズは未確認。",
+      "制約: 対応15言語ペアの列挙に日本語はない。",
+      "最新後継の実在ID: 保存資料内で未確認。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2602.09373",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2602.09373",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2601.22709",
+    "decision": "defer",
+    "reason": "画像認識関心に直接合うVLMで、論文はQwen3-VL-2B等のINT4化による性能を著者値で報告する。ただし昨日詳細済みで、今回の資料から昨日以降の有意な新規証拠は確認できない。さらに配布コンテナはCUDA/NVIDIA向けで、利用可能GPUと隔離実行の確認が必要なため保留。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2601.22709",
+        "quote": "Using real INT4 kernel, we achieve 3× throughput with 54% memory reduction."
+      },
+      {
+        "source_url": "https://github.com/ForeverBlue816/GRACE/releases/tag/v0.1.0",
+        "quote": "The container targets Linux NVIDIA hosts with the NVIDIA Container Toolkit."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "隔離環境とGPU利用可否を確認した後、実在するW4G128-AWQ配布物の実行可能性を確認する。",
+    "unconfirmed": [
+      "論文: 初版2026-01-30、最終改訂2026-06-26、ICML 2026採択との記載。上記性能数値は著者報告で独立実測ではない。",
+      "GitHub repo: 2026-10-03更新、211 stars、最終push 2026-10-01。",
+      "商用利用ライセンス: repo APIにApache-2.0。モデル重み個別の利用条件は未確認。",
+      "導入: v0.1.0コンテナ、HFモデル、ZeroGPU demoを案内。",
+      "資源: リリースはLinux/amd64 CUDA NVIDIA hostを対象と記す。RAM/VRAM要求は未確認。",
+      "制約: ローカル実行にNVIDIA CUDA環境を想定。今回実行は外部コードの隔離未確認のため提案に留める。",
+      "最新後継の実在ID: 保存資料内で確認できる配布IDはForeverBlue/Qwen3-VL-2B-GRACE-W4G128-AWQ。これより新しい後継は未確認。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2601.22709",
+        "exact_normalized_match": false
+      },
+      {
+        "url": "https://github.com/ForeverBlue816/GRACE/releases/tag/v0.1.0",
+        "exact_normalized_match": false
+      }
+    ]
+  },
+  {
+    "candidate_id": "2405.17890",
+    "decision": "reject",
+    "reason": "論文が扱うモデルの用途はユーザー行動履歴から次の商品等を予測する逐次推薦に特化している。現在示された関心（NLP分類/要約、構造化抽出、画像認識、小型CPUモデル、AI駆動開発）に対する具体的な導入価値は資料から確認できない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2405.17890",
+        "quote": "Sequential Recommendation (SR) task involves predicting the next item a user is likely to interact with, given their past interactions."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "論文: 初版2024-05-28、最終改訂2025-04-20、ICLR 2025との記載。",
+      "stars・活動: arXiv資料に対応repoのID、stars、活動日時なし。",
+      "商用利用ライセンス: 未確認。",
+      "導入: 論文記載の手法。公開コード/モデルの導入情報は与えられた資料にない。",
+      "資源: 13% parameters、最大8.0x推論速度は著者報告。具体的RAM/CPU資源と独立実測は未確認。",
+      "制約: 逐次推薦タスクに特化。",
+      "最新後継の実在ID: 保存資料内で未確認。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2405.17890",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2503.06029",
+    "decision": "test",
+    "reason": "中国語スマートフォン上の要約と情報抽出を含む20タスクのオンデバイスLLM評価基準で、分類/要約と構造化抽出の具体的な試用価値がある。論文は実機NPU量子化評価も記述し、READMEには評価手順がある。実行は外部コード隔離を次回確認してから。著者報告は独立検証済み実測ではない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2503.06029",
+        "quote": "text summarization, text Q&A, information extraction, content creation, and notification management"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/vivo-ai-lab/SmartBench/HEAD/README.md",
+        "quote": "采用“LLM-as-a-Judge”方法进行主观问题评估。"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "隔離環境を確認後、READMEのデータ配置と評価スクリプトが20分・RAM 8GB・DL 2GB内で動かせるか確認する。",
+    "unconfirmed": [
+      "公開更新日: 論文v2は2025-08-26改訂。GitHub最終push 2025-09-26、updated 2026-10-05。",
+      "活動: stars 8、forks 1。",
+      "商用利用ライセンス: repo license null、未確認。データ元には各種ライセンスが列挙される。",
+      "導入性: READMEは結果生成・評価・処理の手順を記載。実際の依存関係と現環境への導入可否は未確認。",
+      "資源: 実機NPU量子化評価の記述あり。CPU/RAM/ダウンロード量は未確認。",
+      "制約: 中国語のスマートフォン利用場面向け。コード隔離を確認するまで実行不可。",
+      "最新後継の実在ID: 保存資料では確認不可。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2503.06029",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://raw.githubusercontent.com/vivo-ai-lab/SmartBench/HEAD/README.md",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2211.11014",
+    "decision": "defer",
+    "reason": "小型Transformer encoderのQATでattention-map/output lossを使う知見はNLP向けに具体的だが、候補の手法はQATと学習を前提とし、現在の学習禁止条件に合わない。一次資料は論文のみで、今すぐ試せる導入物も確認できない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2211.11014",
+        "quote": "propose two KD methods; attention-map and attention-output losses"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "学習禁止条件が外れた時に、論文のsub-2-bit QAT設定が現行の小型encoderで再現可能か確認する。",
+    "unconfirmed": [
+      "公開更新日: 2022-11-20提出。保存資料では後続更新なし。",
+      "stars/活動: repo情報がなく未確認。",
+      "商用ライセンス: 未確認。",
+      "導入: 保存資料にrepoや導入手順なし。",
+      "資源: CPU/RAM/DL量は未確認。",
+      "制約: QAT/蒸留の学習が必要で、現在は禁止。",
+      "最新後継の実在ID: 保存資料では確認不可。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2211.11014",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2207.01405",
+    "decision": "defer",
+    "reason": "ViTのINT8整数専用推論は軽量画像認識に関係するが、記載された実測の展開先はGPU整数演算ユニットで、READMEもImageNetを用いるQATとTVMを案内する。CPUのみ・学習禁止の現条件で直接試す経路が確認できないため保留。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2207.01405",
+        "quote": "achieving 3.72$\\sim$4.11$\\times$ inference speedup compared to the FP model"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/zkkli/I-ViT/HEAD/README.md",
+        "quote": "--epochs: recommended values are: [30, 60, 90], default=90."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "学習なしの既成重みでCPU推論を行えるか、READMEのTVM対応とCPUバックエンドを確認する。",
+    "unconfirmed": [
+      "公開更新日: 論文v4は2023-08-07改訂。GitHub最終push 2024-09-02、updated 2026-07-28。",
+      "活動: stars 207、forks 26。",
+      "商用ライセンス: GitHub API資料でApache-2.0。",
+      "導入: READMEにはPyTorch/TVMの手順があるが現環境への導入は未確認。",
+      "資源: CPU/RAM/DL量は未確認。論文の実測はGPU整数演算。",
+      "制約: READMEのQAT手順はImageNetと30–90 epochsを推奨し、学習禁止条件と不一致。",
+      "最新後継の実在ID: 保存資料では確認不可。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2207.01405",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://raw.githubusercontent.com/zkkli/I-ViT/HEAD/README.md",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2609.05334",
+    "decision": "defer",
+    "reason": "唐辛子の病害3クラス分類という具体的な軽量画像認識事例で、論文は圧縮後6.01MB・精度95.13±2.32%を著者報告している。一方、提案はpruning/quantization/蒸留の逐次学習パイプラインであり、学習禁止に抵触する。比較値は著者報告で独立検証ではない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2609.05334v1",
+        "quote": "the fully integrated compression pipeline achieves a 54.5x size reduction (327.42 MB to 6.01 MB)"
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2609.05334v1",
+        "quote": "a directly-trained student of the same final size, without pruning or distillation, reaches comparable accuracy of 94.87%"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "学習なしで使える事前学習済み重みとライセンスが公開されているか確認する。",
+    "unconfirmed": [
+      "公開更新日: 保存資料上v1提出日は2026-09-04。",
+      "stars/活動: repo情報なし、未確認。",
+      "商用ライセンス: 未確認。",
+      "導入: 保存資料にrepo・重み配布先なし。",
+      "資源: 著者報告のモデルサイズ6.01MB。CPU/RAM/DL量・推論速度は未確認。",
+      "制約: 唐辛子3クラスの村落分割データ。提案統合パイプラインと比較学生はいずれも学習を伴う。",
+      "最新後継の実在ID: 保存資料では確認不可。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2609.05334v1",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2609.05334v1",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2507.16782",
+    "decision": "defer",
+    "reason": "物体検出向けのtask-specific zero-shot量子化は、合成キャリブレーション画像でデータ制約を避ける具体的な画像系の価値がある。ただし第2段階にtask-specific trainingを組み込み、コードはYOLO/Mask R-CNN/ViT向けの大きな研究用toolkitである。学習禁止かつCPU20分・RAM8GB・DL2GBの条件では今すぐ試す経路が確認できない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2507.16782",
+        "quote": "we integrate task-specific training into the knowledge distillation process"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/DFQ-Dojo/dfq-toolkit/HEAD/README.md",
+        "quote": "This project includes code from Ultralytics and is therefore distributed under the AGPL license."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "学習を伴わず実行できるキャリブレーション部分だけの最小手順と、必要な重み/データ量をREADMEで確認する。",
+    "unconfirmed": [
+      "公開更新日: 論文2025-07-22提出。GitHub最終push 2025-09-26、updated 2026-09-20。",
+      "活動: stars 31、forks 8。",
+      "商用利用: AGPL-3.0。商用利用時の義務との適合は未確認。",
+      "導入: 4系統の検証用実装と下位ディレクトリ別手順。現環境での導入可否は未確認。",
+      "資源: CPU/RAM/DL量未確認。",
+      "制約: 蒸留プロセスで学習を行う。ResNet Mask R-CNNの事前学習重みと評価手順はREADME TODO。",
+      "最新後継の実在ID: 保存資料では確認不可。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2507.16782",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://raw.githubusercontent.com/DFQ-Dojo/dfq-toolkit/HEAD/README.md",
+        "exact_normalized_match": false
+      }
+    ]
+  },
+  {
+    "candidate_id": "2610.30067",
+    "decision": "test",
+    "reason": "NLP分類・NERとCPU小型モデルの交点に新規性がある。論文は生テキストを扱う26M/49Mパラメータのベトナム語encoderを提示し、分類・感情分析では小型baselineに近い性能を著者報告しているため、ベトナム語の分類/抽出に使う価値を今すぐ確認する。これは著者報告であり当方の実測ではない。実行は次回、外部コードの隔離を確認してからにする。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.30067v2",
+        "quote": "GoiBERT-base retains 99% of that baseline's performance at a quarter of its size."
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2610.30067v2",
+        "quote": "compression is nearly lossless for sentiment and classification tasks but remains costly for inference and entity recognition"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "配布checkpointの実サイズと商用licenseを確認し、隔離環境で短いベトナム語分類をCPU実行できるか検証する。",
+    "unconfirmed": [
+      "公表更新日は資料上2026-10-22 (v2)。",
+      "stars・repo活動は資料にrepoがなく未確認。",
+      "商用利用license未確認。",
+      "導入手順・checkpoint配布先/実サイズは資料内のthis https URLだけでは未確認。",
+      "著者は26M/49M parametersとするが実際のCPU速度・RAMは未測定。",
+      "論文はinferenceとNERでは圧縮コストが残ると記す。",
+      "保存資料だけではv2より新しい版や後継の実在IDを確認できない。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2610.30067v2",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2610.30067v2",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2505.03113",
+    "decision": "defer",
+    "reason": "軽量画像認識という独立の関心に合う調査論文で、効率設計・動的ネットワーク・蒸留の比較を俯瞰する用途はある。一方、surveyと同著者のまとめrepoが中心で、今すぐ試す個別モデル/実装の価値は示されず、具体的な画像タスクも未特定のため保留する。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2505.03113",
+        "quote": "This paper surveys various online strategies for generating lightweight vision transformers for image recognition"
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2505.03113",
+        "quote": "We evaluate the relevant exploration for each topic on the ImageNet-1K benchmark"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "実対象の画像分類タスクが決まった時点で、surveyの比較表からCPU対応候補を1つ選べるか確認する。",
+    "unconfirmed": [
+      "公表更新日は資料上2025-09-26 (v3)。",
+      "repo資料では10 stars、pushed_at 2024-10-21、updated_at 2026-08-18。活動の実質は未確認。",
+      "repo license nullのため商用利用可否未確認。",
+      "READMEは文献整理だが、実装導入手順は未確認。",
+      "実行資源・CPU適性は未確認。",
+      "保存資料に記載された内容はsurveyと参考文献一覧で、特定モデルの実測・比較値は抄録では未確認。",
+      "保存資料だけではv3より新しい版や後継の実在IDを確認できない。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2505.03113",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2505.03113",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2405.03144",
+    "decision": "defer",
+    "reason": "SAMの画像認識に対するpost-training quantizationで、メモリ/計算コストを下げる具体的価値はある。しかしREADMEは実験に40GB超GPUを推奨し、CUDA ops、複数framework、COCOと複数のcheckpointを要するため、現行CPU/RAM/DL予算での試行条件を満たさない。GPU要件を理由に却下せず保留する。",
+    "evidence": [
+      {
+        "source_url": "https://raw.githubusercontent.com/chengtao-lv/PTQ4SAM/HEAD/README.md",
+        "quote": "We recommend using a GPU with more than 40GB for experiments."
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2405.03144",
+        "quote": "when quantizing SAM-L to 6-bit, we achieve lossless accuracy for instance segmentation, about 0.5% drop with theoretical 3.9× acceleration."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "隔離環境とGPU利用可能性が整った場合、配布weights総量が2GB以内かを確認してから再評価する。",
+    "unconfirmed": [
+      "論文公表日は2024-05-06。repo updated_atは資料上2026-09-21、pushed_atは2024-06-26。",
+      "repoは85 stars、5 forks。",
+      "repo license nullのため商用利用可否未確認。",
+      "README記載の導入はPyTorch/MMCV等の導入、CUDA ops build、mmdetection setupを要する。",
+      "READMEは実験用GPU >40GBを推奨。現行環境での資源実測なし。",
+      "COCOとSAM/detector checkpointを準備する手順であり、予算内のDL容量は未確認。",
+      "精度・加速値は論文の著者報告で、当方の実測ではない。",
+      "保存資料だけでは後継の実在IDを確認できない。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://raw.githubusercontent.com/chengtao-lv/PTQ4SAM/HEAD/README.md",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2405.03144",
+        "exact_normalized_match": false
+      }
+    ]
+  },
+  {
+    "candidate_id": "2607.25180",
+    "decision": "reject",
+    "reason": "これはmultilingual retrieval候補だが、保存論文で示される主な差分はretrieval benchmarkのnDCG順位/scoreと速度である。今回の検索候補に求める網羅性補完、前処理、新サイト発見の具体的進展は資料から確認できず、順位改善だけでは採用しない。著者報告の性能値は独立検証ではない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2607.25180",
+        "quote": "on official MMTEB Multilingual v2 Retrieval (nDCG@10) it scores 56.2"
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2607.25180",
+        "quote": "a8m is the fastest on both CPU and GPU"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "公表日は資料上2026-07-28。",
+      "stars・repo活動は保存資料にrepo情報がなく未確認。",
+      "weights/dataのthis https URLしか示されず商用license未確認。",
+      "導入手順とweightsの実サイズ/形式は未確認。",
+      "論文はCPU速度を著者報告するが当方のCPU/RAM実測なし。",
+      "search用途で必要なcoverage/preprocessing/new-site discovery改善は資料に記載確認できず。",
+      "保存資料だけでは後継の実在IDを確認できない。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2607.25180",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2607.25180",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2604.04979",
+    "decision": "reject",
+    "reason": "論文はcoding agentのtool-output pruningというAI駆動開発向けの具体的手法を扱い、著者はbenchmark上のrecall/F1とtoken削減を報告している。ただしこの案件では停止済みSqueezは読解のみで再開不可と明示されているため、再推薦・実行はしない。指標は著者報告で当方の実測ではない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2604.04979",
+        "quote": "return the smallest verbatim evidence block the agent should inspect next."
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2604.04979",
+        "quote": "Our model reaches 0.86 recall and 0.80 F1 while removing 92% of input tokens"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "公表日は資料上2026-04-04。",
+      "repo/stars/活動資料なし。",
+      "商用license未確認。",
+      "導入手順・weights配布・weights容量未確認。",
+      "CPU/RAM実行資源は未確認。",
+      "benchmark結果は著者報告で独立再現・実測なし。",
+      "保存資料だけでは後継の実在IDを確認できない。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2604.04979",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2604.04979",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2607.18213",
+    "decision": "test",
+    "reason": "面向AI駆動開発の長いツール出力を、別の分類モデルでなくコーディングエージェント自身の内部表現で行単位に刈り込む新手法。論文は2バックボーン・4ベンチマークで品質維持と最大39%の入出力トークン削減を報告し、コンテキスト費用・遅延を下げる用途が具体的なので、隔離確認後に統合可能性を小さく調べる価値がある。これは著者報告で独立実測ではない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2607.18213",
+        "quote": "a small head turns the agent's own internal representations into a keep-or-prune label for each line"
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2607.18213",
+        "quote": "saves up to 39% of prompt and completion tokens while preserving task quality"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/Ayanami1314/swe-pruner-pro/HEAD/README.md",
+        "quote": "The released server expects a running SGLang backend that exposes hidden states and a trained pruning head checkpoint."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "隔離環境でSGLangの隠れ状態取得と公開headの対応バックボーン要件を確認し、手元の想定coding-agent構成へ接続できるか調べる。",
+    "unconfirmed": [
+      "公開更新: arXivは2026-07-20投稿、READMEは2026-07-22のhead・訓練コーパス公開を記載。repo APIのupdated_atは2026-10-15、最終pushは2026-07-22。stars 27、forks 5。",
+      "商用ライセンス: repo APIではlicense null。READMEのApache-2.0バッジ表記だけでは商用利用条件を確定できない。",
+      "導入・資源: Python 3.10+、PyTorch 2.9/CUDA 12.xの論文環境。SGLang改変、稼働中backbone、head checkpointが必要。CPU20分・RAM8GB内での動作は未確認。",
+      "制約: 論文の数値は著者報告で独立実測なし。repoの更新活動と公開headの取得・サイズ、最新後継の実在IDは未確認。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2607.18213",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2607.18213",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://raw.githubusercontent.com/Ayanami1314/swe-pruner-pro/HEAD/README.md",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2601.16746",
+    "decision": "defer",
+    "reason": "コーディング作業の目標に応じて周辺コードを選択する0.6B skimmerで、トークン削減と成功率維持・改善を著者が報告している。用途は具体的だが、同じ作者の新しいSWE-Pruner Proがエージェント内部表現を使う別方式として提示されているため、旧skimmerを今試す優先度やCPU資源適合性を先に見極めたい。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2601.16746",
+        "quote": "A lightweight neural skimmer (0.6B parameters) is trained to dynamically select relevant lines"
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2601.16746",
+        "quote": "achieving 23-54% token reduction on agent tasks like SWE-Bench Verified"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/Ayanami1314/swe-pruner/HEAD/README.md",
+        "quote": "Make Claude Tokens 40% Saving!"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "公開checkpointの実サイズとCPU推論要件を確認し、後継Pro方式に対して旧skimmerを選ぶ条件があるか比較する。",
+    "unconfirmed": [
+      "公開更新: arXiv最終改訂は2026-05-07。repo API updated_atは2026-10-20、最終pushは2026-06-30、stars 320、forks 25。",
+      "商用ライセンス: repo APIはMIT License。モデル重み・データ各々の商用条件は未確認。",
+      "導入・資源: READMEはPyPI導入とHugging Faceモデルを案内。モデル実サイズ、CPU/RAM所要量、現行依存関係は未確認。",
+      "制約: 0.6Bモデル推論のCPU20分・RAM8GB適合性と実タスクでの再現性は未確認。最新後継実在IDは未確認。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2601.16746",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2601.16746",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://raw.githubusercontent.com/Ayanami1314/swe-pruner/HEAD/README.md",
+        "exact_normalized_match": false
+      }
+    ]
+  },
+  {
+    "candidate_id": "2507.23370",
+    "decision": "test",
+    "reason": "自然言語指示からツールを使う一般的なソフトウェア開発エージェントで、モジュール構成を研究・拡張できる点がAI駆動開発に直接役立つ。READMEはCLI、複数LLM接続、軌跡記録とMITを示し、既存の自動化作業を置き換えずに隔離環境で設定・拡張性を評価する価値がある。論文の性能比較は著者報告。",
+    "evidence": [
+      {
+        "source_url": "https://raw.githubusercontent.com/bytedance/trae-agent/HEAD/README.md",
+        "quote": "It provides a powerful CLI interface that can understand natural language instructions and execute complex software engineering workflows using various tools and LLM providers."
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/bytedance/trae-agent/HEAD/README.md",
+        "quote": "Trajectory Recording: Detailed logging of all agent actions for debugging and analysis"
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2507.23370",
+        "quote": "Trae Agent has achieved first place on the SWE-bench Verified leaderboard, with a notable Pass@1 score of 75.20%."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "隔離環境で依存導入要件と外部APIなしで試せる経路を確認し、軌跡ログから既存作業に足せる小さな評価課題を一つ選ぶ。",
+    "unconfirmed": [
+      "公開更新: 論文は2025-07-31投稿。repo API updated_atは2026-10-23、最終pushは2026-02-05、stars 12155、forks 1361。",
+      "商用ライセンス: repo APIおよびREADMEはMIT。",
+      "導入・資源: READMEはPython 3.12+とuvを要求。利用には選択したLLM providerのAPI keyが必要で、現金予算0の範囲で利用可能な経路は未確認。",
+      "制約: 著者のベンチマーク値は独立実測ではない。依存のCPU/RAM適合性と最新後継の実在IDは未確認。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://raw.githubusercontent.com/bytedance/trae-agent/HEAD/README.md",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://raw.githubusercontent.com/bytedance/trae-agent/HEAD/README.md",
+        "exact_normalized_match": false
+      },
+      {
+        "url": "https://arxiv.org/abs/2507.23370",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2606.26488",
+    "decision": "defer",
+    "reason": "エッジ向け再帰推論モデルについて、量子化校正の挙動と推論経路の忠実度を調べ、3.3MBのINT4バックボーンを報告する研究。CPU小型モデルの関心に合う可能性はあるが、提示資料にはコード・重み・導入手順がなく、実際に試せるartifactと用途を確認できていない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2606.26488",
+        "quote": "calibrated INT4 brings the backbone to 3.3 MB, inside a 4 MB budget"
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2606.26488",
+        "quote": "pruning, distillation, and linear attention drive puzzle-exact accuracy to zero while cell accuracy holds"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "著者が公開した実行可能な重みまたはコードの有無を確認し、ある場合は対象CPUと再帰モデルの用途を特定する。",
+    "unconfirmed": [
+      "公開更新: arXiv初版2026-06-25、最終改訂2026-09-30。repoの更新日、stars、活動状況は資料なし。",
+      "商用ライセンス: 未確認。",
+      "導入・資源: 抄録は3.3MB backboneと述べるが、他の実行時メモリ、CPU速度、コード・重みの提供は未確認。",
+      "制約: 結果は著者報告で独立検証なし。最新後継の実在IDは未確認。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2606.26488",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2606.26488",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2206.01861",
+    "decision": "defer",
+    "reason": "ZeroQuantは大規模TransformerのINT8/INT4量子化と高速サービングを目的とする。モデル精度と推論効率のトレードオフを調べる基礎資料にはなるが、資料中の実例はGPT-J 6BやGPT-NeoX 20B等のサーバー級モデルで、今回のCPU小型モデル向けの直接的な導入価値は未確認。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2206.01861",
+        "quote": "ZeroQuant can reduce the precision for weights and activations to INT8 in a cost-free way"
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2206.01861",
+        "quote": "directly applied to two of the largest open-sourced language models, including GPT-J6B and GPT-NeoX20"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "現在のCPU小型モデルで使える実装・後継artifactが保存資料にあるかを確認し、なければ保留を維持する。",
+    "unconfirmed": [
+      "公開更新: arXiv投稿2022-06-04。repoの更新日、stars、活動状況は資料なし。公開年だけを理由に棄却していない。",
+      "商用ライセンス: 未確認。",
+      "導入・資源: 抄録は大規模モデル用の量子化・推論backendを説明するが、現在のCPU8GB環境への導入適合性は未確認。",
+      "制約: 抄録の性能値は著者報告で独立実測なし。最新後継の実在IDは未確認。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2206.01861",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2206.01861",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2610.30949",
+    "decision": "defer",
+    "reason": "AI駆動開発向けCLIエージェント基盤という用途は合う。320B総パラメータのMoEに15B活性化という規模は面白いが、今回の資料には試せる重みやコードへのリンクがなく、20分・CPUのみの試行計画を立てられない。必要性が否定されたわけではないため保留。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.30949",
+        "quote": "a sparse Mixture-of-Experts (MoE) agentic foundation model with 320B total parameters (15B activated)"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "公開重みの実IDとCPUでの最小CLIタスク可否を確認する。",
+    "unconfirmed": [
+      "2026-10-22提出のv1を確認。GitHub stars/活動、商用利用ライセンス、導入手順と実行資源は資料になく未確認。has_code=false・has_model=false。後継モデルの実在IDは資料から確認できず未確認。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2610.30949",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2610.19705",
+    "decision": "test",
+    "reason": "AI駆動開発で、簡単な依頼は単発、難しい依頼はmulti-round/agenticへ振り分ける設計を試す価値がある。論文は5領域平均61.4%、最強比較法比11.03%相対改善を報告するが著者報告で、こちらの実測ではない。公開された学習済みrouterとコードがあるとREADMEに記載され、最小の推論確認に進める。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.19705",
+        "quote": "RouteWeaver achieves an average accuracy of 61.4%, an 11.03% relative improvement over the strongest baseline"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/LaughKing/RouteWeaver/HEAD/README.md",
+        "quote": "the trained router is on the Hub"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "隔離を確認後、公開routerで単発/複数段の小さなcoding依頼を各1件ルーティングできるか確かめる。",
+    "unconfirmed": [
+      "論文は2026-10-19 v3を確認。repoは2026-10-23更新、2 stars、直近push 2026-10-16、Apache-2.0表記を確認（商用利用の法的評価は未確認）。READMEにHub上の学習済みrouterとコード公開あり。導入・推論資源、接続可能なモデル/API、現行Hubモデルの実IDと最新後継IDは未確認。隔離未確認の外部コードは実行しない。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2610.19705",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://raw.githubusercontent.com/LaughKing/RouteWeaver/HEAD/README.md",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2610.31305",
+    "decision": "defer",
+    "reason": "連続表現の圧縮と離散文生成を協調させる方法はNLPの表現・生成効率に結びつく可能性がある。ただし今回の資料では具体的な利用可能コード/モデルやCPUで試せる導入経路を確認できず、学習禁止・計算枠内で評価可能な手順がない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.31305",
+        "quote": "learn compact, predictive latent representations"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "再現可能な公開artifactと推論用checkpointが提供されるか確認する。",
+    "unconfirmed": [
+      "2026-10-22提出のv1を確認。stars/活動、商用利用ライセンス、導入手順、資源要件は資料になく未確認。has_code=false・has_model=false。最新後継モデルの実在IDは未確認。学習や推論の制約も不明。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2610.31305",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2610.31574",
+    "decision": "defer",
+    "reason": "系列圧縮と視覚token削減は軽量画像認識の入力コストを下げうる具体的な価値があり、論文は視覚token mergerで標準MLPと同等の性能を55.6%少ないtokenで達成したと報告する（著者値）。一方、READMEの手順はQwen3-VLを使う学習構成で、学習禁止・CPU枠では比較を試せない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.31574",
+        "quote": "matches its performance with 55.6% fewer visual tokens"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/Sphere-AI-Lab/ttr-compressor/HEAD/README.md",
+        "quote": "Training code for TTR visual token merging with Qwen3-VL is in"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "学習なしで公開checkpointを既存画像入力経路に差し込めるかと必要GPU/RAMを確認する。",
+    "unconfirmed": [
+      "2026-10-22公開のv1とREADMEの2026-10-20 release告知を確認。repoは2026-10-23更新、8 stars、直近push 2026-10-23。repoライセンス記載なし。商用利用可否、依存環境と資源、既存SKUへの適合性は未確認。最新後継モデルの実在IDは未確認。READMEに学習手順があるが、今回の実行は学習禁止かつ隔離未確認。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2610.31574",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://raw.githubusercontent.com/Sphere-AI-Lab/ttr-compressor/HEAD/README.md",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2610.30755",
+    "decision": "test",
+    "reason": "会話メモリ/質問応答のNLP経路で、履歴を要約・編集せずdense retrievalとrerankで根拠を渡す単純な基準線を比較する価値がある。論文は4 benchmarkの7設定中6設定で比較対象首位と報告し、欠落する関係情報を生履歴から補える可能性を示す（著者報告）。これは外部サイト検索の改善主張ではない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.30755",
+        "quote": "Raw-RAG ranks first among the compared memory systems in six of seven benchmark-model settings"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/Litmeb/RAW-RAG/HEAD/README.md",
+        "quote": "preserve raw history, retrieve relevant evidence, and let the reader reason over it"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "隔離確認後、固定した小さな会話履歴質問でraw-window検索+rerankが要約メモリより必要な根拠関係を拾うか比較する。",
+    "unconfirmed": [
+      "2026-10-22提出のv1を確認。repoは2026-10-23更新、7 stars、直近push 2026-10-23。ライセンス表示なし（商用利用可否未確認）。READMEにPython 3.12等の導入説明と外部reader/embedding設定があるが、具体的なCPU/RAM/GPU・API費用は未確認。最新後継モデルの実在IDは未確認。隔離未確認の外部コードは実行しない。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2610.30755",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://raw.githubusercontent.com/Litmeb/RAW-RAG/HEAD/README.md",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2610.28889",
+    "decision": "defer",
+    "reason": "画像認識の軽量化には関係する。拡散モデルの中間特徴からタスクごとに時刻・層・チャネルを選ぶ学習方式で、著者は分類等の結果を報告しているが、コードも重みもなく、下流目的での学習を要するため、学習禁止・現金0の条件で今すぐ試す具体手段が確認できない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.28889",
+        "quote": "a budget-conditioned policy trained on the downstream objective that jointly selects all three under a prescribed channel budget."
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2610.28889",
+        "quote": "reaching 38.9 mIoU on ADE20K, 75.4% top-1 on CIFAR-100 at 128 dimensions"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "公表日: 2026-10-20。保存資料に後続版や最新性の確認なし。",
+      "コード/重みなし。stars・活動・商用ライセンス・導入方法は未確認。",
+      "ポリシー学習と拡散教師の実行資源・CPU/RAM/ダウンロード量は未確認。",
+      "後継/代替の実在IDは未確認。著者報告値は記載されているが独立実測ではない。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2610.28889",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2610.28889",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2610.31062",
+    "decision": "defer",
+    "reason": "自然言語ポリシーを小型モデル・決定的抽出器・合成コードからなる述語プログラムへ落とす点は構造化抽出とAI駆動開発に具体的に関係する。一方、論文は訓練データと敵対的反例を用いた最適化を中核とし、保存資料には実装コード/重みがないため、現在の学習・現金・資源枠内で試す具体的導入手順が不足する。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.31062",
+        "quote": "compiles a policy into an executable program of neural predicates executed by small models, deterministic extractors, and code that composes their outputs."
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2610.31062",
+        "quote": "The program is optimized jointly with its training data, using adversarial generation of counterexamples"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "公表日: 2026-10-22。保存資料に後続版や最新性の確認なし。",
+      "コード/重み、stars・活動、商用利用条件、導入手順は未確認。本文ライセンス表示はCC BY 4.0。",
+      "学習/敵対的生成に必要なCPU/GPU/RAM/ダウンロード資源は未確認。",
+      "後継/代替の実在IDは未確認。性能値は著者論文の報告で独立実測ではない。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2610.31062",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2610.31062",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2610.27598",
+    "decision": "defer",
+    "reason": "MoEの層間で専門家を共有し保存・検索を効率化する研究だが、大規模MoEモデル設計に関するもので、現在のCPU小型モデルやNLP分類/抽出へ今すぐ適用する成果物が保存資料から確認できない。検索改善としての網羅性・前処理・新サイト発見の進展も示されていない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.27598",
+        "quote": "Meta Expert: Cross-Layer Expert Sharing for Storage- and Retrieval-Efficient MoE"
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2610.27598",
+        "quote": "Downstream Performance of Meta Experts-based Model"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "公表日: 2026-10-20。保存資料に後続版や最新性の確認なし。",
+      "コード/重みなし。stars・活動・商用ライセンス・導入手順は未確認。本文ライセンス表示はCC BY 4.0。",
+      "MoE学習/推論に必要なモデル規模、資源、CPU適合性は未確認。",
+      "後継/代替の実在IDは未確認。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2610.27598",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://arxiv.org/abs/2610.27598",
+        "exact_normalized_match": false
+      }
+    ]
+  },
+  {
+    "candidate_id": "2610.26836",
+    "decision": "defer",
+    "reason": "ツール出力を取得して読むエージェントで、取得形式により回答精度が変わり、指示介入が一部損失を除いたという具体的なAI開発知見。ただしPHREEQCの科学計算レポート読解に限定された検証で、検索エンジンの網羅性・前処理・新サイト発見を改善するものではなく、現在の開発作業への適用先が特定できない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.26836",
+        "quote": "The instruction changes what agents read and removes the closure loss."
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2610.26836",
+        "quote": "With the simulation held fixed, retrieval still costs GPT-5.2 9.4 points."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "公表日: 2026-10-19。保存資料に後続版や最新性の確認なし。",
+      "リポジトリ更新: 2026-10-20。stars 0、保存時点の更新日10/20。コードMIT、データ/項目は別DATA_LICENSE.mdで商用条件未確認。",
+      "READMEにPHREEQCとAPIキーを使う評価手順あり。必要資源/依存の全容と当方環境への導入可否は未確認。",
+      "後継/代替の実在IDは未確認。数値は著者報告で独立実測ではない。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2610.26836",
+        "exact_normalized_match": false
+      },
+      {
+        "url": "https://arxiv.org/abs/2610.26836",
+        "exact_normalized_match": true
+      }
+    ]
+  },
+  {
+    "candidate_id": "2610.28679",
+    "decision": "test",
+    "reason": "AI駆動開発で生成コード/成果物を判定する検証器の過剰な拒否を、222タスク・4,993隠しケースで測るベンチマークと、証拠に沿った検証器生成ハーネスGavelを公開。正解の別表現を通す検査改善に直接使える具体的価値があるため、まず隔離環境でREADMEと依存要件を短時間確認する価値がある。著者の評価値は実測扱いしない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.28679",
+        "quote": "222 tasks from six agent benchmarks spanning tool-call, state-based, and code verification, with 4,993 hidden test cases"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/DwanZhang-AI/verifier-suite/HEAD/README.md",
+        "quote": "Gavel is a verifier-generation harness for Harbor tasks: one command generates a closed-book verifier for each task, writes it back as tests/, and validates it."
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/DwanZhang-AI/verifier-suite/HEAD/README.md",
+        "quote": "Install Harbor, Python 3.12+, and Docker with Compose 2.24.4 or later."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "候補コードを動かす前に隔離環境と無課金で使えるモデル経路があるかを確認し、READMEの最小例をCPU20分以内で静的に照合する。",
+    "unconfirmed": [
+      "公表日: 2026-10-19。保存資料に後続論文版の確認なし。",
+      "リポジトリ更新: 2026-10-22、stars 3、Apache-2.0。READMEにPython 3.12+、Docker Compose 2.24.4+、APIキーを使う手順あり。無課金経路・導入成立・実行資源は未確認。",
+      "隔離環境は未確認なので候補コードの実行はその確認後に限る。APIキー/認証情報へのアクセスは行っていない。",
+      "後継/代替の実在IDは未確認。論文/READMEの性能値は著者報告で独立比較実測ではない。"
+    ],
+    "quote_checks": [
+      {
+        "url": "https://arxiv.org/abs/2610.28679",
+        "exact_normalized_match": true
+      },
+      {
+        "url": "https://raw.githubusercontent.com/DwanZhang-AI/verifier-suite/HEAD/README.md",
+        "exact_normalized_match": false
+      },
+      {
+        "url": "https://raw.githubusercontent.com/DwanZhang-AI/verifier-suite/HEAD/README.md",
+        "exact_normalized_match": false
+      }
+    ]
+  }
+]

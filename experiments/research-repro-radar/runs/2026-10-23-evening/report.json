@@ -1,0 +1,141 @@
+{
+  "run_id": "2026-10-23-evening-native",
+  "date": "2026-10-23",
+  "status": "reading_completed_no_candidate_execution",
+  "recommended": [],
+  "digest": [
+    {
+      "id": "2610.31574",
+      "title": "TTR-Compressor",
+      "url": "https://arxiv.org/abs/2610.31574",
+      "assessment": "A",
+      "why_picked": "入力token群の相関を回帰係数へ圧縮し、長文・視覚token削減を狙う。",
+      "deferred_reason": "実在sihany/ttr_345mは446.6M・重み893MB、configはflash_attention_3。CPU動作/商用license未確認。HF10票とニュース要約の独立性は弱く、深掘り2信号未達。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.31062",
+      "title": "SCOPE",
+      "url": "https://arxiv.org/abs/2610.31062",
+      "assessment": "A",
+      "why_picked": "複合ポリシー判定を小型の述語と決定的抽出・論理へ分ける。NLP分類/抽出に直接関係。",
+      "deferred_reason": "Plurai/SCOPEデータは実在・MIT。実装/配布プログラム・実行資源未確認。プログラム最適化を重み学習必須とは断定しない。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.28679",
+      "title": "VerifierBench / Gavel",
+      "url": "https://arxiv.org/abs/2610.28679",
+      "assessment": "A",
+      "why_picked": "生成検証器が正しい別解まで拒む問題を、正負両方のケースで評価する。",
+      "deferred_reason": "コードApache-2.0、データは個別条件。追加著者結果は攻撃誤受理とのtradeoffあり。全再現はAPIとworkspace/Docker各100GiBを要し、今回未実行。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.26836",
+      "title": "Same Simulation, Different Evidence",
+      "url": "https://arxiv.org/abs/2610.26836",
+      "assessment": "A",
+      "why_picked": "計算が正しくてもツール出力の読み替えで回答が崩れる現象。根拠の明示と抽出の設計に価値。",
+      "deferred_reason": "コードMIT・データ別条件。科学シミュレーションに限定された著者結果で、汎用NLPへの転移・無料評価経路は未確認。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.30755",
+      "title": "Raw-RAG",
+      "url": "https://arxiv.org/abs/2610.30755",
+      "assessment": "A",
+      "why_picked": "会話履歴を変形せず保存し、必要な関係・依存を根拠として残す単純な比較基準。",
+      "deferred_reason": "外部サイトのrerank追加とは別用途。license・API費用・CPU資源未確認。独立2信号未達で再現なし。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.19705",
+      "title": "RouteWeaver",
+      "url": "https://arxiv.org/abs/2610.19705",
+      "assessment": "B",
+      "why_picked": "モデルだけでなく単発/複数段/agent実行の方式も選ぶrouter。",
+      "deferred_reason": "e2rea1/RouteWeaver-4Bとcost版が実在。routerだけ8.82GBでDL上限超。公式評価は80GB GPU1枚＋worker群。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.30949",
+      "title": "IQuest-Q1",
+      "url": "https://arxiv.org/abs/2610.30949",
+      "assessment": "B",
+      "why_picked": "CLIエージェント向けのMoE基盤モデルを新着から捕捉。",
+      "deferred_reason": "公式IQuestLab/IQuest-Q1はBF16約650GB・独自license。15B活性化は総320Bの保存量を減らさない。小さい公式後継未確認。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.31305",
+      "title": "Cola2",
+      "url": "https://arxiv.org/abs/2610.31305",
+      "assessment": "B",
+      "why_picked": "連続意味圧縮と離散生成を協調させる階層言語モデル。",
+      "deferred_reason": "原論文のみ確認。実装・推論checkpoint・license・CPU資源未確認。arXiv HTMLは404。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.28889",
+      "title": "Policy-Mask",
+      "url": "https://arxiv.org/abs/2610.28889",
+      "assessment": "B",
+      "why_picked": "拡散特徴の時刻/層/チャネルを予算に合わせ選ぶ画像認識手法。",
+      "deferred_reason": "学習済みの利用可能policy/重み・商用条件・CPU資源未確認。新規学習は今回範囲外。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.27598",
+      "title": "Meta Expert",
+      "url": "https://arxiv.org/abs/2610.27598",
+      "assessment": "B",
+      "why_picked": "MoEの層間でexpertを共有し、パラメータ冗長性を減らす設計。",
+      "deferred_reason": "内部expertアクセスの研究で、Web検索条件を適用しない。公開実装/重み/導入条件未確認。",
+      "verification_level": "reading",
+      "measured": false
+    }
+  ],
+  "completed_ids": [],
+  "counts": {
+    "collected_unique": 2710,
+    "ranking_input_with_carry": 6607,
+    "ranked": 5554,
+    "review_pool_read": 20,
+    "primary_read_total": 30,
+    "native_followup_candidates": 6,
+    "candidate_code_executions": 0,
+    "candidate_model_inferences": 0,
+    "pending_after_record_expected": 6606
+  },
+  "budget": {
+    "money_jpy": 0,
+    "candidate_cpu_seconds": 0,
+    "candidate_weights_bytes": 0,
+    "gpu_seconds": 0,
+    "candidate_repairs": 0,
+    "requested_start": "2026-10-23T09:04:00Z",
+    "deadline": "2026-10-23T09:34:00Z"
+  },
+  "host_requested_model": "gpt-6-luna",
+  "service_runtime_model_id": "unknown",
+  "limitations": [
+    "HF complete returned responses plus ten interest queries; no collection stop at 40. GitHub 290-result search paginated through all three pages. arXiv/Crossref searches used 100-result windows, not exhaustive pagination; public literature coverage is incomplete.",
+    "OpenReview five searches returned HTTP403; no bypass.",
+    "Thirty candidates actually primary-read, including final top20; six reread with current official artifacts. Initial quote mismatches are rejected, not adopted. Followup quotes exact and schemas validated.",
+    "Independent hot-signal threshold not established: TTR HF votes and AIWeekly article are distinct publication surfaces but article summarizes same source; conservative no deep_dive_value.",
+    "No candidate execution because credential-isolation hold remains unresolved. No repeat permission question, CLI fallback, auth changes, paid API, training, GPU bypass, email/SMTP/cron changes, SKU or PR19 changes.",
+    "No throughput, RAM, quality or CPU measurements; author values never counted as reproduced. Current price comparison not performed.",
+    "TokenEconomizer/AKV/SearchJev suppressed absent meaningful new evidence. Morning research not rerun.",
+    "All unfinished items preserved; neither digest nor raw native reject labels mark candidates completed. Old holds and historical completed decisions are retained."
+  ]
+}

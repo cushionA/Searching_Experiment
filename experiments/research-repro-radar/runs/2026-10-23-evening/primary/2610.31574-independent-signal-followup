@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic&display=swap" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:400,700,400italic,700italic&display=swap" media="print" onload="this.media='all'" />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic&display=swap" />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:400,700,400italic,700italic&display=swap" />
+    </noscript>
+    <title>TTR-Compressor Matches MLP Merger With 55.6% Fewer Visual Tokens | AI Weekly</title>
+          <meta name="description" content="TTR-Compressor, a sequence compression operator from researchers at the Chinese University of Hong Kong, Token Foundry and Alibaba Group, matches the…" />
+                  <link rel="canonical" href="https://aiweekly.co/alerts/ttr-compressor-matches-mlp-merger-with-556-fewer-visual-tokens" />
+                      <meta property="og:title" content="TTR-Compressor Matches MLP Merger With 55.6% Fewer Visual Tokens | AI Weekly" />
+      <meta property="og:description" content="TTR-Compressor, a sequence compression operator from researchers at the Chinese University of Hong Kong, Token Foundry and Alibaba Group, matches the…" />
+      <meta property="og:url" content="https://aiweekly.co/alerts/ttr-compressor-matches-mlp-merger-with-556-fewer-visual-tokens" />
+      <meta property="og:type" content="article" />
+            <meta property="og:locale" content="en_US" />      <meta property="og:site_name" content="AI Weekly" />
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:title" content="TTR-Compressor Matches MLP Merger With 55.6% Fewer Visual Tokens | AI Weekly" />
+      <meta name="twitter:description" content="TTR-Compressor, a sequence compression operator from researchers at the Chinese University of Hong Kong, Token Foundry and Alibaba Group, matches the…" />
+              <link rel="icon" type="image/svg+xml" href="/themes/custom/aiweekly/images/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/themes/custom/aiweekly/images/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/themes/custom/aiweekly/images/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/themes/custom/aiweekly/images/apple-touch-icon.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#1a1a2e" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="AI Weekly" />
+    <link rel="alternate" type="application/rss+xml" title="AI Weekly RSS Feed" href="/feed" />
+          <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://aiweekly.co/#organization","name":"AI Weekly","alternateName":"AI News Weekly","url":"https://aiweekly.co","logo":{"@type":"ImageObject","url":"https://dxj7eshgz03ln.cloudfront.net/production/publication/logo/1475/8f402391-cd29-43a4-9695-35d930a59660.png","width":1460,"height":535},"description":"AI news delivered 3x/week. Curated AI updates on funding, models, regulation, and applications. Read by 50,000+ professionals since 2015.","foundingDate":"2015","sameAs":["https://twitter.com/aiaboratory","https://www.linkedin.com/company/118823943/","https://bsky.app/profile/aiweekly.bsky.social","https://www.facebook.com/aiweekly","https://www.youtube.com/channel/UCULXZZmTiVYXuj0lE1s7WgQ"],"contactPoint":{"@type":"ContactPoint","contactType":"editorial","email":"alexis@aiweekly.co"}},{"@type":"Person","@id":"https://aiweekly.co/about#alexis-dufresne","name":"Alexis Dufresne","url":"https://aiweekly.co/about#alexis-dufresne","jobTitle":"Founder and editor","worksFor":{"@id":"https://aiweekly.co/#organization"},"knowsAbout":["Artificial intelligence","AI industry","AI policy"]},{"@type":"WebSite","@id":"https://aiweekly.co/#website","url":"https://aiweekly.co","name":"AI Weekly","description":"AI news delivered 3x/week for 50,000+ professionals.","publisher":{"@id":"https://aiweekly.co/#organization"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://aiweekly.co/search/node?keys={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"NewsArticle","@id":"https://aiweekly.co/alerts/ttr-compressor-matches-mlp-merger-with-556-fewer-visual-tokens#article","headline":"TTR-Compressor Matches MLP Merger With 55.6% Fewer Visual Tokens","url":"https://aiweekly.co/alerts/ttr-compressor-matches-mlp-merger-with-556-fewer-visual-tokens","mainEntityOfPage":{"@type":"WebPage","@id":"https://aiweekly.co/alerts/ttr-compressor-matches-mlp-merger-with-556-fewer-visual-tokens"},"author":{"@id":"https://aiweekly.co/about#alexis-dufresne"},"publisher":{"@id":"https://aiweekly.co/#organization"},"isPartOf":{"@id":"https://aiweekly.co/#website"},"articleSection":"AI News Alerts","inLanguage":"en-US","datePublished":"2026-10-23T03:35:45+00:00","dateModified":"2026-10-23T03:45:01+00:00","articleBody":"TTR-Compressor, a sequence compression operator from researchers at the Chinese University of Hong Kong, Token Foundry and Alibaba Group, matches the widely used MLP visual-token merger while using 55.6% fewer visual tokens, and in its convolutional variant beats the strongest attention-based compressor on RULER retrieval tasks by 12.24 points. The paper on Hugging Face reframes sequence compression — the step that collapses a block of tokens into one summary vector — as a test-time regressio...","description":"TTR-Compressor, a sequence compression operator from researchers at the Chinese University of Hong Kong, Token Foundry and Alibaba Group, matches the…","sourceOrganization":{"@type":"Organization","name":"huggingface.co","url":"https://huggingface.co/papers/2610.31574"},"mentions":[{"@type":"Thing","name":"Multimodal","sameAs":"https://aiweekly.co/ai-news-today/multimodal-ai-news"},{"@type":"Thing","name":"Inference","sameAs":"https://aiweekly.co/ai-news-today/inference-ai-news"}],"keywords":"ai-business"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://aiweekly.co"},{"@type":"ListItem","position":2,"name":"AI Alerts","item":"https://aiweekly.co/alerts"},{"@type":"ListItem","position":3,"name":"TTR-Compressor Matches MLP Merger With 55.6% Fewer Visual Tokens","item":"https://aiweekly.co/alerts/ttr-compressor-matches-mlp-merger-with-556-fewer-visual-tokens"}]}]}</script>
+                <link rel="stylesheet" media="all" href="/sites/default/files/css/css_XfjEfEuvH36hvAAYdzW-oWPAbo7idRvI0KVngOyWqKg.css?delta=0&amp;language=en&amp;theme=aiweekly&amp;include=eJxLzCxPTc3OqdRPzNRNzEktKtEpriwuSc3VT0osTgUAqJwLNQ" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_rdx5joZ48D2n3eQjMIJw9WJKfTrBHn4ASrwE0ekQukk.css?delta=1&amp;language=en&amp;theme=aiweekly&amp;include=eJxLzCxPTc3OqdRPzNRNzEktKtEpriwuSc3VT0osTgUAqJwLNQ" />
+
+    
+    <script src="/themes/custom/aiweekly/js/subscribe.js?v=1.0.9" defer></script>
+<script src="/sites/default/files/js/js_rr4RCl9G6x7pg1Mgqn5vBIc1FVxzZvnSQaNbh-yM3A4.js?scope=footer&amp;delta=1&amp;language=en&amp;theme=aiweekly&amp;include=eJxLzCxPTc3OqdRPzNRNzEktKtFJhIsUFMQnFWWmpKcCAA9tDl0"></script>
+
+    
+  </head>
+  <body>
+    
+      <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas>
+    <header class="header header--compact" role="banner">
+  <div class="navbar navbar--inline" role="navigation">
+    <div class="i">
+      <div class="navbar-collapse">
+        <a class="navbar-a navbar-menu-item" href="/">AI News</a>
+        <a class="navbar-a" href="/issues">Archives</a>
+        <a class="navbar-a" href="/learning-ai">Learning AI</a>
+        <a class="navbar-a" href="/newsletters">Newsletters</a>
+        <a class="navbar-a" href="/learning-ai/artificial-intelligence/ai-weekly-index">AI Index</a>
+        <a class="navbar-a navbar-a--live" href="/ai-news-today">AI News Today</a>
+        <a class="navbar-a" href="/whos-who/edition">Who's Who</a>
+        <a class="navbar-a" href="/ai-use-cases">Use Cases</a>
+        <a class="navbar-a" href="/advertise">Advertise</a>
+                  <a class="navbar-a" href="/login">Login</a>
+              </div>
+      <a class="navbar-a navbar-brand" href="/">
+        <picture>
+          <source srcset="/themes/custom/aiweekly/images/logo.webp" type="image/webp" />
+          <img alt="AI News Weekly" width="1460" height="535" src="/themes/custom/aiweekly/images/logo.png" />
+        </picture>
+      </a>
+      <button class="navbar-toggle" aria-label="Toggle menu">
+        <span class="navbar-toggle-bar"></span>
+        <span class="navbar-toggle-bar"></span>
+        <span class="navbar-toggle-bar"></span>
+      </button>
+    </div>
+  </div>
+      <div class="cta cta--header cta--compact-signup">
+      <div class="i">
+        <div id="subscribe-alert" class="cta-alert" style="display:none;"></div>
+        <p class="signup-choose" data-single-label="Join free with your email" data-multi-label="Join two ways — pick one">Join free with your email</p>
+        <div class="signup-options signup-options--single">
+          <form class="new_publication_email_subscriber aiweekly-subscribe-form signup-option signup-option--email" id="subscribe-form" data-oauth="1" action="/email_subscribers" method="post">
+            <div class="signup-option__head">
+              <svg class="signup-option__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4h20v16H2V4zm2 2v.5l8 5.4 8-5.4V6H4zm16 2.9-8 5.4-8-5.4V18h16V8.9z" /></svg>
+              <div>
+                <p class="signup-option__title">With your email</p>
+                <p class="signup-option__subtitle">We send you a confirmation link to click.</p>
+              </div>
+            </div>
+            <div class="form_elements">
+              <label for="subscribe-email">Email</label>
+              <input class="form-control" placeholder="Your email address" type="email" name="email" id="subscribe-email" required />
+              <button type="submit" class="btn" id="subscribe-btn">SUBSCRIBE</button>
+            </div>
+          </form>
+        </div>
+        <div class="subscribe-alerts-opt signup-alerts-shared">
+          <label class="subscribe-alerts-label"><input type="checkbox" name="alerts" id="subscribe-alerts" form="subscribe-form" checked /> <span class="signup-alerts-copy" data-single-label="Also get daily AI alerts — breaking stories only" data-multi-label="With either signup method, also get daily AI alerts — breaking stories only">Also get daily AI alerts — breaking stories only</span></label>
+        </div>
+        <p class="trust-msg"><span class="signup-trust-prefix" data-single-label="Free." data-multi-label="Both are free.">Free.</span> No spam, ever — we'll never share your email address and you can opt out at any time. <a href="/login">Already a subscriber? Log in</a></p>
+      </div>
+    </div>
+  </header>
+
+<main>
+    <div>
+    <div id="block-aiweekly-content">
+  
+    
+      <article class="ai-alert"  data-history-node-id="20017">
+  <header class="ai-alert__head i">
+    <div class="ai-alert__meta">
+              <span class="ai-alert__source">huggingface.co</span>
+                            <span class="ai-alert__discovery ai-alert__discovery--hf">
+          web signal
+                  </span>
+          </div>
+
+    <h1 class="ai-alert__title">
+<span>TTR-Compressor Matches MLP Merger With 55.6% Fewer Visual Tokens</span>
+</h1>
+
+    <div class="ai-alert__byline">
+      By <a rel="author" href="/about#alexis-dufresne">Alexis Dufresne</a>
+      <span aria-hidden="true">·</span>
+      Published
+      <time datetime="2026-10-23T03:35:45+00:00">October 23, 2026 at 03:35 UTC</time>
+              <span aria-hidden="true">·</span>
+        Updated
+        <time datetime="2026-10-23T03:45:01+00:00">October 23, 2026 at 03:45 UTC</time>
+          </div>
+
+    
+            
+          <div class="ai-alert__tags">
+                  <a class="ai-alert__tag ai-alert__tag--entity" href="/ai-news-today/multimodal-ai-news">Multimodal</a>
+                  <a class="ai-alert__tag ai-alert__tag--entity" href="/ai-news-today/inference-ai-news">Inference</a>
+                                      <span class="ai-alert__tag ai-alert__tag--topic">ai-business</span>
+                        </div>
+      </header>
+
+  <div class="ai-alert__body i">
+        <aside class="ai-alert__agent ai-alert__agent--top" data-cta-position="alert-pro-top">
+      <p class="ai-alert__agent-eyebrow">AI Weekly Pro</p>
+      <p class="ai-alert__agent-headline">Want only the AI that hits your stack?</p>
+      <p class="ai-alert__agent-sub">Build an agent that tracks your companies and topics, and skips everything else.</p>
+      <a class="ai-alert__agent-button" href="/intelligence/wizard-v2?src=alert-pro-top">Build your agent →</a>
+    </aside>
+
+        
+                
+                                                                          <section class="ai-alert__tldr">
+          <h2 class="ai-alert__tldr-title">TL;DR</h2>
+          <ul class="ai-alert__tldr-list">
+                          <li>TTR-Compressor's convolutional variant beats the strongest attention-based baseline on RULER retrieval tasks by 12.24 points.</li>                          <li>As a visual-token merger it matches the standard MLP merger while using 55.6% fewer visual tokens.</li>                          <li>Under 3×3 merging the convolutional variant improves on the MLP merger by 4.10 on OCRBench, 4.54 on InfoVQA and 3.56 on ChartQA.</li>                      </ul>
+        </section>
+      
+      
+      <div class="ai-alert__essay">
+        <p>TTR-Compressor, a sequence compression operator from researchers at the Chinese University of Hong Kong, Token Foundry and Alibaba Group, matches the widely used MLP visual-token merger while using 55.6% fewer visual tokens, and in its convolutional variant beats the strongest attention-based compressor on RULER retrieval tasks by 12.24 points.</p>
+<p>The <a href="https://huggingface.co/papers/2610.31574" rel="nofollow noopener" target="_blank">paper on Hugging Face</a> reframes sequence compression — the step that collapses a block of tokens into one summary vector — as a test-time regression problem. Input tokens define a ridge-regression system; its closed-form coefficients become the compressed representation; the regression itself is learned end-to-end by backpropagation. The authors argue existing operators share &quot;a fundamental structural limitation&quot;: they &quot;aggregate tokens using weights that do not account for inter-token relationships.&quot; Mean pooling uses uniform weights, projection uses fixed position-dependent weights, attention-weighted pooling scores tokens independently. The consequence, the paper writes, is that &quot;redundant tokens can reinforce one another, while distinctive information is diluted.&quot;</p>
+<p>For visual-token merging the authors swap the standard MLP merger inside a Qwen3-VL ViT + Qwen3-4B-Instruct stack. Under 2×2 merging the average score rises from 54.93 to 55.92, and the convolutional variant reaches 56.03. Under more aggressive 3×3 merging the gains concentrate on text-rich benchmarks: +4.10 on OCRBench, +4.54 on InfoVQA, +3.56 on ChartQA, for +2.58 on average. The 3×3 convolutional variant averages 54.85, close to the MLP merger&#039;s 54.93 at 2×2 while using fewer than half the visual tokens.</p>
+<p>The compressor adds only 2d trainable parameters per block via a T×T Cholesky solve. At a larger 1B-parameter / 100B-token setting the authors report 0.7996 average RULER accuracy against 0.735 for attention-weighted pooling, with the gap widening at longer context lengths. It is one of 98 <a href="https://aiweekly.co/ai-news-today/multimodal-ai-news">multimodal stories</a> we have tracked in the last 90 days.</p>
+      </div>
+
+              <aside class="ai-alert__editor-note">
+          <span class="ai-alert__editor-note-label">Editor's note</span>
+          <div class="ai-alert__editor-note-body">The 55.6% visual-token reduction is a direct lever on MLLM serving cost if it survives at frontier scale; with Alibaba listed on the paper, the obvious next question is whether this quietly lands in a Qwen-VL variant before competing stacks catch on.</div>
+        </aside>
+      
+                
+        <aside class="ai-alert__agent" data-cta-position="alert-pro-inline">
+      <p class="ai-alert__agent-eyebrow">AI Weekly Pro</p>
+      <p class="ai-alert__agent-headline">We scan all of AI. You track a slice of it.</p>
+      <p class="ai-alert__agent-sub">Build an agent that watches only the companies, topics and people you choose. It reads everything our scanners pull and sends you an edition made of just your matches.</p>
+      <a class="ai-alert__agent-button" href="/intelligence/wizard-v2?src=alert-pro-inline">Build your agent →</a>
+      <p class="ai-alert__agent-fine">
+                  $7/month for the first 2,000 members.
+              </p>
+    </aside>
+
+        
+        
+                
+        
+          <section class="ai-alert__source-link">
+        <p class="ai-alert__source-attribution">
+          Originally reported by
+          <strong>huggingface.co</strong>
+        </p>
+        <a class="ai-alert__source-cta" rel="noopener nofollow" target="_blank" href="https://huggingface.co/papers/2610.31574">
+          Read the original article →
+        </a>
+                  <p class="ai-alert__original-headline">
+            <span class="ai-alert__original-label">Original headline:</span>
+            <span class="ai-alert__original-value">TTR-Compressor Reframes Sequence Compression as Test-Time Regression, Matches MLP Merger With 55.6% Fewer Vision Tokens</span>
+          </p>
+              </section>
+    
+        <aside class="ai-alert__agent" data-cta-position="alert-pro-eoa">
+      <p class="ai-alert__agent-eyebrow">AI Weekly Pro</p>
+      <p class="ai-alert__agent-headline">This one found you. The next one might not.</p>
+      <p class="ai-alert__agent-sub">Name the companies, topics and people you follow. Your agent watches them across every source we scan and sends you an edition when something lands.</p>
+      <a class="ai-alert__agent-button" href="/intelligence/wizard-v2?src=alert-pro-eoa">Build your agent →</a>
+      <p class="ai-alert__agent-fine">
+                  $7/month for the first 2,000 members.
+              </p>
+    </aside>
+
+  </div>
+</article>
+
+<div class="ai-alert-sticky" id="ai-alert-sticky" data-cta-position="alert-pro-sticky" aria-hidden="true">
+  <span class="ai-alert-sticky__label">
+    Track only the AI that matters to you
+    <small>Your own agent, watching your companies and topics.</small>
+  </span>
+  <a class="ai-alert-sticky__button" href="/intelligence/wizard-v2?src=alert-pro-sticky">Build your agent →</a>
+  <button type="button" class="ai-alert-sticky__close" id="ai-alert-sticky-close" aria-label="Dismiss">×</button>
+</div>
+
+  </div>
+
+  </div>
+
+</main>
+
+<footer class="footer">
+  <div class="i">
+    <p>&copy;2015-2026 AI News Weekly | <a href="/">AI News</a> | <a href="/issues">Archives</a> | <a href="/learning-ai">Learning AI</a></p>
+    <p><a href="/login">Log in</a> | <a href="/unsubscribe">Unsubscribe</a></p>
+  </div>
+</footer>
+
+<style>
+/* Compact header: logo left, nav right */
+.header--compact .navbar--inline .i {
+  display: flex; align-items: center;
+}
+.header--compact .navbar-brand {
+  float: none; padding: 10px 0; max-width: none; order: -1;
+}
+.header--compact .navbar-brand img {
+  max-width: 150px; height: auto; display: block;
+}
+.header--compact .navbar-collapse {
+  max-height: none; overflow: visible; display: flex;
+  flex-wrap: wrap; align-items: center; flex: 1;
+  justify-content: flex-end;
+}
+.header--compact .navbar-a {
+  padding: 8px 0; margin: 0 0 0 14px; font-size: 12px;
+}
+.header--compact .navbar-toggle { display: none; }
+@media (max-width: 760px) {
+  .header--compact .navbar-brand img { max-width: 120px; }
+  .header--compact .navbar-collapse { max-height: 0; overflow: hidden; display: block; }
+  .header--compact .navbar-collapse.is-open { max-height: 500px; }
+  .header--compact .navbar-toggle { display: block; }
+  .header--compact .navbar-a { padding: 8px 0; margin: 0 10px; display: block; }
+}
+
+</style>
+
+<script>
+(function() {
+  var toggle = document.querySelector('.navbar-toggle');
+  var nav = document.querySelector('.navbar-collapse');
+  if (toggle && nav) {
+    toggle.addEventListener('click', function() {
+      toggle.classList.toggle('is-open');
+      nav.classList.toggle('is-open');
+    });
+  }
+})();
+</script>
+
+  </div>
+
+    
+
+        <style>
+      #cookie-consent .cc-buttons { display:flex; gap:8px; flex-shrink:0; flex-wrap:wrap; }
+      #cookie-consent .cc-btn { padding:12px 20px; border-radius:6px; font-size:14px; cursor:pointer; min-height:44px; }
+      @media (max-width: 600px) {
+        #cookie-consent .cc-buttons { flex-direction:column; width:100%; }
+        #cookie-consent .cc-btn { width:100%; text-align:center; }
+      }
+    </style>
+    <div id="cookie-consent" style="display:none; position:fixed; bottom:0; left:0; right:0; z-index:9999; background:#1a1a2e; color:#fff; font-family:'Lato',sans-serif; box-shadow:0 -2px 12px rgba(0,0,0,0.3);">
+      <div style="max-width:1100px; margin:0 auto; padding:18px 20px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:240px; font-size:14px; line-height:1.5;">
+          We use essential cookies to keep the site working (login, form security). With your permission, we also use analytics cookies to understand how you use the site.
+          <a href="/privacy" style="color:#93c5fd; text-decoration:underline;">Privacy policy</a>
+        </div>
+        <div class="cc-buttons">
+          <button onclick="cookieConsent('all')" class="cc-btn" style="background:#22c55e; color:#fff; border:none; font-weight:700;">Accept All</button>
+          <button onclick="cookieConsent('essential')" class="cc-btn" style="background:transparent; color:#fff; border:1px solid #555; font-weight:700;">Essential Only</button>
+          <button onclick="cookieConsent('reject')" class="cc-btn" style="background:transparent; color:#999; border:1px solid #333;">Reject Non-Essential</button>
+        </div>
+      </div>
+    </div>
+    <script>
+    (function() {
+      // Show banner if no consent recorded.
+      var consent = localStorage.getItem('cookie_consent');
+      if (!consent) {
+        document.getElementById('cookie-consent').style.display = 'block';
+      }
+      // Expose consent level globally for any scripts to check.
+      window.aiweeklyCookieConsent = consent || 'none';
+    })();
+    function cookieConsent(level) {
+      localStorage.setItem('cookie_consent', level);
+      localStorage.setItem('cookie_consent_date', new Date().toISOString());
+      document.getElementById('cookie-consent').style.display = 'none';
+      window.aiweeklyCookieConsent = level;
+
+      // If user rejected non-essential, clear any analytics cookies that may exist.
+      if (level === 'reject' || level === 'essential') {
+        document.cookie.split(';').forEach(function(c) {
+          var name = c.split('=')[0].trim();
+          // Keep essential cookies: session, csrf, Drupal.
+          if (name === 'csrf_subscribe' || name.indexOf('SESS') === 0 || name.indexOf('SSESS') === 0) return;
+          document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+        });
+      }
+    }
+    // ── Google Analytics 4 (consent-gated) ──
+    // Only loads gtag.js if user accepted analytics cookies.
+    // GA4 Measurement ID: G-1WVJ6T5EFW
+    function loadGA4() {
+      if (document.getElementById('ga4-script')) return;
+      var s = document.createElement('script');
+      s.id = 'ga4-script';
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-1WVJ6T5EFW';
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      window.gtag = gtag;
+      gtag('js', new Date());
+      gtag('config', 'G-1WVJ6T5EFW', { anonymize_ip: true });
+    }
+
+    // Load immediately if consent was previously given.
+    if (window.aiweeklyCookieConsent === 'all') { loadGA4(); }
+
+    // Patch cookieConsent() to also load GA4 when user clicks "Accept All".
+    var _originalCookieConsent = cookieConsent;
+    cookieConsent = function(level) {
+      _originalCookieConsent(level);
+      if (level === 'all') { loadGA4(); }
+    };
+    </script>
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"2d294a2a6e3b467f9b7bf7e9a74494d1","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

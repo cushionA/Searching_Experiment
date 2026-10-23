@@ -1,0 +1,116 @@
+[
+  {
+    "candidate_id": "2610.31574",
+    "decision": "test",
+    "reason": "Sequence compression is relevant to efficient language and multimodal inference; the paper reports a concrete visual-token-merging use and sparse-attention use, so it merits a bounded, isolated feasibility check. These are author-reported results, not independently measured here. HF lists 10 upvotes and AI Weekly separately covered it, but the latter is a short summary of the same paper, so independent interest is a weak second signal; category remains unset.",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.31574",
+        "quote": "For visual token merging, it consistently outperforms the standard MLP merger and matches its performance with 55.6% fewer visual tokens."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "Inspect the 345m artifact/config in isolation and determine whether a CPU-only smoke check can load it within the 20-minute/8-GB limits.",
+    "unconfirmed": [
+      "Paper submitted 2026-10-22; repo README says code/models released 2026-10-20. Repo has 8 stars, pushed 2026-10-23; GitHub license field is null, so commercial-use terms are unconfirmed.",
+      "Official collection contains ready checkpoints (so training is not inherently required): sihany/ttr_345m, ttr_1b, ttr_conv_345m, and sihany/ttr_vlm_conv_3_3. The 345m-named model is actually 446,631,936 parameters with an 893,293,472-byte safetensors file; config specifies flash_attention_3. 1b is 2,247,931,312 bytes; vision conv checkpoint totals 9,465,033,968 bytes, beyond the 2-GB download allowance. Do not combine alternate formats.",
+      "Execution not attempted; resource/runtime requirements remain unverified. Isolated inspection is required before any execution. HF small model last modified 2026-10-17; 1b 2026-10-17; vision 2026-10-19. Latest successor beyond these IDs is unconfirmed.",
+      "HF 10 upvotes and AI Weekly item are two distinct sources, but the news item appears to summarize the paper rather than report separate evidence; treat its independent-signal strength as weak. No comparative reproduction was performed; reported 55.6% is author-reported."
+    ]
+  },
+  {
+    "candidate_id": "2610.31062",
+    "decision": "test",
+    "reason": "This is a direct fit for NLP policy classification and structured verdict extraction: natural-language rules are compiled into small neural predicates plus deterministic extractors and compositional logic. The real Plurai/SCOPE dataset is MIT licensed, making a small reading or data-shape check worthwhile; the paper describes joint program/data optimization, not necessarily training model weights.",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.31062",
+        "quote": "which compiles a policy into an executable program of neural predicates executed by small models, deterministic extractors, and code that composes their outputs."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "Inspect the SCOPE dataset card and identify one policy task whose predicate outputs can be checked without training.",
+    "unconfirmed": [
+      "Paper submitted 2026-10-22; SCOPE dataset ID Plurai/SCOPE exists, last modified 2026-10-11, MIT tag, public and ungated, under 1K items, 2 downloads/0 likes in supplied snapshot.",
+      "No repository supplied; implementation and installation path are unconfirmed. Dataset artifact exists, but executable program/predicate resources and their exact CPU/RAM/download footprint are unconfirmed.",
+      "No training need is established: paper says program optimization jointly uses its training data; whether any specific reproduction requires model-weight training is unconfirmed. No later successor ID confirmed."
+    ]
+  },
+  {
+    "candidate_id": "2610.26836",
+    "decision": "test",
+    "reason": "This targets an actionable AI-development issue in agents that inspect large tool output: retrieval can cause evidence substitution even when simulation output is correct. Its value is about harness behavior and structured evidence use, not external web search. A small static reading/check is worthwhile; no author result is independently reproduced.",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.26836",
+        "quote": "Under retrieval they often skip the report, answer from their own higher-precision output files, and misround to a neighboring option"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "Inspect one released example and formulate a minimal check that verifies an answer cites the retrieved report section.",
+    "unconfirmed": [
+      "Paper submitted 2026-10-19; repo has 0 stars, last pushed 2026-10-20, MIT license.",
+      "Repo/release installation and data download requirements are unconfirmed; repository is available but no execution was attempted. CPU/RAM and external model/API costs for reproducing reported results are unconfirmed.",
+      "No later successor or independent replication confirmed. Paper reports author experiments; no comparative measurement by us."
+    ]
+  },
+  {
+    "candidate_id": "2610.28679",
+    "decision": "test",
+    "reason": "Verifier generation is directly useful to AI-driven development and evaluation: it checks executable validators for both false accepts and false rejects. The supplied paper reports a material precision/recall-style tradeoff, while a small static inspection of its frozen benchmark can be useful without claiming full reproduction. Keep API and large-scale reproduction requirements separate from this bounded inspection.",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.28679",
+        "quote": "generated verifiers consistently rejecting invalid solutions more reliably than they accept valid ones."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "Inspect one frozen task/candidate pair and assess whether a static audit can surface unsupported verifier assumptions without invoking model APIs.",
+    "unconfirmed": [
+      "Paper submitted 2026-10-19. Repo has 3 stars, pushed 2026-10-22, Apache-2.0. HF dataset Catherine1213/VerifierBench exists, updated 2026-10-23, public/ungated; 122 downloads, 0 likes, license tag other; card says frozen 222 tasks and 4,993 candidates. AppWorld content requires local reconstruction and source terms are in LICENSE.md.",
+      "Full reproduction requires API access and roughly 100-GiB x2 per supplied correction; these are not requirements for a small static check. Installation details and whether static inspection can be done within CPU/RAM/download/time limits remain unverified.",
+      "A later successor ID and independent replication are unconfirmed. Reported comparison 68.3 vs 62.1 has attack false acceptance 18.2 vs 7.4, an author-reported tradeoff, not a uniformly better result."
+    ]
+  },
+  {
+    "candidate_id": "2610.19705",
+    "decision": "defer",
+    "reason": "Unified mode selection plus model selection has a plausible AI-development value for choosing single-turn, multi-turn, or agentic execution. However, the supplied official 4B router artifact is 8,822,894,520 bytes, above the 2-GB download allowance, and no smaller newer successor is verified. Defer a model test until a feasible artifact or alternate bounded evaluation is identified; this is a resource hold, not a claim of no value.",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.19705",
+        "quote": "We propose RouteWeaver, a unified routing framework that integrates these routing modes within a single LLM policy"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "Check whether the exact repo provides a small paper-evaluation subset or router-only artifact that fits the download cap.",
+    "unconfirmed": [
+      "Paper submitted 2026-10-19; repo has 2 stars, updated 2026-10-23 but last pushed 2026-10-16, Apache-2.0. HF IDs e2rea1/RouteWeaver-4B and e2rea1/RouteWeaver-4B-cost exist, Apache-2.0, last modified 2026-10-09; router-only weights are 8,822,894,520 bytes. Cost variant has a real ID but distinct weights; do not conflate sizes.",
+      "No smaller successor confirmed. Exact install/runtime and CPU/GPU needs unverified; given the supplied artifact exceeds 2-GB download cap, execution is held. No measured comparison by us."
+    ]
+  },
+  {
+    "candidate_id": "2610.30949",
+    "decision": "defer",
+    "reason": "An agentic CLI foundation model has direct potential for AI-driven development, so size alone is not a rejection. But the official IQuest-Q1 artifact is a 320B-parameter BF16 checkpoint with 649,978,660,440 bytes of weights, far beyond this review’s 2-GB download, 8-GB RAM, and 20-minute CPU limits; license is custom/other. Defer until an applicable smaller official artifact or feasible hosted evaluation is identified.",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.30949",
+        "quote": "We present IQuest-Q1, a sparse Mixture-of-Experts (MoE) agentic foundation model with 320B total parameters (15B activated)."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "Check whether IQuest publishes an official, licensed quantized/smaller model ID suitable for a bounded CLI coding comparison.",
+    "unconfirmed": [
+      "Paper submitted 2026-10-22. Official HF ID IQuestLab/IQuest-Q1 updated 2026-09-29; search snapshot showed 148 likes and 4,130 downloads for official ID, and community GGUF/FP8 IDs exist but are not official. Official card says license_name iquest-q1 (custom terms), so commercial-use status must be reviewed.",
+      "Official BF16 checkpoint is 320,318,615,552 parameters and 649,978,660,440 bytes; no supplied official reduced-size successor. CPU/GPU runtime and install requirements are not established. Resource mismatch requires defer; no candidate code/model execution performed.",
+      "Quantized/community format size is not confirmed in supplied official evidence and cannot be substituted for official checkpoint/license. Future official successor existence is unconfirmed."
+    ]
+  }
+]
