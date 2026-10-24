@@ -184,14 +184,110 @@ def status(client, ref, version=None):
     return read_retry(get)
 
 
-def resolve_session_identity(client, ref, version):
-    """Return only an SDK-supported session binding; never infer an ID from kernel/version IDs."""
+def _validate_public_view_url(response):
+    """Reject redirects and any response whose final URL left Kaggle HTTPS."""
+    from urllib.parse import urlsplit
+    url = urlsplit(getattr(response, "url", ""))
+    if url.scheme != "https" or url.hostname != "www.kaggle.com" or url.username or url.password:
+        raise ValueError("public session lookup response URL was not same-host HTTPS")
+
+
+def _public_kernel_view_model(client, ref, version):
+    """Resolve a public notebook run through Kaggle's anonymous frontend read route."""
+    import requests
+    owner, slug = kernel_ref(ref).split("/")
+    validate_job({"ref": ref, "version": version})
+    root_url = "https://www.kaggle.com/code"
+    session = requests.Session()
+    class AnonymousAuth:
+        def __call__(self, request):
+            return request
+    # Keep environment proxy settings, while preventing requests' implicit netrc auth.
+    session.auth = AnonymousAuth()
+    try:
+        page = session.get(root_url, timeout=(10, 30), allow_redirects=False)
+        _validate_public_view_url(page)
+        if page.status_code != 200:
+            raise RuntimeError(f"public session lookup page HTTP {page.status_code}")
+        xsrf = session.cookies.get("XSRF-TOKEN")
+        if not xsrf:
+            raise RuntimeError("public session lookup XSRF cookie is unavailable")
+        headers = {"X-XSRF-TOKEN": xsrf, "Referer": root_url}
+        build_version = session.cookies.get("build-hash")
+        if build_version:
+            headers["X-Kaggle-Build-Version"] = build_version
+        endpoint = "https://www.kaggle.com/api/i/kernels.LegacyKernelsService/GetKernelViewModel"
+        payload = {"authorUserName": owner, "kernelSlug": slug,
+                   "kernelVersionId": 0, "versionNumber": version}
+        response = session.post(endpoint, json=payload, headers=headers,
+                                timeout=(10, 30), allow_redirects=False)
+        _validate_public_view_url(response)
+        if response.status_code != 200:
+            raise RuntimeError(f"public session lookup API HTTP {response.status_code}")
+        body = response.json()
+    finally:
+        session.close()
+
+    if not isinstance(body, dict):
+        raise ValueError("public session lookup returned an invalid response")
+    kernel = body.get("kernel")
+    run = body.get("kernelRun")
+    author = body.get("author")
+    kernel_author = kernel.get("author") if isinstance(kernel, dict) else None
+    if not isinstance(kernel, dict) or not isinstance(run, dict) or not isinstance(author, dict) or not isinstance(kernel_author, dict):
+        raise ValueError("public session lookup omitted required identity fields")
+    kernel_id = kernel.get("id")
+    session_id = run.get("id")
+    current_version = body.get("currentVersionNumber")
+    run_kernel_id = run.get("kernelId")
+    run_version = run.get("kernelVersionNumber")
+    if (type(kernel_id) is not int or kernel_id <= 0 or type(session_id) is not int or session_id <= 0 or
+            kernel.get("slug") != slug or kernel.get("url") != f"/code/{owner}/{slug}" or
+            author.get("userName") != owner or kernel_author.get("userName") != owner or
+            type(current_version) is not int or current_version != version or
+            type(run_version) is not int or run_version != version or
+            type(run_kernel_id) is not int or run_kernel_id != kernel_id):
+        raise ValueError("public session lookup identity or version did not match the requested notebook")
+    # Confirm the frontend kernel id is the same kernel id returned by the authenticated SDK.
+    remote = get_kernel(client, ref)
+    sdk_kernel_id = getattr(remote.metadata, "id", None)
+    if type(sdk_kernel_id) is not int or sdk_kernel_id <= 0 or sdk_kernel_id != kernel_id:
+        raise ValueError("public session lookup kernel id did not match the SDK kernel metadata")
+    return {"ref": ref, "version": version, "kernel_session_id": session_id,
+            "kernel_id": kernel_id, "current_version_number": current_version,
+            "kernel_run_kernel_id": run_kernel_id, "kernel_run_version_number": run_version,
+            "author_user_name": owner, "kernel_url": kernel["url"],
+            "source": "public_get_kernel_view_model"}
+
+
+def resolve_session_identity(client, ref, version, is_private=True):
+    """Resolve only an exact public frontend binding; private jobs remain unsupported."""
     kernel_ref(ref)
     validate_job({"ref": ref, "version": version})
+    if is_private is False:
+        try:
+            return read_retry(lambda: _public_kernel_view_model(client, ref, version))
+        except Exception as error:
+            return {"ref": ref, "version": version, "kernel_session_id": None,
+                    "session_id_unavailable_reason": f"public lookup failed: {type(error).__name__}"}
+    if is_private is not True:
+        raise ValueError("is_private must be a boolean")
     observed = status(client, ref, version)
     return {"ref": ref, "version": version,
             "kernel_session_id": observed.get("kernel_session_id"),
             "session_id_unavailable_reason": observed.get("session_id_unavailable_reason")}
+
+
+def capture_session_identity(client, ref, version, is_private):
+    """Capture an optional binding after accepted submission without undoing acceptance."""
+    if is_private is True:
+        return {"ref": ref, "version": version, "kernel_session_id": None,
+                "session_id_unavailable_reason": "private notebook session ID lookup is unsupported"}
+    try:
+        return resolve_session_identity(client, ref, version, is_private=False)
+    except Exception as error:
+        return {"ref": ref, "version": version, "kernel_session_id": None,
+                "session_id_unavailable_reason": f"session identity capture failed: {type(error).__name__}"}
 
 
 def _cancel_cause(status_value, failure_message, attempts, ref=None, version=None, session_id=None):
@@ -212,7 +308,7 @@ def _cancel_cause(status_value, failure_message, attempts, ref=None, version=Non
 
 
 @contextlib.contextmanager
-def _cancel_job_lock(job_path):
+def _cancel_job_lock(job_path, blocking=False):
     """Serialize cancellation attempts for one job across processes on POSIX and Windows."""
     lock_path = Path(job_path).with_name(Path(job_path).name + ".cancel.lock")
     lock_path.parent.mkdir(parents=True, exist_ok=True)
@@ -225,10 +321,12 @@ def _cancel_job_lock(job_path):
         try:
             if os.name == "nt":
                 import msvcrt
-                msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+                mode = msvcrt.LK_LOCK if blocking else msvcrt.LK_NBLCK
+                msvcrt.locking(handle.fileno(), mode, 1)
             else:
                 import fcntl
-                fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                flags = fcntl.LOCK_EX | (0 if blocking else fcntl.LOCK_NB)
+                fcntl.flock(handle.fileno(), flags)
         except (OSError, BlockingIOError) as error:
             raise ValueError("another cancel command holds the job lock; inspect status after it exits") from error
         try:
@@ -241,6 +339,44 @@ def _cancel_job_lock(job_path):
             else:
                 import fcntl
                 fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+
+
+def _reconcile_cancel_terminal(job_path, expected_ref, expected_version, current):
+    """Persist terminal cancellation attribution from the latest serialized job state."""
+    status_value = current.get("status")
+    if status_value not in ("complete", "error", "cancel_acknowledged"):
+        raise ValueError("cancel audit requires a terminal status")
+    with _cancel_job_lock(job_path, blocking=True):
+        job = validate_job(load(job_path))
+        if job["ref"] != expected_ref or job["version"] != expected_version:
+            raise ValueError("saved job ref/version changed while waiting; refusing to attach terminal status")
+        if current.get("ref", expected_ref) != expected_ref or current.get("version", expected_version) != expected_version:
+            raise ValueError("terminal status does not match the wait's pinned ref/version")
+        attempts = job.get("cancel_attempts") or []
+        if not attempts and status_value != "cancel_acknowledged":
+            return None
+        identity = job.get("session_identity") or {}
+        session_id = identity.get("kernel_session_id")
+        if session_id is not None and (identity.get("ref") != expected_ref or identity.get("version") != expected_version):
+            raise ValueError("saved session binding does not match the wait's pinned ref/version")
+        observed_session_id = current.get("kernel_session_id")
+        if observed_session_id is not None and observed_session_id != session_id:
+            raise ValueError("terminal status session identity conflicts with the saved binding")
+        if identity.get("ref") != job["ref"] or identity.get("version") != job["version"]:
+            session_id = None
+        if type(session_id) is not int or session_id <= 0:
+            session_id = None
+        cause, evidence = _cancel_cause(status_value, current.get("failure_message", ""), attempts,
+                                        expected_ref, expected_version, session_id)
+        final = {"status": status_value, "failure_message": redact(current.get("failure_message", "") or ""),
+                 "cause": cause, "cause_evidence": evidence, "observed_at": time.time()}
+        job["cancel_final"] = final
+        if status_value == "cancel_acknowledged":
+            job["cancel_state"] = "complete"
+        else:
+            job["cancel_state"] = "terminal_without_cancellation"
+        save(job_path, job)
+        return final
 
 
 def cancel(client, job_path, expected_ref, expected_version, reason):
@@ -259,7 +395,7 @@ def _cancel_locked(client, job_path, expected_ref, expected_version, reason):
         raise ValueError("cancel ref/version does not match the saved job")
     if not isinstance(reason, str) or not reason.strip():
         raise ValueError("cancel reason is required")
-    identity = resolve_session_identity(client, expected_ref, expected_version)
+    identity = resolve_session_identity(client, expected_ref, expected_version, is_private=job.get("is_private", True))
     if identity.get("ref") != expected_ref or identity.get("version") != expected_version:
         raise ValueError("resolved session identity does not match the saved job")
     session_id = identity.get("kernel_session_id")
@@ -455,8 +591,10 @@ def verify_saved_version(client, job, version=None, ref=None, require_matching_r
         raise ValueError("saved notebook type does not match")
     if source_signature(remote.blob.source, job["kernel_type"]) != job["source_signature"]:
         raise ValueError("saved notebook source does not match the submitted code")
-    if remote.metadata.is_private is not True or remote.metadata.enable_gpu != job["enable_gpu"]:
+    if remote.metadata.is_private is not job.get("is_private", True) or remote.metadata.enable_gpu != job["enable_gpu"]:
         raise ValueError("saved notebook privacy or GPU setting does not match")
+    if getattr(remote.metadata, "enable_tpu", False) is not False:
+        raise ValueError("saved notebook TPU setting does not match")
     if remote.metadata.enable_internet != job["enable_internet"]:
         raise ValueError("saved notebook Internet setting does not match")
     return current
@@ -483,15 +621,20 @@ def clean_upload(folder):
     return folder
 
 
-def submit(client, folder, output, notification_target=None):
+def submit(client, folder, output, notification_target=None, allow_public=False):
+    if type(allow_public) is not bool:
+        raise ValueError("allow_public must be a boolean")
     notification = ({"target": validate_notification_target(notification_target), "state": "target_configured",
                      "delivery_status": "unknown"} if notification_target is not None else
                     {"target": {"provider": "chatgpt"}, "state": "not_configured", "delivery_status": "unknown"})
     folder = clean_upload(folder)
     metadata = load(folder / "kernel-metadata.json")
     ref = kernel_ref(metadata["id"])
-    if metadata.get("is_private") is not True or metadata.get("enable_tpu") is not False:
-        raise ValueError("private notebook with TPU disabled is required")
+    requested_private = metadata.get("is_private")
+    if requested_private is not True and not (requested_private is False and allow_public):
+        raise ValueError("private notebook is required unless --allow-public is explicitly set")
+    if metadata.get("enable_tpu") is not False:
+        raise ValueError("TPU must be disabled")
     code = (folder / metadata["code_file"]).resolve()
     if not code.is_relative_to(folder) or not code.is_file():
         raise ValueError("code_file must be inside the upload folder")
@@ -521,6 +664,7 @@ def submit(client, folder, output, notification_target=None):
     job = {"ref": ref, "state": "submission_unknown", "previous_version": previous_version, "timeout_seconds": seconds, "quota_before": budget, "code_sha256": hashlib.sha256(code.read_bytes()).hexdigest(), "payload_bytes": payload, "created_at": time.time(),
            "kernel_type": metadata["kernel_type"], "source_signature": source_signature(code.read_text(encoding="utf-8"), metadata["kernel_type"]),
            "enable_gpu": bool(metadata.get("enable_gpu")), "enable_internet": metadata.get("enable_internet", True),
+           "is_private": requested_private,
            "notification": notification}
     if job_path.exists():
         backup = output / f"job.not_submitted.{time.time_ns()}.json"
@@ -559,7 +703,9 @@ def submit(client, folder, output, notification_target=None):
         raise ValueError("submission response lacks a newer version; inspect without resubmitting")
     job.update(version=version, state="submitted")
     job["session_identity"] = {"ref": ref, "version": version, "kernel_session_id": None,
-                               "session_id_unavailable_reason": "pinned Kaggle SDK exposes no session-id lookup for ref/version"}
+                               "session_id_unavailable_reason": "session identity capture is pending"}
+    save(job_path, job)
+    job["session_identity"] = capture_session_identity(client, ref, version, requested_private)
     save(job_path, job)
     return job
 
@@ -733,6 +879,9 @@ def wait(client, job_path, output, wait_seconds=21600, interval=30):
             append_monitor_event(output, job, "log_retrieval_error", monitor_started, status=current.get("status"), error_type=type(error).__name__)
         if current["status"] == "complete":
             append_monitor_event(output, job, "terminal", monitor_started, status=current["status"])
+            cancel_final = _reconcile_cancel_terminal(job_path, job["ref"], job["version"], current)
+            if cancel_final is not None:
+                result["cancel_final"] = cancel_final
             result["next_phase"] = "recovering_outputs"
             save(Path(output) / "continuation.json", result)
             try:
@@ -750,12 +899,9 @@ def wait(client, job_path, output, wait_seconds=21600, interval=30):
         if current["status"] in ("error", "cancel_acknowledged"):
             append_monitor_event(output, job, "terminal", monitor_started, status=current["status"])
             result["next_phase"] = "failure_review"
-            if current["status"] == "cancel_acknowledged":
-                attempts = load(Path(job_path)).get("cancel_attempts", [])
-                identity = job.get("session_identity") or {}
-                cause, evidence = _cancel_cause(current["status"], current.get("failure_message", ""), attempts,
-                                               job["ref"], job["version"], identity.get("kernel_session_id"))
-                result["cancel_final"] = {"cause": cause, "cause_evidence": evidence}
+            cancel_final = _reconcile_cancel_terminal(job_path, job["ref"], job["version"], current)
+            if cancel_final is not None:
+                result["cancel_final"] = cancel_final
             try:
                 outputs(client, job, Path(output), download=False)
             except Exception as error:
@@ -788,6 +934,7 @@ def main():
             sub.add_argument("--folder", required=True, type=Path)
         if name == "submit":
             sub.add_argument("--notification-config", help="JSON target for ChatGPT completion automation")
+            sub.add_argument("--allow-public", action="store_true", help="allow submission of a public notebook")
         if name == "dataset-update":
             sub.add_argument("--message", required=True)
         if name in ("wait", "reconcile", "cancel"):
@@ -825,7 +972,7 @@ def main():
                 job = {"ref": args.ref, "version": latest_version(client, args.ref)}
                 result = dict(job, files=outputs(client, job, args.output))
             elif args.command == "submit":
-                result = submit(client, args.folder, args.output, notification_target)
+                result = submit(client, args.folder, args.output, notification_target, args.allow_public)
             elif args.command == "wait":
                 result = wait(client, args.job, args.output, args.wait_seconds)
             elif args.command == "cancel":

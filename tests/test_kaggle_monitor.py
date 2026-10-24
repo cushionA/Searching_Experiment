@@ -98,13 +98,57 @@ class KaggleMonitorTests(unittest.TestCase):
                 self.assertEqual(result["monitor_state"], "retry_pending")
                 self.assertNotIn("terminal_event", result)
 
+    def test_public_status_missing_session_id_is_enriched_by_exact_identity_lookup(self):
+        self.job["is_private"] = False
+        monitor.ops.save(self.job_path, self.job)
+        current = self.current("complete", kernel_session_id=None)
+        identity = {"ref": "owner/notebook", "version": 7, "kernel_session_id": 123,
+                    "source": "public_get_kernel_view_model"}
+        with patch.object(monitor.ops, "status", return_value=current), \
+                patch.object(monitor.ops, "resolve_session_identity", return_value=identity) as resolve:
+            result = monitor.poll(object(), self.job_path, self.output)
+        resolve.assert_called_once_with(unittest.mock.ANY, "owner/notebook", 7, is_private=False)
+        self.assertEqual(result["monitor_state"], "observed")
+        self.assertEqual(result["observation"]["kernel_session_id"], 123)
+        self.assertEqual(result["terminal_event"]["kernel_session_id"], 123)
+
+    def test_public_identity_lookup_rejects_missing_or_mismatched_binding(self):
+        self.job["is_private"] = False
+        monitor.ops.save(self.job_path, self.job)
+        bad_identities = (
+            {"ref": "owner/notebook", "version": 7, "kernel_session_id": None},
+            {"ref": "owner/notebook", "version": 7, "kernel_session_id": 999},
+            {"ref": "other/notebook", "version": 7, "kernel_session_id": 123},
+            {"ref": "owner/notebook", "version": 8, "kernel_session_id": 123},
+        )
+        for index, identity in enumerate(bad_identities):
+            with self.subTest(identity=identity):
+                self.output = self.root / f"bad-public-identity-{index}"
+                with patch.object(monitor.ops, "status", return_value=self.current("complete", kernel_session_id=None)), \
+                        patch.object(monitor.ops, "resolve_session_identity", return_value=identity):
+                    result = monitor.poll(object(), self.job_path, self.output)
+                self.assertEqual(result["monitor_state"], "retry_pending")
+                self.assertNotIn("terminal_event", result)
+
+    def test_matching_status_session_skips_public_identity_lookup(self):
+        self.job["is_private"] = False
+        monitor.ops.save(self.job_path, self.job)
+        with patch.object(monitor.ops, "status", return_value=self.current("complete")), \
+                patch.object(monitor.ops, "resolve_session_identity") as resolve:
+            result = monitor.poll(object(), self.job_path, self.output)
+        resolve.assert_not_called()
+        self.assertEqual(result["monitor_state"], "observed")
+
     def test_register_saves_target_and_identity_without_starting_scheduler(self):
+        self.job["is_private"] = False
+        monitor.ops.save(self.job_path, self.job)
         result = monitor.register(self.job_path, self.root / "registry", monitor.target("owner/repo"))
         self.assertFalse(result["scheduler_active"])
         saved = monitor.ops.load(self.job_path)
         self.assertEqual(saved["notification"]["target"]["provider"], "chatgpt")
         self.assertEqual(saved["notification"]["event_id"], monitor.event_id(self.job))
         self.assertEqual(saved["session_identity"], self.job["session_identity"])
+        self.assertFalse(monitor.ops.load(result["registry_file"])["is_private"])
         self.assertTrue(Path(result["registry_file"]).exists())
 
     def test_automation_plan_pins_job_hourly_and_requires_final_marker(self):

@@ -55,7 +55,7 @@ def register(job_path, registry, destination):
         raise ValueError("disable the existing automation before changing its target")
     job["notification"] = {**existing, "target": destination,
                            "state": existing.get("state", "registration_pending"), "event_id": event_id(job)}
-    registration = {k: job[k] for k in ("ref", "version", "state", "session_identity",
+    registration = {k: job[k] for k in ("ref", "version", "state", "is_private", "session_identity",
                                         "cancel_attempts", "notification") if k in job}
     path = Path(registry) / (event_id(job) + ".json")
     ops.save(path, registration)
@@ -93,6 +93,16 @@ def poll(client, job_path, output):
             raise ValueError("observed Kaggle job does not match")
         saved_session = job.get("session_identity", {}).get("kernel_session_id")
         observed_session = current.get("kernel_session_id")
+        if saved_session is not None and observed_session is None and job.get("is_private", True) is False:
+            identity = ops.resolve_session_identity(client, job["ref"], job["version"], is_private=False)
+            if identity.get("ref") != job["ref"] or identity.get("version") != job["version"]:
+                raise ValueError("resolved Kaggle session identity does not match the pinned ref/version")
+            observed_session = identity.get("kernel_session_id")
+            if observed_session is None:
+                raise ValueError("public Kaggle session identity is unavailable")
+            current["kernel_session_id"] = observed_session
+            current["session_identity_source"] = identity.get("source")
+            current.pop("session_id_unavailable_reason", None)
         if saved_session is not None and observed_session != saved_session:
             raise ValueError("observed Kaggle session is missing or does not match")
         state.update(observation=current, observed_at=now(), monitor_state="observed")

@@ -31,21 +31,21 @@ python -m venv .venv-kaggle
 2. 入出力、必要なGPU、実行時間上限を決める。提出前に成果物の合格条件（ファイル名・schema・件数・GPU確認方法）も定める。実行時間の既定上限は6時間で、`training-params.json` の `timeout_seconds` で短縮できる。これは運用上限でKaggleの保証値ではない。
 3. アップロード専用ディレクトリを使う。100 MB超の入力や大きなmanifest・ラベル・画像・重みはprivate Datasetへ分け、Notebook本体に埋め込まない。Dataset更新では過去versionを削除しない。helperはKaggleへ送る形でコードpayloadを計測し、1 MiB未満であることを確認する。詳細は[入力サイズと転送](references/input-size.md)。
 4. 既存Notebookを更新するときは変更が必要なセルだけ編集し、他セルと出力に意図しない差分がないことを確かめる。詳細は[Notebookの編集と転送](references/notebooks.md)。
-5. `submit` は一度だけ実行する。private、TPU無効、GPU残量、既存versionの状態などを確認し、ref・version・ソース署名を `job.json` に記録する。
+5. `submit` は一度だけ実行する。private、TPU無効、GPU残量、既存versionの状態などを確認し、ref・version・ソース署名を `job.json` に記録する。公開Notebookは既定で拒否される。ユーザーが公開を明示的に許可した場合だけ `--allow-public` を付ける。
 6. `wait` はversionを固定してstatusを確認し、ログを取得する。ログの終端だけで成功と判断しない。completeになったら出力を回収してSHA-256を記録する。`continuation.json` の `ready_for_verification: true` は成果物の検証を始めてよい合図であり、実験の合格ではない。手順2の条件で確認してから成功を報告する。
 7. error/cancelならログとstatusを調べる。OOMならbatch size、gradient accumulation、解像度を調整する。条件を変更した試行は別に記録する。
 
 ## ChatGPTへの通知と停止
 
 長時間ジョブは[監視・ChatGPT通知の手順](references/monitoring.md)で固定ref/versionを登録する。
-`wait` やサブエージェントの内部メッセージだけでは、会話終了後の通知を登録したことにならない。
-ChatGPT通知は、外部の定期監視によるGitHub上の保存結果と、実際に登録したChatGPT automationを組み合わせる。
-通知経路のソースをGitHubコネクターで読めることを確認してから登録し、返されたautomation ID・実行記録を保存する。
-ローカルJSON、automation登録成功、通知文生成、端末への受信を区別する。配送receiptが得られなければ受信確認済みとしない。
+常設監視はChatGPT Cloudの時間単位Automationが、GitHub registryの固定対象をKaggle API tokenで読み取り、GitHub上のdurable snapshotをcompare-and-swapで更新する。GitHub Actions workflowは任意の代替経路であり、同じ対象を重ねて監視しない。
+前回の実際のassistant最終回答に同じ `KAGGLE_EVENT:<event_id>`、ref、versionがあれば、その回答本文のSHA-256を保存して重複通知を抑える。conversationへの回答記録は端末への配送receiptではなく、`delivery_status` は `unknown` のまま扱う。
 
-`cancel --job ... --ref owner/slug --version N --reason '停止理由'` は保存した版と実行IDを照合する。
-固定SDK 0.1.37にはref/versionからsession IDを得る公開経路がないため、現時点では実行IDを解決できないジョブの停止を拒否する。
-kernel IDやversion番号をsession IDとして代用しない。API受付と停止完了を分け、`cancel_requested` は待機中として扱う。
+`cancel --job ... --ref owner/slug --version N --reason '停止理由'` は保存した版と実行IDを照合する。Kaggle公式frontendの `GetKernelViewModel` は公開Notebookに対しowner/slugと可視version番号から実行情報を返す。公開時は応答のowner、slug、`currentVersionNumber`、`kernelRun.kernelVersionNumber`、`kernelRun.kernelId == kernel.id` をすべて照合してから `kernelRun.id` をsession IDとして使う。version番号を指定するときは `kernelVersionId=0` と `versionNumber=N` を渡す。公開ページから匿名cookieとXSRF cookieを通常のHTTPで取得するためinteractive loginは不要だが、Kaggle frontend変更で壊れる可能性がある。
+Private Notebookのsubmit/statusはこれまでどおりKaggle API tokenで行い、interactive loginは不要。Private NotebookについてはKaggle API tokenで使える公式SDK/APIにref/versionからsession IDを返す経路がない。frontend RPC向けcookieへAPI tokenを交換する公式手順も確認できていない。ブラウザーloginやID推測に進まず、session IDが得られないprivate jobの停止をfail closedする。
+`kernel.id`、`kernelRun.kernelId`、`kernelVersionId`、version numberをsession IDとして代用しない。API受付と停止完了を分け、`cancel_requested` は待機中として扱い、`cancel_acknowledged` を確認するまで同じrequestを再送しない。
+
+2026-10-24の公開CPU検証では `superbigzabuton/issue24-public-cancel-20261024` v1について、session ID `361701960` とkernel ID `140536360` を照合し、API停止要求1回が受け付けられた後 `running` → `cancel_requested` → `cancel_acknowledged` を確認した。成果物・ログは `experiments/kaggle-monitor/results/20261024-public-cancel/` に保存した。終了後はDeleteKernel要求1回の受付、後続のGetKernel 403とfrontend 404、所有Notebook一覧からの消失を照合し、削除を確認した。
 
 ## 失敗と再開
 

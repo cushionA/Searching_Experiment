@@ -1,0 +1,9 @@
+# Cloud常設監視の実行確認
+
+既存のChatGPT Automationを毎時のCloud監視へ更新し、同じCodex会話へ到着した実際の予定実行指示を処理した。新たな予定タスクは作成していない。
+
+Cloud running/connected、credential readyとプロセス内KAGGLE_API_TOKENの存在だけを確認した。値の表示・複製・保存はしていない。GitHub connectorで指定branchのregistry全体（JSON 1件）とsnapshotを取得し、restore後に専用venvから固定ref/versionをlive照会した。旧CPU smoke v1はcomplete。
+
+既に実際の先行assistant最終回答を照合して保存していたconversation_receiptを維持したため、pendingは0件で再通知しなかった。現在blob SHAを条件にconnectorでsnapshotを更新し、再取得して内容とblob SHAを照合した。commit `d1a13ed89a4e6cf4642c9fc424e4fca5d4706f94`、blob `33e928ddf2aad3d48738a68737052ff30edd71a6`。
+
+実行履歴APIはrun_detailsを提供していない。予定指示の到着、実API照会、GitHub保存は確認済みだが、Automation登録だけを通知成功とは扱わず、端末への配送状態はunknownのまま。snapshot内receiptも本文hashと弱いprovenanceであり、暗号学的な発信者証明ではない。
