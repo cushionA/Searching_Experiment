@@ -53,6 +53,7 @@ kernel IDやversion番号をsession IDとして代用しない。API受付と停
 - ローカルの事前検証に失敗した場合はjobを作らず、修正後に再実行する。
 - submitの応答が曖昧な通信切断・timeout・5xxやversion不明では、自動再送しない。`submission_unknown` として保存し、同じjobを照合する。
 - `reconcile --job ... --version N` は、提出前より新しいversionのソース署名・Notebook種別・private/GPU/Internet設定を保存済みjobと照合してから、そのversionを監視対象にする。古いjobにソース署名がない場合は自動照合せず、Kaggle画面で確認する。
+- 新規Notebookがタイトル由来の別slugで作られた場合は、再投入せず `reconcile --job ... --version N --ref <応答のowner/slug>` を使う。提出前versionが0で、保存済みpush応答のref/version・元owner・リモートのソースと設定がすべて一致した場合だけ追跡先を更新する。元refと照合根拠はjobへ残す。
 - `reconcile --job ... --not-accepted` は、実際のSaveKernel送信要求への明示的なHTTP拒否（400/401/403/404/413/422）がjobに記録され、かつ最新versionが提出前から変わっていない場合にだけ使える。versionが変わらなかったことだけでは未受付の証明にならない。条件が満たされればjobは `not_submitted` になり、次のsubmit時に既存job.jsonを退避してから新しいjobを作る。
 - 送信後に新しいversionがある場合は、内容を照合してから同じjobでwaitする。確認できない間は再送しない。複数端末から同時submitしない。APIに冪等キーがなく、端末間の競合を原子的に防げない。
 - `wait` の期限はローカルの待機を終えるだけでKaggleのジョブを止めない。同じ `job.json` でwaitを再開する。

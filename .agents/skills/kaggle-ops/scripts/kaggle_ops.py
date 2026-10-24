@@ -440,14 +440,17 @@ def push_rejection(error):
     return {"action": "SaveKernel", "http_status": status}
 
 
-def verify_saved_version(client, job, version=None):
+def verify_saved_version(client, job, version=None, ref=None, require_matching_ref=False):
     """Reconcile only a newer saved version containing exactly our code."""
     if not job.get("source_signature"):
         raise ValueError("job lacks a source signature; inspect the remote source before reconciling")
-    remote = get_kernel(client, job["ref"])
+    ref = kernel_ref(ref or job["ref"])
+    remote = get_kernel(client, ref)
     current = remote.metadata.current_version_number
     if current <= job.get("previous_version", 0) or (version is not None and current != version):
         raise ValueError("saved notebook version does not match the new submission")
+    if require_matching_ref and getattr(remote.metadata, "ref", None) != ref:
+        raise ValueError("saved notebook ref does not match the requested reconciliation ref")
     if remote.blob.kernel_type != job["kernel_type"]:
         raise ValueError("saved notebook type does not match")
     if source_signature(remote.blob.source, job["kernel_type"]) != job["source_signature"]:
@@ -561,12 +564,46 @@ def submit(client, folder, output, notification_target=None):
     return job
 
 
-def reconcile(client, job_path, version):
+def reconcile(client, job_path, version, expected_ref=None):
     job = load(job_path)
+    if type(version) is not int or version < 1:
+        raise ValueError("reconcile version must be a positive integer")
     if job.get("state") != "submission_unknown" or version <= job.get("previous_version", 0):
         raise ValueError("reconcile requires an unknown submission and a newer verified version")
-    verify_saved_version(client, job, version)
-    current = status(client, job["ref"], version)
+    original_ref = kernel_ref(job["ref"])
+    if expected_ref is not None:
+        candidate_ref = kernel_ref(expected_ref)
+        if type(job.get("previous_version")) is not int or job["previous_version"] != 0:
+            raise ValueError("--ref reconciliation is limited to a first submission with previous_version 0")
+        response = job.get("submission_response") or {}
+        response_ref = response.get("ref")
+        if isinstance(response_ref, str):
+            response_ref = response_ref.removeprefix("/code/")
+        if response_ref != candidate_ref:
+            raise ValueError("--ref must exactly match the saved submission response ref")
+        if response.get("version") != version or type(response.get("version")) is not int:
+            raise ValueError("--ref version must exactly match the saved submission response")
+        if response.get("error"):
+            raise ValueError("submission response contains an error; --ref reconciliation is unsafe")
+        if candidate_ref.split("/", 1)[0] != original_ref.split("/", 1)[0]:
+            raise ValueError("--ref must keep the original notebook owner")
+        config_values = getattr(client, "config_values", None)
+        authenticated_owner = config_values.get("username") if isinstance(config_values, dict) else None
+        if authenticated_owner and authenticated_owner != candidate_ref.split("/", 1)[0]:
+            raise ValueError("authenticated Kaggle owner does not match the reconciliation ref")
+        verify_saved_version(client, job, version, ref=candidate_ref, require_matching_ref=True)
+        current = status(client, candidate_ref, version)
+        if current.get("ref") != candidate_ref or current.get("version") != version:
+            raise ValueError("status response does not match the requested reconciliation ref/version")
+        job["requested_ref"] = original_ref
+        job["reconciliation_ref_evidence"] = {"requested_ref": original_ref, "submission_response_ref": response_ref,
+                                              "submission_response_version": response["version"],
+                                              "verified_ref": candidate_ref, "verified_version": version,
+                                              "verified_source_signature": job["source_signature"]}
+        job["ref"] = candidate_ref
+    else:
+        verify_saved_version(client, job, version)
+        current = status(client, original_ref, version)
     job.update(version=version, state="submitted", source_verified=True, reconciliation_status=current["status"])
     job["session_identity"] = {"ref": job["ref"], "version": version, "kernel_session_id": current.get("kernel_session_id"),
                                "session_id_unavailable_reason": current.get("session_id_unavailable_reason")}
@@ -757,6 +794,8 @@ def main():
             sub.add_argument("--job", required=True, type=Path)
         if name in ("kernel-status", "reconcile", "cancel"):
             sub.add_argument("--version", type=int)
+        if name == "reconcile":
+            sub.add_argument("--ref", type=kernel_ref)
         if name == "cancel":
             sub.add_argument("--ref", required=True, type=kernel_ref)
             sub.add_argument("--reason", required=True)
@@ -796,7 +835,9 @@ def main():
             elif args.command == "reconcile":
                 if args.not_accepted == (args.version is not None):
                     raise ValueError("reconcile needs exactly one of --version or --not-accepted")
-                result = mark_not_accepted(client, args.job) if args.not_accepted else reconcile(client, args.job, args.version)
+                if args.not_accepted and args.ref is not None:
+                    raise ValueError("--ref cannot be combined with --not-accepted")
+                result = mark_not_accepted(client, args.job) if args.not_accepted else reconcile(client, args.job, args.version, args.ref)
             elif args.command == "dataset-create":
                 client.dataset_create_new(str(clean_upload(args.folder)), public=False, quiet=True, convert_to_csv=False, dir_mode="zip")
                 result = {"created": True, "public": False}
