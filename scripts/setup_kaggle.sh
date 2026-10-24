@@ -7,5 +7,5 @@ if [ ! -x .deps/kaggle-venv/bin/python ]; then
 fi
 .deps/kaggle-venv/bin/python -m pip install --no-cache-dir -r .agents/skills/kaggle-ops/requirements.txt
 .deps/kaggle-venv/bin/python -m pip --no-cache-dir check
-.deps/kaggle-venv/bin/python -B -m unittest discover -s tests -p 'test_kaggle_ops.py'
+.deps/kaggle-venv/bin/python -B -m unittest discover -s tests -p 'test_kaggle*.py'
 .deps/kaggle-venv/bin/python -B .agents/skills/kaggle-ops/scripts/kaggle_ops.py doctor
