@@ -39,6 +39,44 @@ test('Camoufox fourplay is admitted headful-only and rejects unsupported profile
   await assert.rejects(openBrowser('camoufox-fourplay',{headful:true,timezoneId:'Asia/Tokyo'}),/unsupported_capability:camoufox_fourplay_extensions_or_timezone/);
   assert.deepEqual(JSON.parse(fs.readFileSync(new URL('./sites.json',import.meta.url))).tools,original.tools);
 });
+test('site-scoped session initialization sensor URLs stay inside the declared HTTPS origins',()=>{
+  const site={id:'shop',origins:['https://shop.example'],links:{home:'https://shop.example/',targets:['https://shop.example/items']},
+    session_initialization:{kind:'sensor_revisit',sensor_url:'https://shop.example/sensor.js'}};
+  const manifest={schema:1,tools:['camoufox'],sites:[site]};
+  assert.equal(prepare(manifest).sites[0].session_initialization.sensor_url,site.session_initialization.sensor_url);
+  assert.throws(()=>prepare({...manifest,sites:[{...site,session_initialization:{...site.session_initialization,sensor_url:'https://other.example/sensor.js'}}]}),
+    /session_initialization_sensor_outside_site_scope/);
+  assert.throws(()=>prepare({...manifest,sites:[{...site,session_initialization:{kind:'unbounded_retry',sensor_url:site.session_initialization.sensor_url}}]}),
+    /invalid_session_initialization/);
+  assert.throws(()=>prepare({...manifest,profiles:[{id:'pooled',session_pool:{max_pool_size:2}}]}),
+    /unsupported_capability:session_initialization_session_pool/);
+  const local={...site,id:'fixture',origins:['http://127.0.0.1'],links:{home:'http://127.0.0.1/',targets:[]},
+    session_initialization:{kind:'sensor_revisit',sensor_url:'http://127.0.0.1/sensor.js'}};
+  assert.doesNotThrow(()=>prepare({...manifest,sites:[local]},{fixture:true}));
+  assert.throws(()=>prepare({...manifest,sites:[local]},{fixture:false}),/session_initialization_sensor_outside_site_scope/);
+  const external={...local,origins:['http://outside.example'],links:{home:'http://outside.example/',targets:[]},
+    session_initialization:{...local.session_initialization,sensor_url:'http://outside.example/sensor.js'}};
+  assert.throws(()=>prepare({...manifest,sites:[external]},{fixture:true}),/session_initialization_sensor_outside_site_scope/);
+});
+test('scenario invokes the configured session initialization hook after homepage and target',async()=>{
+  const calls=[];
+  const site={id:'shop',links:{home:'https://shop.example/',targets:['https://shop.example/items']},
+    session_initialization:{kind:'sensor_revisit',sensor_url:'https://shop.example/sensor.js'}};
+  const adapter={tool:'camoufox',homepage:async()=>({outcome:'content_observed'}),followLink:async()=>({outcome:'content_observed'}),
+    sessionInitialization:async(url)=>{calls.push(url);return {outcome:'session_initialization_not_applicable'};}};
+  const result=await runScenario({adapter,site});
+  assert.deepEqual(calls,[site.links.home,site.links.targets[0]]);
+  assert.equal(result.state,'navigation_completed');
+});
+test('sites without session initialization keep their ordinary scenario path',async()=>{
+  let initializeCalls=0;
+  const site={id:'shop',links:{home:'https://shop.example/',targets:['https://shop.example/items']}};
+  const adapter={tool:'camoufox',homepage:async()=>({outcome:'content_observed'}),followLink:async()=>({outcome:'content_observed'}),
+    sessionInitialization:async()=>{initializeCalls++;return {outcome:'session_initialization_not_applicable'};}};
+  const result=await runScenario({adapter,site});
+  assert.equal(initializeCalls,0);
+  assert.equal(result.state,'navigation_completed');
+});
 test('URL parameters cannot insert a new host or query separator',()=>{
   assert.equal(injectURL('https://example.com/search?q={query}',{query:'x&next=https://outside.example/'}),
     'https://example.com/search?q=x%26next%3Dhttps%3A%2F%2Foutside.example%2F');

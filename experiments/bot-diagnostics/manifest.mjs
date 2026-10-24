@@ -91,6 +91,16 @@ export function prepare(manifest,{includeGoogle=false,fixture=false,selectors=fa
     if(!/^[a-z][a-z0-9-]*$/.test(site.id) || ids.has(site.id)) throw new Error('invalid_or_duplicate_site_id');
     ids.add(site.id);
     const params=site.params||{};
+    if(site.session_initialization!==undefined) {
+      const rule=site.session_initialization;
+      if(!rule || rule.kind!=='sensor_revisit' || Object.keys(rule).some(key=>!['kind','sensor_url'].includes(key))
+        || Object.keys(rule).length!==2 || typeof rule.sensor_url!=='string') throw new Error('invalid_session_initialization');
+      let sensorURL;
+      try { sensorURL=new URL(rule.sensor_url); } catch { throw new Error('invalid_session_initialization_sensor_url'); }
+      const localSensor=fixture&&sensorURL.protocol==='http:'&&['127.0.0.1','localhost'].includes(sensorURL.hostname);
+      if((sensorURL.protocol!=='https:'&&!localSensor) || sensorURL.username || sensorURL.password || sensorURL.hash
+        || !site.origins.includes(sensorURL.origin)) throw new Error('session_initialization_sensor_outside_site_scope');
+    }
     const links={home:injectURL(site.links.home,params),targets:site.links.targets.map(url=>injectURL(url,params))};
     for(const url of [links.home,...links.targets]) {
       const parsed=new URL(url),local=fixture&&['127.0.0.1','localhost'].includes(parsed.hostname)&&parsed.protocol==='http:';
@@ -106,6 +116,8 @@ export function prepare(manifest,{includeGoogle=false,fixture=false,selectors=fa
     }
     return {...site,links,operations,enabled:site.final_stage?includeGoogle:site.enabled!==false};
   });
+  if(sites.some(site=>site.enabled&&site.session_initialization)&&profiles.some(profile=>profile.session_pool))
+    throw new Error('unsupported_capability:session_initialization_session_pool');
   return {...manifest,options,recovery_plan:recoveryPlan,profiles,
     sites:sites.filter(s=>s.enabled).sort((a,b)=>Number(!!a.final_stage)-Number(!!b.final_stage))};
 }
