@@ -11,6 +11,7 @@ import sys
 import tempfile
 import time
 from pathlib import Path
+from pathlib import PurePosixPath
 
 _original_open = builtins.open
 CODE_LIMIT = 1048576
@@ -80,6 +81,31 @@ def kernel_ref(value):
     if not re.fullmatch(r"[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+", value):
         raise ValueError("ref must be owner/slug")
     return value
+
+
+def validate_notification_target(value):
+    """Validate an explicit ChatGPT automation source; this does not register it."""
+    if not isinstance(value, dict) or set(value) != {"provider", "repository", "snapshot_ref", "snapshot_path"}:
+        raise ValueError("notification config must contain provider, repository, snapshot_ref, and snapshot_path")
+    if value.get("provider") != "chatgpt":
+        raise ValueError("notification provider must be chatgpt")
+    repository = kernel_ref(value["repository"])
+    snapshot_ref = value["snapshot_ref"]
+    ref_parts = snapshot_ref.split("/") if isinstance(snapshot_ref, str) else []
+    if (not isinstance(snapshot_ref, str) or not snapshot_ref or snapshot_ref.startswith(("-", "/")) or snapshot_ref.endswith((".", "/")) or
+            snapshot_ref == "@" or ".." in snapshot_ref or "@{" in snapshot_ref or "//" in snapshot_ref or
+            any(not part or part.startswith(".") or part.endswith(".lock") for part in ref_parts) or
+            any(ord(c) < 32 or c.isspace() or c in "~^:?*[\\\\`" for c in snapshot_ref)):
+        raise ValueError("snapshot_ref must be a valid simple Git ref")
+    snapshot_path = value["snapshot_path"]
+    if (not isinstance(snapshot_path, str) or not snapshot_path or "\\" in snapshot_path or
+            any(ord(c) < 32 or c.isspace() or c == "`" for c in snapshot_path)):
+        raise ValueError("snapshot_path must be repository-relative")
+    path = PurePosixPath(snapshot_path)
+    if path.is_absolute() or path.as_posix() != snapshot_path or any(part in ("", ".", "..") for part in path.parts):
+        raise ValueError("snapshot_path must be repository-relative and cannot traverse directories")
+    return {"provider": "chatgpt", "repository": repository, "snapshot_ref": snapshot_ref,
+            "snapshot_path": snapshot_path}
 
 
 def validate_job(job):
@@ -152,8 +178,182 @@ def status(client, ref, version=None):
             request.version_label = "v" + str(version)
         with client.build_kaggle_client() as sdk:
             response = sdk.kernels.kernels_api_client.get_kernel_session_status(request)
-        return {"ref": ref, "version": version, "status": response.status.name.lower(), "failure_message": redact(response.failure_message or "")}
+        return {"ref": ref, "version": version, "status": response.status.name.lower(), "failure_message": redact(response.failure_message or ""),
+                "kernel_session_id": None,
+                "session_id_unavailable_reason": "pinned Kaggle SDK exposes no session-id lookup for ref/version; status response has only status and failure_message"}
     return read_retry(get)
+
+
+def resolve_session_identity(client, ref, version):
+    """Return only an SDK-supported session binding; never infer an ID from kernel/version IDs."""
+    kernel_ref(ref)
+    validate_job({"ref": ref, "version": version})
+    observed = status(client, ref, version)
+    return {"ref": ref, "version": version,
+            "kernel_session_id": observed.get("kernel_session_id"),
+            "session_id_unavailable_reason": observed.get("session_id_unavailable_reason")}
+
+
+def _cancel_cause(status_value, failure_message, attempts, ref=None, version=None, session_id=None):
+    message = (failure_message or "").lower()
+    if "max allowed execution duration" in message or "maximum allowed execution duration" in message:
+        return "timeout", "Kaggle failure_message reports the maximum allowed execution duration"
+    if status_value == "complete":
+        return "completed", "the pinned version completed before cancellation was requested"
+    if status_value == "error":
+        return "error", "the pinned version ended in error before cancellation was requested"
+    accepted = any(a.get("outcome") == "request_accepted" and
+                   a.get("ref") == ref and a.get("version") == version and
+                   a.get("kernel_session_id") == session_id and session_id is not None
+                   for a in attempts)
+    if status_value == "cancel_acknowledged" and accepted:
+        return "user_requested", "a recorded API cancel request was accepted and this pinned version later acknowledged cancellation; attribution is not cryptographic"
+    return "external_or_unknown", "terminal status does not identify whether a user, UI action, or platform initiated cancellation"
+
+
+@contextlib.contextmanager
+def _cancel_job_lock(job_path):
+    """Serialize cancellation attempts for one job across processes on POSIX and Windows."""
+    lock_path = Path(job_path).with_name(Path(job_path).name + ".cancel.lock")
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open("a+b") as handle:
+        handle.seek(0, os.SEEK_END)
+        if handle.tell() == 0:
+            handle.write(b"0")
+            handle.flush()
+        handle.seek(0)
+        try:
+            if os.name == "nt":
+                import msvcrt
+                msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except (OSError, BlockingIOError) as error:
+            raise ValueError("another cancel command holds the job lock; inspect status after it exits") from error
+        try:
+            yield
+        finally:
+            if os.name == "nt":
+                import msvcrt
+                handle.seek(0)
+                msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+
+
+def cancel(client, job_path, expected_ref, expected_version, reason):
+    with _cancel_job_lock(job_path):
+        return _cancel_locked(client, job_path, expected_ref, expected_version, reason)
+
+
+def _cancel_locked(client, job_path, expected_ref, expected_version, reason):
+    """Request cancellation only when this job has an SDK-resolved session ID binding."""
+    job = load(job_path)
+    validate_job(job)
+    expected_ref = kernel_ref(expected_ref)
+    if type(expected_version) is not int or expected_version < 1:
+        raise ValueError("cancel version must be a positive integer")
+    if job["ref"] != expected_ref or job["version"] != expected_version:
+        raise ValueError("cancel ref/version does not match the saved job")
+    if not isinstance(reason, str) or not reason.strip():
+        raise ValueError("cancel reason is required")
+    identity = resolve_session_identity(client, expected_ref, expected_version)
+    if identity.get("ref") != expected_ref or identity.get("version") != expected_version:
+        raise ValueError("resolved session identity does not match the saved job")
+    session_id = identity.get("kernel_session_id")
+    saved_identity = job.get("session_identity") or {}
+    saved_session_id = saved_identity.get("kernel_session_id")
+    if saved_session_id is not None and (saved_identity.get("ref") != expected_ref or
+                                         saved_identity.get("version") != expected_version or
+                                         session_id != saved_session_id):
+        raise ValueError("resolved session identity conflicts with the saved job binding")
+    job["session_identity"] = identity
+    attempts = job.setdefault("cancel_attempts", [])
+    current = status(client, expected_ref, expected_version)
+    if current.get("ref", expected_ref) != expected_ref or current.get("version", expected_version) != expected_version:
+        raise ValueError("live status response does not match the pinned ref/version")
+    live_session_id = current.get("kernel_session_id")
+    if live_session_id is not None and (session_id is None or live_session_id != session_id):
+        raise ValueError("live status session identity conflicts with the resolved binding")
+    current_status = current["status"]
+    current_message = current.get("failure_message", "")
+    if current_status in ("complete", "error", "cancel_acknowledged"):
+        cause, evidence = _cancel_cause(current_status, current_message, attempts, expected_ref, expected_version, session_id)
+        job["cancel_final"] = {"status": current_status, "failure_message": redact(current_message), "cause": cause, "cause_evidence": evidence, "observed_at": time.time()}
+        save(job_path, job)
+        return {"request_outcome": "not_requested_terminal", **job["cancel_final"]}
+    if current_status == "cancel_requested":
+        cause, evidence = _cancel_cause(current_status, current_message, attempts, expected_ref, expected_version, session_id)
+        job["cancel_final"] = {"status": current_status, "failure_message": redact(current_message), "cause": cause, "cause_evidence": "cancel_requested is pending and is not terminal; " + evidence, "observed_at": time.time()}
+        save(job_path, job)
+        return {"request_outcome": "not_requested_pending", **job["cancel_final"]}
+    if attempts and attempts[-1].get("outcome") in ("request_unknown", "request_accepted"):
+        raise ValueError("a prior cancel request is unresolved; observe status instead of resending")
+    if not isinstance(session_id, int) or isinstance(session_id, bool) or session_id <= 0:
+        attempt = {"outcome": "session_id_unavailable", "ref": expected_ref, "version": expected_version,
+                   "reason": reason, "detail": identity.get("session_id_unavailable_reason"), "created_at": time.time()}
+        attempts.append(attempt)
+        job["cancel_state"] = "unavailable"
+        save(job_path, job)
+        return {"request_outcome": attempt["outcome"], "status": current_status, "session_id_unavailable_reason": attempt["detail"]}
+    attempt = {"outcome": "request_unknown", "ref": expected_ref, "version": expected_version, "kernel_session_id": session_id,
+               "reason": reason, "created_at": time.time()}
+    attempts.append(attempt)
+    job["cancel_state"] = "request_unknown"
+    save(job_path, job)
+    try:
+        from kagglesdk.kernels.types.kernels_api_service import ApiCancelKernelSessionRequest
+        request = ApiCancelKernelSessionRequest()
+        request.kernel_session_id = session_id
+        with client.build_kaggle_client() as sdk:
+            response = sdk.kernels.kernels_api_client.cancel_kernel_session(request)
+    except Exception as error:
+        import requests
+        if isinstance(error, requests.HTTPError) and getattr(error.response, "status_code", None) in (400, 401, 403, 404, 409, 422):
+            attempt.update(outcome="request_rejected", error_type=type(error).__name__, http_status=error.response.status_code)
+            job["cancel_state"] = "request_rejected"
+            save(job_path, job)
+            raise
+        attempt.update(outcome="request_unknown", error_type=type(error).__name__)
+        job["cancel_state"] = "request_unknown"
+        save(job_path, job)
+        raise
+    error_message = redact(getattr(response, "error_message", "") or "")
+    if error_message:
+        attempt.update(outcome="request_rejected", error_message=error_message, responded_at=time.time())
+        job["cancel_state"] = "request_rejected"
+        save(job_path, job)
+        return {"request_outcome": "request_rejected", "error_message": error_message}
+    attempt.update(outcome="request_accepted", error_message="", responded_at=time.time())
+    job["cancel_state"] = "request_accepted"
+    save(job_path, job)
+    try:
+        final_status = status(client, expected_ref, expected_version)
+    except Exception as error:
+        attempt["status_observation"] = {"outcome": "unknown", "error_type": type(error).__name__, "observed_at": time.time()}
+        job["cancel_state"] = "request_accepted_pending"
+        save(job_path, job)
+        raise
+    if final_status.get("ref", expected_ref) != expected_ref or final_status.get("version", expected_version) != expected_version:
+        attempt["status_observation"] = {"outcome": "mismatch", "observed_at": time.time()}
+        job["cancel_state"] = "request_accepted_pending"
+        save(job_path, job)
+        raise ValueError("post-cancel status response does not match the pinned ref/version")
+    final_session_id = final_status.get("kernel_session_id")
+    if final_session_id is not None and final_session_id != session_id:
+        attempt["status_observation"] = {"outcome": "session_mismatch", "observed_at": time.time()}
+        job["cancel_state"] = "request_accepted_pending"
+        save(job_path, job)
+        raise ValueError("post-cancel status session identity conflicts with the resolved binding")
+    cause, evidence = _cancel_cause(final_status["status"], final_status.get("failure_message", ""), attempts,
+                                   expected_ref, expected_version, session_id)
+    job["cancel_final"] = {"status": final_status["status"], "failure_message": redact(final_status.get("failure_message", "")),
+                           "cause": cause, "cause_evidence": evidence, "observed_at": time.time()}
+    job["cancel_state"] = "complete" if final_status["status"] == "cancel_acknowledged" else "request_accepted_pending"
+    save(job_path, job)
+    return {"request_outcome": "request_accepted", **job["cancel_final"]}
 
 
 def get_kernel(client, ref):
@@ -275,7 +475,10 @@ def clean_upload(folder):
     return folder
 
 
-def submit(client, folder, output):
+def submit(client, folder, output, notification_target=None):
+    notification = ({"target": validate_notification_target(notification_target), "state": "target_configured",
+                     "delivery_status": "unknown"} if notification_target is not None else
+                    {"target": {"provider": "chatgpt"}, "state": "not_configured", "delivery_status": "unknown"})
     folder = clean_upload(folder)
     metadata = load(folder / "kernel-metadata.json")
     ref = kernel_ref(metadata["id"])
@@ -309,7 +512,8 @@ def submit(client, folder, output):
         raise ValueError("an existing kernel version is active; resume it instead of submitting")
     job = {"ref": ref, "state": "submission_unknown", "previous_version": previous_version, "timeout_seconds": seconds, "quota_before": budget, "code_sha256": hashlib.sha256(code.read_bytes()).hexdigest(), "payload_bytes": payload, "created_at": time.time(),
            "kernel_type": metadata["kernel_type"], "source_signature": source_signature(code.read_text(encoding="utf-8"), metadata["kernel_type"]),
-           "enable_gpu": bool(metadata.get("enable_gpu")), "enable_internet": metadata.get("enable_internet", True)}
+           "enable_gpu": bool(metadata.get("enable_gpu")), "enable_internet": metadata.get("enable_internet", True),
+           "notification": notification}
     if job_path.exists():
         backup = output / f"job.not_submitted.{time.time_ns()}.json"
         job_path.replace(backup)
@@ -346,6 +550,8 @@ def submit(client, folder, output):
     if version <= previous_version:
         raise ValueError("submission response lacks a newer version; inspect without resubmitting")
     job.update(version=version, state="submitted")
+    job["session_identity"] = {"ref": ref, "version": version, "kernel_session_id": None,
+                               "session_id_unavailable_reason": "pinned Kaggle SDK exposes no session-id lookup for ref/version"}
     save(job_path, job)
     return job
 
@@ -357,6 +563,8 @@ def reconcile(client, job_path, version):
     verify_saved_version(client, job, version)
     current = status(client, job["ref"], version)
     job.update(version=version, state="submitted", source_verified=True, reconciliation_status=current["status"])
+    job["session_identity"] = {"ref": job["ref"], "version": version, "kernel_session_id": current.get("kernel_session_id"),
+                               "session_id_unavailable_reason": current.get("session_id_unavailable_reason")}
     save(job_path, job)
     return job
 
@@ -497,9 +705,15 @@ def wait(client, job_path, output, wait_seconds=21600, interval=30):
             save(Path(output) / "continuation.json", result)
             append_monitor_event(output, job, "verification_ready", monitor_started, status=current["status"])
             return result
-        if current["status"] in ("error", "cancel_acknowledged", "cancel_requested"):
+        if current["status"] in ("error", "cancel_acknowledged"):
             append_monitor_event(output, job, "terminal", monitor_started, status=current["status"])
             result["next_phase"] = "failure_review"
+            if current["status"] == "cancel_acknowledged":
+                attempts = load(Path(job_path)).get("cancel_attempts", [])
+                identity = job.get("session_identity") or {}
+                cause, evidence = _cancel_cause(current["status"], current.get("failure_message", ""), attempts,
+                                               job["ref"], job["version"], identity.get("kernel_session_id"))
+                result["cancel_final"] = {"cause": cause, "cause_evidence": evidence}
             try:
                 outputs(client, job, Path(output), download=False)
             except Exception as error:
@@ -522,7 +736,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--env-file", default=".env")
     commands = parser.add_subparsers(dest="command", required=True)
-    for name in ("doctor", "quota", "kernel-list", "kernel-status", "kernel-output", "submit", "reconcile", "wait", "dataset-create", "dataset-update", "dataset-download"):
+    for name in ("doctor", "quota", "kernel-list", "kernel-status", "kernel-output", "submit", "reconcile", "wait", "cancel", "dataset-create", "dataset-update", "dataset-download"):
         sub = commands.add_parser(name)
         if name in ("kernel-status", "kernel-output", "dataset-download"):
             sub.add_argument("--ref", required=True, type=kernel_ref)
@@ -530,12 +744,17 @@ def main():
             sub.add_argument("--output", required=True, type=Path)
         if name in ("submit", "dataset-create", "dataset-update"):
             sub.add_argument("--folder", required=True, type=Path)
+        if name == "submit":
+            sub.add_argument("--notification-config", help="JSON target for ChatGPT completion automation")
         if name == "dataset-update":
             sub.add_argument("--message", required=True)
-        if name in ("wait", "reconcile"):
+        if name in ("wait", "reconcile", "cancel"):
             sub.add_argument("--job", required=True, type=Path)
-        if name in ("kernel-status", "reconcile"):
+        if name in ("kernel-status", "reconcile", "cancel"):
             sub.add_argument("--version", type=int)
+        if name == "cancel":
+            sub.add_argument("--ref", required=True, type=kernel_ref)
+            sub.add_argument("--reason", required=True)
         if name == "reconcile":
             sub.add_argument("--not-accepted", action="store_true")
         if name == "wait":
@@ -545,6 +764,9 @@ def main():
     load_dotenv(args.env_file, override=False, interpolate=False)
     try:
         configure()
+        notification_target = None
+        if args.command == "submit" and args.notification_config is not None:
+            notification_target = validate_notification_target(json.loads(args.notification_config))
         if args.command == "doctor":
             result = {"kaggle_version": importlib.metadata.version("kaggle"), "token_present": bool(os.environ.get("KAGGLE_API_TOKEN")), "username_present": bool(os.environ.get("KAGGLE_USERNAME"))}
         else:
@@ -559,9 +781,13 @@ def main():
                 job = {"ref": args.ref, "version": latest_version(client, args.ref)}
                 result = dict(job, files=outputs(client, job, args.output))
             elif args.command == "submit":
-                result = submit(client, args.folder, args.output)
+                result = submit(client, args.folder, args.output, notification_target)
             elif args.command == "wait":
                 result = wait(client, args.job, args.output, args.wait_seconds)
+            elif args.command == "cancel":
+                if args.version is None:
+                    raise ValueError("cancel requires --version")
+                result = cancel(client, args.job, args.ref, args.version, args.reason)
             elif args.command == "reconcile":
                 if args.not_accepted == (args.version is not None):
                     raise ValueError("reconcile needs exactly one of --version or --not-accepted")
@@ -576,6 +802,8 @@ def main():
                 read_retry(lambda: client.dataset_download_files(args.ref, path=str(args.output), quiet=True, unzip=False))
                 result = {"downloaded": True, "extracted": False}
         print(redact(json.dumps(result, ensure_ascii=False)))
+        if result.get("request_outcome") in ("session_id_unavailable", "request_rejected"):
+            return 2
         return 0 if result.get("ready_for_verification", True) else 3
     except (Exception, SystemExit) as error:
         message = str(error) if isinstance(error, ValueError) else type(error).__name__

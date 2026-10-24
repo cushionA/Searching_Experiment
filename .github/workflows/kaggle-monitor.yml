@@ -1,0 +1,93 @@
+name: kaggle-monitor
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kaggle-monitor-state
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    if: ${{ vars.KAGGLE_MONITOR_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout trusted workflow code
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v7.0.0
+        with:
+          python-version: '3.12'
+
+      - name: Install Kaggle SDK
+        run: python -m pip install -r .agents/skills/kaggle-ops/requirements.txt
+
+      - name: Restore durable monitor branch
+        shell: bash
+        run: |
+          state_dir="$RUNNER_TEMP/kaggle-monitor-state"
+          set +e
+          git ls-remote --exit-code --heads origin refs/heads/kaggle-monitor-state >/dev/null
+          ref_status=$?
+          set -e
+          if [ "$ref_status" -eq 0 ]; then
+            git fetch origin refs/heads/kaggle-monitor-state:refs/remotes/origin/kaggle-monitor-state
+            git worktree add -B kaggle-monitor-state "$state_dir" origin/kaggle-monitor-state
+          elif [ "$ref_status" -eq 2 ]; then
+            git worktree add --orphan -b kaggle-monitor-state "$state_dir"
+          else
+            exit "$ref_status"
+          fi
+          mkdir -p .lab-output/kaggle-monitor
+          if [ -d "$state_dir/monitor-state" ]; then
+            cp -a "$state_dir/monitor-state/." .lab-output/kaggle-monitor/
+          fi
+
+      - name: Poll fixed Kaggle versions
+        id: poll
+        continue-on-error: true
+        env:
+          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+        run: python -B .agents/skills/kaggle-ops/scripts/kaggle_monitor.py poll --registry .github/kaggle-jobs --output .lab-output/kaggle-monitor
+
+      - name: Publish safe state without replacing branch history
+        shell: bash
+        run: |
+          state_dir="$RUNNER_TEMP/kaggle-monitor-state"
+          mkdir -p .lab-output/kaggle-monitor
+          if [ ! -f .lab-output/kaggle-monitor/kaggle-monitor.json ]; then
+            python -B -c 'import json; from datetime import datetime, timezone; print(json.dumps({"schema_version": 1, "updated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"), "jobs": []}))' > .lab-output/kaggle-monitor/kaggle-monitor.json
+          fi
+          mkdir -p "$state_dir/monitor-state"
+          cp -a .lab-output/kaggle-monitor/. "$state_dir/monitor-state/"
+          cp .lab-output/kaggle-monitor/kaggle-monitor.json "$state_dir/kaggle-monitor.json"
+          git -C "$state_dir" config user.name 'github-actions[bot]'
+          git -C "$state_dir" config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C "$state_dir" add -- kaggle-monitor.json monitor-state
+          if ! git -C "$state_dir" diff --cached --quiet; then
+            git -C "$state_dir" commit -m 'Update Kaggle monitor snapshot'
+            git -C "$state_dir" push origin HEAD:refs/heads/kaggle-monitor-state
+          fi
+
+      - name: Upload monitor audit data
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: kaggle-monitor-${{ github.run_id }}
+          path: .lab-output/kaggle-monitor/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Reflect polling failure
+        if: ${{ steps.poll.outcome == 'failure' }}
+        run: exit 1

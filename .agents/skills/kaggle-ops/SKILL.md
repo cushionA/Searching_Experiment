@@ -35,6 +35,18 @@ python -m venv .venv-kaggle
 6. `wait` はversionを固定してstatusを確認し、ログを取得する。ログの終端だけで成功と判断しない。completeになったら出力を回収してSHA-256を記録する。`continuation.json` の `ready_for_verification: true` は成果物の検証を始めてよい合図であり、実験の合格ではない。手順2の条件で確認してから成功を報告する。
 7. error/cancelならログとstatusを調べる。OOMならbatch size、gradient accumulation、解像度を調整する。条件を変更した試行は別に記録する。
 
+## ChatGPTへの通知と停止
+
+長時間ジョブは[監視・ChatGPT通知の手順](references/monitoring.md)で固定ref/versionを登録する。
+`wait` やサブエージェントの内部メッセージだけでは、会話終了後の通知を登録したことにならない。
+ChatGPT通知は、外部の定期監視によるGitHub上の保存結果と、実際に登録したChatGPT automationを組み合わせる。
+通知経路のソースをGitHubコネクターで読めることを確認してから登録し、返されたautomation ID・実行記録を保存する。
+ローカルJSON、automation登録成功、通知文生成、端末への受信を区別する。配送receiptが得られなければ受信確認済みとしない。
+
+`cancel --job ... --ref owner/slug --version N --reason '停止理由'` は保存した版と実行IDを照合する。
+固定SDK 0.1.37にはref/versionからsession IDを得る公開経路がないため、現時点では実行IDを解決できないジョブの停止を拒否する。
+kernel IDやversion番号をsession IDとして代用しない。API受付と停止完了を分け、`cancel_requested` は待機中として扱う。
+
 ## 失敗と再開
 
 - 読み取りの一時的な通信失敗は最大3回試す。
