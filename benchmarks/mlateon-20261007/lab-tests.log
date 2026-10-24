@@ -1,0 +1,71 @@
+..................................F.....ssss....................................s..ssssssssss...............checkpoint 0/3 failures=0
+checkpoint 3/3 failures=1
+.checkpoint 0/3 failures=0
+checkpoint 2/3 failures=0
+checkpoint 2/3 failures=0
+checkpoint 3/3 failures=0
+..checkpoint 0/3 failures=0
+checkpoint 3/3 failures=0
+........................................
+======================================================================
+FAIL: test_offline_diagnostics_guards (test_lab_bot_diagnostics.BotDiagnosticsTests.test_offline_diagnostics_guards)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/Searching_Experiment/tests/test_lab_bot_diagnostics.py", line 95, in test_offline_diagnostics_guards
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 1 != 0 : ✔ HTTP 202 AWS challenge is not a successful content response (3.260128ms)
+✔ security-check response retains concrete Cloudflare evidence (0.503239ms)
+✔ HTTP 200 visible human verification text is classified as a challenge (0.69608ms)
+✔ explicit bot-abuse IQ-test challenge is detected without matching general IQ-test text (0.423128ms)
+✔ shop pages mentioning robots, confirmation, and CAPTCHA scripts are not challenges (0.160232ms)
+✔ Shift_JIS content is decoded before classifying and extracting the title (0.962552ms)
+✔ errors remain charged on resume; exhausted budgets cannot be reset (3.86427ms)
+✔ verification finds a corrupted response body (1.635667ms)
+✖ robots redirects are charged to one key and follow only explicitly allowed origins (10.73896ms)
+✔ robots cross-origin redirects outside the allowlist make no request to that origin (3.041498ms)
+✔ robots unavailable probe admits only configured unavailable cases, never explicit denial (0.442738ms)
+✔ HTTP sites remain fail-closed when robots is unavailable (2.173629ms)
+✔ 4play saves captured response bodies and DOM and classifies only an observed document response (2.66459ms)
+✔ 4play DOM without a captured document response remains navigation_unverified (0.737182ms)
+✔ 4play preserves the captured HTTP status and classifies a challenge visible only in the rendered DOM (2.159017ms)
+✔ 4play reports detector fixture controls as unsupported without opening a browser (0.733337ms)
+✔ Camoufox fourplay records native context events and real response status (3.637378ms)
+✔ browser observation HTTP path skips robots and records cross-origin redirect hops on the same key (4.476492ms)
+✔ browser observation admits cross-origin POST assets and redirects without diagnostic UA suffix (0.182015ms)
+✔ legacy browser profile keeps same-origin GET, resource, robots, and redirect gates (0.265431ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 19
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5054.03449
+
+✖ failing tests:
+
+test at experiments/bot-diagnostics/runner.test.mjs:66:1
+✖ robots redirects are charged to one key and follow only explicitly allowed origins (10.73896ms)
+  Error: Cannot find module 'robots-parser'
+  Require stack:
+  - /workspace/Searching_Experiment/.deps/bot-diagnostics/package.json
+      at Module._resolveFilename (node:internal/modules/cjs/loader:1517:15)
+      at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+      at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+      at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+      at Module._load (node:internal/modules/cjs/loader:1294:5)
+      at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+      at Module.require (node:internal/modules/cjs/loader:1617:12)
+      at require (node:internal/modules/helpers:153:16)
+      at robots (file:///workspace/Searching_Experiment/experiments/bot-diagnostics/runner.mjs:106:18)
+      at async TestContext.<anonymous> (file:///workspace/Searching_Experiment/experiments/bot-diagnostics/runner.test.mjs:79:18) {
+    code: 'MODULE_NOT_FOUND',
+    requireStack: [ '/workspace/Searching_Experiment/.deps/bot-diagnostics/package.json' ]
+  }
+
+
+----------------------------------------------------------------------
+Ran 151 tests in 13.980s
+
+FAILED (failures=1, skipped=15)
+Wrote /tmp/tmpvx3_mn_4/legacy.ipynb (58,845 bytes; 1 manifest image references)
