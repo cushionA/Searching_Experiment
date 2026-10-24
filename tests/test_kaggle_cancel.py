@@ -141,6 +141,19 @@ class KaggleCancelTests(unittest.TestCase):
         self.assertEqual(result, {"request_outcome": "request_rejected", "error_message": "already stopped"})
         self.assertEqual(ops.load(self.job_path)["cancel_attempts"][-1]["outcome"], "request_rejected")
 
+    def test_job_finishing_during_cancel_request_is_not_left_pending(self):
+        for terminal in ("complete", "error"):
+            with self.subTest(terminal=terminal):
+                ops.save(self.job_path, {"ref": "owner/notebook", "version": 7, "state": "submitted"})
+                api = SimpleNamespace(cancel_kernel_session=Mock(return_value=SimpleNamespace(error_message="")))
+                binding = {"ref": "owner/notebook", "version": 7, "kernel_session_id": 456}
+                with patch.object(ops, "resolve_session_identity", return_value=binding), \
+                     patch.object(ops, "status", side_effect=[{"status": "running"}, {"status": terminal}]):
+                    result = ops.cancel(self.client(api), self.job_path, "owner/notebook", 7, "stop requested")
+                self.assertEqual(result["status"], terminal)
+                self.assertEqual(ops.load(self.job_path)["cancel_state"], "terminal_without_cancellation")
+                self.assertIn("cancellation was not confirmed", result["cause_evidence"])
+
     def test_http_api_rejection_is_persisted_and_never_retried(self):
         response = requests.Response()
         response.status_code = 403

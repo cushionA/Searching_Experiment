@@ -199,16 +199,16 @@ def _cancel_cause(status_value, failure_message, attempts, ref=None, version=Non
     if "max allowed execution duration" in message or "maximum allowed execution duration" in message:
         return "timeout", "Kaggle failure_message reports the maximum allowed execution duration"
     if status_value == "complete":
-        return "completed", "the pinned version completed before cancellation was requested"
+        return "completed", "the pinned version completed; cancellation was not confirmed"
     if status_value == "error":
-        return "error", "the pinned version ended in error before cancellation was requested"
+        return "error", "the pinned version ended in error; cancellation was not confirmed"
     accepted = any(a.get("outcome") == "request_accepted" and
                    a.get("ref") == ref and a.get("version") == version and
                    a.get("kernel_session_id") == session_id and session_id is not None
                    for a in attempts)
     if status_value == "cancel_acknowledged" and accepted:
         return "user_requested", "a recorded API cancel request was accepted and this pinned version later acknowledged cancellation; attribution is not cryptographic"
-    return "external_or_unknown", "terminal status does not identify whether a user, UI action, or platform initiated cancellation"
+    return "external_or_unknown", "status alone does not identify whether a user, UI action, or platform initiated cancellation"
 
 
 @contextlib.contextmanager
@@ -351,7 +351,12 @@ def _cancel_locked(client, job_path, expected_ref, expected_version, reason):
                                    expected_ref, expected_version, session_id)
     job["cancel_final"] = {"status": final_status["status"], "failure_message": redact(final_status.get("failure_message", "")),
                            "cause": cause, "cause_evidence": evidence, "observed_at": time.time()}
-    job["cancel_state"] = "complete" if final_status["status"] == "cancel_acknowledged" else "request_accepted_pending"
+    if final_status["status"] == "cancel_acknowledged":
+        job["cancel_state"] = "complete"
+    elif final_status["status"] in ("complete", "error"):
+        job["cancel_state"] = "terminal_without_cancellation"
+    else:
+        job["cancel_state"] = "request_accepted_pending"
     save(job_path, job)
     return {"request_outcome": "request_accepted", **job["cancel_final"]}
 
