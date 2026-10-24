@@ -1,0 +1,53 @@
+{
+  "model_version": "checkpoint_intent__goibert_b__seed42__cw.pt@sha256:3797d5e208faadb296f128eb5771c5ef87154d3c46ecb020311b3192f202084d",
+  "checkpoint_file": "checkpoint_intent__goibert_b__seed42__cw.pt",
+  "checkpoint_sha256": "3797d5e208faadb296f128eb5771c5ef87154d3c46ecb020311b3192f202084d",
+  "backbone": "goibert_b",
+  "intents": [
+    "GREETING",
+    "CONFIRMATION",
+    "GRATITUDE",
+    "MENU_QUERY",
+    "COMPLAINT",
+    "ADDRESS",
+    "PHONE",
+    "OTHER"
+  ],
+  "languages": [
+    "vi",
+    "en",
+    "other"
+  ],
+  "flags": [
+    "AMBIGUOUS_SHORT_REPLY",
+    "CUSTOMER_CORRECTION",
+    "CUSTOMER_FRUSTRATION",
+    "PREMATURE_CONFIRMATION_RISK",
+    "ORDER_FOR_SOMEONE_ELSE",
+    "NEW_ORDER_START",
+    "STORE_POLICY_QUESTION"
+  ],
+  "flag_thresholds": {
+    "AMBIGUOUS_SHORT_REPLY": 0.5,
+    "CUSTOMER_CORRECTION": 0.5,
+    "CUSTOMER_FRUSTRATION": 0.5,
+    "PREMATURE_CONFIRMATION_RISK": 0.5,
+    "ORDER_FOR_SOMEONE_ELSE": 0.5,
+    "NEW_ORDER_START": 0.5,
+    "STORE_POLICY_QUESTION": 0.5
+  },
+  "language_confidence_threshold": 0.6,
+  "max_length": 256,
+  "input_format": {
+    "builder": "intent_data.build_model_input",
+    "description": "Strip blank context lines, keep the last three, append `[LATEST] {message.strip()}`, and join the turns with newline characters; when context is empty, use only the latest marker and stripped message."
+  },
+  "tokenizer_dir": "tokenizer",
+  "tokenizer_files": [
+    "special_tokens_map.json",
+    "tokenizer.json",
+    "tokenizer_config.json"
+  ],
+  "export_date": "2026-09-16T17:42:53.441646Z",
+  "opset": 17
+}

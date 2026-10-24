@@ -1,0 +1,11 @@
+# goi-intent-v1 (private, internal)
+
+Intent classifier for the TwoHearts delivery bot (8 backend intents + language head).
+Exported 2026-09-17 from experiments/goi-intent-v1 (branch ml-models, Twohearts-Technologies/ai-foundary).
+
+- goibert-b-dapt-j2/  primary: GoiBERT-B DAPT 103M, ONNX fp32 (INT8 dropped: 4.4% argmax drift). Container p50 85 ms / p95 150 ms, 1 CPU thread.
+- goiturn-s-j1/       fallback: GoiTurn-S 26.5M, ONNX fp32 + INT8 (0.9% drift, accepted).
+
+Each folder: model.onnx [model.int8.onnx], contract.json (label order, thresholds, version, input format), tokenizer/.
+Serve with services/goi-intent (FastAPI + onnxruntime), see PRODUCTION_PLAN_EN.md in the repo.
+BamiBERT derivative: internal use only until legal review.

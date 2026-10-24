@@ -1,0 +1,119 @@
+[
+  {
+    "candidate_id": "2610.30067",
+    "decision": "defer",
+    "reason": "新鮮な一次資料では、ベトナム語の26M/49Mパラメータraw-text encoderで、論文著者は分類/NLI/NER等8ベンチマークで compact baseline 比の成績・throughputを主張。CPU小型NLP候補として筋はあるが、現行配布はTwoheartsTechnologies/GoiBERT-Sと-GoiBERT-Mへ移転し、どちらもgeneral-distillation backboneのみでtask headなし。今の予算では学習不可のため分類を今すぐ試す道が確定しない。さらに新ライセンスはcommunity条件付き商用利用で、規模不明の組織に本番採用を推せない。特定タスクheadまたは既存評価器が利用可能か確認後に再検討。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.30067",
+        "quote": "26M and 49M parameters that operate directly on raw text"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/Nhantran65/GoiBERT/HEAD/README.md",
+        "quote": "The released checkpoints are the backbone encoders after general distillation (Stage 1) and have no task head."
+      },
+      {
+        "source_url": "https://huggingface.co/TwoheartsTechnologies/GoiBERT-S/raw/a5652876eb722efb912d70e60d26260b78b670e3/LICENSE",
+        "quote": "If either threshold is reached — 100 or more Personnel OR 1,000 or more Customers — this agreement does not authorize Commercial Use."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "学習なしで使える、対象業務に合致した分類headまたは評価済み分類器が手元にあるか確認する。",
+    "unconfirmed": [
+      "論文の比較値とthroughputは著者報告で、この検討では独立再現していない。論文v2は2026-10-22改訂。",
+      "公式GitHubは2026-10-23更新、5 stars/2 forks、repo license欄なし。現行配布HF IDsはTwoheartsTechnologies/GoiBERT-SとTwoheartsTechnologies/GoiBERT-M（各2026-10-24更新、各1 like）。旧2HeartsVN IDの最新状態は保存資料では断定しない。",
+      "model.safetensors実サイズはS 105,609,040 bytes、M 197,486,112 bytes。S/MともF32 safetensorsメタデータあり。どちらもtask headなし。",
+      "商用条件は新しいGoiBERT Community Model License v1.0（2026-10-22）で、組織グループが100 personnel未満かつ1,000顧客未満の場合のみcommunity commercial use許可。BSD-3-Clause-Clear、Qualcomm RAIL等上流条件も累積適用。大規模組織には別契約が必要。",
+      "goi-intent-v1はdelivery bot用の内部intent分類器で、カードにinternal use only/legal reviewとあるため汎用head扱いしない。公表済みhead付きの他の適合タスクIDは未確認。",
+      "依存関係、8GB RAMでの実メモリ、CPU速度/品質は未計測。2026-10-24以降の後継配布IDは保存資料だけでは確認できない。"
+    ]
+  },
+  {
+    "candidate_id": "2610.31329",
+    "decision": "defer",
+    "reason": "検出・OCR・カウント・pointing・segmentation・mattingを一つで扱うため、画像認識の具体的な価値はある。だが確認できた公式checkpointは2B/4Bで軽量画像認識の想定と合わず、F32 safetensorsだけでも2B版9,767,053,328 bytes、4B版19,322,413,240 bytes。4Bは2GB DL上限とRAM 8GBを大幅に超え、ローカル試行不可。HF Spaceは公式モデルを用いたdemoだが、hugging-apps側の実装adaptationで独立性能再現とは扱えない。GPU利用の見通しが立つまで保留。",
+    "evidence": [
+      {
+        "source_url": "https://raw.githubusercontent.com/Tencent/WeVisOne-VL/HEAD/README.md",
+        "quote": "detection, referring, counting, pointing, OCR, segmentation and matting in a single model."
+      },
+      {
+        "source_url": "https://huggingface.co/api/models/tencent/WeVisOne-VL-4B?blobs=true",
+        "quote": "19322413240"
+      },
+      {
+        "source_url": "https://huggingface.co/spaces/hugging-apps/wevisone-vl-4b/raw/main/README.md",
+        "quote": "are adapted from the official [Tencent/WeVisOne-VL](https://github.com/Tencent/WeVisOne-VL) repository"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "2GB以下の量子化公式checkpoint、または費用ゼロで利用できるGPU実行先が追加公開されたか確認する。",
+    "unconfirmed": [
+      "論文は2026-10-22公開。公式repoメタデータ上のstars/直近活動とrelease一覧はこの要約では未確定、GitHub releases APIは空配列。",
+      "HF公式配布はtencent/WeVisOne-VL-2B（更新2026-10-23、22 likes、F32 2,441,744,384 params、model.safetensors 9,767,053,328 bytes）とtencent/WeVisOne-VL-4B（更新2026-10-23、18 likes、F32 4,830,581,248 params、19,322,413,240 bytes）。各mask_decoder.ptは別途約38MB。APIのdownloads値は0。",
+      "Tencent-authored repo/model cardはApache-2.0。Qwen3-VL等のthird-party componentsは個別の元ライセンスが残るため、全依存の商用条件は要確認。",
+      "モデルカードはTransformers推論例を示すが、実際のRAM/VRAM最小値、CPU対応速度、量子化配布は未確認。demoのA10GはSpace側割当で独立性能評価ではない。",
+      "現行family検索は2B/4Bの2件。より新しい後継IDは保存資料から断定できない。"
+    ]
+  },
+  {
+    "candidate_id": "2610.31198",
+    "decision": "defer",
+    "reason": "T²Quantは拡散言語モデルのdenoising timestepごとにactivation precisionを配分し、論文著者は同一bit budgetで最大6.7ポイント改善を報告。量子化そのものは関心に接するが、実装対象はLLaDA-8B-Instructで、READMEはfull-precisionとquantized両方を保持する40GB以上CUDA GPU、実行4–5時間を要求。現金0、GPUなし、CPU20分/候補の今回の条件では検証不能で、CPU小型モデル用の軽い量子化とも異なる。資源条件を満たす機会まで保留。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.31198",
+        "quote": "achieving gains of up to 6.7 percentage points under the same budget."
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/OfekAvivi/T2Quant/HEAD/README.md",
+        "quote": "One CUDA GPU with at least 40 GB of memory"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/OfekAvivi/T2Quant/HEAD/README.md",
+        "quote": "takes about 4–5 hours"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "40GB以上のCUDA環境なしで動く小型DLM対応または既存の比較済みベンチ結果が公開されたか確認する。",
+    "unconfirmed": [
+      "論文は2026-10-22公開。論文値は著者報告で独立再現なし。GitHub repoは3 stars/0 forks、2026-10-23更新、MIT。release一覧は空配列。",
+      "READMEの例はLLaDA-8B-Instruct、4-bit GPTQ weightsにactivation quantizationを組み合わせる。学習ではないが、40GB CUDAと4–5時間を要する記載。",
+      "追加の重み配布は確認できず、LLaDA-8B-Instructを初回取得する実サイズ・利用条件、および他の最新後継モデルIDは保存資料では未確認。",
+      "推論の実行時間・必要RAM/VRAMがREADME記載を超えるか、CPU-only経路があるかは未検証。"
+    ]
+  },
+  {
+    "candidate_id": "2610.31372",
+    "decision": "defer",
+    "reason": "RIDARはAI駆動開発に最も近い候補。completed agent trajectoriesのpost-hoc検査に加えてruntime feedbackを行い、READMEのadaptersにはClaude Code、Codex CLI、OpenCodeがある。MITコードと公開trajectory datasetは具体的な評価価値を持つ。一方、quick startはAnalyzer/Verifier API credentialsを要求し、今回の現金0・認証操作禁止条件では無償で動くか判断できず、READMEにある権限緩和command例も実行対象にできない。まず既存trajectoryへのローカル/無課金post-hoc経路の有無を隔離環境で確認する段階。",
+    "evidence": [
+      {
+        "source_url": "https://raw.githubusercontent.com/THU-KEG/RIDAR/HEAD/README.md",
+        "quote": "ridar collect codex --session SESSION_ID --run-id RUN_ID"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/THU-KEG/RIDAR/HEAD/README.md",
+        "quote": "RIDAR Runtime"
+      },
+      {
+        "source_url": "https://huggingface.co/api/datasets/THU-KEG/RIDAR",
+        "quote": "2026-10-23T12:36:45.000Z"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "既存のCodex等trajectoryを、認証情報や権限緩和なし・無課金でpost-hoc検査できる実装経路があるか、隔離確認する。",
+    "unconfirmed": [
+      "論文は2026-10-22公開、著者報告はRIV-Gold 60 trajectoriesで85.2 F1、runtimeでtask終了時に残る違反を36.8%減。独立再現なし。",
+      "GitHub repoはMIT、2026-10-23 push/2026-10-24更新、5 stars/0 forks、release一覧は空配列。",
+      "README quick startはAnalyzer/Verifier用API credentialsを要求。無課金ローカルモデル対応、各APIの従量費用、8GB RAM/CPU時間は不明。README記載の--dangerously-skip-permissions例は実行しない。",
+      "HF dataset THU-KEG/RIDARはMIT、2026-10-23更新、24 downloads/0 likes。RIV-Gold 60 human-annotated、RIV-Wild 300 trajectories、RIV-Live 60 runtime/control paired trajectories。",
+      "成果はautonomous research agentの研究integrity用で、通常のcoding agent error検知への外挿は未検証。学習済みモデル/重み配布なし。",
+      "2026-10-24以降に公開された後継IDは保存資料だけでは確認できない。"
+    ]
+  }
+]

@@ -1,0 +1,121 @@
+{
+  "run_id": "2026-10-24-evening-native",
+  "date": "2026-10-24",
+  "status": "reading_completed_no_candidate_execution",
+  "recommended": [],
+  "digest": [
+    {
+      "id": "2610.30067",
+      "title": "GoiBERT",
+      "url": "https://arxiv.org/abs/2610.30067",
+      "assessment": "B",
+      "why_picked": "26M/49Mのベトナム語encoder。分類・抽出の小型化に直結。",
+      "deferred_reason": "現行TwoheartsTechnologies配布はtask headなし。商用は組織全体100人未満かつ有料顧客1,000未満等の条件付きで、上流条件も別途適用。学習へ拡大せず保留。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.31329",
+      "title": "WeVisOne-VL",
+      "url": "https://arxiv.org/abs/2610.31329",
+      "assessment": "B",
+      "why_picked": "検出・OCR・マスクを統合。HF229票、公式2B/4Bと外部名義demoを確認。",
+      "deferred_reason": "2B版のF32重み9,767,053,328 bytesでDL2GB超。CPU速度・公式小型量子化版未確認。demoの独立性は未確定。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.31372",
+      "title": "RIDAR",
+      "url": "https://arxiv.org/abs/2610.31372",
+      "assessment": "B",
+      "why_picked": "研究エージェントの証拠・評価手順の逸脱を監査。MITコードと公開データあり。",
+      "deferred_reason": "公式起動はAnalyzer/Verifier認証を要求。無課金経路未確認。権限緩和例を実行せず、公開軌跡の静的設計確認まで。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.31198",
+      "title": "T²Quant",
+      "url": "https://arxiv.org/abs/2610.31198",
+      "assessment": "B",
+      "why_picked": "拡散LMの時刻ごとに精度を配分し、同一bit予算で品質改善を狙う。",
+      "deferred_reason": "公式LLaDA-8B経路はCUDA40GB以上・4–5時間。今回上限外、Kaggleへ迂回しない。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.25835",
+      "title": "Diffusion Language Models Change Speed Across Tasks and Languages",
+      "url": "https://arxiv.org/abs/2610.25835",
+      "assessment": "B",
+      "why_picked": "入力のコピー・編集と新規生成で推論量が変わる。要約・抽出のコスト評価設計に関係。",
+      "deferred_reason": "著者の2モデル評価のみ。小型CPU実装・日本語入力での速度/品質未確認。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.04184",
+      "title": "EvalResearchBench",
+      "url": "https://arxiv.org/abs/2610.04184",
+      "assessment": "B",
+      "why_picked": "エージェントが作る評価器の順位一致と低コストな手動標本を比較する。",
+      "deferred_reason": "API依存とlicense未確認。通常CI保守ではなくAI開発の評価設計候補、実行保留。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.30418",
+      "title": "Agent Mosaic",
+      "url": "https://arxiv.org/abs/2610.30418",
+      "assessment": "B",
+      "why_picked": "単独では許される文書の組合せから秘匿結論が漏れる現象を合成例で評価。",
+      "deferred_reason": "公開実装・商用条件・無料の再現経路未確認。私有文書を渡さず保留。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.23987",
+      "title": "GAFU / What Generation Knows",
+      "url": "https://arxiv.org/abs/2610.23987",
+      "assessment": "B",
+      "why_picked": "生成側の視覚表現を理解へ再利用し、細部の認識を改善する設計。",
+      "deferred_reason": "公式repoを確認したが後学習が中心。即利用checkpoint・商用条件・CPU資源未確認、学習しない。",
+      "verification_level": "reading",
+      "measured": false
+    }
+  ],
+  "completed_ids": [],
+  "counts": {
+    "collected_unique": 5747,
+    "ranking_input_with_carry": 9376,
+    "ranked": 8022,
+    "review_pool_read": 20,
+    "primary_read_total": 31,
+    "native_followup_candidates": 4,
+    "candidate_code_executions": 0,
+    "candidate_model_inferences": 0,
+    "pending_after_record_expected": 9375
+  },
+  "host_requested_model": "gpt-6-luna",
+  "service_runtime_model_id": "unknown",
+  "budget": {
+    "money_jpy": 0,
+    "candidate_cpu_seconds": 0,
+    "weights_downloaded_bytes": 0,
+    "gpu_seconds": 0,
+    "candidate_repairs": 0,
+    "started_at": "2026-10-24T08:57:00Z",
+    "deadline": "2026-10-24T09:27:00Z"
+  },
+  "limitations": [
+    "No candidate code or inference: credential-isolation hold remains pending; no repeat question or bypass.",
+    "Native JSON success is not candidate reproduction. Author quality and speed are not our measurements.",
+    "All unexecuted, interrupted and digest-only candidates retained; native reject labels alone do not complete candidates.",
+    "OpenReview 5 searches HTTP403; no bypass. HF returns complete lists without next Link but backend ceiling is not exhaustive.",
+    "Crossref uses 100-result relevance windows; arXiv continued beyond first pages within a 240-second source budget. See page ledger.",
+    "Initial 7 quotations failed source matching and were not adopted. Four followup quotes repaired once within shared 180-second limit.",
+    "Independent two-signal deep-dive threshold not confirmed. No current price comparison or cost advantage claim.",
+    "Morning and previously reported candidates suppressed without material new evidence. No SKU, Moli, PR19, email, SMTP, cron, training or paid backend changes."
+  ]
+}

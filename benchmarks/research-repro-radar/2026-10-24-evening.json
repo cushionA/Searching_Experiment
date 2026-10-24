@@ -1,0 +1,57 @@
+{
+  "run_id": "2026-10-24-evening-native",
+  "measurement_level": "reading_only",
+  "candidate_code_executions": 0,
+  "candidate_model_inferences": 0,
+  "cpu_seconds": null,
+  "peak_ram_bytes": null,
+  "quality": null,
+  "throughput_items_per_minute": null,
+  "estimated_10000_items_cpu_seconds": null,
+  "weights_downloaded_bytes": 0,
+  "gpu_seconds": 0,
+  "money_jpy": 0,
+  "blocker": {
+    "action": "external candidate inference",
+    "target": "new candidate PoCs",
+    "status": "pending/not attempted",
+    "reason": "Existing approved credential/personal-file isolation has not been established; no resume authorization."
+  },
+  "expected_difference": "Author throughput, declared checkpoint size, native judgment success and actual inference are separate.",
+  "author_claims_only": {
+    "GoiBERT": {
+      "cpu_ms_8_threads_fp32_128_tokens": {
+        "BamiBERT": 31.0,
+        "S": 14.2,
+        "M": 19.4
+      },
+      "scope": "Encoder only; excludes tokenizer/task heads; not a pure architecture comparison; test feedback influenced model size."
+    },
+    "T2Quant": {
+      "source": "official README",
+      "gsm8k_first500_accuracy_pct": {
+        "uniform_W4A4": 46.6,
+        "T2Quant": 51.4
+      },
+      "sign_test_p": 0.055
+    }
+  },
+  "artifact_metadata_only": {
+    "GoiBERT-S": {
+      "id": "TwoheartsTechnologies/GoiBERT-S",
+      "parameters": 26397696,
+      "safetensors_bytes": 105609040
+    },
+    "GoiBERT-M": {
+      "id": "TwoheartsTechnologies/GoiBERT-M",
+      "parameters": 49366016,
+      "safetensors_bytes": 197486112
+    },
+    "WeVisOne-VL-2B": {
+      "safetensors_bytes": 9767053328
+    },
+    "WeVisOne-VL-4B": {
+      "safetensors_bytes": 19322413240
+    }
+  }
+}

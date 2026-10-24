@@ -1,0 +1,35 @@
+[
+  {
+    "id": "2610.30067",
+    "kind": "intent-card",
+    "url": "https://huggingface.co/TwoheartsTechnologies/goi-intent-v1/raw/main/README.md",
+    "at": "2026-10-24T09:05:28.505882+00:00",
+    "status": 200,
+    "file": "primary/2610.30067-intent-card",
+    "sha256": "52a0526de265c12852c251512e74ab2c55ace8795f2f9e56f189df09209d8db7",
+    "bytes": 740,
+    "text": "# goi-intent-v1 (private, internal)\n\nIntent classifier for the TwoHearts delivery bot (8 backend intents + language head).\nExported 2026-09-17 from experiments/goi-intent-v1 (branch ml-models, Twohearts-Technologies/ai-foundary).\n\n- goibert-b-dapt-j2/  primary: GoiBERT-B DAPT 103M, ONNX fp32 (INT8 dropped: 4.4% argmax drift). Container p50 85 ms / p95 150 ms, 1 CPU thread.\n- goiturn-s-j1/       fallback: GoiTurn-S 26.5M, ONNX fp32 + INT8 (0.9% drift, accepted).\n\nEach folder: model.onnx [model.int8.onnx], contract.json (label order, thresholds, version, input format), tokenizer/.\nServe with services/goi-intent (FastAPI + onnxruntime), see PRODUCTION_PLAN_EN.md in the repo.\nBamiBERT derivative: internal use only until legal review.\n"
+  },
+  {
+    "id": "2610.30067",
+    "kind": "intent-contract",
+    "url": "https://huggingface.co/TwoheartsTechnologies/goi-intent-v1/raw/main/goibert-b-dapt-j2/contract.json",
+    "at": "2026-10-24T09:05:28.506372+00:00",
+    "status": 200,
+    "file": "primary/2610.30067-intent-contract",
+    "sha256": "5cced971d0417744fd7c12e56d1f4734dbf17ec1201b92a98a2b033248dce975",
+    "bytes": 1570,
+    "text": "{\n  \"model_version\": \"checkpoint_intent__goibert_b__seed42__cw.pt@sha256:3797d5e208faadb296f128eb5771c5ef87154d3c46ecb020311b3192f202084d\",\n  \"checkpoint_file\": \"checkpoint_intent__goibert_b__seed42__cw.pt\",\n  \"checkpoint_sha256\": \"3797d5e208faadb296f128eb5771c5ef87154d3c46ecb020311b3192f202084d\",\n  \"backbone\": \"goibert_b\",\n  \"intents\": [\n    \"GREETING\",\n    \"CONFIRMATION\",\n    \"GRATITUDE\",\n    \"MENU_QUERY\",\n    \"COMPLAINT\",\n    \"ADDRESS\",\n    \"PHONE\",\n    \"OTHER\"\n  ],\n  \"languages\": [\n    \"vi\",\n    \"en\",\n    \"other\"\n  ],\n  \"flags\": [\n    \"AMBIGUOUS_SHORT_REPLY\",\n    \"CUSTOMER_CORRECTION\",\n    \"CUSTOMER_FRUSTRATION\",\n    \"PREMATURE_CONFIRMATION_RISK\",\n    \"ORDER_FOR_SOMEONE_ELSE\",\n    \"NEW_ORDER_START\",\n    \"STORE_POLICY_QUESTION\"\n  ],\n  \"flag_thresholds\": {\n    \"AMBIGUOUS_SHORT_REPLY\": 0.5,\n    \"CUSTOMER_CORRECTION\": 0.5,\n    \"CUSTOMER_FRUSTRATION\": 0.5,\n    \"PREMATURE_CONFIRMATION_RISK\": 0.5,\n    \"ORDER_FOR_SOMEONE_ELSE\": 0.5,\n    \"NEW_ORDER_START\": 0.5,\n    \"STORE_POLICY_QUESTION\": 0.5\n  },\n  \"language_confidence_threshold\": 0.6,\n  \"max_length\": 256,\n  \"input_format\": {\n    \"builder\": \"intent_data.build_model_input\",\n    \"description\": \"Strip blank context lines, keep the last three, append `[LATEST] {message.strip()}`, and join the turns with newline characters; when context is empty, use only the latest marker and stripped message.\"\n  },\n  \"tokenizer_dir\": \"tokenizer\",\n  \"tokenizer_files\": [\n    \"special_tokens_map.json\",\n    \"tokenizer.json\",\n    \"tokenizer_config.json\"\n  ],\n  \"export_date\": \"2026-09-16T17:42:53.441646Z\",\n  \"opset\": 17\n}\n"
+  },
+  {
+    "id": "2610.30067",
+    "kind": "intent-meta",
+    "url": "https://huggingface.co/api/models/TwoheartsTechnologies/goi-intent-v1?blobs=true",
+    "at": "2026-10-24T09:05:28.506656+00:00",
+    "status": 200,
+    "file": "primary/2610.30067-intent-meta",
+    "sha256": "329fb1f226dc77339544c09e7b415c971b024f299b0d3f25b87313fccf13ca0f",
+    "bytes": 2296,
+    "text": "{\"_id\":\"6aaada4277f4f7910567cc8f\",\"id\":\"TwoheartsTechnologies/goi-intent-v1\",\"private\":false,\"tags\":[\"onnx\",\"region:us\"],\"downloads\":0,\"likes\":0,\"modelId\":\"TwoheartsTechnologies/goi-intent-v1\",\"author\":\"TwoheartsTechnologies\",\"sha\":\"9942e799d916db5ccbc51f0ac116d00d7411ee56\",\"lastModified\":\"2026-09-16T18:16:55.000Z\",\"gated\":false,\"disabled\":false,\"config\":{},\"siblings\":[{\"rfilename\":\".gitattributes\",\"blobId\":\"a6344aac8c09253b3b630fb776ae94478aa0275b\",\"size\":1519},{\"rfilename\":\"README.md\",\"blobId\":\"6375c6147f59731071c6fc0270d604970d784bca\",\"size\":740},{\"rfilename\":\"goibert-b-dapt-j2/contract.json\",\"blobId\":\"ee3732c87b018864c620f24bd09c6242d1e9490b\",\"size\":1570},{\"rfilename\":\"goibert-b-dapt-j2/model.onnx\",\"blobId\":\"c96f19c05c7d61850d68ad669c6a80b8370445ad\",\"size\":416840054,\"lfs\":{\"sha256\":\"c72c232a63e80779ef2d8dca691dff97ac18ef1e34e7aafff19b9163a27fe7c5\",\"size\":416840054,\"pointerSize\":134}},{\"rfilename\":\"goibert-b-dapt-j2/tokenizer/special_tokens_map.json\",\"blobId\":\"6cd1d9021e10d47aed59399af6b0e30312b46ca4\",\"size\":150},{\"rfilename\":\"goibert-b-dapt-j2/tokenizer/tokenizer.json\",\"blobId\":\"e6cdb3f30af8b8925917f2f449c05af95c77560c\",\"size\":844860},{\"rfilename\":\"goibert-b-dapt-j2/tokenizer/tokenizer_config.json\",\"blobId\":\"e355c9bd0ae147e60a6020af67d565425f2ec178\",\"size\":42},{\"rfilename\":\"goiturn-s-j1/contract.json\",\"blobId\":\"64505695dffa9edfda918f0e5cc7b6843fd993bd\",\"size\":1570},{\"rfilename\":\"goiturn-s-j1/model.int8.onnx\",\"blobId\":\"24250d597de19243f1047ea9624bf306003cad5d\",\"size\":53341584,\"lfs\":{\"sha256\":\"648a912892833d6941ca07147d1855a44b3e9ec787f9c18e80a4459da959126a\",\"size\":53341584,\"pointerSize\":133}},{\"rfilename\":\"goiturn-s-j1/model.onnx\",\"blobId\":\"16bf388ef91552d9e054a8e1236591e88846977b\",\"size\":107608918,\"lfs\":{\"sha256\":\"bd110e8ca849edd7e7ddf5630cbe7eb86d41babb4777924a37ea9781dd8c0738\",\"size\":107608918,\"pointerSize\":134}},{\"rfilename\":\"goiturn-s-j1/tokenizer/special_tokens_map.json\",\"blobId\":\"6cd1d9021e10d47aed59399af6b0e30312b46ca4\",\"size\":150},{\"rfilename\":\"goiturn-s-j1/tokenizer/tokenizer.json\",\"blobId\":\"e6cdb3f30af8b8925917f2f449c05af95c77560c\",\"size\":844860},{\"rfilename\":\"goiturn-s-j1/tokenizer/tokenizer_config.json\",\"blobId\":\"e355c9bd0ae147e60a6020af67d565425f2ec178\",\"size\":42}],\"spaces\":[],\"createdAt\":\"2026-09-16T18:04:50.000Z\",\"usedStorage\":577790556}"
+  }
+]
