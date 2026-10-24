@@ -9,7 +9,8 @@
     "prior_report_audit": {
       "method": "Fetched and searched the 10/7 through 10/24 daily-tech reports and 10/24 evening report for candidate titles/identifiers.",
       "rejected_repeat": "SB-CLASSIFIER had already been introduced in the 2026-10-21 daily-tech report and marked as previously reported in 2026-10-22; 2026-10-23 also compared Mango against it. Excluded from today's new-candidate count.",
-      "candidate_reports_checked": ["research/2026-10-07-mlateon-cpu", "research/2026-10-08-gliner2-classification", "research/2026-10-10-daily-tech through research/2026-10-24-daily-tech", "research/2026-10-24-evening-radar"]
+      "candidate_reports_checked": ["research/2026-10-07-mlateon-cpu", "research/2026-10-08-gliner2-classification", "research/2026-10-10-daily-tech through research/2026-10-24-daily-tech", "research/2026-10-24-evening-radar"],
+      "issue_status_read_only_check": "Parent reports GitHub API read-only lookup: issue 24 closed at 2026-10-24T06:57:27Z; PR29 merged and closes issue 24. No changes made."
     }
   },
   "result": {
@@ -33,15 +34,17 @@
         "paper_html": "https://arxiv.org/html/2609.28980v1",
         "official_code": "https://github.com/aminbigdeli/SEEK",
         "paper_date": "2026-09-24 arXiv v1; CIKM '26 proceedings listed for 2026-11-07 to 11-11",
-        "code_update_date": "Not confirmed from the inspected GitHub activity page; repository page showed one commit.",
+        "latest_main_commit": "32f89f2f8be57e0b7b487b613a6d9a68b482e675",
+        "latest_main_commit_url": "https://github.com/aminbigdeli/SEEK/commit/32f89f2f8be57e0b7b487b613a6d9a68b482e675",
+        "code_update_date": "Latest main committer date 2026-06-13T18:19:15Z, as checked by parent via read-only GitHub API.",
         "stars": 1,
         "forks": 0,
-        "code_license": "No license was shown on the inspected repository page; commercial reuse of the code is unverified. arXiv paper is CC BY, which does not license the code or model weights.",
+        "code_license": "No license was shown on the inspected repository page; commercial reuse of the code is unverified. arXiv landing metadata says perpetual non-exclusive license while the paper body footnote says CC BY; these displays differ, and neither establishes the code/model-weight license.",
         "purpose_and_novelty": "Training-free, test-time iterative retrieval for a fixed corpus: generate pseudo-passages from the query and prior graded feedback, retrieve fresh candidates, assess unseen documents on a 0-3 scale, and repeat up to five rounds. It expands the candidate pool, rather than only reranking a fixed first-pass set.",
         "author_reported_benchmarks_not_our_measurements": {
           "benchmarks": "TREC Deep Learning 2019/2020 and BRIGHT, seven StackExchange subdomains.",
-          "coverage": "Paper says Recall@100 improved over BM25 across benchmarks; on BRIGHT Biology BM25 Recall@100 is 42 and Seek 82; on Psychology 38 and 72.",
-          "ranking": "On BRIGHT, mean nDCG@10 BM25 17.0 vs Seek/Qwen2.5 30.9 (author-reported relative gain 82%). On Biology the paper's five-round run has recall 22% at BM25, then 43% after round one and 58% by round five.",
+          "coverage": "Figure 2 body reports Recall@100 improvements across benchmarks; on BRIGHT Biology BM25 Recall@100 is 42 and Seek 82; on Psychology 38 and 72.",
+          "internal_condition_mismatch": "Figure 3 body describes Qwen2.5-7B biology recall 22% at BM25 and 58% by round five, but its caption says Qwen3. Its roughly 46% final nDCG also differs from Table 1's Seek/Qwen2.5 Biology nDCG@10 37.7. Do not join these as one matched-condition sequence or reconcile without clarification.",
           "qualification": "These are author results on fixed public IR corpora, not web-wide URL coverage, Japanese retrieval, this workspace's search targets, or independent reproduction."
         },
         "integration_and_resource_findings": {
@@ -60,7 +63,9 @@
         "conference_program": "https://sigir2026.org/program.html",
         "official_code": "https://github.com/lycorp-jp/cadeqs",
         "paper_date": "SIGIR 2026 program/paper listed 2026-07-19; conference 2026-07-20 to 07-24",
-        "repository_update_date": "Not confirmed from inspected GitHub page; it showed two commits.",
+        "latest_main_commit": "73e686bb48f4397b82a38aa414c1944ea121c6bc",
+        "latest_main_commit_url": "https://github.com/lycorp-jp/cadeqs/commit/73e686bb48f4397b82a38aa414c1944ea121c6bc",
+        "repository_update_date": "Latest main committer date 2026-07-17T00:56:21Z, as checked by parent via read-only GitHub API.",
         "stars": 0,
         "forks": 0,
         "code_license": "CC0-1.0 stated by repo; repository also says release is temporary and may become private/read-only. Code reuse is permitted under CC0, but model/log rights are unverified.",
@@ -74,7 +79,7 @@
       "The requested remote branch research/2026-10-25-morning did not exist at start; git ls-remote showed only historical research branches. Created a new local research branch from origin/main.",
       "An initially selected SB-CLASSIFIER candidate was found to be already reported on 2026-10-21 and was removed as a duplicate before finalizing the report."
     ],
-    "blockers": "No action blocked by auto-review. Model execution remains pending/not attempted because the approved isolation stays stopped; no attempt to bypass it was made."
+    "blockers": "No auto-review denial. External model/candidate execution remains pending/not attempted because the approved isolation remains stopped; no bypass was attempted."
   },
   "expected_difference": "SEEK may increase recall for relevant documents within a fixed, already indexed corpus by making additional feedback-guided retrieval passes. It cannot close URL/host discovery gaps or improve crawl completeness outside that corpus. CADE-QS suggests next user queries; without evidence that those suggestions yield new URLs/results, it does not materially change current result acquisition."
 }
