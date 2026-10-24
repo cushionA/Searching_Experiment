@@ -27,6 +27,7 @@ STATIC_FILES = (
     ".agents/skills/kaggle-ops/agents/openai.yaml", ".agents/skills/kaggle-ops/references/notebooks.md",
     ".agents/skills/kaggle-ops/scripts/kaggle_ops.py",
     ".agents/skills/kaggle-ops/scripts/kaggle_monitor.py",
+    ".agents/skills/kaggle-ops/scripts/kaggle_cloud_monitor.py",
     ".agents/skills/kaggle-ops/references/monitoring.md",
     ".github/workflows/kaggle-monitor.yml",
 )
