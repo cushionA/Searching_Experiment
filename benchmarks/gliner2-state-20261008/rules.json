@@ -1,0 +1,1104 @@
+{
+  "engine": "rules",
+  "fixture_sha256": "f77e5160256cbcdc68dd17c9c57dbcd7070666c1788a1171d2f83c5914f8b928",
+  "python": "3.12.14",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "cpu_count": 5,
+  "threads": 2,
+  "repeats": 2,
+  "setup_seconds": 7.110000410648354e-07,
+  "warmup_ms": 0.007010000047102949,
+  "total_seconds": 0.004842784000004485,
+  "peak_process_rss_mib": 13.625,
+  "notes": "Linux process lifetime peak RSS includes imports/setup; single-process CPU; no download time. Synthetic diagnostic only.",
+  "summary": {
+    "all": {
+      "n": 48,
+      "correct": 18,
+      "accuracy": 0.375,
+      "macro_f1": 0.3270295746435725,
+      "confusion": {
+        "available": {
+          "available": 0,
+          "sold_out": 2,
+          "preorder": 2,
+          "unknown": 8
+        },
+        "sold_out": {
+          "available": 0,
+          "sold_out": 2,
+          "preorder": 1,
+          "unknown": 9
+        },
+        "preorder": {
+          "available": 0,
+          "sold_out": 0,
+          "preorder": 8,
+          "unknown": 4
+        },
+        "unknown": {
+          "available": 2,
+          "sold_out": 2,
+          "preorder": 0,
+          "unknown": 8
+        }
+      },
+      "latency_median_ms": 0.002213500010839198,
+      "latency_p95_ms": 0.006319999954484956,
+      "review_gate": {
+        "threshold": 0.8,
+        "selected": 0,
+        "coverage": 0.0,
+        "correct": 0,
+        "accuracy": null
+      },
+      "false_available": 2
+    },
+    "en": {
+      "n": 24,
+      "correct": 9,
+      "accuracy": 0.375,
+      "macro_f1": 0.3326118326118326,
+      "confusion": {
+        "available": {
+          "available": 0,
+          "sold_out": 1,
+          "preorder": 1,
+          "unknown": 4
+        },
+        "sold_out": {
+          "available": 0,
+          "sold_out": 1,
+          "preorder": 0,
+          "unknown": 5
+        },
+        "preorder": {
+          "available": 0,
+          "sold_out": 0,
+          "preorder": 4,
+          "unknown": 2
+        },
+        "unknown": {
+          "available": 1,
+          "sold_out": 1,
+          "preorder": 0,
+          "unknown": 4
+        }
+      },
+      "latency_median_ms": 0.0020930000061980536,
+      "latency_p95_ms": 0.0038560000348297763,
+      "review_gate": {
+        "threshold": 0.8,
+        "selected": 0,
+        "coverage": 0.0,
+        "correct": 0,
+        "accuracy": null
+      },
+      "false_available": 1
+    },
+    "ja": {
+      "n": 24,
+      "correct": 9,
+      "accuracy": 0.375,
+      "macro_f1": 0.3222222222222222,
+      "confusion": {
+        "available": {
+          "available": 0,
+          "sold_out": 1,
+          "preorder": 1,
+          "unknown": 4
+        },
+        "sold_out": {
+          "available": 0,
+          "sold_out": 1,
+          "preorder": 1,
+          "unknown": 4
+        },
+        "preorder": {
+          "available": 0,
+          "sold_out": 0,
+          "preorder": 4,
+          "unknown": 2
+        },
+        "unknown": {
+          "available": 1,
+          "sold_out": 1,
+          "preorder": 0,
+          "unknown": 4
+        }
+      },
+      "latency_median_ms": 0.00251899999170746,
+      "latency_p95_ms": 0.006820999999490596,
+      "review_gate": {
+        "threshold": 0.8,
+        "selected": 0,
+        "coverage": 0.0,
+        "correct": 0,
+        "accuracy": null
+      },
+      "false_available": 1
+    }
+  },
+  "predictions": [
+    {
+      "id": "test-available-0-en",
+      "lang": "en",
+      "kind": "direct",
+      "gold": "available",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0038560000348297763,
+        0.0027639999871098553
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-available-0-ja",
+      "lang": "ja",
+      "kind": "direct",
+      "gold": "available",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.02749099996890436,
+        0.0029939999990347133
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-available-1-en",
+      "lang": "en",
+      "kind": "context",
+      "gold": "available",
+      "predicted": "sold_out",
+      "score": null,
+      "typed": {
+        "state": "sold_out",
+        "can_ship_now": false,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0031950000334290962,
+        0.0021040000319771934
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-available-1-ja",
+      "lang": "ja",
+      "kind": "context",
+      "gold": "available",
+      "predicted": "sold_out",
+      "score": null,
+      "typed": {
+        "state": "sold_out",
+        "can_ship_now": false,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.006128999984866823,
+        0.00264400000560272
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-available-2-en",
+      "lang": "en",
+      "kind": "context",
+      "gold": "available",
+      "predicted": "preorder",
+      "score": null,
+      "typed": {
+        "state": "preorder",
+        "can_ship_now": false,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.002203000008194067,
+        0.0016530000266357092
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-available-2-ja",
+      "lang": "ja",
+      "kind": "context",
+      "gold": "available",
+      "predicted": "preorder",
+      "score": null,
+      "typed": {
+        "state": "preorder",
+        "can_ship_now": false,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.003064999987145711,
+        0.002284000004237896
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-available-3-en",
+      "lang": "en",
+      "kind": "context",
+      "gold": "available",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0019430000293141347,
+        0.0016819999473227654
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-available-3-ja",
+      "lang": "ja",
+      "kind": "context",
+      "gold": "available",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.003035000020190637,
+        0.0022240000134843285
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-available-4-en",
+      "lang": "en",
+      "kind": "paraphrase",
+      "gold": "available",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.003736000053322641,
+        0.0017030000094564457
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-available-4-ja",
+      "lang": "ja",
+      "kind": "paraphrase",
+      "gold": "available",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.002403999985745031,
+        0.001963000045179797
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-available-5-en",
+      "lang": "en",
+      "kind": "paraphrase",
+      "gold": "available",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0021339999989322678,
+        0.0017829999592322565
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-available-5-ja",
+      "lang": "ja",
+      "kind": "paraphrase",
+      "gold": "available",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.002524000024095585,
+        0.001972999996269209
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-sold_out-0-en",
+      "lang": "en",
+      "kind": "direct",
+      "gold": "sold_out",
+      "predicted": "sold_out",
+      "score": null,
+      "typed": {
+        "state": "sold_out",
+        "can_ship_now": false,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0024139999936778622,
+        0.0018129999830307497
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-sold_out-0-ja",
+      "lang": "ja",
+      "kind": "direct",
+      "gold": "sold_out",
+      "predicted": "sold_out",
+      "score": null,
+      "typed": {
+        "state": "sold_out",
+        "can_ship_now": false,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.002714000004289119,
+        0.0025940000227819837
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-sold_out-1-en",
+      "lang": "en",
+      "kind": "context",
+      "gold": "sold_out",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.002422999955342675,
+        0.0018829999817171483
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-sold_out-1-ja",
+      "lang": "ja",
+      "kind": "context",
+      "gold": "sold_out",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0031150000268098665,
+        0.002082999969843513
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-sold_out-2-en",
+      "lang": "en",
+      "kind": "context",
+      "gold": "sold_out",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.002172999984395574,
+        0.006319999954484956
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-sold_out-2-ja",
+      "lang": "ja",
+      "kind": "context",
+      "gold": "sold_out",
+      "predicted": "preorder",
+      "score": null,
+      "typed": {
+        "state": "preorder",
+        "can_ship_now": false,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.003916000025583344,
+        0.044607999996060244
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-sold_out-3-en",
+      "lang": "en",
+      "kind": "context",
+      "gold": "sold_out",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0021230000015748374,
+        0.0017520000028525828
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-sold_out-3-ja",
+      "lang": "ja",
+      "kind": "context",
+      "gold": "sold_out",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.002823999977863423,
+        0.0021939999896858353
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-sold_out-4-en",
+      "lang": "en",
+      "kind": "paraphrase",
+      "gold": "sold_out",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.002172999984395574,
+        0.001742999984344351
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-sold_out-4-ja",
+      "lang": "ja",
+      "kind": "paraphrase",
+      "gold": "sold_out",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.002514000016162754,
+        0.001952999980403547
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-sold_out-5-en",
+      "lang": "en",
+      "kind": "paraphrase",
+      "gold": "sold_out",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0021240000478428556,
+        0.0016719999962333532
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-sold_out-5-ja",
+      "lang": "ja",
+      "kind": "paraphrase",
+      "gold": "sold_out",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0032250000003841706,
+        0.0054180000006454065
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-preorder-0-en",
+      "lang": "en",
+      "kind": "direct",
+      "gold": "preorder",
+      "predicted": "preorder",
+      "score": null,
+      "typed": {
+        "state": "preorder",
+        "can_ship_now": false,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.003836000018964114,
+        0.10466800000585863
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-preorder-0-ja",
+      "lang": "ja",
+      "kind": "direct",
+      "gold": "preorder",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.006820999999490596,
+        0.00272400001222195
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-preorder-1-en",
+      "lang": "en",
+      "kind": "context",
+      "gold": "preorder",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0023430000055668643,
+        0.0017020000200318464
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-preorder-1-ja",
+      "lang": "ja",
+      "kind": "context",
+      "gold": "preorder",
+      "predicted": "preorder",
+      "score": null,
+      "typed": {
+        "state": "preorder",
+        "can_ship_now": false,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.002843999993729085,
+        0.002284000004237896
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-preorder-2-en",
+      "lang": "en",
+      "kind": "context",
+      "gold": "preorder",
+      "predicted": "preorder",
+      "score": null,
+      "typed": {
+        "state": "preorder",
+        "can_ship_now": false,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0034450000043761975,
+        0.0018729999737843173
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-preorder-2-ja",
+      "lang": "ja",
+      "kind": "context",
+      "gold": "preorder",
+      "predicted": "preorder",
+      "score": null,
+      "typed": {
+        "state": "preorder",
+        "can_ship_now": false,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.002423000012186094,
+        0.0022140000055514975
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-preorder-3-en",
+      "lang": "en",
+      "kind": "context",
+      "gold": "preorder",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0020429999949556077,
+        0.0015929999790387228
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-preorder-3-ja",
+      "lang": "ja",
+      "kind": "context",
+      "gold": "preorder",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.002583999958005734,
+        0.0021839999817530042
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-preorder-4-en",
+      "lang": "en",
+      "kind": "paraphrase",
+      "gold": "preorder",
+      "predicted": "preorder",
+      "score": null,
+      "typed": {
+        "state": "preorder",
+        "can_ship_now": false,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0024540000254091865,
+        0.001963000045179797
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-preorder-4-ja",
+      "lang": "ja",
+      "kind": "paraphrase",
+      "gold": "preorder",
+      "predicted": "preorder",
+      "score": null,
+      "typed": {
+        "state": "preorder",
+        "can_ship_now": false,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.002534000032028416,
+        0.002243999972506572
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-preorder-5-en",
+      "lang": "en",
+      "kind": "paraphrase",
+      "gold": "preorder",
+      "predicted": "preorder",
+      "score": null,
+      "typed": {
+        "state": "preorder",
+        "can_ship_now": false,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.002273999996305065,
+        0.0018629999658514862
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-preorder-5-ja",
+      "lang": "ja",
+      "kind": "paraphrase",
+      "gold": "preorder",
+      "predicted": "preorder",
+      "score": null,
+      "typed": {
+        "state": "preorder",
+        "can_ship_now": false,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0025540000478940783,
+        0.002203000008194067
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-unknown-0-en",
+      "lang": "en",
+      "kind": "direct",
+      "gold": "unknown",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0021530000253733306,
+        0.001853000014762074
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-unknown-0-ja",
+      "lang": "ja",
+      "kind": "direct",
+      "gold": "unknown",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0022830000148132967,
+        0.0018729999737843173
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-unknown-1-en",
+      "lang": "en",
+      "kind": "context",
+      "gold": "unknown",
+      "predicted": "available",
+      "score": null,
+      "typed": {
+        "state": "available",
+        "can_ship_now": true,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0021230000015748374,
+        0.00174300004118777
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-unknown-1-ja",
+      "lang": "ja",
+      "kind": "context",
+      "gold": "unknown",
+      "predicted": "available",
+      "score": null,
+      "typed": {
+        "state": "available",
+        "can_ship_now": true,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.002623999989737058,
+        0.0021939999896858353
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-unknown-2-en",
+      "lang": "en",
+      "kind": "context",
+      "gold": "unknown",
+      "predicted": "sold_out",
+      "score": null,
+      "typed": {
+        "state": "sold_out",
+        "can_ship_now": false,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0020329999870227766,
+        0.0018120000504495692
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-unknown-2-ja",
+      "lang": "ja",
+      "kind": "context",
+      "gold": "unknown",
+      "predicted": "sold_out",
+      "score": null,
+      "typed": {
+        "state": "sold_out",
+        "can_ship_now": false,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0025239999672521662,
+        0.002213000016126898
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-unknown-3-en",
+      "lang": "en",
+      "kind": "context",
+      "gold": "unknown",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.002083000026686932,
+        0.0018229999909635808
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-unknown-3-ja",
+      "lang": "ja",
+      "kind": "context",
+      "gold": "unknown",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.002483999992364261,
+        0.0020429999949556077
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-unknown-4-en",
+      "lang": "en",
+      "kind": "paraphrase",
+      "gold": "unknown",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0021029999857091752,
+        0.001733000033254939
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-unknown-4-ja",
+      "lang": "ja",
+      "kind": "paraphrase",
+      "gold": "unknown",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0024539999685657676,
+        0.0020429999949556077
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-unknown-5-en",
+      "lang": "en",
+      "kind": "paraphrase",
+      "gold": "unknown",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0021040000319771934,
+        0.0017219999790540896
+      ],
+      "repeat_label_agreement": true
+    },
+    {
+      "id": "test-unknown-5-ja",
+      "lang": "ja",
+      "kind": "paraphrase",
+      "gold": "unknown",
+      "predicted": "unknown",
+      "score": null,
+      "typed": {
+        "state": "unknown",
+        "can_ship_now": null,
+        "raw_model_score": null,
+        "score_is_calibrated": false,
+        "requires_review": true
+      },
+      "latency_ms": [
+        0.0034349999964433664,
+        0.0020030000200677023
+      ],
+      "repeat_label_agreement": true
+    }
+  ]
+}
