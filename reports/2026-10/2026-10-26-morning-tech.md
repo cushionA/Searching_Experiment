@@ -14,7 +14,7 @@
 
 公式GitHub・HF・PyPI/npmのmetadata、固定commitソース、changelog、licenseを読む。29資料、706,107 bytesをURL・取得日時・SHA256付きで保存。資料取得24.1825秒、オフライン監査0.005335秒（全調査の所要時間ではない）。Python 3.12.14、追加依存なし。候補codeはテキストとして解析し実行しない。候補weight DL 0、候補CPU 0秒、料金0円、修復0回。
 
-再現手順は[README](../../experiments/indra-source-audit/README.md)、[script](../../experiments/indra-source-audit/audit.py)、入力は[source-manifest](../../benchmarks/daily-tech-20261026/source-manifest.json)、出力は[static-audit.json](../../benchmarks/daily-tech-20261026/static-audit.json)。5構成の算術確認を5件のOCR PoCと数えない。
+再現手順は[README](../../experiments/indra-source-audit/README.md)、[script](../../experiments/indra-source-audit/audit.py)、入力は[source-manifest](../../benchmarks/daily-tech-20261026/source-manifest.json)、出力は[static-audit.json](../../benchmarks/daily-tech-20261026/static-audit.json)。5構成の算術確認を5件のOCR PoCと数えない。既存基盤のローカル確認 `python3 -B -m unittest discover -s tests -p 'test_lab*.py'` は42 tests / 1.863秒 / OK。ローカル失敗なし。[実行ログ](../../benchmarks/daily-tech-20261026/local-lab-tests.log)を保存した。
 
 ## 結果
 
