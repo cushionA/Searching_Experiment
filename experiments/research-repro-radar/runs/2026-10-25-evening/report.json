@@ -1,0 +1,112 @@
+{
+  "run_id": "2026-10-25-evening-native",
+  "date": "2026-10-25",
+  "status": "reading_completed_no_candidate_execution",
+  "recommended": [],
+  "completed_ids": [],
+  "digest": [
+    {
+      "id": "2610.30181",
+      "title": "OpenDS-World",
+      "url": "https://arxiv.org/abs/2610.30181",
+      "assessment": "A",
+      "why_picked": "200問のlive Web課題。新サイト発見・欠落ページ回復を測る評価設計の候補。",
+      "deferred_reason": "改善手法や実測ではない。公式評価の1問1時間・100 tool callsは今回の枠外。無料実行経路と隔離が未確認。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.31623",
+      "title": "F2G-Pose",
+      "url": "https://arxiv.org/abs/2610.31623",
+      "assessment": "B",
+      "why_picked": "RGB-Dから姿勢・寸法・形状を1パスで推定。HF trending38位、公式コード・重みを確認。",
+      "deferred_reason": "必須RADIOは研究・評価の非商用限定。NVIDIA GPU/CUDA拡張必須、実行隔離保留。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.30949",
+      "title": "IQuest-Q1",
+      "url": "https://arxiv.org/abs/2610.30949",
+      "assessment": "B",
+      "why_picked": "CLIでの開発エージェント用MoE。公式配布と第三者GGUFの実在を確認。",
+      "deferred_reason": "本体BF16約641 GB、確認したGGUF約88 GBでDL2 GB超。15B活性化は全重み容量ではない。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.31305",
+      "title": "Cola2",
+      "url": "https://arxiv.org/abs/2610.31305",
+      "assessment": "B",
+      "why_picked": "意味スパンの連続圧縮と離散生成を協調させる新設計。",
+      "deferred_reason": "公式ページはCode/Model Soon。検索に出た同名CoLA分類モデルは別物。学習しない。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.28889",
+      "title": "Policy-Mask",
+      "url": "https://arxiv.org/abs/2610.28889",
+      "assessment": "B",
+      "why_picked": "拡散特徴の時刻・層・チャネルを予算付きで選択し、分類等へ転用。",
+      "deferred_reason": "下流目的で学習する方式。公開済み推論専用経路、license、CPU資源未確認。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.27598",
+      "title": "Meta Expert",
+      "url": "https://arxiv.org/abs/2610.27598",
+      "assessment": "B",
+      "why_picked": "MoE expertの層間共有で重みの冗長性を減らす設計。",
+      "deferred_reason": "70–80%のexpertで同等という著者主張。訓練不要の既存モデル適用・配布・資源未確認。",
+      "verification_level": "reading",
+      "measured": false
+    },
+    {
+      "id": "2610.30755",
+      "title": "RAW-RAG",
+      "url": "https://arxiv.org/abs/2610.30755",
+      "assessment": "B",
+      "why_picked": "生の会話履歴を保持する、長期会話理解の単純な比較基準。",
+      "deferred_reason": "外部LLM/embedding/reranker設定が必要で無課金経路未確認。検索結果のrerank追加には採用しない。",
+      "verification_level": "reading",
+      "measured": false
+    }
+  ],
+  "counts": {
+    "collected_unique": 5753,
+    "ranking_input_with_carry": 9385,
+    "ranked": 8030,
+    "review_pool_read": 20,
+    "primary_read_total": 27,
+    "native_followup_candidates": 5,
+    "candidate_code_executions": 0,
+    "candidate_model_inferences": 0,
+    "pending_after_record_expected": 9384
+  },
+  "host_requested_model": "gpt-6-luna",
+  "service_runtime_model_id": "unknown",
+  "budget": {
+    "money_jpy": 0,
+    "candidate_cpu_seconds": 0,
+    "weights_downloaded_bytes": 0,
+    "gpu_seconds": 0,
+    "candidate_repairs": 0,
+    "started_at": "2026-10-25T09:02:00Z",
+    "deadline": "2026-10-25T09:32:00Z",
+    "report_created_at": "2026-10-25T09:17:20.272734+00:00"
+  },
+  "limitations": [
+    "Reading only; no candidate reproduction or cost advantage measured.",
+    "Existing isolation boundary remains pending; no candidate execution or retry, no Kaggle bypass.",
+    "OpenReview five queries returned HTTP403; Cola2 HTML404 recovered from primary PDF/project page.",
+    "HF API returned complete lists without next Link; backend search ceiling not exhaustive. Crossref uses relevance windows, not corpus census.",
+    "All 40 arXiv pages and 3 GitHub coding-agent search pages fetched; duplicates removed, all normalized candidates scored.",
+    "Independent two-signal deep-dive gate not established; author effect sizes are not measurements.",
+    "No morning/weekly/SMTP/cron/SKU/PR19/Moli-Lightpanda changes; no training, paid API or additional permission.",
+    "Native request payloads and responses remain private; public ledger contains hashes and host task IDs."
+  ]
+}

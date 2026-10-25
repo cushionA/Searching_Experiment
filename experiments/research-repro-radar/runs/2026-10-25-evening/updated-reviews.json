@@ -1,0 +1,128 @@
+[
+  {
+    "candidate_id": "2610.31623",
+    "decision": "defer",
+    "reason": "F2G-Poseは、分割済みRGB-D画像から物体の6D姿勢・寸法・形状をまとめて推定する専用機能で、ロボット操作などRGB-Dの物体姿勢推定には具体的価値がある。ただし今回の関心は軽量画像認識であり、この方式はLinux/NVIDIA GPU/CUDA拡張を必須とするため、現在の計算環境では試せない。画像認識全般に価値がないとは判断せず、適合するRGB-D用途とGPU環境が確認できるまで保留する。論文・公式repoを読解済みだが実測はない。",
+    "evidence": [
+      {
+        "source_url": "https://raw.githubusercontent.com/jrryzh/F2G-Pose/HEAD/README.md",
+        "quote": "F2G-Pose estimates an object’s 6D pose, metric size, and completed 3D shape from a single segmented RGB-D observation in one forward pass."
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/jrryzh/F2G-Pose/HEAD/docs/INSTALL.md",
+        "quote": "You need Linux, an NVIDIA GPU, Python 3.10, and the CUDA 12.4 development toolkit."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "次回、対象のRGB-D物体姿勢推定用途とNVIDIA GPUの利用可否を確認し、両方合う場合に公式サンプルを隔離環境で試す。",
+    "unconfirmed": [
+      "公表資料は2026-10-22投稿。GitHubは10-23更新・58 stars・2 forks、HF重みは09-26更新・15 downloads・0 likesを資料上で確認。現在の最新更新かは保存資料だけでは断定不可。",
+      "F2G-PoseのApache-2.0コードライセンスを確認。必須依存RADIO v2.5-LのNVIDIA Source Code Licenseとカード上のresearch and development only表示を確認したが、商用利用条件の適合判断は未確認。",
+      "F2G重みは約366 MB。RADIO重みは別途必要で、導入にはCUDA拡張ビルドも必要。RADIO重みを含めた総DL量、GPU VRAM/RAM、CPU実行可否は未確認。",
+      "保存済みHF著者検索にF2G-Pose以外の候補IDはなく、後継モデルIDは確認できない。実行・性能比較は未実施。"
+    ]
+  },
+  {
+    "candidate_id": "2610.30949",
+    "decision": "defer",
+    "reason": "IQuest-Q1はagentic codingとCLIでの複数段階ツール利用を狙うため、AI駆動開発という独立した関心に明確な用途がある。一次資料にはCLIベンチマークと実行手順がある一方、配布BF16モデルは320B超のパラメータで、確認済み混合量子化GGUFも約88 GB規模。現金0・DL 2 GB・RAM 8 GBの条件内で利用できる実行経路/APIは資料から確認できず、今すぐ試す候補にはできない。用途自体を否定せず、利用可能な小型モデルまたは予算不要の提供経路が確認できるまで保留する。実測・実行はない。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/IQuestLab/IQuest-Q1/raw/main/README.md",
+        "quote": "for agentic coding, reasoning, and multi-step tool use."
+      },
+      {
+        "source_url": "https://huggingface.co/api/models/IQuestLab/IQuest-Q1?blobs=true",
+        "quote": "\"total\": 320318615552"
+      },
+      {
+        "source_url": "https://huggingface.co/IQuestLab/IQuest-Q1/raw/main/LICENSE",
+        "quote": "you shall prominently display \"IQuest-Q1\" on the user interface of such product or service."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "公式資料に予算不要のAPI/ホスト推論があるか、または2 GB以下で動く公式互換量子化版が公開されたかを確認する。",
+    "unconfirmed": [
+      "論文は2026-10-22投稿。GitHubは10-19更新・181 stars・8 forks、HFモデルは09-29更新・149 likes・4,777 downloadsを資料上で確認。現在の最新更新かは保存資料だけでは断定不可。",
+      "ソフトウェアLICENSEは商用製品UIにIQuest-Q1の表示を求める変更付きMIT。重みのHF表示はlicense=other / iquest-q1で、利用条件の詳細な適用範囲は未確認。",
+      "BF16パラメータ数は320,318,615,552。別作者のGGUFは6分割合計で約88 GB。CPU速度、必要RAM、利用可能な無料API/提供枠は未確認。",
+      "著者HF一覧でIQuest-Q1の後継IDは確認できない。FlemingやIQuest-Coderは別系統として記録されており、後継とは扱わない。論文・公式モデルカードの性能値は著者報告で、今回の実測ではない。"
+    ]
+  },
+  {
+    "candidate_id": "2610.31305",
+    "decision": "defer",
+    "reason": "Cola2は意味単位の連続圧縮と離散生成を協調させる言語モデル研究で、長文テキストの圧縮表現や生成設計を調べる材料にはなる。ただし一次資料で確認できる評価は一般的な下流タスク・言語モデル尺度で、今回のNLP関心である分類または要約への具体的な適合性は示されていない。公式ページはコードとモデルを未公開予定としており、公開チェックポイントも確認できない。用途評価に必要な成果物がそろうまで保留する。著者報告の実験値を独立実測とは扱わない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.31305",
+        "quote": "Cola2 dynamically segments text into semantic spans"
+      },
+      {
+        "source_url": "https://hongcanguo.github.io/Cola2",
+        "quote": "Paper New arXiv New Code Soon 🤗 Model Soon"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "公式コードまたは重みの公開後、分類・長文要約の具体的評価データと2 GB以下の推論可能性を資料で確認する。",
+    "unconfirmed": [
+      "論文は2026-10-22投稿。保存資料にGitHub活動やstarsはなく、公式ページのコード・モデル表示はSoon。更新日と現在の公開状況は保存資料だけでは断定不可。",
+      "モデル検索の一致結果は別目的の無関係なcola2名義モデルのみで、Cola2公式IDは確認できない。利用ライセンス、導入手順、推論資源、チェックポイントは未確認。",
+      "論文は約210B tokenの実験と346.03B source tokenのチェックポイントを報告。これらは著者報告で、今回の独立実測ではない。学習は予算・制約外。",
+      "公式資料で後継モデルIDは確認できない。論文と同じ研究チームのプロジェクトページは独立した話題信号として二重計上していない。"
+    ]
+  },
+  {
+    "candidate_id": "2610.30181",
+    "decision": "test",
+    "reason": "検索エージェントのlive web調査を200問で評価する公開ベンチマークで、複数ソース発見・証拠統合を扱う。archive-freeの新サイト発見や欠落ページ回復を測る評価設計の具体的な土台として、候補タスクの網羅性を点検する価値がある。論文の39.0%等は著者報告であり、今回の実測ではない。コード実行は未提案で、次回の隔離確認を前提とする。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.30181",
+        "quote": "OpenDS-World, a benchmark comprising 200 challenging tasks spanning diverse information modalities, heterogeneous file formats, and interactive access requirements"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/Yu-xm/OpenDS/HEAD/README.md",
+        "quote": "Model search is limited to one hour and 100 tool calls per task."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "隔離を確認後、タスク記述を読み、新サイト発見・欠落ページ回復を評価できる課題の有無を確認する。",
+    "unconfirmed": [
+      "公開repo更新: 2026-10-23; GitHub snapshotは24 stars、0 forks。活動量の長期推移は未確認。",
+      "repo licenseはApache-2.0と表示。商用利用条件の個別レビューは未確認。",
+      "導入はPython 3.10–3.13、pip install -e .と記載。datasetは200問CSVと対応動画。実際の取得サイズ・依存資源・ローカル実行資源は未確認。",
+      "実行コスト/必要API・モデル構成は未確認。READMEの評価条件は1問あたり最大1時間・100 tool callsで今回の枠を超える。",
+      "保存資料内に最新後継の実在IDは確認できず、latestは断定不可."
+    ]
+  },
+  {
+    "candidate_id": "2610.30755",
+    "decision": "defer",
+    "reason": "長期会話メモリ向けのraw-history検索が、比較対象の会話ベンチマークで強い基準線になり得るという著者報告はNLP読解用途に関係する。ただし提供資料では外部LLM・embedding・rerankerのAPI設定を要し、予算0で即時に検証できる運用経路が確認できない。順位や精度は著者報告で今回の実測ではなく、明確な独立した話題信号も追加確認できないため保留する。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.30755",
+        "quote": "Raw-RAG ranks first among the compared memory systems in six of seven benchmark-model settings"
+      },
+      {
+        "source_url": "https://raw.githubusercontent.com/Litmeb/RAW-RAG/HEAD/README.md",
+        "quote": "Set credentials and service endpoints:"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "arXiv page says submitted 2026-10-22; repo snapshot pushed 2026-10-25, 21 stars, 1 fork. Activity trajectory beyond these timestamps is unconfirmed.",
+      "repo license reports MIT; commercial terms not separately reviewed.",
+      "README gives setup instructions requiring Python 3.12 and PowerShell 7 and lists external LLM, vectorization, reranking, and DeepSeek service endpoints; exact minimum cost and credentials availability are unconfirmed.",
+      "Local CPU/RAM/disk needs and whether any useful offline path fits the 20-minute/8-GB/2-GB constraints are unconfirmed. No GPU requirement is established by these snapshots.",
+      "Saved materials do not establish a latest successor; successor model/repo ID unconfirmed and latest cannot be asserted."
+    ]
+  }
+]

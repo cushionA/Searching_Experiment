@@ -1,0 +1,2087 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/KhrvaP341ipfFUJMp7yZ1ejhCQs</id>
+  <title>arXiv Query: search_query=all:"coding agent" OR all:"software engineering agent"&amp;id_list=&amp;start=1600&amp;max_results=100</title>
+  <updated>2026-10-25T09:10:08Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=all:%22coding+agent%22+OR+all:%22software+engineering+agent%22&amp;start=1600&amp;max_results=100&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>100</opensearch:itemsPerPage>
+  <opensearch:totalResults>1663</opensearch:totalResults>
+  <opensearch:startIndex>1600</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2506.11060v2</id>
+    <title>Code Researcher: Deep Research Agent for Large Systems Code and Commit History</title>
+    <updated>2026-05-20T15:03:52Z</updated>
+    <link href="https://arxiv.org/abs/2506.11060v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2506.11060v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Language Model (LLM)-based coding agents have shown promising results on coding benchmarks, but their effectiveness on systems code remains underexplored. Due to the size and complexities of systems code, making changes to a systems codebase requires researching about many pieces of context, derived from the large codebase and its massive commit history, before making changes. Inspired by the recent progress on deep research agents, we design the first deep research agent for code, called Code Researcher, and apply it to the problem of generating patches to mitigate crashes reported in systems code. Code Researcher performs multi-step reasoning about semantics, patterns, and commit history of code to retrieve all relevant context from the codebase and its commit history. We evaluate Code Researcher on kBenchSyz, a benchmark of Linux kernel crashes, and show that it significantly outperforms strong baselines, achieving a crash-resolution rate (CRR) of 48%, compared to 31.5% by SWE-agent and 31% by Agentless, using OpenAI's GPT-4o model. Scaling up sampling budget to 10 trajectories increases Code Researcher's CRR to 54%. Code Researcher is also robust to model choices, reaching 67% with the newer Gemini 2.5-Flash model. Through another experiment on an open-source multimedia software, we show the generalizability of Code Researcher and also conduct ablations. Our experiments highlight the importance of global context gathering and multi-faceted reasoning for large codebases.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-27T04:57:00Z</published>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Ramneet Singh</name>
+    </author>
+    <author>
+      <name>Sathvik Joel</name>
+    </author>
+    <author>
+      <name>Abhav Mehrotra</name>
+    </author>
+    <author>
+      <name>Nalin Wadhwa</name>
+    </author>
+    <author>
+      <name>Ramakrishna B Bairi</name>
+    </author>
+    <author>
+      <name>Aditya Kanade</name>
+    </author>
+    <author>
+      <name>Nagarajan Natarajan</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2505.20411v2</id>
+    <title>SWE-rebench: An Automated Pipeline for Task Collection and Decontaminated Evaluation of Software Engineering Agents</title>
+    <updated>2025-11-04T13:06:45Z</updated>
+    <link href="https://arxiv.org/abs/2505.20411v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2505.20411v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>LLM-based agents have shown promising capabilities in a growing range of software engineering (SWE) tasks. However, advancing this field faces two critical challenges. First, high-quality training data is scarce, especially data that reflects real-world SWE scenarios, where agents must interact with development environments, execute code and adapt behavior based on the outcomes of their actions. Existing datasets are either limited to one-shot code generation or comprise small, manually curated collections of interactive tasks, lacking both scale and diversity. Second, the lack of fresh interactive SWE tasks affects evaluation of rapidly improving models, as static benchmarks quickly become outdated due to contamination issues. To address these limitations, we introduce a novel, automated, and scalable pipeline to continuously extract real-world interactive SWE tasks from diverse GitHub repositories. Using this pipeline, we construct SWE-rebench, a public dataset comprising over 21,000 interactive Python-based SWE tasks, suitable for reinforcement learning of SWE agents at scale. Additionally, we use continuous supply of fresh tasks collected using SWE-rebench methodology to build a contamination-free benchmark for agentic software engineering. We compare results of various LLMs on this benchmark to results on SWE-bench Verified and show that performance of some language models might be inflated due to contamination issues.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-26T18:01:00Z</published>
+    <arxiv:comment>Dataset: https://huggingface.co/datasets/nebius/SWE-rebench, SWE-rebench leaderboard https://swe-rebench.com NeurIPS 2025</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Ibragim Badertdinov</name>
+    </author>
+    <author>
+      <name>Alexander Golubev</name>
+    </author>
+    <author>
+      <name>Maksim Nekrashevich</name>
+    </author>
+    <author>
+      <name>Anton Shevtsov</name>
+    </author>
+    <author>
+      <name>Simon Karasik</name>
+    </author>
+    <author>
+      <name>Andrei Andriushchenko</name>
+    </author>
+    <author>
+      <name>Maria Trofimova</name>
+    </author>
+    <author>
+      <name>Daria Litvintseva</name>
+    </author>
+    <author>
+      <name>Boris Yangel</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2505.19955v3</id>
+    <title>MLR-Bench: Evaluating AI Agents on Open-Ended Machine Learning Research</title>
+    <updated>2025-10-22T13:33:52Z</updated>
+    <link href="https://arxiv.org/abs/2505.19955v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2505.19955v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent advancements in AI agents have demonstrated their growing potential to drive and support scientific discovery. In this work, we introduce MLR-Bench, a comprehensive benchmark for evaluating AI agents on open-ended machine learning research. MLR-Bench includes three key components: (1) 201 research tasks sourced from NeurIPS, ICLR, and ICML workshops covering diverse ML topics; (2) MLR-Judge, an automated evaluation framework combining LLM-based reviewers with carefully designed review rubrics to assess research quality; and (3) MLR-Agent, a modular agent scaffold capable of completing research tasks through four stages: idea generation, proposal formulation, experimentation, and paper writing. Our framework supports both stepwise assessment across these distinct research stages, and end-to-end evaluation of the final research paper. We then use MLR-Bench to evaluate six frontier LLMs and an advanced coding agent, finding that while LLMs are effective at generating coherent ideas and well-structured papers, current coding agents frequently (e.g., in 80% of the cases) produce fabricated or invalidated experimental results--posing a major barrier to scientific reliability. We validate MLR-Judge through human evaluation, showing high agreement with expert reviewers, supporting its potential as a scalable tool for research evaluation. We open-source MLR-Bench to help the community benchmark, diagnose, and improve AI research agents toward trustworthy and transparent scientific discovery.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-26T13:18:37Z</published>
+    <arxiv:comment>49 pages, 9 figures. Accepted by NeurIPS 2025 D&amp;B Track</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Hui Chen</name>
+    </author>
+    <author>
+      <name>Miao Xiong</name>
+    </author>
+    <author>
+      <name>Yujie Lu</name>
+    </author>
+    <author>
+      <name>Wei Han</name>
+    </author>
+    <author>
+      <name>Ailin Deng</name>
+    </author>
+    <author>
+      <name>Yufei He</name>
+    </author>
+    <author>
+      <name>Jiaying Wu</name>
+    </author>
+    <author>
+      <name>Yibo Li</name>
+    </author>
+    <author>
+      <name>Yue Liu</name>
+    </author>
+    <author>
+      <name>Bryan Hooi</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2506.11058v3</id>
+    <title>Refactoring Codebases through Library Design</title>
+    <updated>2025-10-05T16:31:35Z</updated>
+    <link href="https://arxiv.org/abs/2506.11058v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2506.11058v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Maintainable and general software allows developers to build robust applications efficiently, yet achieving these qualities often requires refactoring specialized solutions into reusable components. This challenge becomes particularly relevant as code agents become used to solve isolated one-off programming problems. We investigate code agents' capacity to refactor code in ways that support growth and reusability. We first investigate what makes a good refactoring, finding via simulation results and a human study that Minimum Description Length best correlates with preferable refactorings. We then present both a benchmark and a method for refactoring: MiniCode, a benchmark where multiple files must be refactored into a shared library, and Librarian, a sample-and-rerank method for generating reusable libraries. We compare Librarian to state-of-the-art library generation methods, and study it on real-world code bases.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-26T07:26:33Z</published>
+    <arxiv:comment>29 pages</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Ziga Kovacic</name>
+    </author>
+    <author>
+      <name>Justin T. Chiu</name>
+    </author>
+    <author>
+      <name>Celine Lee</name>
+    </author>
+    <author>
+      <name>Wenting Zhao</name>
+    </author>
+    <author>
+      <name>Kevin Ellis</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2505.19489v2</id>
+    <title>Taming System Complexity: Demystifying Software Engineering Agents in Diagnosing Linux Kernel Faults</title>
+    <updated>2026-06-01T13:56:50Z</updated>
+    <link href="https://arxiv.org/abs/2505.19489v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2505.19489v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The Linux kernel is a critical system, serving as the foundation for numerous systems. Bugs in the Linux kernel can cause serious consequences, affecting billions of users. Fault localization (FL), which aims at identifying the buggy code elements in software, plays an essential role in software quality assurance. While recent LLM agents have achieved promising accuracy in FL on recent benchmarks like SWE-bench, it remains unclear how well these methods perform in the Linux kernel, where FL is much more challenging due to the large-scale code base, limited observability, and diverse impact factors. In this paper, we introduce LinuxFLBench, a FL benchmark constructed from real-world Linux kernel bugs. We conduct an empirical study to assess the performance of state-of-the-art LLM agents on the Linux kernel. Our initial results reveal that existing agents struggle with this task, achieving a best top-1 accuracy of only 41.6% at file level. To address this challenge, we propose LinuxFL$^+$, an enhancement framework designed to improve FL effectiveness of LLM agents for the Linux kernel. LinuxFL$^+$ substantially improves the FL accuracy of all studied agents (e.g., 7.2% - 11.2% accuracy increase) with minimal costs.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-26T04:15:48Z</published>
+    <arxiv:comment>Accepted to ACL 2026</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Zhenhao Zhou</name>
+    </author>
+    <author>
+      <name>Zhuochen Huang</name>
+    </author>
+    <author>
+      <name>Yike He</name>
+    </author>
+    <author>
+      <name>Chong Wang</name>
+    </author>
+    <author>
+      <name>Jiajun Wang</name>
+    </author>
+    <author>
+      <name>Yijian Wu</name>
+    </author>
+    <author>
+      <name>Xin Peng</name>
+    </author>
+    <author>
+      <name>Yiling Lou</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2505.18223v2</id>
+    <title>IDA-Bench: Evaluating LLMs on Interactive Guided Data Analysis</title>
+    <updated>2025-06-06T06:33:47Z</updated>
+    <link href="https://arxiv.org/abs/2505.18223v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2505.18223v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Language Models (LLMs) show promise as data analysis agents, but existing benchmarks overlook the iterative nature of the field, where experts' decisions evolve with deeper insights of the dataset. To address this, we introduce IDA-Bench, a novel benchmark evaluating LLM agents in multi-round interactive scenarios. Derived from complex Kaggle notebooks, tasks are presented as sequential natural language instructions by an LLM-simulated user. Agent performance is judged by comparing its final numerical output to the human-derived baseline. Initial results show that even state-of-the-art coding agents (like Claude-3.7-thinking) succeed on &lt; 50% of the tasks, highlighting limitations not evident in single-turn tests. This work underscores the need to improve LLMs' multi-round capabilities for building more reliable data analysis agents, highlighting the necessity of achieving a balance between instruction following and reasoning.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-23T09:37:52Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Hanyu Li</name>
+    </author>
+    <author>
+      <name>Haoyu Liu</name>
+    </author>
+    <author>
+      <name>Tingyu Zhu</name>
+    </author>
+    <author>
+      <name>Tianyu Guo</name>
+    </author>
+    <author>
+      <name>Zeyu Zheng</name>
+    </author>
+    <author>
+      <name>Xiaotie Deng</name>
+    </author>
+    <author>
+      <name>Michael I. Jordan</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2505.17148v2</id>
+    <title>LLM Agents for Interactive Exploration of Historical Cadastre Data: Framework and Application to Venice</title>
+    <updated>2025-09-30T12:53:19Z</updated>
+    <link href="https://arxiv.org/abs/2505.17148v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2505.17148v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Cadastral data reveal key information about the historical organization of cities but are often non-standardized due to diverse formats and human annotations, complicating large-scale analysis. We explore as a case study Venice's urban history during the critical period from 1740 to 1808, capturing the transition following the fall of the ancient Republic and the Ancien Régime. This era's complex cadastral data, marked by its volume and lack of uniform structure, presents unique challenges that our approach adeptly navigates, enabling us to generate spatial queries that bridge past and present urban landscapes. We present a text-to-programs framework that leverages Large Language Models (\llms) to process natural language queries as executable code for analyzing historical cadastral records. Our methodology implements two complementary techniques: a SQL agent for handling structured queries about specific cadastral information, and a coding agent for complex analytical operations requiring custom data manipulation. We propose a taxonomy that classifies historical research questions based on their complexity and analytical requirements, mapping them to the most appropriate technical approach. This framework is supported by an investigation into the execution consistency of the system, alongside a qualitative analysis of the answers it produces. By ensuring interpretability and minimizing hallucination through verifiable program outputs, we demonstrate the system's effectiveness in reconstructing past population information, property features, and spatiotemporal comparisons in Venice.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-22T08:45:15Z</published>
+    <arxiv:comment>Accepted in Cambridge press - Computational Humanities Research 2025</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <arxiv:journal_ref>Comput. humanit. res. 1 (2025) e11</arxiv:journal_ref>
+    <author>
+      <name>Tristan Karch</name>
+    </author>
+    <author>
+      <name>Jakhongir Saydaliev</name>
+    </author>
+    <author>
+      <name>Isabella Di Lenardo</name>
+    </author>
+    <author>
+      <name>Frédéric Kaplan</name>
+    </author>
+    <arxiv:doi>10.1017/chr.2025.10014</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1017/chr.2025.10014" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2505.13652v1</id>
+    <title>Guided Search Strategies in Non-Serializable Environments with Applications to Software Engineering Agents</title>
+    <updated>2025-05-19T18:50:15Z</updated>
+    <link href="https://arxiv.org/abs/2505.13652v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2505.13652v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models (LLMs) have recently achieved remarkable results in complex multi-step tasks, such as mathematical reasoning and agentic software engineering. However, they often struggle to maintain consistent performance across multiple solution attempts. One effective approach to narrow the gap between average-case and best-case performance is guided test-time search, which explores multiple solution paths to identify the most promising one. Unfortunately, effective search techniques (e.g. MCTS) are often unsuitable for non-serializable RL environments, such as Docker containers, where intermediate environment states cannot be easily saved and restored. We investigate two complementary search strategies applicable to such environments: 1-step lookahead and trajectory selection, both guided by a learned action-value function estimator. On the SWE-bench Verified benchmark, a key testbed for agentic software engineering, we find these methods to double the average success rate of a fine-tuned Qwen-72B model, achieving 40.8%, the new state-of-the-art for open-weights models. Additionally, we show that these techniques are transferable to more advanced closed models, yielding similar improvements with GPT-4o.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-19T18:50:15Z</published>
+    <arxiv:comment>ICML</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Karina Zainullina</name>
+    </author>
+    <author>
+      <name>Alexander Golubev</name>
+    </author>
+    <author>
+      <name>Maria Trofimova</name>
+    </author>
+    <author>
+      <name>Sergei Polezhaev</name>
+    </author>
+    <author>
+      <name>Ibragim Badertdinov</name>
+    </author>
+    <author>
+      <name>Daria Litvintseva</name>
+    </author>
+    <author>
+      <name>Simon Karasik</name>
+    </author>
+    <author>
+      <name>Filipp Fisin</name>
+    </author>
+    <author>
+      <name>Sergei Skvortsov</name>
+    </author>
+    <author>
+      <name>Maksim Nekrashevich</name>
+    </author>
+    <author>
+      <name>Anton Shevtsov</name>
+    </author>
+    <author>
+      <name>Boris Yangel</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2505.12185v5</id>
+    <title>EVALOOOP: A Self-Consistency-Centered Framework for Assessing Large Language Model Robustness in Programming</title>
+    <updated>2026-02-15T05:28:25Z</updated>
+    <link href="https://arxiv.org/abs/2505.12185v5" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2505.12185v5" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Evaluating the programming robustness of large language models (LLMs) is paramount for ensuring their reliability in AI-based software development. However, adversarial attacks exhibit fundamental limitations that compromise fair robustness assessment: they demonstrate contradictory evaluation outcomes where different attack strategies tend to favor different models, and more critically, they operate solely through external perturbations, failing to capture the intrinsic stability essential for autonomous coding agents where subsequent inputs are endogenously generated by the model itself. We introduce EVALOOOP, a novel assessment framework that evaluates robustness from a self-consistency perspective, leveraging the natural duality inherent in software engineering tasks (e.g., code generation and code summarization). EVALOOOP establishes a self-contained feedback loop where an LLM iteratively transforms between code and natural language until functional failure occurs, with robustness quantified by a novel Average Sustainable Loops (ASL) metric-the mean number of iterations maintaining functional correctness across benchmark tasks. This cyclical strategy intrinsically evaluates robustness without relying on external attack configurations, providing a unified metric that reveals how effectively LLMs preserve semantic integrity through sustained self-referential transformations. We evaluate 96 popular LLMs, ranging from 0.5B to 685B parameters, on EVALOOOP equipped with the MBPP Plus benchmark, and found that EVALOOOP typically induces a 2.65%-47.62% absolute drop in pass@1 accuracy within ten loops. Intriguingly, robustness does not always align with initial performance (i.e., one-time query); for instance, Qwen3-235B-A22B-Instruct-2507, despite inferior initial code generation compared to OpenAI's o-series models and DeepSeek-V3, demonstrated the superior robustness (ASL score).</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-18T01:02:33Z</published>
+    <arxiv:comment>27 pages, 7 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Sen Fang</name>
+    </author>
+    <author>
+      <name>Weiyuan Ding</name>
+    </author>
+    <author>
+      <name>Mengshi Zhang</name>
+    </author>
+    <author>
+      <name>Zihao Chen</name>
+    </author>
+    <author>
+      <name>Bowen Xu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2505.11077v2</id>
+    <title>LLM-Enhanced Symbolic Control for Safety-Critical Applications</title>
+    <updated>2025-05-29T15:22:09Z</updated>
+    <link href="https://arxiv.org/abs/2505.11077v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2505.11077v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Motivated by Smart Manufacturing and Industry 4.0, we introduce a framework for synthesizing Abstraction-Based Controller Design (ABCD) for reach-avoid problems from Natural Language (NL) specifications using Large Language Models (LLMs). A Code Agent interprets an NL description of the control problem and translates it into a formal language interpretable by state-of-the-art symbolic control software, while a Checker Agent verifies the correctness of the generated code and enhances safety by identifying specification mismatches. Evaluations show that the system handles linguistic variability and improves robustness over direct planning with LLMs. The proposed approach lowers the barrier to formal control synthesis by enabling intuitive, NL-based task definition while maintaining safety guarantees through automated validation.</summary>
+    <category term="eess.SY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-16T10:08:25Z</published>
+    <arxiv:primary_category term="eess.SY"/>
+    <author>
+      <name>Amir Bayat</name>
+    </author>
+    <author>
+      <name>Alessandro Abate</name>
+    </author>
+    <author>
+      <name>Necmiye Ozay</name>
+    </author>
+    <author>
+      <name>Raphael M. Jungers</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2505.07473v1</id>
+    <title>Web-Bench: A LLM Code Benchmark Based on Web Standards and Frameworks</title>
+    <updated>2025-05-12T12:06:23Z</updated>
+    <link href="https://arxiv.org/abs/2505.07473v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2505.07473v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The application of large language models (LLMs) in the field of coding is evolving rapidly: from code assistants, to autonomous coding agents, and then to generating complete projects through natural language. Early LLM code benchmarks primarily focused on code generation accuracy, but these benchmarks have gradually become saturated. Benchmark saturation weakens their guiding role for LLMs. For example, HumanEval Pass@1 has reached 99.4% and MBPP 94.2%. Among various attempts to address benchmark saturation, approaches based on software engineering have stood out, but the saturation of existing software engineering benchmarks is rapidly increasing. To address this, we propose a new benchmark, Web-Bench, which contains 50 projects, each consisting of 20 tasks with sequential dependencies. The tasks implement project features in sequence, simulating real-world human development workflows. When designing Web-Bench, we aim to cover the foundational elements of Web development: Web Standards and Web Frameworks. Given the scale and complexity of these projects, which were designed by engineers with 5 to 10 years of experience, each presents a significant challenge. On average, a single project takes 4 to 8 hours for a senior engineer to complete. On our given benchmark agent (Web-Agent), SOTA (Claude 3.7 Sonnet) achieves only 25.1% Pass@1, significantly lower (better) than SWE-Bench's Verified (65.4%) and Full (33.8%) scores. Finally, we discuss that in any development field, Standards and Frameworks represent foundational knowledge and efficiency tools, respectively, and LLMs require optimization tailored to them.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-12T12:06:23Z</published>
+    <arxiv:comment>28 pages, 15 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Kai Xu</name>
+    </author>
+    <author>
+      <name>YiWei Mao</name>
+    </author>
+    <author>
+      <name>XinYi Guan</name>
+    </author>
+    <author>
+      <name>ZiLong Feng</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2505.03733v2</id>
+    <title>WebGen-Bench: Evaluating LLMs on Generating Interactive and Functional Websites from Scratch</title>
+    <updated>2025-08-11T07:13:00Z</updated>
+    <link href="https://arxiv.org/abs/2505.03733v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2505.03733v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>LLM-based agents have demonstrated great potential in generating and managing code within complex codebases. In this paper, we introduce WebGen-Bench, a novel benchmark designed to measure an LLM-based agent's ability to create multi-file website codebases from scratch. It contains diverse instructions for website generation, created through the combined efforts of human annotators and GPT-4o. These instructions span three major categories and thirteen minor categories, encompassing nearly all important types of web applications. To assess the quality of the generated websites, we use GPT-4o to generate test cases targeting each functionality described in the instructions, and then manually filter, adjust, and organize them to ensure accuracy, resulting in 647 test cases. Each test case specifies an operation to be performed on the website and the expected result after the operation. To automate testing and improve reproducibility, we employ a powerful web-navigation agent to execute tests on the generated websites and determine whether the observed responses align with the expected results. We evaluate three high-performance code-agent frameworks, Bolt.diy, OpenHands, and Aider, using multiple proprietary and open-source LLMs as engines. The best-performing combination, Bolt.diy powered by DeepSeek-R1, achieves only 27.8\% accuracy on the test cases, highlighting the challenging nature of our benchmark. Additionally, we construct WebGen-Instruct, a training set consisting of 6,667 website-generation instructions. Training Qwen2.5-Coder-32B-Instruct on Bolt.diy trajectories generated from a subset of this training set achieves an accuracy of 38.2\%, surpassing the performance of the best proprietary model.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-06T17:59:15Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Zimu Lu</name>
+    </author>
+    <author>
+      <name>Yunqiao Yang</name>
+    </author>
+    <author>
+      <name>Houxing Ren</name>
+    </author>
+    <author>
+      <name>Haotian Hou</name>
+    </author>
+    <author>
+      <name>Han Xiao</name>
+    </author>
+    <author>
+      <name>Ke Wang</name>
+    </author>
+    <author>
+      <name>Weikang Shi</name>
+    </author>
+    <author>
+      <name>Aojun Zhou</name>
+    </author>
+    <author>
+      <name>Mingjie Zhan</name>
+    </author>
+    <author>
+      <name>Hongsheng Li</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2505.03574v1</id>
+    <title>LlamaFirewall: An open source guardrail system for building secure AI agents</title>
+    <updated>2025-05-06T14:34:21Z</updated>
+    <link href="https://arxiv.org/abs/2505.03574v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2505.03574v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models (LLMs) have evolved from simple chatbots into autonomous agents capable of performing complex tasks such as editing production code, orchestrating workflows, and taking higher-stakes actions based on untrusted inputs like webpages and emails. These capabilities introduce new security risks that existing security measures, such as model fine-tuning or chatbot-focused guardrails, do not fully address. Given the higher stakes and the absence of deterministic solutions to mitigate these risks, there is a critical need for a real-time guardrail monitor to serve as a final layer of defense, and support system level, use case specific safety policy definition and enforcement. We introduce LlamaFirewall, an open-source security focused guardrail framework designed to serve as a final layer of defense against security risks associated with AI Agents. Our framework mitigates risks such as prompt injection, agent misalignment, and insecure code risks through three powerful guardrails: PromptGuard 2, a universal jailbreak detector that demonstrates clear state of the art performance; Agent Alignment Checks, a chain-of-thought auditor that inspects agent reasoning for prompt injection and goal misalignment, which, while still experimental, shows stronger efficacy at preventing indirect injections in general scenarios than previously proposed approaches; and CodeShield, an online static analysis engine that is both fast and extensible, aimed at preventing the generation of insecure or dangerous code by coding agents. Additionally, we include easy-to-use customizable scanners that make it possible for any developer who can write a regular expression or an LLM prompt to quickly update an agent's security guardrails.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-06T14:34:21Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Sahana Chennabasappa</name>
+    </author>
+    <author>
+      <name>Cyrus Nikolaidis</name>
+    </author>
+    <author>
+      <name>Daniel Song</name>
+    </author>
+    <author>
+      <name>David Molnar</name>
+    </author>
+    <author>
+      <name>Stephanie Ding</name>
+    </author>
+    <author>
+      <name>Shengye Wan</name>
+    </author>
+    <author>
+      <name>Spencer Whitman</name>
+    </author>
+    <author>
+      <name>Lauren Deason</name>
+    </author>
+    <author>
+      <name>Nicholas Doucette</name>
+    </author>
+    <author>
+      <name>Abraham Montilla</name>
+    </author>
+    <author>
+      <name>Alekhya Gampa</name>
+    </author>
+    <author>
+      <name>Beto de Paola</name>
+    </author>
+    <author>
+      <name>Dominik Gabi</name>
+    </author>
+    <author>
+      <name>James Crnkovich</name>
+    </author>
+    <author>
+      <name>Jean-Christophe Testud</name>
+    </author>
+    <author>
+      <name>Kat He</name>
+    </author>
+    <author>
+      <name>Rashnil Chaturvedi</name>
+    </author>
+    <author>
+      <name>Wu Zhou</name>
+    </author>
+    <author>
+      <name>Joshua Saxe</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2505.02861v2</id>
+    <title>Neural Orchestration for Multi-Agent Systems: A Deep Learning Framework for Optimal Agent Selection in Multi-Domain Task Environments</title>
+    <updated>2025-09-26T10:28:11Z</updated>
+    <link href="https://arxiv.org/abs/2505.02861v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2505.02861v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Multi-agent systems (MAS) are foundational in simulating complex real-world scenarios involving autonomous, interacting entities. However, traditional MAS architectures often suffer from rigid coordination mechanisms and difficulty adapting to dynamic tasks. We propose MetaOrch, a neural orchestration framework for optimal agent selection in multi-domain task environments. Our system implements a supervised learning approach that models task context, agent histories, and expected response quality to select the most appropriate agent for each task. A novel fuzzy evaluation module scores agent responses along completeness, relevance, and confidence dimensions, generating soft supervision labels for training the orchestrator. Unlike previous methods that hard-code agent-task mappings, MetaOrch dynamically predicts the most suitable agent while estimating selection confidence. Experiments in simulated environments with heterogeneous agents demonstrate that our approach achieves 86.3% selection accuracy, significantly outperforming baseline strategies including random selection and round-robin scheduling. The modular architecture emphasizes extensibility, allowing agents to be registered, updated, and queried independently. Results suggest that neural orchestration offers a powerful approach to enhancing the autonomy, interpretability, and adaptability of multi-agent systems across diverse task domains.</summary>
+    <category term="cs.MA" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.NE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-03T02:58:25Z</published>
+    <arxiv:comment>Accepted for Publication at PReMI 2025 - 11th International Conference on Pattern Recognition and Machine Intelligence</arxiv:comment>
+    <arxiv:primary_category term="cs.MA"/>
+    <arxiv:journal_ref>In: Proceedings of the International Conference on Pattern Recognition and Machine Intelligence (PReMI), Springer-LNCS, 2025</arxiv:journal_ref>
+    <author>
+      <name>Kushagra Agrawal</name>
+    </author>
+    <author>
+      <name>Nisharg Nargund</name>
+    </author>
+    <arxiv:doi>10.1007/978-3-032-18477-1_55</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1007/978-3-032-18477-1_55" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2504.21798v2</id>
+    <title>SWE-smith: Scaling Data for Software Engineering Agents</title>
+    <updated>2025-05-21T17:21:45Z</updated>
+    <link href="https://arxiv.org/abs/2504.21798v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2504.21798v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Despite recent progress in Language Models (LMs) for software engineering, collecting training data remains a significant pain point. Existing datasets are small, with at most 1,000s of training instances from 11 or fewer GitHub repositories. The procedures to curate such datasets are often complex, necessitating hundreds of hours of human labor; companion execution environments also take up several terabytes of storage, severely limiting their scalability and usability. To address this pain point, we introduce SWE-smith, a novel pipeline for generating software engineering training data at scale. Given any Python codebase, SWE-smith constructs a corresponding execution environment, then automatically synthesizes 100s to 1,000s of task instances that break existing test(s) in the codebase. Using SWE-smith, we create a dataset of 50k instances sourced from 128 GitHub repositories, an order of magnitude larger than all previous works. We train SWE-agent-LM-32B, achieving 40.2% Pass@1 resolve rate on the SWE-bench Verified benchmark, state of the art among open source models. We open source SWE-smith (collection procedure, task instances, trajectories, models) to lower the barrier of entry for research in LM systems for automated software engineering. All assets available at https://swesmith.com.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-04-30T16:56:06Z</published>
+    <arxiv:comment>All assets available at https://swesmith.com</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>John Yang</name>
+    </author>
+    <author>
+      <name>Kilian Lieret</name>
+    </author>
+    <author>
+      <name>Carlos E. Jimenez</name>
+    </author>
+    <author>
+      <name>Alexander Wettig</name>
+    </author>
+    <author>
+      <name>Kabir Khandpur</name>
+    </author>
+    <author>
+      <name>Yanzhe Zhang</name>
+    </author>
+    <author>
+      <name>Binyuan Hui</name>
+    </author>
+    <author>
+      <name>Ofir Press</name>
+    </author>
+    <author>
+      <name>Ludwig Schmidt</name>
+    </author>
+    <author>
+      <name>Diyi Yang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2504.21205v3</id>
+    <title>SecRepoBench: Benchmarking Code Agents for Secure Code Completion in Real-World Repositories</title>
+    <updated>2026-02-14T01:32:04Z</updated>
+    <link href="https://arxiv.org/abs/2504.21205v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2504.21205v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This paper introduces SecRepoBench, a benchmark to evaluate code agents on secure code completion in real-world repositories. SecRepoBench has 318 code completion tasks in 27 C/C++ repositories, covering 15 CWEs. We evaluate 29 standalone LLMs and 15 code agents across 3 state-of-the-art agent frameworks using our benchmark. We find that state-of-the-art LLMs struggle with generating correct and secure code completions. However, code agents significantly outperform standalone LLMs. We show that SecRepoBench is more difficult than the prior state-of-the-art benchmark. Finally, our comprehensive analysis provides insights into potential directions for enhancing the ability of code agents to write correct and secure code in real-world repositories.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-04-29T22:22:44Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Chihao Shen</name>
+    </author>
+    <author>
+      <name>Connor Dilgren</name>
+    </author>
+    <author>
+      <name>Purva Chiniya</name>
+    </author>
+    <author>
+      <name>Luke Griffith</name>
+    </author>
+    <author>
+      <name>Yu Ding</name>
+    </author>
+    <author>
+      <name>Yizheng Chen</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2504.15228v2</id>
+    <title>A Self-Improving Coding Agent</title>
+    <updated>2025-05-16T20:58:56Z</updated>
+    <link href="https://arxiv.org/abs/2504.15228v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2504.15228v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent advancements in Large Language Models (LLMs) have spurred interest in deploying LLM agents to undertake tasks in the world. LLMs are often deployed in agent systems: code that orchestrates LLM calls and provides them with tools. We demonstrate that an agent system, equipped with basic coding tools, can autonomously edit itself, and thereby improve its performance on benchmark tasks. We find performance gains from 17% to 53% on a random subset of SWE Bench Verified, with additional performance gains on LiveCodeBench, as well as synthetically generated agent benchmarks. Our work represents an advancement in the automated and open-ended design of agentic systems, and demonstrates a data-efficient, non gradient-based learning mechanism driven by LLM reflection and code updates.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-04-21T16:58:18Z</published>
+    <arxiv:comment>Submitted as a preprint to NeurIPS 2025</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Maxime Robeyns</name>
+    </author>
+    <author>
+      <name>Martin Szummer</name>
+    </author>
+    <author>
+      <name>Laurence Aitchison</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2504.12516v1</id>
+    <title>BrowseComp: A Simple Yet Challenging Benchmark for Browsing Agents</title>
+    <updated>2025-04-16T22:27:45Z</updated>
+    <link href="https://arxiv.org/abs/2504.12516v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2504.12516v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We present BrowseComp, a simple yet challenging benchmark for measuring the ability for agents to browse the web. BrowseComp comprises 1,266 questions that require persistently navigating the internet in search of hard-to-find, entangled information. Despite the difficulty of the questions, BrowseComp is simple and easy-to-use, as predicted answers are short and easily verifiable against reference answers. BrowseComp for browsing agents can be seen as analogous to how programming competitions are an incomplete but useful benchmark for coding agents. While BrowseComp sidesteps challenges of a true user query distribution, like generating long answers or resolving ambiguity, it measures the important core capability of exercising persistence and creativity in finding information. BrowseComp can be found at https://github.com/openai/simple-evals.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-04-16T22:27:45Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Jason Wei</name>
+    </author>
+    <author>
+      <name>Zhiqing Sun</name>
+    </author>
+    <author>
+      <name>Spencer Papay</name>
+    </author>
+    <author>
+      <name>Scott McKinney</name>
+    </author>
+    <author>
+      <name>Jeffrey Han</name>
+    </author>
+    <author>
+      <name>Isa Fulford</name>
+    </author>
+    <author>
+      <name>Hyung Won Chung</name>
+    </author>
+    <author>
+      <name>Alex Tachard Passos</name>
+    </author>
+    <author>
+      <name>William Fedus</name>
+    </author>
+    <author>
+      <name>Amelia Glaese</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2504.08703v3</id>
+    <title>SWE-PolyBench: A multi-language benchmark for repository level evaluation of coding agents</title>
+    <updated>2025-04-23T20:22:37Z</updated>
+    <link href="https://arxiv.org/abs/2504.08703v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2504.08703v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Coding agents powered by large language models have shown impressive capabilities in software engineering tasks, but evaluating their performance across diverse programming languages and real-world scenarios remains challenging. We introduce SWE-PolyBench, a new multi-language benchmark for repository-level, execution-based evaluation of coding agents. SWE-PolyBench contains 2110 instances from 21 repositories and includes tasks in Java (165), JavaScript (1017), TypeScript (729) and Python (199), covering bug fixes, feature additions, and code refactoring. We provide a task and repository-stratified subsample (SWE-PolyBench500) and release an evaluation harness allowing for fully automated evaluation. To enable a more comprehensive comparison of coding agents, this work also presents a novel set of metrics rooted in syntax tree analysis. We evaluate leading open source coding agents on SWE-PolyBench, revealing their strengths and limitations across languages, task types, and complexity classes. Our experiments show that current agents exhibit uneven performances across languages and struggle with complex problems while showing higher performance on simpler tasks. SWE-PolyBench aims to drive progress in developing more versatile and robust AI coding assistants for real-world software engineering. Our datasets and code are available at: https://github.com/amazon-science/SWE-PolyBench</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-04-11T17:08:02Z</published>
+    <arxiv:comment>20 pages, 6 figures, corrected author name spelling</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Muhammad Shihab Rashid</name>
+    </author>
+    <author>
+      <name>Christian Bock</name>
+    </author>
+    <author>
+      <name>Yuan Zhuang</name>
+    </author>
+    <author>
+      <name>Alexander Buchholz</name>
+    </author>
+    <author>
+      <name>Tim Esler</name>
+    </author>
+    <author>
+      <name>Simon Valentin</name>
+    </author>
+    <author>
+      <name>Luca Franceschi</name>
+    </author>
+    <author>
+      <name>Martin Wistuba</name>
+    </author>
+    <author>
+      <name>Prabhu Teja Sivaprasad</name>
+    </author>
+    <author>
+      <name>Woo Jung Kim</name>
+    </author>
+    <author>
+      <name>Anoop Deoras</name>
+    </author>
+    <author>
+      <name>Giovanni Zappella</name>
+    </author>
+    <author>
+      <name>Laurent Callot</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2504.08696v2</id>
+    <title>SeaView: Software Engineering Agent Visual Interface for Enhanced Workflow</title>
+    <updated>2025-04-14T16:02:38Z</updated>
+    <link href="https://arxiv.org/abs/2504.08696v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2504.08696v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Auto-regressive LLM-based software engineering (SWE) agents, henceforth SWE agents, have made tremendous progress (&gt;60% on SWE-Bench Verified) on real-world coding challenges including GitHub issue resolution. SWE agents use a combination of reasoning, environment interaction and self-reflection to resolve issues thereby generating "trajectories". Analysis of SWE agent trajectories is difficult, not only as they exceed LLM sequence length (sometimes, greater than 128k) but also because it involves a relatively prolonged interaction between an LLM and the environment managed by the agent. In case of an agent error, it can be hard to decipher, locate and understand its scope. Similarly, it can be hard to track improvements or regression over multiple runs or experiments. While a lot of research has gone into making these SWE agents reach state-of-the-art, much less focus has been put into creating tools to help analyze and visualize agent output. We propose a novel tool called SeaView: Software Engineering Agent Visual Interface for Enhanced Workflow, with a vision to assist SWE-agent researchers to visualize and inspect their experiments. SeaView's novel mechanisms help compare experimental runs with varying hyper-parameters or LLMs, and quickly get an understanding of LLM or environment related problems. Based on our user study, experienced researchers spend between 10 and 30 minutes to gather the information provided by SeaView, while researchers with little experience can spend between 30 minutes to 1 hour to diagnose their experiment.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-04-11T17:03:58Z</published>
+    <arxiv:comment>8 pages, 5 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Timothy Bula</name>
+    </author>
+    <author>
+      <name>Saurabh Pujar</name>
+    </author>
+    <author>
+      <name>Luca Buratti</name>
+    </author>
+    <author>
+      <name>Mihaela Bornea</name>
+    </author>
+    <author>
+      <name>Avirup Sil</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2504.04808v2</id>
+    <title>ELT-Bench: An End-to-End Benchmark for Evaluating AI Agents on ELT Pipelines</title>
+    <updated>2025-04-14T19:46:56Z</updated>
+    <link href="https://arxiv.org/abs/2504.04808v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2504.04808v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Practitioners are increasingly turning to Extract-Load-Transform (ELT) pipelines with the widespread adoption of cloud data warehouses. However, designing these pipelines often involves significant manual work to ensure correctness. Recent advances in AI-based methods, which have shown strong capabilities in data tasks, such as text-to-SQL, present an opportunity to alleviate manual efforts in developing ELT pipelines. Unfortunately, current benchmarks in data engineering only evaluate isolated tasks, such as using data tools and writing data transformation queries, leaving a significant gap in evaluating AI agents for generating end-to-end ELT pipelines.
+  To fill this gap, we introduce ELT-Bench, an end-to-end benchmark designed to assess the capabilities of AI agents to build ELT pipelines. ELT-Bench consists of 100 pipelines, including 835 source tables and 203 data models across various domains. By simulating realistic scenarios involving the integration of diverse data sources and the use of popular data tools, ELT-Bench evaluates AI agents' abilities in handling complex data engineering workflows. AI agents must interact with databases and data tools, write code and SQL queries, and orchestrate every pipeline stage. We evaluate two representative code agent frameworks, Spider-Agent and SWE-Agent, using six popular Large Language Models (LLMs) on ELT-Bench. The highest-performing agent, Spider-Agent Claude-3.7-Sonnet with extended thinking, correctly generates only 3.9% of data models, with an average cost of $4.30 and 89.3 steps per pipeline. Our experimental results demonstrate the challenges of ELT-Bench and highlight the need for a more advanced AI agent to reduce manual effort in ELT workflows. Our code and data are available at https://github.com/uiuc-kang-lab/ELT-Bench.</summary>
+    <category term="cs.DB" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-04-07T08:03:36Z</published>
+    <arxiv:comment>14 pages, 18 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.DB"/>
+    <author>
+      <name>Tengjun Jin</name>
+    </author>
+    <author>
+      <name>Yuxuan Zhu</name>
+    </author>
+    <author>
+      <name>Daniel Kang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2504.04220v1</id>
+    <title>AdaCoder: An Adaptive Planning and Multi-Agent Framework for Function-Level Code Generation</title>
+    <updated>2025-04-05T16:14:01Z</updated>
+    <link href="https://arxiv.org/abs/2504.04220v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2504.04220v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recently, researchers have proposed many multi-agent frameworks for function-level code generation, which aim to improve software development productivity by automatically generating function-level source code based on task descriptions. A typical multi-agent framework consists of Large Language Model (LLM)-based agents that are responsible for task planning, code generation, testing, debugging, etc. Studies have shown that existing multi-agent code generation frameworks perform well on ChatGPT. However, their generalizability across other foundation LLMs remains unexplored systematically. In this paper, we report an empirical study on the generalizability of four state-of-the-art multi-agent code generation frameworks across six open-source LLMs with varying parameter sizes, architectures, and performance levels. Our study reveals the unstable generalizability of existing frameworks on diverse foundation LLMs. Based on the findings obtained from the empirical study, we propose AdaCoder, a novel adaptive planning, multi-agent framework for function-level code generation. AdaCoder has two phases. Phase-1 is an initial code generation step without planning, which uses an LLM-based coding agent and a script-based testing agent to unleash LLM's native power, identify cases beyond LLM's power, and determine the errors hindering execution. Phase-2 adds a rule-based debugging agent and an LLM-based planning agent for iterative code generation with planning. Our evaluation shows that AdaCoder achieves higher generalizability on diverse LLMs. Compared to the best baseline MapCoder, AdaCoder is on average 27.69% higher in Pass@1, 16 times faster in inference, and 12 times lower in token consumption.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-04-05T16:14:01Z</published>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Yueheng Zhu</name>
+    </author>
+    <author>
+      <name>Chao Liu</name>
+    </author>
+    <author>
+      <name>Xuan He</name>
+    </author>
+    <author>
+      <name>Xiaoxue Ren</name>
+    </author>
+    <author>
+      <name>Zhongxin Liu</name>
+    </author>
+    <author>
+      <name>Ruwei Pan</name>
+    </author>
+    <author>
+      <name>Hongyu Zhang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2504.00255v2</id>
+    <title>SciReplicate-Bench: Benchmarking LLMs in Agent-driven Algorithmic Reproduction from Research Papers</title>
+    <updated>2025-08-07T16:31:54Z</updated>
+    <link href="https://arxiv.org/abs/2504.00255v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2504.00255v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This study evaluates large language models (LLMs) in generating code from algorithm descriptions in recent NLP papers. The task requires two key competencies: (1) algorithm comprehension: synthesizing information from papers and academic literature to understand implementation logic, and (2) coding expertise: identifying dependencies and correctly implementing necessary APIs. To facilitate rigorous evaluation, we introduce SciReplicate-Bench, a benchmark of 100 tasks from 36 NLP papers published in 2024, featuring detailed annotations and comprehensive test cases. Building on SciReplicate-Bench, we propose Sci-Reproducer, a dual-agent framework consisting of a Paper Agent that interprets algorithmic concepts from literature and a Code Agent that retrieves dependencies from repositories and implements solutions. To assess algorithm understanding, we introduce reasoning graph accuracy, which quantifies similarity between generated and reference reasoning graphs derived from code comments and structure. For evaluating implementation quality, we employ execution accuracy, CodeBLEU, and repository dependency/API recall metrics. In our experiments, we evaluate various powerful non-reasoning and reasoning LLMs as foundational models. The best-performing LLM using \ModelName~achieves only 39% execution accuracy, highlighting the benchmark's difficulty. Our analysis identifies missing or inconsistent algorithm descriptions as key barriers to successful reproduction. We make available our benchmark and code at https://github.com/xyzCS/SciReplicate-Bench and project homepage at https://xyzcs.github.io/scireplicate.github.io/.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.MA" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-03-31T22:02:24Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Yanzheng Xiang</name>
+    </author>
+    <author>
+      <name>Hanqi Yan</name>
+    </author>
+    <author>
+      <name>Shuyin Ouyang</name>
+    </author>
+    <author>
+      <name>Lin Gui</name>
+    </author>
+    <author>
+      <name>Yulan He</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2503.23803v2</id>
+    <title>Thinking Longer, Not Larger: Enhancing Software Engineering Agents via Scaling Test-Time Compute</title>
+    <updated>2025-04-08T12:36:08Z</updated>
+    <link href="https://arxiv.org/abs/2503.23803v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2503.23803v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent advancements in software engineering agents have demonstrated promising capabilities in automating program improvements. However, their reliance on closed-source or resource-intensive models introduces significant deployment challenges in private environments, prompting a critical question: \textit{How can personally deployable open-source LLMs achieve comparable code reasoning performance?}
+  To this end, we propose a unified Test-Time Compute scaling framework that leverages increased inference-time computation instead of larger models. Our framework incorporates two complementary strategies: internal TTC and external TTC. Internally, we introduce a \textit{development-contextualized trajectory synthesis} method leveraging real-world software repositories to bootstrap multi-stage reasoning processes, such as fault localization and patch generation. We further enhance trajectory quality through rejection sampling, rigorously evaluating trajectories along accuracy and complexity. Externally, we propose a novel \textit{development-process-based search} strategy guided by reward models and execution verification. This approach enables targeted computational allocation at critical development decision points, overcoming limitations of existing "end-point only" verification methods.
+  Evaluations on SWE-bench Verified demonstrate our \textbf{32B model achieves a 46\% issue resolution rate}, surpassing significantly larger models such as DeepSeek R1 671B and OpenAI o1. Additionally, we provide the empirical validation of the test-time scaling phenomenon within SWE agents, revealing that \textbf{models dynamically allocate more tokens to increasingly challenging problems}, effectively enhancing reasoning capabilities. We publicly release all training data, models, and code to facilitate future research. https://github.com/yingweima2022/SWE-Reasoner</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-03-31T07:31:32Z</published>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Yingwei Ma</name>
+    </author>
+    <author>
+      <name>Yongbin Li</name>
+    </author>
+    <author>
+      <name>Yihong Dong</name>
+    </author>
+    <author>
+      <name>Xue Jiang</name>
+    </author>
+    <author>
+      <name>Rongyu Cao</name>
+    </author>
+    <author>
+      <name>Jue Chen</name>
+    </author>
+    <author>
+      <name>Fei Huang</name>
+    </author>
+    <author>
+      <name>Binhua Li</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2503.18666v3</id>
+    <title>AgentSpec: Customizable Runtime Enforcement for Safe and Reliable LLM Agents</title>
+    <updated>2025-07-31T04:00:48Z</updated>
+    <link href="https://arxiv.org/abs/2503.18666v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2503.18666v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Agents built on LLMs are increasingly deployed across diverse domains, automating complex decision-making and task execution. However, their autonomy introduces safety risks, including security vulnerabilities, legal violations, and unintended harmful actions. Existing mitigation methods, such as model-based safeguards and early enforcement strategies, fall short in robustness, interpretability, and adaptability. To address these challenges, we propose AgentSpec, a lightweight domain-specific language for specifying and enforcing runtime constraints on LLM agents. With AgentSpec, users define structured rules that incorporate triggers, predicates, and enforcement mechanisms, ensuring agents operate within predefined safety boundaries. We implement AgentSpec across multiple domains, including code execution, embodied agents, and autonomous driving, demonstrating its adaptability and effectiveness. Our evaluation shows that AgentSpec successfully prevents unsafe executions in over 90% of code agent cases, eliminates all hazardous actions in embodied agent tasks, and enforces 100% compliance by autonomous vehicles (AVs). Despite its strong safety guarantees, AgentSpec remains computationally lightweight, with overheads in milliseconds. By combining interpretability, modularity, and efficiency, AgentSpec provides a practical and scalable solution for enforcing LLM agent safety across diverse applications. We also automate the generation of rules using LLMs and assess their effectiveness. Our evaluation shows that the rules generated by OpenAI o1 achieve a precision of 95.56% and recall of 70.96% for embodied agents, successfully identify 87.26% of the risky code, and prevent AVs from breaking laws in 5 out of 8 scenarios.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-03-24T13:31:48Z</published>
+    <arxiv:comment>Accepted by the 48th IEEE/ACM International Conference on Software Engineering (ICSE 2026)</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <arxiv:journal_ref>Proc. ICSE'26, pages 2938-2950. ACM, 2026</arxiv:journal_ref>
+    <author>
+      <name>Haoyu Wang</name>
+    </author>
+    <author>
+      <name>Christopher M. Poskitt</name>
+    </author>
+    <author>
+      <name>Jun Sun</name>
+    </author>
+    <arxiv:doi>10.1145/3744916.3764546</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1145/3744916.3764546" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2503.18494v1</id>
+    <title>Verbal Process Supervision Elicits Better Coding Agents</title>
+    <updated>2025-03-24T09:48:59Z</updated>
+    <link href="https://arxiv.org/abs/2503.18494v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2503.18494v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The emergence of large language models and their applications as AI agents have significantly advanced state-of-the-art code generation benchmarks, transforming modern software engineering tasks. However, even with test-time computed reasoning models, these systems still struggle with complex software engineering challenges. This work introduces CURA, a code understanding and reasoning agent system enhanced with verbal process supervision (VPS), achieving a 3.65\% improvement over baseline models on challenging benchmarks like BigCodeBench. Furthermore, CURA, when paired with the o3-mini model and VPS techniques, attains state-of-the-art performance. This work represents a step forward in integrating reasoning-driven architectures with LLM-based code generation, enabling agentic reasoning for language models to solve complex software engineering tasks.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-03-24T09:48:59Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Hao-Yuan Chen</name>
+    </author>
+    <author>
+      <name>Cheng-Pong Huang</name>
+    </author>
+    <author>
+      <name>Jui-Ming Yao</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2503.18455v1</id>
+    <title>SEAlign: Alignment Training for Software Engineering Agent</title>
+    <updated>2025-03-24T08:59:21Z</updated>
+    <link href="https://arxiv.org/abs/2503.18455v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2503.18455v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent advances in code generation models have demonstrated impressive capabilities in automating software development tasks, yet these models still struggle in real-world software engineering scenarios. Although current training methods, particularly post-training, excel at solving competitive programming problems, they fail to adequately prepare models for the complexities of practical software development. This misalignment raises the critical question: Are existing alignment training methods well suited for real-world software engineering tasks? In this study, we identify this issue and propose SEAlign, a novel alignment framework designed to bridge the gap between code generation models and real-world software development tasks. SEAlign leverages the unique characteristics of software engineering processes, including high-quality workflow steps, to enhance model capabilities. Our framework further employs Monte Carlo Tree Search for fine-grained alignment in multi-step decision processes, followed by preference optimization on critical actions to ensure models meet real-world requirements. We evaluate SEAlign on three standard agentic benchmarks for real-world software engineering, including HumanEvalFix, SWE-Bench-Lite, and SWE-Bench-Verified. Experimental results demonstrate state-of-the-art performance with minimal training overhead. In addition, we develop an agent-based software development platform using SEAlign, which successfully automates the creation of several small applications. Human evaluations of these applications highlight significant improvements in both task performance and user experience. Our findings underscore the potential of SEAlign to accelerate the adoption of large code models in real-world software development. We believe that this research makes a meaningful step towards fully automated software engineering.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-03-24T08:59:21Z</published>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Kechi Zhang</name>
+    </author>
+    <author>
+      <name>Huangzhao Zhang</name>
+    </author>
+    <author>
+      <name>Ge Li</name>
+    </author>
+    <author>
+      <name>Jinliang You</name>
+    </author>
+    <author>
+      <name>Jia Li</name>
+    </author>
+    <author>
+      <name>Yunfei Zhao</name>
+    </author>
+    <author>
+      <name>Zhi Jin</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2503.14713v1</id>
+    <title>TestForge: Feedback-Driven, Agentic Test Suite Generation</title>
+    <updated>2025-03-18T20:21:44Z</updated>
+    <link href="https://arxiv.org/abs/2503.14713v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2503.14713v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Automated test generation holds great promise for alleviating the burdens of manual test creation. However, existing search-based techniques compromise on test readability, while LLM-based approaches are prohibitively expensive in practice. We present TestForge, an agentic unit testing framework designed to cost-effectively generate high-quality test suites for real-world code. Our key insight is to reframe LLM-based test generation as an iterative process. TestForge thus begins with tests generated via zero-shot prompting, and then continuously refines those tests based on feedback from test executions and coverage reports. We evaluate TestForge on TestGenEval, a real world unit test generation benchmark sourced from 11 large scale open source repositories; we show that TestForge achieves a pass@1 rate of 84.3%, 44.4% line coverage and 33.8% mutation score on average, outperforming prior classical approaches and a one-iteration LLM-based baseline. TestForge produces more natural and understandable tests compared to state-of-the-art search-based techniques, and offers substantial cost savings over LLM-based techniques (at $0.63 per file). Finally, we release a version of TestGenEval integrated with the OpenHands platform, a popular open-source framework featuring a diverse set of software engineering agents and agentic benchmarks, for future extension and development.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-03-18T20:21:44Z</published>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Kush Jain</name>
+    </author>
+    <author>
+      <name>Claire Le Goues</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2503.14269v1</id>
+    <title>DARS: Dynamic Action Re-Sampling to Enhance Coding Agent Performance by Adaptive Tree Traversal</title>
+    <updated>2025-03-18T14:02:59Z</updated>
+    <link href="https://arxiv.org/abs/2503.14269v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2503.14269v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Language Models (LLMs) have revolutionized various domains, including natural language processing, data analysis, and software development, by enabling automation. In software engineering, LLM-powered coding agents have garnered significant attention due to their potential to automate complex development tasks, assist in debugging, and enhance productivity. However, existing approaches often struggle with sub-optimal decision-making, requiring either extensive manual intervention or inefficient compute scaling strategies. To improve coding agent performance, we present Dynamic Action Re-Sampling (DARS), a novel inference time compute scaling approach for coding agents, that is faster and more effective at recovering from sub-optimal decisions compared to baselines. While traditional agents either follow linear trajectories or rely on random sampling for scaling compute, our approach DARS works by branching out a trajectory at certain key decision points by taking an alternative action given the history of the trajectory and execution feedback of the previous attempt from that point. We evaluate our approach on SWE-Bench Lite benchmark, demonstrating that this scaling strategy achieves a pass@k score of 55% with Claude 3.5 Sonnet V2. Our framework achieves a pass@1 rate of 47%, outperforming state-of-the-art (SOTA) open-source frameworks.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-03-18T14:02:59Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Vaibhav Aggarwal</name>
+    </author>
+    <author>
+      <name>Ojasv Kamal</name>
+    </author>
+    <author>
+      <name>Abhinav Japesh</name>
+    </author>
+    <author>
+      <name>Zhijing Jin</name>
+    </author>
+    <author>
+      <name>Bernhard Schölkopf</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2503.07701v1</id>
+    <title>Automated Benchmark Generation for Repository-Level Coding Tasks</title>
+    <updated>2025-03-10T17:42:49Z</updated>
+    <link href="https://arxiv.org/abs/2503.07701v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2503.07701v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Code Agent development is an extremely active research area, where a reliable performance metric is critical for tracking progress and guiding new developments. This demand is underscored by the meteoric rise in popularity of SWE-Bench. This benchmark challenges code agents to generate patches addressing GitHub issues given the full repository as context. The correctness of generated patches is then evaluated by executing a human-written test suite extracted from the repository after the issue's resolution. However, constructing benchmarks like SWE-Bench requires substantial manual effort to set up historically accurate execution environments for testing. Crucially, this severely limits the number of considered repositories, e.g., just 12 for SWE-Bench. Considering so few repositories, selected for their popularity runs the risk of leading to a distributional mismatch, i.e., the measured performance may not be representative of real-world scenarios potentially misguiding development efforts. In this work, we address this challenge and introduce SetUpAgent, a fully automated system capable of historically accurate dependency setup, test execution, and result parsing. Using SetUpAgent, we generate two new datasets: (i) SWEE-Bench an extended version of SWE-Bench encompassing hundreds of repositories, and (ii) SWA-Bench a benchmark focusing on applications rather than libraries. Comparing these datasets to SWE-Bench with respect to their characteristics and code agent performance, we find significant distributional differences, including lower issue description quality and detail level, higher fix complexity, and most importantly up to 40% lower agent success rates.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-03-10T17:42:49Z</published>
+    <arxiv:comment>Accepted at DL4C@ICLR'25 and FMWild@ICLR'25</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Konstantinos Vergopoulos</name>
+    </author>
+    <author>
+      <name>Mark Niklas Müller</name>
+    </author>
+    <author>
+      <name>Martin Vechev</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2502.18525v2</id>
+    <title>Programming with Pixels: Can Computer-Use Agents do Software Engineering?</title>
+    <updated>2025-10-03T02:09:59Z</updated>
+    <link href="https://arxiv.org/abs/2502.18525v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2502.18525v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Computer-use agents (CUAs) hold the promise of performing a wide variety of general tasks, but current evaluations have primarily focused on simple scenarios. It therefore remains unclear whether such generalist agents can automate more sophisticated and specialized work such as software engineering (SWE). To investigate this, we introduce $\texttt{Programming with Pixels}$ (PwP), the first comprehensive computer-use environment for software engineering, where agents visually control an IDE to perform diverse software engineering tasks. To enable holistic evaluation, we also introduce \texttt{PwP-Bench}, a benchmark of 15 existing and new software-engineering tasks spanning multiple modalities, programming languages, and skillsets. We perform an extensive evaluation of state-of-the-art open-weight and closed-weight CUAs and find that when interacting purely visually, they perform significantly worse than specialized coding agents. However, when the same CUAs are given direct access to just two APIs-file editing and bash operations-performance jumps, often reaching the levels of specialized agents despite having a task-agnostic design. Furthermore, when given access to additional IDE tools via text APIs, all models show further gains. Our analysis shows that current CUAs fall short mainly due to limited visual grounding and the inability to take full advantage of the rich environment, leaving clear room for future improvements.PwP establishes software engineering as a natural domain for benchmarking whether generalist computer-use agents can reach specialist-level performance on sophisticated tasks. Code and data released at https://programmingwithpixels.com</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-02-24T18:41:33Z</published>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Pranjal Aggarwal</name>
+    </author>
+    <author>
+      <name>Sean Welleck</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2502.11705v2</id>
+    <title>LLM Agents Making Agent Tools</title>
+    <updated>2025-05-29T18:47:41Z</updated>
+    <link href="https://arxiv.org/abs/2502.11705v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2502.11705v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Tool use has turned large language models (LLMs) into powerful agents that can perform complex multi-step tasks by dynamically utilising external software components. However, these tools must be implemented in advance by human developers, hindering the applicability of LLM agents in domains demanding large numbers of highly specialised tools, like in life sciences and medicine. Motivated by the growing trend of scientific studies accompanied by public code repositories, we propose ToolMaker, an agentic framework that autonomously transforms papers with code into LLM-compatible tools. Given a GitHub URL and short task description, ToolMaker autonomously installs dependencies and generates code to perform the task, using a closed-loop self-correction mechanism for debugging. To evaluate our approach, we introduce a benchmark comprising 15 complex computational tasks spanning various domains with over 100 unit tests to assess correctness and robustness. Our method correctly implements 80% of the tasks, substantially outperforming current state-of-the-art software engineering agents. ToolMaker therefore is a step towards fully autonomous agent-based scientific workflows. Our code and benchmark are publicly available at https://github.com/KatherLab/ToolMaker.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.MA" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-02-17T11:44:11Z</published>
+    <arxiv:comment>Accepted at ACL 2025</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Georg Wölflein</name>
+    </author>
+    <author>
+      <name>Dyke Ferber</name>
+    </author>
+    <author>
+      <name>Daniel Truhn</name>
+    </author>
+    <author>
+      <name>Ognjen Arandjelović</name>
+    </author>
+    <author>
+      <name>Jakob Nikolas Kather</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2502.05368v2</id>
+    <title>Otter: Generating Tests from Issues to Validate SWE Patches</title>
+    <updated>2025-05-30T17:25:04Z</updated>
+    <link href="https://arxiv.org/abs/2502.05368v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2502.05368v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>While there has been plenty of work on generating tests from existing code, there has been limited work on generating tests from issues. A correct test must validate the code patch that resolves the issue. This paper focuses on the scenario where that code patch does not yet exist. Doing so supports two major use-cases. First, it supports TDD (test-driven development), the discipline of "test first, write code later" that has well-documented benefits for human software engineers. Second, it also validates SWE (software engineering) agents, which generate code patches for resolving issues. This paper introduces TDD-Bench-Verified, a benchmark for generating tests from issues, and Otter, an LLM-based solution for this task. Otter augments LLMs with rule-based analysis to check and repair their outputs, and introduces a novel self-reflective action planner. Experiments show Otter outperforming state-of-the-art systems for generating tests from issues, in addition to enhancing systems that generate patches from issues. We hope that Otter helps make developers more productive at resolving issues and leads to more robust, well-tested code.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-02-07T22:41:31Z</published>
+    <arxiv:comment>Accepted to the main technical track of the International Conference on Machine Learning (ICML), 2025</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Toufique Ahmed</name>
+    </author>
+    <author>
+      <name>Jatin Ganhotra</name>
+    </author>
+    <author>
+      <name>Rangeet Pan</name>
+    </author>
+    <author>
+      <name>Avraham Shinnar</name>
+    </author>
+    <author>
+      <name>Saurabh Sinha</name>
+    </author>
+    <author>
+      <name>Martin Hirzel</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2502.02747v2</id>
+    <title>PatchPilot: A Cost-Efficient Software Engineering Agent with Early Attempts on Formal Verification</title>
+    <updated>2025-06-10T18:19:40Z</updated>
+    <link href="https://arxiv.org/abs/2502.02747v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2502.02747v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent research builds various patching agents that combine large language models (LLMs) with non-ML tools and achieve promising results on the state-of-the-art (SOTA) software patching benchmark, SWE-bench. Based on how to determine the patching workflows, existing patching agents can be categorized as agent-based planning methods, which rely on LLMs for planning, and rule-based planning methods, which follow a pre-defined workflow. At a high level, agent-based planning methods achieve high patching performance but with a high cost and limited stability. Rule-based planning methods, on the other hand, are more stable and efficient but have key workflow limitations that compromise their patching performance. In this paper, we propose PatchPilot, an agentic patcher that strikes a balance between patching efficacy, stability, and cost-efficiency. PatchPilot proposes a novel rule-based planning workflow with five components: reproduction, localization, generation, validation, and refinement (where refinement is unique to PatchPilot). We introduce novel and customized designs to each component to optimize their effectiveness and efficiency. Through extensive experiments on the SWE-bench benchmarks, PatchPilot shows a superior performance than existing open-source methods while maintaining low cost (less than 1$ per instance) and ensuring higher stability. We also conduct a detailed ablation study to validate the key designs in each component. Our code is available at https://github.com/ucsb-mlsec/PatchPilot.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-02-04T22:30:02Z</published>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Hongwei Li</name>
+    </author>
+    <author>
+      <name>Yuheng Tang</name>
+    </author>
+    <author>
+      <name>Shiqi Wang</name>
+    </author>
+    <author>
+      <name>Wenbo Guo</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2502.02542v5</id>
+    <title>OverThink: Slowdown Attacks on Reasoning LLMs</title>
+    <updated>2026-09-17T20:35:22Z</updated>
+    <link href="https://arxiv.org/abs/2502.02542v5" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2502.02542v5" rel="related" type="application/pdf" title="pdf"/>
+    <summary>A reasoning language model (RLM) generates costly reasoning tokens, often hidden from the users, that help it excel at many tasks. Our Overthink attack targets RLM-based applications (such as chatbots or coding agents) that rely on external context by forcing these models to generate substantially more reasoning tokens while still producing contextually correct answers. An adversary conducts the attack by injecting decoy reasoning problems into available content, optimized to elicit a large number of tokens. We craft decoy challenges (using Markov decision processes, language translation, or graphic comprehension) that appear benign individually yet have an adversarial impact when inserted in the context, allowing them to easily evade safety filters. We evaluate Overthink on proprietary and open-source reasoning models across the FreshQA, SQuAD, and MuSR datasets, where we observe 13x, 46x, and 12x increases, respectively. We also explore multimodal attacks using images, which cause up to a 2.7x increase in reasoning, as well as attacks on coding agents by injecting decoys into skills, README files, and code, resulting in up to a 17x increase. We explore several defenses and evaluate their efficacy against different attack strategies, highlighting that defending against Overthink is nontrivial. Finally, we show that newer generations of RLMs, while showing a drastic increase in per-token cost, also exhibit up to a 2.3x increase in reasoning tokens, leaving them more vulnerable to Overthink attacks.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-02-04T18:12:41Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Abhinav Kumar</name>
+    </author>
+    <author>
+      <name>Jaechul Roh</name>
+    </author>
+    <author>
+      <name>Ali Naseh</name>
+    </author>
+    <author>
+      <name>Marzena Karpinska</name>
+    </author>
+    <author>
+      <name>Mohit Iyyer</name>
+    </author>
+    <author>
+      <name>Amir Houmansadr</name>
+    </author>
+    <author>
+      <name>Eugene Bagdasarian</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2501.16655v1</id>
+    <title>Large Language Model Critics for Execution-Free Evaluation of Code Changes</title>
+    <updated>2025-01-28T02:38:56Z</updated>
+    <link href="https://arxiv.org/abs/2501.16655v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2501.16655v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models (LLMs) offer a promising way forward for automating software engineering tasks, such as bug fixes, feature additions, etc., via multi-step LLM-based agentic workflows. However, existing metrics for evaluating such workflows, mainly build status and occasionally log analysis, are too sparse and limited in providing the information needed to assess the quality of changes made. In this work, we designed LLM-based critics to derive well-structured and rigorous intermediate/step-level, execution-free evaluation proxies for repo-level code changes. Importantly, we assume access to the gold test patch for the problem (i.e., reference-aware) to assess both semantics and executability of generated patches. With the gold test patch as a reference, we predict executability of all editing locations with an F1 score of 91.6%, aggregating which, we can predict the build status in 84.8% of the instances in SWE-bench. In particular, such an execution-focused LLM critic outperforms other reference-free and reference-aware LLM critics by 38.9% to 72.5%. Moreover, we demonstrate the usefulness of such a reference-aware framework in comparing patches generated by different agentic workflows. Finally, we open-source the library developed for this project, which allows further usage for either other agentic workflows or other benchmarks. The source code is available at https://github.com/amazon-science/code-agent-eval.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-01-28T02:38:56Z</published>
+    <arxiv:comment>10 pages, 4 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Aashish Yadavally</name>
+    </author>
+    <author>
+      <name>Hoan Nguyen</name>
+    </author>
+    <author>
+      <name>Laurent Callot</name>
+    </author>
+    <author>
+      <name>Gauthier Guinet</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2501.07811v2</id>
+    <title>CodeCoR: An LLM-Based Self-Reflective Multi-Agent Framework for Code Generation</title>
+    <updated>2026-07-17T14:44:05Z</updated>
+    <link href="https://arxiv.org/abs/2501.07811v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2501.07811v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Code generation aims to produce code that fulfills requirements written in natural language automatically. Large Language Models (LLMs) like ChatGPT have demonstrated promising effectiveness in this area. Nonetheless, the LLMs often fail to ensure the syntactic and semantic correctness of the generated code. Recently, researchers proposed multi-agent frameworks that guide LLMs with different prompts to analyze programming tasks, generate code, and perform testing in a sequential workflow. However, the performance of the workflow is not robust as code generation depends on the performance of each agent. To address this challenge, we propose CodeCoR, a multi-agent framework that prunes intermediate outputs at different stages to reduce error propagation in sequential code generation workflows. Specifically, for a given task description, four agents in CodeCoR generate prompts, code, test cases, and repair advice, respectively. Each agent generates more than one output and prunes away the low-quality ones. The generated code is tested in the local environment: the code that fails to pass the generated test cases is sent to the repair agent, and the coding agent re-generates the code based on repair advice. Finally, the code that passes the highest number of generated test cases is returned to the users. Our experiments on four widely used datasets, HumanEval, HumanEval-ET, MBPP, and MBPP-ET, demonstrate that CodeCoR outperforms existing baselines (e.g., CodeCoT and MapCoder), achieving an average Pass@1 score of 77.13%.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-01-14T03:21:10Z</published>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Ruwei Pan</name>
+    </author>
+    <author>
+      <name>Hongyu Zhang</name>
+    </author>
+    <author>
+      <name>Chao Liu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2412.21139v2</id>
+    <title>Training Software Engineering Agents and Verifiers with SWE-Gym</title>
+    <updated>2025-06-06T07:53:20Z</updated>
+    <link href="https://arxiv.org/abs/2412.21139v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2412.21139v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We present SWE-Gym, the first environment for training real-world software engineering (SWE) agents. SWE-Gym contains 2,438 real-world Python task instances, each comprising a codebase with an executable runtime environment, unit tests, and a task specified in natural language. We use SWE-Gym to train language model based SWE agents, achieving up to 19% absolute gains in resolve rate on the popular SWE-Bench Verified and Lite test sets. We also experiment with inference-time scaling through verifiers trained on agent trajectories sampled from SWE-Gym. When combined with our fine-tuned SWE agents, we achieve 32.0% and 26.0% on SWE-Bench Verified and Lite, respectively, reflecting a new state-of-the-art for open-weight SWE agents. To facilitate further research, we publicly release SWE-Gym, models, and agent trajectories.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-12-30T18:15:39Z</published>
+    <arxiv:comment>Accepted at ICML 2025. Code at https://github.com/SWE-Gym/SWE-Gym</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Jiayi Pan</name>
+    </author>
+    <author>
+      <name>Xingyao Wang</name>
+    </author>
+    <author>
+      <name>Graham Neubig</name>
+    </author>
+    <author>
+      <name>Navdeep Jaitly</name>
+    </author>
+    <author>
+      <name>Heng Ji</name>
+    </author>
+    <author>
+      <name>Alane Suhr</name>
+    </author>
+    <author>
+      <name>Yizhe Zhang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2412.20145v2</id>
+    <title>Efficient Multi-Agent Collaboration with Tool Use for Online Planning in Complex Table Question Answering</title>
+    <updated>2025-02-08T18:16:02Z</updated>
+    <link href="https://arxiv.org/abs/2412.20145v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2412.20145v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Complex table question answering (TQA) aims to answer questions that require complex reasoning, such as multi-step or multi-category reasoning, over data represented in tabular form. Previous approaches demonstrated notable performance by leveraging either closed-source large language models (LLMs) or fine-tuned open-weight LLMs. However, fine-tuning LLMs requires high-quality training data, which is costly to obtain, and utilizing closed-source LLMs poses accessibility challenges and leads to reproducibility issues. In this paper, we propose Multi-Agent Collaboration with Tool use (MACT), a framework that requires neither closed-source models nor fine-tuning. In MACT, a planning agent and a coding agent that also make use of tools collaborate to answer questions. Our experiments on four TQA benchmarks show that MACT outperforms previous SoTA systems on three out of four benchmarks and that it performs comparably to the larger and more expensive closed-source model GPT-4 on two benchmarks, even when using only open-weight models without any fine-tuning. We conduct extensive analyses to prove the effectiveness of MACT's multi-agent collaboration in TQA.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-12-28T13:13:33Z</published>
+    <arxiv:comment>Accepted at NAACL 2025 Findings</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Wei Zhou</name>
+    </author>
+    <author>
+      <name>Mohsen Mesgar</name>
+    </author>
+    <author>
+      <name>Annemarie Friedrich</name>
+    </author>
+    <author>
+      <name>Heike Adel</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2412.12571v1</id>
+    <title>ChatDiT: A Training-Free Baseline for Task-Agnostic Free-Form Chatting with Diffusion Transformers</title>
+    <updated>2024-12-17T06:03:05Z</updated>
+    <link href="https://arxiv.org/abs/2412.12571v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2412.12571v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent research arXiv:2410.15027 arXiv:2410.23775 has highlighted the inherent in-context generation capabilities of pretrained diffusion transformers (DiTs), enabling them to seamlessly adapt to diverse visual tasks with minimal or no architectural modifications. These capabilities are unlocked by concatenating self-attention tokens across multiple input and target images, combined with grouped and masked generation pipelines. Building upon this foundation, we present ChatDiT, a zero-shot, general-purpose, and interactive visual generation framework that leverages pretrained diffusion transformers in their original form, requiring no additional tuning, adapters, or modifications. Users can interact with ChatDiT to create interleaved text-image articles, multi-page picture books, edit images, design IP derivatives, or develop character design settings, all through free-form natural language across one or more conversational rounds. At its core, ChatDiT employs a multi-agent system comprising three key components: an Instruction-Parsing agent that interprets user-uploaded images and instructions, a Strategy-Planning agent that devises single-step or multi-step generation actions, and an Execution agent that performs these actions using an in-context toolkit of diffusion transformers. We thoroughly evaluate ChatDiT on IDEA-Bench arXiv:2412.11767, comprising 100 real-world design tasks and 275 cases with diverse instructions and varying numbers of input and target images. Despite its simplicity and training-free approach, ChatDiT surpasses all competitors, including those specifically designed and trained on extensive multi-task datasets. We further identify key limitations of pretrained DiTs in zero-shot adapting to tasks. We release all code, agents, results, and intermediate outputs to facilitate further research at https://github.com/ali-vilab/ChatDiT</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-12-17T06:03:05Z</published>
+    <arxiv:comment>Tech report. Project page: https://ali-vilab.github.io/ChatDiT-Page/</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Lianghua Huang</name>
+    </author>
+    <author>
+      <name>Wei Wang</name>
+    </author>
+    <author>
+      <name>Zhi-Fan Wu</name>
+    </author>
+    <author>
+      <name>Yupeng Shi</name>
+    </author>
+    <author>
+      <name>Chen Liang</name>
+    </author>
+    <author>
+      <name>Tong Shen</name>
+    </author>
+    <author>
+      <name>Han Zhang</name>
+    </author>
+    <author>
+      <name>Huanzhang Dou</name>
+    </author>
+    <author>
+      <name>Yu Liu</name>
+    </author>
+    <author>
+      <name>Jingren Zhou</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2412.11722v2</id>
+    <title>GHIssuemarket: A Sandbox Environment for SWE-Agents Economic Experimentation</title>
+    <updated>2024-12-17T17:06:43Z</updated>
+    <link href="https://arxiv.org/abs/2412.11722v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2412.11722v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Software engineering agents (swe-agents), as key innovations in intelligent software engineering, are poised in the industry's end-of-programming debate to transcend from assistance to primary roles. we argue the importance of swe-agents' economic viability to their transcendence -- defined as their capacity to maintain efficient operations in constrained environments -- and propose its exploration via software engineering economics experimentation.we introduce ghissuemarket sandbox, a controlled virtual environment for swe-agents' economic experimentation, simulating the environment of an envisioned peer-to-peer multiagent system for github issues outsourcing auctions. in this controlled setting, autonomous swe-agents auction and bid on github issues, leveraging real-time communication, a built-in retrieval-augmented generation (rag) interface for effective decision-making, and instant cryptocurrency micropayments. we open-source our software artifacts, discuss our sandbox engineering decisions, and advocate towards swe-agents' economic exploration -- an emerging field we intend to pursue under the term intelligent software engineering economics (isee).</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-12-16T12:44:42Z</published>
+    <arxiv:comment>2 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Mohamed A. Fouad</name>
+    </author>
+    <author>
+      <name>Marcelo de Almeida Maia</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2412.06294v1</id>
+    <title>Beyond pip install: Evaluating LLM Agents for the Automated Installation of Python Projects</title>
+    <updated>2024-12-09T08:37:06Z</updated>
+    <link href="https://arxiv.org/abs/2412.06294v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2412.06294v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Many works have recently proposed the use of Large Language Model (LLM) based agents for performing `repository level' tasks, loosely defined as a set of tasks whose scopes are greater than a single file. This has led to speculation that the orchestration of these repository-level tasks could lead to software engineering agents capable of performing almost independently of human intervention. However, of the suite of tasks that would need to be performed by this autonomous software engineering agent, we argue that one important task is missing, which is to fulfil project level dependency by installing other repositories. To investigate the feasibility of this repository level installation task, we introduce a benchmark of of repository installation tasks curated from 40 open source Python projects, which includes a ground truth installation process for each target repository. Further, we propose Installamatic, an agent which aims to perform and verify the installation of a given repository by searching for relevant instructions from documentation in the repository. Empirical experiments reveal that that 55% of the studied repositories can be automatically installed by our agent at least one out of ten times. Through further analysis, we identify the common causes for our agent's inability to install a repository, discuss the challenges faced in the design and implementation of such an agent and consider the implications that such an agent could have for developers.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-12-09T08:37:06Z</published>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Louis Milliken</name>
+    </author>
+    <author>
+      <name>Sungmin Kang</name>
+    </author>
+    <author>
+      <name>Shin Yoo</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2411.18015v1</id>
+    <title>AEGIS: An Agent-based Framework for General Bug Reproduction from Issue Descriptions</title>
+    <updated>2024-11-27T03:16:47Z</updated>
+    <link href="https://arxiv.org/abs/2411.18015v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2411.18015v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In software maintenance, bug reproduction is essential for effective fault localization and repair. Manually writing reproduction scripts is a time-consuming task with high requirements for developers. Hence, automation of bug reproduction has increasingly attracted attention from researchers and practitioners. However, the existing studies on bug reproduction are generally limited to specific bug types such as program crashes, and hard to be applied to general bug reproduction. In this paper, considering the superior performance of agent-based methods in code intelligence tasks, we focus on designing an agent-based framework for the task. Directly employing agents would lead to limited bug reproduction performance, due to entangled subtasks, lengthy retrieved context, and unregulated actions. To mitigate the challenges, we propose an Automated gEneral buG reproductIon Scripts generation framework, named AEGIS, which is the first agent-based framework for the task. AEGIS mainly contains two modules: (1) A concise context construction module, which aims to guide the code agent in extracting structured information from issue descriptions, identifying issue-related code with detailed explanations, and integrating these elements to construct the concise context; (2) A FSM-based multi-feedback optimization module to further regulate the behavior of the code agent within the finite state machine (FSM), ensuring a controlled and efficient script generation process based on multi-dimensional feedback. Extensive experiments on the public benchmark dataset show that AEGIS outperforms the state-of-the-art baseline by 23.0% in F-&gt;P metric. In addition, the bug reproduction scripts generated by AEGIS can improve the relative resolved rate of Agentless by 12.5%.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-11-27T03:16:47Z</published>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Xinchen Wang</name>
+    </author>
+    <author>
+      <name>Pengfei Gao</name>
+    </author>
+    <author>
+      <name>Xiangxin Meng</name>
+    </author>
+    <author>
+      <name>Chao Peng</name>
+    </author>
+    <author>
+      <name>Ruida Hu</name>
+    </author>
+    <author>
+      <name>Yun Lin</name>
+    </author>
+    <author>
+      <name>Cuiyun Gao</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2411.11916v1</id>
+    <title>From Words to Structured Visuals: A Benchmark and Framework for Text-to-Diagram Generation and Editing</title>
+    <updated>2024-11-18T02:58:37Z</updated>
+    <link href="https://arxiv.org/abs/2411.11916v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2411.11916v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We introduce the task of text-to-diagram generation, which focuses on creating structured visual representations directly from textual descriptions. Existing approaches in text-to-image and text-to-code generation lack the logical organization and flexibility needed to produce accurate, editable diagrams, often resulting in outputs that are either unstructured or difficult to modify. To address this gap, we introduce DiagramGenBenchmark, a comprehensive evaluation framework encompassing eight distinct diagram categories, including flowcharts, model architecture diagrams, and mind maps. Additionally, we present DiagramAgent, an innovative framework with four core modules-Plan Agent, Code Agent, Check Agent, and Diagram-to-Code Agent-designed to facilitate both the generation and refinement of complex diagrams. Our extensive experiments, which combine objective metrics with human evaluations, demonstrate that DiagramAgent significantly outperforms existing baseline models in terms of accuracy, structural coherence, and modifiability. This work not only establishes a foundational benchmark for the text-to-diagram generation task but also introduces a powerful toolset to advance research and applications in this emerging area.</summary>
+    <category term="cs.DB" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-11-18T02:58:37Z</published>
+    <arxiv:primary_category term="cs.DB"/>
+    <author>
+      <name>Jingxuan Wei</name>
+    </author>
+    <author>
+      <name>Cheng Tan</name>
+    </author>
+    <author>
+      <name>Qi Chen</name>
+    </author>
+    <author>
+      <name>Gaowei Wu</name>
+    </author>
+    <author>
+      <name>Siyuan Li</name>
+    </author>
+    <author>
+      <name>Zhangyang Gao</name>
+    </author>
+    <author>
+      <name>Linzhuang Sun</name>
+    </author>
+    <author>
+      <name>Bihui Yu</name>
+    </author>
+    <author>
+      <name>Ruifeng Guo</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2411.07781v1</id>
+    <title>RedCode: Risky Code Execution and Generation Benchmark for Code Agents</title>
+    <updated>2024-11-12T13:30:06Z</updated>
+    <link href="https://arxiv.org/abs/2411.07781v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2411.07781v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>With the rapidly increasing capabilities and adoption of code agents for AI-assisted coding, safety concerns, such as generating or executing risky code, have become significant barriers to the real-world deployment of these agents. To provide comprehensive and practical evaluations on the safety of code agents, we propose RedCode, a benchmark for risky code execution and generation: (1) RedCode-Exec provides challenging prompts that could lead to risky code execution, aiming to evaluate code agents' ability to recognize and handle unsafe code. We provide a total of 4,050 risky test cases in Python and Bash tasks with diverse input formats including code snippets and natural text. They covers 25 types of critical vulnerabilities spanning 8 domains (e.g., websites, file systems). We provide Docker environments and design corresponding evaluation metrics to assess their execution results. (2) RedCode-Gen provides 160 prompts with function signatures and docstrings as input to assess whether code agents will follow instructions to generate harmful code or software. Our empirical findings, derived from evaluating three agent frameworks based on 19 LLMs, provide insights into code agents' vulnerabilities. For instance, evaluations on RedCode-Exec show that agents are more likely to reject executing risky operations on the operating system, but are less likely to reject executing technically buggy code, indicating high risks. Risky operations described in natural text lead to a lower rejection rate than those in code format. Additionally, evaluations on RedCode-Gen show that more capable base models and agents with stronger overall coding abilities, such as GPT4, tend to produce more sophisticated and effective harmful software. Our findings highlight the need for stringent safety evaluations for diverse code agents. Our dataset and code are available at https://github.com/AI-secure/RedCode.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-11-12T13:30:06Z</published>
+    <arxiv:comment>Accepted by NeurIPS 2024 Datasets and Benchmarks Track</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Chengquan Guo</name>
+    </author>
+    <author>
+      <name>Xun Liu</name>
+    </author>
+    <author>
+      <name>Chulin Xie</name>
+    </author>
+    <author>
+      <name>Andy Zhou</name>
+    </author>
+    <author>
+      <name>Yi Zeng</name>
+    </author>
+    <author>
+      <name>Zinan Lin</name>
+    </author>
+    <author>
+      <name>Dawn Song</name>
+    </author>
+    <author>
+      <name>Bo Li</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2411.07763v2</id>
+    <title>Spider 2.0: Evaluating Language Models on Real-World Enterprise Text-to-SQL Workflows</title>
+    <updated>2025-03-17T16:10:45Z</updated>
+    <link href="https://arxiv.org/abs/2411.07763v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2411.07763v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Real-world enterprise text-to-SQL workflows often involve complex cloud or local data across various database systems, multiple SQL queries in various dialects, and diverse operations from data transformation to analytics. We introduce Spider 2.0, an evaluation framework comprising 632 real-world text-to-SQL workflow problems derived from enterprise-level database use cases. The databases in Spider 2.0 are sourced from real data applications, often containing over 1,000 columns and stored in local or cloud database systems such as BigQuery and Snowflake. We show that solving problems in Spider 2.0 frequently requires understanding and searching through database metadata, dialect documentation, and even project-level codebases. This challenge calls for models to interact with complex SQL workflow environments, process extremely long contexts, perform intricate reasoning, and generate multiple SQL queries with diverse operations, often exceeding 100 lines, which goes far beyond traditional text-to-SQL challenges. Our evaluations indicate that based on o1-preview, our code agent framework successfully solves only 21.3% of the tasks, compared with 91.2% on Spider 1.0 and 73.0% on BIRD. Our results on Spider 2.0 show that while language models have demonstrated remarkable performance in code generation -- especially in prior text-to-SQL benchmarks -- they require significant improvement in order to achieve adequate performance for real-world enterprise usage. Progress on Spider 2.0 represents crucial steps towards developing intelligent, autonomous, code agents for real-world enterprise settings. Our code, baseline models, and data are available at https://spider2-sql.github.io</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.DB" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-11-12T12:52:17Z</published>
+    <arxiv:comment>ICLR 2025 Oral</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Fangyu Lei</name>
+    </author>
+    <author>
+      <name>Jixuan Chen</name>
+    </author>
+    <author>
+      <name>Yuxiao Ye</name>
+    </author>
+    <author>
+      <name>Ruisheng Cao</name>
+    </author>
+    <author>
+      <name>Dongchan Shin</name>
+    </author>
+    <author>
+      <name>Hongjin Su</name>
+    </author>
+    <author>
+      <name>Zhaoqing Suo</name>
+    </author>
+    <author>
+      <name>Hongcheng Gao</name>
+    </author>
+    <author>
+      <name>Wenjing Hu</name>
+    </author>
+    <author>
+      <name>Pengcheng Yin</name>
+    </author>
+    <author>
+      <name>Victor Zhong</name>
+    </author>
+    <author>
+      <name>Caiming Xiong</name>
+    </author>
+    <author>
+      <name>Ruoxi Sun</name>
+    </author>
+    <author>
+      <name>Qian Liu</name>
+    </author>
+    <author>
+      <name>Sida Wang</name>
+    </author>
+    <author>
+      <name>Tao Yu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2410.21909v3</id>
+    <title>SceneGenAgent: Precise Industrial Scene Generation with Coding Agent</title>
+    <updated>2025-06-26T06:24:08Z</updated>
+    <link href="https://arxiv.org/abs/2410.21909v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2410.21909v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The modeling of industrial scenes is essential for simulations in industrial manufacturing. While large language models (LLMs) have shown significant progress in generating general 3D scenes from textual descriptions, generating industrial scenes with LLMs poses a unique challenge due to their demand for precise measurements and positioning, requiring complex planning over spatial arrangement. To address this challenge, we introduce SceneGenAgent, an LLM-based agent for generating industrial scenes through C# code. SceneGenAgent ensures precise layout planning through a structured and calculable format, layout verification, and iterative refinement to meet the quantitative requirements of industrial scenarios. Experiment results demonstrate that LLMs powered by SceneGenAgent exceed their original performance, reaching up to 81.0% success rate in real-world industrial scene generation tasks and effectively meeting most scene generation requirements. To further enhance accessibility, we construct SceneInstruct, a dataset designed for fine-tuning open-source LLMs to integrate into SceneGenAgent. Experiments show that fine-tuning open-source LLMs on SceneInstruct yields significant performance improvements, with Llama3.1-70B approaching the capabilities of GPT-4o. Our code and data are available at https://github.com/THUDM/SceneGenAgent .</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-10-29T10:01:40Z</published>
+    <arxiv:comment>Accepted to ACL 2025</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Xiao Xia</name>
+    </author>
+    <author>
+      <name>Dan Zhang</name>
+    </author>
+    <author>
+      <name>Zibo Liao</name>
+    </author>
+    <author>
+      <name>Zhenyu Hou</name>
+    </author>
+    <author>
+      <name>Tianrui Sun</name>
+    </author>
+    <author>
+      <name>Jing Li</name>
+    </author>
+    <author>
+      <name>Ling Fu</name>
+    </author>
+    <author>
+      <name>Yuxiao Dong</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2410.18032v5</id>
+    <title>GraphTeam: Facilitating Large Language Model-based Graph Analysis via Multi-Agent Collaboration</title>
+    <updated>2025-11-03T16:31:39Z</updated>
+    <link href="https://arxiv.org/abs/2410.18032v5" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2410.18032v5" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Graphs are widely used for modeling relational data in real-world scenarios, such as social networks and urban computing. Existing LLM-based graph analysis approaches either integrate graph neural networks (GNNs) for specific machine learning tasks, limiting their transferability, or rely solely on LLMs' internal reasoning ability, resulting in suboptimal performance. To address these limitations, we take advantage of recent advances in LLM-based agents, which have shown capabilities of utilizing external knowledge or tools for problem solving. By simulating human problem-solving strategies such as analogy and collaboration, we propose a multi-agent system based on LLMs named GraphTeam, for graph analysis. GraphTeam consists of five LLM-based agents from three modules, and the agents with different specialities can collaborate with each other to address complex problems. Specifically, (1) input-output normalization module: the question agent extracts and refines four key arguments from the original question, facilitating the problem understanding, and the answer agent organizes the results to meet the output requirement; (2) external knowledge retrieval module: we first build a knowledge base consisting of relevant documentation and experience information, and then the search agent retrieves the most relevant entries for each question. (3) problem-solving module: given the retrieved information from search agent, the coding agent uses established algorithms via programming to generate solutions, and in case the coding agent does not work, the reasoning agent will directly compute the results without programming. Extensive experiments on six graph analysis benchmarks demonstrate that GraphTeam achieves state-of-the-art performance with an average 25.85% improvement over the best baseline in terms of accuracy. The code and data are available at https://github.com/BUPT-GAMMA/GraphTeam.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.MA" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-10-23T17:02:59Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Xin Li</name>
+    </author>
+    <author>
+      <name>Qizhi Chu</name>
+    </author>
+    <author>
+      <name>Yubin Chen</name>
+    </author>
+    <author>
+      <name>Yang Liu</name>
+    </author>
+    <author>
+      <name>Yaoqi Liu</name>
+    </author>
+    <author>
+      <name>Zekai Yu</name>
+    </author>
+    <author>
+      <name>Weize Chen</name>
+    </author>
+    <author>
+      <name>Chen Qian</name>
+    </author>
+    <author>
+      <name>Chuan Shi</name>
+    </author>
+    <author>
+      <name>Cheng Yang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2410.16464v3</id>
+    <title>Beyond Browsing: API-Based Web Agents</title>
+    <updated>2025-06-16T22:23:37Z</updated>
+    <link href="https://arxiv.org/abs/2410.16464v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2410.16464v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Web browsers are a portal to the internet, where much of human activity is undertaken. Thus, there has been significant research work in AI agents that interact with the internet through web browsing. However, there is also another interface designed specifically for machine interaction with online content: application programming interfaces (APIs). In this paper we ask -- what if we were to take tasks traditionally tackled by Browsing Agents, and give AI agents access to APIs? To do so, we propose two varieties of agents: (1) an API-calling agent that attempts to perform online tasks through APIs only, similar to traditional coding agents, and (2) a Hybrid Agent that can interact with online data through both web browsing and APIs. In experiments on WebArena, a widely-used and realistic benchmark for web navigation tasks, we find that API-Based Agents outperform web Browsing Agents. Hybrid Agents out-perform both others nearly uniformly across tasks, resulting in a more than 24.0% absolute improvement over web browsing alone, achieving a success rate of 38.9%, the SOTA performance among task-agnostic agents. These results strongly suggest that when APIs are available, they present an attractive alternative to relying on web browsing alone.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.MA" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-10-21T19:46:06Z</published>
+    <arxiv:comment>20 pages, 8 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Yueqi Song</name>
+    </author>
+    <author>
+      <name>Frank Xu</name>
+    </author>
+    <author>
+      <name>Shuyan Zhou</name>
+    </author>
+    <author>
+      <name>Graham Neubig</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2410.09117v1</id>
+    <title>REDO: Execution-Free Runtime Error Detection for COding Agents</title>
+    <updated>2024-10-10T18:06:29Z</updated>
+    <link href="https://arxiv.org/abs/2410.09117v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2410.09117v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>As LLM-based agents exhibit exceptional capabilities in addressing complex problems, there is a growing focus on developing coding agents to tackle increasingly sophisticated tasks. Despite their promising performance, these coding agents often produce programs or modifications that contain runtime errors, which can cause code failures and are difficult for static analysis tools to detect. Enhancing the ability of coding agents to statically identify such errors could significantly improve their overall performance. In this work, we introduce Execution-free Runtime Error Detection for COding Agents (REDO), a method that integrates LLMs with static analysis tools to detect runtime errors for coding agents, without code execution. Additionally, we propose a benchmark task, SWE-Bench-Error-Detection (SWEDE), based on SWE-Bench (lite), to evaluate error detection in repository-level problems with complex external dependencies. Finally, through both quantitative and qualitative analyses across various error detection tasks, we demonstrate that REDO outperforms current state-of-the-art methods by achieving a 11.0% higher accuracy and 9.1% higher weighted F1 score; and provide insights into the advantages of incorporating LLMs for error detection.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-10-10T18:06:29Z</published>
+    <arxiv:comment>27 pages, 13 figures, 6 tables</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Shou Li</name>
+    </author>
+    <author>
+      <name>Andrey Kan</name>
+    </author>
+    <author>
+      <name>Laurent Callot</name>
+    </author>
+    <author>
+      <name>Bhavana Bhasker</name>
+    </author>
+    <author>
+      <name>Muhammad Shihab Rashid</name>
+    </author>
+    <author>
+      <name>Timothy B Esler</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2410.07331v2</id>
+    <title>DA-Code: Agent Data Science Code Generation Benchmark for Large Language Models</title>
+    <updated>2024-10-11T00:53:05Z</updated>
+    <link href="https://arxiv.org/abs/2410.07331v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2410.07331v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We introduce DA-Code, a code generation benchmark specifically designed to assess LLMs on agent-based data science tasks. This benchmark features three core elements: First, the tasks within DA-Code are inherently challenging, setting them apart from traditional code generation tasks and demanding advanced coding skills in grounding and planning. Second, examples in DA-Code are all based on real and diverse data, covering a wide range of complex data wrangling and analytics tasks. Third, to solve the tasks, the models must utilize complex data science programming languages, to perform intricate data processing and derive the answers. We set up the benchmark in a controllable and executable environment that aligns with real-world data analysis scenarios and is scalable. The annotators meticulously design the evaluation suite to ensure the accuracy and robustness of the evaluation. We develop the DA-Agent baseline. Experiments show that although the baseline performs better than other existing frameworks, using the current best LLMs achieves only 30.5% accuracy, leaving ample room for improvement. We release our benchmark at https://da-code-bench.github.io.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-10-09T18:00:05Z</published>
+    <arxiv:comment>EMNLP 2024</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Yiming Huang</name>
+    </author>
+    <author>
+      <name>Jianwen Luo</name>
+    </author>
+    <author>
+      <name>Yan Yu</name>
+    </author>
+    <author>
+      <name>Yitong Zhang</name>
+    </author>
+    <author>
+      <name>Fangyu Lei</name>
+    </author>
+    <author>
+      <name>Yifan Wei</name>
+    </author>
+    <author>
+      <name>Shizhu He</name>
+    </author>
+    <author>
+      <name>Lifu Huang</name>
+    </author>
+    <author>
+      <name>Xiao Liu</name>
+    </author>
+    <author>
+      <name>Jun Zhao</name>
+    </author>
+    <author>
+      <name>Kang Liu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2409.10737v2</id>
+    <title>AutoSafeCoder: A Multi-Agent Framework for Securing LLM Code Generation through Static Analysis and Fuzz Testing</title>
+    <updated>2024-11-05T03:00:38Z</updated>
+    <link href="https://arxiv.org/abs/2409.10737v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2409.10737v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent advancements in automatic code generation using large language models (LLMs) have brought us closer to fully automated secure software development. However, existing approaches often rely on a single agent for code generation, which struggles to produce secure, vulnerability-free code. Traditional program synthesis with LLMs has primarily focused on functional correctness, often neglecting critical dynamic security implications that happen during runtime. To address these challenges, we propose AutoSafeCoder, a multi-agent framework that leverages LLM-driven agents for code generation, vulnerability analysis, and security enhancement through continuous collaboration. The framework consists of three agents: a Coding Agent responsible for code generation, a Static Analyzer Agent identifying vulnerabilities, and a Fuzzing Agent performing dynamic testing using a mutation-based fuzzing approach to detect runtime errors. Our contribution focuses on ensuring the safety of multi-agent code generation by integrating dynamic and static testing in an iterative process during code generation by LLM that improves security. Experiments using the SecurityEval dataset demonstrate a 13% reduction in code vulnerabilities compared to baseline LLMs, with no compromise in functionality.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-09-16T21:15:56Z</published>
+    <arxiv:comment>Accepted to NeurIPS 2024 Workshop on Safe &amp; Trustworthy Agents</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Ana Nunez</name>
+    </author>
+    <author>
+      <name>Nafis Tanveer Islam</name>
+    </author>
+    <author>
+      <name>Sumit Kumar Jha</name>
+    </author>
+    <author>
+      <name>Peyman Najafirad</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2409.16299v3</id>
+    <title>HyperAgent: Generalist Software Engineering Agents to Solve Coding Tasks at Scale</title>
+    <updated>2025-09-05T08:01:17Z</updated>
+    <link href="https://arxiv.org/abs/2409.16299v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2409.16299v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Language Models (LLMs) have revolutionized software engineering (SE), showcasing remarkable proficiency in various coding tasks. Despite recent advancements that have enabled the creation of autonomous software agents utilizing LLMs for end-to-end development tasks, these systems are typically designed for specific SE functions. We introduce HyperAgent, an innovative generalist multi-agent system designed to tackle a wide range of SE tasks across different programming languages by mimicking the workflows of human developers. HyperAgent features four specialized agents-Planner, Navigator, Code Editor, and Executor-capable of handling the entire lifecycle of SE tasks, from initial planning to final verification. HyperAgent sets new benchmarks in diverse SE tasks, including GitHub issue resolution on the renowned SWE-Bench benchmark, outperforming robust baselines. Furthermore, HyperAgent demonstrates exceptional performance in repository-level code generation (RepoExec) and fault localization and program repair (Defects4J), often surpassing state-of-the-art baselines.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-09-09T19:35:34Z</published>
+    <arxiv:comment>49 pages</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Huy Nhat Phan</name>
+    </author>
+    <author>
+      <name>Tien N. Nguyen</name>
+    </author>
+    <author>
+      <name>Phong X. Nguyen</name>
+    </author>
+    <author>
+      <name>Nghi D. Q. Bui</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2408.10495v2</id>
+    <title>How Well Do Large Language Models Serve as End-to-End Secure Code Agents for Python?</title>
+    <updated>2025-06-13T04:51:06Z</updated>
+    <link href="https://arxiv.org/abs/2408.10495v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2408.10495v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The rapid advancement of large language models (LLMs) such as GPT-4 has revolutionized the landscape of software engineering, positioning these models at the core of modern development practices. As we anticipate these models to evolve into the primary and trustworthy tools used in software development, ensuring the security of the code they produce becomes paramount. How well can LLMs serve as end-to-end secure code producers? This paper presents a systematic investigation into LLMs' inherent potential to generate code with fewer vulnerabilities. Specifically, We studied GPT-3.5 and GPT-4's capability to identify and repair vulnerabilities in the code generated by four popular LLMs including themselves (GPT-3.5, GPT-4, Code Llama, and CodeGeeX2). By manually or automatically reviewing 4,900 pieces of code, our study reveals that: (1) large language models lack awareness of scenario-relevant security risks, which leads to the generation of over 75% vulnerable code on the SecurityEval benchmark; (2) LLMs such as GPT-3.5 and GPT-4 are unable to precisely identify vulnerabilities in the code they generated; (3) GPT-3.5 and GPT-4 can achieve 33.2%~59.6% success rates in repairing the insecure code produced by the 4 LLMs, but they both perform poorly when repairing self-produced code, indicating self-repair "blind spots". To address the limitation of a single round of repair, we developed a lightweight tool that prompts LLMs to construct safer source code through an iterative repair procedure based on the insights gained from our study. Experiments show that assisted by semantic analysis engines, our tool significantly improves the success rates of repair to 65.9%~85.5%.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-08-20T02:42:29Z</published>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Jianian Gong</name>
+    </author>
+    <author>
+      <name>Nachuan Duan</name>
+    </author>
+    <author>
+      <name>Ziheng Tao</name>
+    </author>
+    <author>
+      <name>Zhaohui Gong</name>
+    </author>
+    <author>
+      <name>Yuan Yuan</name>
+    </author>
+    <author>
+      <name>Minlie Huang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2408.08927v2</id>
+    <title>VerilogCoder: Autonomous Verilog Coding Agents with Graph-based Planning and Abstract Syntax Tree (AST)-based Waveform Tracing Tool</title>
+    <updated>2025-03-05T06:23:52Z</updated>
+    <link href="https://arxiv.org/abs/2408.08927v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2408.08927v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Due to the growing complexity of modern Integrated Circuits (ICs), automating hardware design can prevent a significant amount of human error from the engineering process and result in less errors. Verilog is a popular hardware description language for designing and modeling digital systems; thus, Verilog generation is one of the emerging areas of research to facilitate the design process. In this work, we propose VerilogCoder, a system of multiple Artificial Intelligence (AI) agents for Verilog code generation, to autonomously write Verilog code and fix syntax and functional errors using collaborative Verilog tools (i.e., syntax checker, simulator, and waveform tracer). Firstly, we propose a task planner that utilizes a novel Task and Circuit Relation Graph retrieval method to construct a holistic plan based on module descriptions. To debug and fix functional errors, we develop a novel and efficient abstract syntax tree (AST)-based waveform tracing tool, which is integrated within the autonomous Verilog completion flow. The proposed methodology successfully generates 94.2% syntactically and functionally correct Verilog code, surpassing the state-of-the-art methods by 33.9% on the VerilogEval-Human v2 benchmark.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-08-15T20:06:06Z</published>
+    <arxiv:comment>main paper 7 pages, reference 1 page, it is the version that accepted by AAAI 2025</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Chia-Tung Ho</name>
+    </author>
+    <author>
+      <name>Haoxing Ren</name>
+    </author>
+    <author>
+      <name>Brucek Khailany</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2408.12622v3</id>
+    <title>The AI risk repository: A meta-review, database, and taxonomy of risks from artificial intelligence</title>
+    <updated>2026-05-05T05:31:40Z</updated>
+    <link href="https://arxiv.org/abs/2408.12622v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2408.12622v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Artificial intelligence (AI) is reshaping society, from video generation to medical diagnosis, coding agents to autonomous vehicles. Yet researchers, policymakers, and technology companies lack shared terminology for discussing AI risks. Consider "privacy": one framework uses this term to describe a model's ability to leak sensitive training data, while another uses it to mean freedom from government surveillance. Conversely, researchers have introduced "Goodhart's law," "specification gaming," "reward hacking," and "mesa-optimization" to describe the same phenomenon of AI systems optimizing for measured proxies rather than intended goals. This terminological diversity creates friction: comparing findings across studies requires mapping between frameworks, and comprehensive risk coverage requires consulting multiple taxonomies that use different organizing principles. This paper addresses this challenge by creating a comprehensive catalog of AI risks. We systematically analyzed every major AI risk framework published to date-74 frameworks containing 1,725 distinct risks-and organized them into a unified system. Our two classification systems reveal important patterns: contrary to common assumptions, human decisions cause nearly as many AI risks (38%) as the AI systems themselves (42%). The work provides practical tools for anyone working on AI safety, from developers conducting risk assessments to policymakers writing regulations to auditors evaluating AI systems. By establishing a common reference point, this repository creates the foundation for more coordinated and comprehensive approaches to managing AI's risks while realizing its benefits.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.ET" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.SY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-08-14T10:32:06Z</published>
+    <arxiv:comment>This paper has been published in Patterns (Cell Press, 2026) under a CC BY 4.0 licence: https://doi.org/10.1016/j.patter.2026.101517</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <arxiv:journal_ref>Patterns 101517 (2026)</arxiv:journal_ref>
+    <author>
+      <name>Peter Slattery</name>
+    </author>
+    <author>
+      <name>Alexander K. Saeri</name>
+    </author>
+    <author>
+      <name>Emily A. C. Grundy</name>
+    </author>
+    <author>
+      <name>Jess Graham</name>
+    </author>
+    <author>
+      <name>Michael Noetel</name>
+    </author>
+    <author>
+      <name>Risto Uuk</name>
+    </author>
+    <author>
+      <name>James Dao</name>
+    </author>
+    <author>
+      <name>Soroush Pour</name>
+    </author>
+    <author>
+      <name>Stephen Casper</name>
+    </author>
+    <author>
+      <name>Neil Thompson</name>
+    </author>
+    <arxiv:doi>10.1016/j.patter.2026.101517</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1016/j.patter.2026.101517" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2408.07060v1</id>
+    <title>Diversity Empowers Intelligence: Integrating Expertise of Software Engineering Agents</title>
+    <updated>2024-08-13T17:50:28Z</updated>
+    <link href="https://arxiv.org/abs/2408.07060v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2408.07060v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language model (LLM) agents have shown great potential in solving real-world software engineering (SWE) problems. The most advanced open-source SWE agent can resolve over 27% of real GitHub issues in SWE-Bench Lite. However, these sophisticated agent frameworks exhibit varying strengths, excelling in certain tasks while underperforming in others. To fully harness the diversity of these agents, we propose DEI (Diversity Empowered Intelligence), a framework that leverages their unique expertise. DEI functions as a meta-module atop existing SWE agent frameworks, managing agent collectives for enhanced problem-solving. Experimental results show that a DEI-guided committee of agents is able to surpass the best individual agent's performance by a large margin. For instance, a group of open-source SWE agents, with a maximum individual resolve rate of 27.3% on SWE-Bench Lite, can achieve a 34.3% resolve rate with DEI, making a 25% improvement and beating most closed-source solutions. Our best-performing group excels with a 55% resolve rate, securing the highest ranking on SWE-Bench Lite. Our findings contribute to the growing body of research on collaborative AI systems and their potential to solve complex software engineering challenges.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-08-13T17:50:28Z</published>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Kexun Zhang</name>
+    </author>
+    <author>
+      <name>Weiran Yao</name>
+    </author>
+    <author>
+      <name>Zuxin Liu</name>
+    </author>
+    <author>
+      <name>Yihao Feng</name>
+    </author>
+    <author>
+      <name>Zhiwei Liu</name>
+    </author>
+    <author>
+      <name>Rithesh Murthy</name>
+    </author>
+    <author>
+      <name>Tian Lan</name>
+    </author>
+    <author>
+      <name>Lei Li</name>
+    </author>
+    <author>
+      <name>Renze Lou</name>
+    </author>
+    <author>
+      <name>Jiacheng Xu</name>
+    </author>
+    <author>
+      <name>Bo Pang</name>
+    </author>
+    <author>
+      <name>Yingbo Zhou</name>
+    </author>
+    <author>
+      <name>Shelby Heinecke</name>
+    </author>
+    <author>
+      <name>Silvio Savarese</name>
+    </author>
+    <author>
+      <name>Huan Wang</name>
+    </author>
+    <author>
+      <name>Caiming Xiong</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2407.18901v1</id>
+    <title>AppWorld: A Controllable World of Apps and People for Benchmarking Interactive Coding Agents</title>
+    <updated>2024-07-26T17:55:45Z</updated>
+    <link href="https://arxiv.org/abs/2407.18901v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2407.18901v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Autonomous agents that address day-to-day digital tasks (e.g., ordering groceries for a household), must not only operate multiple apps (e.g., notes, messaging, shopping app) via APIs, but also generate rich code with complex control flow in an iterative manner based on their interaction with the environment. However, existing benchmarks for tool use are inadequate, as they only cover tasks that require a simple sequence of API calls.
+  To remedy this gap, we built $\textbf{AppWorld Engine}$, a high-quality execution environment (60K lines of code) of 9 day-to-day apps operable via 457 APIs and populated with realistic digital activities simulating the lives of ~100 fictitious users. We then created $\textbf{AppWorld Benchmark}$ (40K lines of code), a suite of 750 natural, diverse, and challenging autonomous agent tasks requiring rich and interactive code generation. It supports robust programmatic evaluation with state-based unit tests, allowing for different ways of completing a task while also checking for unexpected changes, i.e., collateral damage. The state-of-the-art LLM, GPT-4o, solves only ~49% of our 'normal' tasks and ~30% of 'challenge' tasks, while other models solve at least 16% fewer. This highlights the benchmark's difficulty and AppWorld's potential to push the frontiers of interactive coding agents. The project website is available at https://appworld.dev/.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-07-26T17:55:45Z</published>
+    <arxiv:comment>ACL'24 Camera Ready</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Harsh Trivedi</name>
+    </author>
+    <author>
+      <name>Tushar Khot</name>
+    </author>
+    <author>
+      <name>Mareike Hartmann</name>
+    </author>
+    <author>
+      <name>Ruskin Manku</name>
+    </author>
+    <author>
+      <name>Vinty Dong</name>
+    </author>
+    <author>
+      <name>Edward Li</name>
+    </author>
+    <author>
+      <name>Shashank Gupta</name>
+    </author>
+    <author>
+      <name>Ashish Sabharwal</name>
+    </author>
+    <author>
+      <name>Niranjan Balasubramanian</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2407.01511v4</id>
+    <title>CRAB: Cross-environment Agent Benchmark for Multimodal Language Model Agents</title>
+    <updated>2025-07-20T13:42:07Z</updated>
+    <link href="https://arxiv.org/abs/2407.01511v4" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2407.01511v4" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The development of autonomous agents increasingly relies on Multimodal Language Models (MLMs) to perform tasks described in natural language with GUI environments, such as websites, desktop computers, or mobile phones. Existing benchmarks for MLM agents in interactive environments are limited by their focus on a single environment, lack of detailed and generalized evaluation methods, and the complexities of constructing tasks and evaluators. To overcome these limitations, we introduce Crab, the first agent benchmark framework designed to support cross-environment tasks, incorporating a graph-based fine-grained evaluation method and an efficient mechanism for task and evaluator construction. Our framework supports multiple devices and can be easily extended to any environment with a Python interface. Leveraging Crab, we developed a cross-platform Crab Benchmark-v0 comprising 120 tasks in computer desktop and mobile phone environments. We evaluated four advanced MLMs using different single and multi-agent system configurations on this benchmark. The experimental results demonstrate that the single agent with GPT-4o achieves the best completion ratio of 38.01%. All framework code, agent code, and task datasets are publicly available at https://github.com/camel-ai/crab.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-07-01T17:55:04Z</published>
+    <arxiv:comment>2025 ACL Findings</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Tianqi Xu</name>
+    </author>
+    <author>
+      <name>Linyao Chen</name>
+    </author>
+    <author>
+      <name>Dai-Jie Wu</name>
+    </author>
+    <author>
+      <name>Yanjun Chen</name>
+    </author>
+    <author>
+      <name>Zecheng Zhang</name>
+    </author>
+    <author>
+      <name>Xiang Yao</name>
+    </author>
+    <author>
+      <name>Zhiqiang Xie</name>
+    </author>
+    <author>
+      <name>Yongchao Chen</name>
+    </author>
+    <author>
+      <name>Shilong Liu</name>
+    </author>
+    <author>
+      <name>Bochen Qian</name>
+    </author>
+    <author>
+      <name>Anjie Yang</name>
+    </author>
+    <author>
+      <name>Zhaoxuan Jin</name>
+    </author>
+    <author>
+      <name>Jianbo Deng</name>
+    </author>
+    <author>
+      <name>Philip Torr</name>
+    </author>
+    <author>
+      <name>Bernard Ghanem</name>
+    </author>
+    <author>
+      <name>Guohao Li</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2407.01489v2</id>
+    <title>Agentless: Demystifying LLM-based Software Engineering Agents</title>
+    <updated>2024-10-29T17:29:27Z</updated>
+    <link href="https://arxiv.org/abs/2407.01489v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2407.01489v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent advancements in large language models (LLMs) have significantly advanced the automation of software development tasks, including code synthesis, program repair, and test generation. More recently, researchers and industry practitioners have developed various autonomous LLM agents to perform end-to-end software development tasks. These agents are equipped with the ability to use tools, run commands, observe feedback from the environment, and plan for future actions. However, the complexity of these agent-based approaches, together with the limited abilities of current LLMs, raises the following question: Do we really have to employ complex autonomous software agents? To attempt to answer this question, we build Agentless -- an agentless approach to automatically solve software development problems. Compared to the verbose and complex setup of agent-based approaches, Agentless employs a simplistic three-phase process of localization, repair, and patch validation, without letting the LLM decide future actions or operate with complex tools. Our results on the popular SWE-bench Lite benchmark show that surprisingly the simplistic Agentless is able to achieve both the highest performance (32.00%, 96 correct fixes) and low cost ($0.70) compared with all existing open-source software agents! Furthermore, we manually classified the problems in SWE-bench Lite and found problems with exact ground truth patch or insufficient/misleading issue descriptions. As such, we construct SWE-bench Lite-S by excluding such problematic issues to perform more rigorous evaluation and comparison. Our work highlights the current overlooked potential of a simple, interpretable technique in autonomous software development. We hope Agentless will help reset the baseline, starting point, and horizon for autonomous software agents, and inspire future work along this crucial direction.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-07-01T17:24:45Z</published>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Chunqiu Steven Xia</name>
+    </author>
+    <author>
+      <name>Yinlin Deng</name>
+    </author>
+    <author>
+      <name>Soren Dunn</name>
+    </author>
+    <author>
+      <name>Lingming Zhang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2406.12952v3</id>
+    <title>SWT-Bench: Testing and Validating Real-World Bug-Fixes with Code Agents</title>
+    <updated>2025-02-07T12:33:06Z</updated>
+    <link href="https://arxiv.org/abs/2406.12952v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2406.12952v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Rigorous software testing is crucial for developing and maintaining high-quality code, making automated test generation a promising avenue for both improving software quality and boosting the effectiveness of code generation methods. However, while code generation with Large Language Models (LLMs) is an extraordinarily active research area, test generation remains relatively unexplored. We address this gap and investigate the capability of LLM-based Code Agents to formalize user issues into test cases. To this end, we propose a novel benchmark based on popular GitHub repositories, containing real-world issues, ground-truth bug-fixes, and golden tests. We find that LLMs generally perform surprisingly well at generating relevant test cases, with Code Agents designed for code repair exceeding the performance of systems designed specifically for test generation. Further, as test generation is a similar but more structured task than code generation, it allows for a more fine-grained analysis using issue reproduction rate and coverage changes, providing a dual metric for analyzing systems designed for code repair. Finally, we find that generated tests are an effective filter for proposed code fixes, doubling the precision of SWE-Agent. We release all data and code at https://github.com/logic-star-ai/SWT-Bench</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-06-18T14:54:37Z</published>
+    <arxiv:comment>20 pages, 14 figures, 7 tables</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Niels Mündler</name>
+    </author>
+    <author>
+      <name>Mark Niklas Müller</name>
+    </author>
+    <author>
+      <name>Jingxuan He</name>
+    </author>
+    <author>
+      <name>Martin Vechev</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2405.12399v2</id>
+    <title>Diffusion for World Modeling: Visual Details Matter in Atari</title>
+    <updated>2024-10-30T14:34:49Z</updated>
+    <link href="https://arxiv.org/abs/2405.12399v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2405.12399v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>World models constitute a promising approach for training reinforcement learning agents in a safe and sample-efficient manner. Recent world models predominantly operate on sequences of discrete latent variables to model environment dynamics. However, this compression into a compact discrete representation may ignore visual details that are important for reinforcement learning. Concurrently, diffusion models have become a dominant approach for image generation, challenging well-established methods modeling discrete latents. Motivated by this paradigm shift, we introduce DIAMOND (DIffusion As a Model Of eNvironment Dreams), a reinforcement learning agent trained in a diffusion world model. We analyze the key design choices that are required to make diffusion suitable for world modeling, and demonstrate how improved visual details can lead to improved agent performance. DIAMOND achieves a mean human normalized score of 1.46 on the competitive Atari 100k benchmark; a new best for agents trained entirely within a world model. We further demonstrate that DIAMOND's diffusion world model can stand alone as an interactive neural game engine by training on static Counter-Strike: Global Offensive gameplay. To foster future research on diffusion for world modeling, we release our code, agents, videos and playable world models at https://diamond-wm.github.io.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-05-20T22:51:05Z</published>
+    <arxiv:comment>NeurIPS 2024 (Spotlight)</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Eloi Alonso</name>
+    </author>
+    <author>
+      <name>Adam Jelley</name>
+    </author>
+    <author>
+      <name>Vincent Micheli</name>
+    </author>
+    <author>
+      <name>Anssi Kanervisto</name>
+    </author>
+    <author>
+      <name>Amos Storkey</name>
+    </author>
+    <author>
+      <name>Tim Pearce</name>
+    </author>
+    <author>
+      <name>François Fleuret</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2405.08944v1</id>
+    <title>Challenges in Deploying Long-Context Transformers: A Theoretical Peak Performance Analysis</title>
+    <updated>2024-05-14T20:17:22Z</updated>
+    <link href="https://arxiv.org/abs/2405.08944v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2405.08944v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Transformer-based long context generative models power emerging AI applications like hour-long video understanding and project-level coding agent. Deploying long context transformers (e.g., 100K to 10M tokens) is prohibitively expensive compared to short context (e.g., 4K tokens) model variants. Reducing the cost of long-context transformers is becoming a pressing research and engineering challenge starting from the year of 2024. This work describes a concurrent programming framework for quantitatively analyzing the efficiency challenges in serving multiple long-context requests under limited size of GPU high-bandwidth memory (HBM) regime. We give a detailed analysis of how all additional computational costs, compared to 4K context, trace back to \textit{one single source: the large size of the KV cache}. We use a 34B GPT-3.5 level model of 50K context on A100 NVLink as a running example, and describe how its large KV cache causes four types of deployment challenges: (1) prefilling long inputs takes much longer compute time and GPU memory than short inputs; (2) after prefilling, the large KV cache residing on the GPU HBM substantially restricts the number of concurrent users being served; (3) during decoding, repeatedly reading the KV cache from HBM to SM largely increases latency; (4) when KV cache memory overflows, swapping it from HBM to DDR causes significant context switching latency. We use this framework to analyze existing works and identify possibilities of combining them to build end-to-end systems. Overall, this work offers a foundational framework for analyzing long context transformer deployment and identifies directions towards reducing the inference cost of 1M context to be as cheap as 4K.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.DC" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-05-14T20:17:22Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Yao Fu</name>
+    </author>
+  </entry>
+</feed>

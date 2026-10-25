@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cola2 — Co-Adaptive Hierarchical Language Modeling</title>
+
+  <meta name="description" content="Cola2: Co-Adaptive Hierarchical Language Modeling with Continuous Semantic Compression and Balanced Discrete Generation.">
+  <meta property="og:title" content="Cola2 — Co-Adaptive Hierarchical Language Modeling">
+  <meta property="og:description" content="Continuous semantic compression and balanced discrete generation for hierarchical language modeling.">
+  <meta property="og:image" content="static/images/cola2-workflow.svg">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" href="static/images/cola_logo.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+  <!-- Use the complete frontend design of the original Cola project page. -->
+  <link rel="stylesheet" href="static/css/index.css">
+</head>
+
+<body>
+
+<!-- ==== STICKY TOP NAV ==== -->
+<header class="topnav">
+  <div class="topnav-inner">
+    <a class="brand" href="#top">
+      <img src="static/images/cola_logo.png" alt="Cola2">
+      <span><span class="accent">Cola</span>2</span>
+    </a>
+    <nav>
+      <a href="#abstract">Abstract</a>
+      <a href="#method">Method</a>
+      <a href="#experiments">Experiments</a>
+      <a href="#scaling">Scaling</a>
+      <a href="#summary">Summary</a>
+      <a href="zh/" lang="zh-CN">中文</a>
+      <a href="#bibtex" class="is-cta">BibTeX</a>
+    </nav>
+  </div>
+</header>
+
+<a id="top"></a>
+
+<!-- ==== HERO ==== -->
+<section class="hero">
+  <div class="hero-inner">
+    <h1 class="publication-title reveal">
+      <img src="static/images/cola_logo.png" alt="Cola2 logo" class="cola-logo">
+      <span class="accent">Cola<span style="color:var(--ink);">2</span></span>: Co-Adaptive Hierarchical Language Modeling with
+      Continuous Semantic Compression and Balanced Discrete Generation
+    </h1>
+
+    <p class="tagline reveal reveal-delay-1">
+      Compress semantics continuously, realize language discretely, and let both sides co-adapt.
+    </p>
+
+    <div class="authors reveal reveal-delay-2">
+      <span class="author">Hongcan Guo<sup>1,2,‡</sup>,</span>
+      <span class="author">Yian Zhao<sup>2,3</sup>,</span>
+      <span class="author">Feng Wang<sup>2</sup>,</span>
+      <span class="author">Shen Nie<sup>4</sup>,</span>
+      <span class="author">Guoqiang Wei<sup>2,‡</sup>,</span>
+      <span class="author">Yan Zeng<sup>2,†,‡</sup>,</span>
+      <span class="author">Hengshuang Zhao<sup>1,✉</sup></span>
+    </div>
+
+    <div class="affil-list reveal reveal-delay-3">
+      <span class="affil-item"><span class="sup">1</span>The University of Hong Kong</span>
+      <span class="affil-item"><span class="sup">2</span>ByteDance Seed</span>
+      <span class="affil-item"><span class="sup">3</span>Peking University</span>
+      <span class="affil-item"><span class="sup">4</span>Renmin University of China</span>
+    </div>
+
+    <div class="notes reveal reveal-delay-3">
+      <span class="sup">†</span>Project Lead&nbsp;·&nbsp;
+      <span class="sup">‡</span>Major Contributor&nbsp;·&nbsp;
+      <span class="sup">✉</span>Corresponding author
+    </div>
+
+    <div class="team-badge reveal reveal-delay-3">
+      <span class="star" aria-hidden="true">★</span>
+      <span>Seedance Team Research Project</span>
+      <span class="star" aria-hidden="true">★</span>
+    </div>
+
+    <div class="publication-links reveal reveal-delay-4">
+      <a class="btn" href="static/paper/paper.pdf" target="_blank" rel="noopener">
+        <span class="icon"><i class="fas fa-file-pdf"></i></span>
+        <span>Paper</span>
+        <span class="new-badge">New</span>
+      </a>
+      <a class="btn" href="https://arxiv.org/abs/2610.31305" target="_blank" rel="noopener">
+        <span class="icon"><i class="ai ai-arxiv"></i></span>
+        <span>arXiv</span>
+        <span class="new-badge">New</span>
+      </a>
+      <a class="btn is-soft" href="#" aria-disabled="true">
+        <span class="icon"><i class="fab fa-github"></i></span>
+        <span>Code</span>
+        <span class="coming-soon-badge">Soon</span>
+      </a>
+      <a class="btn is-soft" href="#" aria-disabled="true">
+        <span class="icon">🤗</span>
+        <span>Model</span>
+        <span class="coming-soon-badge">Soon</span>
+      </a>
+      <a class="btn" href="#bibtex">
+        <span class="icon"><i class="fas fa-quote-left"></i></span>
+        <span>BibTeX</span>
+      </a>
+    </div>
+
+    <figure class="cola-figure reveal" style="margin:2.8rem auto 0;">
+      <video
+        autoplay
+        muted
+        loop
+        playsinline
+        controls
+        preload="metadata"
+        aria-label="Cola2 project overview video"
+        style="display:block; width:100%; border-radius:14px; background:#000; box-shadow:var(--shadow-2);">
+        <source src="static/videos/cola2-v2-motion-bgm-1080p.mp4" type="video/mp4">
+        Your browser does not support embedded MP4 video.
+      </video>
+      <figcaption>
+        <b>Cola2 project overview.</b>
+      </figcaption>
+      <div class="publication-links" style="margin-top:1rem;">
+        <a class="btn" href="static/videos/cola2-v2-motion-bgm-1080p.mp4" download="cola2-v2-motion-bgm-1080p.mp4">
+          <span class="icon"><i class="fas fa-download"></i></span>
+          <span>Download video</span>
+        </a>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<!-- ==== ABSTRACT ==== -->
+<section class="section" id="abstract">
+  <div class="container narrow">
+    <div class="section-heading reveal">
+      <span class="eyebrow">Abstract</span>
+      <h2>Co-adapting continuous semantics and discrete generation</h2>
+    </div>
+
+    <div class="abstract-block reveal">
+      <p>
+        Hierarchical language generation separates continuous semantic modeling from discrete text
+        realization, but its effectiveness depends on what information the latent space should
+        compress and how the discrete generator should use it. We propose <b>Cola2</b>, which jointly
+        studies continuous semantic compression, the discrete reconstruction–generation balance, and
+        their co-adaptation. Cola2 dynamically segments text into semantic spans, controls the
+        compression rate with an auxiliary-loss-free negative-feedback mechanism, and combines
+        reconstruction and generation supervision to learn compact and predictive latent
+        representations.
+      </p>
+      <p>
+        A block-causal masked diffusion model (MDM) decoder is jointly trained under clean, noisy,
+        and dropped latent conditions, and classifier-free guidance (CFG) adjusts the balance between
+        semantic reconstruction and autonomous generation. During training, token-prediction gradients
+        update the encoder through the latents, driving the continuous representation and discrete
+        generation to co-adapt, while Flow Matching prior learning is decoupled from representation
+        learning via stop-gradient. At inference, the generated text is re-encoded under the fixed
+        span layout, keeping the latent history consistent with the actual text context.
+      </p>
+      <p>
+        Systematic component analyses and controlled comparisons on five downstream tasks with about
+        <b>210B training tokens</b> validate the core designs and show competitive, unsaturated
+        scaling. With only <b>346.03B source tokens</b>, the unconverged checkpoint reaches a
+        <b>60.10 eight-task average</b> and surpasses Llama-3-8B on HellaSwag and StoryCloze despite
+        its over <b>43× larger</b> reported pretraining budget.
+      </p>
+      <p>
+        These results indicate effective transfer of the Qwen-initialized causal decoder's generation
+        capability and substantial scaling headroom for hierarchical language generation. More
+        broadly, continuous-latent hierarchical modeling can combine effectively with established
+        token-space generation paradigms, including autoregressive and masked-diffusion decoders.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ==== METHOD ==== -->
+<section class="section is-soft" id="method">
+  <div class="container">
+    <div class="section-heading reveal">
+      <span class="eyebrow">Method</span>
+      <h2>The Cola2 workflow</h2>
+      <p class="lead">
+        A compressed continuous latent prior organizes semantics; a capable token-space decoder
+        reconstructs those semantics and generates the remaining detail.
+      </p>
+    </div>
+
+    <figure class="cola-figure reveal">
+      <img
+        src="static/images/cola2-workflow.svg"
+        alt="Cola2 method overview: compression VAE, balanced discrete decoder, detached latent DiT training, and block-wise inference."
+        loading="lazy"
+        style="width:min(100%, 1000px);">
+      <figcaption>
+        <b>Method overview from the paper.</b> Stage 1 jointly trains the compression encoder and
+        reconstruction–generation balanced decoder. Stage 2 additionally trains a DiT on detached
+        latents. At inference, the DiT generates latents block by block and the decoder realizes them
+        as tokens.
+      </figcaption>
+    </figure>
+
+    <div class="method-tldr">
+      <div class="stage reveal reveal-delay-1">
+        <span class="stage-tag">Stage 1</span>
+        <h4>Semantic compression</h4>
+        <p>Dynamic segmentation assigns latent positions to content-aware spans. A gradient-free controller keeps the mean compression rate near its target without competing with representation learning.</p>
+      </div>
+      <div class="stage reveal reveal-delay-2">
+        <span class="stage-tag">Stage 2</span>
+        <h4>Detached latent prior</h4>
+        <p>A block-causal DiT fits the online latent distribution with Flow Matching. Its gradient is stopped at the encoder, while token-side gradients continue to shape the representation.</p>
+      </div>
+      <div class="stage reveal reveal-delay-3">
+        <span class="stage-tag">Inference</span>
+        <h4>Propose → decode → re-encode</h4>
+        <p>The DiT proposes a latent block, the decoder realizes tokens, and fixed-span feedback re-encodes those tokens so latent and discrete histories remain aligned.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==== EXPERIMENTS ==== -->
+<section class="section" id="experiments">
+  <div class="container">
+    <div class="section-heading reveal">
+      <span class="eyebrow">Experiments</span>
+      <h2>Three questions across the hierarchy</h2>
+      <p class="lead">
+        We study how to construct a compressed semantic latent space, how to train its continuous
+        generator, and how the discrete decoder should balance reconstruction with generation.
+      </p>
+    </div>
+
+    <details class="detail-block reveal" open>
+      <summary>1 · How do we build a compressed, predictive semantic latent space?</summary>
+      <div class="detail-body">
+        <div class="takeaway">
+          <b>Main finding.</b> Dynamic semantic segmentation and generation-oriented supervision are
+          both essential. At 2× compression, the best dynamic configuration reaches 29.4% on LAMBADA
+          and slightly surpasses the uncompressed model; co-evolving the encoder and decoder with
+          generative supervision reaches 58.2%.
+        </div>
+        <div class="figure-grid cols-2">
+          <figure class="cola-figure">
+            <img src="static/images/figures/stage1_latent/fig1_segmentation_and_rate_control.svg" alt="Dynamic segmentation and rate-control comparison." loading="lazy">
+            <figcaption><b>Segmentation and rate control.</b> Content-aware spans beat fixed and random grouping; auxiliary-free feedback beats DLCM.</figcaption>
+          </figure>
+          <figure class="cola-figure">
+            <img src="static/images/figures/stage1_latent/fig2_vae_architecture.svg" alt="VAE encoder architecture and pooling ablations." loading="lazy">
+            <figcaption><b>VAE architecture.</b> Layer allocation matters more than depth; intra-span bidirectional attention is best.</figcaption>
+          </figure>
+          <figure class="cola-figure">
+            <img src="static/images/figures/stage1_latent/fig3_latent_width_and_max_span.svg" alt="Latent width and maximum span-length ablations." loading="lazy">
+            <figcaption><b>Capacity.</b> Latent width has an interior optimum and maximum span length is non-monotonic.</figcaption>
+          </figure>
+          <figure class="cola-figure">
+            <img src="static/images/figures/stage1_latent/fig4b_span_length_distribution.svg" alt="Span-length distributions." loading="lazy">
+            <figcaption><b>Span distribution.</b> Larger caps reduce forcibly truncated semantic spans.</figcaption>
+          </figure>
+          <figure class="cola-figure">
+            <img src="static/images/figures/stage1_latent/fig5_generative_loss_on_encoder.svg" alt="Generative supervision ablations." loading="lazy">
+            <figcaption><b>Generative supervision.</b> Predictive objectives and encoder–decoder co-evolution are complementary.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </details>
+
+    <details class="detail-block reveal">
+      <summary>2 · How should the continuous latent generator be trained?</summary>
+      <div class="detail-body">
+        <div class="takeaway">
+          <b>Main finding.</b> Keep adapting the VAE with token-side supervision, but detach the
+          Flow Matching gradient from the encoder. A moderate latent block size is best, the noise
+          schedule must match the representation, and inference saturates at roughly eight DiT steps.
+        </div>
+        <div class="figure-grid cols-2">
+          <figure class="cola-figure">
+            <img src="static/images/figures/stage2_dit/fig6_vae_policy_and_noise_schedule.svg" alt="VAE update policy and DiT noise-schedule results." loading="lazy">
+            <figcaption><b>Update policy and calibration.</b> Trainable VAE plus detached DiT gradient performs best; the schedule must match the latent.</figcaption>
+          </figure>
+          <figure class="cola-figure">
+            <img src="static/images/figures/stage2_dit/fig8_block_size.svg" alt="DiT block size and model-capacity results." loading="lazy">
+            <figcaption><b>Block size.</b> Moderate blocks are optimal; larger DiTs tolerate broader blocks.</figcaption>
+          </figure>
+          <figure class="cola-figure">
+            <img src="static/images/figures/stage2_dit/fig9_dit_infer_steps.svg" alt="Latent generator CFG and inference-step sweeps." loading="lazy">
+            <figcaption><b>Inference.</b> Strong CFG helps and DiT denoising saturates at about eight steps.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </details>
+
+    <details class="detail-block reveal">
+      <summary>3 · How should the decoder balance reconstruction and generation?</summary>
+      <div class="detail-body">
+        <div class="takeaway">
+          <b>Main finding.</b> The decoder should train mostly under noisy and dropped latent
+          conditions while retaining clean reconstruction examples. The selected 0.4 / 0.4 / 0.2
+          drop–noise–clean mixture reaches 44.7%, and shuffled latents cause the largest degradation,
+          confirming that the decoder uses aligned semantic content.
+        </div>
+        <div class="figure-grid cols-2">
+          <figure class="cola-figure">
+            <img src="static/images/figures/stage3_decoder/fig10_decoder_data_partition.svg" alt="Decoder clean, noisy, and dropped condition mixture." loading="lazy">
+            <figcaption><b>Data partition.</b> A 0.4 / 0.4 / 0.2 drop–noise–clean mixture gives the best balance.</figcaption>
+          </figure>
+          <figure class="cola-figure">
+            <img src="static/images/figures/stage3_decoder/fig11_decoder_cfg.svg" alt="Decoder CFG and parameter-allocation results." loading="lazy">
+            <figcaption><b>Guidance and allocation.</b> CFG must match training; a 2B DiT with a 1B decoder is the best 3B split.</figcaption>
+          </figure>
+          <figure class="cola-figure">
+            <img src="static/images/figures/stage3_decoder/fig12_decoder_size.svg" alt="Decoder size scaling results." loading="lazy">
+            <figcaption><b>Decoder size.</b> Accuracy improves monotonically with decoder capacity under a fixed DiT.</figcaption>
+          </figure>
+          <figure class="cola-figure">
+            <img src="static/images/figures/stage3_decoder/fig13_demask_and_latent_ablation.svg" alt="Demasking steps and latent ablation." loading="lazy">
+            <figcaption><b>Latent use.</b> Eight-by-eight steps are optimal; shuffled latents cause the largest degradation.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </details>
+
+    <details class="detail-block reveal">
+      <summary>4 · Do the gains continue as training scales?</summary>
+      <div class="detail-body">
+        <div class="takeaway">
+          <b>Main finding.</b> Under controlled training to approximately 210B tokens, Cola-MDM
+          achieves the strongest overall scaling. Compressed Cola2-MDM converges more slowly, but
+          continues closing its gap to LLaDA after about 150B tokens without saturation.
+        </div>
+        <div class="figure-grid cols-2">
+          <figure class="cola-figure">
+            <img src="static/images/figures/scaling/scaling_scatter_trend.svg" alt="Controlled scaling trends for AR, LLaDA, Cola DLM, Cola-MDM, and Cola2-MDM." loading="lazy">
+            <figcaption><b>Controlled scaling.</b> Compression retains strong semantic-task scaling while the latent DiT continues to improve.</figcaption>
+          </figure>
+          <figure class="cola-figure">
+            <img src="static/images/figures/scaling/best_decoder_cfg_trend.svg" alt="Optimal decoder CFG weight over the controlled scaling run." loading="lazy">
+            <figcaption><b>Decoder CFG trend.</b> The optimum remains near −0.9 and drifts gradually toward zero during training.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ==== LARGE-SCALE RESULT ==== -->
+<section class="section is-soft" id="scaling">
+  <div class="container">
+    <div class="section-heading reveal">
+      <span class="eyebrow">Post-pretraining evaluation</span>
+      <h2>60.10 average at 346.03B source tokens</h2>
+      <p class="lead">
+        A separate resource-constrained run initializes the causal decoder from Qwen3-4B-Base.
+        Its latent DiT remains unconverged, leaving substantial scaling headroom.
+      </p>
+    </div>
+
+    <div class="method-tldr">
+      <div class="stage reveal reveal-delay-1">
+        <span class="stage-tag">Training budget</span>
+        <h4>346.03B source tokens</h4>
+        <p>Stage I trains the VAE; Stage II co-trains the VAE and an approximately 4B latent DiT; Stage III continues the DiT.</p>
+      </div>
+      <div class="stage reveal reveal-delay-2">
+        <span class="stage-tag">Eight-task average</span>
+        <h4>60.10 accuracy</h4>
+        <p>Only 6.15 points behind Llama-3-8B despite that baseline reporting at least 15T pretraining tokens.</p>
+      </div>
+      <div class="stage reveal reveal-delay-3">
+        <span class="stage-tag">Data efficiency</span>
+        <h4>&gt;43× fewer tokens</h4>
+        <p>Cola2 surpasses Llama-3-8B on HellaSwag and StoryCloze under the reported token budgets.</p>
+      </div>
+    </div>
+
+    <div class="headline-result reveal">
+      <span class="headline-tag"><span class="star">★</span> Eight-task benchmark</span>
+      <h3>Competitive capability before convergence</h3>
+      <p class="claim">
+        The models below use different recipes, tokenizers, and token-counting conventions; this
+        comparison contextualizes post-pretraining performance rather than isolating the generation
+        paradigm.
+      </p>
+
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Llama-3-8B</th>
+              <th>Qwen2.5-7B</th>
+              <th>Qwen3-8B-Base</th>
+              <th>LLaDA-8B-Base</th>
+              <th>Cola2</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="row-label">Pretraining tokens</td><td>15T+</td><td>18T</td><td>~36T</td><td>2.3T</td><td class="best">346B</td></tr>
+            <tr><td class="row-label">RACE</td><td>75.77</td><td>89.95</td><td>90.65</td><td>87.40</td><td>69.91</td></tr>
+            <tr><td class="row-label">NarrativeQA</td><td>42.70</td><td>32.90</td><td>37.30</td><td>36.00</td><td>32.70</td></tr>
+            <tr><td class="row-label">HellaSwag</td><td>39.21</td><td>75.67</td><td>68.13</td><td>69.65</td><td class="best">41.75</td></tr>
+            <tr><td class="row-label">StoryCloze</td><td>79.49</td><td>95.09</td><td>97.44</td><td>95.94</td><td class="best">80.42</td></tr>
+            <tr><td class="row-label">LAMBADA</td><td>75.70</td><td>71.82</td><td>71.20</td><td>67.90</td><td>63.00</td></tr>
+            <tr><td class="row-label">ARC-Easy</td><td>90.86</td><td>96.00</td><td>97.35</td><td>93.85</td><td>87.62</td></tr>
+            <tr><td class="row-label">TruthfulQA</td><td>63.04</td><td>69.03</td><td>72.58</td><td>64.87</td><td>54.10</td></tr>
+            <tr><td class="row-label">MMLU</td><td>63.19</td><td>70.16</td><td>72.31</td><td>61.27</td><td>51.32</td></tr>
+            <tr><td class="row-label"><b>8-task average</b></td><td>66.25</td><td>75.08</td><td>75.87</td><td>72.11</td><td class="best"><b>60.10</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==== EXPERIMENTAL SUMMARY ==== -->
+<section class="section" id="summary">
+  <div class="container narrow">
+    <div class="section-heading reveal">
+      <span class="eyebrow">Experiments</span>
+      <h2>Summary</h2>
+    </div>
+
+    <div class="abstract-block reveal">
+      <p>The results support the design of <b>Cola2</b> in three respects.</p>
+      <p>
+        <b>Semantic compression:</b> dynamic segmentation and generative supervision keep the
+        latents strongly semantic at high compression rates; the former slightly surpasses the
+        uncompressed model with an appropriate <span class="eq">L<sub>max</sub></span>, and the
+        latter raises accuracy from <b>15.7%</b> to <b>26.7%</b>.
+      </p>
+      <p>
+        <b>Reconstruction–generation balance:</b> mixed training dominated by noisy and dropped
+        conditions enables the decoder both to faithfully use the latent (shuffling the latent costs
+        <b>12.2 points</b>) and to autonomously generate the residual information.
+      </p>
+      <p>
+        <b>Continuous–discrete co-adaptation:</b> the information placed in the latent should be
+        determined by the decoder; co-training the encoder and decoder yields a <b>5.9-point gain</b>,
+        and both continue to benefit from more training data, giving the hierarchical model scaling
+        trends comparable to or better than AR and LLaDA.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ==== LIMITATIONS & FUTURE PROSPECTS ==== -->
+<section class="section is-soft">
+  <div class="container narrow">
+    <div class="section-heading reveal">
+      <span class="eyebrow">Outlook</span>
+      <h2>Limitations &amp; Future Prospects</h2>
+    </div>
+    <div class="abstract-block reveal">
+      <p>
+        Although our results provide initial evidence for the feasibility, competitiveness, and
+        scaling potential of <b>Cola2</b>, we view the current system as a starting point rather than
+        a finished endpoint.
+      </p>
+      <p>
+        First, the model remains far from convergence, especially the latent DiT, while the present
+        training scale is limited by available resources. Larger models, longer training, and broader
+        data and compute budgets are therefore needed to establish its performance ceiling.
+      </p>
+      <p>
+        Second, compression reduces the dominant linear and attention FLOPs of the latent prior in
+        theory, but end-to-end generation speed also depends on the decoder, CFG branches, latent
+        feedback, and hardware utilization. Infrastructure co-design—including specialized kernels,
+        cache management, and parallel scheduling—is needed to translate theoretical savings into
+        practical speedups.
+      </p>
+      <p>
+        Third, <b>Cola2</b> already shows compatibility with autoregressive and masked-diffusion
+        decoders, but their co-training objectives, inference trade-offs, and optimal division of
+        labor remain underexplored.
+      </p>
+      <p>
+        Finally, the continuous latent space may provide a shared interface between text and other
+        continuous modalities such as vision, opening a path toward unified latent representations,
+        cross-modal priors, and unified understanding and generation.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ==== BIBTEX ==== -->
+<section class="section is-tight" id="bibtex">
+  <div class="container narrow">
+    <div class="section-heading reveal">
+      <span class="eyebrow">Cite</span>
+      <h2>BibTeX</h2>
+      <p class="lead">Cite the arXiv preprint using the entry below.</p>
+    </div>
+    <div class="bibtex-block reveal">
+      <button class="copy-btn" type="button">Copy</button>
+<pre>@article{guo2026cola2,
+  title  = {Cola2: Co-Adaptive Hierarchical Language Modeling
+            with Continuous Semantic Compression and
+            Balanced Discrete Generation},
+  author = {Guo, Hongcan and Zhao, Yian and Wang, Feng and Nie, Shen
+            and Wei, Guoqiang and Zeng, Yan and Zhao, Hengshuang},
+  year   = {2026},
+  journal = {arXiv preprint arXiv:2610.31305},
+  url    = {https://arxiv.org/abs/2610.31305}
+}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ==== FOOTER ==== -->
+<footer class="footer">
+  <div style="font-weight:700; color:#1a1c20; margin-bottom:.55rem;">ByteDance Seed × The University of Hong Kong</div>
+  <div class="small">
+    © 2026 ByteDance Seed and The University of Hong Kong.
+    <br>
+    Page design follows the original Cola project page.
+  </div>
+</footer>
+
+<button class="back-to-top" aria-label="Back to top">
+  <svg viewBox="0 0 24 24"><polyline points="6 14 12 8 18 14"/></svg>
+</button>
+
+<!-- Use the complete interaction layer of the original Cola project page. -->
+<script src="static/js/index.js"></script>
+</body>
+</html>

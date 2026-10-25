@@ -1,0 +1,4911 @@
+arXiv:2610.31305v1 [cs.CL] 22 Oct 2026
+
+Cola
+
+Cola2: Co-Adaptive Hierarchical Language Modeling
+with Continuous Semantic Compression and
+Balanced Discrete Generation
+Hongcan Guo1,2,‡ , Yian Zhao2,3 , Feng Wang2 , Shen Nie4 , Guoqiang Wei2,‡ ,
+Yan Zeng2,†,‡ , Hengshuang Zhao1,B
+1
+
+The University of Hong Kong, 2 ByteDance Seed, 3 Peking University,
+4
+Renmin University of China
+†
+
+Project Lead, ‡ Major Contributor, B Corresponding author
+
+Abstract
+Hierarchical language generation separates continuous semantic modeling from discrete text
+realization, but its effectiveness depends on what information the latent space should compress
+and how the discrete generator should use it. We propose Cola2, which jointly studies continuous
+semantic compression, the discrete reconstruction–generation balance, and their co-adaptation.
+Cola2 dynamically segments text into semantic spans, controls the compression rate with an
+auxiliary-loss-free negative-feedback mechanism, and combines reconstruction and generation
+supervision to learn compact and predictive latent representations. A block-causal masked
+diffusion model (MDM) decoder is jointly trained under clean, noisy, and dropped latent conditions,
+and classifier-free guidance (CFG) adjusts the balance between semantic reconstruction and
+autonomous generation. During training, token-prediction gradients update the encoder through
+the latents, driving the continuous representation and discrete generation to co-adapt, while Flow
+Matching prior learning is decoupled from representation learning via stop-gradient. At inference,
+the generated text is re-encoded under the fixed span layout, keeping the latent history consistent
+with the actual text context. Systematic component analyses and controlled comparisons on five
+downstream tasks with about 210B training tokens validate the core designs and show competitive,
+unsaturated scaling. With only 346.03B source tokens, the unconverged checkpoint reaches a
+60.10 eight-task average and surpasses Llama-3-8B on HellaSwag and StoryCloze despite its over
+43× larger reported pretraining budget. These results indicate effective transfer of the Qweninitialized causal decoder’s generation capability and substantial scaling headroom for hierarchical
+language generation. More broadly, continuous-latent hierarchical modeling can combine effectively
+with established token-space generation paradigms, including autoregressive and masked-diffusion
+decoders.
+Date: October 23, 2026
+Project Lead: Yan Zeng at zengyan.yanne@bytedance.com
+Correspondence: Hengshuang Zhao at hszhao@cs.hku.hk
+Project Page: https://hongcanguo.github.io/Cola2
+
+★ Seedance Team Research Project ★
+
+1
+
+Introduction
+
+Large language models (LLMs) have made remarkable progress under the autoregressive (AR) paradigm [6, 43],
+but the fixed left-to-right generation order imposes an inherent serial dependency on inference. Diffusion
+language models (DLMs) [1, 2, 34, 41] offer a new way to break this constraint. Cola DLM [13] further
+decomposes text generation into semantic organization in a continuous latent space and text realization in
+a discrete space; through latent prior modeling and conditional decoding, it provides a viable path toward
+hierarchical language generation beyond direct token modeling.
+However, a structural division between continuous and discrete spaces does not automatically yield an effective
+division of labor. The key questions are what information the latent space should compress and how the
+discrete generator should use it. Shortening the latent sequence is not equivalent to obtaining a compact
+semantic representation, and a reconstruction-only objective does not guarantee that the latents can predict
+missing or future text [19, 24, 29]. Meanwhile, the decoder must not only faithfully realize the latent semantics,
+but also generate the remaining content from the text context when the latent condition is incomplete or
+imprecise [44]. Semantic compression and discrete generation therefore cannot be designed independently:
+the information the latents should retain must be determined jointly with the information the decoder can
+complete.
+This interdependence further raises the question of how continuous and discrete representations should be
+learned jointly. Fixing the encoder in advance determines the information carried by the latents before the
+discrete generator is fully learned, limiting the continual adaptation of the representation to decoding needs.
+At the same time, letting the latent-prior fitting objective directly shape the encoder may push the latents
+toward directions that are easier to fit but not necessarily more beneficial for discrete generation. Hierarchical
+language modeling thus requires not only learning continuous representations and a discrete generator, but
+also specifying which objectives should jointly shape the representation and which learning processes should
+remain decoupled.
+To address these issues, we propose Cola2, which jointly studies continuous semantic compression, the discrete
+reconstruction–generation balance, and their co-adaptation within a unified hierarchical language modeling
+framework. Its core idea is that, under limited latent capacity, the actual demands of text reconstruction and
+generation jointly determine what the continuous representation should retain, while the discrete generator
+handles the residual uncertainty that the latents do not explain. Specifically, Cola2 dynamically segments text
+into semantic spans, controls the compression rate with an auxiliary-loss-free negative-feedback mechanism,
+and combines reconstruction and generation supervision to learn compact and predictive latent representations.
+On the discrete side, a block-causal masked diffusion model (MDM) decoder [1, 41] is jointly trained under
+clean, noisy, and dropped latent conditions, balancing semantic reconstruction with context-based autonomous
+generation, and classifier-free guidance (CFG) [15] adjusts this balance at inference.
+During training, the token-prediction loss is backpropagated through the latents to the encoder, so that the
+continuous representation and discrete generation co-adapt; the Diffusion Transformer (DiT) [38] learns the
+current latent distribution via Flow Matching [26] without backpropagating gradients to the encoder, thereby
+decoupling prior fitting from representation learning. At inference, the model re-encodes the generated text
+block by block under the fixed span layout, keeping the latent history consistent with the actual text context
+and aligning the two spaces throughout generation.
+Building on these ideas, we systematically study co-adaptive hierarchical language generation across continuous
+and discrete spaces from three perspectives: probabilistic modeling, representation learning, and generation
+performance. Our main contributions are as follows:
+• We propose Cola2, a co-adaptive hierarchical language modeling framework. From the perspective of
+conditional information decomposition, we analyze semantic compression, the reconstruction–generation
+balance, and continuous–discrete co-adaptation in a unified manner, clarifying the relation between the
+information retained by the latents and the residual left to discrete generation.
+• We develop a generation-oriented joint learning mechanism for continuous and discrete representations.
+It combines dynamic semantic compression, generation-oriented supervision, and training under latent
+2
+
+conditions of varying reliability, and coordinates representation learning with prior fitting through
+gradient decoupling, so that compact semantic representations and discrete generation capability
+co-evolve.
+• We validate the core designs and their scaling potential through systematic experiments. Controlled
+five-task scaling to about 210B tokens and a separate 346.03B-source-token pretraining run show
+competitive, unsaturated scaling. The latter reaches a 60.10 average over eight tasks and surpasses
+Llama-3-8B on HellaSwag and StoryCloze despite over 43× fewer reported tokens, demonstrating decoder
+capability transfer and compatibility with autoregressive and masked-diffusion token-space generators.
+
+2
+
+Related Work
+
+2.1
+
+Semantic Compression and Hierarchical Language Models
+
+Fixed-granularity methods shorten the modeled sequence through chunking or downsampling [33, 48]. Adaptive
+compression methods dynamically aggregate bytes or tokens according to content [18, 36, 39]. Concept-level
+methods organize generation through sentence representations or concept prediction [3, 7]. In contrast, Cola2
+maintains the target compression rate through negative-feedback control without an auxiliary compression-rate
+loss, and combines reconstruction and generation supervision to learn compact and predictive continuous
+semantic representations.
+
+2.2
+
+Token-Space Language Models
+
+Autoregressive methods generate text serially, token by token [6, 11, 45]. Discrete diffusion methods predict
+multiple positions in parallel through iterative denoising [2, 27, 34, 41, 42, 47], and have been further extended
+to block-level generation and token editing [1, 4, 5]. Continuous-augmented methods use paired continuous
+states to assist discrete denoising [44, 51, 52]. In contrast, Cola2 learns a semantic prior in a compressed
+latent space and then performs conditional generation with a discrete decoder, handling semantic modeling
+and text realization hierarchically.
+
+2.3
+
+Continuous Representations and Latent-Space Language Models
+
+Token-aligned methods perform diffusion or flow modeling on continuous representations [8, 10, 12, 16, 22,
+23, 46]. Autoencoder-based latent-space methods separate latent generation from text decoding [28, 29, 50].
+Joint-learning methods further co-optimize the latent space and the generative model [13, 30]. In contrast,
+Cola2 drives representation learning with discrete reconstruction and generation supervision while isolating
+the prior-fitting gradient, so that semantic compression and the decoder’s reconstruction–generation balance
+are optimized jointly.
+
+3
+
+Cola2: Continuous Latent Diffusion for Hierarchical Text Modeling
+
+We formulate hierarchical text generation as a continuous latent-variable model and, from an informationdecomposition perspective, discuss semantic compression, the reconstruction–generation balance, and continuous–
+discrete co-adaptation (Section 3.1). We then present the unified model, training procedure, latent-feedback
+inference procedure, and computational cost (Sections 3.2–3.3).
+
+3.1
+
+Probabilistic and Information-Theoretic Perspective
+
+3.1.1
+
+Hierarchical Probabilistic Modeling
+
+Let C denote the observed context, Y the text to be generated, and Z = (z1 , . . . , zK ) a continuous latent
+sequence with zk ∈ Rdz . If Y contains T tokens, the compression rate is ρ = K/T . Cola2 factorizes the text
+probability into a continuous latent prior and discrete conditional generation:
+Z
+p(Y | C) = pθ (Z | C) pψ (Y | C, Z) dZ.
+(3.1)
+
+3
+
+During training, introducing the encoder qϕ (Z | C, Y ) as an approximate posterior yields the conditional
+evidence lower bound (ELBO)
+LcELBO = Eqϕ [log pψ (Y | C, Z)]
+− KL(qϕ (Z | C, Y ) ∥ pθ (Z | C)) ≤ log p(Y | C).
+Defining the conditional aggregated posterior
+Z
+q̄ϕ (Z | C) = qϕ (Z | C, Y ) pdata (Y | C) dY,
+
+(3.2)
+
+(3.3)
+
+the average negative ELBO decomposes as
+−ELcELBO = E[− log pψ (Y | C, Z)] + I(Y ; Z | C)
++ EC KL(q̄ϕ (Z | C) ∥ pθ (Z | C)) .
+
+(3.4)
+
+Thus, the encoder determines which information is retained within the limited latent capacity, the discrete
+generator decoder implements pψ (Y | C, Z), and the latent DiT only needs to fit the pθ (Z | C) induced by
+the online encoder.
+3.1.2
+
+Semantic Compression and Information Density
+
+Given C, the uncertainty of the target text satisfies
+H(Y | C) = I(Y ; Z | C) + H(Y | C, Z).
+
+(3.5)
+
+If S denotes a high-level semantic variable determined by Y , the chain rule of mutual information gives
+H(Y | C) =
+
+I(S; Z | C)
+| {z }
+
++
+
+semantic information
+
++
+
+H(Y | C, Z)
+|
+{z
+}
+
+I(Y ; Z | S, C)
+|
+{z
+}
+
+local residual information
+
+.
+
+(3.6)
+
+discrete generation residual
+
+Under the compression constraint K = ρT , whether the latents are worth further modeling in continuous
+space depends not only on whether K is sufficiently short, but more importantly on whether the information
+retained in the limited latent positions is semantic and predictive. To characterize this, we define the analytical
+quantity
+I(S; Z | C)
+I(S; Z | C)
+Dsem :=
+=
+,
+(3.7)
+K
+ρT
+which measures the density of high-level semantic information carried per latent position. This quantity
+characterizes the design objective rather than serving as a loss estimated directly during training.
+Furthermore, partitioning Y into a visible part Y vis and a target part Y tar gives
+I(Y tar ; Z | C, Y vis ) = H(Y tar | C, Y vis )
+− H(Y tar | C, Y vis , Z).
+
+(3.8)
+
+Therefore, beyond local reconstructability, a high-quality latent space should also reduce the conditional
+uncertainty of future or missing tokens, i.e., concentrate more generative information within its limited capacity.
+Section 3.2 instantiates this principle through dynamic semantic compression and generation-oriented latent
+supervision.
+3.1.3
+
+Reconstruction--Generation Balance and Continuous--Discrete Co-adaptation
+
+Let Ze be the latent condition obtained by passing Z through a stochastic degradation channel, satisfying the
+e given C. By the data processing inequality,
+conditional Markov chain Y → Z → Z
+I(Y ; Z | C) ≥ I(Y ; Ze | C),
+
+e
+H(Y | C, Z) ≤ H(Y | C, Z).
+4
+
+(3.9)
+
+When the latent condition is intact, the decoder’s main task is to realize the continuous semantics as the
+e increases, and more
+corresponding discrete tokens; as the condition is perturbed or removed, H(Y | C, Z)
+uncertainty must be handled by the decoder’s own discrete prediction capability. This gives an informationtheoretic form of the reconstruction–generation trade-off.
+On the other hand, since H(Y | C) is determined by the data distribution, changing the encoder effectively
+reallocates
+H(Y | C) = I(Y ; Zϕ | C) + H(Y | C, Zϕ ).
+(3.10)
+If Eϕ is fixed before the decoder is trained, this allocation is determined before the discrete generator is
+learned. Cola2 instead jointly optimizes
+(ϕ⋆ , ψ ⋆ ) = arg min Epdata (C,Y ) Eqϕ (Z|C,Y ) [− log pψ (Y | C, Z)]
+ϕ,ψ
+
+s.t.
+
+K
+≈ ρ⋆ ,
+T
+
+(3.11)
+
+so that token prediction retains a direct gradient to the encoder:
+∇ϕ Ltok =
+
+∂Ltok ∂Z
+̸= 0.
+∂Z ∂ϕ
+
+(3.12)
+
+This lets the continuous latent space and the discrete realization co-adapt: the encoder learns semantic
+representations better suited to reconstruction and generation by the actual decoder, while latent-prior fitting
+is decoupled from this representation learning. The concrete mechanisms for compression, reliability training,
+gradient routing, and inference alignment are given in the next section.
+
+3.2
+
+Workflow
+
+Figure 1 instantiates the above information decomposition with three coordinated modules: the compression
+variational autoencoder (VAE) encoder Eϕ learns continuous latents, the discrete generator decoder Dψ
+realizes the latent condition as discrete tokens, and the block-causal DiT Gθ learns the generative distribution
+of the detached online latents. Their relationship can be summarized as
+Eϕ
+
+(C, Y ) −−−→ Z,
+
+Dψ
+
+(C, Z) −−−→ Y,
+
+L
+
+FM
+sg(Z) −−−
+−→ Gθ .
+
+(3.13)
+
+Here Dψ is a block-causal masked-diffusion decoder (MDM), which is causal across blocks and performs
+bidirectional token denoising within the current block. Stage 1 jointly learns Eϕ and Dψ ; Stage 2 retains this
+pathway and additionally trains a detached latent DiT. Full implementation details are given in Appendix G.
+3.2.1
+
+Model Architecture
+
+Compression VAE encoder. The target sequence Y = (y1 , . . . , yT ) is dynamically partitioned into K
+contiguous spans. Let Sk denote the token index set of the k-th span and Lk = |Sk | its length. Then
+K
+[
+
+Sk = {1, . . . , T },
+
+1 ≤ Lk ≤ Lmax ,
+
+k=1
+
+ρ=
+
+K
+.
+T
+
+(3.14)
+
+The encoder Eϕ first performs dynamic segmentation over token representations, then aggregates bidirectionally
+within each span and models causally along the latent axis, yielding a diagonal Gaussian posterior
+
+qϕ (zk | C, Y ) = N µk , diag(σk2 ) ,
+zk = µk + σk ⊙ ϵk , ϵk ∼ N (0, I).
+(3.15)
+The compression rate is maintained near the target ρ⋆ by an independent, gradient-free rate-bias controller
+rather than learned through an additional differentiable rate loss. The dynamic boundaries, span-local pooling,
+and convergence properties of the controller are given in Appendix G.1.
+
+5
+
++
+
+Clean Latent
+
+KL loss
+
+Down Projector
+
+Span Mean Calculate
+
+Span-local Bidirectional
+Transformer
+
+Causal Tranformer
+
+Embedding
+
+Compression VAE Encoder
+
+Think [mask] latent [mask]
+
+latent space
+
+in
+
+in
+
+Think
+
+Reason
+
+Rec & Gen
+Balanced Decoder
+
+with latent space
+
+Expanding
+
+Pooling
+
+Think
+
+Predictor
+
+Compression VAE Decoder
+
+Clean
+Noisy
+Drop
+
+Duration
+
+Discrete Block
+Generator
+
+1 (gt)
+
+Dur
+loss
+
+3 (gt)
+
+Embedding
+
+(Reshape)
+
+Up Projector
+
+Dynamic
+Segmenter
+
+Expander
+
+Embed
+Projector
+
+rate bias
+loss-free!
+
+Gen loss
+
+Masked Latent
+
+latent space
+
+Training Stage 1 (Active in All Training Stage)
+
+Rec loss
+
+Inference Stage
+
+Until Stop
+
+Denoised Latent
+
+Denoised
+Latent
+
+Block Causal
+
+DiT Blocks
+
+DiT KV Cache
+
+Prompt Latent
+
+Embed
+Projector
+
+Prompt
+Block
+== 0
+Latent %
+Size
+Seqlen
+
+Clean
+Latent
+Noisy
+Latent
+
+Encoder KV Cache
+
+Compression VAE Encoder
+
+Prompt Tokens
+
+Attention Mask
+
+Diffusion loss
+
+Block Causal DiT Blocks
+
+Discard trailing
+remainder latents
+
+DiT
+Training
+
+Expanding
+
+Clean
+Drop
+
+Mask Embed
+Prompt
+Embedding
+
+Clean Generated Tokens
+
+Noisy Part
+
+Discrete Block
+Generator
+
+Clean Part
+
+Clean Tokens
+
+Clean Latent (Detach)
+
++
+
+Training Stage 2 (Add to Stage 1)
+
+Generator
+KV Cache
+
+Discard tokens
+corresponding to trailing
+remainder latents
+
+DiT Inference
+
+Rec & Gen Balanced
+Decoder Inference
+
+Figure 1 Method overview. Stage 1 jointly trains the compression encoder and the reconstruction–generation
+balanced decoder; Stage 2 additionally trains a DiT on detached latents; at inference, the DiT generates latents block
+by block and the decoder decodes them into tokens.
+
+Latent-to-token interface and block-causal MDM decoder. Each latent is first projected into the decoder
+hidden space, and a duration head predicts the number of tokens it covers:
+
+pψ (Lk | zk ) = softmax MLPdur (Win zk ) .
+(3.16)
+Z
+Given the span lengths, the latents are expanded into a token-aligned condition H Z = (hZ
+1 , . . . , hT ). If
+g(t) = k indicates that token t belongs to span k, then
+
+hZ
+(3.17)
+t = Expand zg(t) , jt , Lg(t) ,
+
+where jt is the relative position of token t within its span. The block-causal MDM decoder Dψ then predicts
+the target tokens in token space:
+
+pψ (yt | Kt , HtZ ) = softmax Head(Dψ (Kt ), HtZ ) ,
+(3.18)
+where Kt contains the historical clean blocks and the current masked block; attention is causal across blocks
+and bidirectional denoising is allowed within the current block, which cannot read its own clean copy. The
+attention mask and training objective are detailed in Appendix G.3.
+Latent generator.
+
+The latent sequence is partitioned into contiguous blocks of fixed size B,
+ 
+K
+Bj = {(j − 1)B + 1, . . . , min(jB, K)},
+J=
+.
+B
+6
+
+(3.19)
+
+The generator Gθ is a block-causal DiT: causal across blocks and bidirectional within the current block. It
+learns pθ (Z | C) in continuous latent space via Flow Matching. High-level generation therefore iterates along
+a latent axis of length K ≈ ρT , while discrete details are recovered by Dψ in token space.
+3.2.2
+
+Training Procedure and Objectives
+
+Stage 1: semantic compression and reconstruction–generation co-adaptation. Stage 1 jointly optimizes Eϕ ,
+the latent-to-token interface, and Dψ . To cover the spectrum in Eq. (3.9) from strong-condition reconstruction
+to weak-condition generation, we sample one of three mutually exclusive condition-reliability states for each
+latent block. Let A ∈ {cond, noise, drop} and define
+
+
+A = cond,
+Z,
+eA = (1 − uc )Z + uc ε, A = noise,
+Z
+ε ∼ N (0, I),
+(3.20)
+
+
+∅,
+A = drop,
+where ∅ removes only the latent condition of the current block while retaining the same discrete token context.
+Let LA
+tok denote the MDM prediction objective under state A. The three states form
+drop
+
+noise
+Lbal = λc Lcond
+tok + λn Ltok + λd Ltok ,
+
+(3.21)
+
+where LA
+tok is the masked denoising loss under the corresponding state, defined in Appendix G.3.
+To increase the generative information in Eq. (3.8), we additionally introduce
+(3.22)
+
+Lgen = Lencmask ,
+
+which masks part of the encoder input under a fixed span layout and directly supervises the encoder through
+the corresponding token prediction. Thus,
+(3.23)
+
+LDGD = Lbal + λgen Lgen .
+The KL regularization of the diagonal Gaussian posterior is
+K
+
+LKL =
+
+Kref dref 1 X
+KL(qϕ (zk | C, Y ) ∥ N (0, I)) ,
+Tref Kdz
+
+(3.24)
+
+k=1
+
+and the duration predictor is supervised with ground-truth span lengths, giving Ldur . The unified Stage 1
+objective is
+L(1) = LDGD + βKL LKL + λdur Ldur .
+(3.25)
+Its key gradient relation is
+
+∂LDGD ∂Z
+̸= 0,
+(3.26)
+∂Z ∂ϕ
+i.e., discrete token prediction directly shapes the encoder latents, so that Eϕ and Dψ jointly determine the
+information allocation in Eq. (3.10). This pathway remains active in Stage 2.
+∇ϕ LDGD =
+
+Stage 2: detached latent diffusion co-training. Stage 2 retains Eq. (3.25) and adds only detached latent-prior
+fitting. Let Z̄ = sg(Z); for the j-th latent block, we sample
+uj = σ(ξj ),
+
+ξj ∼ N (µu , σu2 ),
+
+(3.27)
+
+and all latents within the block share the same uj . Under the linear Flow Matching path,
+zu = (1 − u)z̄ + uϵ,
+which gives
+
+v ⋆ = ϵ − z̄,
+
+ϵ ∼ N (0, I),
+
+h
+i
+2
+LFM = E Gθ (zu , u; Z̄<j ) − v ⋆ 2 .
+7
+
+(3.28)
+(3.29)
+
+The total Stage 2 objective is therefore
+L(2) = L(1) + λFM LFM ,
+and hence
+∇ϕ LFM = 0,
+
+∇ϕ LDGD ̸= 0,
+
+(3.30)
+(3.31)
+
+i.e., prior fitting is decoupled from representation learning, while the continuous representation and the
+discrete realization remain co-adapted end to end. The complete gradient routing is given in Appendix G.5.
+3.2.3
+
+Inference Procedure
+
+Propose–decode–re-encode–commit. Given a prompt C, the encoder takes the posterior mode to obtain Kp
+prompt latents. Writing
+
+
+Kp
+Kp = B
++ r,
+0 ≤ r < B,
+(3.32)
+B
+only the complete block-aligned prefix is persistently committed; the trailing r latents and their tokens serve
+as the clean prefix of the first generated block, and the remaining B − r latent slots are initialized from
+Gaussian noise.
+The j-th generated block follows a unified transaction
+Dψ
+
+Eϕ ( · ;Sbj )
+
+commit
+
+Zjprop −−−→ Yj −−−−−−−→ Zjcorr −−−−−−→ Kj+1 ,
+
+(3.33)
+
+where Sbj is the span layout already determined by the duration predictor; feedback does not rerun the dynamic
+segmenter. The proposal serves only the current token block, and the persistent latent history always stores
+Zjcorr .
+This design first preserves train–inference consistency. During training, the clean history is obtained by
+encoding ground-truth tokens; at inference,
+
+
+hist
+= Eϕ Y≤j ; Sb≤j ,
+(3.34)
+Z≤j
+so the latent history read by the next block is still produced by the same encoder path as in training.
+It also keeps the continuous latent context aligned with the discrete token context:
+
+
+Z
+Y
+K≤j
+≡ Eϕ K≤j
+; Sb≤j .
+
+(3.35)
+
+If Zjprop were committed directly, the subsequent DiT history and the token history actually generated by
+the decoder could stem from different semantic states, causing cumulative context bias; fixed-span feedback
+projects both back onto the same committed history. The cache protocol is detailed in Appendix G.6.
+Two-level CFG.
+
+The latent DiT modulates the historical latent condition in velocity space:
+v̂γ = vu + γgen (vc − vu ),
+
+(3.36)
+
+where vc and vu are the velocity outputs with and without the historical latent condition, respectively, and
+γgen is the guidance scale. Its local probabilistic interpretation is given in Appendix F.
+The MDM decoder uses masked_only conditioning, so the historical token KV contains no latent condition,
+and applies prefix–latent two-axis CFG in logit space. Fixing the current masked block and the span layout,
+let ℓab denote the logits obtained by keeping (1) or masking (0) the historical token prefix and the current
+latent condition, where a, b ∈ {0, 1} correspond to the two conditions, respectively. With two-axis scales γp , γz ,
+we define
+ℓγp ,γz = γp γz ℓ11 + γp (1 − γz )ℓ10
+(3.37)
++ (1 − γp )γz ℓ01 + (1 − γp )(1 − γz )ℓ00 .
+8
+
+Setting γp = 1 modulates only the latent, setting γz = 1 modulates only the prefix, and setting both to
+1 recovers the fully conditioned branch. This rule changes neither the training objective nor the feedback
+protocol. The four-branch definition and cache implementation are given in Appendices F.3 and G.6.1.
+Let Sgen be the number of DiT denoising steps. On the uniform time grid ui = 1 − i/Sgen , the explicit Euler
+update is
+
+
+1
+(i+1)
+(i)
+(i)
+Zj
+= Zj −
+v̂γ Zj , ui ,
+i = 0, . . . , Sgen − 1.
+(3.38)
+Sgen
+Given the proposal, Dψ completes the current token block with a few iterative demasking steps, followed by
+the feedback correction in Eq. (3.33).
+
+3.3
+
+Computational Cost
+(s)
+
+Let Ds be the training token budget of Stage s, crep the average per-token cost of the encoder–decoder path in
+(2)
+that stage, and cG the average per-token cost of the added DiT, both including the corresponding attention
+and output projections. Then
+(2) 
+(2)
+Ctrain ≈ D1 c(1)
+(3.39)
+rep + D2 crep + cG .
+Under the same prior architecture and a comparable layout, K = ρT reduces the dominant linear-layer and
+attention-pair terms to O(ρ) and O(ρ2 ) of their token-axis counterparts, respectively, but the representation
+path persists in both stages.
+Inference cost consists of DiT proposal/commit, discrete decoding (including condition preparation), and
+infer
+infer
+infer
+fixed-span feedback, denoted by CG
+, CD
+, and Cfb , respectively. Taking as reference the AR cost CAR
+under the same prompt/output budget and accounting convention,
+Rinfer =
+
+infer
+infer
+CG
++ CD
++ Cfb
+.
+infer
+CAR
+
+(3.40)
+
+Both sides exclude the one-time prefill but retain the cost of subsequently reading the prompt KV.
+Let ρgen be the realized latent/token ratio of the generated text, and let HD and HF be the numbers of
+per-block call rounds for condition preparation/decoding/clean-token commit and for feedback/corrected-cache
+commit, respectively. Ignoring boundary effects and assuming ideally parallel CFG branches, the number of
+serial call rounds H satisfies
+
+HCola2
+ρgen
+Sgen + HD + HF .
+(3.41)
+≈
+HAR
+B
+This is a forward-round proxy rather than a latency guarantee. The end-to-end cost also depends on the
+actual number of CFG branches, the token decoder, and feedback; per-term counts, the AR comparison, and
+the KV analysis are given in Appendix H.
+
+4
+
+Experiments
+
+Following the training pipeline in Section 3.2, our experiments address three questions: (1) how to build a
+compressed latent space that is semantically rich and easy to model; (2) how to train the latent generator;
+and (3) how the decoder should allocate its capacity between conditional reconstruction and autonomous
+generation.
+
+4.1
+
+Experimental Setup
+
+Datasets. For the component analyses and controlled scaling experiments, we train on the open-source
+
+OLMo 2 pretraining corpus [35]. The component analyses are conducted mainly on LAMBADA and examine
+the construction of the semantic latent space, the learning of the latent generator, and the reconstruction–
+generation balance of the decoder. The controlled scaling experiments are conducted on five downstream
+tasks, RACE [21], OBQA [31], Story Cloze [32], LAMBADA [37], and SQuAD [40], and compare how different
+
+9
+
+(a) Segmentation Strategy
+LAMBADA accuracy (%)
+
+30
+
+28.7
+
+(b) Rate-Control
+29.4
+
+25.0
+
+22.5
+
+24
+
+21
+
+20.6
+
+21
+
+15
+
+25.0
+
+24
+
+27
+
+18
+
+25.5
+
+19.5
+16.8
+
+18.4
+18
+
+Fixed-length
++ tail drop
+
+Random
+span
+
+Dynamic
+(ours)
+
+No
+compression
+
+Dynamic (ours)
+at best Lmax
+
+ρ=1/2, Lmax =4
+
+ρ=1/2, Lmax =4
+
+ρ=1/2, Lmax =4
+
+ρ=1
+
+ρ=1/2, Lmax =8
+
+DLCM
+
+Aux-free
+(ours)
+
+ρ=1/2, Lmax =4
+
+Figure 2 Segmentation and rate control. Dynamic segmentation outperforms fixed-length and random segmentation;
+auxiliary-free negative-feedback control outperforms DLCM [39].
+
+generation paradigms improve as training scales. The post-pretraining comparison additionally evaluates
+HellaSwag [49], NarrativeQA [20], ARC-Easy [9], TruthfulQA [25], and MMLU [14].
+Baselines. Component studies compare Cola2 variants and DLCM [39] for rate control. Controlled scaling
+
+compares AR [6], LLaDA [34], Cola DLM [13], and the uncompressed Cola-MDM (ρ = 1) under matched model
+size, data, and evaluation; Cola-MDM shares the Cola2-MDM decoder to isolate the effect of compression.
+Post-pretraining comparisons use Llama-3-8B [11], Qwen2.5-7B [17], Qwen3-8B-Base [45], and LLaDA-8BBase [34].
+Metrics. Answers are extracted from model outputs according to each task format, and accuracy (%) is
+
+computed by exact match. All tasks except LAMBADA use few-shot prompting. The internal ablations
+report LAMBADA accuracy by default, and the controlled scaling experiments report the accuracy on all five
+tasks and their average.
+
+Settings. In the component analyses and controlled scaling experiments, we use the OLMo 2 (dolma2)
+
+tokenizer and the AdamW optimizer with β = (0.9, 0.95), weight decay 0.01, and a maximum sequence length
+of 512. Stage 1 jointly trains the encoder and decoder; Stage 2 trains the DiT while continuing to update
+the VAE, and blocks the Flow Matching gradient from reaching the encoder. The learning rates of the
+Stage 1 VAE and the Stage 2 DiT both start at 10−6 , increase linearly over 5,000 warmup steps to 10−4
+and 1.5 × 10−4 , respectively, and then follow cosine decay to 10−6 at step 50,000 and 10−5 at step 1,000,000,
+respectively. In Stage 2, the VAE learning rate continues from Stage 1 with a 5,000-step transition, and the
+encoder learning rate is 0.1× that of the decoder. Unless otherwise stated, each latent covers 2 tokens on
+average, the latent dimension is 64, and the maximum span length is 8. DiT noise times follow a logit-normal
+distribution (loc = 2.0, scale = 1.0); the decoder samples clean, noisy, and dropped latent conditions per block
+with probabilities 0.2, 0.4, and 0.4, respectively. Inference uses 8 DiT denoising steps and 4 MDM demasking
+steps by default, and the controlled scaling experiments train on about 210B tokens.
+
+4.2
+
+Building the Semantic Latent Space
+
+4.2.1
+
+Dynamic Segmentation and Rate Control
+
+Obs. 1 Dynamic segmentation is essential. With ρ = 1/2 and Lmax = 4, dynamic segmentation (25.0%)
+
+outperforms random spans and fixed-length segmentation by 4.4 and 8.2 points (Figure 2); relaxing Lmax to 8
+reaches 29.4%, exceeding the uncompressed model (28.7%), which shows that content-based compression is
+not only lossless but also beneficial.
+
+10
+
+LAMBADA accuracy (%)
+
+(a) Encoder Layer Allocation
+29.6
+
+30
+27
+
+25.0
+
+24
+
+18
+15
+
+24.9
+
+22.5
+
+22.7
+20.9
+
+21
+
+26.7
+25.0
+
+25
+
+26.3
+
+26.1
+
+(b) Span Pooling Strategy
+
+27.5
+
+20
+17.5
+
+15.7
+
+18.9
+
+19.0
+
+Endpoint
+
+Causal
+attn
+
+16.2
+
+15
+2+0+2
+
+0+4+2
+
+1+2+2
+
+2+2+2
+
+2+2+0
+
+0+2+4
+
+0+2+2
+
+2+2+2
+
+4L enc
+dec 2+4
+
+6L enc
+dec 2+4
+
+5L enc
+dec 2+4
+
+6L enc
+dec 2+4
+
+4L enc
+dec 2+4
+
+6L enc
+dec 2+4
+
+4L enc
+dec 2+4
+
+6L enc
+dec 4+2
+
+Mean
+
+Blockcausal
+
+Intra-span
+bi (ours)
+
+all cells: ρ=1/2, Lmax =4, dz =64, 2B DiT
+
+Span pooling method
+
+Encoder layout (token + pool + latent)
+
+Figure 3 VAE architecture. Left: the allocation of encoder layers matters more than depth, with 0+2+2 performing
+best. Right: intra-span bidirectional attention is the best pooling operator.
+
+(a) Latent Channel Width
+
+(b) Maximum Span
+
+LAMBADA accuracy (%)
+
+32.3
+
+30
+
+span 2, dz =64, B=16
+span 4, dz =128, B=8
+
+30
+28.4
+
+25.0
+
+25
+25
+
+22.1
+20.4
+
+20
+
+20.7
+
+15
+
+15
+
+13.7
+
+span 2, Lmax =8, B=16
+span 4, Lmax =6, B=8
+
+10
+32
+
+64
+
+256
+
+Latent channel width dz
+
+512
+
+Lmax =6
+
+21.7
+
+Lmax =18
+
+15.2
+
+10.3
+
+9.4
+
+10
+
+Lmax =8
+
+5
+
+23.0
+Lmax =6
+
+14.5
+11.0
+
+128
+
+Lmax =4
+
+20
+
+20.8
+
+29.4
+Lmax =8
+
+1.5
+
+2
+
+Lmax =12
+
+3
+
+4
+
+Lmax / mean span (Lmax /s)̄
+
+4.5
+
+Figure 4 Latent width and maximum span length. Left: dz has an interior optimum. Right: the effect of Lmax is
+non-monotonic.
+Obs. 2 Feedback rate control beats an auxiliary rate loss. Under the same setting, the former reaches 25.0%
+whereas DLCM [39] reaches only 18.4%: directly regulating the hard compression rate avoids the competition
+between the rate loss and representation learning.
+
+4.2.2
+
+VAE Architecture
+
+Obs. 3 Encoder layout matters more than size. The four-layer 0+2+2 encoder achieves the best result of
+29.6%, outperforming all six-layer variants (20.9–26.3%); removing the pooling layers (2+0+2) yields only
+15.7%, whereas reallocating decoder layers has almost no effect (25.0% vs. 24.9%; Figure 3, left). An oversized
+encoder makes the latent distribution more complex and harder for the DiT to model. Intra-span bidirectional
+attention performs best (26.7%), followed by block-causal attention (25.0%), while fully causal attention,
+endpoint pooling, and mean pooling all stay at or below 19.0% (Figure 3, right).
+
+4.2.3
+
+Compression and Latent Capacity
+
+Obs. 4 Wider latents are not always better. With mean span length 2, accuracy peaks at 32.3% at dz = 64
+
+and drops to 14.5% at dz = 512 (Figure 4, left). A larger dz adds capacity, but also increases the complexity
+11
+
+(a) Latent Token Coverage: Actual Mean = 2.00
+Lmax =4 (cap mass 16.0%)
+Lmax =6 (cap mass 6.0%)
+
+Fraction of latents (%)
+
+50
+
+30
+
+(b) Latent Token Coverage: Actual Mean = 4.00
+Lmax =6 (cap mass 28.0%)
+Lmax =8 (cap mass 14.5%)
+
+25
+
+Lmax =8 (cap mass 2.0%)
+
+40
+
+Lmax =12 (cap mass 4.8%)
+Lmax =18 (cap mass 1.1%)
+
+20
+30
+
+15
+
+20
+
+10
+
+10
+0
+
+5
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+Tokens represented by one latent
+
+7
+
+0
+
+8
+
+1
+
+2
+
+4
+
+6
+
+8
+
+12
+
+Tokens represented by one latent
+
+18
+
+Figure 5 Distribution of the number of tokens covered by each latent. Increasing Lmax reduces the number of
+forcibly truncated spans.
+Table 1 Best configuration at each compression level. Accuracy decreases as compression becomes stronger.
+Mean span length
+
+Latent width dz
+
+Lmax
+
+LAMBADA (%)
+
+2
+3
+4
+
+64
+128
+256
+
+8
+8
+18
+
+32.3
+26.9
+25.2
+
+of the distribution that the DiT must fit.
+Obs. 5 Compression rate, dz , and Lmax must be tuned jointly. Even with the best configuration at each
+
+compression level, accuracy still falls from 32.3% (span length 2) to 25.2% (span length 4), as shown in
+Table 1. The effect of Lmax (Figure 4, right) is governed by the truncation ratio (Figure 5): when truncation
+is frequent, a smaller Lmax keeps each latent simpler; once the cap mass drops to about 1% (span length 4,
+Lmax = 18), preserving complete semantic spans dominates and accuracy rises to 21.7%.
+4.2.4
+
+Generative Supervision of the Encoder
+
+Lemma 4.1 (Generative Supervision Promotes Predictive Representations). When the supervised tokens are
+hidden from the encoder, the generative objective cannot be satisfied by copying the current targets. When the
+encoder is trainable, reducing this objective encourages the latent to retain information predictive of missing
+or future tokens. If the encoder is frozen, the objective only improves the decoder’s use of information already
+present in the latent. See Appendix B for the proof.
+Obs. 6 Generative supervision is key; its form is secondary. Pure reconstruction reaches only 15.7%, and
+
+adding the Span-AR or BERT-style objective raises accuracy to 25.2% and 26.5%, respectively (Figure 6).
+With a frozen encoder, the BERT-style objective yields a 2.2-point gain (28.9% → 31.1%), and unfreezing the
+encoder reaches 35.2%. Consistent with Lemma 4.1, the generative objective improves both the completion
+ability of the decoder and the latent itself.
+Obs. 7 Encoder and decoder should co-evolve. With the MDM decoder, a frozen encoder yields 47.6%,
+
+end-to-end co-evolution raises accuracy to 53.5%, and further adding the generative loss reaches 58.2%
+(Figure 6, right). What the latent should retain must be determined jointly with what the decoder can
+complete.
+
+4.3
+
+Learning the Latent Generator
+
+12
+
+Generative Loss
+LAMBADA accuracy (%)
+
+27.5
+
+26.5
+
+26.7
+
+25.2
+
+25
+
+Encoder Data Scaling
+
+36
+
+35.2
+
+33
+
+20
+
+31.5
+
+17.5
+
+30
+
+55
+
+50
+28.9
+
+47.5
+
+28.5
+No gen.
+Span-AR
+loss
+loss (no BERT)
+
+BERT
+loss
+
+BERT +
+lite-noise
+
+53.5
+
+52.5
+
+31.1
+
+15.7
+
+15
+
+58.2
+57.5
+
+34.5
+
+22.5
+
+Enc.–Dec. Co-evolution
+
+Frozen enc. Frozen enc. Trainable enc.
+no BERT
++ BERT
++ BERT
+
+47.6
+
+Frozen enc. Co-evolved Co-evolved
++ MDM dec. no gen. loss + gen. loss
+
+Figure 6 Generative supervision. Left: generative objectives substantially outperform pure reconstruction. Middle:
+the gain is larger when the encoder is trainable. Right: co-evolving the encoder and decoder with the generative loss
+performs best.
+
+(b) Noise Schedule
+
+LAMBADA accuracy (%)
+
+32.5
+30
+27.5
+25
+22.5
+20
+
+VAE trainable, full detach (ours)
+VAE trained every 5th step, EMA latents
+VAE frozen
+
+17.5
+20
+
+40
+
+60
+
+80
+
+100
+
+DiT training step (k)
+
+120
+
+Δ LAMBADA vs. loc=2.0 (pp)
+
+(a) VAE Update Policy
+0
+-0.5
+-1
+-1.5
+
+dz =64, span 2, Lmax =8, B=16 [32.3%]
+dz =128, span 4, Lmax =6, B=16 [16.4%]
+dz =256, span 4, Lmax =18, B=8 [25.2%]
+
+loc=2.0 (ours)
+-0.3
+
+-0.9
+-1.3
+-1.7
+
+-1.2
+
+-1.5
+
+-2
+-2.5
+-3
+
+140
+
+-3.0
+
+1.0
+
+1.7
+
+2.0
+
+2.3
+
+Logit-normal schedule mean loc (scale 1.0)
+
+Figure 7 VAE update policy and noise schedule. Left: continuing to train the VAE while detaching the DiT
+gradient performs best. Right: differences relative to loc = 2.0; all three configurations are optimal at 2.0.
+
+4.3.1
+
+VAE Update Policy and Gradient Detachment
+
+Lemma 4.2 (Prior Fitting and Representation Learning Should Be Decoupled). The DiT Flow Matching
+objective only requires the current latent to be easier for the prior to fit; its gradient is not guaranteed to align
+with the token-side representation objective. Applying stop-gradient to the DiT path ensures that prior fitting
+does not directly rewrite the encoder, while preserving end-to-end encoder updates from the decoder token loss.
+See Appendix C for the proof.
+Obs. 8 Keep training the VAE, but detach the DiT gradient. A trainable VAE reaches 32.8%, whereas a frozen
+VAE reaches only 28.7% (Figure 7, left). Allowing the DiT gradient to flow into the encoder yields a 2.2-point
+lead early on, but this is overtaken after 80k steps and becomes a 1.0-point deficit at 140k steps (Table 2).
+This supports Lemma 4.2: the DiT gradient rewrites the latent to be easier to fit rather than more useful for
+text modeling, and detaching the gradient blocks this latent hacking.
+
+13
+
+(a) Block Size
+B=1
+B=4
+B=8
+
+35
+
+B=12
+B=16
+B=24
+
+30
+25
+20
+15
+20
+
+40
+
+60
+
+(b) DiT Capacity Scaling
+
+4
+
+Δ LAMBADA vs. B=8 (pp)
+
+LAMBADA accuracy (%)
+
+40
+
+80
+
+100
+
+DiT training step (k)
+
+2
+0
+−2
+−4
+−6
+
+120
+
+2B DiT, span 2 @120k
+7B DiT, span 2 @35k
+32B DiT, span 2 @6k
+2B DiT, span 4 @150k
+7B DiT, span 4 @150k
+
+B=1
+
+B=4
+
+B=8
+
+B=12
+
+DiT block size B
+
+B=16
+
+Figure 8 DiT block size and capacity. Left: moderate block sizes are optimal. Right: larger DiTs yield flatter curves.
+
+(a) DiT CFG Sweep
+
+(b) DiT Steps Across Block Sizes
+0
+
+35
+30
+
+Δ vs. 8 steps (pp)
+
+LAMBADA accuracy (%)
+
+40
+
+Peak region
+38.5 @ 20
+
+39
+
+25
+
+37
+37.1 @ 14
+
+20
+
+35
+12
+
+15
+
+15
+
+20
+
+2
+
+3
+
+4
+
+6
+
+8
+
+12
+
+DiT classifier-free guidance scale
+
+16
+
+20
+
+-5
+-7.5
+-10
+-12.5
+
+23
+
+8 denoising steps
+16 denoising steps
+
+1
+
+-2.5
+
+30
+
+2B DiT, B=4 [29.0% plateau]
+2B DiT, B=8 [29.1% plateau]
+2B DiT, B=32 [20.1% plateau]
+
+-15
+1
+
+4
+
+8
+
+16
+
+32
+
+DiT denoising steps
+
+64
+
+128
+
+Figure 9 DiT inference. Left: generator CFG sweep. Right: the DiT saturates at 8 steps.
+
+4.3.2
+
+Noise-Schedule Calibration
+
+Lemma 4.3 (Effective Noise Is Jointly Determined by the Latent and Diffusion). At the same DiT timestep,
+the available latent signal is affected by both VAE posterior uncertainty and diffusion corruption. Consequently,
+changing the noise scale of the Stage 1 latent changes the effective signal-to-noise ratio induced by the same
+DiT schedule, so the noise schedule must be calibrated jointly with the latent distribution. See Appendix D for
+the proof.
+Obs. 9 The noise schedule must match the representation. All three configurations achieve their best results at
+
+loc = 2.0, and deviating from it costs 0.3–3.0 points, with the magnitude varying with dz and the compression
+level (Figure 7, right). By Lemma 4.3, the schedule should be recalibrated when the representation changes.
+4.3.3
+
+Block Size and Generator Capacity
+
+Obs. 10 Moderate blocks are best, and larger DiTs tolerate larger blocks. For the 2B DiT, B = 4 is optimal
+(36.4%), whereas B = 1 and B = 24 reach only 31.8% and 27.3%, respectively (Figure 8, left). In the right
+panel of Figure 8, the slope of the decline for B > 8 becomes monotonically flatter with DiT size: the loss
+from B = 8 → 16 decreases from 4.5 points for 2B to 3.4 points for 7B and 2.7 points for 32B, and the same
+trend holds at mean span length 4. A larger DiT can jointly model more latents within a single block, which
+enlarges the range of block sizes it can use effectively.
+
+14
+
+100
+
+reconstruction ≥ 99.7%
+
+46
+
+80
+44
+
+43.2
+42.3
+
+42
+40
+38
+
+(b) Decoder Dropped-Latent Ratio
+
+48
+
+42.7
+
+41.0
+
+60
+40
+
+39.5
+
+20
+
+clean
+0.8
+
+clean
+0.6
+
+clean
+0.4
+
+clean
+0.2
+
+clean
+0.1
+
+0
+
+0.2
+
+0.4
+
+0.6
+
+0.7
+
+100
+
+reconstruction ≥ 99.5%
+
+46
+44.7
+
+44
+
+80
+
+44.7
+
+43.2
+
+43.1
+
+42.3
+
+42
+
+60
+40
+
+41.0
+
+40
+
+noisy 0.4 (LAMBADA)
+noisy 0.2 (LAMBADA)
+
+0
+
+0.2
+
+0.4
+
+noisy 0.4 (recon.)
+noisy 0.2 (recon.)
+
+0.5
+
+0.7
+
+20
+
+Reconstruction accuracy (%)
+
+LAMBADA accuracy (%)
+
+(a) Decoder Noised-Latent Ratio
+
+0
+
+Share of blocks trained with the latent dropped
+
+Share of blocks trained on a noised latent
+
+Figure 10 Decoder data partition. Left: varying the noisy-to-clean ratio. Right: varying the drop ratio.
+Reconstruction accuracy (right axis) stays above 99.5% throughout; 0.4/0.4/0.2 gives the best balance.
+Table 2 Whether the DiT gradient flows into the encoder. Gradient injection leads early, but is overtaken by full
+detachment in the middle and late stages of training.
+Gradient policy
+
+4.3.4
+
+20k steps
+
+80k steps
+
+140k steps
+
+Full detachment (ours)
+DiT velocity loss injected every 10 steps
+
+21.4
+23.6
+
+30.4
+29.9
+
+33.1
+32.1
+
+Difference (ours − injection)
+
+−2.2
+
++0.5
+
++1.0
+
+Generator Guidance and Inference Steps
+
+Obs. 11 The generator needs strong CFG and about 8 steps. At 8 steps, accuracy rises from 12.2% at γgen = 1
+
+to 37.1% at γgen = 14; at 16 steps, the peak moves to γgen = 20 (38.5%) (Figure 9, left). Using 1 and 4 steps
+loses about 14 and 5 points, respectively, whereas results between 8 and 128 steps differ by at most 0.3 points
+(Figure 9, right).
+
+4.4
+
+Balancing the Reconstruction--Generation Decoder
+
+Lemma 4.4 (Latent-Condition Strength Determines Residual Generation). Given the same discrete context,
+a more reliable latent condition provides more information and leaves less residual uncertainty for the decoder
+to generate on its own; when the latent is corrupted or removed, the residual uncertainty increases accordingly.
+Thus, mixed cond/ noise/ drop training covers the continuum from conditional reconstruction to autonomous
+generation. See Appendix E for the proof.
+4.4.1
+
+Decoder Type
+
+Obs. 12 Decoder factorization matters little. At every checkpoint, the gap between them is at most 1.4 points,
+
+and the leader alternates during training (Table 3): AR-MTP leads by 0.9 points at 50k steps, whereas MDM
+leads by 0.7 and 1.4 points at 100k and 150k steps. This indicates that, given a shared latent–token interface,
+the specific decoder factorization is not the decisive factor for performance, and the hierarchical framework
+applies to both; subsequent experiments use the MDM decoder.
+4.4.2
+
+Decoder Data Partition
+
+Obs. 13 Train mostly on noisy and dropped conditions, but keep clean ones. Reconstruction accuracy stays
+
+above 99.5% in all configurations, even when only 10% of blocks are clean (Figure 10), so most of the data can
+15
+
+(a) Decoder CFG Sweep
+
+(b) Fixed-Budget Model Allocation
+
+LAMBADA accuracy (%)
+
+45
+
+best allocation
+
+45
+
+44.4
+
+40
+43.5
+
+35
+30
+
+42
+41.1
+
+25
+40.5
+
+20
+Decoder trained 0.4 / 0.4 / 0.2 (ours)
+Decoder trained 0.2 / 0.0 / 0.8
+
+15
+0.5
+
+0.0
+
+-0.5
+
+-1.0
+
+Decoder CFG weight w
+
+41.0
+40.3
+
+40.0
+
+39
+-1.5
+
+2.5B/0.5B
+
+2B/1B
+1.5B/1.5B
+1B/2B
+0.5B/2.5B
+DiT / decoder parameters (total = 3B)
+
+-2.0
+
+Figure 11 Decoder guidance and parameter allocation. Left: the balanced decoder is optimal at wdec = −0.9.
+Right: with 3B total parameters, a 2B DiT with a 1B decoder is optimal.
+Table 3 Decoder factorization. The two decoders perform similarly.
+Decoder
+
+50k steps
+
+100k steps
+
+150k steps
+
+AR-MTP decoder
+MDM decoder
+
+39.7
+38.8
+
+43.7
+44.4
+
+44.1
+45.5
+
+Difference (MDM − AR-MTP)
+
+−0.9
+
++0.7
+
++1.4
+
+be devoted to generation under degraded conditions. With the drop ratio fixed at 0.2, shifting noisy/clean
+from 0.0/0.8 to 0.6/0.2 raises LAMBADA accuracy from 39.5% to 43.2%; raising the drop ratio from 0.2 to
+0.4 adds another 2.2–2.4 points, while pushing further brings no gain (noisy 0.7: 42.7%; drop 0.7: 43.1%).
+The selected 0.4/0.4/0.2 (drop/noisy/clean) ties for the best result of 44.7% while retaining more clean data,
+confirming the reconstruction–generation continuum in Lemma 4.4.
+4.4.3
+
+Decoder Guidance
+
+Obs. 14 Decoder CFG must match the training mixture. The balanced decoder reaches 44.7% at wdec = −0.9
+
+and collapses rapidly at more negative weights, whereas the clean-heavy decoder reaches at best 40.3%
+(Figure 11, left), indicating that inference-time guidance cannot compensate for an imbalanced training
+distribution.
+4.4.4
+
+Decoder Capacity
+
+Obs. 15 Under a fixed budget, the DiT matters more. With the DiT fixed, increasing the decoder from 500M
+
+to 2B yields monotonic gains of 2.1–2.4 points (Figure 12); under a total budget of 3B, a 2B DiT with a
+1B decoder (44.4%) outperforms the other allocations by 3.3–4.4 points, and imbalance in either direction
+degrades performance (Figure 11, right).
+4.4.5
+
+Demasking Steps and Latent Use
+
+Obs. 16 Demasking saturates at about 8 steps. 8 DiT/8 demasking steps achieve the best result of 49.0%
+(Figure 13, left); fewer than 8 DiT steps cause a clear drop, while increasing demasking can partially compensate
+when the DiT uses too few steps. The 8/4 setting (48.2%) is only 0.8 points below the optimum and serves as
+the default low-cost setting.
+Obs. 17 The decoder relies on aligned latents. Zeroing, resampling, and shuffling the latent reduce accuracy
+
+16
+
+Figure 12 Scaling the decoder with a fixed DiT. Accuracy improves monotonically with decoder size.
+Accuracy
+(%)
+
+(a) Decoder × DiT Steps
+16
+
+42.2
+
+43.9
+
+46.9
+
+48.3
+
+50
+
+48.0
+
+DiT denoising steps
+
+46
+
+12
+
+42.9
+
+43.9
+
+47.5
+
+48.1
+
+48.7
+
+8
+
+42.1
+
+44.5
+
+48.2
+
+49.0
+
+47.8
+
+4
+2
+
+37.4
+
+39.3
+
+41.1
+
+43.0
+
+40
+
+42
+
+30
+
+38
+
+20
+
+34
+
+10
+
+30
+
+0
+
+(b) Latent Ablation
+46.5
+41.2
+
+39.3
+34.3
+
+45.1
+
+30.1
+
+35.9
+
+37.5
+
+40.1
+
+42.6
+
+1
+
+2
+
+4
+
+8
+
+16
+
+Decoder demask steps
+
+50
+
+Latent Zeroed Shuffled Resampled
+as trained
+(0, 1)
+
+Figure 13 Decoder inference and latent ablation. Left: 8/8 steps are optimal. Right: corrupting the latent
+substantially degrades performance, with shuffling being the most harmful.
+
+from 46.5% to 41.2%, 39.3%, and 34.3%, respectively (Figure 13, right). Zeroing corresponds to the drop
+state seen in training and therefore degrades more gracefully; shuffled latents are statistically realistic but
+semantically misaligned and cause the largest damage, showing that the decoder follows the latent content.
+
+4.5
+
+Scaling Experiments
+
+4.5.1
+
+Controlled Scaling Trends
+
+Figure 14 extends training to about 210B tokens and compares the models on RACE, OBQA, Story Cloze,
+LAMBADA, and SQuAD. Cola-MDM (ρ = 1) and Cola2-MDM (with the compression VAE from Section 4.2)
+share the MDM decoder selected in Section 4.4, which separates the effect of the decoder design from that of
+dynamic compression.
+Obs. 18 The MDM decoder yields the strongest scaling. Cola-MDM finally reaches a task average of about
+34.5%, higher than AR (about 33%), and about 64% on LAMBADA, about 15 points above Cola DLM.
+The weakness of Cola DLM on generative tasks stems from its decoder rather than from the hierarchical
+framework.
+Obs. 19 Compression preserves semantic tasks, with costs on exact-token tasks. Cola2-MDM matches AR on
+
+17
+
+AR
+
+LLaDA
+
+Cola
+
+RACE
+
+Cola2-MDM
+
+Cola-MDM
+
+OBQA
+
+Story Cloze
+
+12
+20
+
+6
+4
+
+30
+
+Accuracy
+
+8
+
+Accuracy
+
+Accuracy
+
+10
+
+15
+10
+
+2
+
+10
+
+5
+
+0
+
+50
+
+100
+
+150
+
+Training Tokens (B)
+
+200
+
+50
+
+LAMBADA
+
+150
+
+200
+
+50
+
+40
+
+30
+20
+
+50
+
+100
+
+150
+
+Training Tokens (B)
+
+0
+
+200
+
+200
+
+25
+20
+15
+
+10
+
+30
+
+150
+
+30
+
+Accuracy
+
+50
+
+100
+
+Training Tokens (B)
+
+Tasks Average
+
+35
+
+40
+
+Accuracy
+
+Accuracy
+
+100
+
+Training Tokens (B)
+
+SQuAD
+
+60
+
+20
+
+10
+50
+
+100
+
+150
+
+200
+
+Training Tokens (B)
+
+50
+
+100
+
+150
+
+Training Tokens (B)
+
+200
+
+Figure 14 Scaling trends with training tokens. Cola-MDM achieves the strongest overall scaling; Cola2-MDM also
+exhibits strong and unsaturated scaling potential under compression.
+
+Cola-MDM
+
+Best Decoder CFG
+
+0.6
+0.8
+1.0
+
+50
+
+150
+
+Training Tokens (B)
+
+50
+
+Best Decoder CFG
+
+0.7
+0.8
+0.9
+50
+
+100
+
+150
+
+Training Tokens (B)
+
+100
+
+150
+
+Training Tokens (B)
+
+0.6
+0.7
+0.8
+0.9
+1.0
+
+200
+
+50
+
+SQuAD
+
+0.6
+
+1.0
+
+0.8
+1.0
+
+200
+
+Story Cloze
+
+0.5
+
+0.6
+
+LAMBADA
+
+0.5
+
+Best Decoder CFG
+
+100
+
+0.0
+
+200
+
+0.90
+0.95
+1.00
+50
+
+100
+
+150
+
+Training Tokens (B)
+
+100
+
+150
+
+Training Tokens (B)
+
+200
+
+Tasks Average
+
+Best Decoder CFG
+
+Best Decoder CFG
+
+-0.1
+
+Cola2-MDM
+
+OBQA
+
+Best Decoder CFG
+
+RACE
+
+200
+
+0.7
+0.8
+0.9
+1.0
+
+50
+
+100
+
+150
+
+Training Tokens (B)
+
+200
+
+Figure 15 Optimal decoder CFG weight during training. For both models, the optimal weight remains within
+[−1.0, −0.8], consistent with the −0.9 selected in Section 4.4, and drifts slowly toward 0 during training; the drift of
+Cola2-MDM is more gradual, consistent with its slower convergence.
+
+LAMBADA (about 61%) and leads substantially on RACE (about 10.5% vs. 4.5%), with the gap concentrated
+on SQuAD and Story Cloze, which rely on verbatim reproduction.
+Obs. 20 The compressed variant converges more slowly but keeps closing the gap. Since each latent
+
+summarizes more tokens, the latent DiT converges more slowly than the discrete generator. As training
+
+18
+
+Table 4 Post-pretraining evaluation. Accuracy (%) on eight downstream tasks, with tasks grouped by evaluation
+focus and models by generation paradigm. Cola2 uses 346.03B source tokens; the models are not compute-matched.
+Autoregressive
+
+Discrete diffusion
+
+Continuous diffusion
+
+Llama-3-8B
+
+Qwen2.5-7B
+
+Qwen3-8B-Base
+
+LLaDA-8B-Base
+
+Cola2
+
+15T+
+
+18T
+
+∼36T
+
+2.3T
+
+346B
+
+Reading comprehension
+RACE
+75.77
+NarrativeQA
+42.70
+
+89.95
+32.90
+
+90.65
+37.30
+
+87.40
+36.00
+
+69.91
+32.70
+
+Commonsense reasoning
+HellaSwag
+39.21
+StoryCloze
+79.49
+
+75.67
+95.09
+
+68.13
+97.44
+
+69.65
+95.94
+
+41.75
+80.42
+
+Language modeling
+LAMBADA
+
+75.70
+
+71.82
+
+71.20
+
+67.90
+
+63.00
+
+Knowledge-oriented QA
+ARC-Easy
+90.86
+TruthfulQA
+63.04
+MMLU
+63.19
+
+96.00
+69.03
+70.16
+
+97.35
+72.58
+72.31
+
+93.85
+64.87
+61.27
+
+87.62
+54.10
+51.32
+
+8-task average
+
+75.08
+
+75.87
+
+72.11
+
+60.10
+
+Task
+
+Pretraining tokens
+
+66.25
+
+continues, the latent condition becomes increasingly useful: after about 150B tokens, the average gap to
+LLaDA shrinks from about 4 to 1.5 points without saturating. The mixed decoder setting wdec = −0.9
+(44.7%) also outperforms both the latent-free (43.5%) and fully conditioned (37.0%) settings, confirming that
+latent semantics and discrete generation are complementary.
+4.5.2
+
+Post-Pretraining Benchmark Comparison
+
+The final checkpoint evaluated here uses a separate large-scale recipe from the controlled scaling study. It is
+trained on OLMo 2 pretraining data retokenized with the Qwen3-4B tokenizer, using length-4096 sequences.
+The decoder and the VAE encoder embedding are initialized from Qwen3-4B-Base. During decoder training,
+masked positions are represented by [MASK] inputs, while decoder self-attention remains causal. Stage I
+trains the dynamic-compression VAE on 52.43B source tokens. Stage II jointly updates the VAE and an
+approximately 4B-parameter latent DiT, with detached VAE latents, on an additional 125.83B source tokens.
+Stage III freezes the Stage-II EMA VAE and continues training only the DiT on 167.77B source tokens. The
+total is 346.03B source tokens. Architecture, optimization, objective, EMA, and state-transition details are
+provided in Appendix I.
+Inference uses a low-noise-biased eight-step Euler DiT schedule, ti = T (1 − i/8)2 for i = 0, . . . , 8, with DiT
+CFG set to 10. Decoder CFG is −0.9, each decoding call generates one latent span, dynamic duration and
+latent feedback are enabled, and decoding is greedy.
+We compare this checkpoint with representative 7B–8B pretrained models across eight downstream tasks.
+Each Cola2 task score reported below is the average of three sampled evaluations. Because the models’ training
+recipes, tokenizers, and token-counting conventions differ, this comparison contextualizes post-pretraining
+performance rather than isolating the effect of the generation paradigm.
+Obs. 21 Cola2 shows strong scaling potential under a limited training budget. With only 346.03B source tokens
+
+and before convergence, Cola2 reaches an eight-task average of 60.10, only 6.15 points behind Llama-3-8B
+(66.25), which uses at least 15T tokens—over 43× more data. Cola2 also surpasses Llama-3-8B on HellaSwag
+(41.75 vs. 39.21) and StoryCloze (80.42 vs. 79.49), while reaching 87.62 on ARC-Easy. These results indicate
+substantial scaling headroom and successful transfer of the Qwen-initialized causal decoder’s text generation
+
+19
+
+capability. More broadly, continuous-latent hierarchical modeling can integrate effectively with established
+token-space generation paradigms, including autoregressive and masked-diffusion decoders.
+
+4.6
+
+Summary
+
+The results support the design of Cola2 in three respects. Semantic compression: dynamic segmentation
+and generative supervision keep the latents strongly semantic at high compression rates; the former slightly
+surpasses the uncompressed model with an appropriate Lmax , and the latter raises accuracy from 15.7% to
+26.7%. Reconstruction--generation balance: mixed training dominated by noisy and dropped conditions
+enables the decoder both to faithfully use the latent (shuffling the latent costs 12.2 points) and to autonomously
+generate the residual information. Continuous--discrete co-adaptation: the information placed in the latent
+should be determined by the decoder; co-training the encoder and decoder yields a 5.9-point gain, and both
+continue to benefit from more training data, giving the hierarchical model scaling trends comparable to or
+better than AR and LLaDA.
+
+5
+
+Limitations & Future Prospects
+
+Although our results provide initial evidence for the feasibility, competitiveness, and scaling potential of Cola2,
+we view the current system as a starting point rather than a finished endpoint. First, the model remains far
+from convergence, especially the latent DiT, while the present training scale is limited by available resources.
+Larger models, longer training, and broader data and compute budgets are therefore needed to establish its
+performance ceiling. Second, compression reduces the dominant linear and attention FLOPs of the latent prior
+in theory, but end-to-end generation speed also depends on the decoder, CFG branches, latent feedback, and
+hardware utilization. Infrastructure co-design—including specialized kernels, cache management, and parallel
+scheduling—is needed to translate theoretical savings into practical speedups. Third, Cola2 already shows
+compatibility with autoregressive and masked-diffusion decoders, but their co-training objectives, inference
+trade-offs, and optimal division of labor remain underexplored. Finally, the continuous latent space may
+provide a shared interface between text and other continuous modalities such as vision, opening a path toward
+unified latent representations, cross-modal priors, and unified understanding and generation.
+
+6
+
+Conclusion
+
+We presented Cola2, a hierarchical language modeling framework that unifies dynamic semantic compression
+with balanced discrete reconstruction and generation through continuous–discrete co-adaptation. Dynamic
+compression and generation-oriented supervision encourage compact, predictive latent representations, while
+the decoder realizes latent semantics and handles residual uncertainty from context. Token-prediction gradients
+drive encoder–decoder co-adaptation, whereas latent-prior fitting remains decoupled from representation
+learning. Systematic component analyses and controlled evaluations on five downstream tasks, scaled to
+about 210B training tokens, support these design principles and show competitive, unsaturated scaling. In a
+separate resource-constrained run, the final checkpoint trained on 346.03B source tokens achieves a 60.10
+average over eight tasks and surpasses Llama-3-8B on HellaSwag and StoryCloze, although that baseline
+reports over 43× more pretraining tokens. These results indicate successful transfer of the Qwen-initialized
+causal decoder’s generation capability and substantial scaling headroom, especially because the latent DiT
+remains far from convergence. More broadly, Cola2 shows that continuous-latent hierarchical modeling can
+integrate effectively with established token-space generators, including autoregressive and masked-diffusion
+decoders, rather than depending on a single decoder paradigm.
+
+20
+
+References
+[1] Marianne Arriola, Aaron Gokaslan, Justin Chiu, Zhihan Yang, Zhixuan Qi, Jiaqi Han, Subham Sahoo, and
+Volodymyr Kuleshov. Block diffusion: Interpolating between autoregressive and diffusion language models. In
+International Conference on Learning Representations, volume 2025, pages 50726–50753, 2025.
+[2] Jacob Austin, Daniel D Johnson, Jonathan Ho, Daniel Tarlow, and Rianne Van Den Berg. Structured denoising
+diffusion models in discrete state-spaces. Advances in neural information processing systems, 34:17981–17993,
+2021.
+[3] Loïc Barrault, Paul-Ambroise Duquenne, Maha Elbayad, Artyom Kozhevnikov, Belen Alastruey, Pierre Andrews,
+Mariano Coria, Guillaume Couairon, Marta R Costa-jussà, David Dale, et al. Large concept models: Language
+modeling in a sentence representation space. arXiv preprint arXiv:2412.08821, 2024.
+[4] Tiwei Bie, Maosong Cao, Kun Chen, Lun Du, Mingliang Gong, Zhuochen Gong, Yanmei Gu, Jiaqi Hu, Zenan
+Huang, Zhenzhong Lan, et al. Llada2. 0: Scaling up diffusion language models to 100b. arXiv preprint
+arXiv:2512.15745, 2025.
+[5] Tiwei Bie, Maosong Cao, Xiang Cao, Bingsen Chen, Fuyuan Chen, Kun Chen, Lun Du, Daozhuo Feng, Haibo Feng,
+Mingliang Gong, et al. Llada2. 1: Speeding up text diffusion via token editing. arXiv preprint arXiv:2602.08676,
+2026.
+[6] Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla Dhariwal, Arvind
+Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, et al. Language models are few-shot learners.
+Advances in neural information processing systems, 33:1877–1901, 2020.
+[7] Jiaqi Cao, Chiyu Chen, Shuang Cheng, Xu Cheng, Beiya Dai, Yufan Feng, Kewen Ge, Ruijun Ge, Jiayi Huang,
+Yang Jiao, et al. Ncp-archpreview technical report: Moving towards latent space language models through next
+concept prediction. arXiv preprint arXiv:2609.10715, 2026.
+[8] Yuxin Chen, Chumeng Liang, Hangke Sui, Ruihan Guo, Chaoran Cheng, Jiaxuan You, and Ge Liu. Langflow:
+Continuous diffusion rivals discrete in language modeling. arXiv preprint arXiv:2604.11748, 2026.
+[9] Peter Clark, Isaac Cowhey, Oren Etzioni, Tushar Khot, Ashish Sabharwal, Carissa Schoenick, and Oyvind
+Tafjord. Think you have solved question answering? try ARC, the AI2 reasoning challenge. arXiv preprint
+arXiv:1803.05457, 2018.
+[10] Shansan Gong, Mukai Li, Jiangtao Feng, Zhiyong Wu, and LingPeng Kong. Diffuseq: Sequence to sequence text
+generation with diffusion models. arXiv preprint arXiv:2210.08933, 2022.
+[11] Aaron Grattafiori, Abhimanyu Dubey, Abhinav Jauhri, Abhinav Pandey, Abhishek Kadian, Ahmad Al-Dahle,
+Aiesha Letman, Akhil Mathur, Alan Schelten, Alex Vaughan, et al. The llama 3 herd of models. arXiv preprint
+arXiv:2407.21783, 2024.
+[12] Ishaan Gulrajani and Tatsunori B Hashimoto. Likelihood-based diffusion language models. Advances in Neural
+Information Processing Systems, 36:16693–16715, 2023.
+[13] Hongcan Guo, Qinyu Zhao, Yian Zhao, Shen Nie, Rui Zhu, Qiushan Guo, Feng Wang, Tao Yang, Hengshuang
+Zhao, Guoqiang Wei, et al. Continuous latent diffusion language model. arXiv preprint arXiv:2605.06548, 2026.
+[14] Dan Hendrycks, Collin Burns, Steven Basart, Andy Zou, Mantas Mazeika, Dawn Song, and Jacob Steinhardt.
+Measuring massive multitask language understanding. arXiv preprint arXiv:2009.03300, 2020.
+[15] Jonathan Ho and Tim Salimans. Classifier-free diffusion guidance. arXiv preprint arXiv:2207.12598, 2022.
+[16] Keya Hu, Linlu Qiu, Yiyang Lu, Hanhong Zhao, Tianhong Li, Yoon Kim, Jacob Andreas, and Kaiming He. Elf:
+Embedded language flows. arXiv preprint arXiv:2605.10938, 2026.
+[17] Binyuan Hui, Jian Yang, Zeyu Cui, Jiaxi Yang, Dayiheng Liu, Lei Zhang, Tianyu Liu, Jiajun Zhang, Bowen Yu,
+Keming Lu, et al. Qwen2.5-Coder technical report. arXiv preprint arXiv:2409.12186, 2024.
+[18] Sukjun Hwang, Brandon Wang, and Albert Gu. Dynamic chunking for end-to-end hierarchical sequence modeling.
+In International Conference on Learning Representations, volume 2026, pages 149273–149313, 2026.
+[19] Jiaxiu Jiang, Jingjing Ren, Wenbo Li, Bo Wang, Haoze Sun, Yijun Yang, Jianhui Liu, Yanbing Zhang, Shenghe
+Zheng, Yuan Zhang, Haoyang Huang, Nan Duan, and Wangmeng Zuo. TextLDM: Language modeling with
+continuous latent diffusion. arXiv preprint arXiv:2605.07748, 2026.
+
+21
+
+[20] Tomáš Kočiskỳ, Jonathan Schwarz, Phil Blunsom, Chris Dyer, Karl Moritz Hermann, Gábor Melis, and Edward Grefenstette. The NarrativeQA reading comprehension challenge. Transactions of the Association for
+Computational Linguistics, 6:317–328, 2018.
+[21] Guokun Lai, Qizhe Xie, Hanxiao Liu, Yiming Yang, and Eduard Hovy. Race: Large-scale reading comprehension
+dataset from examinations. In Proceedings of the 2017 conference on empirical methods in natural language
+processing, pages 785–794, 2017.
+[22] Chanhyuk Lee, Jaehoon Yoo, Manan Agarwal, Sheel Shah, Jerry Huang, Aditi Raghunathan, Seunghoon Hong,
+Nicholas M Boffi, and Jinwoo Kim. Flow map language models: One-step language modeling via continuous
+denoising. arXiv preprint arXiv:2602.16813, 2026.
+[23] Xiang Li, John Thickstun, Ishaan Gulrajani, Percy S Liang, and Tatsunori B Hashimoto. Diffusion-lm improves
+controllable text generation. Advances in neural information processing systems, 35:4328–4343, 2022.
+[24] Jiajun Liang, Yucheng Liao, Yukang Cao, Jiazhe Wei, Ken Li, Wende Tan, Jiankun Zhang, ZY Cui, Jingkang Yang,
+Liucheng Guo, Shiqi Yang, B. Yang, Caifeng Shan, Ziwei Liu, and Chenyang Si. AURORA-LM: Autoencoding
+unified representation for continuous-latent diffusion language modeling. arXiv preprint arXiv:2608.02602, 2026.
+[25] Stephanie Lin, Jacob Hilton, and Owain Evans. TruthfulQA: Measuring how models mimic human falsehoods.
+In Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long
+Papers), pages 3214–3252, 2022.
+[26] Yaron Lipman, Ricky T. Q. Chen, Heli Ben-Hamu, Maximilian Nickel, and Matthew Le. Flow matching for
+generative modeling. In The Eleventh International Conference on Learning Representations, 2023.
+[27] Aaron Lou, Chenlin Meng, and Stefano Ermon. Discrete diffusion modeling by estimating the ratios of the data
+distribution. arXiv preprint arXiv:2310.16834, 2023.
+[28] Justin Lovelace, Varsha Kishore, Chao Wan, Eliot Shekhtman, and Kilian Q Weinberger. Latent diffusion for
+language generation. Advances in Neural Information Processing Systems, 36:56998–57025, 2023.
+[29] Viacheslav Meshchaninov, Egor Chimbulatov, Alexander Shabalin, Aleksandr Abramov, and Dmitry Vetrov.
+Cosmos: Compressed and smooth latent space for text diffusion modeling. Advances in Neural Information
+Processing Systems, 38:14271–14299, 2026.
+[30] Viacheslav Meshchaninov, Alexander Shabalin, Egor Chimbulatov, Nikita Gushchin, Ilya Koziev, Alexander
+Korotin, and Dmitry Vetrov. How to train your latent diffusion language model jointly with the latent space.
+arXiv preprint arXiv:2605.07933, 2026.
+[31] Todor Mihaylov, Peter Clark, Tushar Khot, and Ashish Sabharwal. Can a suit of armor conduct electricity? a
+new dataset for open book question answering. In Proceedings of the 2018 conference on empirical methods in
+natural language processing, pages 2381–2391, 2018.
+[32] Nasrin Mostafazadeh, Nathanael Chambers, Xiaodong He, Devi Parikh, Dhruv Batra, Lucy Vanderwende,
+Pushmeet Kohli, and James Allen. A corpus and cloze evaluation for deeper understanding of commonsense stories.
+In Proceedings of the 2016 Conference of the North American Chapter of the Association for Computational
+Linguistics: Human Language Technologies, pages 839–849, 2016.
+[33] Piotr Nawrot, Szymon Tworkowski, Michał Tyrolski, Łukasz Kaiser, Yuhuai Wu, Christian Szegedy, and Henryk
+Michalewski. Hierarchical transformers are more efficient language models. In Findings of the Association for
+Computational Linguistics: NAACL 2022, pages 1559–1571, 2022.
+[34] Shen Nie, Fengqi Zhu, Zebin You, Xiaolu Zhang, Jingyang Ou, Jun Hu, Jun Zhou, Yankai Lin, Ji-Rong Wen,
+and Chongxuan Li. Large language diffusion models. Advances in Neural Information Processing Systems, 38:
+50608–50646, 2026.
+[35] Team OLMo, Pete Walsh, Luca Soldaini, Dirk Groeneveld, Kyle Lo, Shane Arora, Akshita Bhagia, Yuling Gu,
+Shengyi Huang, Matt Jordan, et al. 2 olmo 2 furious. arXiv preprint arXiv:2501.00656, 2024.
+[36] Artidoro Pagnoni, Ramakanth Pasunuru, Pedro Rodriguez, John Nguyen, Benjamin Muller, Margaret Li, Chunting
+Zhou, Lili Yu, Jason E Weston, Luke Zettlemoyer, et al. Byte latent transformer: Patches scale better than
+tokens. In Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1:
+Long Papers), pages 9238–9258, 2025.
+
+22
+
+[37] Denis Paperno, Germán Kruszewski, Angeliki Lazaridou, Ngoc-Quan Pham, Raffaella Bernardi, Sandro Pezzelle,
+Marco Baroni, Gemma Boleda, and Raquel Fernández. The lambada dataset: Word prediction requiring a broad
+discourse context. In Proceedings of the 54th annual meeting of the association for computational linguistics
+(volume 1: Long papers), pages 1525–1534, 2016.
+[38] William Peebles and Saining Xie. Scalable diffusion models with transformers. In Proceedings of the IEEE/CVF
+International Conference on Computer Vision, pages 4195–4205, 2023.
+[39] Xingwei Qu, Shaowen Wang, Zihao Huang, Kai Hua, Fan Yin, Rui-Jie Zhu, Jundong Zhou, Qiyang Min, Zihao
+Wang, Yizhi Li, et al. Dynamic large concept models: Latent reasoning in an adaptive semantic space. arXiv
+preprint arXiv:2512.24617, 2025.
+[40] Pranav Rajpurkar, Jian Zhang, Konstantin Lopyrev, and Percy Liang. Squad: 100,000+ questions for machine
+comprehension of text. In Proceedings of the 2016 conference on empirical methods in natural language processing,
+pages 2383–2392, 2016.
+[41] Subham S Sahoo, Marianne Arriola, Yair Schiff, Aaron Gokaslan, Edgar Marroquin, Justin T Chiu, Alexander
+Rush, and Volodymyr Kuleshov. Simple and effective masked diffusion language models. Advances in Neural
+Information Processing Systems, 37:130136–130184, 2024.
+[42] Subham Sekhar Sahoo, Justin Deschenaux, Aaron Gokaslan, Guanghan Wang, Justin Chiu, and Volodymyr
+Kuleshov. The diffusion duality. Proceedings of machine learning research, 267:52584, 2025.
+[43] Hugo Touvron, Thibaut Lavril, Gautier Izacard, Xavier Martinet, Marie-Anne Lachaux, Timothée Lacroix,
+Baptiste Rozière, Naman Goyal, Eric Hambro, Faisal Azhar, Aurelien Rodriguez, Armand Joulin, Edouard Grave,
+and Guillaume Lample. LLaMA: Open and efficient foundation language models. arXiv preprint arXiv:2302.13971,
+2023.
+[44] Roy Uziel, Omer Belhasin, Itay Levy, Akhiad Bercovich, Ran El-Yaniv, Ran Zilberstein, and Michael Elad.
+Crocodil: Continuous and robust conditioned diffusion for language. arXiv preprint arXiv:2603.20210, 2026.
+[45] An Yang, Anfeng Li, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo Zheng, Bowen Yu, Chang Gao, Chengen
+Huang, Chenxu Lv, et al. Qwen3 technical report. arXiv preprint arXiv:2505.09388, 2025.
+[46] Zhihan Yang, Wei Guo, Shuibai Zhang, Subham Sekhar Sahoo, Yongxin Chen, Arash Vahdat, Morteza Mardani,
+and John Thickstun. Continuous diffusion scales competitively with discrete diffusion for language. arXiv preprint
+arXiv:2605.18530, 2026.
+[47] Jiacheng Ye, Zhihui Xie, Lin Zheng, Jiahui Gao, Zirui Wu, Xin Jiang, Zhenguo Li, and Lingpeng Kong. Dream
+7b: Diffusion large language models, 2025. URL https://arxiv. org/abs/2508.15487.
+[48] Lili Yu, Dániel Simig, Colin Flaherty, Armen Aghajanyan, Luke Zettlemoyer, and Mike Lewis. Megabyte:
+Predicting million-byte sequences with multiscale transformers. Advances in Neural Information Processing
+Systems, 36:78808–78823, 2023.
+[49] Rowan Zellers, Ari Holtzman, Yonatan Bisk, Ali Farhadi, and Yejin Choi. HellaSwag: Can a machine really finish
+your sentence? In Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics, pages
+4791–4800, 2019.
+[50] Yizhe Zhang, Jiatao Gu, Zhuofeng Wu, Shuangfei Zhai, Joshua Susskind, and Navdeep Jaitly. Planner: Generating
+diversified paragraph via latent language diffusion model. Advances in Neural Information Processing Systems, 36:
+80178–80190, 2023.
+[51] Huangjie Zheng, Shansan Gong, Ruixiang Zhang, Tianrong Chen, Jiatao Gu, Mingyuan Zhou, Navdeep Jaitly,
+and Yizhe Zhang. Continuously augmented discrete diffusion model for categorical generative modeling. In
+International Conference on Learning Representations, volume 2026, pages 34212–34242, 2026.
+[52] Cai Zhou, Chenxiao Yang, Yi Hu, Chenyu Wang, Chubin Zhang, Muhan Zhang, Lester Mackey, Tommi Jaakkola,
+Stephen Bates, and Dinghuai Zhang. Coevolutionary continuous discrete diffusion: Make your diffusion language
+model a latent reasoner. arXiv preprint arXiv:2510.03206, 2025.
+
+23
+
+Appendix
+A Detailed Derivations of the Probabilistic Model and Information Decomposition
+A.1
+
+Conditional ELBO
+
+During training, the encoder qϕ (Z | C, Y ) serves as the approximate posterior, where ϕ denotes the encoder
+parameters. By Jensen’s inequality, the conditional log-likelihood in Eq. (3.1) satisfies
+
+
+qϕ (Z | C, Y )
+log p(Y | C) ≥ Eqϕ (Z|C,Y ) log pψ (Y | C, Z) − log
+.
+(A.1)
+pθ (Z | C)
+Define the conditional aggregated posterior as
+Z
+q̄ϕ (Z | C) = qϕ (Z | C, Y )pdata (Y | C) dY.
+
+(A.2)
+
+Adding and subtracting log q̄ϕ (Z | C) in the average KL term gives
+E KL(qϕ (Z | C, Y )∥pθ (Z | C))
+= I(Y ; Z | C) + EC KL(q̄ϕ (Z | C)∥pθ (Z | C)) .
+
+(A.3)
+
+Eq. (A.3) clarifies the probabilistic role of each of the three modules: the encoder determines what information
+the latent carries from the target text, the latent generator fits the conditional latent distribution induced by
+the encoder, and the decoder models tokens conditioned on the latent. Flow Matching is merely the particular
+solver used in this work to learn pθ (Z | C), not part of the definition of the generative model itself.
+
+A.2
+
+Information Identities and Semantic Decomposition
+
+Conditional mutual information is defined as
+I(Y ; Z | C) = H(Y | C) − H(Y | C, Z),
+
+(A.4)
+
+and rearranging directly yields Eq. (3.5) in the main text.
+If S is a high-level semantic variable determined by Y , then I(Y ; Z | C) = I(S, Y ; Z | C). Applying the chain
+rule of mutual information,
+I(Y ; Z | C) = I(S, Y ; Z | C)
+(A.5)
+= I(S; Z | C) + I(Y ; Z | S, C),
+which yields the semantic decomposition in Eq. (3.6). Under the compression constraint K = ρT , we further
+define the semantic information density per latent position as
+Dsem =
+
+I(S; Z | C)
+.
+K
+
+(A.6)
+
+This quantity need not be estimated explicitly during training; it distinguishes two different objectives: merely
+shortening the latent sequence versus concentrating semantic information in a limited number of latent
+positions.
+If the target tokens are partitioned into a visible part Y vis and a target part Y tar , then
+I(Y tar ; Z | C, Y vis ) = H(Y tar | C, Y vis )
+− H(Y tar | C, Y vis , Z).
+
+(A.7)
+
+Generation-oriented latent supervision can therefore be interpreted as biasing the limited latent capacity
+toward predictive semantic information by reducing the conditional uncertainty of missing or future tokens
+given the latent. Section B gives a concrete interpretation of the fixed-span encoder-mask objective.
+24
+
+A.3
+
+KL, Compression Rate, and Latent Information Capacity
+
+Let p0 (Z | C) be the reference distribution used for regularization in Stage 1. For any such reference
+distribution,
+EC,Y KL(qϕ (Z | C, Y )∥p0 (Z | C))
+= I(Y ; Z | C) + EC KL(q̄ϕ (Z | C)∥p0 (Z | C))
+
+(A.8)
+
+≥ I(Y ; Z | C).
+Thus, the VAE KL term not only constrains the latent distribution but also upper-bounds the amount of
+information the latent can carry. If the posterior approximately factorizes across latents and dimensions, and
+the average KL per latent dimension stays roughly at r̄, then the total KL scales approximately with Kdz .
+Since K = ρT , the information capacity available per token follows the approximate scaling
+1
+I(Y ; Z | C) ≲ ρdz r̄.
+T
+
+(A.9)
+
+Cola2 normalizes the KL per latent element so that the regularization pressure on each latent dimension
+remains as comparable as possible across different K and dz . Changing ρ can therefore be understood
+more directly as changing the number of latent channels available per token. Dynamic segmentation further
+determines where these limited latent positions are allocated under a fixed target compression rate: the
+compression rate controls how many representation positions exist, and semantic boundaries determine where
+they are placed.
+
+B
+
+Information-Theoretic Interpretation of Generation-Oriented Latent Supervision
+
+The Lgen term in the main text is not an additional inference-time sampler, but a fixed-span encoder-mask
+objective applied directly to the encoder. Its constraint is that a supervised token cannot simply rely on a
+complete current latent observation in one-to-one correspondence with itself, but must be predicted from a
+context in which its input is missing. The objective therefore specifically increases the predictive information
+of the latent rather than merely its local reconstructability.
+
+B.1
+
+Fixed-Span Encoder-Mask / BERT-Style Objective
+
+Let M denote a randomly selected set of spans, YM the text in these spans that is masked on the encoder
+side, YM̄ the remaining visible text, and Z M the latent obtained by encoding the masked input under the
+fixed original span layout. Since the encoder cannot observe the ground-truth YM in this forward pass, we
+have, given (C, M ), the Markov chain
+YM −→ (C, YM̄ ) −→ Z M .
+
+(B.1)
+
+I(YM ; Z M | C, M ) ≤ I(YM ; YM̄ | C, M ).
+
+(B.2)
+
+By the data processing inequality,
+
+Hence the objective cannot be satisfied by directly copying the masked tokens; it can only exploit information
+in the visible context that is statistically related to the target spans. For any predictor pη (YM | C, Z M , M ),
+the cross-entropy can be written as
+M
+Lmask
+gen = H(YM | C, Z , M )
+
+
++ E KL q(YM | C, Z M , M )∥pη (YM | C, Z M , M ) .
+
+(B.3)
+
+If the predictor is conditionally optimal, then
+⋆
+M
+(Lmask
+gen ) = H(YM | C, Z , M )
+
+= H(YM | C, M ) − I(YM ; Z M | C, M ).
+25
+
+(B.4)
+
+Therefore, when the encoder is trainable, reducing this objective drives the latent to contain more predictive
+information about the missing spans. The current MDM implementation uses fixed-span encoder-mask
+MDM: the first clean forward pass determines the hard spans, and the second pass replaces only the encoder
+observations without re-segmenting. Functionally, it thus imposes BERT-style generation pressure, but it is
+not equivalent to arbitrary forms of the span-BERT loss used in earlier implementations.
+
+C
+
+Latent Hacking and Gradient Decoupling in Compressed Representations
+
+This appendix proves Lemma 4.2, and first distinguishes two kinds of “joint training.” We deliberately retain
+the gradient from the discrete generator decoder to the encoder, because token reconstruction and generation
+are precisely the discrete realization that the latent must ultimately serve. The risk discussed here refers only
+to allowing the DiT Flow Matching prior loss to backpropagate into the encoder. That loss optimizes how
+easily the current latent can be fit by the prior solver, which is not equivalent to the reconstructability or
+generability of the discrete semantics. Below, we first analyze the potential conflict between the two gradients,
+and then discuss representation drift under fixed capacity and local decoder geometry. These analyses do
+not require compression to necessarily shrink the valid region, nor do they constitute a general guarantee of
+training collapse.
+
+C.1
+
+Joint Objective and Gradient Conflict
+
+Collect the Stage 1 objectives that shape the representation into
+Lrep (ϕ, ψ) = Lbal + λgen Lgen + λdur Ldur + λKL LKL ,
+
+(C.1)
+
+where ϕ and ψ denote the encoder and decoder parameters, respectively; both Lbal and Lgen update the
+encoder through the token-prediction path of the discrete generator decoder. If the gradient of the DiT Flow
+Matching loss is fully allowed to reach the encoder, the encoder effectively optimizes
+(C.2)
+
+Ljoint = Lrep + λFM LFM .
+Define
+grep = ∇ϕ Lrep ,
+A single SGD update is
+
+gFM = ∇ϕ LFM .
+
+(C.3)
+
+
+ϕ+ = ϕ − η grep + λFM gFM .
+
+(C.4)
+
+∆Lrep ≈ −η∥grep ∥22 − ηλFM ⟨grep , gFM ⟩.
+
+(C.5)
+
+A first-order expansion of Lrep gives
+
+Therefore, whenever
+
+∥grep ∥22
+,
+(C.6)
+λFM
+the DiT loss can decrease while the representation objective locally increases. This is the most basic condition
+for unstable joint training: the two gradients are not inherently aligned.
+⟨grep , gFM ⟩ < −
+
+C.2
+
+The DiT-to-Encoder Gradient Is Not a Semantic Gradient
+
+Let the encoder produce the clean latent via reparameterization,
+ϵ0 ∼ N (0, I).
+
+z0 = gϕ (x, ϵ0 ),
+
+(C.7)
+
+A general v-prediction / Flow Matching process can be written as
+zt = αt z0 + σt ϵ,
+and we define
+
+vt⋆ = at z0 + bt ϵ,
+
+r = vθ (zt , t, c) − vt⋆ ,
+26
+
+ϵ ∼ N (0, I),
+
+ℓv = ∥r∥22 ,
+
+(C.8)
+(C.9)
+
+where c denotes conditions such as previous latent blocks or the prompt representation. If c is detached from
+z0 , the chain rule gives
+
+⊤
+∇z0 ℓv = 2 αt Jv,z
+− at I r,
+(C.10)
+t
+where Jv,zt = ∂vθ /∂zt . If the condition path also depends on z0 and is not detached, an additional term
+appears:
+⊤
+2Jc,z
+J ⊤ r.
+(C.11)
+0 v,c
+Finally,
+
+⊤ ∂z0
+
+∇ϕ ℓv = (∇z0 ℓv )
+
+∂ϕ
+
+.
+
+(C.12)
+
+These gradients are determined jointly by the denoising residual, the DiT Jacobian, the condition path, and
+the noise schedule; they contain neither a reconstruction likelihood nor a semantic objective. Therefore, gFM
+serves to make the current latent representation easier for the prior solver to fit, rather than to guarantee that
+the decodable semantics of the latent remain intact.
+
+C.3
+
+Lowering the FM Loss Admits a ‘‘Simpler Latent’’ Shortcut
+
+Let W = (zt , t, c) and let the target velocity be ut . For any vector field v(W ), the squared loss admits the
+conditional-expectation decomposition
+E∥v(W ) − ut ∥22 = E∥v(W ) − E[ut | W ]∥22
++ E∥ut − E[ut | W ]∥22 .
+Hence
+
+v ⋆ (W ) = E[ut | W ],
+
+L⋆FM = E[Var(ut | zt , t, c)] .
+
+(C.13)
+
+(C.14)
+
+Eq. (C.14) shows that, when the encoder is also trainable, the FM loss can decrease in two ways: the DiT
+can better approximate the conditional mean, or the encoder can actively alter the latent geometry so that
+the conditional variance of the target velocity itself decreases. The latter path directly flattens semantically
+meaningful modes.
+As a simple counterexample, let the semantic variable S ∈ {−1, +1} be equiprobable and construct
+qsem (z | S) = N (mSe1 , I),
+
+m > 0,
+
+qcol (z | S) = N (0, I).
+
+(C.15)
+
+The former satisfies I(S; Zsem ) > 0, whereas the latter satisfies I(S; Zcol ) = 0. However, in high-noise or
+weak-conditioning regions, transporting the bimodal semantic distribution is more complex, while the collapsed
+distribution is closer to the base Gaussian. It is therefore possible that
+LFM (qcol ) < LFM (qsem ),
+
+I(S; Zcol ) < I(S; Zsem ).
+
+(C.16)
+
+Consequently, a lower FM loss alone cannot rule out semantic collapse; under unrestricted joint training,
+collapse may even become an easier optimization direction.
+
+C.4
+
+Information Constraints and Local Decoder Geometry under Compression
+
+In this subsection, n denotes the number of tokens covered by a single latent Z, to distinguish it from the
+latent sequence length K used elsewhere. Given the data distribution and context C, define the minimum
+conditional information required to reach a total reconstruction-loss threshold ε as
+n
+Rn⋆ (ε) =
+inf
+I(X1:n ; Z | C) :
+q(z|X1:n ,C)
+(C.17)
+o
+inf E[− log pψ (X1:n | Z, C)] ≤ ε .
+pψ
+
+If the effective conditional information capacity of this latent is Cn , the information slack is
+∆n = Cn − Rn⋆ (ε).
+27
+
+(C.18)
+
+If additional tokens increase the required predictive information while Cn does not increase accordingly, the
+slack may decrease. This depends on the data, the context, and the distortion criterion, and does not imply
+an unconditional monotonic relation among separately retrained models with different compression rates.
+To illustrate the geometric constraint, fix the decoder, the target span x1:n , and the context c. Under the
+causal factorization, let pi (z) = pψ (xi | x<i , z, c), and let τ, τi ∈ (0, 1] denote probability thresholds. Define
+(
+)
+n
+Y
+A1:n (τ ) = z :
+pi (z) ≥ τ ,
+Ai (τi ) = {z : pi (z) ≥ τi }.
+(C.19)
+i=1
+
+Satisfying every per-token threshold is sufficient for satisfying the joint threshold, so
+!
+n
+n
+\
+Y
+Bn :=
+Ai (τi ) ⊆ A1:n
+τi .
+i=1
+
+(C.20)
+
+i=1
+
+With the existing pi and thresholds unchanged, adding one token constraint gives
+Bn+1 = Bn ∩ An+1 (τn+1 ) ⊆ Bn .
+
+(C.21)
+
+This only states that the intersection of fixed constraints does not grow; it does not guarantee strict shrinkage,
+nor does it directly compare relearned latent geometries.
+To exclude the trivial scale growth caused by summing losses, we use the per-token average loss below. With
+ℓi (z) = − log pi (z),
+n
+1X
+(n)
+ℓi (z).
+(C.22)
+Ldec (z) =
+n i=1
+Its local Hessian is
+
+n
+
+(n)
+
+Hn (z) = ∇2z Ldec (z) =
+
+1X 2
+∇ ℓi (z).
+n i=1 z
+
+(C.23)
+
+For MDM, the same local analysis can take ℓi as the token denoising loss under a fixed masked state, without
+treating the product as the full MDM sequence likelihood. If the loss is twice continuously differentiable near
+z, then for a latent drift δ,
+1
+(n)
+(n)
+(n)
+Ldec (z + δ) − Ldec (z) = ∇Ldec (z)⊤ δ + δ ⊤ Hn (z)δ
+2
++ o(∥δ∥22 ).
+
+(C.24)
+
+Only when z is close to a stationary point, the first-order and higher-order terms are negligible, and
+∥Hn (z)∥2 > 0, the local quadratic perturbation scale corresponding to an allowed average-loss increase ϵd > 0
+is approximately
+s
+2ϵd
+.
+(C.25)
+rnquad (ϵd ) ≃
+∥Hn (z)∥2
+This scale is neither the boundary of the actual valid region nor a guaranteed safe radius. More tokens need
+not increase the spectral norm of the average Hessian, and the actual loss change also depends on the drift
+direction. Only when the additional constraints increase the local curvature along the relevant directions can
+the decoder become more sensitive to drift along those directions.
+
+C.5
+
+Prior-Induced Local Drift and Gradient Decoupling
+
+Considering only the DiT gradient component acting on the encoder, one parameter update is
+δϕFM = −ηλFM gFM .
+
+28
+
+(C.26)
+
+Let Jz,ϕ = ∂z0 /∂ϕ be the encoder Jacobian. Taking gFM = ∇ϕ ℓv for the single-sample FM term, the induced
+first-order latent drift is
+δzFM ≈ Jz,ϕ δϕFM
+(C.27)
+⊤
+= −ηλFM Jz,ϕ Jz,ϕ
+∇z0 ℓv .
+For batch updates, gFM should be replaced by the corresponding aggregated parameter gradient. Fixing the
+current decoder and setting z = z0 , Eq. (C.24) gives
+(n)
+
+(n)
+
+∆LFM
+dec := Ldec (z + δzFM ) − Ldec (z)
+1 ⊤
+(n)
+Hn (z)δzFM .
+≈ ∇Ldec (z)⊤ δzFM + δzFM
+2
+
+(C.28)
+
+Hence, the FM-induced drift may increase the token loss along sensitive directions of the decoder, with an
+effect that depends on the encoder Jacobian, the direction and magnitude of the drift, and the simultaneous
+adaptation of the decoder. This analysis characterizes the local risk of prior-induced representation drift; it
+does not establish a general relation between the compression rate and training collapse.
+Full detachment directly removes the prior-solver gradient acting on the encoder:
+full detach
+
+∇ϕ Ljoint −−−−−−−→ ∇ϕ Lrep ,
+
+∇θ Ljoint = λFM ∇θ LFM .
+
+(C.29)
+
+The VAE still learns under its own objectives, and the DiT still fits the aggregated posterior using samples
+from the current encoder. This operation guarantees that the path by which the prior loss directly rewrites
+the encoder is blocked, but does not guarantee that the full training process is necessarily stable.
+
+D
+
+Joint Information-Theoretic Interpretation of VAE and DiT Noise
+
+This appendix proves Lemma 4.3. To analyze the relation between the Stage 1 latent noise and the Stage 2
+diffusion noise, we write the clean latent in the simplified form
+Z = G + N0 ,
+
+(D.1)
+
+where G denotes the signal associated with high-level semantics and N0 denotes the VAE posterior noise. The
+DiT further constructs
+Zt = αt Z + σt ε,
+ε ∼ N (0, I).
+(D.2)
+Under a Gaussian approximation, assume that G ∼ N (0, ΣG ) and N0 ∼ N (0, Σ0 ) are independent. Conditioned
+on G, the effective noise covariance of Zt is αt2 Σ0 + σt2 I, and therefore
+I(G; Zt ) =
+
+
+
+1
+log det I + αt2 ΣG (αt2 Σ0 + σt2 I)−1 .
+2
+
+(D.3)
+
+Defining λt = log(αt2 /σt2 ), the same expression can equivalently be written as
+I(G; Zt ) =
+
+
+
+1
+log det I + ΣG (Σ0 + e−λt I)−1 .
+2
+
+(D.4)
+
+Eq. (D.4) expresses a central fact: the VAE posterior noise and the DiT corruption jointly determine how
+discriminable the latent semantic signal is. Applying the same DiT noise schedule to VAE latents of different
+sharpness therefore corresponds to different semantic-information regimes. We accordingly treat the two noise
+sources as quantities that must be calibrated jointly, rather than claiming that any fixed logSNR or timestep
+is a model-independent theoretical optimum.
+
+E
+
+Reconstruction--Generation Balance in the Discrete Generator Decoder
+
+This appendix proves Lemma 4.4.
+29
+
+E.1
+
+Information Allocation under Different Latent Conditions
+
+Let ZA denote the current-block latent condition actually received by the discrete generator decoder under
+condition mode A, where A ∈ {cond, noise, drop}. For each condition, Eq. (3.5) in the main text holds:
+H(Y | C) = I(Y ; ZA | C) + H(Y | C, ZA ).
+
+(E.1)
+
+The cond state uses the complete clean latent and therefore typically provides the most informative condition
+for the current block. The drop state zeros the latent condition of the current block, which corresponds
+to masked token prediction that does not depend on that latent. The noise state applies a small random
+perturbation to the clean latent to train the decoder’s robustness to imprecise conditions. Together, the
+three states cover three training regimes: strongly conditioned reconstruction, local robustness, and weakly
+conditioned generation.
+For any discrete generator decoder pψ (Y | C, ZA ), the cross-entropy decomposes exactly as
+LA (ψ) = H(Y | C, ZA )
++ E KL(q(Y | C, ZA )∥pψ (Y | C, ZA )) .
+
+(E.2)
+
+The first term is determined by how much uncertainty remains under the given condition; the second is the
+modeling error of the finite-capacity discrete generator decoder relative to the optimal conditional distribution.
+Training only under cond mainly optimizes the strongly conditioned region and may make the model overly
+dependent on precise latents, whereas training only under drop may cause the discrete generator decoder to
+ignore the latent. Mixing cond, noise, and drop trains the same decoder parameters to reduce the modeling
+error across different levels of condition reliability. The optimal mixture depends on model capacity, training
+budget, and the distribution of latent errors at inference, and should therefore be determined empirically.
+
+E.2
+
+Local Perturbation Path of the Noise Condition
+
+The noise condition uses the same linear interpolation as the latent generator, but restricts the range of the
+perturbation coefficient. Let u ∈ [0, umax ], where umax ≪ 1 controls the perturbation scale; then
+Zu = (1 − u)Z + uε,
+
+ε ∼ N (0, I).
+
+(E.3)
+
+For a single dz -dimensional latent, let ∆Zu = Zu − Z. Independent standard Gaussian noise gives
+E[∥∆Zu ∥22 | Z, u] = u2 (dz + ∥Z∥22 ).
+
+(E.4)
+
+A small u controls the mean-squared perturbation scale, but Gaussian noise does not have finite support. For
+each u, the decoder receives information I(Y ; Zu | C); if a stronger perturbation constitutes a more degraded
+stochastic channel, this mutual information does not increase, and the corresponding H(Y | C, Zu ) does not
+decrease. The noise branch optimizes the expected token loss under this perturbation distribution to improve
+adaptation to imprecise latents; it neither assumes that the artificial perturbation shares the distribution of
+DiT output errors, nor guarantees uniform robustness to all inference-time deviations.
+
+F
+
+Probabilistic Derivation of Classifier-Free Guidance
+
+The single-axis guidance of the latent DiT and each axis of the two-axis MDM guidance are based on the
+linear operator
+
+fγ = fu + γ fc − fu ,
+(F.1)
+where fc and fu are the branch outputs with and without the selected condition, and γ is the guidance scale;
+the latent generator applies this operator to velocities, whereas the MDM decoder combines logits along
+the prefix and latent axes. Below, we give a per-noise-time interpretation under exact scores and optimal
+FM regression fields, and derive the token-probability reweighting under a fixed decoding state; neither
+automatically yields a power-mixture guarantee for the complete generated distribution.
+30
+
+F.1
+
+From Bayes’ Rule to the Guided Score
+
+First consider a continuous variable Xu with a differentiable positive density, where u is the noise time and x
+its value. Let K denote the context shared by the conditional and unconditional branches, let A denote the
+additional condition dropped in CFG, and define
+sc (x, u) = ∇x log pu (x | K, A),
+su (x, u) = ∇x log pu (x | K).
+By Bayes’ rule,
+
+(F.2)
+
+pu (A | x, K)pu (x | K)
+,
+p(A | K)
+
+(F.3)
+
+sc (x, u) − su (x, u) = ∇x log pu (A | x, K).
+
+(F.4)
+
+pu (x | K, A) =
+and taking the gradient with respect to x yields
+
+The standard CFG score therefore satisfies
+sγ = su + γ(sc − su )
+= ∇x log pu (x | K) + γ∇x log pu (A | x, K)
+
+(F.5)
+
+= ∇x log peγ,u (x | K, A),
+where the unnormalized guided distribution is
+peγ,u (x | K, A) ∝ pu (x | K) pu (A | x, K)γ
+∝ pu (x | K, A)γ pu (x | K)1−γ .
+
+(F.6)
+
+When the normalizing constant is finite, it is independent of x and does not affect the score. For a fixed u, in
+Eq. (F.6), γ = 0 recovers the base density at that time, γ = 1 recovers the conditional density, 0 < γ < 1
+attenuates the conditional likelihood ratio, and γ > 1 amplifies it. This equivalence describes the instantaneous
+score field rather than the final sampling distribution.
+
+F.2
+
+Equivalence of Flow Matching Velocity CFG and Score CFG
+
+The latent generator of Cola2 predicts velocities rather than scores, so it remains to explain why applying the
+same linear combination to velocities, as in Eq. (3.36), is still valid. Consider a general Gaussian corruption
+path
+Xu = αu X0 + σu ε,
+ε ∼ N (0, I),
+(F.7)
+where αu and σu are differentiable path coefficients and dots denote derivatives with respect to the noise time
+u. The following identities apply at interior times with αu ̸= 0 and σu > 0. For an arbitrary condition Q,
+write
+sQ (x, u) = ∇x log pu (x | Q).
+(F.8)
+The score identity for Gaussian convolution gives
+E[ε | Xu = x, Q] = −σu sQ (x, u).
+
+(F.9)
+
+On the other hand, since x = αu X0 + σu ε,
+E[X0 | Xu = x, Q] =
+
+x + σu2 sQ (x, u)
+.
+αu
+
+(F.10)
+
+The optimal Flow Matching regression target is the conditional expected path velocity, so
+vQ (x, u) = E[α̇u X0 + σ̇u ε | Xu = x, Q]
+
+
+α̇u
+α̇u σu
+x + σu
+− σ̇u sQ (x, u).
+=
+αu
+αu
+31
+
+(F.11)
+
+In other words, at a fixed u, the velocity and the score are related by an affine transformation shared by all
+conditions,
+vQ (x, u) = au x + bu sQ (x, u),
+(F.12)
+where au = α̇u /αu and bu = σu (α̇u σu /αu − σ̇u ). When the conditional and unconditional branches are
+subtracted, the shared term au x cancels exactly, so
+vu + γgen (vc − vu ) = au x + bu [su + γgen (sc − su )]
+= au x + bu sγ .
+
+(F.13)
+
+Therefore, under a shared Gaussian path and optimal branch regression fields, velocity CFG and score CFG
+correspond pointwise, with γ = γgen . For the linear path used in this work,
+αu = 1 − u,
+
+(F.14)
+
+σu = u,
+
+Eq. (F.11) further reduces to
+vQ (x, u) = −
+
+x
+u
+−
+sQ (x, u),
+1−u 1−u
+
+0 < u < 1,
+
+(F.15)
+
+with the endpoints understood as continuous limits when these exist. In Cola2, vc uses the historical latent
+cache while vu clears it, so γgen modulates the influence of the historical condition on the instantaneous field.
+Let vγ = vu + γ(vc − vu ). If the normalized density in Eq. (F.6) were also the actual marginal of this flow, it
+would have to satisfy the continuity equation
+
+∂u peγ,u + ∇x · peγ,u vγ = 0.
+(F.16)
+The per-time score identity alone does not guarantee this path-consistency condition. Hence, even with
+exact branch fields, one cannot conclude that the endpoint of guided integration follows the data distribution
+reweighted by the same power.
+
+F.3
+
+Prefix--Latent Two-Axis CFG for MDM
+
+For the masked_only MDM, let P be the committed pure-token prefix, U the token/mask state of the current
+block together with the fixed span layout, and H Z the current latent condition refined by the condition stack.
+Denoting the decoder logits by ℓ(y | ·), the four branches are
+ℓ11 (y) = ℓ(y | U, P, H Z ),
+Z
+
+ℓ01 (y) = ℓ(y | U, ∅, H ),
+
+ℓ10 (y) = ℓ(y | U, P, 0),
+ℓ00 (y) = ℓ(y | U, ∅, 0).
+
+(F.17)
+
+The first subscript controls the visibility of the prefix token KV, and the second controls the additive injection
+of the current latent; 0 is a zero condition tensor rather than a learnable null embedding. All four branches
+share U and the same H Z , so ℓ00 can still read the known tokens of the current block and is not an uninformed
+unconditional text model.
+Using guidance scales γp and γz for the prefix and latent axes, respectively, the expansion is
+ℓγp ,γz = γp γz ℓ11 + γp (1 − γz )ℓ10
++ (1 − γp )γz ℓ01 + (1 − γp )(1 − γz )ℓ00 .
+
+(F.18)
+
+This bilinear combination is independent of the nesting order of the two axes. Setting γp = 1 modulates only
+the latent, γz = 1 modulates only the prefix, and γz = 0 does not use the current latent condition. In general,
+dropping nonzero terms no longer yields this two-axis rule.
+Let cab be the coefficient of ℓab in Eq. (F.18), and pab = softmax(ℓab ) the corresponding token probability.
+For any candidate token y,
+ℓab (y) = log pab (y) + κab ,
+(F.19)
+32
+
+where κab is the log-partition constant of each branch and is independent of y. For a fixed current state,
+X
+Y
+cab = 1,
+pγp ,γz (y) ∝
+pab (y)cab .
+(F.20)
+a,b∈{0,1}
+
+a,b∈{0,1}
+
+This algebraic identity does not require the network to reach the true conditional distribution. The coefficients
+can be negative, so this is an affine combination of logits rather than a convex mixture of probabilities;
+coefficients summing to 1 also do not guarantee that the sharpness of the distribution or the confidence
+ranking used for demasking is preserved. Prefix-off only masks the token-cache read path and does not remove
+the historical information retained in H Z , so these operational branches are not directly equated with four
+marginal conditions of the true joint distribution.
+This rule acts on the token distribution of each prediction; since the states and normalizers of multi-step
+demasking change with the generated results, a global power mixture of the complete text distribution
+does not follow automatically. The key mask, position indexing, and read-only cache protocol are given in
+Appendix G.6.1.
+
+G
+
+Implementation Details of the Overall Workflow
+
+This appendix supplements the dynamic segmentation, the block-causal MDM decoder, the Stage 1/Stage 2
+gradient routing, and the complete inference procedure with latent feedback omitted from Section 3.2. The
+main text retains only the core definitions needed for unified modeling; implementation details are expanded
+here.
+
+G.1
+
+Dynamic Semantic Segmentation and Compression-Rate Control
+
+Let ht = Emb(yt ) denote the token representation before segmentation. The semantic discontinuity between
+adjacent positions is defined as
+t = 1, . . . , T − 1,
+
+(G.1)
+
+boundaryt = 1[pt > 0.5],
+
+(G.2)
+
+δt = 1 − cos(LN(ht ), LN(ht+1 )) ,
+and is mapped to a boundary probability by
+pt = σ(α(δt − τ0 ) + b) ,
+
+where α is the slope, τ0 the threshold, and b a scalar bias controlling the overall boundary density. If the target
+compression rate is ρ⋆ and the measured rate on the current global batch is ρ̂, then b does not participate in
+backpropagation and is updated as
+(G.3)
+
+b ← clip(b − ηb (ρ̂ − ρ⋆ ), −cb , cb ) ,
+
+where ηb is the control step size and cb the clipping range. The upper bound Lmax is enforced by forced cuts
+during a greedy scan.
+G.1.1
+
+Convergence of Compression-Rate Control
+
+By Eq. (G.2), a hard boundary satisfies
+pt >
+
+1
+2
+
+⇐⇒
+
+δt > τeff (b) := τ0 −
+
+b
+.
+α
+
+(G.4)
+
+Thus, increasing b lowers the effective threshold and increases the boundary density; together with Eq. (G.3),
+the sign of b forms a negative-feedback loop. With the encoder and data distribution fixed, define
+r(b) := E[ρ̂ | b]
+
+(G.5)
+
+as the expected compression rate after hard thresholding and length constraints. Length-based forced cuts
+introduce plateaus and an attainable lower bound into r(b), but as long as the target ρ⋆ lies within the
+attainable range and the local rate response near the equilibrium remains monotone, the following stability
+result holds.
+33
+
+Lemma G.1 (Local Convergence of Dynamic Compression-Rate Control). Assume that there exists b⋆ ∈
+(−cb , cb ) such that r(b⋆ ) = ρ⋆ . If r is differentiable in a neighborhood I of b⋆ and satisfies
+b ∈ I,
+
+(G.6)
+
+then for any 0 < ηb < 2/L, the mean-response update map
+
+
+F (b) = Π[−cb ,cb ] b − ηb r(b) − ρ⋆
+
+(G.7)
+
+0 < m ≤ r′ (b) ≤ L < ∞,
+
+is a contraction in a sufficiently small neighborhood of b⋆ , with
+|bn+1 − b⋆ | ≤ q|bn − b⋆ |,
+
+q = max{|1 − ηb m|, |1 − ηb L|} < 1.
+
+(G.8)
+
+Consequently, bn → b⋆ and r(bn ) → ρ⋆ , with at least a geometric convergence rate O(q n ).
+Proof. Let en = bn − b⋆ . By the mean value theorem, there exists ξn between bn and b⋆ such that
+(G.9)
+
+r(bn ) − r(b⋆ ) = r′ (ξn )en .
+Ignoring the projection, the mean-response update in Eq. (G.7) gives
+
+en+1 = 1 − ηb r′ (ξn ) en .
+
+(G.10)
+
+From Eq. (G.6) and 0 < ηb < 2/L, we have |1 − ηb r′ (ξn )| ≤ q < 1. The interval projection Π[−cb ,cb ] is
+non-expansive, and since b⋆ lies in the interior of the interval, the projection does not enlarge the error. This
+yields Eq. (G.8) and completes the proof.
+In practice, with the encoder fixed, the hard rate on a finite global batch can be written as ρ̂n = r(bn ) + εn ,
+where εn denotes measurementP
+fluctuation. If the i-th sample contains Ti valid tokens, the quantization step
+of the rate is approximately 1/ i Ti . Under local stability and controlled
+noise, a fixed
+P
+P ηb typically results in
+fluctuation around the target; using a decreasing step size with n ηn = ∞ and n ηn2 < ∞ additionally
+requires stochastic-approximation conditions such as zero-mean bounded-variance noise and iterate stability
+before convergence can be discussed.
+During joint training, let ϕn be the encoder parameters at the n-th update, rn (b) = E[ρ̂n | b, ϕn ] the actual
+response, and b⋆n its equilibrium satisfying rn (b⋆n ) = ρ⋆ . If the response at every step has a uniform contraction
+factor q < 1 over the visited region, then
+|bn+1 − b⋆n+1 | ≤ q|bn − b⋆n | + ηb |εn | + |b⋆n+1 − b⋆n |,
+
+(G.11)
+
+where εn = ρ̂n − rn (bn ). The last term captures the target drift caused by encoder updates. The lemma
+therefore analyzes local convergence under a fixed response and provides a tracking interpretation for slowly
+varying responses, rather than a convergence guarantee for fully non-stationary joint training.
+Given the assignment map g(t), span pooling uses block-diagonal bidirectional attention:
+pool
+Mij
+= 1[g(i) = g(j)],
+
+rk =
+
+1 Xe
+ht ,
+Lk
+
+(G.12)
+
+t∈Sk
+
+where e
+h = AttnM pool (h). A causal Transformer along the latent axis then produces r̄k , and the posterior
+parameters are
+[µk , log σk2 ] = Wpost r̄k .
+(G.13)
+Reparameterized sampling is used during training, and the posterior mean is used at inference.
+
+34
+
+G.2
+
+Decoder Duration and Token-Level Conditioning
+
+Let gk = Win zk . The duration head outputs a distribution over Lmax classes,
+p(Lk | zk ) = softmax(MLPdur (gk )).
+
+(G.14)
+
+Given Lk , gk is repeated Lk times and concatenated with the relative position within the span. If token t has
+local index j in its span of length L, then
+
+
+
+j L−j
+hZ
+=
+W
+g
+MLP
+,
+,
+log
+L
+.
+(G.15)
+c
+loc
+g(t)
+t
+L
+L
+Before being injected into the token decoder, this condition is further refined by a few block-causal conditioning
+layers. Consequently, multiple token positions expanded from the same latent remain distinguishable.
+
+G.3
+
+Block-Causal Masked-Diffusion Decoder
+
+The main text denotes the token-side module by the discrete generator decoder Dψ , instantiated as a blockcausal MDM. It receives the committed token context and the token-aligned latent condition H Z , and realizes
+continuous semantics as discrete tokens. The decoder is connected to the compression encoder through the
+duration/expansion interface, uses latent reliability augmentation, and is trained jointly with the detached
+DiT in Stage 2.
+During training, the decoder uses a dual layout [clean | masked] of length 2T . The clean half stores the groundtruth tokens, while selected positions in the masked half are replaced with a learnable [MASK] embedding. Let
+β(i) denote the latent block containing token i, and let cl(i) ∈ {0, 1} indicate whether the position belongs to
+the clean half. The attention mask is
+(
+cl(j) ∧ [β(j) ≤ β(i)],
+cl(i) = 1,
+Allow(i, j) =
+(G.16)
+
+
+cl(j) ∧ [β(j) < β(i)] ∨ ¬ cl(j) ∧ [β(j) = β(i)] , cl(i) = 0.
+Hence token blocks are causal with respect to one another, while bidirectional denoising is allowed within
+the current masked block; a masked query cannot read the clean copy of its current block, which prevents
+target leakage. Under the masked_only configuration, the clean half receives no latent condition, while the
+masked half receives a clean, noisy, or zero latent condition according to the condition state. This design
+naturally decouples the historical clean-token cache from the latent condition and allows the conditioned and
+unconditioned logits to share the same prefix cache.
+During training, each token block independently samples a masking ratio πj , and the cross-entropy of each
+masked token is weighted by πj−1 . With Mj denoting the masked positions in block j,
+LA
+MDM =
+
+X − log pψ (yt | Ye , H Z )
+1
+A
+,
+|MA |
+πβ(t)
+
+A ∈ {cond, noise, drop},
+
+(G.17)
+
+t∈MA
+
+where the supervised sets of the three states are normalized independently. The implementation also uses
+fully masked blocks with some probability to directly train the recovery of a complete new block from the
+latent and the historical blocks.
+The decoder uses the encoder-mask generation objective as Lgen . A clean encoder forward pass first fixes
+the hard spans; a random subset of spans is then selected, their encoder input tokens are replaced with
+encoder-side masks, and a second encoder forward pass is performed without rerunning the dynamic segmenter.
+The decoder uses fully masked queries for blocks touched by these spans, but supervises only the tokens
+actually masked on the encoder side:
+1 X
+Lencmask = −
+log pψ (yt | Ye , Z encmask ).
+(G.18)
+|Me |
+t∈Me
+
+Since the span layout is fixed by stop-gradient, this branch forces the encoder to use context to form decodable
+latents when local observations are missing, rather than lowering the task difficulty by moving boundaries.
+35
+
+G.4
+
+Stage 1: Unified Compression VAE / Discrete Generator Decoder Objective
+
+The block-causal MDM decoder is trained end to end with the encoder in Stage 1; this is the core of the
+co-adaptation between continuous semantics and discrete realization in this work, as opposed to first fixing
+the encoder and then fitting the decoder. For each block, a clean latent Z is first constructed, and then a
+mutually exclusive condition state is sampled. The clean state uses Z directly; the noise state locally perturbs
+Z; the drop state removes only the latent condition of the current block while keeping the same token history.
+A generic formulation is
+
+
+Ak = cond,
+zk ,
+zek = (1 − uck )zk + uck ϵk , Ak = noise,
+uck ∈ [0, umax ], ϵk ∼ N (0, I).
+(G.19)
+
+
+∅,
+Ak = drop,
+The implementation may additionally apply a weaker sample-level latent perturbation before state partitioning
+to improve adaptation to small latent perturbations; this is input augmentation rather than a separate
+reconstruction loss, and it does not assume the same distribution as the terminal error of the DiT.
+Let LA
+tok denote the MDM masked denoising objective under state A. The reconstruction–generation balance
+is
+drop
+noise
+Lbal = λc Lcond
+(G.20)
+tok + λn Ltok + λd Ltok ,
+A
+where LA
+tok = LMDM as defined in Eq. (G.17).
+
+Separately from the three-state decoder balance, we denote the objective dedicated to injecting generative
+predictive information into the encoder by
+Lgen = Lencmask .
+
+(G.21)
+
+The unified objective of the discrete generator decoder is therefore
+LDGD = Lbal + λgen Lgen .
+
+(G.22)
+
+The key target of Lgen is the latent representation: the masked-input encoder must recover the missing
+semantics from context and receives gradients directly from ground-truth discrete token prediction.
+The Gaussian KL of each latent is
+dz
+
+1X
+2
+2
+µ2k,d + σk,d
+− 1 − log σk,d
+,
+KLk =
+2
+
+(G.23)
+
+d=1
+
+and the duration loss is
+
+K
+
+Ldur = −
+
+1 X
+log pψ (Lk | zk ).
+K
+
+(G.24)
+
+k=1
+
+Combined with Eq. (3.24), the total Stage 1 objective is
+L(1) = LDGD + λdur Ldur + βKL LKL .
+
+(G.25)
+
+This objective remains active in Stage 2; the transition from Stage 1 to Stage 2 is therefore a full-state handoff
+rather than “train the VAE, then freeze the VAE.” The discrete token losses can always shape the encoder
+latents through the condition path, and only the DiT prior loss is isolated by stop-gradient.
+
+G.5
+
+Stage 2: Detached Block-Causal Flow Matching
+
+Stage 2 additionally trains the latent DiT on top of Eq. (G.25). Let Z be the sampled posterior latent of the
+current online encoder. The DiT reads only
+Z̄ = sg(Z),
+(G.26)
+
+36
+
+so the DiT objective cannot backpropagate into the encoder; meanwhile, Eϕ , the latent condition path, and
+Dψ are still updated normally by L(1) .
+The latent sequence is grouped into blocks of B latents. Each block independently samples a noise level uj ,
+all latents in a block share the same timestep, and the linear path in Eq. (3.28) is used. The training layout
+consists of clean history and noisy current blocks: every noisy query can read only strictly earlier clean latent
+blocks and interacts bidirectionally within its current noisy block. The attention mask can be written as
+AllowDiT (i, j) = 1[β(j) < β(i)] cl(j) ∨ 1[β(j) = β(i)]¬ cl(j),
+
+(G.27)
+
+where clean-history positions act as read-only conditions, and the current noisy block cannot read its
+corresponding clean target copy.
+To cover inference cases in which the prompt is not aligned with latent block boundaries, training may
+randomly restore the first c ∈ {1, . . . , B − 1} latents of a noisy block to their clean values and remove them
+from the corresponding Flow Matching supervision. This partial-clean-prefix augmentation matches the
+handling of the first mixed block at inference. Finally,
+∇ϕ LFM = 0,
+and
+
+∇θ LFM ̸= 0,
+
+L(2) = L(1) + λFM LFM .
+
+(G.28)
+(G.29)
+
+Stage 2 can thus be understood as continuously updating the online compression encoder and discrete generator
+decoder while letting the DiT track their evolving latent distribution, but forbidding the DiT from shaping
+the encoder through the diffusion loss.
+
+G.6
+
+Complete Inference Procedure and Latent Feedback
+
+Inference follows propose–decode–re-encode–commit. The dynamic encoder runs on the prompt only once at
+the beginning and uses the posterior mode. Suppose the prompt yields Kp latents with
+0 ≤ r < B.
+
+Kp = Bq + r,
+
+(G.30)
+
+The first Bq block-aligned latents are prefilled into the persistent caches. If r > 0, the trailing r prompt
+latents and their tokens are not written into the persistent cache as a completed block; instead, they are
+kept as the clean prefix of the first generated block, and the remaining B − r latent slots are initialized from
+Gaussian noise:
+h
+i
+(0)
+p
+Z j = zK
+ϵ
+,
+.
+.
+.
+,
+ϵ
+ϵi ∼ N (0, I).
+(G.31)
+1
+B−r ,
+p −r+1:Kp
+This explains the meaning of “discard trailing remainder” in Figure 1: the trailing remainder is excluded from
+the committed cache, not permanently removed from the prompt semantics. After each DiT Euler update, the
+clean prompt prefix in the mixed block is restored to its original values.
+Latent proposal. The DiT performs Sgen denoising steps on top of the committed latent prefix. With CFG,
+v̂ = vu + γgen (vc − vu ),
+
+(G.32)
+
+where the conditional branch reads the committed corrected latent cache and the unconditional branch removes
+this prefix. Importantly, the current proposal remains a read-only temporary state until token generation and
+feedback correction are complete, and is not written into the persistent DiT/condition caches.
+Duration and token decoding. The proposal latents first pass through the duration/expansion path. For
+newly generated latent slots,
+b k = arg max pψ (L | zk ),
+L
+(G.33)
+L
+
+whereas the slots belonging to the prompt tail in the mixed first block keep the ground-truth span lengths
+known to the encoder. This yields the effective width and the token-aligned condition of the current token
+block.
+37
+
+The MDM decoder initializes unknown positions to [MASK], repeatedly predicts them over several refinement
+steps, and progressively commits them by confidence; intermediate masked states do not enter the KV cache,
+and only after the whole block is determined is a single clean forward pass used to commit the final tokens,
+yielding the finalized clean token block Yj .
+The decoder logits use the prefix–latent two-axis CFG in Eq. (3.37). The four branches share the current
+block state and the latent-free clean-token prefix cache; the prefix-off branches mask the historical token keys,
+and the latent-off branches zero the injection of the current proposal latent condition. Execution details are
+given below.
+Fixed-span re-encoding. After the current token block is finalized, the feedback encoder does not rerun
+the dynamic segmenter. Instead, it directly constructs fixed span boundaries from the span lengths just
+determined by the duration predictor. It applies to these tokens the same span-local bidirectional pooling as
+the initial encoder, reads the committed encoder latent-prefix KV, obtains the posterior of the current block
+through the causal latent encoder, and takes its mode:
+
+
+E
+b B , K<j
+Zjcorr = µϕ Yj ; L
+.
+(G.34)
+j
+For the first mixed block, the previously saved pooled representations of the prompt tail are concatenated
+with those of the newly generated spans to form a complete B-latent block before running the latent encoder.
+Since the span boundaries are fixed, this correction changes “the latent obtained by re-encoding the generated
+tokens under this span layout,” rather than re-optimizing the segmentation.
+Atomic commit. After feedback, the proposal latent is replaced by Zjcorr , and the caches are updated
+according to the invariants
+corr
+KjDiT = Z≤j
+,
+corr
+Kjcond = Cond(Z≤j
+),
+
+KjE = EncState(Y≤j ),
+
+(G.35)
+
+clean
+Kjtok = Y≤j
+.
+
+That is, the DiT history, the condition history, and the encoder latent history all correspond to corrected
+encoder latents, while the token cache contains only the final clean tokens. The proposal latent never enters
+the persistent history. The current block is not regenerated after correction, so the effect of feedback starts
+from the next latent block.
+This transaction also establishes an important train–inference consistency invariant. During training, the
+clean history fitted by the DiT consists of online-encoder latents of ground-truth tokens; at inference, after
+each block is completed, the next history is obtained from the final committed tokens through the same
+fixed-span encoder path. Hence, for the committed prefix,
+
+
+Z
+Y
+K≤j
+= Eϕ K≤j
+; Sb≤j ,
+(G.36)
+prop
+Z
+rather than K≤j
+= Z≤j
+. The former keeps the continuous context of the DiT, the latent history of the
+condition stack, and the clean-token context of the discrete generator decoder pointing to the same finalized
+content. If the proposal were committed directly, any proposal–decode discrepancy would be permanently
+written into the latent cache and would cause cross-space context bias in subsequent blocks; fixed-span
+correction is designed precisely to eliminate this cumulative mismatch. Since the correction reuses the spans
+just predicted, it only aligns the representation content without reintroducing segmentation drift at inference.
+
+Algorithm 1 summarizes the unified procedure.
+G.6.1
+
+Execution Details of MDM Prefix--Latent CFG
+
+Condition preparation and scope. This path requires decoder_cond_drop_scope=masked_only, which guarantees that the prefix token KV contains no latent condition. We follow the branch subscripts a, b of
+38
+
+Algorithm 1 Unified block-wise inference of Cola2
+Require: Prompt C, latent block size B, DiT steps Sgen
+p
+
+1: z1:Kp ← µ(Eϕ (C))
+2: Prefill the complete block-aligned prompt prefix into the persistent caches, and keep the remainder as the
+
+clean prefix of the first block
+
+3: while stopping criterion not met do
+4:
+Initialize the current latent block from Gaussian noise (and the optional clean prompt tail)
+5:
+6:
+7:
+8:
+9:
+
+for i = 0, . . . , Sgen − 1 do
+
+Update the DiT proposal on the committed corrected-latent prefix; restore the clean tail if present
+
+end for
+
+Predict span lengths from the proposal latents and construct the token-aligned latent condition
+Complete the current token block with the block-causal MDM decoder using the two-axis CFG in
+Eq. (3.37)
+10:
+Re-encode the final tokens with the fixed predicted spans to obtain Zjcorr
+11:
+Atomically commit the finalized tokens, Zjcorr , and the corresponding condition/encoder states
+12: end while
+13: return the generated token sequence
+
+Appendix F.3. The refined condition is prepared only once per block:
+
+
+Z,(b)
+cond
+b B ); K<j
+HjZ = Cond Expand(Zjprop , L
+,
+Hj
+= bHjZ ,
+j
+
+(G.37)
+
+cond
+b B follows the existing duration rule. All four
+where K<j
+is the committed condition-stack history and L
+j
+Z
+branches share the same Hj ; b = 0 zeros the injected condition after refinement, without recomputing the
+duration or the condition stack.
+
+Prefix-key masking and position indexing. Omitting the batch index, let mr ∈ {0, 1} indicate the validity of
+the r-th key slot, Nk the total number of key slots, and Nq the number of current query slots. The current
+block occupies the trailing index set Qj = {Nk − Nq + 1, . . . , Nk }. The two prefix visibilities correspond to
+!
+r
+X
+
+(a)
+(a)
+(a)
+mr = mr a + (1 − a)1[r ∈ Qj ] ,
+posr = max
+ms − 1, 0 .
+(G.38)
+s=1
+
+For valid current-block queries, m(a) controls both key visibility and position indexing. With a = 0, only the
+valid keys of the current block are kept, and their positions are indexed contiguously from 0. If the first mixed
+block contains a clean prompt tail, the tail still belongs to Qj and is not masked together with the persistent
+prefix.
+Our implementation caches keys before RoPE and applies RoPE according to pos(a) after concatenating the
+cached and current keys. The two prefix branches thus reuse the same persistent KV without an additional
+cache or a modified RoPE operator, although the effective position indices differ between branches. Masking
+does not modify the tokens, the DiT proposal, or the condition-stack history. This rule adds no training
+objective; the first training block provides an input form without historical token keys, but we do not assume
+from this that all prefix-off inference states are in-distribution with respect to training.
+Read-only branches, demasking, and commit. Let Mj be the number of refinement steps of the current block,
+s ∈ {0, . . . , Mj − 1} the iteration index, and Ms the valid positions that are still masked. At each step, the
+branches with nonzero coefficients are computed on the same current token state, all with update_kv=False,
+(s)
+and the logits are then combined according to Eq. (F.18). Denoting the combined logits at position t by ℓt ,
+the candidate token and confidence under greedy decoding are
+(s)
+(s)
+(s)
+(s)
+(s) 
+ybt = arg max ℓt (y),
+ct = log softmax(ℓt ) ybt , t ∈ Ms .
+(G.39)
+y
+
+39
+
+Under non-greedy decoding, candidates are sampled from the guided logits as configured. At each step,
+the highest-confidence candidates are kept according to the existing quota and the remaining positions stay
+(s)
+masked; the known prompt tail does not participate in generation. Since ct is also derived from the guided
+logits, the two-axis weights affect both token selection and potentially the unmasking order, and confidence
+effects cannot be ruled out merely by the scale invariance of the greedy argmax.
+After the block is finalized, the final tokens are written into the cache by a single latent-free clean forward pass
+(update_kv=True) without CFG, restoring full prefix visibility and normal position indexing. The original
+fixed-span feedback and corrected-history commit remain unchanged. The persistent token KV is determined
+only by finalized tokens; branch hidden states and masked states are temporary.
+The two configuration parameters are mdm_decoder_cfg_weight (γz − 1) and mdm_decoder_prefix_cfg_weight (γp − 1). The prefix parameter defaults to 0, corresponding to γp = 1. For a fixed single-step state,
+the four branch logits can be cached and recombined with different weights; however, different weights change
+subsequent tokens, the unmasking order, and the committed history, so a complete rollout cannot share a
+single offline logits trajectory.
+
+H
+
+Detailed Derivation of the Computational Cost
+
+This section re-derives the computational cost according to the current training and inference execution graphs.
+There are two key differences: Stage 2 continues training the same compression encoder and discrete generator
+decoder and only additionally adds a detached DiT; and inference performs fixed-span feedback after the
+discrete tokens of each block are finalized, before committing the corrected latent history. Hence, the previous
+accounting of “Stage 1 VAE + Stage 2 DiT/decoder” or a one-way “DiT → decoder” no longer applies.
+
+H.1
+
+Notation
+
+Below, one multiply–add counts as two FLOPs, and we count backbone linear layers, attention matrix
+multiplications, output heads, and auxiliary projections, while omitting element-wise operations such as
+embedding lookup, normalization, and softmax. Training includes the forward and backward passes, but
+excludes activation recomputation, optimizer updates, and communication. If these additional operations are
+counted, Cola2 and AR should use the same convention.
+For a module R, let NR be the number of its backbone linear-layer parameters (excluding separate heads/interfaces), nR its number of layers, dqR the total width of all query heads per layer, QR the cumulative number
+of processed positions, and Aexec
+the cumulative number of executed query–key pairs per layer. When all
+R
+layers share the same shape,
+fwd
+CR,backbone
+≈ 2NR QR + 4nR dqR Aexec
+R ,
+(H.1)
+q exec
+train
+CR,backbone ≈ 6NR QR + 12nR dR AR ,
+where the attention term includes both QK ⊤ and the attention–value product; heterogeneous layers are
+summed layer by layer. Let Avalid
+be the number of pairs allowed by the mask; it equals the executed amount
+R
+only when the kernel actually skips invalid regions, and dense masks, tile boundaries, and padding must be
+charged according to the actual shapes.
+If the vocabulary size is V , the output hidden width is dout , and logits are actually computed at Qlogit
+positions, then
+fwd
+train
+Chead
+≈ 2V dout Qlogit ,
+Chead
+≈ 6V dout Qlogit .
+(H.2)
+Weight sharing with the embedding does not eliminate this output projection, and supervising only a subset
+of positions does not automatically reduce the backbone QR . All of the above are approximations of the
+dominant matrix-multiplication terms; the total cost accumulates over actual calls rather than being counted
+by the number of distinct parameters.
+A training sequence contains T valid tokens and, after compression,
+K = ρT.
+40
+
+(H.3)
+
+At inference, let Tnew be the number of newly generated tokens, Knew the number of corresponding latents,
+and ρgen = Knew /Tnew the realized ratio. Ignoring truncation at the beginning and end, the average number
+of tokens P covered by a latent block of size B and the number of blocks J satisfy
+P ≈
+
+B
+,
+ρgen
+
+J≈
+
+ρgen Tnew
+.
+B
+
+(H.4)
+
+Duration prediction does not guarantee ρgen = ρ⋆ . The prompt tail in the first block, truncation in the last
+block, and batch padding may make the actual processed amount larger than the effective output, so we first
+give per-call counts and then approximations that ignore boundary effects.
+
+H.2
+
+Training: Persistent Representation/Decoder Path and an Additional Detached DiT
+
+Stage 1 representation/decoder path. Denote the training cost of this path by Crep (T, K). Clean, noisy, and
+drop are mutually exclusive condition states within the same main request, so the backbone forward pass is
+not multiplied by three; the additional requests of the generation-oriented Lgen , however, must be counted
+MDM
+separately. Below, CE includes the encoder and the posterior projection, CD
+includes the MDM token
+backbone, attention, and the corresponding output head, and the remaining operations such as conditioning
+and duration are listed as separate terms.
+The MDM main request uses one clean encoder pass and one dual-layout decoder pass of length 2T ; Lencmask
+fixes the original spans and runs an additional masked-input encoder pass and a separate MDM request.
+Hence, when both requests are fully executed,
+MDM
+MDM
+Crep
+(T, K) ≈ 2 CE (T, K) + 2 CD
+(2T )
+MDM
++ Ccond/dur/KL
+,
+
+(H.5)
+
+where each single-pass cost is the average over the two requests. The two decoder requests together process
+about 4T backbone positions, with a dominant linear training term of 24ND T , where ND is the number of
+MDM backbone parameters. Concatenating the two requests along the batch dimension does not change this
+count; the output head is charged by the actual logit positions, and repeated calls of the condition path are
+included in the last term. The two-axis inference CFG does not increase the number of training requests in
+either stage.
+Let Es denote the average over the actual training samples or batch layouts of Stage s, and T the corresponding
+number of valid tokens. Define
+c(s)
+rep :=
+
+Es [Crep (T, K)]
+,
+Es [T ]
+
+s ∈ {1, 2}.
+
+(H.6)
+
+This definition normalizes the actual executed amount by valid tokens. The representation path remains
+fully present in Stage 2, but when the sequence length, compression layout, or request configuration changes,
+(1)
+(2)
+crep = crep need not hold.
+Stage 2 detached DiT. The same clean encoder latent participates in the token objectives and also enters
+the DiT as Z̄ = sg(Z). Suppose the training sequence has Jtr = ⌈K/B⌉ latent blocks, and the last block has
+length rlast = K − B(Jtr − 1) ∈ {1, . . . , B}. Omitting the clean copy of the last block, Kc = K − rlast , and we
+define
+K + Kc
+χG =
+,
+1 ≤ χG < 2.
+(H.7)
+K
+When K is divisible by B, rlast = B rather than 0. The dominant linear training term of the DiT backbone is
+train
+CG,linear
+(T, K) ≈ 6NG (K + Kc ) = 6χG ρNG T.
+
+(H.8)
+
+Detachment only cuts the gradient to the encoder; it does not skip the backward pass of the DiT itself.
+
+41
+
+When K = Jtr B and the clean stream is also computed block-causally, the numbers of valid pairs of clean
+and noisy queries correspond to the first Jtr − 1 blocks and all Jtr blocks, respectively:
+
+
+JX
+Jtr
+tr −1
+X
+Avalid
+= B2 
+j+
+j = K 2.
+(H.9)
+G
+j=1
+
+j=1
+
+Layouts with incomplete blocks remain O(K 2 ). The dominant attention training term is
+train
+CG,attn
+≈ 12nG dqG Aexec
+G ,
+
+Avalid
+= O(ρ2 T 2 ),
+G
+
+(H.10)
+
+train
+where nG and dqG follow the module-level notation. Let CG,aux
+include the latent input/output and time/condition projections not counted in NG . The average per-token cost of the added DiT is then
+(2)
+
+cG =
+
+train
+train
+train
+E2 [CG,linear
++ CG,attn
++ CG,aux
+]
+.
+E2 [T ]
+
+(H.11)
+
+Hence ρ and ρ2 describe the scaling of the linear length and the attention pairs under the same architecture
+and a comparable layout, rather than a fixed speedup factor for the complete system or an arbitrary kernel.
+Total training cost and AR reference.
+
+If the two stages process D1 and D2 valid tokens, respectively, then
+
+(2) 
+train
+(2)
+CCola2
+≈ D1 c(1)
+rep + D2 crep + cG .
+
+(H.12)
+
+With the same representation configuration, the first part can be merged into (D1 + D2 )crep , but the DiT
+attention and auxiliary projections must still be retained.
+Taking as reference an AR model with training budget DAR and average per-token cost ctrain
+AR under the same
+convention, define
+(2)
+(s)
+cG
+crep
+(s)
+train
+rrep
+= train ,
+rG
+= train
+.
+(H.13)
+cAR
+cAR
+Then
+
+train
+CCola2
+DAR ctrain
+AR
+
+D1 (1)
+D2 (2)
+train
+≈
+rrep + rG
+.
+rrep +
+DAR
+DAR
+
+Rtrain :=
+
+(H.14)
+
+The AR cost ctrain
+AR likewise includes attention and the output head. 6NAR DAR is only its backbone linear
+reference and cannot serve as the denominator for a complete cost that includes other operations. Compression
+mainly reduces the cost of the added prior and does not automatically make the entire training scale with ρ.
+
+H.3
+
+Inference: Proposal, Discrete Decoding, Feedback, and Commit
+
+Excluding the one-time prompt encoding/prefill, the transaction of each generated block is
+DiT proposal → DGD token decoding → fixed-span re-encoding → corrected-cache commit.
+
+(H.15)
+
+Subsequent attention still reads the prompt KV, so its history length cannot be dropped merely because prefill
+infer
+infer
+is excluded. Below, CG
+includes the DiT proposal/commit, CD
+includes condition preparation, token
+decoding, and the token-cache commit, and Cfb includes the feedback encoder and the corrected condition
+commit; the three parts do not overlap.
+
+42
+
+DiT proposal and corrected DiT commit. Let Bjexec be the number of latent query slots actually processed in
+the j-th block, and νG,j,i the number of velocity branches actually executed at its i-th denoising step. Then
+Qprop
+=
+G
+
+J
+X
+
+Sgen
+
+Bjexec
+
+j=1
+
+X
+
+νG,j,i
+
+(H.16)
+
+i=1
+
+≈ ρgen νgen Sgen Tnew .
+The second line assumes a uniform branch count νgen and ignores boundaries and padding. The proposal
+does not write to the persistent cache; corrected latents are committed only after feedback. To avoid folding
+attention into the linear coefficient, define
+κcommit
+:=
+G
+
+commit
+CG,linear
+,
+2NG Knew
+
+(H.17)
+
+where the numerator is only the backbone linear cost of the corrected DiT commit. If each new latent requires
+one additional full clean forward pass, κcommit
+≈ 1 ignoring boundaries. The total cost is
+G
+infer
+commit
+≈ 2NG Qprop
++ CG,linear
+CG
+G
+
+(H.18)
+
+infer
+infer
++ CG,attn
++ CG,aux
+,
+
+where the last two terms accumulate the attention and remaining input/output projections of the proposal and
+commit. If the current effective block width is bj and the committed latent history length is PjZ , the numbers
+of valid pairs per branch with prefix on and off are bj (PjZ + bj ) and b2j , respectively; these are accumulated
+over the actual denoising steps and commits, and the executed pair counts are substituted into Eq. (H.1).
+MDM discrete generator decoder. Let Wjexec be the query width actually processed in each refinement of the
+j-th block, Wjcom the number of positions processed in the final clean commit, Mj the number of refinement
+steps, and νD,j,i the number of decoder branches actually executed at step i. Then
+
+
+Mj
+J
+X
+X
+MDM
+Wjexec
+CD
+≈ 2ND
+νD,j,i + Wjcom 
+(H.19)
+j=1
+i=1
+MDM
+MDM
++ CD,attn
++ Chead/interface
+.
+
+Ignoring the beginning,
+P end, and padding, if νdec branches are computed at every step, the dominant linear
+term reduces to 2ND j (νdec Mj + 1)Wj , where Wj is the effective block width; with a uniform Mj = M , it
+is approximately 2ND (νdec M + 1)Tnew .
+The full two-axis CFG executes four branches, but νD,j,i counts the actual forward passes rather than only
+the nonzero coefficients. The cost is reduced only if the code skips zero-coefficient branches or merges identical
+branches before the call; multiplying logits by zero after the call saves no backbone FLOPs. The four
+branches share one proposal condition preparation per block, and only one clean-token commit without CFG
+is performed at the end.
+To expand the effect of prefix visibility, let PjY be the number of tokens committed before the j-th block
+on
+(including the prompt), and νj,i
+the number of branches with the prefix kept at that step. With effective
+width Wj , the number of valid pairs over all refinements and the clean commit is
+Avalid
+=
+D
+
+" Mj
+J
+X
+X
+j=1
+
+on
+νj,i
+Wj PjY + νD,j,i Wj2
+
+i=1
+
+#
++ Wj (PjY + Wj ) .
+
+43
+
+
+(H.20)
+
+The full two-axis CFG has (ν on , νdec ) = (2, 4). Prefix-off branches only allow keys from the current block, but
+if the kernel does not skip the masked historical blocks, the actual FLOPs must use Aexec
+D :
+MDM
+CD,attn
+≈ 4nD dqD Aexec
+D .
+
+(H.21)
+
+MDM
+Chead/interface
+includes all actual logit projections and one proposal duration/expansion/condition refinement.
+The recomputation of the corrected condition is attributed to feedback and is not double-counted here.
+
+Fixed-span feedback and corrected condition commit. Each finalized block is re-encoded with fixed spans,
+without rerunning the dynamic segmenter. Let NF,t and NF,z be the numbers of linear-layer parameters of
+the span-local token pooling and the causal latent encoder, and QF,t and QF,z the numbers of positions they
+actually process. Then
+Cfb,enc ≈ 2NF,t QF,t + 2NF,z QF,z
+(H.22)
++ Cfb,attn + Cfb,proj ,
+where Cfb,proj includes projections such as the posterior head that are not counted in the above parameters;
+ignoring boundaries and padding, QF,t ≈ Tnew and QF,z ≈ Knew . A token-encoder depth
+Pof zero does not
+eliminate the computation of span-local pooling. Its valid attention pairs accumulate as k L2k over spans,
+and the latent encoder is charged according to the causal prefix/current layout.
+After obtaining Zjcorr , the corrected condition-stack KV must also be rebuilt and committed; denoting its
+cumulative cost by Ccond,commit , we have Cfb = Cfb,enc + Ccond,commit . The proposal condition preparation and
+the corrected condition commit are two distinct computations, but neither is multiplied by four for the four
+infer
+CFG branches; the corrected DiT commit is already included in CG
+.
+Unified AR comparison convention. AR likewise excludes the one-time prefill. Let QAR be the number of
+infer
+positions actually processed by its incremental backbone, Aexec
+AR the executed attention pairs, and Chead,AR
+the output-projection cost. Then
+infer
+CAR
+≈ 2NAR QAR + 4nAR dqAR Aexec
+AR
+infer
++ Chead,AR
+.
+
+(H.23)
+
+If the initial KV length is Tp , processing QAR new queries consecutively yields QAR Tp + QAR (QAR + 1)/2
+valid pairs; QAR ≈ Tnew only ignores boundary differences in where logits are taken. Using denominators
+under the same convention, define
+infer
+rG
+=
+
+so that
+Rinfer =
+
+infer
+CG
+,
+infer
+CAR
+
+rDGD =
+
+infer
+CD
+,
+infer
+CAR
+
+rfb =
+
+Cfb
+,
+infer
+CAR
+
+infer
+infer
+CG
++ CD
++ Cfb
+infer
+= rG
++ rDGD + rfb .
+infer
+CAR
+
+(H.24)
+
+(H.25)
+
+Using only the AR backbone linear term as reference and ignoring boundaries, the corresponding DiT
+contribution is
+commit
+ NG
+2NG Qprop
++ CG,linear
+G
+≈ ρgen νgen Sgen + κcommit
+.
+(H.26)
+G
+2NAR Tnew
+NAR
+This is not the total inference ratio. When end-to-end initialization is included, the numerator and denominator
+of Eq. (H.25) should add the prefill costs of Cola2 and AR, respectively.
+
+H.4
+
+Serial Call Rounds, Latency, and Block Parallelism
+
+We use H as a forward-round proxy, not as Transformer layer depth or actual latency. By convention, one
+module forward pass counts as one round, and independent CFG branches at the same step count as one group
+under ideal parallelism. Let HD,j be the number of call rounds for condition preparation, token decoding,
+44
+
+and clean-token commit of the j-th block, and HF,j the number of rounds for the feedback encoder and the
+corrected condition/DiT commit. Then
+HCola2 ≈
+
+J
+X
+
+
+Sgen + HD,j + HF,j .
+
+(H.27)
+
+j=1
+
+Ignoring boundaries, AR corresponds to HAR ≈ Tnew . With HD and HF denoting the average per-block
+numbers of rounds,
+
+HCola2
+ρgen
+≈
+Sgen + HD + HF .
+(H.28)
+HAR
+B
+Thus, the condition under which this idealized call-round proxy is smaller is
+
+B > ρgen Sgen + HD + HF ,
+(H.29)
+which is not a sufficient condition for end-to-end speedup. The decoding part of MDM contains about Mj
+refinement groups and one clean commit. If the CFG branches are invoked sequentially, every forward pass
+must be counted, and they cannot be treated as one round merely because the formula is parallelizable.
+Let τinit be the one-time initialization latency, τG,j,i the latency of the i-th DiT update of the j-th block
+(including the actual CFG scheduling), and τprep,j , τD,j , and τF,j the latencies of condition preparation, token
+decoding/commit, and feedback/corrected-cache commit, respectively. Under the current serial transaction,
+
+
+Sgen
+J
+X
+X
+
+τCola2 ≈ τinit +
+τG,j,i + τprep,j + τD,j + τF,j  .
+(H.30)
+j=1
+
+i=1
+
+These latencies depend on module size, query/prefix length, branch batching, and hardware utilization, and
+should be measured on the corresponding execution paths; the same time cannot be assigned to every module
+forward pass.
+
+H.5
+
+KV Cache and Temporary States
+
+Let Khist and Thist be the lengths of the committed latent/token histories, including the prompt. The DiT and
+feedback latent-encoder KV lie on the latent axis with length O(Khist ); the condition-stack and token-decoder
+KV lie on the token axis with length O(Thist ). The MDM token cache is bidirectional within a block and
+causal across blocks.
+For R ∈ {G, E, C, D}, denoting the DiT, the feedback latent encoder, the condition stack, and the token
+decoder, respectively, let nR be the number of KV layers and dKV
+R = nkv,R dhead,R the total KV-head width
+per layer, where nkv,R and dhead,R are the number of KV heads and the per-head width. For an equal-length
+batch of Nseq sequences with sKV bytes per cached element,
+h
+KV
+MemKV ≈ 2sKV Nseq (nG dKV
+G + nE dE )Khist
+i
+(H.31)
+KV
++ (nC dKV
++
+n
+d
+)T
+.
+D
+hist
+C
+D
+The factor 2 accounts for keys and values; different lengths, KV layer shapes, or precisions are summed
+according to the actual allocation, and padding must also be counted. Under GQA, dKV
+R should be used
+instead of the hidden width.
+The four MDM CFG branches share one persistent token KV, so Eq. (H.31) is not multiplied by four;
+temporary logits, branch hidden states, and attention workspaces still affect peak memory. Proposals and
+masked states do not accumulate as history, but the sizes of cache concatenation, RoPE, and attention
+temporaries may still depend on the prefix length. This formula therefore counts only persistent KV and does
+not equal the total peak memory.
+In summary, compression shortens the sequence and the latent-axis history of the latent prior, while continuous
+representation learning, token decoding, CFG, and feedback all retain their own costs. End-to-end comparisons
+should use a unified FLOP accounting scope and separately report actually processed positions, serial call
+rounds, latency, and KV capacity, rather than equating any single metric with overall speedup.
+45
+
+I
+
+Final-Checkpoint Pretraining Recipe
+
+This section describes the large-scale recipe used for the final checkpoint in Table 4. It is separate from the
+matched component and controlled scaling setup in Section 4.1.
+
+I.1
+
+Shared Training Configuration
+
+The pretraining corpus uses OLMo 2 pretraining data retokenized with the Qwen3-4B tokenizer. The sequence
+length is 4096.
+All stages use AdamW with β = (0.9, 0.95) and weight decay 0.01. The EMA decay in Stages II and III is
+0.9998. At stage boundaries, model parameters, optimizer state, the learning-rate scheduler, and the data
+cursor are restored.
+
+I.2
+
+Stage I: Dynamic-Compression VAE
+
+Stage I processes approximately 52.43B source tokens. Dynamic segmentation compresses about two tokens
+into one latent on average, with maximum span length 8 and latent dimension 64. The decoder is initialized
+from Qwen3-4B-Base, and the VAE encoder embedding is copied from the same model; the remaining
+compression modules are initialized from scratch.
+The Qwen-initialized parameters remain frozen for the first 5.24B source tokens and are subsequently updated
+at 0.1× the main learning rate; the compression encoder also uses a 0.1× multiplier. The learning rate is
+linearly warmed up from 10−6 to 10−4 over the first 5.24B source tokens and then cosine-decayed to 10−6 .
+The decoder uses a causal dual-stream objective. Masked positions are supplied as [MASK] inputs, but the
+decoder self-attention remains causal rather than becoming bidirectional. Clean, noisy, and dropped latent
+conditions are sampled with proportions 0.4/0.3/0.3, and their three token-loss weights are all 1. The KL,
+duration, and encoder-mask auxiliary loss weights are 10−4 , 0.1, and 1, respectively, and the encoder-mask
+span ratio is 0.15.
+
+I.3
+
+Stage II: Joint VAE and Latent-DiT Training
+
+Stage II restores the complete VAE checkpoint, optimizer, scheduler, and data cursor from Stage I. It introduces
+an approximately 4B-parameter latent DiT with 34 Transformer layers, hidden dimension 2560, 20 attention
+heads, and latent block size 8. This stage processes approximately 125.83B source tokens.
+The VAE continues to use the Stage-I causal dual-stream objective, with the encoder-mask span ratio increased
+to 0.30. The DiT reads detached VAE latents, so its diffusion loss does not backpropagate into the VAE; the
+VAE is updated only by its compression and decoder objectives. The DiT uses velocity-prediction MSE, with
+timesteps sampled from LogitNormal(loc = 2, scale = 1).
+The DiT learning rate is warmed up from 10−6 to 1.5 × 10−4 and then cosine-decayed. The schedule is defined
+over a nominal 2.1T-token horizon, although training terminates before reaching that horizon.
+
+I.4
+
+Stage III: Frozen VAE and Continued DiT Training
+
+Stage III restores the complete DiT parameters, EMA, optimizer, learning-rate scheduler, and data cursor
+from the Stage-II checkpoint. The Stage-II EMA VAE encoder is frozen, and only the DiT continues to be
+optimized. The released model uses the matching EMA VAE decoder associated with this encoder.
+The timestep distribution remains LogitNormal(loc = 2, scale = 1). This stage processes approximately
+167.77B source tokens from the retokenized OLMo 2 corpus.
+
+46
+
+I.5
+
+Source-Token Accounting
+
+Table 5 Final-checkpoint pretraining budget. Token counts report source-token positions processed in each stage.
+Stage
+
+Source tokens
+
+Primary update
+
+Stage I
+Stage II
+Stage III
+
+52.43B
+125.83B
+167.77B
+
+Dynamic-compression VAE
+VAE and latent DiT
+Latent DiT only
+
+Total
+
+346.03B
+
+–
+
+47
+
+
