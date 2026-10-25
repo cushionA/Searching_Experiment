@@ -1,0 +1,102 @@
+{
+  "kind": "static_manifest_arithmetic_not_inference",
+  "python": "3.12.14",
+  "source_files_verified": 29,
+  "code_sha": "e20355319b5aa5705a876a8d2b40aca606d7df5f",
+  "model_tag": "v1.1.0",
+  "resolved_tag_sha": "a1283c4b42a273c09480ad50e71461daff50fcc7",
+  "api_revision_reported_sha": "bd02167fdf2005a19962cc15188f8496a2c87d3b",
+  "api_revision_matches_refs": false,
+  "variants": {
+    "python_default": {
+      "files": [
+        "det.onnx",
+        "lm.npz",
+        "lm_cjk.npz",
+        "lm_world.npz",
+        "meta.json",
+        "order.onnx",
+        "orient.onnx",
+        "rec.onnx",
+        "rec_cjk.onnx",
+        "rec_rtl.onnx",
+        "rec_world.onnx",
+        "script.onnx"
+      ],
+      "file_count": 12,
+      "bytes": 76089598
+    },
+    "python_math": {
+      "files": [
+        "det.onnx",
+        "lm.npz",
+        "lm_cjk.npz",
+        "lm_world.npz",
+        "math_dec_init.onnx",
+        "math_dec_step.onnx",
+        "math_enc.onnx",
+        "math_meta.json",
+        "mathcls.onnx",
+        "meta.json",
+        "order.onnx",
+        "orient.onnx",
+        "rec.onnx",
+        "rec_cjk.onnx",
+        "rec_rtl.onnx",
+        "rec_world.onnx",
+        "script.onnx"
+      ],
+      "file_count": 17,
+      "bytes": 95963757
+    },
+    "port_base": {
+      "files": [
+        "det.onnx",
+        "rec.onnx",
+        "script.onnx",
+        "orient.onnx",
+        "order.onnx",
+        "meta.json"
+      ],
+      "file_count": 6,
+      "bytes": 9180548
+    },
+    "port_base_plus_cjk": {
+      "files": [
+        "det.onnx",
+        "rec.onnx",
+        "script.onnx",
+        "orient.onnx",
+        "order.onnx",
+        "meta.json",
+        "rec_cjk.onnx"
+      ],
+      "file_count": 7,
+      "bytes": 19356566
+    },
+    "port_base_plus_cjk_and_cjk_lm": {
+      "files": [
+        "det.onnx",
+        "rec.onnx",
+        "script.onnx",
+        "orient.onnx",
+        "order.onnx",
+        "meta.json",
+        "rec_cjk.onnx",
+        "lm_cjk.npz"
+      ],
+      "file_count": 8,
+      "bytes": 38311726
+    }
+  },
+  "safetensors_used_by_default": false,
+  "actual_candidate_trials": 0,
+  "weight_bytes_downloaded": 0,
+  "limitations": [
+    "File sizes are remote metadata, not downloaded weights.",
+    "Base/CJK sets are static lower bounds, not observed network or RSS.",
+    "Math decoder files may share weights; summed bytes are not parameter counts.",
+    "No speed, OCR quality, missing-page recovery or search coverage measurement."
+  ],
+  "elapsed_s": 0.005335
+}
