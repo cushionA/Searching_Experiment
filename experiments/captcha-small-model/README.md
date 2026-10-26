@@ -2,6 +2,8 @@
 
 次の実CAPTCHA検証に必要な公式デモ候補、学習済み重みの取得先、準備状況は[CAPTCHAテストの引き継ぎ](HANDOFF.md)を参照。
 
+論文Robot VisionsのCLIP / OWLv2方式を追加した。[ローカル実行手順](LOCAL_VISUAL.md)に、重みの準備、保存画像の認識、既存ボードの型別比較、URL指定のブラウザ実行をまとめた。AIエージェントや外部AI APIは不要。
+
 公開データセットの画像ラベルと人手注釈済みボードを使い、画像エンコーダーと文字OCRをローカルで評価する。集計表、指標JSON、対象データと評価上の制約は[結果レポート](results/20261006/REPORT.md)と[metrics.json](results/20261006/metrics.json)を参照。
 
 ## 結果

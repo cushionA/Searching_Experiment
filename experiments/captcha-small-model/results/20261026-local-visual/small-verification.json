@@ -1,0 +1,31 @@
+{
+  "status": "completed",
+  "profile": "small",
+  "device": "cpu",
+  "cases": 2,
+  "network_connect_attempts": 0,
+  "scope": "Non-random functionality smoke; first public board of each type, not an accuracy estimate.",
+  "offline_flags": [
+    "HF_HUB_OFFLINE=1",
+    "TRANSFORMERS_OFFLINE=1"
+  ],
+  "socket_guard": [
+    "socket.socket.connect"
+  ],
+  "regression_tests": {
+    "command": "python3 -B -m unittest discover -s tests -p 'test_lab*.py'",
+    "total": 173,
+    "skipped": 15,
+    "failures": 0
+  },
+  "new_tests": {
+    "command": ".deps/local-visual-venv/bin/python -B -m unittest discover -s tests -p 'test_lab_local_visual*.py'",
+    "total": 22,
+    "failures": 0
+  },
+  "source_repository": "ssivakorn/reCAPTCHA-study",
+  "source_commit": "efb3595c33780abf9d326c729973e72d165366c2",
+  "source_license": "CC BY-NC 4.0",
+  "inference_api": false,
+  "browser_integration": "not implemented"
+}
