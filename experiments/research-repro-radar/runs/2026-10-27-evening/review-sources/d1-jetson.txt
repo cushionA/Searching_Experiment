@@ -1,0 +1,494 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="description" content="Liquid AI's compact zero-shot classification model for text, images, and audio, with a guide to running it on Jetson using PyTorch."><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/png" href="/images/icons/nvidia-logo.png"><link rel="apple-touch-icon" href="/images/icons/nvidia-logo.png"><link rel="canonical" href="https://www.jetson-ai-lab.com/models/d1-omni-600M/"><meta name="generator" content="Astro v5.16.6"><title>d1-omni-600M | Jetson AI Lab</title><!-- Open Graph --><meta property="og:type" content="website"><meta property="og:url" content="https://www.jetson-ai-lab.com/models/d1-omni-600M/"><meta property="og:title" content="d1-omni-600M | Jetson AI Lab"><meta property="og:description" content="Liquid AI's compact zero-shot classification model for text, images, and audio, with a guide to running it on Jetson using PyTorch."><meta property="og:image" content="https://www.jetson-ai-lab.com/images/hero/nvidia-logo.png"><meta property="og:image:alt" content="NVIDIA Jetson AI Lab"><meta property="og:site_name" content="Jetson AI Lab"><meta property="og:locale" content="en_US"><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="d1-omni-600M | Jetson AI Lab"><meta name="twitter:description" content="Liquid AI's compact zero-shot classification model for text, images, and audio, with a guide to running it on Jetson using PyTorch."><meta name="twitter:image" content="https://www.jetson-ai-lab.com/images/hero/nvidia-logo.png"><meta name="twitter:image:alt" content="NVIDIA Jetson AI Lab"><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Jetson AI Lab","alternateName":"NVIDIA Jetson AI Lab","url":"https://www.jetson-ai-lab.com/","description":"Guides, models, tutorials, and community resources for running generative AI on NVIDIA Jetson.","publisher":{"@type":"Organization","name":"NVIDIA","url":"https://www.nvidia.com/"},"inLanguage":"en"}</script><!-- Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-SXH8S4Y8RW"></script><script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-SXH8S4Y8RW');
+    </script><!-- ISO download tracking --><script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const links = Array.from(document.querySelectorAll('a[href$=".iso"]'));
+
+        links.forEach(link => {
+          link.addEventListener('click', function (e) {
+            const url = link.href;
+            const openInNewTab = e.metaKey || e.ctrlKey || link.target === '_blank';
+            const fileName = (new URL(url)).pathname.split('/').pop() || 'unknown';
+            if (!openInNewTab) e.preventDefault();
+
+            // Optional: parse your NVIDIA URL for useful params
+            const m = link.pathname.match(/L4T\/(r\d+_Release_v[\d.]+)\/.*jetsoninstaller-([\d.]+)-(r[\d.]+)-([\d-]+)-(arm64)\.iso$/);
+
+            if (typeof gtag === 'function') {
+              gtag('event', 'download_iso_file', {
+                file_extension: 'iso',
+                file_name: fileName,
+                link_url: url,
+                l4t_release_raw: m?.[1] || '',
+                installer_version: m?.[2] || '',
+                l4t_release: m?.[3] || '',
+                build_timestamp: m?.[4] || '',
+                arch: m?.[5] || '',
+                event_callback: function () { if (!openInNewTab) window.location.href = url; },
+                event_timeout: 2000
+              });
+            }
+
+            if (!openInNewTab) setTimeout(() => { window.location.href = url; }, 1000);
+          }, { capture: true });
+        });
+      });
+    </script><!-- OneTrust Cookies Consent Notice - Only on Production --><!-- Excluded on localhost/staging to avoid popup loop on non-production domains --><script>
+      // Only load OneTrust on production domain
+      if (window.location.hostname === 'www.jetson-ai-lab.com' || window.location.hostname === 'jetson-ai-lab.com') {
+        // OneTrust Cookie Consent
+        var script1 = document.createElement('script');
+        script1.src = 'https://cdn.cookielaw.org/scripttemplates/otSDKStub.js';
+        script1.type = 'text/javascript';
+        script1.charset = 'UTF-8';
+        script1.setAttribute('data-domain-script', '018e2d65-efdf-7071-b793-f15ccf25c234');
+        document.head.appendChild(script1);
+
+        // OptanonWrapper callback
+        window.OptanonWrapper = function() {
+          var event = new Event('bannerLoaded');
+          window.dispatchEvent(event);
+        };
+
+        // OneTrust custom JS
+        var script2 = document.createElement('script');
+        script2.src = 'https://images.nvidia.com/aem-dam/Solutions/ot-js/ot-custom.js';
+        script2.type = 'text/javascript';
+        document.head.appendChild(script2);
+
+        // Adobe DTM
+        var script3 = document.createElement('script');
+        script3.src = '//assets.adobedtm.com/5d4962a43b79/814eb6e9b4e1/launch-4bc07f1e0b0b.min.js';
+        document.head.appendChild(script3);
+      }
+    </script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/_astro/index.DCMtzkgQ.css">
+<style>.code-block-wrapper{position:relative}.code-copy-btn{position:absolute;top:.5rem;right:.5rem;padding:.375rem;color:#e2e8f0;background:#37415180;border:1px solid rgba(75,85,99,1);border-radius:.375rem;cursor:pointer;transition:background .15s,border-color .15s}.code-copy-btn:hover{background:#4b5563cc;border-color:#6b7280}.code-copy-btn.code-copy-done{border-color:#76b900}.prose pre{padding-top:2.25rem}
+.inference-matrix-code-wrap{width:100%;max-width:100%;min-width:0;overflow-x:hidden}.inference-matrix-module-bar,.inference-matrix-engine-bar{overflow-y:hidden}.one-shot-code-wrap{width:100%;max-width:100%;min-width:0;overflow-x:hidden}.one-shot-module-bar{overflow-y:hidden}canvas[data-astro-cid-7bpw5mv4][data-model-shader]{opacity:0;transition:opacity .3s ease}canvas[data-astro-cid-7bpw5mv4][data-model-shader][data-ready=true]{opacity:1}.device-tabs{margin:1.5rem 0}.device-tab-bar{display:flex;gap:2rem;border-bottom:1px solid #e5e7eb;margin-bottom:1.5rem}.device-tab{padding-bottom:1rem;font-size:1.125rem;font-weight:500;cursor:pointer;border:none;border-bottom:2px solid transparent;background:transparent;color:#6b7280;transition:all .2s}.device-tab.active{color:#76b900;border-bottom-color:#76b900}.device-tab:not(.active):hover{color:#1a1a1a;border-bottom-color:#d1d5db}
+</style></head> <body class="bg-nvidia-white text-nvidia-black"> <!-- Migration Notice Banner --> <div id="migration-notice" class="bg-gradient-to-r from-nvidia-green to-gray-100 text-black px-4 py-3 shadow-lg" style="display: none;"> <div class="max-w-7xl mx-auto flex items-center justify-between gap-4"> <div class="flex items-center gap-3 flex-1"> <span class="text-2xl">🎉</span> <div class="flex-1"> <p class="font-semibold">Welcome to Jetson AI Lab 2.0!</p> <p class="text-sm">We've redesigned the site with curated tutorials. Looking for old content?
+<a href="/archive/index.html" class="underline font-medium hover:text-white">Browse the archive →</a> </p> </div> </div> <button id="dismiss-notice" class="text-black hover:text-white font-bold text-xl px-2 py-1 rounded hover:bg-black/10 transition-colors" aria-label="Dismiss">
+×
+</button> </div> </div> <header class="bg-nvidia-white border-b border-nvidia-gray-200 sticky top-0 z-50"> <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> <div class="flex justify-between h-16"> <div class="flex items-center"> <a href="/" class="flex items-center"> <span class="text-2xl font-nvidia font-bold text-nvidia-black">Jetson AI Lab</span> </a> </div> <div class="hidden md:flex items-center space-x-1"> <a href="/" class="text-nvidia-black hover:text-nvidia-green hover:bg-nvidia-gray-50 px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200">Home</a> <a href="/models" class="text-nvidia-black hover:text-nvidia-green hover:bg-nvidia-gray-50 px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200">Models</a> <a href="/tutorials" class="text-nvidia-black hover:text-nvidia-green hover:bg-nvidia-gray-50 px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200">Tutorials</a> <a href="/projects" class="text-nvidia-black hover:text-nvidia-green hover:bg-nvidia-gray-50 px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200">Projects</a> <a href="/research" class="text-nvidia-black hover:text-nvidia-green hover:bg-nvidia-gray-50 px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200">Research Group</a> </div> <div class="md:hidden flex items-center"> <button id="mobile-menu-button" class="text-nvidia-black hover:text-nvidia-green p-2" aria-label="Toggle menu"> <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path> </svg> </button> </div> </div> <!-- Mobile menu, hidden by default --> <div id="mobile-menu" class="hidden md:hidden pb-4"> <a href="/" class="block text-nvidia-black hover:text-nvidia-green hover:bg-nvidia-gray-50 px-4 py-3 text-base font-medium rounded-md transition-colors duration-200">Home</a> <a href="/models" class="block text-nvidia-black hover:text-nvidia-green hover:bg-nvidia-gray-50 px-4 py-3 text-base font-medium rounded-md transition-colors duration-200">Models</a> <a href="/tutorials" class="block text-nvidia-black hover:text-nvidia-green hover:bg-nvidia-gray-50 px-4 py-3 text-base font-medium rounded-md transition-colors duration-200">Tutorials</a> <a href="/projects" class="block text-nvidia-black hover:text-nvidia-green hover:bg-nvidia-gray-50 px-4 py-3 text-base font-medium rounded-md transition-colors duration-200">Projects</a> <a href="/research" class="block text-nvidia-black hover:text-nvidia-green hover:bg-nvidia-gray-50 px-4 py-3 text-base font-medium rounded-md transition-colors duration-200">Research Group</a> </div> </nav> </header> <!-- Mobile Menu Toggle Script --> <script>
+      (function() {
+        var menuButton = document.getElementById('mobile-menu-button');
+        var mobileMenu = document.getElementById('mobile-menu');
+
+        if (menuButton && mobileMenu) {
+          menuButton.addEventListener('click', function() {
+            mobileMenu.classList.toggle('hidden');
+          });
+        }
+      })();
+    </script> <main class="min-h-screen"> <section class="relative overflow-hidden bg-nvidia-black text-nvidia-white py-20" style="background-color:#0D0913" data-model-visual-hero>  <div class="pointer-events-none absolute inset-0" data-model-visual-art aria-hidden="true"> <img src="/images/model-families/liquid-d1/hero.webp" alt="" class="absolute inset-0 h-full w-full object-cover"> <canvas id="model-shader-liquid-model-d1-omni-600M" class="absolute inset-0 h-full w-full" style="left:24%;right:auto;width:76%" data-model-shader="liquid" aria-hidden="true" data-astro-cid-7bpw5mv4></canvas><span class="pointer-events-none absolute inset-0 bg-black opacity-0" data-shader-darkness-overlay="liquid" aria-hidden="true" data-astro-cid-7bpw5mv4></span> <script>(function(){const canvasId = "model-shader-liquid-model-d1-omni-600M";
+const shaderId = "liquid";
+const fragmentShader = "#version 300 es\nprecision highp float;\n\nuniform vec2 u_resolution;\nuniform vec2 u_layout_resolution;\nuniform vec2 u_viewport;\nuniform float u_time;\nuniform float u_convergence;\nuniform float u_field_density;\nuniform float u_field_orbit;\nuniform float u_pulse;\nuniform float u_sphere_haze;\nuniform float u_flow_amplitude;\nout vec4 outColor;\n\nfloat hash21(vec2 p) {\n  return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);\n}\n\nfloat ribbon(float distanceToCenter, float width) {\n  return exp(-pow(abs(distanceToCenter) / width, 2.0));\n}\n\nmat2 rotate2d(float angle) {\n  float c = cos(angle);\n  float s = sin(angle);\n  return mat2(c, -s, s, c);\n}\n\nfloat particleLayer(vec2 position, float density, float seed) {\n  vec2 grid = position * (82.0 * max(density, 0.05));\n  vec2 cell = floor(grid);\n  vec2 local = fract(grid) - 0.5;\n  vec2 jitter = vec2(hash21(cell + seed), hash21(cell + seed + 19.17)) - 0.5;\n  vec2 particlePosition = local - jitter * 0.42;\n  float squareDistance = max(abs(particlePosition.x), abs(particlePosition.y));\n  float square = 1.0 - smoothstep(0.24, 0.32, squareDistance);\n  float occupancy = smoothstep(0.955, 1.0, hash21(cell + seed + 43.2));\n  return square * occupancy;\n}\n\nfloat smootherstep01(float x) {\n  x = clamp(x, 0.0, 1.0);\n  return x * x * x * (x * (x * 6.0 - 15.0) + 10.0);\n}\n\nfloat junctionY(float t) {\n  // All incoming and outgoing ribbons share this moving anchor. The whole\n  // junction can breathe vertically without allowing the output to detach.\n  return -0.018 + 0.010 * u_flow_amplitude * sin(t * 0.42);\n}\n\nfloat inputCurve(float x, int lane, float t, float convergence) {\n  float sourceX = -1.52;\n  float sourceY = 0.36;\n  float phase = 0.1;\n  float frequency = 2.05;\n  float drift = 0.014;\n\n  if (lane == 0) {\n    sourceX = -1.52;\n    sourceY = 0.36;\n    phase = 0.1;\n    frequency = 2.05;\n    drift = 0.014;\n  } else if (lane == 1) {\n    sourceX = -1.20;\n    sourceY = -0.015;\n    phase = 1.2;\n    frequency = 1.65;\n    drift = 0.018;\n  } else {\n    sourceX = -0.88;\n    sourceY = -0.43;\n    phase = 2.35;\n    frequency = 2.35;\n    drift = 0.012;\n  }\n\n  // One quintic interpolation replaces the former staged bends. Its slope is\n  // zero at both ends, while the low-amplitude drift also fades to zero at\n  // the source and merge. The result reads as a supple ribbon rather than a\n  // polyline with animated elbows.\n  float progress = clamp((x - sourceX) / (0.20 - sourceX), 0.0, 1.0);\n  float gather = smootherstep01(progress) * clamp(convergence, 0.0, 1.0);\n  float mergeY = junctionY(t);\n  float driftEnvelope = 16.0 * progress * progress * (1.0 - progress) * (1.0 - progress);\n  float gentleDrift = sin(x * frequency - t * 0.34 + phase) * drift * driftEnvelope * u_flow_amplitude;\n  return mix(sourceY, mergeY, gather) + gentleDrift;\n}\n\nvoid main() {\n  float viewportScale = u_viewport.y > 0.0 ? u_viewport.y : 1.0;\n  vec2 uv = vec2(u_viewport.x + gl_FragCoord.x / u_resolution.x * viewportScale, gl_FragCoord.y / u_resolution.y);\n  uv.y = 1.0 - uv.y;\n  vec2 layoutResolution = u_layout_resolution.x > 0.0 ? u_layout_resolution : u_resolution;\n  float aspect = layoutResolution.x / layoutResolution.y;\n  vec2 p = vec2((uv.x - 0.72) * aspect, uv.y - 0.5);\n  // u_time already includes the UI's Flow Speed multiplier. Keep the local\n  // clock close to real time so 1.00 reads as motion rather than a still.\n  float t = u_time * 0.82;\n\n  vec3 color = vec3(0.012, 0.006, 0.025);\n\n  // A broad, edge-free sphere haze sits behind the flow. This is a restrained\n  // reference to Liquid's System 1 sphere imagery, not a foreground badge or\n  // a literal diagram of the model. Uneven illumination keeps it from reading\n  // as a flat geometric disc.\n  vec2 sphereP = p - vec2(0.14, -0.015);\n  float sphereDistance = length(sphereP);\n  float sphereBody = exp(-sphereDistance * sphereDistance * 12.0);\n  float sphereHalo = exp(-sphereDistance * sphereDistance * 3.4);\n  float sphereLight = exp(-dot(sphereP - vec2(-0.075, 0.090), sphereP - vec2(-0.075, 0.090)) * 23.0);\n  float sphereShade = 0.64 + 0.36 * smoothstep(-0.22, 0.22, -sphereP.x + sphereP.y * 0.34);\n  float sphereBreathe = 0.90 + 0.10 * sin(t * 0.62);\n  color += vec3(0.22, 0.075, 0.48) * sphereHalo * 0.105 * u_sphere_haze;\n  color += vec3(0.34, 0.12, 0.66) * sphereBody * sphereShade * 0.135 * u_sphere_haze;\n  color += vec3(0.72, 0.42, 0.96) * sphereLight * sphereBody * 0.085 * sphereBreathe * u_sphere_haze;\n  vec3 shades[3] = vec3[3](\n    vec3(0.47, 0.20, 0.98),\n    vec3(0.70, 0.32, 1.00),\n    vec3(0.91, 0.62, 1.00)\n  );\n  float widths[3] = float[3](0.019, 0.029, 0.014);\n  float starts[3] = float[3](-1.52, -1.20, -0.88);\n  float ends[3] = float[3](0.29, 0.30, 0.28);\n\n  // Unequal ribbons arrive from different origins, with distinct curvature,\n  // width, and timing. They approach a decision aperture without forming a\n  // symmetric three-pronged icon.\n  for (int i = 0; i < 3; ++i) {\n    float y = inputCurve(p.x, i, t, u_convergence);\n    float gateIn = smoothstep(starts[i] - 0.08, starts[i] + 0.13, p.x);\n    float gateOut = 1.0 - smoothstep(ends[i] - 0.12, ends[i] + 0.10, p.x);\n    float bundleT = smoothstep(-0.22, 0.14, p.x) * u_convergence;\n    float bundledWidth = mix(widths[i], 0.0075, bundleT);\n    float mask = ribbon(p.y - y, bundledWidth) * gateIn * gateOut;\n    float halo = ribbon(p.y - y, bundledWidth * mix(3.8, 2.8, bundleT)) * gateIn * gateOut;\n    float flowPulse = 0.76 + 0.24 * sin(p.x * 7.0 - t * 2.15 + float(i) * 1.15);\n    color += shades[i] * halo * 0.065;\n    color += shades[i] * mask * (0.36 + float(i) * 0.07) * flowPulse;\n  }\n\n  // Hold the converged inputs together as one quiet spine before the\n  // probability traces separate. This avoids three independently clipped\n  // ribbon ends looking loose or accidental on the right side.\n  float spineGate = smoothstep(0.02, 0.15, p.x) * (1.0 - smoothstep(0.28, 0.38, p.x));\n  float mergeX = 0.20;\n  float spineWave = sin(p.x * 2.7 - t * 0.32) - sin(mergeX * 2.7 - t * 0.32);\n  float spineY = junctionY(t) + 0.004 * u_flow_amplitude * spineWave;\n  float spineHalo = ribbon(p.y - spineY, 0.025) * spineGate;\n  float spineCore = ribbon(p.y - spineY, 0.0075) * spineGate;\n  color += vec3(0.72, 0.36, 0.98) * spineHalo * 0.075;\n  color += vec3(0.91, 0.70, 1.00) * spineCore * 0.48;\n\n  // The convergence point remains deliberately soft: no outlined aperture or\n  // tilted ellipse competes with the asymmetric ribbons.\n  float decisionGlow = exp(-dot(sphereP, sphereP) * 38.0);\n  color += vec3(0.68, 0.34, 0.96) * decisionGlow * 0.075 * u_pulse;\n\n  // The output reads as one weighted stream. Five probability traces remain\n  // inside it, but stay close enough to behave as internal texture: their\n  // breathing changes the stream's apparent width instead of opening into a\n  // loose set of parallel wires.\n  float outputGate = smoothstep(0.16, 0.31, p.x);\n  // Subtract the wave value at mergeX so the output is mathematically pinned\n  // to the same moving junction as the three inputs and the quiet spine.\n  float outputWave = sin(p.x * 1.65 - t * 0.58) - sin(mergeX * 1.65 - t * 0.58);\n  float outputCenter = junctionY(t) + 0.010 * u_flow_amplitude * outputWave;\n  float outputBreath = 0.5 + 0.5 * sin(p.x * 1.15 - t * 0.72);\n  float outputBodyWidth = 0.017 + 0.004 * outputBreath;\n  float outputHalo = ribbon(p.y - outputCenter, outputBodyWidth * 2.8) * outputGate;\n  float outputBody = ribbon(p.y - outputCenter, outputBodyWidth) * outputGate;\n  float outputCore = ribbon(p.y - outputCenter, 0.0065) * outputGate;\n  float streamPulse = 0.78 + 0.22 * sin(p.x * 7.8 - t * 2.35);\n  color += vec3(0.50, 0.20, 0.91) * outputHalo * 0.070;\n  color += vec3(0.70, 0.34, 0.98) * outputBody * 0.20;\n  color += vec3(0.94, 0.76, 1.00) * outputCore * 0.26 * streamPulse;\n\n  for (int i = 0; i < 5; ++i) {\n    float fi = float(i) - 2.0;\n    float settle = smoothstep(0.20, 0.62, p.x);\n    float tightSpacing = (0.0022 + 0.0013 * outputBreath) * settle;\n    float localDrift = 0.0014 * u_flow_amplitude * sin(p.x * (1.7 + fi * 0.025) - t * 0.70 + fi * 0.48);\n    float y = outputCenter + fi * tightSpacing + localDrift * settle;\n    float trace = ribbon(p.y - y, 0.0024 + 0.0003 * abs(fi)) * outputGate;\n    float confidence = 1.0 - abs(fi) * 0.13;\n    color += mix(vec3(0.53, 0.25, 0.95), vec3(0.96, 0.81, 1.0), confidence)\n      * trace * (0.10 + confidence * 0.18);\n  }\n\n  // Two sparse point layers orbit around the sphere haze at slightly\n  // different rates, producing depth without implying model topology.\n  vec2 particleCenter = p - vec2(0.14, -0.015);\n  float orbitAngle = t * 0.13 * u_field_orbit;\n  vec2 nearOrbit = rotate2d(orbitAngle) * particleCenter;\n  vec2 farOrbit = rotate2d(-orbitAngle * 0.58) * particleCenter;\n  float dots = particleLayer(nearOrbit * vec2(0.82, 1.24), u_field_density, 3.7);\n  float farDots = particleLayer(farOrbit * vec2(0.68, 1.08), u_field_density * 0.72, 11.9);\n  float field = exp(-length((p - vec2(0.04, 0.0)) * vec2(0.80, 1.25)) * 1.45);\n  float probabilityBand = smoothstep(-0.75, 0.20, p.x) * (1.0 - smoothstep(0.35, 1.1, p.x));\n  color += vec3(0.58, 0.38, 0.84) * dots * field * probabilityBand * 0.44;\n  color += vec3(0.38, 0.24, 0.64) * farDots * field * probabilityBand * 0.22;\n\n  color *= mix(0.42, 1.0, smoothstep(0.12, 0.52, uv.x));\n  color += (hash21(gl_FragCoord.xy) - 0.5) / 520.0;\n  outColor = vec4(pow(max(color, 0.0), vec3(0.9)), 1.0);\n}\n";
+const vertexShader = "#version 300 es\nin vec2 a_position;\nvoid main() { gl_Position = vec4(a_position, 0.0, 1.0); }";
+const layeredRenderer = false;
+const maxFps = 20;
+const resolutionScale = 0.75;
+const canvasCoverage = 0.76;
+const startTime = 13;
+const defaults = {"speed":3.5,"flow_amplitude":2.05,"convergence":0.98,"field_density":0.9,"field_orbit":0.45,"pulse":0.24,"sphere_haze":3.5};
+
+	const shaderExportRegistry = globalThis.__jalShaderExports ??= {};
+	if (!shaderExportRegistry[shaderId]) {
+		const exportValues = { ...defaults };
+		shaderExportRegistry[shaderId] = {
+			source: fragmentShader,
+			values: exportValues,
+			canvasCoverage,
+			startTime,
+			layered: layeredRenderer,
+		};
+		document.addEventListener('input', (event) => {
+			const control = event.target;
+			if (!(control instanceof HTMLInputElement) || control.dataset.shaderControl !== shaderId) return;
+			const key = control.dataset.param;
+			if (key && key !== 'darkness') exportValues[key] = Number(control.value);
+		});
+		document.addEventListener('model-shader-preset', (event) => {
+			const detail = event.detail;
+			if (!detail || detail.shaderId !== shaderId || !detail.params) return;
+			Object.assign(exportValues, detail.params);
+		});
+	}
+	const canvas = document.getElementById(canvasId);
+	if (!layeredRenderer && canvas instanceof HTMLCanvasElement && !canvas.dataset.initialized) {
+		canvas.dataset.initialized = 'pending';
+		const initialize = () => {
+			if (canvas.dataset.initialized === 'true') return;
+			canvas.dataset.initialized = 'true';
+			canvas.addEventListener('webglcontextlost', (event) => {
+			event.preventDefault();
+			delete canvas.dataset.ready;
+			});
+			const gl = canvas.getContext('webgl2', { alpha: true, antialias: false, powerPreference: 'low-power' });
+			if (gl) {
+			const compile = (type, source) => {
+				const shader = gl.createShader(type);
+				gl.shaderSource(shader, source);
+				gl.compileShader(shader);
+				if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(shader));
+				return shader;
+			};
+			const program = gl.createProgram();
+			gl.attachShader(program, compile(gl.VERTEX_SHADER, vertexShader));
+			gl.attachShader(program, compile(gl.FRAGMENT_SHADER, fragmentShader));
+			gl.linkProgram(program);
+			if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
+			gl.useProgram(program);
+			const buffer = gl.createBuffer();
+			gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+			const position = gl.getAttribLocation(program, 'a_position');
+			gl.enableVertexAttribArray(position);
+			gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+
+			const resolution = gl.getUniformLocation(program, 'u_resolution');
+			const layoutResolution = gl.getUniformLocation(program, 'u_layout_resolution');
+			const viewport = gl.getUniformLocation(program, 'u_viewport');
+			const time = gl.getUniformLocation(program, 'u_time');
+			const values = { ...defaults };
+			const presentationKeys = new Set(['render_scale', 'soft_focus', 'darkness']);
+			const locations = Object.fromEntries(
+				Object.keys(values)
+					.filter((key) => key !== 'speed' && !presentationKeys.has(key))
+					.map((key) => [key, gl.getUniformLocation(program, `u_${key}`)])
+			);
+			const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+			let visible = true;
+			let frame = 0;
+			let lastFrame = -Infinity;
+			let sizeDirty = true;
+			let currentResolutionScale = Number(values.render_scale ?? resolutionScale);
+			let currentSoftFocus = Number(values.soft_focus ?? 0);
+			const startedAt = performance.now();
+
+			const updatePresentation = () => {
+				canvas.style.filter = currentSoftFocus > 0.001 ? `blur(${currentSoftFocus}px)` : 'none';
+				// A tiny overscan prevents a soft-focus setting from revealing the canvas edge.
+				canvas.style.transform = currentSoftFocus > 0.001 ? `scale(${1 + currentSoftFocus * 0.0025})` : 'none';
+			};
+			updatePresentation();
+
+			const updateControl = (control) => {
+				if (!(control instanceof HTMLInputElement) || control.dataset.shaderControl !== shaderId) return;
+				const key = control.dataset.param;
+				if (!key) return;
+				if (key === 'darkness') {
+					document.querySelectorAll(`[data-shader-darkness-overlay="${shaderId}"]`).forEach((overlay) => {
+						if (overlay instanceof HTMLElement) overlay.style.opacity = control.value;
+					});
+					const output = document.querySelector(`[data-shader-value="${shaderId}:${key}"]`);
+					if (output) output.textContent = `${Number(control.value).toFixed(Number(control.dataset.decimals ?? 2))}${output.dataset.unit ?? ''}`;
+					return;
+				}
+				if (!(key in values)) return;
+				values[key] = Number(control.value);
+				if (key === 'render_scale') {
+					currentResolutionScale = values[key];
+					sizeDirty = true;
+				}
+				if (key === 'soft_focus') {
+					currentSoftFocus = values[key];
+					updatePresentation();
+				}
+				const output = document.querySelector(`[data-shader-value="${shaderId}:${key}"]`);
+				if (output) output.textContent = `${Number(control.value).toFixed(Number(control.dataset.decimals ?? 2))}${output.dataset.unit ?? ''}`;
+			};
+			document.addEventListener('input', (event) => updateControl(event.target));
+			document.addEventListener('model-shader-preset', (event) => {
+				const detail = event.detail;
+				if (!detail || detail.shaderId !== shaderId || !detail.params) return;
+				Object.entries(detail.params).forEach(([key, value]) => {
+					if (key in values && typeof value === 'number') values[key] = value;
+				});
+				if (typeof detail.resolutionScale === 'number' && detail.resolutionScale > 0) {
+					currentResolutionScale = detail.resolutionScale;
+					if ('render_scale' in values) values.render_scale = detail.resolutionScale;
+					sizeDirty = true;
+				}
+			});
+			document.addEventListener('click', (event) => {
+				const resetButton = event.target instanceof Element ? event.target.closest(`[data-shader-reset="${shaderId}"]`) : null;
+				if (!(resetButton instanceof HTMLButtonElement)) return;
+				let resetValues = defaults;
+				try { resetValues = JSON.parse(resetButton.dataset.shaderResetValues || '{}'); } catch { /* retain component defaults */ }
+				document.querySelectorAll(`[data-shader-control="${shaderId}"]`).forEach((control) => {
+					if (!(control instanceof HTMLInputElement)) return;
+					const key = control.dataset.param;
+					if (!key || (!(key in resetValues) && key !== 'darkness')) return;
+					control.value = key === 'darkness' ? '0' : String(resetValues[key]);
+					control.dispatchEvent(new Event('input', { bubbles: true }));
+				});
+				document.dispatchEvent(new CustomEvent('model-shader-preset', { detail: { shaderId, params: resetValues } }));
+			});
+
+			const resize = () => {
+				if (!sizeDirty) return;
+				const bounds = canvas.getBoundingClientRect();
+				const width = Math.max(1, Math.round(bounds.width * currentResolutionScale));
+				const height = Math.max(1, Math.round(bounds.height * currentResolutionScale));
+				if (canvas.width !== width || canvas.height !== height) {
+					canvas.width = width;
+					canvas.height = height;
+					gl.viewport(0, 0, width, height);
+				}
+				sizeDirty = false;
+			};
+			const render = (now) => {
+				if (now - lastFrame >= 1000 / maxFps || reducedMotion) {
+					resize();
+					gl.uniform2f(resolution, canvas.width, canvas.height);
+					if (layoutResolution) gl.uniform2f(layoutResolution, canvas.width / canvasCoverage, canvas.height);
+					if (viewport) gl.uniform2f(viewport, 1 - canvasCoverage, canvasCoverage);
+					if (time) gl.uniform1f(time, startTime + (reducedMotion ? 0 : (now - startedAt) / 1000 * values.speed));
+					Object.entries(locations).forEach(([key, location]) => {
+						if (location) gl.uniform1f(location, values[key]);
+					});
+					gl.drawArrays(gl.TRIANGLES, 0, 3);
+					canvas.dataset.ready = 'true';
+					lastFrame = now;
+				}
+				if (!reducedMotion && visible) frame = requestAnimationFrame(render);
+			};
+
+			new ResizeObserver(() => { sizeDirty = true; }).observe(canvas);
+			new IntersectionObserver(([entry]) => {
+				visible = entry.isIntersecting;
+				cancelAnimationFrame(frame);
+				if (visible) frame = requestAnimationFrame(render);
+				}).observe(canvas);
+			}
+		};
+		// Delay WebGL allocation until this canvas is actually visible. The
+		// prototype contains many shader families, and eagerly allocating every
+		// context can evict the selected hero before its controls are used.
+		const activationObserver = new IntersectionObserver(([entry]) => {
+			if (!entry.isIntersecting) return;
+			activationObserver.disconnect();
+			initialize();
+		}, { rootMargin: '160px' });
+		activationObserver.observe(canvas);
+	}
+})();</script>  <div class="absolute inset-0 bg-gradient-to-r from-black via-black/75 to-black/20"></div> <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/25"></div>  </div> <button type="button" class="model-visual-toggle absolute right-4 top-3 z-[2] inline-flex items-center gap-2 rounded border border-white/10 bg-black/25 px-2.5 py-1.5 text-[11px] font-medium tracking-wide text-white/55 transition hover:border-white/25 hover:bg-black/45 hover:text-white/85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nvidia-green sm:right-6 lg:right-8" data-model-visual-toggle aria-pressed="true" aria-label="Turn model visual off"> <span>Model visual</span> <span class="model-visual-switch relative h-3.5 w-7 rounded-[4px] border border-white/15 bg-[#76b900]/45 transition-colors" aria-hidden="true"> <span class="model-visual-thumb absolute left-[2px] top-[2px] h-2 w-2 translate-x-[14px] rounded-[2px] bg-white/80 transition-transform"></span> </span> <span class="w-5 text-left" data-model-visual-state>On</span> </button>  <div class="relative z-[1] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> <div class="grid md:grid-cols-2 gap-12 items-center"> <div> <div class="flex items-center space-x-3 mb-6"> <span data-model-new-badge data-legacy-is-new="false" data-new-window-days="60" class="bg-nvidia-green text-nvidia-black px-4 py-2 rounded-full text-sm font-semibold hidden">New</span> <span class="text-nvidia-gray-300 font-semibold text-lg">Multimodal</span> </div> <h1 class="text-5xl font-bold mb-6">d1-omni-600M</h1> <p class="text-xl text-nvidia-gray-300 mb-8 leading-relaxed"> Liquid AI&#39;s compact zero-shot classification model for text, images, and audio, with a guide to running it on Jetson using PyTorch. </p>  <div class="flex flex-wrap gap-2 mt-2">   <a href="#model-details" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-[#76b900]/60 text-nvidia-gray-200 hover:bg-[#76b900]/10 hover:text-white transition-colors"> <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-nvidia-green flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"> <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path> </svg>
+Model Details
+</a> </div> </div> <div class="rounded-xl p-8 border border-nvidia-gray-700 shadow-2xl" style="background-color:rgba(0,0,0,0.5)" data-model-visual-card data-model-visual-card-opacity="0.5"> <div class="divide-y divide-nvidia-gray-700">  <div class="flex justify-between items-start py-3 gap-4"> <span class="text-nvidia-gray-300 font-medium shrink-0">Parameters</span> <span class="font-bold text-nvidia-white text-right">587M</span> </div>  <div class="flex justify-between items-center py-3 gap-4"> <span class="text-nvidia-gray-300 font-medium shrink-0">Inputs</span> <div class="flex flex-wrap gap-1.5 justify-end"> <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:#94A3B8"> <svg class="w-3 h-3 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/></svg> Text </span><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:#94A3B8"> <svg class="w-3 h-3 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/></svg> Image </span><span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:#94A3B8"> <svg class="w-3 h-3 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clip-rule="evenodd"/></svg> Audio </span> </div> </div> <div class="flex justify-between items-center py-3 gap-4"> <span class="text-nvidia-gray-300 font-medium shrink-0">Outputs</span> <div class="flex flex-wrap gap-1.5 justify-end"> <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);color:#94A3B8"> <svg class="w-3 h-3 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm1 3a1 1 0 100 2h2a1 1 0 100-2H5zm5 0a1 1 0 100 2h5a1 1 0 100-2h-5zM5 10a1 1 0 100 2h2a1 1 0 100-2H5zm5 0a1 1 0 100 2h5a1 1 0 100-2h-5z" clip-rule="evenodd"/></svg> Structured data </span> </div> </div>  <div class="flex justify-between items-center py-3 gap-4"> <span class="text-nvidia-gray-300 font-medium shrink-0">Context Length</span> <span class="font-bold text-nvidia-white">16K</span> </div>  <div class="flex justify-between items-start py-3 gap-4"> <span class="text-nvidia-gray-300 font-medium shrink-0">License</span> <span class="font-bold text-nvidia-white text-right">LFM Open License v1.0</span> </div>  <div class="flex justify-between items-center py-3 gap-4"> <span class="text-nvidia-gray-300 font-medium shrink-0">Precision</span> <div class="flex flex-wrap gap-1.5 justify-end"> <span style="background:rgba(0,102,102,0.15);border:1px solid #008080;color:#4DD9D9;padding:0.2rem 0.6rem;border-radius:9999px;font-size:0.78rem;font-weight:600;letter-spacing:0.02em;"> FP16 </span> </div> </div> </div> </div> </div> </div> </section> <section id="model-details" class="py-16 bg-nvidia-white"> <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> <div class="flex flex-wrap items-center justify-between gap-4 mb-6"> <h2 class="text-3xl font-bold text-nvidia-black">Model Details</h2>  <div class="flex flex-wrap gap-3">  <a href="https://huggingface.co/LiquidAI/d1-omni-600M" target="_blank" rel="noopener noreferrer" class="relative inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-gray-100 px-4 pt-2.5 pb-4 font-semibold text-black transition-colors hover:bg-gray-200 after:absolute after:right-4 after:bottom-2 after:left-4 after:h-[3px] after:rounded-full after:bg-[#FFD21E] after:content-['']"> <img src="/images/icons/hf-logo.png" alt="HuggingFace" class="w-5 h-5">
+View on HuggingFace
+</a> </div> </div>  <div class="prose prose-lg text-nvidia-gray-600 max-w-none"> <h2 id="get-started-with-d1-omni-600m-on-jetson">Get started with d1-omni-600M on Jetson</h2>
+<p><a href="https://huggingface.co/LiquidAI/d1-omni-600M">d1-omni-600M</a> is a compact zero-shot classification model from <a href="https://www.liquid.ai/blog/d1-open">Liquid AI</a>, built on LFM2.5-Encoder-350M with vision and audio encoders. Given text, images, or a voice clip and a set of questions, it returns structured answers in a single forward pass.</p>
+<p>Describe your task and candidate labels in natural language to route support tickets, classify voice commands, moderate content, or inspect images. Changing tasks requires changing the questions and labels, without task-specific fine-tuning.</p>
+<p>The model answers three types of questions: <code>noul</code> returns a probability for a yes/no question, <code>choice</code> selects from named options, and <code>score</code> returns a rating across ordered levels. A request can include text with images or text with audio. Images and audio cannot be combined in the same request.</p>
+<p>This guide uses FP16 to run text, image, audio, and batch examples on the GPU. For the larger model and its reported Jetson latency, see <a href="/models/d1-3b/#model-details">d1-3B on Jetson</a>.</p>
+<h2 id="1-prerequisites">1. Prerequisites</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Requirement</th><th>Configuration</th></tr></thead><tbody><tr><td>Hardware</td><td>Jetson AGX Thor, Jetson AGX Orin 64 GB, or Jetson Orin Nano</td></tr><tr><td>System software</td><td><a href="https://developer.nvidia.com/embedded/jetpack/downloads/archive-7.2">JetPack 7.2</a> / Jetson Linux 39.2</td></tr><tr><td>Container</td><td>Docker installed and NVIDIA Container Toolkit configured for GPU access</td></tr></tbody></table>
+<h2 id="2-start-the-container">2. Start the container</h2>
+<p>NVIDIA’s PyTorch container includes PyTorch built for the Jetson GPU.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">docker</span><span style="color:#9ECBFF"> run</span><span style="color:#79B8FF"> --pull</span><span style="color:#9ECBFF"> always</span><span style="color:#79B8FF"> --rm</span><span style="color:#79B8FF"> -it</span><span style="color:#79B8FF"> --runtime</span><span style="color:#9ECBFF"> nvidia</span><span style="color:#79B8FF"> --ipc=host</span><span style="color:#79B8FF"> \</span></span>
+<span class="line"><span style="color:#79B8FF">  -v</span><span style="color:#9ECBFF"> "</span><span style="color:#E1E4E8">$PWD</span><span style="color:#9ECBFF">":/workspace</span><span style="color:#79B8FF"> -w</span><span style="color:#9ECBFF"> /workspace</span><span style="color:#79B8FF"> \</span></span>
+<span class="line"><span style="color:#79B8FF">  -v</span><span style="color:#9ECBFF"> ~/.cache/huggingface:/root/.cache/huggingface</span><span style="color:#79B8FF"> \</span></span>
+<span class="line"><span style="color:#9ECBFF">  nvcr.io/nvidia/pytorch:26.09-py3</span></span></code></pre>
+<p>Run the remaining commands inside the container. Files in <code>/workspace</code> and downloaded models stay on the host; installed packages disappear when this temporary container exits.</p>
+<h2 id="3-install-the-dependencies">3. Install the dependencies</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">pip</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> "transformers==5.18.0"</span><span style="color:#9ECBFF"> pillow</span><span style="color:#9ECBFF"> soundfile</span></span></code></pre>
+<p>The remaining dependencies are already installed and configured in the container.</p>
+<h2 id="4-run-inference-and-check-gpu-execution">4. Run inference and check GPU execution</h2>
+<p><code>from_pretrained()</code> downloads the checkpoint on the first run and reuses the mounted Hugging Face cache on later runs.</p>
+<p>The audio example uses a 16 kHz mono clip. The model accepts up to 30 seconds of audio and was trained on English speech requests.</p>
+<p>Save this as <code>example.py</code>. It is adapted from the “How to use” example in the <a href="https://huggingface.co/LiquidAI/d1-omni-600M">d1-omni-600M model card</a>.</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> io</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> urllib.request </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> urlopen</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> soundfile </span><span style="color:#F97583">as</span><span style="color:#E1E4E8"> sf</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> torch</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> transformers </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> AutoModel</span></span>
+<span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> transformers.image_utils </span><span style="color:#F97583">import</span><span style="color:#E1E4E8"> load_image</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">assert</span><span style="color:#E1E4E8"> torch.cuda.is_available(), </span><span style="color:#9ECBFF">"CUDA is not available"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">model </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> AutoModel.from_pretrained(</span><span style="color:#9ECBFF">"LiquidAI/d1-omni-600M"</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">trust_remote_code</span><span style="color:#F97583">=</span><span style="color:#79B8FF">True</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">dtype</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">torch.float16).to(</span><span style="color:#9ECBFF">"cuda"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># Text: several named questions over one state, answered in one pass</span></span>
+<span class="line"><span style="color:#E1E4E8">questions </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#9ECBFF">    "refund"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#9ECBFF">        "type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"noul"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">        "instructions"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Is the customer asking for a refund?"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">    },</span></span>
+<span class="line"><span style="color:#9ECBFF">    "team"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#9ECBFF">        "type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"choice"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">        "instructions"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Which team should handle this?"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">        "criteria"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#9ECBFF">            "billing"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Charges, refunds, invoices"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">            "technical"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"App or site faults"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">            "fraud"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Suspected unauthorised use"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        },</span></span>
+<span class="line"><span style="color:#E1E4E8">    },</span></span>
+<span class="line"><span style="color:#9ECBFF">    "urgency"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#9ECBFF">        "type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"score"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">        "instructions"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"How urgent is this?"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">        "criteria"</span><span style="color:#E1E4E8">: [</span><span style="color:#9ECBFF">"Can wait"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"Today"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"Blocking the customer now"</span><span style="color:#E1E4E8">],</span></span>
+<span class="line"><span style="color:#E1E4E8">    },</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"><span style="color:#E1E4E8">text_result </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> model.system_one(</span><span style="color:#9ECBFF">"I was charged twice this month, please refund one of them."</span><span style="color:#E1E4E8">, questions)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># Image: the photo is the whole state</span></span>
+<span class="line"><span style="color:#E1E4E8">image </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> load_image(</span><span style="color:#9ECBFF">"http://images.cocodataset.org/val2017/000000039769.jpg"</span><span style="color:#E1E4E8">)  </span><span style="color:#6A737D"># two cats on a sofa</span></span>
+<span class="line"><span style="color:#E1E4E8">cats </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#9ECBFF">    "type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"choice"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">    "instructions"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"How many cats are there?"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">    "criteria"</span><span style="color:#E1E4E8">: {</span><span style="color:#9ECBFF">"one"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"One"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"two"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Two"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"more"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Three or more"</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"><span style="color:#E1E4E8">image_result </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> model.system_one(</span><span style="color:#79B8FF">None</span><span style="color:#E1E4E8">, {</span><span style="color:#9ECBFF">"cats"</span><span style="color:#E1E4E8">: cats}, </span><span style="color:#FFAB70">images</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">[image])</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># Text + audio: one 16 kHz mono clip</span></span>
+<span class="line"><span style="color:#E1E4E8">url </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> "https://huggingface.co/datasets/Narsil/asr_dummy/resolve/main/1.flac"</span></span>
+<span class="line"><span style="color:#E1E4E8">audio, rate </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> sf.read(io.BytesIO(urlopen(url).read()), </span><span style="color:#FFAB70">dtype</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">"int16"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">topic </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#9ECBFF">    "type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"choice"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">    "instructions"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"What is the speaker talking about?"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">    "criteria"</span><span style="color:#E1E4E8">: {</span><span style="color:#9ECBFF">"food"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Food and meals"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"travel"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"Travel and transport"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"weather"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"The weather"</span><span style="color:#E1E4E8">},</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"><span style="color:#E1E4E8">audio_result </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> model.system_one(</span><span style="color:#9ECBFF">"Voice note from a user."</span><span style="color:#E1E4E8">, {</span><span style="color:#9ECBFF">"topic"</span><span style="color:#E1E4E8">: topic}, </span><span style="color:#FFAB70">audio</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">audio)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># Batch: many requests in one call</span></span>
+<span class="line"><span style="color:#E1E4E8">tickets </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span><span style="color:#9ECBFF">"Where is my parcel? It was due Monday."</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"The app crashes when I open settings."</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#E1E4E8">batch_result </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> model.system_one_batch([(t, {</span><span style="color:#9ECBFF">"team"</span><span style="color:#E1E4E8">: questions[</span><span style="color:#9ECBFF">"team"</span><span style="color:#E1E4E8">]}) </span><span style="color:#F97583">for</span><span style="color:#E1E4E8"> t </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> tickets])</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"GPU:"</span><span style="color:#E1E4E8">, torch.cuda.get_device_name())</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"Refund:"</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">f</span><span style="color:#9ECBFF">'</span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">text_result[</span><span style="color:#9ECBFF">"answers"</span><span style="color:#E1E4E8">][</span><span style="color:#9ECBFF">"refund"</span><span style="color:#E1E4E8">][</span><span style="color:#9ECBFF">"noul"</span><span style="color:#E1E4E8">]</span><span style="color:#F97583">:.2f</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"Team:"</span><span style="color:#E1E4E8">, text_result[</span><span style="color:#9ECBFF">"answers"</span><span style="color:#E1E4E8">][</span><span style="color:#9ECBFF">"team"</span><span style="color:#E1E4E8">][</span><span style="color:#9ECBFF">"choice"</span><span style="color:#E1E4E8">])</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"Urgency:"</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">f</span><span style="color:#9ECBFF">'</span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">text_result[</span><span style="color:#9ECBFF">"answers"</span><span style="color:#E1E4E8">][</span><span style="color:#9ECBFF">"urgency"</span><span style="color:#E1E4E8">][</span><span style="color:#9ECBFF">"score"</span><span style="color:#E1E4E8">]</span><span style="color:#F97583">:.2f</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF">'</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"Cats:"</span><span style="color:#E1E4E8">, image_result[</span><span style="color:#9ECBFF">"answers"</span><span style="color:#E1E4E8">][</span><span style="color:#9ECBFF">"cats"</span><span style="color:#E1E4E8">][</span><span style="color:#9ECBFF">"choice"</span><span style="color:#E1E4E8">])</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"Topic:"</span><span style="color:#E1E4E8">, audio_result[</span><span style="color:#9ECBFF">"answers"</span><span style="color:#E1E4E8">][</span><span style="color:#9ECBFF">"topic"</span><span style="color:#E1E4E8">][</span><span style="color:#9ECBFF">"choice"</span><span style="color:#E1E4E8">])</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"Batch:"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">", "</span><span style="color:#E1E4E8">.join(r[</span><span style="color:#9ECBFF">"answers"</span><span style="color:#E1E4E8">][</span><span style="color:#9ECBFF">"team"</span><span style="color:#E1E4E8">][</span><span style="color:#9ECBFF">"choice"</span><span style="color:#E1E4E8">] </span><span style="color:#F97583">for</span><span style="color:#E1E4E8"> r </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> batch_result))</span></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">python</span><span style="color:#9ECBFF"> example.py</span></span></code></pre>
+<p>Example output from a Jetson Thor run of the model-card example, formatted to match the print statements above:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>GPU: NVIDIA Thor</span></span>
+<span class="line"><span>Refund: 1.00</span></span>
+<span class="line"><span>Team: billing</span></span>
+<span class="line"><span>Urgency: 1.80</span></span>
+<span class="line"><span>Cats: two</span></span>
+<span class="line"><span>Topic: food</span></span>
+<span class="line"><span>Batch: technical, technical</span></span></code></pre>
+<p>Values can differ between devices. The GPU name should match your Jetson.</p>
+<h2 id="further-reading">Further reading</h2>
+<ul>
+<li><a href="https://huggingface.co/LiquidAI/d1-omni-600M">d1-omni-600M model card and API examples</a></li>
+<li><a href="https://www.liquid.ai/blog/d1-open">Open d1: Edge decision models for text, vision, and audio</a></li>
+<li><a href="/models/d1-3b/">d1-3B on Jetson</a></li>
+</ul> </div> </div> </section>  </main> <footer class="bg-nvidia-black text-nvidia-white"> <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8"> <div class="grid grid-cols-1 md:grid-cols-4 gap-12"> <div class="col-span-1 md:col-span-2"> <div class="flex items-center mb-6"> <span class="text-2xl font-nvidia font-bold">Jetson AI Lab</span> </div> <p class="text-nvidia-gray-300 mb-6 text-lg leading-relaxed">
+Experience the latest generative AI models optimized for Jetson.
+              Run locally, without depending on the cloud.
+</p> </div> <div> <h3 class="text-sm font-semibold text-nvidia-gray-300 tracking-wider uppercase mb-6">Resources</h3> <ul class="space-y-3"> <li><a href="/models" class="text-nvidia-gray-300 hover:text-nvidia-white transition-colors duration-200">Models</a></li> <li><a href="/tutorials" class="text-nvidia-gray-300 hover:text-nvidia-white transition-colors duration-200">Tutorials</a></li> <li><a href="/projects" class="text-nvidia-gray-300 hover:text-nvidia-white transition-colors duration-200">Projects</a></li> <li><a href="/research" class="text-nvidia-gray-300 hover:text-nvidia-white transition-colors duration-200">Research Group</a></li> </ul> </div> <div> <h3 class="text-sm font-semibold text-nvidia-gray-300 tracking-wider uppercase mb-6">NVIDIA</h3> <ul class="space-y-3"> <li><a href="https://developer.nvidia.com" class="text-nvidia-gray-300 hover:text-nvidia-white transition-colors duration-200">Developer Portal</a></li> <li><a href="https://www.nvidia.com" class="text-nvidia-gray-300 hover:text-nvidia-white transition-colors duration-200">NVIDIA.com</a></li> </ul> </div> </div> <div class="mt-12 pt-8 border-t border-nvidia-gray-700"> <ul class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-nvidia-gray-400 mb-4"> <li><a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank" class="hover:text-nvidia-white transition-colors duration-200">Privacy Policy</a></li> <li><a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank" class="hover:text-nvidia-white transition-colors duration-200">Your Privacy Choices</a></li> <li><a href="https://www.nvidia.com/en-us/about-nvidia/legal-info/" target="_blank" class="hover:text-nvidia-white transition-colors duration-200">Legal</a></li> <li><a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank" class="hover:text-nvidia-white transition-colors duration-200">Accessibility</a></li> <li><a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_self" class="hover:text-nvidia-white transition-colors duration-200">Corporate Policies</a></li> <li><a href="https://www.nvidia.com/en-us/product-security/" target="_blank" class="hover:text-nvidia-white transition-colors duration-200">Product Security</a></li> <li><a href="https://www.nvidia.com/en-us/contact/" target="_blank" class="hover:text-nvidia-white transition-colors duration-200">Contact</a></li> </ul> <p class="text-nvidia-gray-400 text-sm text-center">
+© 2026 NVIDIA Corporation. All rights reserved.
+</p> </div> </div> </footer> <script type="module" src="/_astro/Layout.astro_astro_type_script_index_0_lang.CTaCgKGL.js"></script> <!-- 6sense Tracking --> <!-- Migration Notice Handler --> <script>
+      // Show migration notice banner if not dismissed
+      (function() {
+        const notice = document.getElementById('migration-notice');
+        const dismissBtn = document.getElementById('dismiss-notice');
+        const storageKey = 'jetson-ai-lab-migration-notice-dismissed';
+
+        // Check if user has dismissed the notice
+        const isDismissed = localStorage.getItem(storageKey);
+
+        if (!isDismissed && notice) {
+          notice.style.display = 'block';
+        }
+
+        // Handle dismiss
+        if (dismissBtn) {
+          dismissBtn.addEventListener('click', function() {
+            localStorage.setItem(storageKey, 'true');
+            notice.style.display = 'none';
+          });
+        }
+      })();
+    </script> <!-- Code block copy-to-clipboard (only for .prose pre; skips blocks that already have a copy button) --> <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var clipboardSvg = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" /><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" /></svg>';
+        var checkSvg = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>';
+        document.querySelectorAll('.prose pre').forEach(function(pre) {
+          if (pre.closest('.code-block-wrapper')) return;
+          var parent = pre.parentElement;
+          if (parent && parent.querySelector('.copy-btn')) return;
+          var code = pre.querySelector('code');
+          if (code && (code.className && code.className.includes && code.className.includes('no-copy'))) return;
+          if (pre.getAttribute('data-no-copy') !== null) return;
+          if (pre.closest('[data-no-copy]') !== null) return;
+          var prev = pre.previousSibling;
+          while (prev) {
+            if (prev.nodeType === 8 && prev.textContent && prev.textContent.indexOf('no-copy') !== -1) return;
+            if (prev.nodeType === 1) break;
+            prev = prev.previousSibling;
+          }
+          var wrapper = document.createElement('div');
+          wrapper.className = 'code-block-wrapper';
+          pre.parentNode.insertBefore(wrapper, pre);
+          wrapper.appendChild(pre);
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'code-copy-btn';
+          btn.setAttribute('aria-label', 'Copy to clipboard');
+          btn.innerHTML = clipboardSvg;
+          btn.addEventListener('click', function() {
+            var code = pre.querySelector('code');
+            var text = (code ? code.textContent : pre.textContent) || '';
+            navigator.clipboard.writeText(text).then(function() {
+              btn.innerHTML = checkSvg;
+              btn.classList.add('code-copy-done');
+              setTimeout(function() {
+                btn.innerHTML = clipboardSvg;
+                btn.classList.remove('code-copy-done');
+              }, 2000);
+            });
+          });
+          wrapper.insertBefore(btn, pre);
+        });
+      });
+    </script>  <!-- 6sense Tracking --> <script>
+      window._6si = window._6si || [];
+      window._6si.push(['enableEventTracking', true]);
+      window._6si.push(['setToken', 'eb417ec30d332e34d732e2916f185311']);
+      window._6si.push(['setEndpoint', 'b.6sc.co']);
+      window._6si.push(['enableRetargeting', false]);
+
+      window._6si.push(['enableCompanyDetails', true]);
+      window._6si.push(['setEpsilonKey', '6f578ba72568231347d1bddb7102e53695302c28']);
+
+      (function() {
+        var gd = document.createElement('script');
+        gd.type = 'text/javascript';
+        gd.async = true;
+        gd.src = '//j.6sc.co/6si.min.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(gd, s);
+      })();
+    </script> <script type="text/javascript">
+      // Only call _satellite if Adobe DTM is loaded (production only)
+      if (typeof _satellite !== 'undefined') {
+        _satellite.pageBottom();
+      }
+    </script> </body> </html> <script type="module">function u(){const a=document.querySelector("[data-model-new-badge]");if(!a)return;const s=a.dataset.catalogAddedAt,t=a.dataset.newUntil,l=24*60*60*1e3;let o=a.dataset.legacyIsNew==="true";if(s){const e=Date.parse(`${s}T00:00:00Z`),n=Date.now();if(!Number.isFinite(e)||n<e)o=!1;else if(t){const d=Date.parse(`${t}T00:00:00Z`);o=Number.isFinite(d)&&n<d+l}else{const d=Number(a.dataset.newWindowDays||"60");o=n<e+d*l}}a.classList.toggle("hidden",!o)}u();document.addEventListener("astro:page-load",u);function g(){const a="jetson-ai-lab:model-visuals";document.querySelectorAll("[data-model-visual-hero]").forEach(s=>{const t=s.querySelector("[data-model-visual-toggle]"),l=s.querySelector("[data-model-visual-art]"),o=s.querySelector("[data-model-visual-card]"),e=t?.querySelector("[data-model-visual-state]"),n=t?.querySelector(".model-visual-switch"),d=t?.querySelector(".model-visual-thumb");if(!t||!l||!o||!e||!n||!d)return;const y=s.style.backgroundColor||"rgb(0, 0, 0)",m=Number(o.dataset.modelVisualCardOpacity??.5),i=r=>{l.hidden=!r,s.style.backgroundColor=r?y:"rgb(0, 0, 0)",o.style.backgroundColor=r?`rgba(0, 0, 0, ${m})`:"rgb(31, 41, 55)",o.style.boxShadow=r?"":"none",t.setAttribute("aria-pressed",String(r)),t.setAttribute("aria-label",r?"Turn model visual off":"Show model visual"),e.textContent=r?"On":"Off",n.style.backgroundColor=r?"rgba(118, 185, 0, 0.45)":"rgba(255, 255, 255, 0.14)",d.style.transform=r?"translateX(14px)":"translateX(0)"};let c=!0;try{c=localStorage.getItem(a)!=="off"}catch{}i(c),t.dataset.bound!=="true"&&(t.dataset.bound="true",t.addEventListener("click",()=>{c=t.getAttribute("aria-pressed")!=="true",i(c);try{localStorage.setItem(a,c?"on":"off")}catch{}}))})}g();document.addEventListener("astro:page-load",g);document.querySelectorAll(".device-tabs").forEach(a=>{const s=a.querySelectorAll(".device-tab"),t=a.querySelectorAll(".device-panel");s.forEach(l=>{l.addEventListener("click",()=>{const o=l.getAttribute("data-target");s.forEach(e=>e.classList.toggle("active",e.getAttribute("data-target")===o)),t.forEach(e=>{e.getAttribute("data-panel")===o?e.style.display="":e.style.display="none"})})})});</script> 

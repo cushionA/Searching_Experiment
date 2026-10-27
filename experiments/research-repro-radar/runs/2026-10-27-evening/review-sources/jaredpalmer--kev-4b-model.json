@@ -1,0 +1,442 @@
+{
+  "_id": "6aae08af72cc7f47eaf11c0e",
+  "id": "jaredpalmer/kev-4b",
+  "private": false,
+  "pipeline_tag": "text-classification",
+  "library_name": "peft",
+  "tags": [
+    "peft",
+    "safetensors",
+    "decision-model",
+    "calibration",
+    "lora",
+    "multiple-choice",
+    "typesafe",
+    "qwen3.5",
+    "text-classification",
+    "en",
+    "dataset:legacy-datasets/banking77",
+    "dataset:google/boolq",
+    "dataset:fancyzhx/ag_news",
+    "dataset:nyu-mll/multi_nli",
+    "dataset:SetFit/sst5",
+    "dataset:Yelp/yelp_review_full",
+    "dataset:CogComp/trec",
+    "dataset:fancyzhx/dbpedia_14",
+    "dataset:SetFit/amazon_reviews_multi_en",
+    "dataset:stanfordnlp/imdb",
+    "dataset:bigcode/commitpackft",
+    "dataset:nvidia/Aegis-AI-Content-Safety-Dataset-2.0",
+    "dataset:davidheineman/consumer-finance-complaints-large",
+    "base_model:Qwen/Qwen3.5-4B-Base",
+    "base_model:adapter:Qwen/Qwen3.5-4B-Base",
+    "license:apache-2.0",
+    "model-index",
+    "region:us"
+  ],
+  "downloads": 19403,
+  "likes": 160,
+  "modelId": "jaredpalmer/kev-4b",
+  "author": "jaredpalmer",
+  "sha": "6cfce5c2fa4b4bd64026336ab649c5ca78857d52",
+  "lastModified": "2026-10-01T17:18:26.000Z",
+  "gated": false,
+  "disabled": false,
+  "widgetData": [
+    {
+      "text": "I like you. I love you"
+    }
+  ],
+  "model-index": [
+    {
+      "name": "Kev-4B",
+      "results": [
+        {
+          "task": {
+            "type": "text-classification",
+            "name": "typed decisions",
+            "out-of-domain (locked test": null,
+            "read once)": null
+          },
+          "dataset": {
+            "type": "mixed",
+            "name": "transfer-v4 test: six never-trained public sources and held-out policy structures (656 questions)"
+          },
+          "metrics": [
+            {
+              "type": "accuracy",
+              "value": 0.838,
+              "verified": false
+            },
+            {
+              "type": "brier_score",
+              "value": 0.224,
+              "verified": false
+            }
+          ]
+        },
+        {
+          "task": {
+            "type": "text-classification",
+            "name": "typed decisions",
+            "held-out public datasets (test)": null
+          },
+          "dataset": {
+            "type": "mixed",
+            "name": "breadth-v1 test: 14 held-out public datasets (3,089 questions)"
+          },
+          "metrics": [
+            {
+              "type": "accuracy",
+              "value": 0.69,
+              "verified": false
+            }
+          ]
+        },
+        {
+          "task": {
+            "type": "text-classification",
+            "name": "typed decisions",
+            "held-out task families (development)": null
+          },
+          "dataset": {
+            "type": "mixed",
+            "name": "tasksource-heldout-v1 development: 17 of 24 held-out task families (1,993 questions)"
+          },
+          "metrics": [
+            {
+              "type": "accuracy",
+              "value": 0.677,
+              "verified": false
+            }
+          ]
+        },
+        {
+          "task": {
+            "type": "text-classification",
+            "name": "typed decisions",
+            "skill records (test)": null
+          },
+          "dataset": {
+            "type": "mixed",
+            "name": "hard-v1 test (1,088 questions; programmatic labels, held-out templates)"
+          },
+          "metrics": [
+            {
+              "type": "accuracy",
+              "value": 0.803,
+              "verified": false
+            },
+            {
+              "type": "brier_score",
+              "value": 0.278,
+              "verified": false
+            }
+          ]
+        },
+        {
+          "task": {
+            "type": "text-classification",
+            "name": "typed decisions",
+            "developer tooling (test)": null
+          },
+          "dataset": {
+            "type": "mixed",
+            "name": "devtools-v1 test (1,071 questions; six public developer-tooling sources)"
+          },
+          "metrics": [
+            {
+              "type": "accuracy",
+              "value": 0.756,
+              "verified": false
+            },
+            {
+              "type": "brier_score",
+              "value": 0.342,
+              "verified": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "config": {
+    "tokenizer_config": {
+      "bos_token": null,
+      "eos_token": "<|endoftext|>",
+      "pad_token": "<|endoftext|>",
+      "unk_token": null
+    },
+    "peft": {
+      "base_model_name_or_path": "Qwen/Qwen3.5-4B-Base",
+      "task_type": "FEATURE_EXTRACTION"
+    }
+  },
+  "cardData": {
+    "language": "en",
+    "license": "apache-2.0",
+    "library_name": "peft",
+    "base_model": "Qwen/Qwen3.5-4B-Base",
+    "base_model_relation": "adapter",
+    "pipeline_tag": "text-classification",
+    "tags": [
+      "decision-model",
+      "calibration",
+      "lora",
+      "multiple-choice",
+      "typesafe",
+      "qwen3.5"
+    ],
+    "datasets": [
+      "legacy-datasets/banking77",
+      "google/boolq",
+      "fancyzhx/ag_news",
+      "nyu-mll/multi_nli",
+      "SetFit/sst5",
+      "Yelp/yelp_review_full",
+      "CogComp/trec",
+      "fancyzhx/dbpedia_14",
+      "SetFit/amazon_reviews_multi_en",
+      "stanfordnlp/imdb",
+      "bigcode/commitpackft",
+      "nvidia/Aegis-AI-Content-Safety-Dataset-2.0",
+      "davidheineman/consumer-finance-complaints-large"
+    ],
+    "metrics": [
+      "accuracy",
+      "brier_score",
+      "expected_calibration_error"
+    ],
+    "model-index": [
+      {
+        "name": "Kev-4B",
+        "results": [
+          {
+            "task": {
+              "type": "text-classification",
+              "name": "typed decisions",
+              "out-of-domain (locked test": null,
+              "read once)": null
+            },
+            "dataset": {
+              "type": "mixed",
+              "name": "transfer-v4 test: six never-trained public sources and held-out policy structures (656 questions)"
+            },
+            "metrics": [
+              {
+                "type": "accuracy",
+                "value": 0.838,
+                "verified": false
+              },
+              {
+                "type": "brier_score",
+                "value": 0.224,
+                "verified": false
+              }
+            ]
+          },
+          {
+            "task": {
+              "type": "text-classification",
+              "name": "typed decisions",
+              "held-out public datasets (test)": null
+            },
+            "dataset": {
+              "type": "mixed",
+              "name": "breadth-v1 test: 14 held-out public datasets (3,089 questions)"
+            },
+            "metrics": [
+              {
+                "type": "accuracy",
+                "value": 0.69,
+                "verified": false
+              }
+            ]
+          },
+          {
+            "task": {
+              "type": "text-classification",
+              "name": "typed decisions",
+              "held-out task families (development)": null
+            },
+            "dataset": {
+              "type": "mixed",
+              "name": "tasksource-heldout-v1 development: 17 of 24 held-out task families (1,993 questions)"
+            },
+            "metrics": [
+              {
+                "type": "accuracy",
+                "value": 0.677,
+                "verified": false
+              }
+            ]
+          },
+          {
+            "task": {
+              "type": "text-classification",
+              "name": "typed decisions",
+              "skill records (test)": null
+            },
+            "dataset": {
+              "type": "mixed",
+              "name": "hard-v1 test (1,088 questions; programmatic labels, held-out templates)"
+            },
+            "metrics": [
+              {
+                "type": "accuracy",
+                "value": 0.803,
+                "verified": false
+              },
+              {
+                "type": "brier_score",
+                "value": 0.278,
+                "verified": false
+              }
+            ]
+          },
+          {
+            "task": {
+              "type": "text-classification",
+              "name": "typed decisions",
+              "developer tooling (test)": null
+            },
+            "dataset": {
+              "type": "mixed",
+              "name": "devtools-v1 test (1,071 questions; six public developer-tooling sources)"
+            },
+            "metrics": [
+              {
+                "type": "accuracy",
+                "value": 0.756,
+                "verified": false
+              },
+              {
+                "type": "brier_score",
+                "value": 0.342,
+                "verified": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "siblings": [
+    {
+      "rfilename": ".gitattributes",
+      "blobId": "52373fe24473b1aa44333d318f578ae6bf04b49b",
+      "size": 1570
+    },
+    {
+      "rfilename": "README.md",
+      "blobId": "20ab650c92dbec5f963efaa32cb6c2979f4c39cb",
+      "size": 24981
+    },
+    {
+      "rfilename": "adapter_config.json",
+      "blobId": "ea5c33529f3e0e9521f52b42485d44a23d333ba7",
+      "size": 1271
+    },
+    {
+      "rfilename": "adapter_model.safetensors",
+      "blobId": "efcc553500df019ea7957460d200a406c7f41572",
+      "size": 129924032,
+      "lfs": {
+        "sha256": "90e817356246e7f18bfa7ca3d31794cd4fbeb3332a66a84cb51d9ceae925f2b2",
+        "size": 129924032,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "added_tokens.json",
+      "blobId": "b54f9135e44c1e81047e8d05cb027af8bc039eed",
+      "size": 707
+    },
+    {
+      "rfilename": "head.pt",
+      "blobId": "6204a1c6e0bc7680dd69a2e7929e2b37d6d004f8",
+      "size": 5249791,
+      "lfs": {
+        "sha256": "dd633435998ecc751ac538717a3742e32149500fabf7d7276287dbf0693f347c",
+        "size": 5249791,
+        "pointerSize": 132
+      }
+    },
+    {
+      "rfilename": "merges.txt",
+      "blobId": "31349551d90c7606f325fe0f11bbb8bd5fa0d7c7",
+      "size": 1671853
+    },
+    {
+      "rfilename": "provenance.json",
+      "blobId": "5c34f812efe4ad2983c4db3fe3c50f243ed420f1",
+      "size": 4265
+    },
+    {
+      "rfilename": "result.json",
+      "blobId": "1a18548b8d47bd0260021fdd7c30237c17f27bb1",
+      "size": 80553
+    },
+    {
+      "rfilename": "special_tokens_map.json",
+      "blobId": "17305b3603dfb19ccc0f658ec2cd2cd3adff4a58",
+      "size": 616
+    },
+    {
+      "rfilename": "tokenizer.json",
+      "blobId": "5520bfd2dd834ce386c1312c410fa71af56db5ad",
+      "size": 19989325,
+      "lfs": {
+        "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+        "size": 19989325,
+        "pointerSize": 133
+      }
+    },
+    {
+      "rfilename": "tokenizer_config.json",
+      "blobId": "fa833096a2f03c2ff89094eb1ba7716fbd98b102",
+      "size": 1128
+    },
+    {
+      "rfilename": "train.log",
+      "blobId": "8448598a9e08f830447f890c3079c9770c1018db",
+      "size": 12759
+    },
+    {
+      "rfilename": "training_config.json",
+      "blobId": "2abc7a274e9ba1cb7290bc51ff20a6df4dbb4886",
+      "size": 1845
+    },
+    {
+      "rfilename": "training_metrics.json",
+      "blobId": "8f551b88fa7f46a5201d7b0d4d281ffcec6940d8",
+      "size": 324
+    },
+    {
+      "rfilename": "vocab.json",
+      "blobId": "4783fe10ac3adce15ac8f358ef5462739852c569",
+      "size": 2776833
+    }
+  ],
+  "spaces": [
+    "multimodalart/jev-decision-index",
+    "jaredpalmer/kev",
+    "Station-house/ConspiracyBench",
+    "hotchpotch/S1MB-leaderboard",
+    "mayafree/typed-decision-leaderboard",
+    "muratcanlaloglu/TurkishDecisionBenchmark",
+    "jaredpalmer/kev-4b-decision-demo",
+    "MahmoudGhraibeh/kev-decisions",
+    "KroZenDev/dg_gtp_4o_mini_0",
+    "sayshara/capability-decision-lab",
+    "uulonger/jev-decision-index",
+    "a2aprotocol/decisions-api-playground",
+    "lucataco/decision-index-clef-preview",
+    "mrfakename/decision-model-playground",
+    "iamdgarcia/jev-mini-bench",
+    "assix-research/jev-decision-index",
+    "huanguang/DC-Jev-RL-Explorer"
+  ],
+  "createdAt": "2026-09-19T03:59:43.000Z",
+  "usedStorage": 852219076
+}

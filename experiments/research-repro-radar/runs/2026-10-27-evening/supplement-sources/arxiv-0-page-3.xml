@@ -1,0 +1,1630 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/KdxGO6JE+dk8iv9aTmiBTyo+P4g</id>
+  <title>arXiv Query: search_query=all:"small language model" AND (all:quantization OR all:distillation)&amp;id_list=&amp;start=200&amp;max_results=100</title>
+  <updated>2026-10-27T09:04:40Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=all:%22small+language+model%22+AND+(all:quantization+OR+all:distillation)&amp;start=200&amp;max_results=100&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>100</opensearch:itemsPerPage>
+  <opensearch:totalResults>251</opensearch:totalResults>
+  <opensearch:startIndex>200</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2502.14272v1</id>
+    <title>Capturing Nuanced Preferences: Preference-Aligned Distillation for Small Language Models</title>
+    <updated>2025-02-20T05:18:23Z</updated>
+    <link href="https://arxiv.org/abs/2502.14272v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2502.14272v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Aligning small language models (SLMs) with human values typically involves distilling preference knowledge from large language models (LLMs). However, existing distillation methods model preference knowledge in teacher LLMs by comparing pairwise responses, overlooking the extent of difference between responses. This limitation hinders student SLMs from capturing the nuanced preferences for multiple responses. In this paper, we propose a Preference-Aligned Distillation (PAD) framework, which models teacher's preference knowledge as a probability distribution over all potential preferences, thereby providing more nuanced supervisory signals. Our insight in developing PAD is rooted in the demonstration that language models can serve as reward functions, reflecting their intrinsic preferences. Based on this, PAD comprises three key steps: (1) sampling diverse responses using high-temperature; (2) computing rewards for both teacher and student to construct their intrinsic preference; and (3) training the student's intrinsic preference distribution to align with the teacher's. Experiments on four mainstream alignment benchmarks demonstrate that PAD consistently and significantly outperforms existing approaches, achieving over 20\% improvement on AlpacaEval 2 and Arena-Hard, indicating superior alignment with human preferences. Notably, on MT-Bench, using the \textsc{Gemma} model family, the student trained by PAD surpasses its teacher, further validating the effectiveness of our PAD.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-02-20T05:18:23Z</published>
+    <arxiv:comment>Under review</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Yanggan Gu</name>
+    </author>
+    <author>
+      <name>Junzhuo Li</name>
+    </author>
+    <author>
+      <name>Sirui Huang</name>
+    </author>
+    <author>
+      <name>Xin Zou</name>
+    </author>
+    <author>
+      <name>Zhenghua Li</name>
+    </author>
+    <author>
+      <name>Xuming Hu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2502.11569v3</id>
+    <title>Towards Reasoning Ability of Small Language Models</title>
+    <updated>2025-09-30T11:59:32Z</updated>
+    <link href="https://arxiv.org/abs/2502.11569v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2502.11569v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Reasoning has long been viewed as an emergent property of large language models (LLMs). However, recent studies challenge this assumption, showing that small language models (SLMs) can also achieve competitive reasoning performance. This paper introduces ThinkSLM, the first extensive benchmark to systematically evaluate and study the reasoning abilities of SLMs trained from scratch or derived from LLMs through quantization, pruning, and distillation. We first establish a reliable evaluation criterion comparing available methods and LLM judges against our human evaluations. Then we present a study evaluating 72 diverse SLMs from six major model families across 17 reasoning benchmarks. We repeat all our experiments three times to ensure a robust assessment. Our findings show that: 1) reasoning ability in SLMs is strongly influenced by training methods and data quality rather than solely model scale; 2) quantization preserves reasoning capability, while pruning significantly disrupts it; 3) larger models consistently exhibit higher robustness against adversarial perturbations and intermediate reasoning, but certain smaller models closely match or exceed the larger models' performance. Our findings challenge the assumption that scaling is the only way to achieve strong reasoning. Instead, we foresee a future where SLMs with strong reasoning capabilities can be developed through structured training or post-training compression. Our ThinkSLM Leaderboard is publicly available at: https://ctrl-gaurav.github.io/thinkslm.github.io/</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-02-17T08:59:16Z</published>
+    <arxiv:comment>Accepted to EMNLP 2025 Main Conference</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Gaurav Srivastava</name>
+    </author>
+    <author>
+      <name>Shuxiang Cao</name>
+    </author>
+    <author>
+      <name>Xuan Wang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2502.09854v2</id>
+    <title>Scaling Multimodal Search and Recommendation with Small Language Models via Upside-Down Reinforcement Learning</title>
+    <updated>2025-12-03T01:22:57Z</updated>
+    <link href="https://arxiv.org/abs/2502.09854v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2502.09854v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In this work, we investigate how small language models (SLMs) can be scaled to support multimodal search and recommendation use cases while remaining efficient enough for real-time, resource-constrained deployments. We present a framework that combines upside-down reinforcement learning with synthetic data distillation from a large language model (Llama-3) to train a 100M-parameter GPT-2 model for multitask prompt generation. Despite being up to 80 times smaller than state-of-the-art large language models (LLMs), our SLM achieves relevance and diversity scores within 6% of competitive baselines such as Llama-3 8B, Qwen3 8B, and Ministral 8B. These results demonstrate that SLMs can effectively handle multimodal search and recommendation tasks, while dramatically reducing inference latency and memory overhead. Our study highlights the potential of lightweight models as practical engines for scalable multimodal discovery, bridging the gap between cutting-edge research and real-world multimodal applications such as media recommendations and creative content generation.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-02-14T01:39:45Z</published>
+    <arxiv:comment>Accepted by ICDM 2025 MMSR</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Yu-Chen Lin</name>
+    </author>
+    <author>
+      <name>Sanat Sharma</name>
+    </author>
+    <author>
+      <name>Hari Manikandan</name>
+    </author>
+    <author>
+      <name>Jayant Kumar</name>
+    </author>
+    <author>
+      <name>Tracy Holloway King</name>
+    </author>
+    <author>
+      <name>Jing Zheng</name>
+    </author>
+    <arxiv:doi>10.1109/ICDMW69685.2025.00179</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1109/ICDMW69685.2025.00179" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2502.06759v4</id>
+    <title>Rationalization Models for Text-to-SQL</title>
+    <updated>2025-03-20T13:46:48Z</updated>
+    <link href="https://arxiv.org/abs/2502.06759v4" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2502.06759v4" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We introduce a framework for generating Chain-of-Thought (CoT) rationales to enhance text-to-SQL model fine-tuning. These rationales consist of intermediate SQL statements and explanations, serving as incremental steps toward constructing the final SQL query. The process begins with manually annotating a small set of examples, which are then used to prompt a large language model in an iterative, dynamic few-shot knowledge distillation procedure from a teacher model. A rationalization model is subsequently trained on the validated decomposed queries, enabling extensive synthetic CoT annotations for text-to-SQL datasets. To evaluate the approach, we fine-tune small language models with and without these rationales on the BIRD dataset. Results indicate that step-by-step query generation improves execution accuracy, especially for moderately and highly complex queries, while also enhancing explainability.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.DB" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-02-10T18:38:57Z</published>
+    <arxiv:comment>Published at ICLR 2025 Workshop on Reasoning and Planning for LLMs</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Gaetano Rossiello</name>
+    </author>
+    <author>
+      <name>Nhan Pham</name>
+    </author>
+    <author>
+      <name>Michael Glass</name>
+    </author>
+    <author>
+      <name>Junkyu Lee</name>
+    </author>
+    <author>
+      <name>Dharmashankar Subramanian</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2501.16273v2</id>
+    <title>Return of the Encoder: Maximizing Parameter Efficiency for SLMs</title>
+    <updated>2025-01-30T16:44:45Z</updated>
+    <link href="https://arxiv.org/abs/2501.16273v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2501.16273v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The dominance of large decoder-only language models has overshadowed encoder-decoder architectures, despite their fundamental efficiency advantages in sequence processing. For small language models (SLMs) - those with 1 billion parameters or fewer - our systematic analysis across GPU, CPU, and NPU platforms reveals that encoder-decoder architectures achieve 47% lower first-token latency and 4.7x higher throughput compared to decoder-only models on edge devices. These gains may be attributed to encoder-decoder's one-time input processing and efficient separation of understanding and generation phases.
+  We introduce a novel knowledge distillation framework that enables encoder-decoder models to leverage capabilities from large scalable decoder-only teachers while preserving their architectural advantages, achieving up to 6 average performance points improvement across diverse tasks, with significant gains in asymmetric sequence tasks where input and output distributions can benefit from different processing approaches.
+  When combined with modern advances like Rotary Positional Embeddings (RoPE) and Vision encoders, our systematic investigation demonstrates that encoder-decoder architectures provide a more practical path toward deploying capable language models in resource-constrained environments. Our findings challenge the prevailing trend toward decoder-only scaling, showing that architectural choices become increasingly crucial as parameter budgets decrease, particularly for on-device and edge deployments where computational efficiency is paramount.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-01-27T18:06:36Z</published>
+    <arxiv:comment>13 pages, 5 figures. LLMs/SLMs, encoder-decoder and decoder-only</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Mohamed Elfeki</name>
+    </author>
+    <author>
+      <name>Rui Liu</name>
+    </author>
+    <author>
+      <name>Chad Voegele</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2501.08598v2</id>
+    <title>LlamaRestTest: Effective REST API Testing with Small Language Models</title>
+    <updated>2025-04-03T19:42:32Z</updated>
+    <link href="https://arxiv.org/abs/2501.08598v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2501.08598v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Modern web services rely heavily on REST APIs, typically documented using the OpenAPI specification. The widespread adoption of this standard has resulted in the development of many black-box testing tools that generate tests based on OpenAPI specifications. Although Large Language Models (LLMs) have shown promising test-generation abilities, their application to REST API testing remains mostly unexplored. We present LlamaRestTest, a novel approach that employs two custom LLMs-created by fine-tuning and quantizing the Llama3-8B model using mined datasets of REST API example values and inter-parameter dependencies-to generate realistic test inputs and uncover inter-parameter dependencies during the testing process by analyzing server responses. We evaluated LlamaRestTest on 12 real-world services (including popular services such as Spotify), comparing it against RESTGPT, a GPT-powered specification-enhancement tool, as well as several state-of-the-art REST API testing tools, including RESTler, MoRest, EvoMaster, and ARAT-RL. Our results demonstrate that fine-tuning enables smaller models to outperform much larger models in detecting actionable parameter-dependency rules and generating valid inputs for REST API testing. We also evaluated different tool configurations, ranging from the base Llama3-8B model to fine-tuned versions, and explored multiple quantization techniques, including 2-bit, 4-bit, and 8-bit integer formats. Our study shows that small language models can perform as well as, or better than, large language models in REST API testing, balancing effectiveness and efficiency. Furthermore, LlamaRestTest outperforms state-of-the-art REST API testing tools in code coverage achieved and internal server errors identified, even when those tools use RESTGPT-enhanced specifications.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-01-15T05:51:20Z</published>
+    <arxiv:comment>To be published in the ACM International Conference on the Foundations of Software Engineering (FSE 2025)</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Myeongsoo Kim</name>
+    </author>
+    <author>
+      <name>Saurabh Sinha</name>
+    </author>
+    <author>
+      <name>Alessandro Orso</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2501.04519v1</id>
+    <title>rStar-Math: Small LLMs Can Master Math Reasoning with Self-Evolved Deep Thinking</title>
+    <updated>2025-01-08T14:12:57Z</updated>
+    <link href="https://arxiv.org/abs/2501.04519v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2501.04519v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We present rStar-Math to demonstrate that small language models (SLMs) can rival or even surpass the math reasoning capability of OpenAI o1, without distillation from superior models. rStar-Math achieves this by exercising "deep thinking" through Monte Carlo Tree Search (MCTS), where a math policy SLM performs test-time search guided by an SLM-based process reward model. rStar-Math introduces three innovations to tackle the challenges in training the two SLMs: (1) a novel code-augmented CoT data sythesis method, which performs extensive MCTS rollouts to generate step-by-step verified reasoning trajectories used to train the policy SLM; (2) a novel process reward model training method that avoids naïve step-level score annotation, yielding a more effective process preference model (PPM); (3) a self-evolution recipe in which the policy SLM and PPM are built from scratch and iteratively evolved to improve reasoning capabilities. Through 4 rounds of self-evolution with millions of synthesized solutions for 747k math problems, rStar-Math boosts SLMs' math reasoning to state-of-the-art levels. On the MATH benchmark, it improves Qwen2.5-Math-7B from 58.8% to 90.0% and Phi3-mini-3.8B from 41.4% to 86.4%, surpassing o1-preview by +4.5% and +0.9%. On the USA Math Olympiad (AIME), rStar-Math solves an average of 53.3% (8/15) of problems, ranking among the top 20% the brightest high school math students. Code and data will be available at https://github.com/microsoft/rStar.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-01-08T14:12:57Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Xinyu Guan</name>
+    </author>
+    <author>
+      <name>Li Lyna Zhang</name>
+    </author>
+    <author>
+      <name>Yifei Liu</name>
+    </author>
+    <author>
+      <name>Ning Shang</name>
+    </author>
+    <author>
+      <name>Youran Sun</name>
+    </author>
+    <author>
+      <name>Yi Zhu</name>
+    </author>
+    <author>
+      <name>Fan Yang</name>
+    </author>
+    <author>
+      <name>Mao Yang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2501.02342v1</id>
+    <title>Optimizing Small Language Models for In-Vehicle Function-Calling</title>
+    <updated>2025-01-04T17:32:56Z</updated>
+    <link href="https://arxiv.org/abs/2501.02342v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2501.02342v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We propose a holistic approach for deploying Small Language Models (SLMs) as function-calling agents within vehicles as edge devices, offering a more flexible and robust alternative to traditional rule-based systems. By leveraging SLMs, we simplify vehicle control mechanisms and enhance the user experience. Given the in-vehicle hardware constraints, we apply state-of-the-art model compression techniques, including structured pruning, healing, and quantization, ensuring that the model fits within the resource limitations while maintaining acceptable performance. Our work focuses on optimizing a representative SLM, Microsoft's Phi-3 mini, and outlines best practices for enabling embedded models, including compression, task-specific fine-tuning, and vehicle integration. We demonstrate that, despite significant reduction in model size which removes up to 2 billion parameters from the original model, our approach preserves the model's ability to handle complex in-vehicle tasks accurately and efficiently. Furthermore, by executing the model in a lightweight runtime environment, we achieve a generation speed of 11 tokens per second, making real-time, on-device inference feasible without hardware acceleration. Our results demonstrate the potential of SLMs to transform vehicle control systems, enabling more intuitive interactions between users and their vehicles for an enhanced driving experience.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.HC" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-01-04T17:32:56Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Yahya Sowti Khiabani</name>
+    </author>
+    <author>
+      <name>Farris Atif</name>
+    </author>
+    <author>
+      <name>Chieh Hsu</name>
+    </author>
+    <author>
+      <name>Sven Stahlmann</name>
+    </author>
+    <author>
+      <name>Tobias Michels</name>
+    </author>
+    <author>
+      <name>Sebastian Kramer</name>
+    </author>
+    <author>
+      <name>Benedikt Heidrich</name>
+    </author>
+    <author>
+      <name>M. Saquib Sarfraz</name>
+    </author>
+    <author>
+      <name>Julian Merten</name>
+    </author>
+    <author>
+      <name>Faezeh Tafazzoli</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2412.18552v2</id>
+    <title>Distilling Fine-grained Sentiment Understanding from Large Language Models</title>
+    <updated>2024-12-30T11:24:32Z</updated>
+    <link href="https://arxiv.org/abs/2412.18552v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2412.18552v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Fine-grained sentiment analysis (FSA) aims to extract and summarize user opinions from vast opinionated text. Recent studies demonstrate that large language models (LLMs) possess exceptional sentiment understanding capabilities. However, directly deploying LLMs for FSA applications incurs high inference costs. Therefore, this paper investigates the distillation of fine-grained sentiment understanding from LLMs into small language models (SLMs). We prompt LLMs to examine and interpret the sentiments of given reviews and then utilize the generated content to pretrain SLMs. Additionally, we develop a comprehensive FSA benchmark to evaluate both SLMs and LLMs. Extensive experiments on this benchmark reveal that: (1) distillation significantly enhances the performance of SLMs in FSA tasks, achieving a 6.00\% improvement in $F_1$-score, and the distilled model can outperform Llama-2-7b with only 220M parameters; (2) distillation equips SLMs with excellent zero-shot sentiment classification capabilities, enabling them to match or even exceed their teacher models. These results suggest that distillation from LLMs is a highly promising direction for FSA. We will release our code, data, and pretrained model weights at https://github.com/HITSZ-HLT/FSA-Distillation.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-12-24T17:05:26Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Yice Zhang</name>
+    </author>
+    <author>
+      <name>Guangyu Xie</name>
+    </author>
+    <author>
+      <name>Hongling Xu</name>
+    </author>
+    <author>
+      <name>Kaiheng Hou</name>
+    </author>
+    <author>
+      <name>Jianzhu Bao</name>
+    </author>
+    <author>
+      <name>Qianlong Wang</name>
+    </author>
+    <author>
+      <name>Shiwei Chen</name>
+    </author>
+    <author>
+      <name>Ruifeng Xu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2412.13698v1</id>
+    <title>Towards Efficient and Explainable Hate Speech Detection via Model Distillation</title>
+    <updated>2024-12-18T10:42:53Z</updated>
+    <link href="https://arxiv.org/abs/2412.13698v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2412.13698v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Automatic detection of hate and abusive language is essential to combat its online spread. Moreover, recognising and explaining hate speech serves to educate people about its negative effects. However, most current detection models operate as black boxes, lacking interpretability and explainability. In this context, Large Language Models (LLMs) have proven effective for hate speech detection and to promote interpretability. Nevertheless, they are computationally costly to run. In this work, we propose distilling big language models by using Chain-of-Thought to extract explanations that support the hate speech classification task. Having small language models for these tasks will contribute to their use in operational settings. In this paper, we demonstrate that distilled models deliver explanations of the same quality as larger models while surpassing them in classification performance. This dual capability, classifying and explaining, advances hate speech detection making it more affordable, understandable and actionable.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-12-18T10:42:53Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <arxiv:journal_ref>Advances in Information Retrieval. ECIR 2025. Lecture Notes in Computer Science, vol 15573</arxiv:journal_ref>
+    <author>
+      <name>Paloma Piot</name>
+    </author>
+    <author>
+      <name>Javier Parapar</name>
+    </author>
+    <arxiv:doi>10.1007/978-3-031-88711-6_24</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1007/978-3-031-88711-6_24" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2412.11499v1</id>
+    <title>Embodied CoT Distillation From LLM To Off-the-shelf Agents</title>
+    <updated>2024-12-16T07:18:02Z</updated>
+    <link href="https://arxiv.org/abs/2412.11499v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2412.11499v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We address the challenge of utilizing large language models (LLMs) for complex embodied tasks, in the environment where decision-making systems operate timely on capacity-limited, off-the-shelf devices. We present DeDer, a framework for decomposing and distilling the embodied reasoning capabilities from LLMs to efficient, small language model (sLM)-based policies. In DeDer, the decision-making process of LLM-based strategies is restructured into a hierarchy with a reasoning-policy and planning-policy. The reasoning-policy is distilled from the data that is generated through the embodied in-context learning and self-verification of an LLM, so it can produce effective rationales. The planning-policy, guided by the rationales, can render optimized plans efficiently. In turn, DeDer allows for adopting sLMs for both policies, deployed on off-the-shelf devices. Furthermore, to enhance the quality of intermediate rationales, specific to embodied tasks, we devise the embodied knowledge graph, and to generate multiple rationales timely through a single inference, we also use the contrastively prompted attention model. Our experiments with the ALFRED benchmark demonstrate that DeDer surpasses leading language planning and distillation approaches, indicating the applicability and efficiency of sLM-based embodied policies derived through DeDer.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-12-16T07:18:02Z</published>
+    <arxiv:comment>Accepted at ICML 2024</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Wonje Choi</name>
+    </author>
+    <author>
+      <name>Woo Kyung Kim</name>
+    </author>
+    <author>
+      <name>Minjong Yoo</name>
+    </author>
+    <author>
+      <name>Honguk Woo</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2412.08564v4</id>
+    <title>Visual Program Distillation with Template-Based Augmentation</title>
+    <updated>2025-11-04T00:01:39Z</updated>
+    <link href="https://arxiv.org/abs/2412.08564v4" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2412.08564v4" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Adapting visual programming or prompting large language models (LLMs) to generate executable code for visual tasks like visual question answering (VQA) for specialized tasks or domains remains challenging due to high annotation and inference costs. We propose a low-cost visual program distillation method that can be used for models with at most 1 billion parameters and requires no human-generated program annotations. We achieve this through synthetic data augmentation based on decoupling programs into higher-level skills, called templates, and their corresponding arguments. Experimental results show that, with a relatively small amount of question/answer data, small language models can generate high-quality specialized visual programs with the added benefit of much faster inference</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-12-11T17:32:21Z</published>
+    <arxiv:comment>EMNLP Camera Ready</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Michal Shlapentokh-Rothman</name>
+    </author>
+    <author>
+      <name>Yu-Xiong Wang</name>
+    </author>
+    <author>
+      <name>Derek Hoiem</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2412.08393v1</id>
+    <title>Learning to Reason via Self-Iterative Process Feedback for Small Language Models</title>
+    <updated>2024-12-11T14:05:04Z</updated>
+    <link href="https://arxiv.org/abs/2412.08393v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2412.08393v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Small language models (SLMs) are more efficient, cost-effective, and customizable than large language models (LLMs), though they often underperform in specific areas like reasoning. Past methods for enhancing SLMs' reasoning, such as supervised fine-tuning and distillation, often depend on costly external signals, resulting in SLMs being overly confident with limited supervision signals, thus limiting their abilities. Therefore, this study enables SLMs to learn to reason from self-iterative feedback. By combining odds ratio preference optimization (ORPO), we fine-tune and align SLMs using positive and negative signals generated by themselves. Additionally, we introduce process supervision for rewards in preference alignment by sampling-based inference simulation and process reward models. Compared to Supervised Fine-Tuning (SFT), our method improves the performance of Gemma-2B by 12.43 (Acc) on GSM8K and 3.95 (Pass@1) on MBPP. Furthermore, the proposed method also demonstrated superior out-of-domain generalization capabilities on MMLU_Math and HumanEval.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-12-11T14:05:04Z</published>
+    <arxiv:comment>Accepted by COLING 2025</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Kaiyuan Chen</name>
+    </author>
+    <author>
+      <name>Jin Wang</name>
+    </author>
+    <author>
+      <name>Xuejie Zhang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2412.02602v1</id>
+    <title>CEGI: Measuring the trade-off between efficiency and carbon emissions for SLMs and VLMs</title>
+    <updated>2024-12-03T17:32:47Z</updated>
+    <link href="https://arxiv.org/abs/2412.02602v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2412.02602v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This paper analyzes the performance of Small Language Models (SLMs) and Vision Language Models (VLMs) and evaluates the trade-off between model performance and carbon emissions across 4 essential tasks: Image Captioning, Visual Question Answering (VQA), Dialogue Summarization and Text-to-SQL conversion. Various SLMs and VLMs belonging to the Qwen and LLaMA architecture family are chosen and variants based on model size in terms of the number of parameters, quantization level and fine-tuning parameters are evaluated. The model variant's performance and carbon emissions are calculated. To quantify the trade-off between model performance and carbon emissions, we introduce a novel metric called CEGI (Carbon Efficient Gain Index). This metric represents the carbon emission per unit percentage gain per million trainable parameters . This metric provides a normalized measure to compare model's efficiency in terms of performance improvement relative to their environmental cost. The experiment's outcome demonstrates that fine-tuning SLMs and VLMs can achieve performance levels comparable to Large Language Models (LLMs) while producing significantly less carbon emissions. Our findings suggest that the marginal gains in accuracy from larger models do not justify the substantial increase in carbon emissions. Leveraging lower-bit quantization levels, the proposed metric further enhances energy efficiency without compromising performance. This study highlights balancing high performance and environmental sustainability. It offers a valuable metric for selecting models suitable for environmentally-friendly AI development.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CY" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-12-03T17:32:47Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Abhas Kumar</name>
+    </author>
+    <author>
+      <name>Kapil Pathak</name>
+    </author>
+    <author>
+      <name>Rajesh Kavuru</name>
+    </author>
+    <author>
+      <name>Prabhakar Srinivasan</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2411.16991v1</id>
+    <title>Dynamic Self-Distillation via Previous Mini-batches for Fine-tuning Small Language Models</title>
+    <updated>2024-11-25T23:37:48Z</updated>
+    <link href="https://arxiv.org/abs/2411.16991v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2411.16991v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Knowledge distillation (KD) has become a widely adopted approach for compressing large language models (LLMs) to reduce computational costs and memory footprints. However, the availability of complex teacher models is a prerequisite for running most KD pipelines. Thus, the traditional KD procedure can be unachievable or budget-unfriendly, particularly when relying on commercial LLMs like GPT4. In this regard, Self-distillation (SelfD) emerges as an advisable alternative, enabling student models to learn without teachers' guidance. Nonetheless, existing SelfD approaches for LMs often involve architectural modifications, assuming the models are open-source, which may not always be practical. In this work, we introduce a model-agnostic and task-agnostic method named dynamic SelfD from the previous minibatch (DynSDPB), which realizes current iterations' distillation from the last ones' generated logits. Additionally, to address prediction inaccuracies during the early iterations, we dynamically adjust the distillation influence and temperature values to enhance the adaptability of fine-tuning. Furthermore, DynSDPB is a novel fine-tuning policy that facilitates the seamless integration of existing self-correction and self-training techniques for small language models (SLMs) because they all require updating SLMs' parameters. We demonstrate the superior performance of DynSDPB on both encoder-only LMs (e.g., BERT model families) and decoder-only LMs (e.g., LLaMA model families), validating its effectiveness across natural language understanding (NLU) and natural language generation (NLG) benchmarks.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-11-25T23:37:48Z</published>
+    <arxiv:comment>Work in progress</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Yao Fu</name>
+    </author>
+    <author>
+      <name>Yin Yu</name>
+    </author>
+    <author>
+      <name>Xiaotian Han</name>
+    </author>
+    <author>
+      <name>Runchao Li</name>
+    </author>
+    <author>
+      <name>Xianxuan Long</name>
+    </author>
+    <author>
+      <name>Haotian Yu</name>
+    </author>
+    <author>
+      <name>Pan Li</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2411.14698v1</id>
+    <title>Improving Mathematical Reasoning Capabilities of Small Language Models via Feedback-Driven Distillation</title>
+    <updated>2024-11-22T03:12:39Z</updated>
+    <link href="https://arxiv.org/abs/2411.14698v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2411.14698v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Language Models (LLMs) demonstrate exceptional reasoning capabilities, often achieving state-of-the-art performance in various tasks. However, their substantial computational and memory demands, due to billions of parameters, hinder deployment in resource-constrained environments. A promising solution is knowledge distillation, where LLMs transfer reasoning capabilities to Small Language Models (SLMs, $\le$ 1B parameters), enabling wider deployment on low-resource devices. Existing methods primarily focus on generating high-quality reasoning rationales for distillation datasets but often neglect the critical role of data quantity and quality. To address these challenges, we propose a Feedback-Driven Distillation (FDD) framework to enhance SLMs' mathematical reasoning capabilities. In the initialization stage, a distillation dataset is constructed by prompting LLMs to pair mathematical problems with corresponding reasoning rationales. We classify problems into easy and hard categories based on SLM performance. For easy problems, LLMs generate more complex variations, while for hard problems, new questions of similar complexity are synthesized. In addition, we propose a multi-round distillation paradigm to iteratively enrich the distillation datasets, thereby progressively improving the mathematical reasoning abilities of SLMs. Experimental results demonstrate that our method can make SLMs achieve SOTA mathematical reasoning performance.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-11-22T03:12:39Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Xunyu Zhu</name>
+    </author>
+    <author>
+      <name>Jian Li</name>
+    </author>
+    <author>
+      <name>Can Ma</name>
+    </author>
+    <author>
+      <name>Weiping Wang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2411.07611v5</id>
+    <title>Knowledge-Augmented Multimodal Clinical Rationale Generation for Disease Diagnosis with Small Language Models</title>
+    <updated>2025-07-13T10:35:58Z</updated>
+    <link href="https://arxiv.org/abs/2411.07611v5" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2411.07611v5" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Interpretation is critical for disease diagnosis, but existing models struggle to balance predictive accuracy with human-understandable rationales. While large language models (LLMs) offer strong reasoning abilities, their clinical use is limited by high computational costs and restricted multimodal reasoning ability. Small language models (SLMs) are efficient but lack advanced reasoning for integrating multimodal medical data. In addition, both LLMs and SLMs lack domain knowledge for trustworthy reasoning. Therefore, we propose ClinRaGen, enhancing SLMs by leveraging LLM-derived reasoning ability via rationale distillation and domain knowledge injection for trustworthy multimodal rationale generation. Key innovations include a sequential rationale distillation framework that equips SLMs with LLM-comparable multimodal reasoning abilities, and a knowledge-augmented attention mechanism that jointly unifies multimodal representation from time series and textual data in the same encoding space, enabling it to be naturally interpreted by SLMs while incorporating domain knowledge for reliable rationale generation. Experiments on real-world medical datasets show that ClinRaGen achieves state-of-the-art performance in disease diagnosis and rationale generation, demonstrating the effectiveness of combining LLM-driven reasoning with knowledge augmentation for improved interpretability.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-11-12T07:34:56Z</published>
+    <arxiv:comment>13 pages. 7 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <arxiv:journal_ref>This paper is accpeted by ACL2025(Main)</arxiv:journal_ref>
+    <author>
+      <name>Shuai Niu</name>
+    </author>
+    <author>
+      <name>Jing Ma</name>
+    </author>
+    <author>
+      <name>Hongzhan Lin</name>
+    </author>
+    <author>
+      <name>Liang Bai</name>
+    </author>
+    <author>
+      <name>Zhihua Wang</name>
+    </author>
+    <author>
+      <name>Yida Xu</name>
+    </author>
+    <author>
+      <name>Yunya Song</name>
+    </author>
+    <author>
+      <name>Xian Yang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2410.20011v1</id>
+    <title>A Survey of Small Language Models</title>
+    <updated>2024-10-25T23:52:28Z</updated>
+    <link href="https://arxiv.org/abs/2410.20011v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2410.20011v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Small Language Models (SLMs) have become increasingly important due to their efficiency and performance to perform various language tasks with minimal computational resources, making them ideal for various settings including on-device, mobile, edge devices, among many others. In this article, we present a comprehensive survey on SLMs, focusing on their architectures, training techniques, and model compression techniques. We propose a novel taxonomy for categorizing the methods used to optimize SLMs, including model compression, pruning, and quantization techniques. We summarize the benchmark datasets that are useful for benchmarking SLMs along with the evaluation metrics commonly used. Additionally, we highlight key open challenges that remain to be addressed. Our survey aims to serve as a valuable resource for researchers and practitioners interested in developing and deploying small yet efficient language models.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-10-25T23:52:28Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Chien Van Nguyen</name>
+    </author>
+    <author>
+      <name>Xuan Shen</name>
+    </author>
+    <author>
+      <name>Ryan Aponte</name>
+    </author>
+    <author>
+      <name>Yu Xia</name>
+    </author>
+    <author>
+      <name>Samyadeep Basu</name>
+    </author>
+    <author>
+      <name>Zhengmian Hu</name>
+    </author>
+    <author>
+      <name>Jian Chen</name>
+    </author>
+    <author>
+      <name>Mihir Parmar</name>
+    </author>
+    <author>
+      <name>Sasidhar Kunapuli</name>
+    </author>
+    <author>
+      <name>Joe Barrow</name>
+    </author>
+    <author>
+      <name>Junda Wu</name>
+    </author>
+    <author>
+      <name>Ashish Singh</name>
+    </author>
+    <author>
+      <name>Yu Wang</name>
+    </author>
+    <author>
+      <name>Jiuxiang Gu</name>
+    </author>
+    <author>
+      <name>Franck Dernoncourt</name>
+    </author>
+    <author>
+      <name>Nesreen K. Ahmed</name>
+    </author>
+    <author>
+      <name>Nedim Lipka</name>
+    </author>
+    <author>
+      <name>Ruiyi Zhang</name>
+    </author>
+    <author>
+      <name>Xiang Chen</name>
+    </author>
+    <author>
+      <name>Tong Yu</name>
+    </author>
+    <author>
+      <name>Sungchul Kim</name>
+    </author>
+    <author>
+      <name>Hanieh Deilamsalehy</name>
+    </author>
+    <author>
+      <name>Namyong Park</name>
+    </author>
+    <author>
+      <name>Mike Rimer</name>
+    </author>
+    <author>
+      <name>Zhehao Zhang</name>
+    </author>
+    <author>
+      <name>Huanrui Yang</name>
+    </author>
+    <author>
+      <name>Ryan A. Rossi</name>
+    </author>
+    <author>
+      <name>Thien Huu Nguyen</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2410.18209v1</id>
+    <title>CorrectionLM: Self-Corrections with SLM for Dialogue State Tracking</title>
+    <updated>2024-10-23T18:27:16Z</updated>
+    <link href="https://arxiv.org/abs/2410.18209v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2410.18209v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models (LLMs) have demonstrated self-improvement capabilities via feedback and refinement, but current small language models (SLMs) have had limited success in this area. Existing correction approaches often rely on distilling knowledge from LLMs, which imposes significant computation demands. In this work, we introduce CORRECTIONLM, a novel correction framework that enables SLMs to self-correct using in-context exemplars without LLM involvement. Applied to two dialogue state tracking (DST) tasks in low-resource settings, CORRECTIONLM achieves results similar to a state-of-the-art LLM at a small fraction of the computation costs.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-10-23T18:27:16Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Chia-Hsuan Lee</name>
+    </author>
+    <author>
+      <name>Hao Cheng</name>
+    </author>
+    <author>
+      <name>Mari Ostendorf</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2410.09037v1</id>
+    <title>Mentor-KD: Making Small Language Models Better Multi-step Reasoners</title>
+    <updated>2024-10-11T17:53:27Z</updated>
+    <link href="https://arxiv.org/abs/2410.09037v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2410.09037v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Language Models (LLMs) have displayed remarkable performances across various complex tasks by leveraging Chain-of-Thought (CoT) prompting. Recently, studies have proposed a Knowledge Distillation (KD) approach, reasoning distillation, which transfers such reasoning ability of LLMs through fine-tuning language models of multi-step rationales generated by LLM teachers. However, they have inadequately considered two challenges regarding insufficient distillation sets from the LLM teacher model, in terms of 1) data quality and 2) soft label provision. In this paper, we propose Mentor-KD, which effectively distills the multi-step reasoning capability of LLMs to smaller LMs while addressing the aforementioned challenges. Specifically, we exploit a mentor, intermediate-sized task-specific fine-tuned model, to augment additional CoT annotations and provide soft labels for the student model during reasoning distillation. We conduct extensive experiments and confirm Mentor-KD's effectiveness across various models and complex reasoning tasks.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-10-11T17:53:27Z</published>
+    <arxiv:comment>EMNLP 2024</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Hojae Lee</name>
+    </author>
+    <author>
+      <name>Junho Kim</name>
+    </author>
+    <author>
+      <name>SangKeun Lee</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2410.05639v1</id>
+    <title>DecorateLM: Data Engineering through Corpus Rating, Tagging, and Editing with Language Models</title>
+    <updated>2024-10-08T02:42:56Z</updated>
+    <link href="https://arxiv.org/abs/2410.05639v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2410.05639v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The performance of Large Language Models (LLMs) is substantially influenced by the pretraining corpus, which consists of vast quantities of unsupervised data processed by the models. Despite its critical role in model performance, ensuring the quality of this data is challenging due to its sheer volume and the absence of sample-level quality annotations and enhancements. In this paper, we introduce DecorateLM, a data engineering method designed to refine the pretraining corpus through data rating, tagging and editing. Specifically, DecorateLM rates texts against quality criteria, tags texts with hierarchical labels, and edits texts into a more formalized format. Due to the massive size of the pretraining corpus, adopting an LLM for decorating the entire corpus is less efficient. Therefore, to balance performance with efficiency, we curate a meticulously annotated training corpus for DecorateLM using a large language model and distill data engineering expertise into a compact 1.2 billion parameter small language model (SLM). We then apply DecorateLM to enhance 100 billion tokens of the training corpus, selecting 45 billion tokens that exemplify high quality and diversity for the further training of another 1.2 billion parameter LLM. Our results demonstrate that employing such high-quality data can significantly boost model performance, showcasing a powerful approach to enhance the quality of the pretraining corpus.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-10-08T02:42:56Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <arxiv:journal_ref>EMNLP 2024</arxiv:journal_ref>
+    <author>
+      <name>Ranchi Zhao</name>
+    </author>
+    <author>
+      <name>Zhen Leng Thai</name>
+    </author>
+    <author>
+      <name>Yifan Zhang</name>
+    </author>
+    <author>
+      <name>Shengding Hu</name>
+    </author>
+    <author>
+      <name>Yunqi Ba</name>
+    </author>
+    <author>
+      <name>Jie Zhou</name>
+    </author>
+    <author>
+      <name>Jie Cai</name>
+    </author>
+    <author>
+      <name>Zhiyuan Liu</name>
+    </author>
+    <author>
+      <name>Maosong Sun</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2409.13203v4</id>
+    <title>Neural-Symbolic Collaborative Distillation: Advancing Small Language Models for Complex Reasoning Tasks</title>
+    <updated>2025-02-18T15:58:08Z</updated>
+    <link href="https://arxiv.org/abs/2409.13203v4" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2409.13203v4" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In this paper, we propose $\textbf{Ne}$ural-$\textbf{Sy}$mbolic $\textbf{C}$ollaborative $\textbf{D}$istillation ($\textbf{NesyCD}$), a novel knowledge distillation method for learning the complex reasoning abilities of Large Language Models (LLMs, e.g., \textgreater 13B). We argue that complex reasoning tasks are difficult for Small Language Models (SLMs, e.g., $\leq$ 7B), as these tasks demand not only general cognitive abilities but also specialized knowledge, which is often sparse and difficult for these neural-based SLMs to effectively capture. Therefore, NesyCD distills the general capabilities and specialized knowledge in LLMs using different manners. On the one hand, we distill only general abilities from teacher LLMs into the student SLMs of parameterized neural networks. On the other hand, for the specialized abilities and uncommon knowledge of a complex reasoning task, we employ a symbolic knowledge distillation approach to obtain and store the specialized knowledge within a symbolic knowledge base (KB). By decoupling general and specialized capabilities, the proposed NesyCD can achieve superior performance cost-effectively, utilizing smaller models and blending parameterized neural networks with symbolic KB. Moreover, the specialized KB generalizes well and is comprehended and manipulated by humans. Our experiments show that NesyCD significantly boosts SLMs' complex reasoning performance on in-domain (BBH, GSM8K) and out-of-domain (AGIEval, ARC) datasets. Notably, our approach enabled the LLaMA3-8B and Qwen2-7B to surpass GPT-3.5-turbo in performance and come close to matching LLaMA3-70B, despite the latter having nine times more parameters. Our code will be available at https://github.com/Xnhyacinth/NesyCD.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-09-20T04:17:13Z</published>
+    <arxiv:comment>Accepted to AAAI 2025</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Huanxuan Liao</name>
+    </author>
+    <author>
+      <name>Shizhu He</name>
+    </author>
+    <author>
+      <name>Yao Xu</name>
+    </author>
+    <author>
+      <name>Yuanzhe Zhang</name>
+    </author>
+    <author>
+      <name>Kang Liu</name>
+    </author>
+    <author>
+      <name>Jun Zhao</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2409.13183v2</id>
+    <title>$\textit{SKIntern}$: Internalizing Symbolic Knowledge for Distilling Better CoT Capabilities into Small Language Models</title>
+    <updated>2024-12-14T05:50:41Z</updated>
+    <link href="https://arxiv.org/abs/2409.13183v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2409.13183v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Small Language Models (SLMs) are attracting attention due to the high computational demands and privacy concerns of Large Language Models (LLMs). Some studies fine-tune SLMs using Chains of Thought (CoT) data distilled from LLMs, aiming to enhance their reasoning ability. Furthermore, Some CoT distillation methods introduce external symbolic knowledge into the generation process to improve the limited knowledge memory, reasoning ability and out-of-domain (OOD) generalization of SLMs. However, the introduction of symbolic knowledge increases computational overhead and introduces potential noise. In this paper, we introduce $\textit{SKIntern}$, an innovative approach that empowers SLMs to internalize symbolic knowledge and few-shot examples gradually through a progressive fine-tuning process, guided by a predefined linear decay schedule under curriculum learning. By efficiently internalizing knowledge, $\textit{SKIntern}$ reduces computational overhead and speeds up the reasoning process by focusing solely on the question during inference. It outperforms state-of-the-art baselines by over 5\%, while reducing inference costs (measured in FLOPs) by up to $4\times$ across a wide range of SLMs in both in-domain (ID) and out-of-domain (OOD) tasks. Our code will be available at \url{https://github.com/Xnhyacinth/SKIntern}.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-09-20T03:23:20Z</published>
+    <arxiv:comment>Accepted to COLING 2025</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Huanxuan Liao</name>
+    </author>
+    <author>
+      <name>Shizhu He</name>
+    </author>
+    <author>
+      <name>Yupu Hao</name>
+    </author>
+    <author>
+      <name>Xiang Li</name>
+    </author>
+    <author>
+      <name>Yuanzhe Zhang</name>
+    </author>
+    <author>
+      <name>Jun Zhao</name>
+    </author>
+    <author>
+      <name>Kang Liu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2409.12599v1</id>
+    <title>Enhancing SLM via ChatGPT and Dataset Augmentation</title>
+    <updated>2024-09-19T09:24:36Z</updated>
+    <link href="https://arxiv.org/abs/2409.12599v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2409.12599v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This paper explores the enhancement of small language models through strategic dataset augmentation via ChatGPT-3.5-Turbo, in the domain of Natural Language Inference (NLI). By employing knowledge distillation-based techniques and synthetic dataset augmentation, we aim to bridge the performance gap between large language models (LLMs) and small language models (SLMs) without the immense cost of human annotation. Our methods involve two forms of rationale generation--information extraction and informed reasoning--to enrich the ANLI dataset. We then fine-tune T5-Small on these augmented datasets, evaluating its performance against an established benchmark. Our findings reveal that the incorporation of synthetic rationales significantly improves the model's ability to comprehend natural language, leading to 1.3\% and 2.3\% higher classification accuracy, respectively, on the ANLI dataset, demonstrating the potential of leveraging LLMs for dataset augmentation. This approach not only enhances the performance of smaller models on complex tasks but also introduces a cost-effective method for fine-tuning smaller language models. By advancing our understanding of knowledge distillation and fine-tuning strategies, this work contributes to the ongoing effort to create more capable and efficient NLP systems.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-09-19T09:24:36Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Tom Pieper</name>
+    </author>
+    <author>
+      <name>Mohamad Ballout</name>
+    </author>
+    <author>
+      <name>Ulf Krumnack</name>
+    </author>
+    <author>
+      <name>Gunther Heidemann</name>
+    </author>
+    <author>
+      <name>Kai-Uwe Kühnberger</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2409.12586v1</id>
+    <title>Efficient Knowledge Distillation: Empowering Small Language Models with Teacher Model Insights</title>
+    <updated>2024-09-19T09:09:53Z</updated>
+    <link href="https://arxiv.org/abs/2409.12586v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2409.12586v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Enhancing small language models for real-life application deployment is a significant challenge facing the research community. Due to the difficulties and costs of using large language models, researchers are seeking ways to effectively deploy task-specific small models. In this work, we introduce a simple yet effective knowledge distillation method to improve the performance of small language models. Our approach utilizes a teacher model with approximately 3 billion parameters to identify the most influential tokens in its decision-making process. These tokens are extracted from the input based on their attribution scores relative to the output, using methods like saliency maps. These important tokens are then provided as rationales to a student model, aiming to distill the knowledge of the teacher model. This method has proven to be effective, as demonstrated by testing it on four diverse datasets, where it shows improvement over both standard fine-tuning methods and state-of-the-art knowledge distillation models. Furthermore, we explore explanations of the success of the model by analyzing the important tokens extracted from the teacher model. Our findings reveal that in 68\% of cases, specifically in datasets where labels are part of the answer, such as multiple-choice questions, the extracted tokens are part of the ground truth.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-09-19T09:09:53Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Mohamad Ballout</name>
+    </author>
+    <author>
+      <name>Ulf Krumnack</name>
+    </author>
+    <author>
+      <name>Gunther Heidemann</name>
+    </author>
+    <author>
+      <name>Kai-Uwe Kühnberger</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2409.12393v1</id>
+    <title>Small Language Models are Equation Reasoners</title>
+    <updated>2024-09-19T01:34:43Z</updated>
+    <link href="https://arxiv.org/abs/2409.12393v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2409.12393v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Chain-of-Thought (CoT) reasoning has enabled Large Language Model (LLM) to achieve remarkable performance in various NLP tasks, including arithmetic problem-solving. However, this success does not generalize to small language model (sLM) like T5, due to their limited capacity and absence of emergent abilities associated with larger models. Recent works to enhance sLM through knowledge distillation have yielded some improvements but still face significant limitations, particularly high ambiguity from the variability in natural language expressions and substantial computational costs. In this paper, we investigate why sLM perform poorly on arithmetic reasoning tasks and hypothesize that natural language format variability introduces high ambiguity for these smaller models. Based on this hypothesis, we conduct experiments with equation-only format, which is a reasoning format that unifies arithmetic reasoning previously expressed in natural language formats into mathematical equations. Experiment results demonstrate that equation-only format effectively boosts the arithmetic reasoning abilities of sLM, especially in very small models like T5-Tiny.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-09-19T01:34:43Z</published>
+    <arxiv:comment>6 pages, 2 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Bumjun Kim</name>
+    </author>
+    <author>
+      <name>Kunha Lee</name>
+    </author>
+    <author>
+      <name>Juyeon Kim</name>
+    </author>
+    <author>
+      <name>Sangam Lee</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2409.18989v1</id>
+    <title>SC-Phi2: A Fine-tuned Small Language Model for StarCraft II Macromanagement Tasks</title>
+    <updated>2024-09-17T12:50:32Z</updated>
+    <link href="https://arxiv.org/abs/2409.18989v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2409.18989v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This paper introduces SC-Phi2, a fine-tuned StarCraft II small language model for macromanagement tasks. Small language models, like Phi2, Gemma, and DistilBERT, are streamlined versions of large language models (LLMs) with fewer parameters that require less power and memory to run. To teach Microsoft's Phi2 model about StarCraft, we create a new SC2 text dataset with information about StarCraft races, roles, and actions and use it to fine-tune Phi-2 with self-supervised learning. We pair this language model with a Vision Transformer (ViT) from the pre-trained BLIP-2 (Bootstrapping Language Image Pre-training) model, fine-tuning it on the MSC replay dataset. This enables us to construct dynamic prompts that include visual game state information. Unlike the large models used in StarCraft LLMs such as GPT-3.5, Phi2 is trained primarily on textbook data and contains little inherent knowledge of StarCraft II beyond what is provided by our training process. By using LoRA (Low-rank Adaptation) and quantization, our model can be trained on a single GPU. We demonstrate that our model performs well at micromanagement tasks such as build order and global state prediction with a small number of parameters.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-09-17T12:50:32Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Muhammad Junaid Khan</name>
+    </author>
+    <author>
+      <name>Gita Sukthankar</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2409.11055v6</id>
+    <title>Exploring the Trade-Offs: Quantization Methods, Task Difficulty, and Model Size in Large Language Models From Edge to Giant</title>
+    <updated>2025-06-04T01:15:49Z</updated>
+    <link href="https://arxiv.org/abs/2409.11055v6" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2409.11055v6" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Quantization has gained attention as a promising solution for the cost-effective deployment of large and small language models. However, most prior work has been limited to perplexity or basic knowledge tasks and lacks a comprehensive evaluation of recent models like Llama-3.3. In this paper, we conduct a comprehensive evaluation of instruction-tuned models spanning 1B to 405B parameters, applying four quantization methods across 13 datasets. Our findings reveal that (1) quantized models generally surpass smaller FP16 baselines, yet they often struggle with instruction-following and hallucination detection; (2) FP8 consistently emerges as the most robust option across tasks, and AWQ tends to outperform GPTQ in weight-only quantization; (3) smaller models can suffer severe accuracy drops at 4-bit quantization, while 70B-scale models maintain stable performance; (4) notably, \textit{hard} tasks do not always experience the largest accuracy losses, indicating that quantization magnifies a model's inherent weaknesses rather than simply correlating with task difficulty; and (5) an LLM-based judge (MT-Bench) highlights significant performance declines in Coding and STEM tasks, though it occasionally reports improvements in reasoning.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-09-17T10:31:37Z</published>
+    <arxiv:comment>Accepted in IJCAI 2025, 21 pages, 2 figure</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Jemin Lee</name>
+    </author>
+    <author>
+      <name>Sihyeong Park</name>
+    </author>
+    <author>
+      <name>Jinse Kwon</name>
+    </author>
+    <author>
+      <name>Jihun Oh</name>
+    </author>
+    <author>
+      <name>Yongin Kwon</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2409.15298v2</id>
+    <title>Sorbet: A Neuromorphic Hardware-Compatible Transformer-Based Spiking Language Model</title>
+    <updated>2026-01-02T13:42:47Z</updated>
+    <link href="https://arxiv.org/abs/2409.15298v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2409.15298v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>For reasons such as privacy, there are use cases for language models at the edge. This has given rise to small language models targeted for deployment in resource-constrained devices where energy efficiency is critical. Spiking neural networks (SNNs) offer a promising solution due to their energy efficiency, and there are already works on realizing transformer-based models on SNNs. However, key operations like softmax and layer normalization (LN) are difficult to implement on neuromorphic hardware, and many of these early works sidestepped them. To address these challenges, we introduce Sorbet, a transformer-based spiking language model that is more neuromorphic hardware-compatible. Sorbet incorporates a novel shifting-based softmax called PTsoftmax and a Bit Shifting PowerNorm (BSPN), both designed to replace the respective energy-intensive operations. By leveraging knowledge distillation and model quantization, Sorbet achieved a highly compressed binary weight model that maintains competitive performance while achieving $27.16\times$ energy savings compared to BERT. We validate Sorbet through extensive testing on the GLUE benchmark and a series of ablation studies, demonstrating its potential as an energy-efficient solution for language model inference. Our code is publicly available at \href{https://github.com/Kaiwen-Tang/Sorbet}{https://github.com/Kaiwen-Tang/Sorbet}</summary>
+    <category term="cs.NE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-09-04T10:20:50Z</published>
+    <arxiv:comment>Accepted by ICML 2025. Camera-ready version</arxiv:comment>
+    <arxiv:primary_category term="cs.NE"/>
+    <arxiv:journal_ref>Proceedings of the 42nd International Conference on Machine Learning (ICML), 2025</arxiv:journal_ref>
+    <author>
+      <name>Kaiwen Tang</name>
+    </author>
+    <author>
+      <name>Zhanglu Yan</name>
+    </author>
+    <author>
+      <name>Weng-Fai Wong</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2409.00608v3</id>
+    <title>TinyAgent: Function Calling at the Edge</title>
+    <updated>2024-10-25T01:16:55Z</updated>
+    <link href="https://arxiv.org/abs/2409.00608v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2409.00608v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent large language models (LLMs) have enabled the development of advanced agentic systems that can integrate various tools and APIs to fulfill user queries through function calling. However, the deployment of these LLMs on the edge has not been explored since they typically require cloud-based infrastructure due to their substantial model size and computational demands. To this end, we present TinyAgent, an end-to-end framework for training and deploying task-specific small language model agents capable of function calling for driving agentic systems at the edge. We first show how to enable accurate function calling for open-source models via the LLMCompiler framework. We then systematically curate a high-quality dataset for function calling, which we use to fine-tune two small language models, TinyAgent-1.1B and 7B. For efficient inference, we introduce a novel tool retrieval method to reduce the input prompt length and utilize quantization to further accelerate the inference speed. As a driving application, we demonstrate a local Siri-like system for Apple's MacBook that can execute user commands through text or voice input. Our results show that our models can achieve, and even surpass, the function-calling capabilities of larger models like GPT-4-Turbo, while being fully deployed at the edge. We open-source our dataset, models, and installable package and provide a demo video for our MacBook assistant agent.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-09-01T04:23:48Z</published>
+    <arxiv:comment>EMNLP 2024 Demo</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Lutfi Eren Erdogan</name>
+    </author>
+    <author>
+      <name>Nicholas Lee</name>
+    </author>
+    <author>
+      <name>Siddharth Jha</name>
+    </author>
+    <author>
+      <name>Sehoon Kim</name>
+    </author>
+    <author>
+      <name>Ryan Tabrizi</name>
+    </author>
+    <author>
+      <name>Suhong Moon</name>
+    </author>
+    <author>
+      <name>Coleman Hooper</name>
+    </author>
+    <author>
+      <name>Gopala Anumanchipalli</name>
+    </author>
+    <author>
+      <name>Kurt Keutzer</name>
+    </author>
+    <author>
+      <name>Amir Gholami</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2408.11219v1</id>
+    <title>CoDi: Conversational Distillation for Grounded Question Answering</title>
+    <updated>2024-08-20T22:35:47Z</updated>
+    <link href="https://arxiv.org/abs/2408.11219v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2408.11219v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Distilling conversational skills into Small Language Models (SLMs) with approximately 1 billion parameters presents significant challenges. Firstly, SLMs have limited capacity in their model parameters to learn extensive knowledge compared to larger models. Secondly, high-quality conversational datasets are often scarce, small, and domain-specific. Addressing these challenges, we introduce a novel data distillation framework named CoDi (short for Conversational Distillation, pronounced "Cody"), allowing us to synthesize large-scale, assistant-style datasets in a steerable and diverse manner. Specifically, while our framework is task agnostic at its core, we explore and evaluate the potential of CoDi on the task of conversational grounded reasoning for question answering. This is a typical on-device scenario for specialist SLMs, allowing for open-domain model responses, without requiring the model to "memorize" world knowledge in its limited weights. Our evaluations show that SLMs trained with CoDi-synthesized data achieve performance comparable to models trained on human-annotated data in standard metrics. Additionally, when using our framework to generate larger datasets from web data, our models surpass larger, instruction-tuned models in zero-shot conversational grounded reasoning tasks.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-08-20T22:35:47Z</published>
+    <arxiv:comment>13 pages</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Patrick Huber</name>
+    </author>
+    <author>
+      <name>Arash Einolghozati</name>
+    </author>
+    <author>
+      <name>Rylan Conway</name>
+    </author>
+    <author>
+      <name>Kanika Narang</name>
+    </author>
+    <author>
+      <name>Matt Smith</name>
+    </author>
+    <author>
+      <name>Waqar Nayyar</name>
+    </author>
+    <author>
+      <name>Adithya Sagar</name>
+    </author>
+    <author>
+      <name>Ahmed Aly</name>
+    </author>
+    <author>
+      <name>Akshat Shrivastava</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2407.13781v1</id>
+    <title>RDBE: Reasoning Distillation-Based Evaluation Enhances Automatic Essay Scoring</title>
+    <updated>2024-07-03T05:49:01Z</updated>
+    <link href="https://arxiv.org/abs/2407.13781v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2407.13781v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recently, various encoder-only and encoder-decoder pre-trained models like BERT and T5 have been applied to automatic essay scoring (AES) as small language models. However, existing studies have primarily treated this task akin to a classification problem, focusing solely on outputting scores in the target text without offering interpretations for the generated scores. Departing from the approaches, we introduce Reasoning Distillation-Based Evaluation (RDBE), which integrates interpretability to elucidate the rationale behind model scores while enhancing performance through initial reasoning. This interpretive capability is acquired during training by leveraging generated reasoning from a large language model (LLM) to distill a small language model (SLM). Our experimental results demonstrate the efficacy of RDBE across all scoring rubrics considered in the dataset. RDBE outperforms both zero-shot LLM generation and generation from a baseline fine-tuned model, establishing itself as state-of-the-art in the corresponding dataset. This highlights its practical interpretative output and enhanced performance.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CY" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-07-03T05:49:01Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Ali Ghiasvand Mohammadkhani</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2407.09527v1</id>
+    <title>BitNet b1.58 Reloaded: State-of-the-art Performance Also on Smaller Networks</title>
+    <updated>2024-06-24T20:55:36Z</updated>
+    <link href="https://arxiv.org/abs/2407.09527v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2407.09527v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recently proposed methods for 1-bit and 1.58-bit quantization aware training investigate the performance and behavior of these methods in the context of large language models, finding state-of-the-art performance for models with more than 3B parameters. In this work, we investigate 1.58-bit quantization for small language and vision models ranging from 100K to 48M parameters. We introduce a variant of BitNet b1.58, which allows to rely on the median rather than the mean in the quantization process.
+  Through extensive experiments we investigate the performance of 1.58-bit models obtained through quantization aware training. We further investigate the robustness of 1.58-bit quantization-aware training to changes in the learning rate and regularization through weight decay, finding different patterns for small language and vision models than previously reported for large language models.
+  Our results showcase that 1.58-bit quantization-aware training provides state-of-the-art performance for small language models when doubling hidden layer sizes and reaches or even surpasses state-of-the-art performance for small vision models of identical size. Ultimately, we demonstrate that 1.58-bit quantization-aware training is a viable and promising approach also for training smaller deep learning networks, facilitating deployment of such models in low-resource use-cases and encouraging future research.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-06-24T20:55:36Z</published>
+    <arxiv:comment>17 pages, 4 Tables, 14 grafs. Accepted to DeLTA</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Jacob Nielsen</name>
+    </author>
+    <author>
+      <name>Peter Schneider-Kamp</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2406.12403v2</id>
+    <title>FedCoT: Federated Chain-of-Thought Distillation for Large Language Models</title>
+    <updated>2025-11-09T03:13:03Z</updated>
+    <link href="https://arxiv.org/abs/2406.12403v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2406.12403v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Language Models (LLMs) have emerged as a transformative force in artificial intelligence, demonstrating exceptional proficiency across various tasks. However, their deployment in resource-constrained environments and concerns over user data privacy pose significant challenges. In contrast, Small Language Models (SLMs) offer computational efficiency but often lag in performance. To address these issues, we propose FedCoT, a federated framework designed for the Chain-of-Thought (CoT) distillation of knowledge from LLMs to SLMs, while ensuring the preservation of clients' data privacy. FedCoT ensures secure and efficient knowledge transfer from an LLM on a high-powered server to an SLM on a resource-constrained client, while adhering to privacy requirements. Leveraging perturbed prompts and rationales generated through the CoT approach, the framework enhances the performance of the client's SLM without compromising user data privacy within a multi-task learning framework. We propose two privacy protection strategies: the Exponential Mechanism Strategy and the Adaptive Exponential Mechanism Strategy, which balance user prompt privacy and the usability of rationales. Empirical evaluation on various text generation tasks demonstrates the effectiveness of FedCoT in training task-specific SLMs with enhanced performance while prioritizing data privacy protection. Our code has been contributed to the FATE open-source project and is now publicly accessible at \textit{https://github.com/FederatedAI/FATE-LLM/tree/main/python/fate_llm/algo/fedcot}</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-06-18T08:48:14Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Tao Fan</name>
+    </author>
+    <author>
+      <name>Weijing Chen</name>
+    </author>
+    <author>
+      <name>Yan Kang</name>
+    </author>
+    <author>
+      <name>Guoqiang Ma</name>
+    </author>
+    <author>
+      <name>Hanlin Gu</name>
+    </author>
+    <author>
+      <name>Yuanfeng Song</name>
+    </author>
+    <author>
+      <name>Lixin Fan</name>
+    </author>
+    <author>
+      <name>Qiang Yang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2405.17890v4</id>
+    <title>SLMRec: Distilling Large Language Models into Small for Sequential Recommendation</title>
+    <updated>2025-04-20T18:07:13Z</updated>
+    <link href="https://arxiv.org/abs/2405.17890v4" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2405.17890v4" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Sequential Recommendation (SR) task involves predicting the next item a user is likely to interact with, given their past interactions. The SR models examine the sequence of a user's actions to discern more complex behavioral patterns and temporal dynamics. Recent research demonstrates the great impact of LLMs on sequential recommendation systems, either viewing sequential recommendation as language modeling or serving as the backbone for user representation. Although these methods deliver outstanding performance, there is scant evidence of the necessity of a large language model and how large the language model is needed, especially in the sequential recommendation scene. Meanwhile, due to the huge size of LLMs, it is inefficient and impractical to apply a LLM-based model in real-world platforms that often need to process billions of traffic logs daily. In this paper, we explore the influence of LLMs' depth by conducting extensive experiments on large-scale industry datasets. Surprisingly, our motivational experiments reveal that most intermediate layers of LLMs are redundant, indicating that pruning the remaining layers can still maintain strong performance. Motivated by this insight, we empower small language models for SR, namely SLMRec, which adopt a simple yet effective knowledge distillation method. Moreover, SLMRec is orthogonal to other post-training efficiency techniques, such as quantization and pruning, so that they can be leveraged in combination. Comprehensive experimental results illustrate that the proposed SLMRec model attains the best performance using only 13% of the parameters found in LLM-based recommendation models while simultaneously achieving up to 6.6x and 8.0x speedups in training and inference time costs, respectively. Besides, we provide a theoretical justification for why small language models can perform comparably to large language models in SR.</summary>
+    <category term="cs.IR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-05-28T07:12:06Z</published>
+    <arxiv:comment>International Conference on Learning Representations (ICLR 2025)</arxiv:comment>
+    <arxiv:primary_category term="cs.IR"/>
+    <author>
+      <name>Wujiang Xu</name>
+    </author>
+    <author>
+      <name>Qitian Wu</name>
+    </author>
+    <author>
+      <name>Zujie Liang</name>
+    </author>
+    <author>
+      <name>Jiaojiao Han</name>
+    </author>
+    <author>
+      <name>Xuying Ning</name>
+    </author>
+    <author>
+      <name>Yunxiao Shi</name>
+    </author>
+    <author>
+      <name>Wenfang Lin</name>
+    </author>
+    <author>
+      <name>Yongfeng Zhang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2404.09170v6</id>
+    <title>Distilling Reasoning Ability from Large Language Models with Adaptive Thinking</title>
+    <updated>2025-08-07T03:25:23Z</updated>
+    <link href="https://arxiv.org/abs/2404.09170v6" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2404.09170v6" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Chain of thought finetuning (cot-finetuning) aims to endow small language models (SLM) with reasoning ability to improve their performance towards specific tasks by allowing them to imitate the reasoning procedure of large language models (LLM) beyond simply predicting the answers. Most existing cot-finetuning methods adopt a pre-thinking mechanism, allowing the SLM to generate a rationale before providing an answer. This mechanism enables SLM to analyze and think about complex questions, but it also makes answer correctness highly sensitive to minor errors in rationale. Therefore, we propose a robust post-thinking mechanism to generate answers before rationale. Thanks to this answer-first setting, 1) the answer can escape from the adverse effects caused by minor errors in the rationale; 2) the rationale serves as an error amplifier to the answer, which makes the SLM focus on learning hard samples; 3) the inferring efficiency can also benefit from the setting since users can stop the generation right after answers are outputted when inference is conducted. However, although the post-thinking mechanism brings many advantages and improves the overall performance of SLM on specific tasks, it may lose the ability to think about the questions and decompose complex questions into simple sub-questions compared to pre-thinking mechanism. Therefore, a plug-and-play adaptive-thinking mechanism is proposed with the aid of the soft prompt tuning to integrate the merits of the pre-thinking mechanism and post-thinking mechanism, in which a perception module is introduced to adaptively prompt SLM answer or think first based on perceiving the complexity of the questions. Extensive experiments are conducted across 12 reasoning tasks and 2 representative language models to demonstrate the effectiveness of the proposed mechanism.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-04-14T07:19:27Z</published>
+    <arxiv:comment>This work has been accepted by IEEE for publication. Early access in IEEE Transactions on Neural Networks and Learning Systems</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Xiaoshu Chen</name>
+    </author>
+    <author>
+      <name>Sihang Zhou</name>
+    </author>
+    <author>
+      <name>Ke Liang</name>
+    </author>
+    <author>
+      <name>Xinwang Liu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2404.03414v1</id>
+    <title>Can Small Language Models Help Large Language Models Reason Better?: LM-Guided Chain-of-Thought</title>
+    <updated>2024-04-04T12:46:37Z</updated>
+    <link href="https://arxiv.org/abs/2404.03414v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2404.03414v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We introduce a novel framework, LM-Guided CoT, that leverages a lightweight (i.e., &lt;1B) language model (LM) for guiding a black-box large (i.e., &gt;10B) LM in reasoning tasks. Specifically, the lightweight LM first generates a rationale for each input instance. The Frozen large LM is then prompted to predict a task output based on the rationale generated by the lightweight LM. Our approach is resource-efficient in the sense that it only requires training the lightweight LM. We optimize the model through 1) knowledge distillation and 2) reinforcement learning from rationale-oriented and task-oriented reward signals. We assess our method with multi-hop extractive question answering (QA) benchmarks, HotpotQA, and 2WikiMultiHopQA. Experimental results show that our approach outperforms all baselines regarding answer prediction accuracy. We also find that reinforcement learning helps the model to produce higher-quality rationales with improved QA performance.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-04-04T12:46:37Z</published>
+    <arxiv:comment>This paper is accepted to LREC-COLING 2024</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Jooyoung Lee</name>
+    </author>
+    <author>
+      <name>Fan Yang</name>
+    </author>
+    <author>
+      <name>Thanh Tran</name>
+    </author>
+    <author>
+      <name>Qian Hu</name>
+    </author>
+    <author>
+      <name>Emre Barut</name>
+    </author>
+    <author>
+      <name>Kai-Wei Chang</name>
+    </author>
+    <author>
+      <name>Chengwei Su</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2403.04260v2</id>
+    <title>Can Small Language Models be Good Reasoners for Sequential Recommendation?</title>
+    <updated>2024-03-28T11:55:32Z</updated>
+    <link href="https://arxiv.org/abs/2403.04260v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2403.04260v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models (LLMs) open up new horizons for sequential recommendations, owing to their remarkable language comprehension and generation capabilities. However, there are still numerous challenges that should be addressed to successfully implement sequential recommendations empowered by LLMs. Firstly, user behavior patterns are often complex, and relying solely on one-step reasoning from LLMs may lead to incorrect or task-irrelevant responses. Secondly, the prohibitively resource requirements of LLM (e.g., ChatGPT-175B) are overwhelmingly high and impractical for real sequential recommender systems. In this paper, we propose a novel Step-by-step knowLedge dIstillation fraMework for recommendation (SLIM), paving a promising path for sequential recommenders to enjoy the exceptional reasoning capabilities of LLMs in a "slim" (i.e., resource-efficient) manner. We introduce CoT prompting based on user behavior sequences for the larger teacher model. The rationales generated by the teacher model are then utilized as labels to distill the downstream smaller student model (e.g., LLaMA2-7B). In this way, the student model acquires the step-by-step reasoning capabilities in recommendation tasks. We encode the generated rationales from the student model into a dense vector, which empowers recommendation in both ID-based and ID-agnostic scenarios. Extensive experiments demonstrate the effectiveness of SLIM over state-of-the-art baselines, and further analysis showcasing its ability to generate meaningful recommendation reasoning at affordable costs.</summary>
+    <category term="cs.IR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-03-07T06:49:37Z</published>
+    <arxiv:comment>Accepted by TheWebConf (WWW) 2024</arxiv:comment>
+    <arxiv:primary_category term="cs.IR"/>
+    <author>
+      <name>Yuling Wang</name>
+    </author>
+    <author>
+      <name>Changxin Tian</name>
+    </author>
+    <author>
+      <name>Binbin Hu</name>
+    </author>
+    <author>
+      <name>Yanhua Yu</name>
+    </author>
+    <author>
+      <name>Ziqi Liu</name>
+    </author>
+    <author>
+      <name>Zhiqiang Zhang</name>
+    </author>
+    <author>
+      <name>Jun Zhou</name>
+    </author>
+    <author>
+      <name>Liang Pang</name>
+    </author>
+    <author>
+      <name>Xiao Wang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2402.18113v1</id>
+    <title>Small But Funny: A Feedback-Driven Approach to Humor Distillation</title>
+    <updated>2024-02-28T07:02:38Z</updated>
+    <link href="https://arxiv.org/abs/2402.18113v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2402.18113v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The emergence of Large Language Models (LLMs) has brought to light promising language generation capabilities, particularly in performing tasks like complex reasoning and creative writing. Consequently, distillation through imitation of teacher responses has emerged as a popular technique to transfer knowledge from LLMs to more accessible, Small Language Models (SLMs). While this works well for simpler tasks, there is a substantial performance gap on tasks requiring intricate language comprehension and creativity, such as humor generation. We hypothesize that this gap may stem from the fact that creative tasks might be hard to learn by imitation alone and explore whether an approach, involving supplementary guidance from the teacher, could yield higher performance. To address this, we study the effect of assigning a dual role to the LLM - as a "teacher" generating data, as well as a "critic" evaluating the student's performance. Our experiments on humor generation reveal that the incorporation of feedback significantly narrows the performance gap between SLMs and their larger counterparts compared to merely relying on imitation. As a result, our research highlights the potential of using feedback as an additional dimension to data when transferring complex language abilities via distillation.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-02-28T07:02:38Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Sahithya Ravi</name>
+    </author>
+    <author>
+      <name>Patrick Huber</name>
+    </author>
+    <author>
+      <name>Akshat Shrivastava</name>
+    </author>
+    <author>
+      <name>Aditya Sagar</name>
+    </author>
+    <author>
+      <name>Ahmed Aly</name>
+    </author>
+    <author>
+      <name>Vered Shwartz</name>
+    </author>
+    <author>
+      <name>Arash Einolghozati</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2402.13561v2</id>
+    <title>Cognitive Visual-Language Mapper: Advancing Multimodal Comprehension with Enhanced Visual Knowledge Alignment</title>
+    <updated>2024-06-26T07:05:21Z</updated>
+    <link href="https://arxiv.org/abs/2402.13561v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2402.13561v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Evaluating and Rethinking the current landscape of Large Multimodal Models (LMMs), we observe that widely-used visual-language projection approaches (e.g., Q-former or MLP) focus on the alignment of image-text descriptions yet ignore the visual knowledge-dimension alignment, i.e., connecting visuals to their relevant knowledge. Visual knowledge plays a significant role in analyzing, inferring, and interpreting information from visuals, helping improve the accuracy of answers to knowledge-based visual questions. In this paper, we mainly explore improving LMMs with visual-language knowledge alignment, especially aimed at challenging knowledge-based visual question answering (VQA). To this end, we present a Cognitive Visual-Language Mapper (CVLM), which contains a pretrained Visual Knowledge Aligner (VKA) and a Fine-grained Knowledge Adapter (FKA) used in the multimodal instruction tuning stage. Specifically, we design the VKA based on the interaction between a small language model and a visual encoder, training it on collected image-knowledge pairs to achieve visual knowledge acquisition and projection. FKA is employed to distill the fine-grained visual knowledge of an image and inject it into Large Language Models (LLMs). We conduct extensive experiments on knowledge-based VQA benchmarks and experimental results show that CVLM significantly improves the performance of LMMs on knowledge-based VQA (average gain by 5.0%). Ablation studies also verify the effectiveness of VKA and FKA, respectively. The codes are available at https://github.com/HITsz-TMG/Cognitive-Visual-Language-Mapper</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-02-21T06:34:46Z</published>
+    <arxiv:comment>12 pages,4 figures; Accepted by ACL 2024 Main Conference</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Yunxin Li</name>
+    </author>
+    <author>
+      <name>Xinyu Chen</name>
+    </author>
+    <author>
+      <name>Baotian Hu</name>
+    </author>
+    <author>
+      <name>Haoyuan Shi</name>
+    </author>
+    <author>
+      <name>Min Zhang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2402.10787v2</id>
+    <title>Squat: Quant Small Language Models on the Edge</title>
+    <updated>2025-07-01T19:43:45Z</updated>
+    <link href="https://arxiv.org/abs/2402.10787v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2402.10787v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>A growing trend has emerged in designing high-quality Small Language Models (SLMs) with a few million parameters. This trend is driven by the increasing concerns over cloud costs, privacy, and latency. Considering that full parameter training is feasible for SLMs on mobile devices, Quantization-Aware Training (QAT) is employed to improve efficiency by reducing computational overhead and memory footprint. However, previous QAT works adopt fine-grained quantization methods to compress models with billions of parameters on GPUs, incompatible with current commodity hardware, such as mobile and edge devices, which relies on Single Instruction Multiple Data (SIMD) instructions. Thus, the generalization of these methods to SLMs on mobile devices is limited. In this paper, we propose Squat method, an effective QAT framework with deployable quantization for SLMs on mobile devices. Specifically, we propose entropy-guided and distribution-aligned distillation to mitigate the distortion of attention information from quantization. Besides, we employ sub-8-bit token adaptive quantization, assigning varying bit widths to different tokens based on their importance. Furthermore, we develop a SIMD-based Multi-Kernel Mixed-Precision (MKMP) multiplier to support sub-8-bit mixed-precision MAC on mobile devices. Our extensive experiments verify the substantial improvements of our method compared to other QAT methods across various datasets. Furthermore, we achieve an on-device speedup of up to 2.37x compared with its FP16 counterparts, signaling a great advancement. Code: https://github.com/shawnricecake/squant</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-02-16T16:10:38Z</published>
+    <arxiv:comment>Accepeted by ICCAD 2025</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Xuan Shen</name>
+    </author>
+    <author>
+      <name>Peiyan Dong</name>
+    </author>
+    <author>
+      <name>Zhenglun Kong</name>
+    </author>
+    <author>
+      <name>Yifan Gong</name>
+    </author>
+    <author>
+      <name>Changdi Yang</name>
+    </author>
+    <author>
+      <name>Zhaoyang Han</name>
+    </author>
+    <author>
+      <name>Yanyue Xie</name>
+    </author>
+    <author>
+      <name>Lei Lu</name>
+    </author>
+    <author>
+      <name>Cheng Lyu</name>
+    </author>
+    <author>
+      <name>Chao Wu</name>
+    </author>
+    <author>
+      <name>Yanzhi Wang</name>
+    </author>
+    <author>
+      <name>Pu Zhao</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2401.11864v5</id>
+    <title>Distilling Mathematical Reasoning Capabilities into Small Language Models</title>
+    <updated>2024-08-01T04:03:32Z</updated>
+    <link href="https://arxiv.org/abs/2401.11864v5" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2401.11864v5" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This work addresses the challenge of democratizing advanced Large Language Models (LLMs) by compressing their mathematical reasoning capabilities into sub-billion parameter Small Language Models (SLMs) without compromising performance. We introduce Equation-of-Thought Distillation (EoTD), a novel technique that encapsulates the reasoning process into equation-based representations to construct an EoTD dataset for fine-tuning SLMs. Additionally, we propose the Ensemble Thoughts Distillation (ETD) framework to enhance the reasoning performance of SLMs. This involves creating a reasoning dataset with multiple thought processes, including Chain-of-Thought (CoT), Program-of-Thought (PoT), and Equation-of-Thought (EoT), and using it for fine-tuning. Our experimental performance demonstrates that EoTD significantly boosts the reasoning abilities of SLMs, while ETD enables these models to achieve state-of-the-art reasoning performance.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-01-22T11:37:18Z</published>
+    <arxiv:comment>Accepted for publication in Neural Networks</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Xunyu Zhu</name>
+    </author>
+    <author>
+      <name>Jian Li</name>
+    </author>
+    <author>
+      <name>Yong Liu</name>
+    </author>
+    <author>
+      <name>Can Ma</name>
+    </author>
+    <author>
+      <name>Weiping Wang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2311.15614v1</id>
+    <title>FreeAL: Towards Human-Free Active Learning in the Era of Large Language Models</title>
+    <updated>2023-11-27T08:23:08Z</updated>
+    <link href="https://arxiv.org/abs/2311.15614v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2311.15614v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Collecting high-quality labeled data for model training is notoriously time-consuming and labor-intensive for various NLP tasks. While copious solutions, such as active learning for small language models (SLMs) and prevalent in-context learning in the era of large language models (LLMs), have been proposed and alleviate the labeling burden to some extent, their performances are still subject to human intervention. It is still underexplored how to reduce the annotation cost in the LLMs era. To bridge this, we revolutionize traditional active learning and propose an innovative collaborative learning framework FreeAL to interactively distill and filter the task-specific knowledge from LLMs. During collaborative training, an LLM serves as an active annotator inculcating its coarse-grained knowledge, while a downstream SLM is incurred as a student to filter out high-quality in-context samples to feedback LLM for the subsequent label refinery. Extensive experiments on eight benchmark datasets demonstrate that FreeAL largely enhances the zero-shot performances for both SLM and LLM without any human supervision. The code is available at https://github.com/Justherozen/FreeAL .</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-11-27T08:23:08Z</published>
+    <arxiv:comment>Accepted to EMNLP 2023 (Main conference)</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Ruixuan Xiao</name>
+    </author>
+    <author>
+      <name>Yiwen Dong</name>
+    </author>
+    <author>
+      <name>Junbo Zhao</name>
+    </author>
+    <author>
+      <name>Runze Wu</name>
+    </author>
+    <author>
+      <name>Minmin Lin</name>
+    </author>
+    <author>
+      <name>Gang Chen</name>
+    </author>
+    <author>
+      <name>Haobo Wang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2311.09214v3</id>
+    <title>Mind's Mirror: Distilling Self-Evaluation Capability and Comprehensive Thinking from Large Language Models</title>
+    <updated>2024-04-07T19:17:53Z</updated>
+    <link href="https://arxiv.org/abs/2311.09214v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2311.09214v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models (LLMs) have achieved remarkable advancements in natural language processing. However, the massive scale and computational demands of these models present formidable challenges when considering their practical deployment in resource-constrained environments. While techniques such as chain-of-thought (CoT) distillation have displayed promise in distilling LLMs into small language models (SLMs), there is a risk that distilled SLMs may still inherit flawed reasoning and hallucinations from LLMs. To address these issues, we propose a twofold methodology: First, we introduce a novel method for distilling the self-evaluation capability from LLMs into SLMs, aiming to mitigate the adverse effects of flawed reasoning and hallucinations inherited from LLMs. Second, we advocate for distilling more comprehensive thinking by incorporating multiple distinct CoTs and self-evaluation outputs, to ensure a more thorough and robust knowledge transfer into SLMs. Experiments on three NLP benchmarks demonstrate that our method significantly improves the performance of distilled SLMs, offering a new perspective for developing more effective and efficient SLMs in resource-constrained environments.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-11-15T18:56:23Z</published>
+    <arxiv:comment>Accepted to NAACL 2024 Main Conference</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Weize Liu</name>
+    </author>
+    <author>
+      <name>Guocong Li</name>
+    </author>
+    <author>
+      <name>Kai Zhang</name>
+    </author>
+    <author>
+      <name>Bang Du</name>
+    </author>
+    <author>
+      <name>Qiyuan Chen</name>
+    </author>
+    <author>
+      <name>Xuming Hu</name>
+    </author>
+    <author>
+      <name>Hongxia Xu</name>
+    </author>
+    <author>
+      <name>Jintai Chen</name>
+    </author>
+    <author>
+      <name>Jian Wu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2309.12247v2</id>
+    <title>Bad Actor, Good Advisor: Exploring the Role of Large Language Models in Fake News Detection</title>
+    <updated>2024-01-22T07:24:30Z</updated>
+    <link href="https://arxiv.org/abs/2309.12247v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2309.12247v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Detecting fake news requires both a delicate sense of diverse clues and a profound understanding of the real-world background, which remains challenging for detectors based on small language models (SLMs) due to their knowledge and capability limitations. Recent advances in large language models (LLMs) have shown remarkable performance in various tasks, but whether and how LLMs could help with fake news detection remains underexplored. In this paper, we investigate the potential of LLMs in fake news detection. First, we conduct an empirical study and find that a sophisticated LLM such as GPT 3.5 could generally expose fake news and provide desirable multi-perspective rationales but still underperforms the basic SLM, fine-tuned BERT. Our subsequent analysis attributes such a gap to the LLM's inability to select and integrate rationales properly to conclude. Based on these findings, we propose that current LLMs may not substitute fine-tuned SLMs in fake news detection but can be a good advisor for SLMs by providing multi-perspective instructive rationales. To instantiate this proposal, we design an adaptive rationale guidance network for fake news detection (ARG), in which SLMs selectively acquire insights on news analysis from the LLMs' rationales. We further derive a rationale-free version of ARG by distillation, namely ARG-D, which services cost-sensitive scenarios without querying LLMs. Experiments on two real-world datasets demonstrate that ARG and ARG-D outperform three types of baseline methods, including SLM-based, LLM-based, and combinations of small and large language models.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-09-21T16:47:30Z</published>
+    <arxiv:comment>16 pages, 5 figures, and 9 tables. To appear at AAAI 2024</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <arxiv:journal_ref>AAAI 2024</arxiv:journal_ref>
+    <author>
+      <name>Beizhe Hu</name>
+    </author>
+    <author>
+      <name>Qiang Sheng</name>
+    </author>
+    <author>
+      <name>Juan Cao</name>
+    </author>
+    <author>
+      <name>Yuhui Shi</name>
+    </author>
+    <author>
+      <name>Yang Li</name>
+    </author>
+    <author>
+      <name>Danding Wang</name>
+    </author>
+    <author>
+      <name>Peng Qi</name>
+    </author>
+    <arxiv:doi>10.1609/aaai.v38i20.30214</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1609/aaai.v38i20.30214" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2307.08072v2</id>
+    <title>Do Emergent Abilities Exist in Quantized Large Language Models: An Empirical Study</title>
+    <updated>2023-07-26T04:15:48Z</updated>
+    <link href="https://arxiv.org/abs/2307.08072v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2307.08072v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Despite the superior performance, Large Language Models~(LLMs) require significant computational resources for deployment and use. To overcome this issue, quantization methods have been widely applied to reduce the memory footprint of LLMs as well as increasing the inference rate. However, a major challenge is that low-bit quantization methods often lead to performance degradation. It is important to understand how quantization impacts the capacity of LLMs. Different from previous studies focused on overall performance, this work aims to investigate the impact of quantization on \emph{emergent abilities}, which are important characteristics that distinguish LLMs from small language models. Specially, we examine the abilities of in-context learning, chain-of-thought reasoning, and instruction-following in quantized LLMs. Our empirical experiments show that these emergent abilities still exist in 4-bit quantization models, while 2-bit models encounter severe performance degradation on the test of these abilities. To improve the performance of low-bit models, we conduct two special experiments: (1) fine-gained impact analysis that studies which components (or substructures) are more sensitive to quantization, and (2) performance compensation through model fine-tuning. Our work derives a series of important findings to understand the impact of quantization on emergent abilities, and sheds lights on the possibilities of extremely low-bit quantization for LLMs.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-07-16T15:11:01Z</published>
+    <arxiv:comment>15 pages, 4 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Peiyu Liu</name>
+    </author>
+    <author>
+      <name>Zikang Liu</name>
+    </author>
+    <author>
+      <name>Ze-Feng Gao</name>
+    </author>
+    <author>
+      <name>Dawei Gao</name>
+    </author>
+    <author>
+      <name>Wayne Xin Zhao</name>
+    </author>
+    <author>
+      <name>Yaliang Li</name>
+    </author>
+    <author>
+      <name>Bolin Ding</name>
+    </author>
+    <author>
+      <name>Ji-Rong Wen</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2307.07951v1</id>
+    <title>MinT: Boosting Generalization in Mathematical Reasoning via Multi-View Fine-Tuning</title>
+    <updated>2023-07-16T05:41:53Z</updated>
+    <link href="https://arxiv.org/abs/2307.07951v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2307.07951v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Reasoning in mathematical domains remains a significant challenge for relatively small language models (LMs). Many current methods focus on specializing LMs in mathematical reasoning and rely heavily on knowledge distillation from powerful but inefficient large LMs (LLMs). In this work, we explore a new direction that avoids over-reliance on LLM teachers, introducing a multi-view fine-tuning method that efficiently exploits existing mathematical problem datasets with diverse annotation styles. Our approach uniquely considers the various annotation formats as different "views" and leverages them in training the model. By postpending distinct instructions to input questions, models can learn to generate solutions in diverse formats in a flexible manner. Experimental results show that our strategy enables a LLaMA-7B model to outperform prior approaches that utilize knowledge distillation, as well as carefully established baselines. Additionally, the proposed method grants the models promising generalization ability across various views and datasets, and the capability to learn from inaccurate or incomplete noisy data. We hope our multi-view training paradigm could inspire future studies in other machine reasoning domains.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-07-16T05:41:53Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Zhenwen Liang</name>
+    </author>
+    <author>
+      <name>Dian Yu</name>
+    </author>
+    <author>
+      <name>Xiaoman Pan</name>
+    </author>
+    <author>
+      <name>Wenlin Yao</name>
+    </author>
+    <author>
+      <name>Qingkai Zeng</name>
+    </author>
+    <author>
+      <name>Xiangliang Zhang</name>
+    </author>
+    <author>
+      <name>Dong Yu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2305.19472v3</id>
+    <title>PlaSma: Making Small Language Models Better Procedural Knowledge Models for (Counterfactual) Planning</title>
+    <updated>2024-09-18T15:30:33Z</updated>
+    <link href="https://arxiv.org/abs/2305.19472v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2305.19472v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Procedural planning, which entails decomposing a high-level goal into a sequence of temporally ordered steps, is an important yet intricate task for machines. It involves integrating common-sense knowledge to reason about complex and often contextualized situations, e.g. ``scheduling a doctor's appointment without a phone''. While current approaches show encouraging results using large language models (LLMs), they are hindered by drawbacks such as costly API calls and reproducibility issues. In this paper, we advocate planning using smaller language models. We present PlaSma, a novel two-pronged approach to endow small language models with procedural knowledge and (constrained) language planning capabilities. More concretely, we develop symbolic procedural knowledge distillation to enhance the commonsense knowledge in small language models and an inference-time algorithm to facilitate more structured and accurate reasoning. In addition, we introduce a new related task, Replanning, that requires a revision of a plan to cope with a constrained situation. In both the planning and replanning settings, we show that orders-of-magnitude smaller models (770M-11B parameters) can compete and often surpass their larger teacher models' capabilities. Finally, we showcase successful application of PlaSma in an embodied environment, VirtualHome.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-05-31T00:55:40Z</published>
+    <arxiv:comment>ICLR 2024 version , 31 pages</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Faeze Brahman</name>
+    </author>
+    <author>
+      <name>Chandra Bhagavatula</name>
+    </author>
+    <author>
+      <name>Valentina Pyatkin</name>
+    </author>
+    <author>
+      <name>Jena D. Hwang</name>
+    </author>
+    <author>
+      <name>Xiang Lorraine Li</name>
+    </author>
+    <author>
+      <name>Hirona J. Arai</name>
+    </author>
+    <author>
+      <name>Soumya Sanyal</name>
+    </author>
+    <author>
+      <name>Keisuke Sakaguchi</name>
+    </author>
+    <author>
+      <name>Xiang Ren</name>
+    </author>
+    <author>
+      <name>Yejin Choi</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2305.18395v2</id>
+    <title>Knowledge-Augmented Reasoning Distillation for Small Language Models in Knowledge-Intensive Tasks</title>
+    <updated>2023-10-30T08:20:14Z</updated>
+    <link href="https://arxiv.org/abs/2305.18395v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2305.18395v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Language Models (LLMs) have shown promising performance in knowledge-intensive reasoning tasks that require a compound understanding of knowledge. However, deployment of the LLMs in real-world applications can be challenging due to their high computational requirements and concerns on data privacy. Previous studies have focused on building task-specific small Language Models (LMs) by fine-tuning them with labeled data or distilling LLMs. However, these approaches are ill-suited for knowledge-intensive reasoning tasks due to the limited capacity of small LMs in memorizing the knowledge required. Motivated by our theoretical analysis on memorization, we propose Knowledge-Augmented Reasoning Distillation (KARD), a novel method that fine-tunes small LMs to generate rationales obtained from LLMs with augmented knowledge retrieved from an external knowledge base. Moreover, we further propose a neural reranker to obtain documents relevant to rationale generation. We empirically show that KARD significantly improves the performance of small T5 and GPT models on the challenging knowledge-intensive reasoning datasets, namely MedQA-USMLE, StrategyQA, and OpenbookQA. Notably, our method makes the 250M T5 models achieve superior performance against the fine-tuned 3B models, having 12 times larger parameters, on both MedQA-USMLE and StrategyQA benchmarks.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-05-28T13:00:00Z</published>
+    <arxiv:comment>NeurIPS 2023</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Minki Kang</name>
+    </author>
+    <author>
+      <name>Seanie Lee</name>
+    </author>
+    <author>
+      <name>Jinheon Baek</name>
+    </author>
+    <author>
+      <name>Kenji Kawaguchi</name>
+    </author>
+    <author>
+      <name>Sung Ju Hwang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2305.12132v2</id>
+    <title>Can Public Large Language Models Help Private Cross-device Federated Learning?</title>
+    <updated>2024-04-12T21:01:12Z</updated>
+    <link href="https://arxiv.org/abs/2305.12132v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2305.12132v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We study (differentially) private federated learning (FL) of language models. The language models in cross-device FL are relatively small, which can be trained with meaningful formal user-level differential privacy (DP) guarantees when massive parallelism in training is enabled by the participation of a moderate size of users. Recently, public data has been used to improve privacy-utility trade-offs for both large and small language models. In this work, we provide a systematic study of using large-scale public data and LLMs to help differentially private training of on-device FL models, and further improve the privacy-utility tradeoff by techniques of distillation. Moreover, we propose a novel distribution matching algorithm with theoretical grounding to sample public data close to private data distribution, which significantly improves the sample efficiency of (pre-)training on public data. The proposed method is efficient and effective for training private models by taking advantage of public data, especially for customized on-device architectures that do not have ready-to-use pre-trained models.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-05-20T07:55:58Z</published>
+    <arxiv:comment>Published at Findings of NAACL 2024</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Boxin Wang</name>
+    </author>
+    <author>
+      <name>Yibo Jacky Zhang</name>
+    </author>
+    <author>
+      <name>Yuan Cao</name>
+    </author>
+    <author>
+      <name>Bo Li</name>
+    </author>
+    <author>
+      <name>H. Brendan McMahan</name>
+    </author>
+    <author>
+      <name>Sewoong Oh</name>
+    </author>
+    <author>
+      <name>Zheng Xu</name>
+    </author>
+    <author>
+      <name>Manzil Zaheer</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2212.08410v3</id>
+    <title>Teaching Small Language Models to Reason</title>
+    <updated>2023-06-01T12:17:01Z</updated>
+    <link href="https://arxiv.org/abs/2212.08410v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2212.08410v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Chain of thought prompting successfully improves the reasoning capabilities of large language models, achieving state of the art results on a range of datasets. However, these reasoning capabilities only appear to emerge in models with a size of over 100 billion parameters. In this paper, we explore the transfer of such reasoning capabilities to models with less than 100 billion parameters via knowledge distillation. Specifically, we finetune a student model on the chain of thought outputs generated by a larger teacher model. Our experiments show that the proposed method improves task performance across arithmetic, commonsense and symbolic reasoning datasets. For example, the accuracy of T5 XXL on GSM8K improves from 8.11% to 21.99% when finetuned on PaLM-540B generated chains of thought.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-16T11:24:42Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Lucie Charlotte Magister</name>
+    </author>
+    <author>
+      <name>Jonathan Mallinson</name>
+    </author>
+    <author>
+      <name>Jakub Adamek</name>
+    </author>
+    <author>
+      <name>Eric Malmi</name>
+    </author>
+    <author>
+      <name>Aliaksei Severyn</name>
+    </author>
+  </entry>
+</feed>

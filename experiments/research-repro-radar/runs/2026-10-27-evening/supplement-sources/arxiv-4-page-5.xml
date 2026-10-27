@@ -1,0 +1,1703 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/L989Cncxq2uf+FZ81cXlW6XI1ZE</id>
+  <title>arXiv Query: search_query=all:"lightweight vision" OR all:"efficient vision"&amp;id_list=&amp;start=400&amp;max_results=100</title>
+  <updated>2026-10-27T09:07:13Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=all:%22lightweight+vision%22+OR+all:%22efficient+vision%22&amp;start=400&amp;max_results=100&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>100</opensearch:itemsPerPage>
+  <opensearch:totalResults>460</opensearch:totalResults>
+  <opensearch:startIndex>400</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2305.15023v3</id>
+    <title>Cheap and Quick: Efficient Vision-Language Instruction Tuning for Large Language Models</title>
+    <updated>2023-10-24T09:34:02Z</updated>
+    <link href="https://arxiv.org/abs/2305.15023v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2305.15023v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recently, growing interest has been aroused in extending the multimodal capability of large language models (LLMs), e.g., vision-language (VL) learning, which is regarded as the next milestone of artificial general intelligence. However, existing solutions are prohibitively expensive, which not only need to optimize excessive parameters, but also require another large-scale pre-training before VL instruction tuning. In this paper, we propose a novel and affordable solution for the effective VL adaption of LLMs, called Mixture-of-Modality Adaptation (MMA). Instead of using large neural networks to connect the image encoder and LLM, MMA adopts lightweight modules, i.e., adapters, to bridge the gap between LLMs and VL tasks, which also enables the joint optimization of the image and language models. Meanwhile, MMA is also equipped with a routing algorithm to help LLMs achieve an automatic shift between single- and multi-modal instructions without compromising their ability of natural language understanding. To validate MMA, we apply it to a recent LLM called LLaMA and term this formed large vision-language instructed model as LaVIN. To validate MMA and LaVIN, we conduct extensive experiments under two setups, namely multimodal science question answering and multimodal dialogue. The experimental results not only demonstrate the competitive performance and the superior training efficiency of LaVIN than existing multimodal LLMs, but also confirm its great potential as a general-purpose chatbot. More importantly, the actual expenditure of LaVIN is extremely cheap, e.g., only 1.4 training hours with 3.8M trainable parameters, greatly confirming the effectiveness of MMA. Our project is released at https://luogen1996.github.io/lavin.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-05-24T11:06:15Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Gen Luo</name>
+    </author>
+    <author>
+      <name>Yiyi Zhou</name>
+    </author>
+    <author>
+      <name>Tianhe Ren</name>
+    </author>
+    <author>
+      <name>Shengxin Chen</name>
+    </author>
+    <author>
+      <name>Xiaoshuai Sun</name>
+    </author>
+    <author>
+      <name>Rongrong Ji</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2305.14840v1</id>
+    <title>Predicting Token Impact Towards Efficient Vision Transformer</title>
+    <updated>2023-05-24T07:44:16Z</updated>
+    <link href="https://arxiv.org/abs/2305.14840v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2305.14840v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Token filtering to reduce irrelevant tokens prior to self-attention is a straightforward way to enable efficient vision Transformer. This is the first work to view token filtering from a feature selection perspective, where we weigh the importance of a token according to how much it can change the loss once masked. If the loss changes greatly after masking a token of interest, it means that such a token has a significant impact on the final decision and is thus relevant. Otherwise, the token is less important for the final decision, so it can be filtered out. After applying the token filtering module generalized from the whole training data, the token number fed to the self-attention module can be obviously reduced in the inference phase, leading to much fewer computations in all the subsequent self-attention layers. The token filter can be realized using a very simple network, where we utilize multi-layer perceptron. Except for the uniqueness of performing token filtering only once from the very beginning prior to self-attention, the other core feature making our method different from the other token filters lies in the predictability of token impact from a feature selection point of view. The experiments show that the proposed method provides an efficient way to approach a light weighted model after optimized with a backbone by means of fine tune, which is easy to be deployed in comparison with the existing methods based on training from scratch.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-05-24T07:44:16Z</published>
+    <arxiv:comment>10 pages</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Hong Wang</name>
+    </author>
+    <author>
+      <name>Su Yang</name>
+    </author>
+    <author>
+      <name>Xiaoke Huang</name>
+    </author>
+    <author>
+      <name>Weishan Zhang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2305.09924v1</id>
+    <title>CageViT: Convolutional Activation Guided Efficient Vision Transformer</title>
+    <updated>2023-05-17T03:19:18Z</updated>
+    <link href="https://arxiv.org/abs/2305.09924v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2305.09924v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recently, Transformers have emerged as the go-to architecture for both vision and language modeling tasks, but their computational efficiency is limited by the length of the input sequence. To address this, several efficient variants of Transformers have been proposed to accelerate computation or reduce memory consumption while preserving performance. This paper presents an efficient vision Transformer, called CageViT, that is guided by convolutional activation to reduce computation. Our CageViT, unlike current Transformers, utilizes a new encoder to handle the rearranged tokens, bringing several technical contributions: 1) Convolutional activation is used to pre-process the token after patchifying the image to select and rearrange the major tokens and minor tokens, which substantially reduces the computation cost through an additional fusion layer. 2) Instead of using the class activation map of the convolutional model directly, we design a new weighted class activation to lower the model requirements. 3) To facilitate communication between major tokens and fusion tokens, Gated Linear SRA is proposed to further integrate fusion tokens into the attention mechanism. We perform a comprehensive validation of CageViT on the image classification challenge.
+  Experimental results demonstrate that the proposed CageViT outperforms the most recent state-of-the-art backbones by a large margin in terms of efficiency, while maintaining a comparable level of accuracy (e.g. a moderate-sized 43.35M model trained solely on 224 x 224 ImageNet-1K can achieve Top-1 accuracy of 83.4% accuracy).</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-05-17T03:19:18Z</published>
+    <arxiv:comment>9 pages, 3 figures, NeurIPS conference</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Hao Zheng</name>
+    </author>
+    <author>
+      <name>Jinbao Wang</name>
+    </author>
+    <author>
+      <name>Xiantong Zhen</name>
+    </author>
+    <author>
+      <name>Hong Chen</name>
+    </author>
+    <author>
+      <name>Jingkuan Song</name>
+    </author>
+    <author>
+      <name>Feng Zheng</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2305.07027v1</id>
+    <title>EfficientViT: Memory Efficient Vision Transformer with Cascaded Group Attention</title>
+    <updated>2023-05-11T17:59:41Z</updated>
+    <link href="https://arxiv.org/abs/2305.07027v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2305.07027v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Vision transformers have shown great success due to their high model capabilities. However, their remarkable performance is accompanied by heavy computation costs, which makes them unsuitable for real-time applications. In this paper, we propose a family of high-speed vision transformers named EfficientViT. We find that the speed of existing transformer models is commonly bounded by memory inefficient operations, especially the tensor reshaping and element-wise functions in MHSA. Therefore, we design a new building block with a sandwich layout, i.e., using a single memory-bound MHSA between efficient FFN layers, which improves memory efficiency while enhancing channel communication. Moreover, we discover that the attention maps share high similarities across heads, leading to computational redundancy. To address this, we present a cascaded group attention module feeding attention heads with different splits of the full feature, which not only saves computation cost but also improves attention diversity. Comprehensive experiments demonstrate EfficientViT outperforms existing efficient models, striking a good trade-off between speed and accuracy. For instance, our EfficientViT-M5 surpasses MobileNetV3-Large by 1.9% in accuracy, while getting 40.4% and 45.2% higher throughput on Nvidia V100 GPU and Intel Xeon CPU, respectively. Compared to the recent efficient model MobileViT-XXS, EfficientViT-M2 achieves 1.8% superior accuracy, while running 5.8x/3.7x faster on the GPU/CPU, and 7.4x faster when converted to ONNX format. Code and models are available at https://github.com/microsoft/Cream/tree/main/EfficientViT.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-05-11T17:59:41Z</published>
+    <arxiv:comment>CVPR 2023</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Xinyu Liu</name>
+    </author>
+    <author>
+      <name>Houwen Peng</name>
+    </author>
+    <author>
+      <name>Ningxin Zheng</name>
+    </author>
+    <author>
+      <name>Yuqing Yang</name>
+    </author>
+    <author>
+      <name>Han Hu</name>
+    </author>
+    <author>
+      <name>Yixuan Yuan</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2305.04474v4</id>
+    <title>TRIPS: Efficient Vision-and-Language Pre-training with Text-Relevant Image Patch Selection</title>
+    <updated>2025-09-28T08:22:30Z</updated>
+    <link href="https://arxiv.org/abs/2305.04474v4" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2305.04474v4" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Vision Transformers (ViTs) have been widely used in large-scale Vision and Language Pre-training (VLP) models. Though previous VLP works have proved the effectiveness of ViTs, they still suffer from computational efficiency brought by the long visual sequence. To tackle this problem, in this paper, we propose an efficient vision-and-language pre-training model with \textbf{T}ext-\textbf{R}elevant \textbf{I}mage \textbf{P}atch \textbf{S}election, namely TRIPS, which reduces the visual sequence progressively with a text-guided patch-selection layer in the visual backbone for efficient training and inference. The patch-selection layer can dynamically compute text-dependent visual attention to identify the attentive image tokens with text guidance and fuse inattentive ones in an end-to-end manner. Meanwhile, TRIPS does not introduce extra parameters to ViTs. Experimental results on a variety of popular benchmark datasets demonstrate that TRIPS gain a speedup of 40\% over previous similar VLP models, yet with competitive or better downstream task performance.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-05-08T05:53:30Z</published>
+    <arxiv:comment>Accepted by EMNLP2022</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Chaoya Jiang</name>
+    </author>
+    <author>
+      <name>Haiyang Xu</name>
+    </author>
+    <author>
+      <name>Chenliang Li</name>
+    </author>
+    <author>
+      <name>Miang Yan</name>
+    </author>
+    <author>
+      <name>Wei Ye</name>
+    </author>
+    <author>
+      <name>Shikun Zhang</name>
+    </author>
+    <author>
+      <name>Bin Bi</name>
+    </author>
+    <author>
+      <name>Songfang Huang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2303.17803v5</id>
+    <title>Rethinking Local Perception in Lightweight Vision Transformer</title>
+    <updated>2023-06-01T07:42:15Z</updated>
+    <link href="https://arxiv.org/abs/2303.17803v5" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2303.17803v5" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Vision Transformers (ViTs) have been shown to be effective in various vision tasks. However, resizing them to a mobile-friendly size leads to significant performance degradation. Therefore, developing lightweight vision transformers has become a crucial area of research. This paper introduces CloFormer, a lightweight vision transformer that leverages context-aware local enhancement. CloFormer explores the relationship between globally shared weights often used in vanilla convolutional operators and token-specific context-aware weights appearing in attention, then proposes an effective and straightforward module to capture high-frequency local information. In CloFormer, we introduce AttnConv, a convolution operator in attention's style. The proposed AttnConv uses shared weights to aggregate local information and deploys carefully designed context-aware weights to enhance local features. The combination of the AttnConv and vanilla attention which uses pooling to reduce FLOPs in CloFormer enables the model to perceive high-frequency and low-frequency information. Extensive experiments were conducted in image classification, object detection, and semantic segmentation, demonstrating the superiority of CloFormer. The code is available at \url{https://github.com/qhfan/CloFormer}.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-03-31T05:25:32Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Qihang Fan</name>
+    </author>
+    <author>
+      <name>Huaibo Huang</name>
+    </author>
+    <author>
+      <name>Jiyang Guan</name>
+    </author>
+    <author>
+      <name>Ran He</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2303.14376v1</id>
+    <title>ViPFormer: Efficient Vision-and-Pointcloud Transformer for Unsupervised Pointcloud Understanding</title>
+    <updated>2023-03-25T06:47:12Z</updated>
+    <link href="https://arxiv.org/abs/2303.14376v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2303.14376v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recently, a growing number of work design unsupervised paradigms for point cloud processing to alleviate the limitation of expensive manual annotation and poor transferability of supervised methods. Among them, CrossPoint follows the contrastive learning framework and exploits image and point cloud data for unsupervised point cloud understanding. Although the promising performance is presented, the unbalanced architecture makes it unnecessarily complex and inefficient. For example, the image branch in CrossPoint is $\sim$8.3x heavier than the point cloud branch leading to higher complexity and latency. To address this problem, in this paper, we propose a lightweight Vision-and-Pointcloud Transformer (ViPFormer) to unify image and point cloud processing in a single architecture. ViPFormer learns in an unsupervised manner by optimizing intra-modal and cross-modal contrastive objectives. Then the pretrained model is transferred to various downstream tasks, including 3D shape classification and semantic segmentation. Experiments on different datasets show ViPFormer surpasses previous state-of-the-art unsupervised methods with higher accuracy, lower model complexity and runtime latency. Finally, the effectiveness of each component in ViPFormer is validated by extensive ablation studies. The implementation of the proposed method is available at https://github.com/auniquesun/ViPFormer.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-03-25T06:47:12Z</published>
+    <arxiv:comment>9 pages, 4 figures, 7 tables; accepted by ICRA 2023</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Hongyu Sun</name>
+    </author>
+    <author>
+      <name>Yongcai Wang</name>
+    </author>
+    <author>
+      <name>Xudong Cai</name>
+    </author>
+    <author>
+      <name>Xuewei Bai</name>
+    </author>
+    <author>
+      <name>Deying Li</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2303.15234v1</id>
+    <title>Prompt Tuning based Adapter for Vision-Language Model Adaption</title>
+    <updated>2023-03-24T15:05:17Z</updated>
+    <link href="https://arxiv.org/abs/2303.15234v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2303.15234v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large pre-trained vision-language (VL) models have shown significant promise in adapting to various downstream tasks. However, fine-tuning the entire network is challenging due to the massive number of model parameters. To address this issue, efficient adaptation methods such as prompt tuning have been proposed. We explore the idea of prompt tuning with multi-task pre-trained initialization and find it can significantly improve model performance. Based on our findings, we introduce a new model, termed Prompt-Adapter, that combines pre-trained prompt tunning with an efficient adaptation network. Our approach beat the state-of-the-art methods in few-shot image classification on the public 11 datasets, especially in settings with limited data instances such as 1 shot, 2 shots, 4 shots, and 8 shots images. Our proposed method demonstrates the promise of combining prompt tuning and parameter-efficient networks for efficient vision-language model adaptation. The code is publicly available at: https://github.com/Jingchensun/prompt_adapter.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-03-24T15:05:17Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Jingchen Sun</name>
+    </author>
+    <author>
+      <name>Jiayu Qin</name>
+    </author>
+    <author>
+      <name>Zihao Lin</name>
+    </author>
+    <author>
+      <name>Changyou Chen</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2303.13755v1</id>
+    <title>Sparsifiner: Learning Sparse Instance-Dependent Attention for Efficient Vision Transformers</title>
+    <updated>2023-03-24T02:12:28Z</updated>
+    <link href="https://arxiv.org/abs/2303.13755v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2303.13755v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Vision Transformers (ViT) have shown their competitive advantages performance-wise compared to convolutional neural networks (CNNs) though they often come with high computational costs. To this end, previous methods explore different attention patterns by limiting a fixed number of spatially nearby tokens to accelerate the ViT's multi-head self-attention (MHSA) operations. However, such structured attention patterns limit the token-to-token connections to their spatial relevance, which disregards learned semantic connections from a full attention mask. In this work, we propose a novel approach to learn instance-dependent attention patterns, by devising a lightweight connectivity predictor module to estimate the connectivity score of each pair of tokens. Intuitively, two tokens have high connectivity scores if the features are considered relevant either spatially or semantically. As each token only attends to a small number of other tokens, the binarized connectivity masks are often very sparse by nature and therefore provide the opportunity to accelerate the network via sparse computations. Equipped with the learned unstructured attention pattern, sparse attention ViT (Sparsifiner) produces a superior Pareto-optimal trade-off between FLOPs and top-1 accuracy on ImageNet compared to token sparsity. Our method reduces 48% to 69% FLOPs of MHSA while the accuracy drop is within 0.4%. We also show that combining attention and token sparsity reduces ViT FLOPs by over 60%.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-03-24T02:12:28Z</published>
+    <arxiv:comment>Accepted at CVPR 2023</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Cong Wei</name>
+    </author>
+    <author>
+      <name>Brendan Duke</name>
+    </author>
+    <author>
+      <name>Ruowei Jiang</name>
+    </author>
+    <author>
+      <name>Parham Aarabi</name>
+    </author>
+    <author>
+      <name>Graham W. Taylor</name>
+    </author>
+    <author>
+      <name>Florian Shkurti</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2303.11114v2</id>
+    <title>SeiT: Storage-Efficient Vision Training with Tokens Using 1% of Pixel Storage</title>
+    <updated>2023-09-11T06:04:24Z</updated>
+    <link href="https://arxiv.org/abs/2303.11114v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2303.11114v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We need billion-scale images to achieve more generalizable and ground-breaking vision models, as well as massive dataset storage to ship the images (e.g., the LAION-4B dataset needs 240TB storage space). However, it has become challenging to deal with unlimited dataset storage with limited storage infrastructure. A number of storage-efficient training methods have been proposed to tackle the problem, but they are rarely scalable or suffer from severe damage to performance. In this paper, we propose a storage-efficient training strategy for vision classifiers for large-scale datasets (e.g., ImageNet) that only uses 1024 tokens per instance without using the raw level pixels; our token storage only needs &lt;1% of the original JPEG-compressed raw pixels. We also propose token augmentations and a Stem-adaptor module to make our approach able to use the same architecture as pixel-based approaches with only minimal modifications on the stem layer and the carefully tuned optimization settings. Our experimental results on ImageNet-1k show that our method significantly outperforms other storage-efficient training methods with a large gap. We further show the effectiveness of our method in other practical scenarios, storage-efficient pre-training, and continual learning. Code is available at https://github.com/naver-ai/seit</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-03-20T13:55:35Z</published>
+    <arxiv:comment>ICCV 2023; First two authors contributed equally; code url: https://github.com/naver-ai/seit; 17 pages, 1.2MB</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Song Park</name>
+    </author>
+    <author>
+      <name>Sanghyuk Chun</name>
+    </author>
+    <author>
+      <name>Byeongho Heo</name>
+    </author>
+    <author>
+      <name>Wonjae Kim</name>
+    </author>
+    <author>
+      <name>Sangdoo Yun</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2303.09992v3</id>
+    <title>LION: Implicit Vision Prompt Tuning</title>
+    <updated>2024-03-27T16:20:52Z</updated>
+    <link href="https://arxiv.org/abs/2303.09992v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2303.09992v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Despite recent competitive performance across a range of vision tasks, vision Transformers still have an issue of heavy computational costs. Recently, vision prompt learning has provided an economic solution to this problem without fine-tuning the whole large-scale models. However, the efficiency of existing models are still far from satisfactory due to insertion of extensive prompts blocks and trick prompt designs. In this paper, we propose an efficient vision model named impLicit vIsion prOmpt tuNing (LION), which is motivated by deep implicit models with stable memory costs for various complex tasks. In particular, we merely insect two equilibrium implicit layers in two ends of the pre-trained main backbone with parameters in the backbone frozen. Moreover, we prune the parameters in these two layers according to lottery hypothesis. The performance obtained by our LION are promising on a wide range of datasets. In particular, our LION reduces up to 11.5% of training parameter numbers while obtaining higher performance compared with the state-of-the-art baseline VPT, especially under challenging scenes. Furthermore, we find that our proposed LION had a good generalization performance, making it an easy way to boost transfer learning in the future.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-03-17T14:07:55Z</published>
+    <arxiv:comment>Accepted by AAAI2024; 9 pages, 3 figures, 4 tables</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Haixin Wang</name>
+    </author>
+    <author>
+      <name>Jianlong Chang</name>
+    </author>
+    <author>
+      <name>Xiao Luo</name>
+    </author>
+    <author>
+      <name>Jinan Sun</name>
+    </author>
+    <author>
+      <name>Zhouchen Lin</name>
+    </author>
+    <author>
+      <name>Qi Tian</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2303.09917v2</id>
+    <title>Vision Transformer for Action Units Detection</title>
+    <updated>2023-03-20T14:39:32Z</updated>
+    <link href="https://arxiv.org/abs/2303.09917v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2303.09917v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Facial Action Units detection (FAUs) represents a fine-grained classification problem that involves identifying different units on the human face, as defined by the Facial Action Coding System. In this paper, we present a simple yet efficient Vision Transformer-based approach for addressing the task of Action Units (AU) detection in the context of Affective Behavior Analysis in-the-wild (ABAW) competition. We employ the Video Vision Transformer(ViViT) Network to capture the temporal facial change in the video. Besides, to reduce massive size of the Vision Transformers model, we replace the ViViT feature extraction layers with the CNN backbone (Regnet). Our model outperform the baseline model of ABAW 2023 challenge, with a notable 14% difference in result. Furthermore, the achieved results are comparable to those of the top three teams in the previous ABAW 2022 challenge.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-03-16T13:43:02Z</published>
+    <arxiv:comment>Will be updated</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Tu Vu</name>
+    </author>
+    <author>
+      <name>Van Thong Huynh</name>
+    </author>
+    <author>
+      <name>Soo Hyung Kim</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2303.07618v1</id>
+    <title>Medical Phrase Grounding with Region-Phrase Context Contrastive Alignment</title>
+    <updated>2023-03-14T03:57:16Z</updated>
+    <link href="https://arxiv.org/abs/2303.07618v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2303.07618v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Medical phrase grounding (MPG) aims to locate the most relevant region in a medical image, given a phrase query describing certain medical findings, which is an important task for medical image analysis and radiological diagnosis. However, existing visual grounding methods rely on general visual features for identifying objects in natural images and are not capable of capturing the subtle and specialized features of medical findings, leading to sub-optimal performance in MPG. In this paper, we propose MedRPG, an end-to-end approach for MPG. MedRPG is built on a lightweight vision-language transformer encoder and directly predicts the box coordinates of mentioned medical findings, which can be trained with limited medical data, making it a valuable tool in medical image analysis. To enable MedRPG to locate nuanced medical findings with better region-phrase correspondences, we further propose Tri-attention Context contrastive alignment (TaCo). TaCo seeks context alignment to pull both the features and attention outputs of relevant region-phrase pairs close together while pushing those of irrelevant regions far away. This ensures that the final box prediction depends more on its finding-specific regions and phrases. Experimental results on three MPG datasets demonstrate that our MedRPG outperforms state-of-the-art visual grounding approaches by a large margin. Additionally, the proposed TaCo strategy is effective in enhancing finding localization ability and reducing spurious region-phrase correlations.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-03-14T03:57:16Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Zhihao Chen</name>
+    </author>
+    <author>
+      <name>Yang Zhou</name>
+    </author>
+    <author>
+      <name>Anh Tran</name>
+    </author>
+    <author>
+      <name>Junting Zhao</name>
+    </author>
+    <author>
+      <name>Liang Wan</name>
+    </author>
+    <author>
+      <name>Gideon Ooi</name>
+    </author>
+    <author>
+      <name>Lionel Cheng</name>
+    </author>
+    <author>
+      <name>Choon Hua Thng</name>
+    </author>
+    <author>
+      <name>Xinxing Xu</name>
+    </author>
+    <author>
+      <name>Yong Liu</name>
+    </author>
+    <author>
+      <name>Huazhu Fu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2303.04664v2</id>
+    <title>Centroid-centered Modeling for Efficient Vision Transformer Pre-training</title>
+    <updated>2024-08-01T08:39:23Z</updated>
+    <link href="https://arxiv.org/abs/2303.04664v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2303.04664v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Masked Image Modeling (MIM) is a new self-supervised vision pre-training paradigm using a Vision Transformer (ViT). Previous works can be pixel-based or token-based, using original pixels or discrete visual tokens from parametric tokenizer models, respectively. Our proposed centroid-based approach, CCViT, leverages k-means clustering to obtain centroids for image modeling without supervised training of the tokenizer model, which only takes seconds to create. This non-parametric centroid tokenizer only takes seconds to create and is faster for token inference. The centroids can represent both patch pixels and index tokens with the property of local invariance. Specifically, we adopt patch masking and centroid replacing strategies to construct corrupted inputs, and two stacked encoder blocks to predict corrupted patch tokens and reconstruct original patch pixels. Experiments show that our CCViT achieves 84.4% top-1 accuracy on ImageNet-1K classification with ViT-B and 86.0% with ViT-L. We also transfer our pre-trained model to other downstream tasks. Our approach achieves competitive results with recent baselines without external supervision and distillation training from other models.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-03-08T15:34:57Z</published>
+    <arxiv:comment>Codes are available at https://github.com/Cakeyan/CCViT_Public</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Xin Yan</name>
+    </author>
+    <author>
+      <name>Zuchao Li</name>
+    </author>
+    <author>
+      <name>Lefei Zhang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2303.02506v3</id>
+    <title>Prismer: A Vision-Language Model with Multi-Task Experts</title>
+    <updated>2024-01-18T22:09:40Z</updated>
+    <link href="https://arxiv.org/abs/2303.02506v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2303.02506v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent vision-language models have shown impressive multi-modal generation capabilities. However, typically they require training huge models on massive datasets. As a more scalable alternative, we introduce Prismer, a data- and parameter-efficient vision-language model that leverages an ensemble of task-specific experts. Prismer only requires training of a small number of components, with the majority of network weights inherited from multiple readily-available, pre-trained experts, and kept frozen during training. By leveraging experts from a wide range of domains, we show Prismer can efficiently pool this expert knowledge and adapt it to various vision-language reasoning tasks. In our experiments, we show that Prismer achieves fine-tuned and few-shot learning performance which is competitive with current state-of-the-arts, whilst requiring up to two orders of magnitude less training data. Code is available at https://github.com/NVlabs/prismer.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-03-04T21:22:47Z</published>
+    <arxiv:comment>Published at TMLR 2024. Project Page: https://shikun.io/projects/prismer Code: https://github.com/NVlabs/prismer</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Shikun Liu</name>
+    </author>
+    <author>
+      <name>Linxi Fan</name>
+    </author>
+    <author>
+      <name>Edward Johns</name>
+    </author>
+    <author>
+      <name>Zhiding Yu</name>
+    </author>
+    <author>
+      <name>Chaowei Xiao</name>
+    </author>
+    <author>
+      <name>Anima Anandkumar</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2302.11184v2</id>
+    <title>A residual dense vision transformer for medical image super-resolution with segmentation-based perceptual loss fine-tuning</title>
+    <updated>2023-03-03T06:51:27Z</updated>
+    <link href="https://arxiv.org/abs/2302.11184v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2302.11184v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Super-resolution plays an essential role in medical imaging because it provides an alternative way to achieve high spatial resolutions and image quality with no extra acquisition costs. In the past few decades, the rapid development of deep neural networks has promoted super-resolution performance with novel network architectures, loss functions and evaluation metrics. Specifically, vision transformers dominate a broad range of computer vision tasks, but challenges still exist when applying them to low-level medical image processing tasks. This paper proposes an efficient vision transformer with residual dense connections and local feature fusion to achieve efficient single-image super-resolution (SISR) of medical modalities. Moreover, we implement a general-purpose perceptual loss with manual control for image quality improvements of desired aspects by incorporating prior knowledge of medical image segmentation. Compared with state-of-the-art methods on four public medical image datasets, the proposed method achieves the best PSNR scores of 6 modalities among seven modalities. It leads to an average improvement of $+0.09$ dB PSNR with only 38\% parameters of SwinIR. On the other hand, the segmentation-based perceptual loss increases $+0.14$ dB PSNR on average for SOTA methods, including CNNs and vision transformers. Additionally, we conduct comprehensive ablation studies to discuss potential factors for the superior performance of vision transformers over CNNs and the impacts of network and loss function components. The code will be released on GitHub with the paper published.</summary>
+    <category term="eess.IV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-02-22T07:39:09Z</published>
+    <arxiv:comment>Preprint submitted to Medical Image Analysis and under review</arxiv:comment>
+    <arxiv:primary_category term="eess.IV"/>
+    <author>
+      <name>Jin Zhu</name>
+    </author>
+    <author>
+      <name>Guang Yang</name>
+    </author>
+    <author>
+      <name>Pietro Lio</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2302.10494v4</id>
+    <title>The Role of Masking for Efficient Supervised Knowledge Distillation of Vision Transformers</title>
+    <updated>2024-09-27T14:50:23Z</updated>
+    <link href="https://arxiv.org/abs/2302.10494v4" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2302.10494v4" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Knowledge distillation is an effective method for training lightweight vision models. However, acquiring teacher supervision for training samples is often costly, especially from large-scale models like vision transformers (ViTs). In this paper, we develop a simple framework to reduce the supervision cost of ViT distillation: masking out a fraction of input tokens given to the teacher. By masking input tokens, one can skip the computations associated with the masked tokens without requiring any change to teacher parameters or architecture. We find that masking patches with the lowest student attention scores is highly effective, saving up to 50% of teacher FLOPs without any drop in student accuracy, while other masking criterion leads to suboptimal efficiency gains. Through in-depth analyses, we reveal that the student-guided masking provides a good curriculum to the student, making teacher supervision easier to follow during the early stage and challenging in the later stage.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-02-21T07:48:34Z</published>
+    <arxiv:comment>ECCV 2024</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Seungwoo Son</name>
+    </author>
+    <author>
+      <name>Jegwang Ryu</name>
+    </author>
+    <author>
+      <name>Namhoon Lee</name>
+    </author>
+    <author>
+      <name>Jaeho Lee</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2302.08374v3</id>
+    <title>Efficiency 360: Efficient Vision Transformers</title>
+    <updated>2023-02-23T19:36:20Z</updated>
+    <link href="https://arxiv.org/abs/2302.08374v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2302.08374v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Transformers are widely used for solving tasks in natural language processing, computer vision, speech, and music domains. In this paper, we talk about the efficiency of transformers in terms of memory (the number of parameters), computation cost (number of floating points operations), and performance of models, including accuracy, the robustness of the model, and fair \&amp; bias-free features. We mainly discuss the vision transformer for the image classification task. Our contribution is to introduce an efficient 360 framework, which includes various aspects of the vision transformer, to make it more efficient for industrial applications. By considering those applications, we categorize them into multiple dimensions such as privacy, robustness, transparency, fairness, inclusiveness, continual learning, probabilistic models, approximation, computational complexity, and spectral complexity. We compare various vision transformer models based on their performance, the number of parameters, and the number of floating point operations (FLOPs) on multiple datasets.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-02-16T15:43:32Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Badri N. Patro</name>
+    </author>
+    <author>
+      <name>Vijay Srinivas Agneeswaran</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.02241v1</id>
+    <title>CiT: Curation in Training for Effective Vision-Language Data</title>
+    <updated>2023-01-05T18:59:57Z</updated>
+    <link href="https://arxiv.org/abs/2301.02241v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.02241v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large vision-language models are generally applicable to many downstream tasks, but come at an exorbitant training cost that only large institutions can afford. This paper trades generality for efficiency and presents Curation in Training (CiT), a simple and efficient vision-text learning algorithm that couples a data objective into training. CiT automatically yields quality data to speed-up contrastive image-text training and alleviates the need for an offline data filtering pipeline, allowing broad data sources (including raw image-text pairs from the web). CiT contains two loops: an outer loop curating the training data and an inner loop consuming the curated training data. The text encoder connects the two loops. Given metadata for tasks of interest, e.g., class names, and a large pool of image-text pairs, CiT alternatively selects relevant training data from the pool by measuring the similarity of their text embeddings and embeddings of the metadata. In our experiments, we observe that CiT can speed up training by over an order of magnitude, especially if the raw data size is large.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-01-05T18:59:57Z</published>
+    <arxiv:comment>Technical Report</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Hu Xu</name>
+    </author>
+    <author>
+      <name>Saining Xie</name>
+    </author>
+    <author>
+      <name>Po-Yao Huang</name>
+    </author>
+    <author>
+      <name>Licheng Yu</name>
+    </author>
+    <author>
+      <name>Russell Howes</name>
+    </author>
+    <author>
+      <name>Gargi Ghosh</name>
+    </author>
+    <author>
+      <name>Luke Zettlemoyer</name>
+    </author>
+    <author>
+      <name>Christoph Feichtenhofer</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.01940v1</id>
+    <title>Enabling Augmented Segmentation and Registration in Ultrasound-Guided Spinal Surgery via Realistic Ultrasound Synthesis from Diagnostic CT Volume</title>
+    <updated>2023-01-05T07:28:06Z</updated>
+    <link href="https://arxiv.org/abs/2301.01940v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.01940v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This paper aims to tackle the issues on unavailable or insufficient clinical US data and meaningful annotation to enable bone segmentation and registration for US-guided spinal surgery. While the US is not a standard paradigm for spinal surgery, the scarcity of intra-operative clinical US data is an insurmountable bottleneck in training a neural network. Moreover, due to the characteristics of US imaging, it is difficult to clearly annotate bone surfaces which causes the trained neural network missing its attention to the details. Hence, we propose an In silico bone US simulation framework that synthesizes realistic US images from diagnostic CT volume. Afterward, using these simulated bone US we train a lightweight vision transformer model that can achieve accurate and on-the-fly bone segmentation for spinal sonography. In the validation experiments, the realistic US simulation was conducted by deriving from diagnostic spinal CT volume to facilitate a radiation-free US-guided pedicle screw placement procedure. When it is employed for training bone segmentation task, the Chamfer distance achieves 0.599mm; when it is applied for CT-US registration, the associated bone segmentation accuracy achieves 0.93 in Dice, and the registration accuracy based on the segmented point cloud is 0.13~3.37mm in a complication-free manner. While bone US images exhibit strong echoes at the medium interface, it may enable the model indistinguishable between thin interfaces and bone surfaces by simply relying on small neighborhood information. To overcome these shortcomings, we propose to utilize a Long-range Contrast Learning Module to fully explore the Long-range Contrast between the candidates and their surrounding pixels.</summary>
+    <category term="eess.IV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-01-05T07:28:06Z</published>
+    <arxiv:comment>Submitted to IEEE Transactions on Automation Science and Engineering. Note that the abstract is shorter than that in the pdf file due to character limitations</arxiv:comment>
+    <arxiv:primary_category term="eess.IV"/>
+    <author>
+      <name>Ang Li</name>
+    </author>
+    <author>
+      <name>Jiayi Han</name>
+    </author>
+    <author>
+      <name>Yongjian Zhao</name>
+    </author>
+    <author>
+      <name>Keyu Li</name>
+    </author>
+    <author>
+      <name>Li Liu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2211.11701v1</id>
+    <title>Perceiver-VL: Efficient Vision-and-Language Modeling with Iterative Latent Attention</title>
+    <updated>2022-11-21T18:22:39Z</updated>
+    <link href="https://arxiv.org/abs/2211.11701v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2211.11701v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We present Perceiver-VL, a vision-and-language framework that efficiently handles high-dimensional multimodal inputs such as long videos and text. Powered by the iterative latent cross-attention of Perceiver, our framework scales with linear complexity, in contrast to the quadratic complexity of self-attention used in many state-of-the-art transformer-based models. To further improve the efficiency of our framework, we also study applying LayerDrop on cross-attention layers and introduce a mixed-stream architecture for cross-modal retrieval. We evaluate Perceiver-VL on diverse video-text and image-text benchmarks, where Perceiver-VL achieves the lowest GFLOPs and latency while maintaining competitive performance. In addition, we also provide comprehensive analyses of various aspects of our framework, including pretraining data, scalability of latent size and input size, dropping cross-attention layers at inference to reduce latency, modality aggregation strategy, positional encoding, and weight initialization strategy. Our code and checkpoints are available at: https://github.com/zinengtang/Perceiver_VL</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-11-21T18:22:39Z</published>
+    <arxiv:comment>WACV 2023 (first two authors contributed equally)</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Zineng Tang</name>
+    </author>
+    <author>
+      <name>Jaemin Cho</name>
+    </author>
+    <author>
+      <name>Jie Lei</name>
+    </author>
+    <author>
+      <name>Mohit Bansal</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2211.11315v1</id>
+    <title>Beyond Attentive Tokens: Incorporating Token Importance and Diversity for Efficient Vision Transformers</title>
+    <updated>2022-11-21T09:57:11Z</updated>
+    <link href="https://arxiv.org/abs/2211.11315v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2211.11315v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Vision transformers have achieved significant improvements on various vision tasks but their quadratic interactions between tokens significantly reduce computational efficiency. Many pruning methods have been proposed to remove redundant tokens for efficient vision transformers recently. However, existing studies mainly focus on the token importance to preserve local attentive tokens but completely ignore the global token diversity. In this paper, we emphasize the cruciality of diverse global semantics and propose an efficient token decoupling and merging method that can jointly consider the token importance and diversity for token pruning. According to the class token attention, we decouple the attentive and inattentive tokens. In addition to preserving the most discriminative local tokens, we merge similar inattentive tokens and match homogeneous attentive tokens to maximize the token diversity. Despite its simplicity, our method obtains a promising trade-off between model complexity and classification accuracy. On DeiT-S, our method reduces the FLOPs by 35% with only a 0.2% accuracy drop. Notably, benefiting from maintaining the token diversity, our method can even improve the accuracy of DeiT-T by 0.1% after reducing its FLOPs by 40%.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-11-21T09:57:11Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Sifan Long</name>
+    </author>
+    <author>
+      <name>Zhen Zhao</name>
+    </author>
+    <author>
+      <name>Jimin Pi</name>
+    </author>
+    <author>
+      <name>Shengsheng Wang</name>
+    </author>
+    <author>
+      <name>Jingdong Wang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2211.10801v1</id>
+    <title>Peeling the Onion: Hierarchical Reduction of Data Redundancy for Efficient Vision Transformer Training</title>
+    <updated>2022-11-19T21:15:47Z</updated>
+    <link href="https://arxiv.org/abs/2211.10801v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2211.10801v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Vision transformers (ViTs) have recently obtained success in many applications, but their intensive computation and heavy memory usage at both training and inference time limit their generalization. Previous compression algorithms usually start from the pre-trained dense models and only focus on efficient inference, while time-consuming training is still unavoidable. In contrast, this paper points out that the million-scale training data is redundant, which is the fundamental reason for the tedious training. To address the issue, this paper aims to introduce sparsity into data and proposes an end-to-end efficient training framework from three sparse perspectives, dubbed Tri-Level E-ViT. Specifically, we leverage a hierarchical data redundancy reduction scheme, by exploring the sparsity under three levels: number of training examples in the dataset, number of patches (tokens) in each example, and number of connections between tokens that lie in attention weights. With extensive experiments, we demonstrate that our proposed technique can noticeably accelerate training for various ViT architectures while maintaining accuracy. Remarkably, under certain ratios, we are able to improve the ViT accuracy rather than compromising it. For example, we can achieve 15.2% speedup with 72.6% (+0.4) Top-1 accuracy on Deit-T, and 15.7% speedup with 79.9% (+0.1) Top-1 accuracy on Deit-S. This proves the existence of data redundancy in ViT.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-11-19T21:15:47Z</published>
+    <arxiv:comment>AAAI 2023</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Zhenglun Kong</name>
+    </author>
+    <author>
+      <name>Haoyu Ma</name>
+    </author>
+    <author>
+      <name>Geng Yuan</name>
+    </author>
+    <author>
+      <name>Mengshu Sun</name>
+    </author>
+    <author>
+      <name>Yanyue Xie</name>
+    </author>
+    <author>
+      <name>Peiyan Dong</name>
+    </author>
+    <author>
+      <name>Xin Meng</name>
+    </author>
+    <author>
+      <name>Xuan Shen</name>
+    </author>
+    <author>
+      <name>Hao Tang</name>
+    </author>
+    <author>
+      <name>Minghai Qin</name>
+    </author>
+    <author>
+      <name>Tianlong Chen</name>
+    </author>
+    <author>
+      <name>Xiaolong Ma</name>
+    </author>
+    <author>
+      <name>Xiaohui Xie</name>
+    </author>
+    <author>
+      <name>Zhangyang Wang</name>
+    </author>
+    <author>
+      <name>Yanzhi Wang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2211.07198v2</id>
+    <title>Fcaformer: Forward Cross Attention in Hybrid Vision Transformer</title>
+    <updated>2023-03-20T03:43:27Z</updated>
+    <link href="https://arxiv.org/abs/2211.07198v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2211.07198v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Currently, one main research line in designing a more efficient vision transformer is reducing the computational cost of self attention modules by adopting sparse attention or using local attention windows. In contrast, we propose a different approach that aims to improve the performance of transformer-based architectures by densifying the attention pattern. Specifically, we proposed forward cross attention for hybrid vision transformer (FcaFormer), where tokens from previous blocks in the same stage are secondary used. To achieve this, the FcaFormer leverages two innovative components: learnable scale factors (LSFs) and a token merge and enhancement module (TME). The LSFs enable efficient processing of cross tokens, while the TME generates representative cross tokens. By integrating these components, the proposed FcaFormer enhances the interactions of tokens across blocks with potentially different semantics, and encourages more information flows to the lower levels. Based on the forward cross attention (Fca), we have designed a series of FcaFormer models that achieve the best trade-off between model size, computational cost, memory cost, and accuracy. For example, without the need for knowledge distillation to strengthen training, our FcaFormer achieves 83.1% top-1 accuracy on Imagenet with only 16.3 million parameters and about 3.6 billion MACs. This saves almost half of the parameters and a few computational costs while achieving 0.7% higher accuracy compared to distilled EfficientFormer.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-11-14T08:43:44Z</published>
+    <arxiv:comment>10 pages, 8 figures. Source code is available at https://github.com/hkzhang91/FcaFormer</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Haokui Zhang</name>
+    </author>
+    <author>
+      <name>Wenze Hu</name>
+    </author>
+    <author>
+      <name>Xiaoyu Wang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2208.13628v2</id>
+    <title>Efficient Vision-Language Pretraining with Visual Concepts and Hierarchical Alignment</title>
+    <updated>2022-10-05T11:35:46Z</updated>
+    <link href="https://arxiv.org/abs/2208.13628v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2208.13628v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Vision and Language Pretraining has become the prevalent approach for tackling multimodal downstream tasks. The current trend is to move towards ever larger models and pretraining datasets. This computational headlong rush does not seem reasonable in the long term to move toward sustainable solutions, and de facto excludes academic laboratories with limited resources. In this work, we propose a new framework, dubbed ViCHA, that efficiently exploits the input data to boost the learning by: (a) a new hierarchical cross-modal alignment loss, (b) new self-supervised scheme based on masked image modeling, (c) leveraging image-level annotations, called Visual Concepts, obtained with existing foundation models such as CLIP to boost the performance of the image encoder. Although pretrained on four times less data, our ViCHA strategy outperforms other approaches on several downstream tasks such as Image-Text Retrieval, VQA, Visual Reasoning, Visual Entailment and Visual Grounding. The code will be made publicly available here: https://github.com/mshukor/ViCHA</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-08-29T14:24:08Z</published>
+    <arxiv:comment>BMVC 2022</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Mustafa Shukor</name>
+    </author>
+    <author>
+      <name>Guillaume Couairon</name>
+    </author>
+    <author>
+      <name>Matthieu Cord</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2208.08166v1</id>
+    <title>Data-Efficient Vision Transformers for Multi-Label Disease Classification on Chest Radiographs</title>
+    <updated>2022-08-17T09:07:45Z</updated>
+    <link href="https://arxiv.org/abs/2208.08166v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2208.08166v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Radiographs are a versatile diagnostic tool for the detection and assessment of pathologies, for treatment planning or for navigation and localization purposes in clinical interventions. However, their interpretation and assessment by radiologists can be tedious and error-prone. Thus, a wide variety of deep learning methods have been proposed to support radiologists interpreting radiographs. Mostly, these approaches rely on convolutional neural networks (CNN) to extract features from images. Especially for the multi-label classification of pathologies on chest radiographs (Chest X-Rays, CXR), CNNs have proven to be well suited. On the Contrary, Vision Transformers (ViTs) have not been applied to this task despite their high classification performance on generic images and interpretable local saliency maps which could add value to clinical interventions. ViTs do not rely on convolutions but on patch-based self-attention and in contrast to CNNs, no prior knowledge of local connectivity is present. While this leads to increased capacity, ViTs typically require an excessive amount of training data which represents a hurdle in the medical domain as high costs are associated with collecting large medical data sets. In this work, we systematically compare the classification performance of ViTs and CNNs for different data set sizes and evaluate more data-efficient ViT variants (DeiT). Our results show that while the performance between ViTs and CNNs is on par with a small benefit for ViTs, DeiTs outperform the former if a reasonably large data set is available for training.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-08-17T09:07:45Z</published>
+    <arxiv:comment>Accepted at CURAC22 Conference</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Finn Behrendt</name>
+    </author>
+    <author>
+      <name>Debayan Bhattacharya</name>
+    </author>
+    <author>
+      <name>Julia Krüger</name>
+    </author>
+    <author>
+      <name>Roland Opfer</name>
+    </author>
+    <author>
+      <name>Alexander Schlaefer</name>
+    </author>
+    <arxiv:doi>10.1515/cdbme-2022-0009</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1515/cdbme-2022-0009" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2208.07479v1</id>
+    <title>Context-Aware Streaming Perception in Dynamic Environments</title>
+    <updated>2022-08-16T00:33:04Z</updated>
+    <link href="https://arxiv.org/abs/2208.07479v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2208.07479v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Efficient vision works maximize accuracy under a latency budget. These works evaluate accuracy offline, one image at a time. However, real-time vision applications like autonomous driving operate in streaming settings, where ground truth changes between inference start and finish. This results in a significant accuracy drop. Therefore, a recent work proposed to maximize accuracy in streaming settings on average. In this paper, we propose to maximize streaming accuracy for every environment context. We posit that scenario difficulty influences the initial (offline) accuracy difference, while obstacle displacement in the scene affects the subsequent accuracy degradation. Our method, Octopus, uses these scenario properties to select configurations that maximize streaming accuracy at test time. Our method improves tracking performance (S-MOTA) by 7.4% over the conventional static approach. Further, performance improvement using our method comes in addition to, and not instead of, advances in offline accuracy.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-08-16T00:33:04Z</published>
+    <arxiv:comment>26 pages, 10 figures, to be published in ECCV 2022</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Gur-Eyal Sela</name>
+    </author>
+    <author>
+      <name>Ionel Gog</name>
+    </author>
+    <author>
+      <name>Justin Wong</name>
+    </author>
+    <author>
+      <name>Kumar Krishna Agrawal</name>
+    </author>
+    <author>
+      <name>Xiangxi Mo</name>
+    </author>
+    <author>
+      <name>Sukrit Kalra</name>
+    </author>
+    <author>
+      <name>Peter Schafhalter</name>
+    </author>
+    <author>
+      <name>Eric Leong</name>
+    </author>
+    <author>
+      <name>Xin Wang</name>
+    </author>
+    <author>
+      <name>Bharathan Balaji</name>
+    </author>
+    <author>
+      <name>Joseph Gonzalez</name>
+    </author>
+    <author>
+      <name>Ion Stoica</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2208.06066v1</id>
+    <title>Deep is a Luxury We Don't Have</title>
+    <updated>2022-08-11T23:43:52Z</updated>
+    <link href="https://arxiv.org/abs/2208.06066v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2208.06066v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Medical images come in high resolutions. A high resolution is vital for finding malignant tissues at an early stage. Yet, this resolution presents a challenge in terms of modeling long range dependencies. Shallow transformers eliminate this problem, but they suffer from quadratic complexity. In this paper, we tackle this complexity by leveraging a linear self-attention approximation. Through this approximation, we propose an efficient vision model called HCT that stands for High resolution Convolutional Transformer. HCT brings transformers' merits to high resolution images at a significantly lower cost. We evaluate HCT using a high resolution mammography dataset. HCT is significantly superior to its CNN counterpart. Furthermore, we demonstrate HCT's fitness for medical images by evaluating its effective receptive field.Code available at https://bit.ly/3ykBhhf</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-08-11T23:43:52Z</published>
+    <arxiv:comment>MICCAI 2022 + Extra Experiments</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Ahmed Taha</name>
+    </author>
+    <author>
+      <name>Yen Nhi Truong Vu</name>
+    </author>
+    <author>
+      <name>Brent Mombourquette</name>
+    </author>
+    <author>
+      <name>Thomas Paul Matthews</name>
+    </author>
+    <author>
+      <name>Jason Su</name>
+    </author>
+    <author>
+      <name>Sadanand Singh</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2208.04060v1</id>
+    <title>GRIT-VLP: Grouped Mini-batch Sampling for Efficient Vision and Language Pre-training</title>
+    <updated>2022-08-08T11:15:45Z</updated>
+    <link href="https://arxiv.org/abs/2208.04060v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2208.04060v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Most of the currently existing vision and language pre-training (VLP) methods have mainly focused on how to extract and align vision and text features. In contrast to the mainstream VLP methods, we highlight that two routinely applied steps during pre-training have crucial impact on the performance of the pre-trained model: in-batch hard negative sampling for image-text matching (ITM) and assigning the large masking probability for the masked language modeling (MLM). After empirically showing the unexpected effectiveness of above two steps, we systematically devise our GRIT-VLP, which adaptively samples mini-batches for more effective mining of hard negative samples for ITM while maintaining the computational cost for pre-training. Our method consists of three components: 1) GRouped mIni-baTch sampling (GRIT) strategy that collects similar examples in a mini-batch, 2) ITC consistency loss for improving the mining ability, and 3) enlarged masking probability for MLM. Consequently, we show our GRIT-VLP achieves a new state-of-the-art performance on various downstream tasks with much less computational cost. Furthermore, we demonstrate that our model is essentially in par with ALBEF, the previous state-of-the-art, only with one-third of training epochs on the same training data. Code is available at https://github.com/jaeseokbyun/GRIT-VLP.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-08-08T11:15:45Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Jaeseok Byun</name>
+    </author>
+    <author>
+      <name>Taebaek Hwang</name>
+    </author>
+    <author>
+      <name>Jianlong Fu</name>
+    </author>
+    <author>
+      <name>Taesup Moon</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2207.14525v1</id>
+    <title>Curriculum Learning for Data-Efficient Vision-Language Alignment</title>
+    <updated>2022-07-29T07:45:56Z</updated>
+    <link href="https://arxiv.org/abs/2207.14525v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2207.14525v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Aligning image and text encoders from scratch using contrastive learning requires large amounts of paired image-text data. We alleviate this need by aligning individually pre-trained language and vision representation models using a much smaller amount of paired data, augmented with a curriculum learning algorithm to learn fine-grained vision-language alignments. TOnICS (Training with Ontology-Informed Contrastive Sampling) initially samples minibatches whose image-text pairs contain a wide variety of objects to learn object-level alignment, and progressively samples minibatches where all image-text pairs contain the same object to learn finer-grained contextual alignment. Aligning pre-trained BERT and VinVL models to each other using TOnICS outperforms CLIP on downstream zero-shot image retrieval while using less than 1% as much training data.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-07-29T07:45:56Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Tejas Srinivasan</name>
+    </author>
+    <author>
+      <name>Xiang Ren</name>
+    </author>
+    <author>
+      <name>Jesse Thomason</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2207.10255v2</id>
+    <title>SplitMixer: Fat Trimmed From MLP-like Models</title>
+    <updated>2022-07-25T17:04:19Z</updated>
+    <link href="https://arxiv.org/abs/2207.10255v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2207.10255v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We present SplitMixer, a simple and lightweight isotropic MLP-like architecture, for visual recognition. It contains two types of interleaving convolutional operations to mix information across spatial locations (spatial mixing) and channels (channel mixing). The first one includes sequentially applying two depthwise 1D kernels, instead of a 2D kernel, to mix spatial information. The second one is splitting the channels into overlapping or non-overlapping segments, with or without shared parameters, and applying our proposed channel mixing approaches or 3D convolution to mix channel information. Depending on design choices, a number of SplitMixer variants can be constructed to balance accuracy, the number of parameters, and speed. We show, both theoretically and experimentally, that SplitMixer performs on par with the state-of-the-art MLP-like models while having a significantly lower number of parameters and FLOPS. For example, without strong data augmentation and optimization, SplitMixer achieves around 94% accuracy on CIFAR-10 with only 0.28M parameters, while ConvMixer achieves the same accuracy with about 0.6M parameters. The well-known MLP-Mixer achieves 85.45% with 17.1M parameters. On CIFAR-100 dataset, SplitMixer achieves around 73% accuracy, on par with ConvMixer, but with about 52% fewer parameters and FLOPS. We hope that our results spark further research towards finding more efficient vision architectures and facilitate the development of MLP-like models. Code is available at https://github.com/aliborji/splitmixer.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-07-21T01:37:07Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Ali Borji</name>
+    </author>
+    <author>
+      <name>Sikun Lin</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2207.07268v2</id>
+    <title>Lightweight Vision Transformer with Cross Feature Attention</title>
+    <updated>2023-07-05T16:11:41Z</updated>
+    <link href="https://arxiv.org/abs/2207.07268v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2207.07268v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent advances in vision transformers (ViTs) have achieved great performance in visual recognition tasks. Convolutional neural networks (CNNs) exploit spatial inductive bias to learn visual representations, but these networks are spatially local. ViTs can learn global representations with their self-attention mechanism, but they are usually heavy-weight and unsuitable for mobile devices. In this paper, we propose cross feature attention (XFA) to bring down computation cost for transformers, and combine efficient mobile CNNs to form a novel efficient light-weight CNN-ViT hybrid model, XFormer, which can serve as a general-purpose backbone to learn both global and local representation. Experimental results show that XFormer outperforms numerous CNN and ViT-based models across different tasks and datasets. On ImageNet1K dataset, XFormer achieves top-1 accuracy of 78.5% with 5.5 million parameters, which is 2.2% and 6.3% more accurate than EfficientNet-B0 (CNN-based) and DeiT (ViT-based) for similar number of parameters. Our model also performs well when transferring to object detection and semantic segmentation tasks. On MS COCO dataset, XFormer exceeds MobileNetV2 by 10.5 AP (22.7 -&gt; 33.2 AP) in YOLOv3 framework with only 6.3M parameters and 3.8G FLOPs. On Cityscapes dataset, with only a simple all-MLP decoder, XFormer achieves mIoU of 78.5 and FPS of 15.3, surpassing state-of-the-art lightweight segmentation networks.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-07-15T03:27:13Z</published>
+    <arxiv:comment>Technical Report. A shorter version has been accepted to ICIP 2023</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Youpeng Zhao</name>
+    </author>
+    <author>
+      <name>Huadong Tang</name>
+    </author>
+    <author>
+      <name>Yingying Jiang</name>
+    </author>
+    <author>
+      <name>Yong A</name>
+    </author>
+    <author>
+      <name>Qiang Wu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2207.01580v2</id>
+    <title>Dynamic Spatial Sparsification for Efficient Vision Transformers and Convolutional Neural Networks</title>
+    <updated>2023-06-02T13:50:01Z</updated>
+    <link href="https://arxiv.org/abs/2207.01580v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2207.01580v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In this paper, we present a new approach for model acceleration by exploiting spatial sparsity in visual data. We observe that the final prediction in vision Transformers is only based on a subset of the most informative tokens, which is sufficient for accurate image recognition. Based on this observation, we propose a dynamic token sparsification framework to prune redundant tokens progressively and dynamically based on the input to accelerate vision Transformers. Specifically, we devise a lightweight prediction module to estimate the importance score of each token given the current features. The module is added to different layers to prune redundant tokens hierarchically. While the framework is inspired by our observation of the sparse attention in vision Transformers, we find the idea of adaptive and asymmetric computation can be a general solution for accelerating various architectures. We extend our method to hierarchical models including CNNs and hierarchical vision Transformers as well as more complex dense prediction tasks that require structured feature maps by formulating a more generic dynamic spatial sparsification framework with progressive sparsification and asymmetric computation for different spatial locations. By applying lightweight fast paths to less informative features and using more expressive slow paths to more important locations, we can maintain the structure of feature maps while significantly reducing the overall computations. Extensive experiments demonstrate the effectiveness of our framework on various modern architectures and different visual recognition tasks. Our results clearly demonstrate that dynamic spatial sparsification offers a new and more effective dimension for model acceleration. Code is available at https://github.com/raoyongming/DynamicViT</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-07-04T17:00:51Z</published>
+    <arxiv:comment>Accepted to T-PAMI. Journal version of our NeurIPS 2021 work: arXiv:2106.02034. Code is available at https://github.com/raoyongming/DynamicViT</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Yongming Rao</name>
+    </author>
+    <author>
+      <name>Zuyan Liu</name>
+    </author>
+    <author>
+      <name>Wenliang Zhao</name>
+    </author>
+    <author>
+      <name>Jie Zhou</name>
+    </author>
+    <author>
+      <name>Jiwen Lu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2207.01405v4</id>
+    <title>I-ViT: Integer-only Quantization for Efficient Vision Transformer Inference</title>
+    <updated>2023-08-07T03:11:49Z</updated>
+    <link href="https://arxiv.org/abs/2207.01405v4" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2207.01405v4" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Vision Transformers (ViTs) have achieved state-of-the-art performance on various computer vision applications. However, these models have considerable storage and computational overheads, making their deployment and efficient inference on edge devices challenging. Quantization is a promising approach to reducing model complexity, and the dyadic arithmetic pipeline can allow the quantized models to perform efficient integer-only inference. Unfortunately, dyadic arithmetic is based on the homogeneity condition in convolutional neural networks, which is not applicable to the non-linear components in ViTs, making integer-only inference of ViTs an open issue. In this paper, we propose I-ViT, an integer-only quantization scheme for ViTs, to enable ViTs to perform the entire computational graph of inference with integer arithmetic and bit-shifting, and without any floating-point arithmetic. In I-ViT, linear operations (e.g., MatMul and Dense) follow the integer-only pipeline with dyadic arithmetic, and non-linear operations (e.g., Softmax, GELU, and LayerNorm) are approximated by the proposed light-weight integer-only arithmetic methods. More specifically, I-ViT applies the proposed Shiftmax and ShiftGELU, which are designed to use integer bit-shifting to approximate the corresponding floating-point operations. We evaluate I-ViT on various benchmark models and the results show that integer-only INT8 quantization achieves comparable (or even slightly higher) accuracy to the full-precision (FP) baseline. Furthermore, we utilize TVM for practical hardware deployment on the GPU's integer arithmetic units, achieving 3.72$\sim$4.11$\times$ inference speedup compared to the FP model. Code of both Pytorch and TVM is released at https://github.com/zkkli/I-ViT.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-07-04T13:37:38Z</published>
+    <arxiv:comment>ICCV 2023</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Zhikai Li</name>
+    </author>
+    <author>
+      <name>Qingyi Gu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2206.12482v1</id>
+    <title>Insect-inspired Visually-guided Decentralized Swarming</title>
+    <updated>2022-06-24T19:50:01Z</updated>
+    <link href="https://arxiv.org/abs/2206.12482v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2206.12482v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This paper addresses the need for fast, lightweight, vision-guided swarming under limited computation and no explicit communication network or position source. The study develops a multi-agent optic flow sensing framework, then integrates perfect information distributed feedback with optic flow sensing to create an analogous visually-guided feedback path for idealized inter-agent velocity and distance structures. The Cucker-Smale flocking example is used to develop vision-guided swarming with rigorous asymptotic convergence guarantees, including under ignorance of agent size.</summary>
+    <category term="cs.MA" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-06-24T19:50:01Z</published>
+    <arxiv:primary_category term="cs.MA"/>
+    <author>
+      <name>Mehdi Yadipour</name>
+    </author>
+    <author>
+      <name>Imraan A. Faruque</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2205.14540v3</id>
+    <title>SupMAE: Supervised Masked Autoencoders Are Efficient Vision Learners</title>
+    <updated>2024-01-21T02:12:04Z</updated>
+    <link href="https://arxiv.org/abs/2205.14540v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2205.14540v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recently, self-supervised Masked Autoencoders (MAE) have attracted unprecedented attention for their impressive representation learning ability. However, the pretext task, Masked Image Modeling (MIM), reconstructs the missing local patches, lacking the global understanding of the image. This paper extends MAE to a fully supervised setting by adding a supervised classification branch, thereby enabling MAE to learn global features from golden labels effectively. The proposed Supervised MAE (SupMAE) only exploits a visible subset of image patches for classification, unlike the standard supervised pre-training where all image patches are used. Through experiments, we demonstrate that SupMAE is not only more training efficient but it also learns more robust and transferable features. Specifically, SupMAE achieves comparable performance with MAE using only 30% of compute when evaluated on ImageNet with the ViT-B/16 model. SupMAE's robustness on ImageNet variants and transfer learning performance outperforms MAE and standard supervised pre-training counterparts. Codes are available at https://github.com/enyac-group/supmae.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-05-28T23:05:03Z</published>
+    <arxiv:comment>Edge Intelligence Workshop Workshop at AAAI 2024</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Feng Liang</name>
+    </author>
+    <author>
+      <name>Yangguang Li</name>
+    </author>
+    <author>
+      <name>Diana Marculescu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2205.14443v2</id>
+    <title>A Closer Look at Self-Supervised Lightweight Vision Transformers</title>
+    <updated>2023-05-03T15:07:01Z</updated>
+    <link href="https://arxiv.org/abs/2205.14443v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2205.14443v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Self-supervised learning on large-scale Vision Transformers (ViTs) as pre-training methods has achieved promising downstream performance. Yet, how much these pre-training paradigms promote lightweight ViTs' performance is considerably less studied. In this work, we develop and benchmark several self-supervised pre-training methods on image classification tasks and some downstream dense prediction tasks. We surprisingly find that if proper pre-training is adopted, even vanilla lightweight ViTs show comparable performance to previous SOTA networks with delicate architecture design. It breaks the recently popular conception that vanilla ViTs are not suitable for vision tasks in lightweight regimes. We also point out some defects of such pre-training, e.g., failing to benefit from large-scale pre-training data and showing inferior performance on data-insufficient downstream tasks. Furthermore, we analyze and clearly show the effect of such pre-training by analyzing the properties of the layer representation and attention maps for related models. Finally, based on the above analyses, a distillation strategy during pre-training is developed, which leads to further downstream performance improvement for MAE-based pre-training. Code is available at https://github.com/wangsr126/mae-lite.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-05-28T14:14:57Z</published>
+    <arxiv:comment>Accepted by ICML 2023</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Shaoru Wang</name>
+    </author>
+    <author>
+      <name>Jin Gao</name>
+    </author>
+    <author>
+      <name>Zeming Li</name>
+    </author>
+    <author>
+      <name>Xiaoqin Zhang</name>
+    </author>
+    <author>
+      <name>Weiming Hu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2205.12005v2</id>
+    <title>mPLUG: Effective and Efficient Vision-Language Learning by Cross-modal Skip-connections</title>
+    <updated>2022-05-25T05:49:30Z</updated>
+    <link href="https://arxiv.org/abs/2205.12005v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2205.12005v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large-scale pretrained foundation models have been an emerging paradigm for building artificial intelligence (AI) systems, which can be quickly adapted to a wide range of downstream tasks. This paper presents mPLUG, a new vision-language foundation model for both cross-modal understanding and generation. Most existing pre-trained models suffer from the problems of low computational efficiency and information asymmetry brought by the long visual sequence in cross-modal alignment. To address these problems, mPLUG introduces an effective and efficient vision-language architecture with novel cross-modal skip-connections, which creates inter-layer shortcuts that skip a certain number of layers for time-consuming full self-attention on the vision side. mPLUG is pre-trained end-to-end on large-scale image-text pairs with both discriminative and generative objectives. It achieves state-of-the-art results on a wide range of vision-language downstream tasks, such as image captioning, image-text retrieval, visual grounding and visual question answering. mPLUG also demonstrates strong zero-shot transferability when directly transferred to multiple video-language tasks.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-05-24T11:52:06Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <arxiv:journal_ref>EMNLP2022</arxiv:journal_ref>
+    <author>
+      <name>Chenliang Li</name>
+    </author>
+    <author>
+      <name>Haiyang Xu</name>
+    </author>
+    <author>
+      <name>Junfeng Tian</name>
+    </author>
+    <author>
+      <name>Wei Wang</name>
+    </author>
+    <author>
+      <name>Ming Yan</name>
+    </author>
+    <author>
+      <name>Bin Bi</name>
+    </author>
+    <author>
+      <name>Jiabo Ye</name>
+    </author>
+    <author>
+      <name>Hehong Chen</name>
+    </author>
+    <author>
+      <name>Guohai Xu</name>
+    </author>
+    <author>
+      <name>Zheng Cao</name>
+    </author>
+    <author>
+      <name>Ji Zhang</name>
+    </author>
+    <author>
+      <name>Songfang Huang</name>
+    </author>
+    <author>
+      <name>Fei Huang</name>
+    </author>
+    <author>
+      <name>Jingren Zhou</name>
+    </author>
+    <author>
+      <name>Luo Si</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2205.11397v5</id>
+    <title>Super Vision Transformer</title>
+    <updated>2023-07-19T08:25:37Z</updated>
+    <link href="https://arxiv.org/abs/2205.11397v5" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2205.11397v5" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We attempt to reduce the computational costs in vision transformers (ViTs), which increase quadratically in the token number. We present a novel training paradigm that trains only one ViT model at a time, but is capable of providing improved image recognition performance with various computational costs. Here, the trained ViT model, termed super vision transformer (SuperViT), is empowered with the versatile ability to solve incoming patches of multiple sizes as well as preserve informative tokens with multiple keeping rates (the ratio of keeping tokens) to achieve good hardware efficiency for inference, given that the available hardware resources often change from time to time. Experimental results on ImageNet demonstrate that our SuperViT can considerably reduce the computational costs of ViT models with even performance increase. For example, we reduce 2x FLOPs of DeiT-S while increasing the Top-1 accuracy by 0.2% and 0.7% for 1.5x reduction. Also, our SuperViT significantly outperforms existing studies on efficient vision transformers. For example, when consuming the same amount of FLOPs, our SuperViT surpasses the recent state-of-the-art (SOTA) EViT by 1.1% when using DeiT-S as their backbones. The project of this work is made publicly available at https://github.com/lmbxmu/SuperViT.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-05-23T15:42:12Z</published>
+    <arxiv:comment>Accepted by International Journal of Computer Vision (IJCV) in the year of 2023</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Mingbao Lin</name>
+    </author>
+    <author>
+      <name>Mengzhao Chen</name>
+    </author>
+    <author>
+      <name>Yuxin Zhang</name>
+    </author>
+    <author>
+      <name>Chunhua Shen</name>
+    </author>
+    <author>
+      <name>Rongrong Ji</name>
+    </author>
+    <author>
+      <name>Liujuan Cao</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2205.01460v1</id>
+    <title>3D Semantic Scene Perception using Distributed Smart Edge Sensors</title>
+    <updated>2022-05-03T12:46:26Z</updated>
+    <link href="https://arxiv.org/abs/2205.01460v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2205.01460v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We present a system for 3D semantic scene perception consisting of a network of distributed smart edge sensors. The sensor nodes are based on an embedded CNN inference accelerator and RGB-D and thermal cameras. Efficient vision CNN models for object detection, semantic segmentation, and human pose estimation run on-device in real time. 2D human keypoint estimations, augmented with the RGB-D depth estimate, as well as semantically annotated point clouds are streamed from the sensors to a central backend, where multiple viewpoints are fused into an allocentric 3D semantic scene model. As the image interpretation is computed locally, only semantic information is sent over the network. The raw images remain on the sensor boards, significantly reducing the required bandwidth, and mitigating privacy risks for the observed persons. We evaluate the proposed system in challenging real-world multi-person scenes in our lab. The proposed perception system provides a complete scene view containing semantically annotated 3D geometry and estimates 3D poses of multiple persons in real time.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-05-03T12:46:26Z</published>
+    <arxiv:comment>17th International Conference on Intelligent Autonomous Systems (IAS), Zagreb, Croatia, June 2022</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Simon Bultmann</name>
+    </author>
+    <author>
+      <name>Sven Behnke</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2204.08412v1</id>
+    <title>Temporally Efficient Vision Transformer for Video Instance Segmentation</title>
+    <updated>2022-04-18T17:09:20Z</updated>
+    <link href="https://arxiv.org/abs/2204.08412v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2204.08412v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recently vision transformer has achieved tremendous success on image-level visual recognition tasks. To effectively and efficiently model the crucial temporal information within a video clip, we propose a Temporally Efficient Vision Transformer (TeViT) for video instance segmentation (VIS). Different from previous transformer-based VIS methods, TeViT is nearly convolution-free, which contains a transformer backbone and a query-based video instance segmentation head. In the backbone stage, we propose a nearly parameter-free messenger shift mechanism for early temporal context fusion. In the head stages, we propose a parameter-shared spatiotemporal query interaction mechanism to build the one-to-one correspondence between video instances and queries. Thus, TeViT fully utilizes both framelevel and instance-level temporal context information and obtains strong temporal modeling capacity with negligible extra computational cost. On three widely adopted VIS benchmarks, i.e., YouTube-VIS-2019, YouTube-VIS-2021, and OVIS, TeViT obtains state-of-the-art results and maintains high inference speed, e.g., 46.6 AP with 68.9 FPS on YouTube-VIS-2019. Code is available at https://github.com/hustvl/TeViT.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-04-18T17:09:20Z</published>
+    <arxiv:comment>To appear in CVPR 2022</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Shusheng Yang</name>
+    </author>
+    <author>
+      <name>Xinggang Wang</name>
+    </author>
+    <author>
+      <name>Yu Li</name>
+    </author>
+    <author>
+      <name>Yuxin Fang</name>
+    </author>
+    <author>
+      <name>Jiemin Fang</name>
+    </author>
+    <author>
+      <name>Wenyu Liu</name>
+    </author>
+    <author>
+      <name>Xun Zhao</name>
+    </author>
+    <author>
+      <name>Ying Shan</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2204.07722v1</id>
+    <title>Searching Intrinsic Dimensions of Vision Transformers</title>
+    <updated>2022-04-16T05:16:35Z</updated>
+    <link href="https://arxiv.org/abs/2204.07722v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2204.07722v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>It has been shown by many researchers that transformers perform as well as convolutional neural networks in many computer vision tasks. Meanwhile, the large computational costs of its attention module hinder further studies and applications on edge devices. Some pruning methods have been developed to construct efficient vision transformers, but most of them have considered image classification tasks only. Inspired by these results, we propose SiDT, a method for pruning vision transformer backbones on more complicated vision tasks like object detection, based on the search of transformer dimensions. Experiments on CIFAR-100 and COCO datasets show that the backbones with 20\% or 40\% dimensions/parameters pruned can have similar or even better performance than the unpruned models. Moreover, we have also provided the complexity analysis and comparisons with the previous pruning methods.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-04-16T05:16:35Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Fanghui Xue</name>
+    </author>
+    <author>
+      <name>Biao Yang</name>
+    </author>
+    <author>
+      <name>Yingyong Qi</name>
+    </author>
+    <author>
+      <name>Jack Xin</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2204.06779v1</id>
+    <title>3D Shuffle-Mixer: An Efficient Context-Aware Vision Learner of Transformer-MLP Paradigm for Dense Prediction in Medical Volume</title>
+    <updated>2022-04-14T06:32:12Z</updated>
+    <link href="https://arxiv.org/abs/2204.06779v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2204.06779v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Dense prediction in medical volume provides enriched guidance for clinical analysis. CNN backbones have met bottleneck due to lack of long-range dependencies and global context modeling power. Recent works proposed to combine vision transformer with CNN, due to its strong global capture ability and learning capability. However, most works are limited to simply applying pure transformer with several fatal flaws (i.e., lack of inductive bias, heavy computation and little consideration for 3D data). Therefore, designing an elegant and efficient vision transformer learner for dense prediction in medical volume is promising and challenging. In this paper, we propose a novel 3D Shuffle-Mixer network of a new Local Vision Transformer-MLP paradigm for medical dense prediction. In our network, a local vision transformer block is utilized to shuffle and learn spatial context from full-view slices of rearranged volume, a residual axial-MLP is designed to mix and capture remaining volume context in a slice-aware manner, and a MLP view aggregator is employed to project the learned full-view rich context to the volume feature in a view-aware manner. Moreover, an Adaptive Scaled Enhanced Shortcut is proposed for local vision transformer to enhance feature along spatial and channel dimensions adaptively, and a CrossMerge is proposed to skip-connects the multi-scale feature appropriately in the pyramid architecture. Extensive experiments demonstrate the proposed model outperforms other state-of-the-art medical dense prediction methods.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-04-14T06:32:12Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Jianye Pang</name>
+    </author>
+    <author>
+      <name>Cheng Jiang</name>
+    </author>
+    <author>
+      <name>Yihao Chen</name>
+    </author>
+    <author>
+      <name>Jianbo Chang</name>
+    </author>
+    <author>
+      <name>Ming Feng</name>
+    </author>
+    <author>
+      <name>Renzhi Wang</name>
+    </author>
+    <author>
+      <name>Jianhua Yao</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2203.02358v1</id>
+    <title>ViT-P: Rethinking Data-efficient Vision Transformers from Locality</title>
+    <updated>2022-03-04T14:49:48Z</updated>
+    <link href="https://arxiv.org/abs/2203.02358v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2203.02358v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent advances of Transformers have brought new trust to computer vision tasks. However, on small dataset, Transformers is hard to train and has lower performance than convolutional neural networks. We make vision transformers as data-efficient as convolutional neural networks by introducing multi-focal attention bias. Inspired by the attention distance in a well-trained ViT, we constrain the self-attention of ViT to have multi-scale localized receptive field. The size of receptive field is adaptable during training so that optimal configuration can be learned. We provide empirical evidence that proper constrain of receptive field can reduce the amount of training data for vision transformers. On Cifar100, our ViT-P Base model achieves the state-of-the-art accuracy (83.16%) trained from scratch. We also perform analysis on ImageNet to show our method does not lose accuracy on large data sets.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-03-04T14:49:48Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Bin Chen</name>
+    </author>
+    <author>
+      <name>Ran Wang</name>
+    </author>
+    <author>
+      <name>Di Ming</name>
+    </author>
+    <author>
+      <name>Xin Feng</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2201.06098v1</id>
+    <title>An Edge Map based Ensemble Solution to Detect Water Level in Stream</title>
+    <updated>2022-01-16T17:43:12Z</updated>
+    <link href="https://arxiv.org/abs/2201.06098v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2201.06098v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Flooding is one of the most dangerous weather events today. Between $2015-2019$, on average, flooding has caused more than $130$ deaths every year in the USA alone. The devastating nature of flood necessitates the continuous monitoring of water level in the rivers and streams to detect the incoming flood. In this work, we have designed and implemented an efficient vision-based ensemble solution to continuously detect the water level in the creek. Our solution adapts template matching algorithm to find the region of interest by leveraging edge maps, and combines two parallel approach to identify the water level. While first approach fits a linear regression model in edge map to identify the water line, second approach uses a split sliding window to compute the sum of squared difference in pixel intensities to find the water surface. We evaluated the proposed system on $4306$ images collected between $3$rd October and $18$th December in 2019 with the frequency of $1$ image in every $10$ minutes. The system exhibited low error rate as it achieved $4.8$, $3.1\%$ and $0.92$ scores for MAE, MAPE and $R^2$ evaluation metrics, respectively. We believe the proposed solution is very practical as it is pervasive, accurate, doesn't require installation of any additional infrastructure in the water body and can be easily adapted to other locations.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-01-16T17:43:12Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Pratool Bharti</name>
+    </author>
+    <author>
+      <name>Priyanjani Chandra</name>
+    </author>
+    <author>
+      <name>Michael. E. Papka</name>
+    </author>
+    <author>
+      <name>David Koop</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2112.07658v3</id>
+    <title>AdaViT: Adaptive Tokens for Efficient Vision Transformer</title>
+    <updated>2022-10-05T18:39:43Z</updated>
+    <link href="https://arxiv.org/abs/2112.07658v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2112.07658v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We introduce A-ViT, a method that adaptively adjusts the inference cost of vision transformer (ViT) for images of different complexity. A-ViT achieves this by automatically reducing the number of tokens in vision transformers that are processed in the network as inference proceeds. We reformulate Adaptive Computation Time (ACT) for this task, extending halting to discard redundant spatial tokens. The appealing architectural properties of vision transformers enables our adaptive token reduction mechanism to speed up inference without modifying the network architecture or inference hardware. We demonstrate that A-ViT requires no extra parameters or sub-network for halting, as we base the learning of adaptive halting on the original network parameters. We further introduce distributional prior regularization that stabilizes training compared to prior ACT approaches. On the image classification task (ImageNet1K), we show that our proposed A-ViT yields high efficacy in filtering informative spatial features and cutting down on the overall compute. The proposed method improves the throughput of DeiT-Tiny by 62% and DeiT-Small by 38% with only 0.3% accuracy drop, outperforming prior art by a large margin. Project page at https://a-vit.github.io/</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2021-12-14T18:56:07Z</published>
+    <arxiv:comment>CVPR'22 oral acceptance</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Hongxu Yin</name>
+    </author>
+    <author>
+      <name>Arash Vahdat</name>
+    </author>
+    <author>
+      <name>Jose Alvarez</name>
+    </author>
+    <author>
+      <name>Arun Mallya</name>
+    </author>
+    <author>
+      <name>Jan Kautz</name>
+    </author>
+    <author>
+      <name>Pavlo Molchanov</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2111.15667v3</id>
+    <title>Adaptive Token Sampling For Efficient Vision Transformers</title>
+    <updated>2022-07-26T17:54:59Z</updated>
+    <link href="https://arxiv.org/abs/2111.15667v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2111.15667v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>While state-of-the-art vision transformer models achieve promising results in image classification, they are computationally expensive and require many GFLOPs. Although the GFLOPs of a vision transformer can be decreased by reducing the number of tokens in the network, there is no setting that is optimal for all input images. In this work, we therefore introduce a differentiable parameter-free Adaptive Token Sampler (ATS) module, which can be plugged into any existing vision transformer architecture. ATS empowers vision transformers by scoring and adaptively sampling significant tokens. As a result, the number of tokens is not constant anymore and varies for each input image. By integrating ATS as an additional layer within the current transformer blocks, we can convert them into much more efficient vision transformers with an adaptive number of tokens. Since ATS is a parameter-free module, it can be added to the off-the-shelf pre-trained vision transformers as a plug and play module, thus reducing their GFLOPs without any additional training. Moreover, due to its differentiable design, one can also train a vision transformer equipped with ATS. We evaluate the efficiency of our module in both image and video classification tasks by adding it to multiple SOTA vision transformers. Our proposed module improves the SOTA by reducing their computational costs (GFLOPs) by 2X, while preserving their accuracy on the ImageNet, Kinetics-400, and Kinetics-600 datasets.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2021-11-30T18:56:57Z</published>
+    <arxiv:comment>ECCV 2022</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Mohsen Fayyaz</name>
+    </author>
+    <author>
+      <name>Soroush Abbasi Koohpayegani</name>
+    </author>
+    <author>
+      <name>Farnoush Rezaei Jafari</name>
+    </author>
+    <author>
+      <name>Sunando Sengupta</name>
+    </author>
+    <author>
+      <name>Hamid Reza Vaezi Joze</name>
+    </author>
+    <author>
+      <name>Eric Sommerlade</name>
+    </author>
+    <author>
+      <name>Hamed Pirsiavash</name>
+    </author>
+    <author>
+      <name>Juergen Gall</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2111.05297v3</id>
+    <title>Sliced Recursive Transformer</title>
+    <updated>2022-07-26T06:19:42Z</updated>
+    <link href="https://arxiv.org/abs/2111.05297v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2111.05297v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We present a neat yet effective recursive operation on vision transformers that can improve parameter utilization without involving additional parameters. This is achieved by sharing weights across the depth of transformer networks. The proposed method can obtain a substantial gain (~2%) simply using naive recursive operation, requires no special or sophisticated knowledge for designing principles of networks, and introduces minimal computational overhead to the training procedure. To reduce the additional computation caused by recursive operation while maintaining the superior accuracy, we propose an approximating method through multiple sliced group self-attentions across recursive layers which can reduce the cost consumption by 10~30% with minimal performance loss. We call our model Sliced Recursive Transformer (SReT), a novel and parameter-efficient vision transformer design that is compatible with a broad range of other designs for efficient ViT architectures. Our best model establishes significant improvement on ImageNet-1K over state-of-the-art methods while containing fewer parameters. The proposed weight sharing mechanism by sliced recursion structure allows us to build a transformer with more than 100 or even 1000 shared layers with ease while keeping a compact size (13~15M), to avoid optimization difficulties when the model is too large. The flexible scalability has shown great potential for scaling up models and constructing extremely deep vision transformers. Code is available at https://github.com/szq0214/SReT.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2021-11-09T17:59:14Z</published>
+    <arxiv:comment>ECCV 2022, 31 pages with Appendix. Code and models are available at https://github.com/szq0214/SReT (v3: update license and fix arxiv timestamp)</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Zhiqiang Shen</name>
+    </author>
+    <author>
+      <name>Zechun Liu</name>
+    </author>
+    <author>
+      <name>Eric Xing</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2110.01024v2</id>
+    <title>Galaxy Morphological Classification with Efficient Vision Transformer</title>
+    <updated>2022-02-03T22:07:30Z</updated>
+    <link href="https://arxiv.org/abs/2110.01024v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2110.01024v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Quantifying the morphology of galaxies has been an important task in astrophysics to understand the formation and evolution of galaxies. In recent years, the data size has been dramatically increasing due to several on-going and upcoming surveys. Labeling and identifying interesting objects for further investigations has been explored by citizen science through the Galaxy Zoo Project and by machine learning in particular with the convolutional neural networks (CNNs). In this work, we explore the usage of Vision Transformer (ViT) for galaxy morphology classification for the first time. We show that ViT could reach competitive results compared with CNNs, and is specifically good at classifying smaller-sized and fainter galaxies. With this promising preliminary result, we believe the ViT network architecture can be an important tool for galaxy morphological classification for the next generation surveys. Our open source, is publicly available at
+  \url{https://github.com/sliao-mi-luku/Galaxy-Zoo-Classification}</summary>
+    <category term="astro-ph.GA" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2021-10-03T15:25:50Z</published>
+    <arxiv:comment>11 pages, 4 figures, accepted by the NeurIPS Machine Learning and the Physical Sciences workshop</arxiv:comment>
+    <arxiv:primary_category term="astro-ph.GA"/>
+    <author>
+      <name>Joshua Yao-Yu Lin</name>
+    </author>
+    <author>
+      <name>Song-Mao Liao</name>
+    </author>
+    <author>
+      <name>Hung-Jin Huang</name>
+    </author>
+    <author>
+      <name>Wei-Ting Kuo</name>
+    </author>
+    <author>
+      <name>Olivia Hsuan-Min Ou</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2109.03219v1</id>
+    <title>Fruit-CoV: An Efficient Vision-based Framework for Speedy Detection and Diagnosis of SARS-CoV-2 Infections Through Recorded Cough Sounds</title>
+    <updated>2021-09-06T07:56:02Z</updated>
+    <link href="https://arxiv.org/abs/2109.03219v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2109.03219v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>SARS-CoV-2 is colloquially known as COVID-19 that had an initial outbreak in December 2019. The deadly virus has spread across the world, taking part in the global pandemic disease since March 2020. In addition, a recent variant of SARS-CoV-2 named Delta is intractably contagious and responsible for more than four million deaths over the world. Therefore, it is vital to possess a self-testing service of SARS-CoV-2 at home. In this study, we introduce Fruit-CoV, a two-stage vision framework, which is capable of detecting SARS-CoV-2 infections through recorded cough sounds. Specifically, we convert sounds into Log-Mel Spectrograms and use the EfficientNet-V2 network to extract its visual features in the first stage. In the second stage, we use 14 convolutional layers extracted from the large-scale Pretrained Audio Neural Networks for audio pattern recognition (PANNs) and the Wavegram-Log-Mel-CNN to aggregate feature representations of the Log-Mel Spectrograms. Finally, we use the combined features to train a binary classifier. In this study, we use a dataset provided by the AICovidVN 115M Challenge, which includes a total of 7371 recorded cough sounds collected throughout Vietnam, India, and Switzerland. Experimental results show that our proposed model achieves an AUC score of 92.8% and ranks the 1st place on the leaderboard of the AICovidVN Challenge. More importantly, our proposed framework can be integrated into a call center or a VoIP system to speed up detecting SARS-CoV-2 infections through online/recorded cough sounds.</summary>
+    <category term="cs.SD" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.NE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.AS" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2021-09-06T07:56:02Z</published>
+    <arxiv:comment>4 pages</arxiv:comment>
+    <arxiv:primary_category term="cs.SD"/>
+    <author>
+      <name>Long H. Nguyen</name>
+    </author>
+    <author>
+      <name>Nhat Truong Pham</name>
+    </author>
+    <author>
+      <name>Van Huong Do</name>
+    </author>
+    <author>
+      <name>Liu Tai Nguyen</name>
+    </author>
+    <author>
+      <name>Thanh Tin Nguyen</name>
+    </author>
+    <author>
+      <name>Van Dung Do</name>
+    </author>
+    <author>
+      <name>Hai Nguyen</name>
+    </author>
+    <author>
+      <name>Ngoc Duy Nguyen</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2107.01378v4</id>
+    <title>Learning Efficient Vision Transformers via Fine-Grained Manifold Distillation</title>
+    <updated>2022-06-02T12:16:28Z</updated>
+    <link href="https://arxiv.org/abs/2107.01378v4" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2107.01378v4" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In the past few years, transformers have achieved promising performances on various computer vision tasks. Unfortunately, the immense inference overhead of most existing vision transformers withholds their from being deployed on edge devices such as cell phones and smart watches. Knowledge distillation is a widely used paradigm for compressing cumbersome architectures via transferring information to a compact student. However, most of them are designed for convolutional neural networks (CNNs), which do not fully investigate the character of vision transformer (ViT). In this paper, we utilize the patch-level information and propose a fine-grained manifold distillation method. Specifically, we train a tiny student model to match a pre-trained teacher model in the patch-level manifold space. Then, we decouple the manifold matching loss into three terms with careful design to further reduce the computational costs for the patch relationship. Equipped with the proposed method, a DeiT-Tiny model containing 5M parameters achieves 76.5% top-1 accuracy on ImageNet-1k, which is +2.0% higher than previous distillation approaches. Transfer learning results on other classification benchmarks and downstream vision tasks also demonstrate the superiority of our method over the state-of-the-art algorithms.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2021-07-03T08:28:34Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Zhiwei Hao</name>
+    </author>
+    <author>
+      <name>Jianyuan Guo</name>
+    </author>
+    <author>
+      <name>Ding Jia</name>
+    </author>
+    <author>
+      <name>Kai Han</name>
+    </author>
+    <author>
+      <name>Yehui Tang</name>
+    </author>
+    <author>
+      <name>Chao Zhang</name>
+    </author>
+    <author>
+      <name>Han Hu</name>
+    </author>
+    <author>
+      <name>Yunhe Wang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2106.02852v2</id>
+    <title>Patch Slimming for Efficient Vision Transformers</title>
+    <updated>2022-04-04T05:25:51Z</updated>
+    <link href="https://arxiv.org/abs/2106.02852v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2106.02852v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This paper studies the efficiency problem for visual transformers by excavating redundant calculation in given networks. The recent transformer architecture has demonstrated its effectiveness for achieving excellent performance on a series of computer vision tasks. However, similar to that of convolutional neural networks, the huge computational cost of vision transformers is still a severe issue. Considering that the attention mechanism aggregates different patches layer-by-layer, we present a novel patch slimming approach that discards useless patches in a top-down paradigm. We first identify the effective patches in the last layer and then use them to guide the patch selection process of previous layers. For each layer, the impact of a patch on the final output feature is approximated and patches with less impact will be removed. Experimental results on benchmark datasets demonstrate that the proposed method can significantly reduce the computational costs of vision transformers without affecting their performances. For example, over 45% FLOPs of the ViT-Ti model can be reduced with only 0.2% top-1 accuracy drop on the ImageNet dataset.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2021-06-05T09:46:00Z</published>
+    <arxiv:comment>This paper is accepted by CVPR 2022</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Yehui Tang</name>
+    </author>
+    <author>
+      <name>Kai Han</name>
+    </author>
+    <author>
+      <name>Yunhe Wang</name>
+    </author>
+    <author>
+      <name>Chang Xu</name>
+    </author>
+    <author>
+      <name>Jianyuan Guo</name>
+    </author>
+    <author>
+      <name>Chao Xu</name>
+    </author>
+    <author>
+      <name>Dacheng Tao</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2106.02034v2</id>
+    <title>DynamicViT: Efficient Vision Transformers with Dynamic Token Sparsification</title>
+    <updated>2021-10-26T13:37:53Z</updated>
+    <link href="https://arxiv.org/abs/2106.02034v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2106.02034v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Attention is sparse in vision transformers. We observe the final prediction in vision transformers is only based on a subset of most informative tokens, which is sufficient for accurate image recognition. Based on this observation, we propose a dynamic token sparsification framework to prune redundant tokens progressively and dynamically based on the input. Specifically, we devise a lightweight prediction module to estimate the importance score of each token given the current features. The module is added to different layers to prune redundant tokens hierarchically. To optimize the prediction module in an end-to-end manner, we propose an attention masking strategy to differentiably prune a token by blocking its interactions with other tokens. Benefiting from the nature of self-attention, the unstructured sparse tokens are still hardware friendly, which makes our framework easy to achieve actual speed-up. By hierarchically pruning 66% of the input tokens, our method greatly reduces 31%~37% FLOPs and improves the throughput by over 40% while the drop of accuracy is within 0.5% for various vision transformers. Equipped with the dynamic token sparsification framework, DynamicViT models can achieve very competitive complexity/accuracy trade-offs compared to state-of-the-art CNNs and vision transformers on ImageNet. Code is available at https://github.com/raoyongming/DynamicViT</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2021-06-03T17:57:41Z</published>
+    <arxiv:comment>Accepted to NeurIPS 2021. Project page: https://dynamicvit.ivg-research.xyz/</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Yongming Rao</name>
+    </author>
+    <author>
+      <name>Wenliang Zhao</name>
+    </author>
+    <author>
+      <name>Benlin Liu</name>
+    </author>
+    <author>
+      <name>Jiwen Lu</name>
+    </author>
+    <author>
+      <name>Jie Zhou</name>
+    </author>
+    <author>
+      <name>Cho-Jui Hsieh</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2105.08582v1</id>
+    <title>Vision Transformer for Fast and Efficient Scene Text Recognition</title>
+    <updated>2021-05-18T15:08:54Z</updated>
+    <link href="https://arxiv.org/abs/2105.08582v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2105.08582v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Scene text recognition (STR) enables computers to read text in natural scenes such as object labels, road signs and instructions. STR helps machines perform informed decisions such as what object to pick, which direction to go, and what is the next step of action. In the body of work on STR, the focus has always been on recognition accuracy. There is little emphasis placed on speed and computational efficiency which are equally important especially for energy-constrained mobile machines. In this paper we propose ViTSTR, an STR with a simple single stage model architecture built on a compute and parameter efficient vision transformer (ViT). On a comparable strong baseline method such as TRBA with accuracy of 84.3%, our small ViTSTR achieves a competitive accuracy of 82.6% (84.2% with data augmentation) at 2.4x speed up, using only 43.4% of the number of parameters and 42.2% FLOPS. The tiny version of ViTSTR achieves 80.3% accuracy (82.1% with data augmentation), at 2.5x the speed, requiring only 10.9% of the number of parameters and 11.9% FLOPS. With data augmentation, our base ViTSTR outperforms TRBA at 85.2% accuracy (83.7% without augmentation) at 2.3x the speed but requires 73.2% more parameters and 61.5% more FLOPS. In terms of trade-offs, nearly all ViTSTR configurations are at or near the frontiers to maximize accuracy, speed and computational efficiency all at the same time.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2021-05-18T15:08:54Z</published>
+    <arxiv:comment>To appear at ICDAR2021 Springer Lecture Notes in Computer Science series</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <arxiv:journal_ref>ICDAR2021</arxiv:journal_ref>
+    <author>
+      <name>Rowel Atienza</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2101.07513v3</id>
+    <title>Towards Latent Space Based Manipulation of Elastic Rods using Autoencoder Models and Robust Centerline Extractions</title>
+    <updated>2021-04-09T11:14:13Z</updated>
+    <link href="https://arxiv.org/abs/2101.07513v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2101.07513v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The automatic shape control of deformable objects is a challenging (and currently hot) manipulation problem due to their high-dimensional geometric features and complex physical properties. In this study, a new methodology to manipulate elastic rods automatically into 2D desired shapes is presented. An efficient vision-based controller that uses a deep autoencoder network is designed to compute a compact representation of the object's infinite-dimensional shape. An online algorithm that approximates the sensorimotor mapping between the robot's configuration and the object's shape features is used to deal with the latter's (typically unknown) mechanical properties. The proposed approach computes the rod's centerline from raw visual data in real-time by introducing an adaptive algorithm on the basis of a self-organizing network. Its effectiveness is thoroughly validated with simulations and experiments.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2021-01-19T08:49:07Z</published>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Jiaming Qi</name>
+    </author>
+    <author>
+      <name>Guangfu Ma</name>
+    </author>
+    <author>
+      <name>Peng Zhou</name>
+    </author>
+    <author>
+      <name>Haibo Zhang</name>
+    </author>
+    <author>
+      <name>Yueyong Lyu</name>
+    </author>
+    <author>
+      <name>David Navarro-Alarcon</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1911.03458v1</id>
+    <title>MERIT: Tensor Transform for Memory-Efficient Vision Processing on Parallel Architectures</title>
+    <updated>2019-11-07T15:03:43Z</updated>
+    <link href="https://arxiv.org/abs/1911.03458v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1911.03458v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Computationally intensive deep neural networks (DNNs) are well-suited to run on GPUs, but newly developed algorithms usually require the heavily optimized DNN routines to work efficiently, and this problem could be even more difficult for specialized DNN architectures. In this paper, we propose a mathematical formulation which can be useful for transferring the algorithm optimization knowledge across computing platforms. We discover that data movement and storage inside parallel processor architectures can be viewed as tensor transforms across memory hierarchies, making it possible to describe many memory optimization techniques mathematically. Such transform, which we call Memory Efficient Ranged Inner-Product Tensor (MERIT) transform, can be applied to not only DNN tasks but also many traditional machine learning and computer vision computations. Moreover, the tensor transforms can be readily mapped to existing vector processor architectures. In this paper, we demonstrate that many popular applications can be converted to a succinct MERIT notation on GPUs, speeding up GPU kernels up to 20 times while using only half as many code tokens. We also use the principle of the proposed transform to design a specialized hardware unit called MERIT-z processor. This processor can be applied to a variety of DNN tasks as well as other computer vision tasks while providing comparable area and power efficiency to dedicated DNN ASICs.</summary>
+    <category term="cs.DC" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2019-11-07T15:03:43Z</published>
+    <arxiv:primary_category term="cs.DC"/>
+    <author>
+      <name>Yu-Sheng Lin</name>
+    </author>
+    <author>
+      <name>Wei-Chao Chen</name>
+    </author>
+    <author>
+      <name>Shao-Yi Chien</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1909.02406v2</id>
+    <title>Utilizing Temporal Information in Deep Convolutional Network for Efficient Soccer Ball Detection and Tracking</title>
+    <updated>2019-09-06T10:41:39Z</updated>
+    <link href="https://arxiv.org/abs/1909.02406v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1909.02406v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Soccer ball detection is identified as one of the critical challenges in the RoboCup competition. It requires an efficient vision system capable of handling the task of detection with high precision and recall and providing robust and low inference time. In this work, we present a novel convolutional neural network (CNN) approach to detect the soccer ball in an image sequence. In contrast to the existing methods where only the current frame or an image is used for the detection, we make use of the history of frames. Using history allows to efficiently track the ball in situations where the ball disappears or gets partially occluded in some of the frames. Our approach exploits spatio-temporal correlation and detects the ball based on the trajectory of its movements. We present our results with three convolutional methods, namely temporal convolutional networks (TCN), ConvLSTM, and ConvGRU. We first solve the detection task for an image using fully convolutional encoder-decoder architecture, and later, we use it as an input to our temporal models and jointly learn the detection task in sequences of images. We evaluate all our experiments on a novel dataset prepared as a part of this work. Furthermore, we present empirical results to support the effectiveness of using the history of the ball in challenging scenarios.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2019-09-05T13:40:27Z</published>
+    <arxiv:comment>23rd RoboCup International Symposium, Sydney, Australia, 2019</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Anna Kukleva</name>
+    </author>
+    <author>
+      <name>Mohammad Asif Khan</name>
+    </author>
+    <author>
+      <name>Hafez Farazi</name>
+    </author>
+    <author>
+      <name>Sven Behnke</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1810.11832v3</id>
+    <title>VDMS: Efficient Big-Visual-Data Access for Machine Learning Workloads</title>
+    <updated>2018-12-11T15:42:14Z</updated>
+    <link href="https://arxiv.org/abs/1810.11832v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1810.11832v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We introduce the Visual Data Management System (VDMS), which enables faster access to big-visual-data and adds support to visual analytics. This is achieved by searching for relevant visual data via metadata stored as a graph, and enabling faster access to visual data through new machine-friendly storage formats. VDMS differs from existing large scale photo serving, video streaming, and textual big-data management systems due to its primary focus on supporting machine learning and data analytics pipelines that use visual data (images, videos, and feature vectors), treating these as first class entities. We describe how to use VDMS via its user friendly interface and how it enables rich and efficient vision analytics through a machine learning pipeline for processing medical images. We show the improved performance of 2x in complex queries over a comparable set-up.</summary>
+    <category term="cs.DB" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2018-10-28T16:41:22Z</published>
+    <arxiv:primary_category term="cs.DB"/>
+    <author>
+      <name>Luis Remis</name>
+    </author>
+    <author>
+      <name>Vishakha Gupta-Cledat</name>
+    </author>
+    <author>
+      <name>Christina Strong</name>
+    </author>
+    <author>
+      <name>Ragaad Altarawneh</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1809.05958v2</id>
+    <title>Autonomous drone race: A computationally efficient vision-based navigation and control strategy</title>
+    <updated>2019-12-15T16:00:55Z</updated>
+    <link href="https://arxiv.org/abs/1809.05958v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1809.05958v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Drone racing is becoming a popular sport where human pilots have to control their drones to fly at high speed through complex environments and pass a number of gates in a pre-defined sequence. In this paper, we develop an autonomous system for drones to race fully autonomously using only onboard resources. Instead of commonly used visual navigation methods, such as simultaneous localization and mapping and visual inertial odometry, which are computationally expensive for micro aerial vehicles (MAVs), we developed the highly efficient snake gate detection algorithm for visual navigation, which can detect the gate at 20HZ on a Parrot Bebop drone. Then, with the gate detection result, we developed a robust pose estimation algorithm which has better tolerance to detection noise than a state-of-the-art perspective-n-point method. During the race, sometimes the gates are not in the drone's field of view. For this case, a state prediction-based feed-forward control strategy is developed to steer the drone to fly to the next gate. Experiments show that the drone can fly a half-circle with 1.5m radius within 2 seconds with only 30cm error at the end of the circle without any position feedback. Finally, the whole system is tested in a complex environment (a showroom in the faculty of Aerospace Engineering, TU Delft). The result shows that the drone can complete the track of 15 gates with a speed of 1.5m/s which is faster than the speeds exhibited at the 2016 and 2017 IROS autonomous drone races.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2018-09-16T21:17:52Z</published>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>S. Li</name>
+    </author>
+    <author>
+      <name>M. M. O. I. Ozo</name>
+    </author>
+    <author>
+      <name>C. De Wagter</name>
+    </author>
+    <author>
+      <name>G. C. H. E. de Croon</name>
+    </author>
+    <arxiv:doi>10.1016/j.robot.2020.103621</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1016/j.robot.2020.103621" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1703.01681v2</id>
+    <title>A/D Converter Architectures for Energy-Efficient Vision Processor</title>
+    <updated>2017-03-21T05:18:50Z</updated>
+    <link href="https://arxiv.org/abs/1703.01681v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1703.01681v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>AI applications have emerged in current world. Among AI applications, computer-vision (CV) related applications have attracted high interest. Hardware implementation of CV processors necessitates a high performance but low-power image detector. The key to energy-efficiency work lies in analog-digital converting, where output of imaging detectors is transferred to digital domain and CV algorithms can be performed on data. In this paper, analog-digital converter architectures are compared, and an example ADC design is proposed which achieves both good performance and low power consumption.</summary>
+    <category term="cs.ET" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2017-03-05T22:41:15Z</published>
+    <arxiv:comment>arXiv admin note: substantial text overlap with arXiv:1701.08877</arxiv:comment>
+    <arxiv:primary_category term="cs.ET"/>
+    <author>
+      <name>Li Du</name>
+    </author>
+    <author>
+      <name>Yilei Li</name>
+    </author>
+  </entry>
+</feed>

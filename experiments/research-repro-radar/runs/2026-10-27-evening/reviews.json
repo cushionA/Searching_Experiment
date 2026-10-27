@@ -1,0 +1,573 @@
+[
+  {
+    "candidate_id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+    "decision": "defer",
+    "reason": "公式READMEは1.54Bパラメータの指示調整済みコードモデルとTransformers導入例を示すため関心には合う。一方、配布重みのサイズが2GB上限内か、8GB RAMでCPU推論できるかは資料で確認できず、現予算・時間内の試行可否を確定できない。著者側の性能説明は当方の実測ではない。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct/raw/main/README.md",
+        "quote": "Number of Parameters: 1.54B"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "公式重みの配布サイズとCPU/8GBで動かす量子化導入手順が2GBの取得枠に収まるか確認する。",
+    "unconfirmed": [
+      "配布重みが2GB以内か、公式量子化配布の有無",
+      "CPU推論速度と8GB RAMでの実行可否",
+      "Apache-2.0のモデル適用範囲と商用利用上の条件"
+    ]
+  },
+  {
+    "candidate_id": "2412.14219",
+    "decision": "test",
+    "reason": "MoE推論の最適化をモデル・システム・ハードウェアの各層で整理した一次資料で、量子化や剪定とCPU/スループット関心の両方に接点がある。読む価値はあるが、大規模MoE向けの調査であり、手元の小型CPU環境への直接適用性は限定的。記載は論文の整理で、当方のベンチマークではない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2412.14219",
+        "quote": "pruning, quantization, and knowledge distillation"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": "deep_dive_value",
+    "next_check": "調査で対象とするMoE規模と、単一CPU・8GB環境にも転用可能な最適化を本文で確認する。",
+    "unconfirmed": [
+      "公式コードや実装配布の有無",
+      "ライセンスおよび商用利用条件",
+      "CPU/RAM要件と小型モデルでの実測",
+      "本文の比較条件・各手法の適用限界"
+    ]
+  },
+  {
+    "candidate_id": "2602.09373",
+    "decision": "defer",
+    "reason": "アフリカ諸語向け翻訳をNLLB-200 600Mから剪定・量子化・蒸留で作り、Transformers版とCTranslate2版を公開したとの一次資料上の主張は、資源制約下の多言語翻訳に関連する。ただし現在の関心として翻訳言語の適合が示されず、CPU/RAMやライセンスも確認できないため、現時点で深掘り対象には決めない。性能は著者報告で当方実測ではない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2602.09373",
+        "quote": "supports 15 language pairs (30 translation directions)"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "必要な言語ペアがある場合に、公式モデル配布・ライセンスとCPU/8GBでの推論条件を確認する。",
+    "unconfirmed": [
+      "対象言語ペアの手元用途への適合",
+      "公式モデル/学習データ配布URLと取得サイズ",
+      "モデル・データのライセンスと商用利用条件",
+      "CPU/RAM要件、速度、品質の比較条件"
+    ]
+  },
+  {
+    "candidate_id": "2108.10197",
+    "decision": "reject",
+    "reason": "これは本番のQuery-Title Relevance分類器（検索候補の関連度判定）を蒸留で小型化する事例で、CPU速度の主張もあるが、ユーザー指定の検索用途はcoverage・gaps・preprocessing・archive-free discoveryに限られ、rerankのみの案は採用しない。報告された0.2msは著者の特定環境での数値で、当方実測ではない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2108.10197v1",
+        "quote": "at most 0.2ms on CPU"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "実装や学習済みモデルの公式配布",
+      "ライセンスおよび商用利用条件",
+      "CPU/RAM環境と比較条件の詳細",
+      "別の許可された検索用途への転用可能性"
+    ]
+  },
+  {
+    "candidate_id": "2601.22709",
+    "decision": "test",
+    "reason": "GRACEはVLMの蒸留と量子化対応学習をまとめる新しい手法で、INT4とスループット/メモリ削減の関心に接点があり、論文を読む価値がある。実験は著者のLLaVA/Qwen設定による報告であり、CPU性能や当方環境での優位を示すものではない。学習は禁止・予算外のため、読む範囲にとどめる。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2601.22709",
+        "quote": "quantization-aware training for VLMs remains underexplored."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": "deep_dive_value",
+    "next_check": "本文でINT4実験のGPU/メモリ条件、評価データ、追加コード/モデル配布、推論のみで利用できる成果物を確認する。",
+    "unconfirmed": [
+      "公式コード・学習済みモデル・データの配布先と取得サイズ",
+      "ライセンスおよび商用利用条件",
+      "CPU推論と8GB RAMでの実行可否",
+      "比較ベースライン、精度差、ハードウェア条件",
+      "推論専用利用に必要なチェックポイントの有無"
+    ]
+  },
+  {
+    "candidate_id": "2503.06029",
+    "decision": "defer",
+    "reason": "中国語のスマホ利用を想定した要約・情報抽出など20タスクの評価ベンチマークで関心には合う。原資料はデータとコードが将来公開予定と述べるだけで、取得先・現行ライセンス・実行手順は確認できない。中国語評価データ、モデル配布条件、CPU/RAM実測も未確認。手元制約で試す段階ではない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2503.06029",
+        "quote": "we introduce SmartBench, the first benchmark designed to evaluate the capabilities of on-device LLMs in Chinese mobile contexts."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "データ・コードの公開先とライセンス、CPUでの最小評価手順が確認できた時点で再検討する。",
+    "unconfirmed": [
+      "コード・データの公開先と現行配布状況",
+      "データ及びコードのライセンスと商用条件",
+      "対象モデル別のCPU速度・RAM・ストレージ要件",
+      "ローカルで実行できる導入手順"
+    ]
+  },
+  {
+    "candidate_id": "2211.11014",
+    "decision": "defer",
+    "reason": "Transformer encoderのQATに対する蒸留損失を分析し、2-bit未満の量子化結果を報告する研究。圧縮への関連性はあるが、中心は学習時の手法で、現条件は訓練なし。原資料からコード公開、導入、商用ライセンス、CPU/RAM要件は確認できず、著者報告の精度を独立実測として扱えない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2211.11014",
+        "quote": "we propose two KD methods; attention-map and attention-output losses."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "学習実験を許容する別枠ができ、公開実装・データ条件を確認できた場合に再検討する。",
+    "unconfirmed": [
+      "公開コード及び導入・依存関係",
+      "データと実装のライセンス・商用条件",
+      "再現に必要な教師・学生モデルと訓練資源",
+      "推論時のCPU/RAM要件"
+    ]
+  },
+  {
+    "candidate_id": "2207.01405",
+    "decision": "defer",
+    "reason": "ViTのINT8整数のみ推論とTVM/GPUでの高速化を扱うが、報告された実用展開はGPU整数演算で、現在のCPU限定条件とずれる。著者報告の速度・精度は当方実測ではない。実装・ライセンス・CPU速度/RAMが確認できないため、今すぐの試験や深掘り推薦は見送る。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2207.01405",
+        "quote": "we utilize TVM for practical hardware deployment on the GPU's integer arithmetic units"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "CPU向けの動作実装とCPUベンチマークが公開資料で確認できた時点で再検討する。",
+    "unconfirmed": [
+      "PyTorch/TVMコードの取得先と現在の導入手順",
+      "コード・モデルのライセンスと商用条件",
+      "CPUでの整数演算対応・速度・RAM要件",
+      "GPU報告値の再現条件と比較基準"
+    ]
+  },
+  {
+    "candidate_id": "2609.05334",
+    "decision": "defer",
+    "reason": "農業現場の唐辛子病害分類向けに剪定・量子化・蒸留を比較した2026年論文で、制約環境への関心と強く合う。特に同サイズの直接学習学生が圧縮パイプラインに近い精度を出したという比較は読む価値がある一方、用途・データは特定地域の3クラスで、再現には学習が関わる。コード、ライセンス、CPU/RAM/速度は未確認。著者のサイズ・精度値は未検証。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2609.05334v1",
+        "quote": "a directly-trained student of the same final size, without pruning or distillation, reaches comparable accuracy of 94.87%"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": "deep_dive_value",
+    "next_check": "まず論文のアブレーションとデータ分割を読み、公開コード・ライセンスとCPU推論測定の有無を確認する。訓練やPoCは開始しない。",
+    "unconfirmed": [
+      "コード・データの公開先、現行配布状況、ライセンスと商用条件",
+      "報告されたデータ分割と精度の独立再現性",
+      "6.01 MBモデルのCPU速度・ピークRAM・前処理要件",
+      "農業外の画像分類への一般化"
+    ]
+  },
+  {
+    "candidate_id": "2509.14001",
+    "decision": "defer",
+    "reason": "凍結VLM教師から軽量な画像検出器へ領域意味を蒸留する手法で、軽量ビジョンと物体検出の関心に合う。学習時に大きなVLM教師を使うため、訓練なし・CPU限定の現条件で再現する候補ではない。論文抄録のベンチマーク改善値は著者報告。教師/学生の具体的モデル、コード、ライセンス、CPU/RAM値が資料から確認できない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2509.14001v5",
+        "quote": "transfers multimodal region-level knowledge from a frozen VLM teacher into a lightweight vision-only detector."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "教師・学生モデルの配布条件と学習資源、CPU推論値を論文本文または公開実装で確認できた場合に再検討する。",
+    "unconfirmed": [
+      "教師・学生モデル名、公開先、ライセンス及び商用条件",
+      "学習データ・コード・導入手順",
+      "教師を含む再現に必要なGPU/CPU・RAM・時間",
+      "軽量学生の実際のCPUレイテンシとRAM"
+    ]
+  },
+  {
+    "candidate_id": "2507.16782",
+    "decision": "defer",
+    "reason": "検出器向けのゼロショット量子化は関心領域に近い一方、提案法は合成校正セット作成と蒸留を含み、訓練なし・CPU20分・DL2GBの枠で導入効果を確かめにくい。論文のコード公開記述だけでは公式配布先、ライセンス、CPU/RAM要件を確定できない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2507.16782",
+        "quote": "we integrate task-specific training into the knowledge distillation process"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "訓練不要の既存量子化済み検出器と比較できる小規模CPU評価手順が見つかった場合に再検討する。",
+    "unconfirmed": [
+      "公式コード配布先と導入手順",
+      "licenseおよび商用利用条件",
+      "CPU/RAMとモデルのダウンロード容量"
+    ]
+  },
+  {
+    "candidate_id": "2610.30067",
+    "decision": "defer",
+    "reason": "26M/49Mの生テキスト対応ベトナム語エンコーダーは小型NLP候補だが、言語がベトナム語に特化し、主な貢献は二段階蒸留による訓練である。配布済みモデルを制約内で試せる証拠や対象タスクとの適合がまだない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.30067",
+        "quote": "two compact Vietnamese encoders with 26M and 49M parameters"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "ベトナム語の分類・NERなど対象タスクがあり、事前訓練済み配布物をCPUだけで試せると確認できた場合に再検討する。",
+    "unconfirmed": [
+      "公式配布先・導入手順と事前訓練済み重みの有無",
+      "licenseおよび商用利用条件",
+      "推論時CPU/RAM要件・実測性能"
+    ]
+  },
+  {
+    "candidate_id": "2505.03113",
+    "decision": "reject",
+    "reason": "軽量ViTの広範なサーベイで、現在のCPU小型モデル検証に直接使える実装・配布物や具体的な適用先は提示資料から確認できない。読む価値はあり得るが、限られた確認枠での優先候補にはしない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2505.03113",
+        "quote": "This paper surveys various online strategies for generating lightweight vision transformers"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "プロジェクトページの内容・実装や公式配布物の有無",
+      "licenseおよび商用利用条件",
+      "CPU/RAM要件と個別手法の再現コスト"
+    ]
+  },
+  {
+    "candidate_id": "2405.03144",
+    "decision": "defer",
+    "reason": "SAM向けPTQは量子化の関心と合うが、対象は大規模なセグメンテーションモデルで、提示資料の速度向上は理論値を含む。2GBの取得枠・CPUのみで実用性を確かめられる配布物や実測は確認できない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2405.03144",
+        "quote": "we propose a post-training quantization (PTQ) framework for Segment Anything Model, namely PTQ4SAM."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "2GB以下の公式量子化済み重みとCPU上の比較可能な実測が確認できれば再検討する。",
+    "unconfirmed": [
+      "公式コード・量子化済み重みの配布先と導入手順",
+      "licenseおよび商用利用条件",
+      "実際のCPU速度、RAM、モデル容量"
+    ]
+  },
+  {
+    "candidate_id": "2607.25180",
+    "decision": "test",
+    "reason": "検索用途のうちアーカイブ不要の多言語発見・coverage/gaps確認には埋め込み検索が合い得る。論文は小型モデル、CPU速度、ONNX/OpenVINO容量の比較を報告し、2GB枠内のCPUスモーク候補として試す価値がある。ただしこれは著者報告であり、こちらの実測や独立確認ではない。ライセンスと公式導入経路の確認が先決。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2607.25180",
+        "quote": "the fastest on both CPU and GPU -- 1.6x multilingual-e5-small on x86 CPU"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "公式配布先と商用条件を確認し、2GB以内で取得できる場合のみ、CPUで少量の多言語コーパスを用い発見・coverage/gaps用途の埋め込み検索をスモーク確認する。rerank単独用途には使わない。",
+    "unconfirmed": [
+      "公式モデル配布先・手順およびONNX/OpenVINO容量の再確認",
+      "licenseおよび商用利用条件",
+      "本環境でのRAM・CPU速度・検索品質"
+    ]
+  },
+  {
+    "candidate_id": "2609.31430",
+    "decision": "defer",
+    "reason": "LOHA/ACDの手法とSWE-bench結果は一次資料の要旨で確認できるが、学習を要する文脈表現適応が中心で、現金0・訓練なし・CPU制約の下で20分の試行に落とし込めない。著者報告値であり当方実測ではない。配布物の実態・ライセンス/商用条件・CPU/RAM・導入手順・詳細な失敗条件はこの資料から確認できない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2609.31430v1",
+        "quote": "LOHA compresses older tool observations into soft tokens while retaining the agent's own turns and the last K observations in text"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "CPUで動く既存エージェントと訓練不要の実装が確認でき、実際の長文ツール履歴で比較する機会ができた時に再評価。",
+    "unconfirmed": [
+      "公式配布物の実在・入手先と再現手順",
+      "licenseおよび商用利用条件",
+      "CPUのみの実行可否とRAM/ストレージ所要量",
+      "学習・適応時の計算資源と詳細な失敗例"
+    ]
+  },
+  {
+    "candidate_id": "2604.04979",
+    "decision": "defer",
+    "reason": "タスク条件付き出力剪定という適用は明確で、要旨の性能値も一次資料で確認できる。ただし既存PoC済みのSqueezであり、既報の変更なしを繰返し推薦しない。新しい版・実装・比較結果の差分はこの資料から未確認。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2604.04979",
+        "quote": "Our model reaches 0.86 recall and 0.80 F1 while removing 92% of input tokens"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "既存PoC記録と照合し、後続版や未確認の具体的な差分が提示された場合に限り追記評価。",
+    "unconfirmed": [
+      "公式配布先の具体的なURL、実装手順と成果物",
+      "licenseおよび商用利用条件",
+      "Qwen 3.5 2B LoRAモデルのCPU推論RAM/速度",
+      "既存PoCからの新規性・変更点"
+    ]
+  },
+  {
+    "candidate_id": "2601.16746",
+    "decision": "defer",
+    "reason": "課題ヒントで関連行を選ぶ0.6BスキマーとSWE-bench等の結果を要旨で確認。SWE-Prunerは未完了であり、依頼なしに再開しない。現在の制約では追加実験は開始せず、未完了記録に留める。数値は著者報告で、当方測定ではない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2601.16746",
+        "quote": "A lightweight neural skimmer (0.6B parameters) is trained to dynamically select relevant lines from the surrounding context given the goal."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "既存の未完了状態を維持。再開の明示依頼または明確な新規成果がある場合に既存記録から続行。",
+    "unconfirmed": [
+      "公式コード配布先のURL・導入手順・実行依存関係",
+      "licenseおよび商用利用条件",
+      "CPU推論の速度とRAM所要量",
+      "既存の未完了PoCとの差分と未解決点"
+    ]
+  },
+  {
+    "candidate_id": "2507.23370",
+    "decision": "reject",
+    "reason": "リポジトリ課題解決向けの生成・剪定・選択を束ねたエージェントで、要旨の高いPass@1値は著者報告。複数LLMを使う構成は現金0・CPU20分・8GBの条件に適合する根拠がなく、現時点で実行候補にしない。arXivはオープンソース公開を述べるが、具体的な配布・ライセンスやローカル資源条件は未確認。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2507.23370",
+        "quote": "We are pleased to release Trae Agent as an open-source project to support the research community"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "一次資料上の具体的な公式配布URLと現在の入手可能性",
+      "licenseおよび商用利用条件",
+      "使用LLMとAPI/ローカル構成、CPU/RAM・費用要件",
+      "報告されたSWE-bench設定の再現性と現在の比較条件"
+    ]
+  },
+  {
+    "candidate_id": "2606.26488",
+    "decision": "defer",
+    "reason": "再帰型reasonerで圧縮が局所予測と全体推論に与える差、較正INT4の報告は、端末向け小型モデルの関心に近い。一方、一次資料の要旨だけでは対象モデル/タスクの一致や実際の導入先を確認できず、独立した関心シグナルも不足。3.3MB等は著者報告値で当方実測ではないため、深掘り価値は現時点で付与しない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2606.26488",
+        "quote": "calibrated INT4 brings the backbone to 3.3 MB, inside a 4 MB budget"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "実利用候補の再帰reasoner/端末条件との一致、モデルと公式実装、ライセンス、および再現可能なCPU測定を確認できる時に再評価。",
+    "unconfirmed": [
+      "公式配布先と導入・較正手順",
+      "licenseおよび商用利用条件",
+      "3.3MB構成の実行RAM・CPU速度・周辺メモリ要件",
+      "対象タスクと現利用ケースの適合性、失敗時の挙動"
+    ]
+  },
+  {
+    "candidate_id": "hf:liquidai/d1-omni-600m",
+    "decision": "defer",
+    "reason": "単一パスでテキスト・画像・音声を判定する用途は明確ですが、指定のFP32配布物は2GBの取得上限を超え、Q8構成も本体とmmprojを合わせると上限を超えます。商用利用条件への適合も未確認なので、現条件で実用テストに進めません。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/LiquidAI/d1-omni-600M",
+        "quote": "d1-omni-600M is a 600M parameter **decision model** built on [LFM2.5-Encoder-350M](https://huggingface.co/LiquidAI/LFM2.5-Encoder-350M)."
+      },
+      {
+        "source_url": "https://huggingface.co/LiquidAI/d1-omni-600M/blob/main/LICENSE",
+        "quote": "Any Commercial Use of the Work or a Derivative Work by a Legal Entity that exceeds the Threshold is not licensed under this Agreement."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "配布形式と取得サイズが2GB以内に収まり、利用主体の売上条件に適合すると確認できた場合に再評価する。",
+    "unconfirmed": [
+      "指定された閾値に対する利用主体の売上条件",
+      "記載の配布サイズ以外に取得が必要な依存ファイルの総量"
+    ]
+  },
+  {
+    "candidate_id": "github:jaredpalmer/kev",
+    "decision": "test",
+    "reason": "0.8Bの既成モデルを使ったCPU推論の短い実用スモークは、与えられた容量・時間枠内で試す価値があります。adapterだけでなくbaseモデルの取得が必要なので、初回取得とロードで予算に収まるかを先に確認します。",
+    "evidence": [
+      {
+        "source_url": "https://github.com/jaredpalmer/kev",
+        "quote": "The first run downloads the adapter and the base model."
+      },
+      {
+        "source_url": "https://github.com/jaredpalmer/kev",
+        "quote": "Use `--device cpu` to skip accelerator discovery"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "0.8BチェックポイントをCPU指定で取得・ロードし、短い既知入力でchoiceまたはnoulの応答、実時間、メモリを記録する。",
+    "unconfirmed": [
+      "この環境での実取得総量と依存関係の追加容量",
+      "CPUでのロード時間・ピークメモリ・推論時間",
+      "公開ベンチマーク値がこの環境の実測を表すか"
+    ]
+  },
+  {
+    "candidate_id": "github:nokia-applied-research/anyjev",
+    "decision": "defer",
+    "reason": "L0の無学習読出しとTacitの既学習モデルは別経路です。READMEの改善値は特定の実験条件に結び付いた著者報告であり、較正値を普遍的な確率保証とは扱えません。現枠で使えるモデルと小規模な再現手順が資料から確定しません。",
+    "evidence": [
+      {
+        "source_url": "https://github.com/nokia-applied-research/AnyJev",
+        "quote": "The stopping threshold is calibrated against our own full-cycle answer, so it needs no labels."
+      },
+      {
+        "source_url": "https://github.com/nokia-applied-research/AnyJev",
+        "quote": "A Tacit model, in Python."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "無学習L0経路とTacitチェックポイント経路の必要モデル・取得量を切り分け、2GB以下で動く候補が判明してから小規模評価する。",
+    "unconfirmed": [
+      "現環境で使える適合モデルと重みサイズ",
+      "特定タスク外での確率校正",
+      "README掲載値の独立再現性"
+    ]
+  },
+  {
+    "candidate_id": "github:wfzyx/von",
+    "decision": "defer",
+    "reason": "CPU向けの過去モデルとして比較対象にはなり得ますが、リポジトリはアーカイブ済みです。D1は別モデルなので後継互換性を前提にせず、既存チェックポイントと現行環境で動かす根拠を確認してから扱うのが妥当です。",
+    "evidence": [
+      {
+        "source_url": "https://github.com/wfzyx/von",
+        "quote": "**Archived.** Von is no longer maintained and these weights will not be updated."
+      },
+      {
+        "source_url": "https://github.com/wfzyx/von",
+        "quote": "For new projects, use [LiquidAI/d1-omni-600M]"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "Vonの固定済み重みと依存バージョンが取得上限・CPU時間枠内で使えることを確認し、履歴比較を目的とする小規模試験の可否を決める。",
+    "unconfirmed": [
+      "Vonの取得総量と現在の依存関係での再現性",
+      "D1とのAPI・出力互換性。互換性を示す資料は未確認"
+    ]
+  },
+  {
+    "candidate_id": "2610.34241",
+    "decision": "defer",
+    "reason": "小型オープンモデルのコーディング実務を扱う一次資料で、著者のセッション・デバッグ記録と複数の委任研究が示されています。現資料は要旨中心で、独立検証や手元のコーディング環境で試す具体的な再現手順が確認できないため、まず論文本文の方法と限界を確認する段階です。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.34241",
+        "quote": "The evidence includes 4,165 coding-agent gateway turns from my own sessions, 623 debug jobs, and three separate delegation studies"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": "deep_dive_value",
+    "next_check": "本文で各実験の条件、独立評価の方法、失敗分類を読み、現環境で再現可能な小さな測定を特定する。",
+    "unconfirmed": [
+      "著者の観察結果が独立環境でも再現するか",
+      "提供資料だけでは本文の実験条件・再現資材を十分に確認できない"
+    ]
+  },
+  {
+    "candidate_id": "2610.33845",
+    "decision": "test",
+    "reason": "論文と公開リポジトリがそろい、ユーザー指示の範囲なら公開データと保存済み回答のスコアラー監査を試せます。モデル重みの学習やライブゲーム接続は含めず、採点手順・データ範囲・ライセンス表示に絞るのが実用的です。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.33845",
+        "quote": "We present AutoTavern, a self-improving research system"
+      },
+      {
+        "source_url": "https://github.com/MCG-NJU/AutoTavern",
+        "quote": "A benchmark for reasoning about game decisions and rules."
+      },
+      {
+        "source_url": "https://github.com/MCG-NJU/AutoTavern",
+        "quote": "training code, and the benchmark item generators are not included."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "公開ベンチマーク項目と保存済み回答の採点経路を読み、正解・採点出力を数件突合する。データ利用条件も確認する。",
+    "unconfirmed": [
+      "同梱データでスコアラー監査が可能な範囲",
+      "公開データに含まれる第三者ゲームコンテンツの利用条件",
+      "著者の論文上の結果を手元で再現できるか"
+    ]
+  },
+  {
+    "candidate_id": "2610.35434",
+    "decision": "defer",
+    "reason": "Skill最適化そのものを再帰的に更新する一次研究で、SkillsBench上の比較値は深掘りの根拠になります。ただし現在使っているself-improvement Skill全文と比較しておらず、この環境での優位性は判断できません。まず論文の方法・評価条件を読み、手元のSkillとの差分を確認する必要があります。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.35434",
+        "quote": "On 83 SkillsBench tasks, Skill$^{\\infty}$ reaches a pass rate of 60.7%, compared with 56.4% for human-curated skills and 54.5% for SkillEvolver."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": "deep_dive_value",
+    "next_check": "論文本文の比較条件と再現資材を確認し、現行self-improvement Skill全文を読んでから、同一タスクでの比較可否を決める。",
+    "unconfirmed": [
+      "現行self-improvement Skillとの比較結果",
+      "論文結果の独立再現性と実装取得条件"
+    ]
+  },
+  {
+    "candidate_id": "2610.34634",
+    "decision": "defer",
+    "reason": "再利用可能なWebエージェント検証器を、保存状態からの要件テストと実行結果の両面で測る一次研究です。結果は検証器品質と実行成否の関連を示しますが、現行self-improvement Skillとの比較や、実行を伴わない範囲で使えるデータ・採点手順の詳細は未確認です。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.34634",
+        "quote": "The resource spans 97 tasks, 79 families, and four Web services."
+      },
+      {
+        "source_url": "https://arxiv.org/abs/2610.34634",
+        "quote": "32/33 assignments with error-free panels, versus 1/11 with panel errors."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": "deep_dive_value",
+    "next_check": "本文で保存済み状態・参照ルール・プログラムの配布形式と採点を確認し、外部サービス実行なしで監査できる資料を特定する。",
+    "unconfirmed": [
+      "現行self-improvement Skillとの比較",
+      "実行・外部接続をせずに利用できる監査範囲",
+      "著者報告の独立再現性"
+    ]
+  }
+]
