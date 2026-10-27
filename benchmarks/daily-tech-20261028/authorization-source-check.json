@@ -1,0 +1,29 @@
+{
+  "wheel": "laya-0.4.15-py3-none-any.whl",
+  "url": "https://files.pythonhosted.org/packages/64/8a/02cdddba94fdaeedca93fc161ad0688da49834b42803f5072f7ec286df78/laya-0.4.15-py3-none-any.whl",
+  "bytes": 451484,
+  "sha256": "f51301738464677cb650159684537eb267de47d33f3db4d8897f1502a9570e6e",
+  "method": "download to process memory and inspect ZIP text only; no install/import/exec",
+  "static_hits": [
+    {
+      "file": "laya/agent.py",
+      "line": 577,
+      "text": "\n        from safetensors.torch import load_file\n\n        model_dir = model_id_or_path"
+    },
+    {
+      "file": "laya/common.py",
+      "line": 710,
+      "text": "        with _no_init_weights():\n            enc = AutoModel.from_config(ecfg, attn_implementation=\"sdpa\")\n        return DecisionModel(enc, head_layers, n_act, no_init=True)\n    # Training-time Hub load of the base encoder; allow pinning it like the checkpoints."
+    },
+    {
+      "file": "laya/train.py",
+      "line": 575,
+      "text": "    \"\"\"`(model, tokenizer, cfg)` from a local checkpoint directory or Hub ID, model on CPU in fp32.\"\"\"\n    from safetensors.torch import load_file\n    from transformers import AutoTokenizer\n"
+    },
+    {
+      "file": "laya/train.py",
+      "line": 592,
+      "text": "    \"\"\"Write the layout `laya.load` reads: weights in fp16, encoder config, tokenizer, config.\"\"\"\n    from safetensors.torch import save_file\n\n    os.makedirs(path, exist_ok=True)"
+    }
+  ]
+}

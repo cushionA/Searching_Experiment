@@ -18,4 +18,4 @@ python3 -B experiments/laya-source-audit/audit.py
 
 初回の自作manifestファイル名不備と、Jevの1応答の確率和0.99を `errors.json` に保存。公開許容差0.01へ合わせ、0.001超のずれは別欄で報告する。確率を修正・再正規化しない。
 
-上流コード・モデルはApache-2.0表記、中国語benchmark contributionはMIT表記。各LICENSEとREADME、出典URLを保存。保存コードは読むための資料であり実行対象ではない。新規推論には別途外部コード実行の承認・隔離確認が必要。モデルinstall、API推論、学習、Kaggle submitは行わない。
+上流コード・モデルはApache-2.0表記、中国語benchmark contributionはMIT表記。各LICENSEとREADME、出典URLを保存。保存コードは読むための資料であり実行対象ではない。新規推論は既存の小規模試験許可の範囲で、実行時の隔離・依存・予算確認が必要。Laya/日本語モデル固有の承認待ちは確認されていない。unknown-sourceや範囲外操作が実際に必要となった場合だけ個別判断する。モデルinstall、API推論、学習、Kaggle submitは行わない。

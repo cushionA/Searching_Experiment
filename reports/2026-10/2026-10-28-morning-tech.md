@@ -60,12 +60,20 @@ four_noulは4つの真偽を公開固定閾値で組み合わせる別方式。L
 - モデル推論0・候補install0・候補CPU0・修復0・支出0・学習0。監査のみ0.0169秒、peak RSS15,352KiB。資料取得2,283,487 bytes。監査速度/RAMをモデル推論へ転用しない。
 - 中国語archiveのLayaはM4 MPS・旧runtime、JevはネットワークAPI。速度/費用/ハードウェア優劣を比較しない。Jevの有料APIは呼ばない。
 - 自作監査の初回はmanifestの拡張子不備、次に確率和許容差の差を検出。Jevの後続repeat1の1応答は確率和0.99だった。公開仕様の0.01許容差へ合わせ、厳しい0.001超の逸脱を別欄へ残した。確率・正解・予測を修正せず、first-repeat品質に影響なし。[エラー記録](../../benchmarks/daily-tech-20261028/errors.json)。
-- 外部候補コードの実行は既存の未解決承認を引き継ぎ、**Laya/日本語モデルのinstall・import・推論は未着手/pending**。今回の自動承認拒否ではない。TinyJev第3追加修復、Moli/Lightpanda追加依存も未着手。停止点の別環境迂回、BUILDX_CONFIG変更なし。計算不足による停止ではないためKaggleへ迂回しない。
+- **訂正：Laya/日本語モデルに適用される個別の承認待ち・拒否は確認できなかった。** 初稿では前朝報告の一般的なpending記載を誤って新候補へ拡張した。実際の未実施理由は、今回私が公開応答監査を優先し、当日の隔離確認・固定比較準備・推論へ進まなかったこと。実行不能やユーザー承認待ちによる停止ではない。TinyJev第3追加修復とMoli/Lightpanda追加依存の個別停止は有効で、再開・別環境迂回・BUILDX_CONFIG変更はしていない。
 - ローカル既存labテスト151件は1失敗/15skip。既存`.deps/bot-diagnostics`の`robots-parser`不足で、監査や候補の失敗ではない。依存修復は対象外。[ログ](../../benchmarks/daily-tech-20261028/local-lab-tests.log)。新しい基盤機能は実装していない。
 - Playwright/Crawlee/Crawl4AI/Trafilatura/PaddleOCR/Browsertrixの公式release先頭2件も保存。Browsertrixは今回APIでv1.26.3（10/22）を確認し、前朝記載の1.15.1を最新値として継承しない。新たな検索coverageや前処理短縮を実証するものは今回選定せず、検索機能PRを作らない。OCR/vision・archiveの紹介数を埋める追加試験なし。
 
 ## 採用・次
 
-採用B、現行版の実推論を条件にする。小さな日本語NLPとgame actionを別々に固定し、選択肢順序・否定・取消し・構造化/自然文の差を検証する価値がある。Layaはmultilingualだけ取得し、Router全preloadを避ける。ただし今回新ジョブや重複TinyJev試験を準備・投入しない。外部コード実行の承認と隔離条件が解決した後の候補として残す。
+採用B、現行版の実推論を条件にする。小さな日本語NLPとgame actionを別々に固定し、選択肢順序・否定・取消し・構造化/自然文の差を検証する価値がある。Layaはmultilingualだけ取得し、Router全preloadを避ける。ただし今回新ジョブや重複TinyJev試験を準備・投入しない。新候補を試す権限は既存の小規模試験依頼に含まれる。実行前には現行の隔離・依存・予算を確認し、実際にunknown-source実行や範囲外操作が必要な場合だけ、その操作への承認を求める。一般的な承認待ちを作らない。
+
+### 追補：承認範囲の読み取り監査（22:15〜22:18 UTC）
+
+前朝報告の「既存pending」には元の質問・対象・拒否記録が付されていない。一方、夕方のTinyJev停止台帳はwheel配置修復上限、継続報告はDocker buildx設定先修復を対象にする。Moli報告はlibfontconfig等の追加runtime依存を対象とする。いずれもLayaや日本語ModernBERTの新規試験全般を停止する根拠ではない。
+
+PyPIの`laya==0.4.15` wheel（451,484 bytes）をメモリ内で取得し公開SHA256一致を確認、ZIPのテキストだけを読んだ。install/import/execなし。SDKはsafetensors読込と標準`AutoModel.from_config`を使い、SDK Python内に`trust_remote_code`指定は見つからなかった。日本語モデルconfigは`ModernBertForSequenceClassification`/`modernbert`、`auto_map`なし、モデルrepoにPythonファイルなし。標準Transformersとsafetensorsの経路はモデルrepoのカスタムPython実行を必要とする証拠がなく、これら既知配布元の固定版を隔離して試すための追加承認が必須とは確認できない。ただしPyPI掲載やsafetensorsだけで依存全体の安全性を保証するわけではない。
+
+当環境のread-only確認ではDocker client/server28.4.0が応答し、`python:3.12-slim`タグのimage inspectは「No such image」。これはタグ不存在のみで、Docker隔離不能・拒否・承認待ちの証拠ではない。pull/build/run、未知コード実行、既存停止ジョブの修復は一切しない。現在の実行隔離は今回未検証のまま。[配布物の静的確認](../../benchmarks/daily-tech-20261028/authorization-source-check.json)、[判断の根拠](../../benchmarks/daily-tech-20261028/authorization-review.json)。
 
 実用機能なし、draft PRなし、merge/deployなし。研究成果を独立branchへ公開し、remote SHAとexact-SHA CIは最終返答へ記す。
