@@ -1,0 +1,106 @@
+{
+  "approved_additional_repairs": 1,
+  "repair_used": 1,
+  "cause_evidence": {
+    "host_uid": 1000,
+    "host_gid": 1000,
+    "wheels_dir_mode": "0700",
+    "wheel_file_mode": "0600",
+    "original_container_uid": 0,
+    "original_container_gid": 0,
+    "original_container_can_read_or_traverse_wheels": false,
+    "nonroot_uid1000_can_read_and_traverse_wheels": true,
+    "inference": "Ownership/mode plus cap-drop ALL explains original root process access failure; no evidence that wheel install attempted to write /wheels."
+  },
+  "repair": "Nonroot UID/GID1000 matching public files; read-only wheel/model/source mounts; install/temp/cache only on container-owned tmpfs. Host permissions unchanged.",
+  "limits": {
+    "cash": 0,
+    "ram_bytes": 8589934592,
+    "cpu_limit_seconds": 1200,
+    "wall_deadline_seconds": 1200,
+    "download_reused": true,
+    "network": "none",
+    "cap_drop": "ALL",
+    "rootfs": "read-only",
+    "no_new_privileges": true
+  },
+  "original_files": {
+    "inputs.json": "8c0bcef169e398d83b896068bcfa4566c7b2468c146f341f172162375f034f15",
+    "gold.json": "98bca7e5ad3dc3402264ffcf8dea1327ab6bf2d8123e6b97badf700ed90acf7a",
+    "run_model.py": "3026c54ee686fe7f04a718a893f13424f6d29ff8f97cc463ae5b230998142238",
+    "run_baseline.py": "fd17ad38c8b801bd6cba5ddf23c73624d92819161ee5ef4015fce106485d8963",
+    "score.py": "ddae150063d222d1e641e89c23f8af7f7058501eb7bff51a674522dc9aa8c568"
+  },
+  "original_model_download_ledger": [
+    null,
+    {
+      "file": "README.md",
+      "bytes": 11319,
+      "sha256": "97b1f4ed9eeebcf49d49464c657d417d46c37de1459d6ca3db22e317b0c66859",
+      "seconds": 0.5659010850000072
+    },
+    {
+      "file": "config.json",
+      "bytes": 787,
+      "sha256": "bdfc3d2416429cf227e20c2acb3b6cd3e73944332186fe7f055c11da55470a84",
+      "seconds": 0.3954916110000113
+    },
+    {
+      "file": "head.safetensors",
+      "bytes": 2099536,
+      "sha256": "1acf273a08d453351b6fd2d05827a6f90e8e2dd5e953d398454323fd729dacd7",
+      "seconds": 1.5819116030000089
+    },
+    {
+      "file": "model.safetensors",
+      "bytes": 1192132928,
+      "sha256": "d5cdc518743ba1574455790e637a7917515cb7292b336dd75a36d254aec6b824",
+      "seconds": 172.502673929
+    },
+    {
+      "file": "tinyjev.json",
+      "bytes": 1130,
+      "sha256": "7395d390ff5bea39e5958618ff0b32c930f28f4507704abc44bacb1756d04d56",
+      "seconds": 0.4034763979999809
+    },
+    {
+      "file": "tokenizer.json",
+      "bytes": 11422650,
+      "sha256": "be75606093db2094d7cd20f3c2f385c212750648bd6ea4fb2bf507a6a4c55506",
+      "seconds": 2.9088464529999953
+    },
+    {
+      "file": "tokenizer_config.json",
+      "bytes": 842,
+      "sha256": "3cca39ab54f024cdc0e40bf9791c7e71535e0fe0a21ac245d8c6f72c5e4f2904",
+      "seconds": 0.3286865809999995
+    }
+  ],
+  "code_sha": "fec868b6b44ac5fddac64ff87d318ccceaff27ea",
+  "baseline_output_sha256": "cdd3183b8592b9f3159289e4543c384387d6b4c8cf1ae72fa19f9ed3aabf8a1d",
+  "canonical_sha_untouched": "398863ba6611ec4c2c502c9cd5533a0922528108",
+  "timestamp_kind": "manifest verification time after execution, not launch time",
+  "verification_at_utc": "2026-10-27T15:10:38.303657+00:00",
+  "outcome": {
+    "install_exit": 0,
+    "import_exit": 1,
+    "model_inferences": 0,
+    "status": "blocked_second_additional_repair_not_authorized",
+    "uncertain_external_job": false,
+    "automatic_approval_rejection": false
+  },
+  "same_config_mount_diagnostic": {
+    "work_mount_lines": [
+      "138 129 0:58 / /work rw,nosuid,nodev,noexec,relatime - tmpfs tmpfs rw,size=3145728k,mode=700,uid=1000,gid=1000"
+    ],
+    "noexec": true,
+    "uid": 1000
+  },
+  "original_command": "docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --memory 8g --cpus 2 --tmpfs /tmp:rw,size=1g --mount type=bind,src=/tmp/tinyjev-oct27/wheels,dst=/wheels,readonly --mount type=bind,src=/tmp/tinyjev-oct27/deps,dst=/deps python:3.12-slim python -m pip install --no-index --find-links /wheels --target /deps torch transformers tokenizers safetensors numpy huggingface_hub",
+  "canonical_state_sha256_unchanged": {
+    "seen.json": "effe294a7bfc63b692ff46d30866dffc62b996bf0fd231c291a707d44a460584",
+    "queue.json": "48903cf556403a74f8158a8dce5410452b691ea5e11404aa9f2503251fd6cc43",
+    "mail.json": "857c7786769a9a4e2d5ce0389316bd399a40d81fbe2a23122764fe09418550a3",
+    "freshness.json": "eab619db882183a32b66ecc8aa78843d7118cb7fd7ee8f3f3bbf46e06190b31e"
+  }
+}
