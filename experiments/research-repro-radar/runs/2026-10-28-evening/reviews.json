@@ -1,0 +1,350 @@
+[
+  {
+    "candidate_id": "hf:liquidai/d1-omni-600m",
+    "decision": "test",
+    "reason": "選択肢確率で分類・抽出を短出力で返す設計は、雑多な大量入力をAPIより低コストでさばく狙いに合う。587Mで試行枠にも収まりそう。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/LiquidAI/d1-omni-600M/raw/main/README.md",
+        "quote": "You give it a state (text or JSON, with images or a voice clip) and a set of named questions."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "短いスクレイプ断片を使い、モデル容量・CPU速度・分類品質・ライセンスを確認",
+    "unconfirmed": [
+      "LF-MIT系ライセンスの商用条件",
+      "実際の重み容量とCPU推論の速度・精度"
+    ]
+  },
+  {
+    "candidate_id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+    "decision": "defer",
+    "reason": "コード生成モデルとして開発関心には合うが、通常のスクレイピング分類・抽出への直接適合は未確認。1.5B重みが2GB枠に収まるかも不明。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct/raw/main/README.md",
+        "quote": "This repo contains the instruction-tuned 1.5B Qwen2.5-Coder model**, which has the following features:"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "量子化ファイル容量と小規模コーディング評価を確認",
+    "unconfirmed": [
+      "ダウンロード容量",
+      "大量スクレイプ処理の費用対効果"
+    ]
+  },
+  {
+    "candidate_id": "2412.14219",
+    "decision": "reject",
+    "reason": "MoE推論最適化のサーベイで、軽量な分類・抽出器や評価可能な実装ではない。大量の雑多入力の処理に直結しにくい。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2412.14219",
+        "quote": "This comprehensive survey analyzes optimization techniques for MoE models across the entire system stack."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": []
+  },
+  {
+    "candidate_id": "2602.09373",
+    "decision": "defer",
+    "reason": "アフリカ諸語向け軽量翻訳モデルは低資源言語の処理に有用な可能性があるが、用途が翻訳であり対象言語やCPU性能が未確認。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2602.09373",
+        "quote": "AfriNLLB supports 15 language pairs"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "公開重み・ライセンス・CPU速度を確認",
+    "unconfirmed": [
+      "対象スクレイピングの言語",
+      "配布重みの容量とライセンス"
+    ]
+  },
+  {
+    "candidate_id": "2108.10197",
+    "decision": "defer",
+    "reason": "本番の軽量BERT分類器の実例で、大量データの分類に近い。ただし古い報告で、今使える成果物や現行環境への再現性が不明。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2108.10197v1",
+        "quote": "We successfully optimize a Query-Title Relevance (QTR) classifier for deployment via a compact model, which we name BERT Bi"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "論文中の実装・モデル公開先と現行ベースラインを確認",
+    "unconfirmed": [
+      "公開コード・重みの有無",
+      "現在のCPUでの処理量"
+    ]
+  },
+  {
+    "candidate_id": "2601.22709",
+    "decision": "defer",
+    "reason": "VLMの蒸留と量子化は軽量化関心に合うが、画像を含む分類等に用途が限られ、訓練手法の計算負荷と実用成果物が未確認。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2601.22709",
+        "quote": "We propose GRACE, a framework unifying knowledge distillation and QAT under the Information Bottleneck principle:"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "公開成果物と推論時の精度・容量を確認",
+    "unconfirmed": [
+      "再現用コード・モデル",
+      "GPU学習費用とCPU実行可能性"
+    ]
+  },
+  {
+    "candidate_id": "2503.06029",
+    "decision": "reject",
+    "reason": "中国語スマホアシスタント評価ベンチマークであり、処理器自体ではない。対象ワークロードに直接使える成果が薄い。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2503.06029",
+        "quote": "we introduce SmartBench, the first benchmark design"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": []
+  },
+  {
+    "candidate_id": "2211.11014",
+    "decision": "defer",
+    "reason": "BERT系encoderの量子化学習と蒸留は分類のCPU単価を下げうるが、古い論文で具体的な現在のモデル・成果物が確認できない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2211.11014",
+        "quote": "Knowledge distillation (KD) has been a ubiquitous method for model compression to strengthen the capability of a lightweight model"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "比較結果と実装の現行利用可否を確認",
+    "unconfirmed": [
+      "利用可能なコード・モデル",
+      "最新手法に対する効果"
+    ]
+  },
+  {
+    "candidate_id": "2207.01405",
+    "decision": "defer",
+    "reason": "整数専用ViT推論は軽量vision関心に合う。一方、画像以外の大量スクレイプ処理とは別用途で、実環境の対応カーネル・速度が未確認。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2207.01405",
+        "quote": "the quantized models to perform efficient integer-only inference."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "CPU実装と公開重みを確認",
+    "unconfirmed": [
+      "CPU実装・対応命令",
+      "実測速度と精度"
+    ]
+  },
+  {
+    "candidate_id": "2609.05334",
+    "decision": "defer",
+    "reason": "制約環境の植物病害visionモデル圧縮で、軽量画像認識として関心に合うが、対象画像用途との距離があり、重み・CPU速度が不明。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2609.05334v1",
+        "quote": "their large computational footprint makes deployment on resource constrained devices challenging."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "成果物と一般画像での転用可能性を確認",
+    "unconfirmed": [
+      "データ・重みの公開状況",
+      "CPU推論性能"
+    ]
+  },
+  {
+    "candidate_id": "2610.34886",
+    "decision": "defer",
+    "reason": "2-bit量子化は低コスト推論に魅力があるが、対象は長文生成型のreasoning LMで、短い分類・抽出向けとは限らない。実装・CPU対応も未確認。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.34886",
+        "quote": "We present ThinkBit, a strictly scalar two-bit framework built to preserve reasoning"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "推論実装・ベースモデル・CPU評価を確認",
+    "unconfirmed": [
+      "コード・量子化済み重み",
+      "CPUでのスループットと品質"
+    ]
+  },
+  {
+    "candidate_id": "hf:ankitai/tinyjev-0.6b",
+    "decision": "defer",
+    "reason": "軽量な確率付き分類器として適合しそうだが、既存の子タスクが修復上限待ちの試行中なので再開せず保留。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/AnkitAI/TinyJev-0.6B/raw/main/README.md",
+        "quote": "596M parameters, about 1.2 GB."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "進行中の試行結果を引き継いで判断",
+    "unconfirmed": [
+      "既存試行の修復結果"
+    ]
+  },
+  {
+    "candidate_id": "2509.14001",
+    "decision": "defer",
+    "reason": "少数例の個別物体検出を軽量モデルへ蒸留する研究。画像認識関心には合うが、スクレイピング文章処理とは用途が異なり、データ・重みとCPU要件も未確認。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2509.14001v5",
+        "quote": "Personalized object detection aims to adapt a general-purpose detector to recognize user-specific instances from only a few examples."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "公開成果物と計算条件を確認",
+    "unconfirmed": [
+      "公開コード・重み",
+      "CPUでの実行可能性"
+    ]
+  },
+  {
+    "candidate_id": "2507.16782",
+    "decision": "defer",
+    "reason": "物体検出のzero-shot量子化はvision関心に合うが、訓練データを使わない量子化法の評価で、文章分類・抽出には直接適用できない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2507.16782",
+        "quote": "Zero-shot Quantization (ZSQ) addresses this by using synthetic data generated from pre-trained models"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "コードと軽量検出器での効果を確認",
+    "unconfirmed": [
+      "公開コード・対象検出器",
+      "CPU向けの実用成果"
+    ]
+  },
+  {
+    "candidate_id": "2610.30067",
+    "decision": "defer",
+    "reason": "26M/49Mのraw-textベトナム語encoderは、雑な文面の分類・抽出をCPUで大量処理する方向にかなり合う。ベトナム語以外への適用、モデル公開、ライセンスが未確認。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.30067",
+        "quote": "a family of two compact Vietnamese encoders with 26M and 49M parameters that operate directly on raw text."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "重み公開先と下流タスク評価を確認",
+    "unconfirmed": [
+      "対象データの言語",
+      "重み・コード・ライセンス",
+      "分類/抽出タスクの評価"
+    ]
+  },
+  {
+    "candidate_id": "2505.03113",
+    "decision": "reject",
+    "reason": "軽量ViTのオンライン手法を広くまとめたサーベイで、個別に試せる手法や成果物が絞られていない。今回のスクレイプ処理にも直結しない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2505.03113",
+        "quote": "This paper surveys various online strategies for generating light"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": []
+  },
+  {
+    "candidate_id": "2405.03144",
+    "decision": "defer",
+    "reason": "SAMの後処理量子化は大規模visionモデルを軽くする話で、画像segment用途が別。軽量vision関心には隣接するが、CPU・容量の適合性が未確認。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2405.03144",
+        "quote": "we propose a post-training quantization (PTQ) framework for Segment Anything Model, namely PTQ4SAM."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "CPU実装と量子化重みの有無を確認",
+    "unconfirmed": [
+      "量子化後モデル容量",
+      "CPU処理速度・精度"
+    ]
+  },
+  {
+    "candidate_id": "github:ankit-aglawe/tinyjev",
+    "decision": "defer",
+    "reason": "選択肢確率を返す小型分類器で、雑多なレコードの短い分類に合う。TinyJevの試行が既に進行中のため重複着手せず、既存試行を待つ。",
+    "evidence": [
+      {
+        "source_url": "https://raw.githubusercontent.com/ankit-aglawe/tinyjev/HEAD/README.md",
+        "quote": "TinyJev answers typed questions about text and returns probabilities, in one forward pass, on your own machine."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "進行中のモデル試行に合わせてコード側の結果を確認",
+    "unconfirmed": [
+      "依存関係・CPU環境での動作",
+      "既存試行の結果"
+    ]
+  },
+  {
+    "candidate_id": "2607.25180",
+    "decision": "reject",
+    "reason": "超小型多言語embeddingの検索・retrieval専用で、今回の対象外。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2607.25180",
+        "quote": "How small can a competitive multilingual retrieval model be?"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": []
+  },
+  {
+    "candidate_id": "2609.31430",
+    "decision": "defer",
+    "reason": "開発agentの観測文脈を圧縮し、ソフトウェア工学タスクの処理効率を上げる研究で、AI駆動開発関心に合う。ただし学習済みモデルやコード、GPU要件が不明で、スクレイプ処理用途ではない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2609.31430v1",
+        "quote": "we combine Latent Observations, Hard Actions (LOHA), a context layout that separates compressed history from text needed for exact reference"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "成果物と学習・推論ハードウェア要件を確認",
+    "unconfirmed": [
+      "コード・学習済みモデル",
+      "GPU依存と実行費用"
+    ]
+  }
+]

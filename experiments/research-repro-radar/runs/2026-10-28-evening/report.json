@@ -1,0 +1,158 @@
+{
+  "run_id": "2026-10-28-evening",
+  "date": "2026-10-28",
+  "recommended": [],
+  "completed_ids": [
+    "2412.14219",
+    "2503.06029",
+    "2505.03113",
+    "2607.25180",
+    "hf:argos1111/modernbert-ja-310m-jev"
+  ],
+  "completed_reasons": {
+    "2412.14219": "MoE推論最適化のサーベイで、軽量な分類・抽出器や評価可能な実装ではない。大量の雑多入力の処理に直結しにくい。",
+    "2503.06029": "中国語スマホアシスタント評価ベンチマークであり、処理器自体ではない。対象ワークロードに直接使える成果が薄い。",
+    "2505.03113": "軽量ViTのオンライン手法を広くまとめたサーベイで、個別に試せる手法や成果物が絞られていない。今回のスクレイプ処理にも直結しない。",
+    "2607.25180": "超小型多言語embeddingの検索・retrieval専用で、今回の対象外。",
+    "hf:argos1111/modernbert-ja-310m-jev": "Bounded 32-input comparison completed; conditional adoption and independent followup remain distinct from this completed check."
+  },
+  "digest": [
+    {
+      "id": "hf:liquidai/d1-omni-600m",
+      "title": "LiquidAI/d1-omni-600M",
+      "url": "https://huggingface.co/LiquidAI/d1-omni-600M",
+      "reason": "選択肢確率で分類・抽出を短出力で返す設計は、雑多な大量入力をAPIより低コストでさばく狙いに合う。587Mで試行枠にも収まりそう。",
+      "hold": "LF-MIT系ライセンスの商用条件; 実際の重み容量とCPU推論の速度・精度",
+      "verification": "reading_only_no_inference"
+    },
+    {
+      "id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+      "title": "Qwen2.5-Coder-1.5B-Instruct",
+      "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+      "reason": "コード生成モデルとして開発関心には合うが、通常のスクレイピング分類・抽出への直接適合は未確認。1.5B重みが2GB枠に収まるかも不明。",
+      "hold": "ダウンロード容量; 大量スクレイプ処理の費用対効果",
+      "verification": "reading_only_no_inference"
+    },
+    {
+      "id": "2602.09373",
+      "title": "AfriNLLB: Efficient Translation Models for African Languages",
+      "url": "https://arxiv.org/abs/2602.09373",
+      "reason": "アフリカ諸語向け軽量翻訳モデルは低資源言語の処理に有用な可能性があるが、用途が翻訳であり対象言語やCPU性能が未確認。",
+      "hold": "対象スクレイピングの言語; 配布重みの容量とライセンス",
+      "verification": "reading_only_no_inference"
+    },
+    {
+      "id": "2108.10197",
+      "title": "Deploying a BERT-based Query-Title Relevance Classifier in a Production System: a View from the Trenches",
+      "url": "https://arxiv.org/abs/2108.10197v1",
+      "reason": "本番の軽量BERT分類器の実例で、大量データの分類に近い。ただし古い報告で、今使える成果物や現行環境への再現性が不明。",
+      "hold": "公開コード・重みの有無; 現在のCPUでの処理量",
+      "verification": "reading_only_no_inference"
+    },
+    {
+      "id": "2601.22709",
+      "title": "Gated Relational Alignment via Confidence-based Distillation for Efficient VLMs",
+      "url": "https://arxiv.org/abs/2601.22709",
+      "reason": "VLMの蒸留と量子化は軽量化関心に合うが、画像を含む分類等に用途が限られ、訓練手法の計算負荷と実用成果物が未確認。",
+      "hold": "再現用コード・モデル; GPU学習費用とCPU実行可能性",
+      "verification": "reading_only_no_inference"
+    },
+    {
+      "id": "2211.11014",
+      "title": "Understanding and Improving Knowledge Distillation for\n  Quantization-Aware Training of Large Transformer Encoders",
+      "url": "https://arxiv.org/abs/2211.11014",
+      "reason": "BERT系encoderの量子化学習と蒸留は分類のCPU単価を下げうるが、古い論文で具体的な現在のモデル・成果物が確認できない。",
+      "hold": "利用可能なコード・モデル; 最新手法に対する効果",
+      "verification": "reading_only_no_inference"
+    },
+    {
+      "id": "2207.01405",
+      "title": "I-ViT: Integer-only Quantization for Efficient Vision Transformer\n  Inference",
+      "url": "https://arxiv.org/abs/2207.01405",
+      "reason": "整数専用ViT推論は軽量vision関心に合う。一方、画像以外の大量スクレイプ処理とは別用途で、実環境の対応カーネル・速度が未確認。",
+      "hold": "CPU実装・対応命令; 実測速度と精度",
+      "verification": "reading_only_no_inference"
+    },
+    {
+      "id": "2609.05334",
+      "title": "Lightweight Vision Transformer Compression for On-Device Plant Disease Detection in Resource-Constrained Agricultural Field Conditions",
+      "url": "https://arxiv.org/abs/2609.05334v1",
+      "reason": "制約環境の植物病害visionモデル圧縮で、軽量画像認識として関心に合うが、対象画像用途との距離があり、重み・CPU速度が不明。",
+      "hold": "データ・重みの公開状況; CPU推論性能",
+      "verification": "reading_only_no_inference"
+    },
+    {
+      "id": "2610.34886",
+      "title": "ThinkBit: Search Codewords, Recalibrate Scales, Select by Reasoning",
+      "url": "https://arxiv.org/abs/2610.34886",
+      "reason": "2-bit量子化は低コスト推論に魅力があるが、対象は長文生成型のreasoning LMで、短い分類・抽出向けとは限らない。実装・CPU対応も未確認。",
+      "hold": "コード・量子化済み重み; CPUでのスループットと品質",
+      "verification": "reading_only_no_inference"
+    },
+    {
+      "id": "hf:ankitai/tinyjev-0.6b",
+      "title": "AnkitAI/TinyJev-0.6B",
+      "url": "https://huggingface.co/AnkitAI/TinyJev-0.6B",
+      "reason": "軽量な確率付き分類器として適合しそうだが、既存の子タスクが修復上限待ちの試行中なので再開せず保留。",
+      "hold": "既存試行の修復結果",
+      "verification": "reading_only_no_inference"
+    },
+    {
+      "id": "2509.14001",
+      "title": "MOCHA: Multi-modal Objects-aware Cross-arcHitecture Alignment",
+      "url": "https://arxiv.org/abs/2509.14001v5",
+      "reason": "少数例の個別物体検出を軽量モデルへ蒸留する研究。画像認識関心には合うが、スクレイピング文章処理とは用途が異なり、データ・重みとCPU要件も未確認。",
+      "hold": "公開コード・重み; CPUでの実行可能性",
+      "verification": "reading_only_no_inference"
+    },
+    {
+      "id": "2507.16782",
+      "title": "Task-Specific Zero-shot Quantization-Aware Training for Object Detection",
+      "url": "https://arxiv.org/abs/2507.16782",
+      "reason": "物体検出のzero-shot量子化はvision関心に合うが、訓練データを使わない量子化法の評価で、文章分類・抽出には直接適用できない。",
+      "hold": "公開コード・対象検出器; CPU向けの実用成果",
+      "verification": "reading_only_no_inference"
+    },
+    {
+      "id": "2610.30067",
+      "title": "GoiBERT: Compact Vietnamese Language Models via Two-Stage Knowledge Distillation",
+      "url": "https://arxiv.org/abs/2610.30067",
+      "reason": "26M/49Mのraw-textベトナム語encoderは、雑な文面の分類・抽出をCPUで大量処理する方向にかなり合う。ベトナム語以外への適用、モデル公開、ライセンスが未確認。",
+      "hold": "対象データの言語; 重み・コード・ライセンス; 分類/抽出タスクの評価",
+      "verification": "reading_only_no_inference"
+    },
+    {
+      "id": "2405.03144",
+      "title": "PTQ4SAM: Post-Training Quantization for Segment Anything",
+      "url": "https://arxiv.org/abs/2405.03144",
+      "reason": "SAMの後処理量子化は大規模visionモデルを軽くする話で、画像segment用途が別。軽量vision関心には隣接するが、CPU・容量の適合性が未確認。",
+      "hold": "量子化後モデル容量; CPU処理速度・精度",
+      "verification": "reading_only_no_inference"
+    },
+    {
+      "id": "2609.31430",
+      "title": "Compress What You See, Not What You Say: Anchored Context Distillation for Latent-Observation Software Engineering Agents",
+      "url": "https://arxiv.org/abs/2609.31430v1",
+      "reason": "開発agentの観測文脈を圧縮し、ソフトウェア工学タスクの処理効率を上げる研究で、AI駆動開発関心に合う。ただし学習済みモデルやコード、GPU要件が不明で、スクレイプ処理用途ではない。",
+      "hold": "コード・学習済みモデル; GPU依存と実行費用",
+      "verification": "reading_only_no_inference"
+    }
+  ],
+  "counts": {
+    "collected_unique": 2046,
+    "ranked_input_with_carry": 9560,
+    "review_pool": 20,
+    "additional_trial_candidates": 1,
+    "candidate_models_inferred": 1,
+    "model_input_inferences": 32,
+    "pending_before": 9467,
+    "pending_after": 9481
+  },
+  "adoption": {
+    "japanese_nlp": "B conditional; synthetic diagnostic23/24",
+    "game": "C for replacement of explicit deterministic rules in this fixture;5/8 vs8/8"
+  },
+  "trial_summary": "benchmarks/research-repro-radar/2026-10-28/scores.json",
+  "cost_jpy": 0,
+  "gpu_used": false
+}

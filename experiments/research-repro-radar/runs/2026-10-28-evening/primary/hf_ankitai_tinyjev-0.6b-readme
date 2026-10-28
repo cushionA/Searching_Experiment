@@ -1,0 +1,229 @@
+---
+license: mit
+library_name: transformers
+pipeline_tag: text-classification
+base_model: Qwen/Qwen3-0.6B-Base
+tags: [tinyjev, jev, decision-model, system-one, typed-decisions, mlx, qwen3]
+language: [en]
+datasets: [jaredpalmer/kev-suites]
+---
+
+<div align="center">
+
+<img alt="TinyJev" src="https://raw.githubusercontent.com/ankit-aglawe/tinyjev/main/assets/tinyjev_header.png" width="620">
+
+<p>Typed decisions, on your laptop, in one forward pass.</p>
+
+<p>
+  <a href="https://pypi.org/project/tinyjev/"><img alt="PyPI" src="https://img.shields.io/pypi/v/tinyjev?label=pypi&color=E46412"></a>
+  <a href="https://pypi.org/project/tinyjev/"><img alt="Python" src="https://img.shields.io/badge/python-3.9%2B-E46412"></a>
+  <a href="https://github.com/ankit-aglawe/tinyjev"><img alt="GitHub" src="https://img.shields.io/badge/code-github-E46412?logo=github&logoColor=white"></a>
+  <a href="https://github.com/ankit-aglawe/tinyjev/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-E46412"></a>
+</p>
+
+<p>
+  <a href="https://github.com/ankit-aglawe/tinyjev">GitHub</a> ·
+  <a href="https://pypi.org/project/tinyjev/">PyPI</a> ·
+  <a href="https://github.com/ankit-aglawe/tinyjev/tree/main/examples">Examples</a>
+</p>
+
+<p>
+  <b>English</b> ·
+  <a href="https://github.com/ankit-aglawe/tinyjev/blob/main/README.zh-CN.md">简体中文</a> ·
+  <a href="https://github.com/ankit-aglawe/tinyjev/blob/main/README.ja.md">日本語</a> ·
+  <a href="https://github.com/ankit-aglawe/tinyjev/blob/main/README.ko.md">한국어</a>
+</p>
+
+</div>
+
+Send this model some state, a ticket or a record or a log line, plus questions with the answers you
+will accept. It returns a probability for every option you offered. It cannot answer with anything
+else, because it never generates text; it scores the options you gave it and stops.
+
+- `Choice` picks one option from a list, with a probability for each.
+- `Noul` measures whether a statement is true.
+- `Score` places state on an ordered scale.
+- Confidence is calibrated, so a threshold means something.
+
+596M parameters, about 1.2 GB. MLX on Apple Silicon, PyTorch everywhere else, fully offline.
+
+## Watch it decide
+
+<div align="center">
+  <img alt="TinyJev and GPT-6 Sol answering the same six never-seen questions from a shared start; TinyJev finishes each in under 130 ms, GPT-6 Sol writes JSON for about two seconds" src="https://raw.githubusercontent.com/ankit-aglawe/tinyjev/main/assets/demo_race.gif" width="600">
+</div>
+
+Six decisions from six domains it never trained on, the same question to both models at the same
+instant. TinyJev answers in one forward pass: 6 of 6 right, 86 ms a question on a base M1. GPT-6 Sol
+writes the answer as JSON, token by token: 6 of 6 right, 2,042 ms a question. Both lanes are real
+runs replayed at real speed; the API lane is a recording with wall-clock timestamps. The questions,
+the answers and both timings are in [`assets/recordings`](assets/recordings).
+
+```bash
+pip install 'tinyjev[mlx,demo]'
+python demos/race.py --recording assets/recordings/gpt-6-sol.jsonl --llm-name "GPT-6 Sol" --gif demo.gif
+```
+
+<details>
+<summary><b>Twelve decisions about one ticket, in one pass</b> — click to expand</summary>
+
+<div align="center">
+  <img alt="TinyJev answering 12 typed decisions about one support ticket in one forward pass, next to GPT-6 Sol writing the same answers as JSON token by token" src="https://raw.githubusercontent.com/ankit-aglawe/tinyjev/main/assets/demo_batch.gif" width="600">
+</div>
+
+One support ticket, twelve typed decisions: which team, what priority, what the customer wants.
+TinyJev scores every option of every question in a single forward pass and returns all twelve
+together, 596 ms, 10 of 12 right. GPT-6 Sol writes the same twelve as JSON: 2,198 ms, 12 of 12 right.
+The ticket, the questions, the expected answers and both measurements are in
+[`demos/cases`](demos/cases) and [`assets/recordings`](assets/recordings).
+
+```bash
+python demos/batch_race.py --data assets/recordings/batch-support-ticket-gpt-6-sol.json --gif demo.gif
+```
+
+</details>
+
+<details>
+<summary><b>Eight tickets, three questions each</b> — click to expand</summary>
+
+<div align="center">
+  <img alt="TinyJev triaging support tickets" src="https://raw.githubusercontent.com/ankit-aglawe/tinyjev/main/assets/demo_triage.gif" width="600">
+</div>
+
+Eight real support tickets, one after another, on a base M1. Three questions per ticket in a
+single forward pass, about 110 ms each. Every number in that recording came from a live run.
+
+```bash
+python demos/triage_desk.py --gif demo.gif
+```
+
+</details>
+
+<details>
+<summary><b>And, for fun, Doom</b> — click to expand</summary>
+
+<div align="center">
+  <img alt="TinyJev choosing actions in VizDoom" src="https://raw.githubusercontent.com/ankit-aglawe/tinyjev/main/assets/tinyjev_doom.gif" width="860">
+</div>
+
+TinyJev is text-only, so it never sees the game pixels. VizDoom supplies health, ammo, enemy positions, recent damage and the location of the goal. A small rules-based router picks the tactical mode; TinyJev chooses a tactic and returns its probabilities; ordinary code handles aiming and key presses. In this fixed-seed run it kills all six enemies and reaches the goal.
+
+```bash
+pip install 'tinyjev[mlx,doom]'
+python demos/doom_corridor.py --gif tinyjev_doom.gif
+```
+
+This is a demo, not a benchmark: on structured numeric state the answer barely moves with the input, and the router does the game's work.
+
+</details>
+
+## Models
+
+Two models so far, same head, same training data, scored on the same 500 never-seen cases from 25
+domains ([`benchmarks/opendecision`](https://github.com/ankit-aglawe/tinyjev/tree/main/benchmarks/opendecision), every case and probability logged).
+Latency is a base M1 (16 GB) via MLX, one forward pass per case.
+
+| Model | Params | OD-500 | Gate 0.85 | ms / case | Weights |
+|---|---:|---:|---|---:|---|
+| <img src="https://raw.githubusercontent.com/ankit-aglawe/tinyjev/main/assets/logos/tinyjev.png" width="18"> **TinyJev&nbsp;0.6B** | 596M, 1.2 GB | 440 (88.0%) | 59% @ 98.0% | 85 | 🤗 [AnkitAI/TinyJev-0.6B](https://huggingface.co/AnkitAI/TinyJev-0.6B) |
+| <img src="https://raw.githubusercontent.com/ankit-aglawe/tinyjev/main/assets/logos/tinyjev.png" width="18"> **TinyJev&nbsp;4B** | 4.0B, 8.0 GB | 474 (94.8%) | 87% @ 99.1% | 628 | 🤗 [AnkitAI/TinyJev-4B](https://huggingface.co/AnkitAI/TinyJev-4B) |
+
+OD-500 is correct answers out of 500. Gate 0.85 is the share of decisions answered on its own at
+confidence ≥ 0.85, and how often those were right. Calibration (ECE 0.071 vs 0.022), coverage at 2%
+error (63% vs 92%) and transfer-v4 dev (0.625 vs 0.762) are on the benchmark page. Load either with
+`tinyjev.load("TinyJev-0.6B")` or `tinyjev.load("TinyJev-4B")`.
+
+Both rows are fp16. Loading with `quantize=8` keeps the same weights in half the memory and changes
+almost nothing: the 0.6B scores 440 at 90 ms, the 4B 473 at 845 ms, one answer in 500 different from
+fp16. The gate is the number that matters in production; the rest of the queue goes to a person or a
+bigger model. On the same 500: Kev-0.8B 463, Claude Opus 5.5 496, the same Qwen3-0.6B weights read
+through letter logits with no head 354.
+
+## Measured
+
+On OpenDecision's Original Choice 500, a suite of 25 domains that was not in the training data, with the same 500 inputs for every model:
+
+| Model | Correct / 500 | Handled alone at confidence ≥ 0.85 |
+|---|---:|---:|
+| Claude Opus 5.5 (cloud, self-reported probabilities) | 496 | 477 at 100.0% |
+| Kev-0.6B, the checkpoint this reproduces (raw logits) | 441 | 378 at 98.2% |
+| **TinyJev-0.6B** | **440** | **296 at 98.0%** |
+| Same Qwen3-0.6B weights, no head, letter logits | 354 | 79 at 97.5% |
+
+330/375 on dev, 110/125 on holdout, 95% CI 0.850–0.908. The shipped temperature (1.464, fitted in-distribution) flattens confidence out of distribution: at raw logits the same gate covers 76% of the queue, matching Kev-0.6B. Reported, not refit. Every case, every probability, the coverage curves and all the baseline rows: [benchmarks/opendecision](https://github.com/ankit-aglawe/tinyjev/tree/main/benchmarks/opendecision).
+
+## Use it
+
+```bash
+pip install 'tinyjev[mlx]'     # Apple Silicon
+pip install 'tinyjev[torch]'   # everything else
+```
+
+```python
+import tinyjev
+agent = tinyjev.load("TinyJev-0.6B")
+
+agent.predict({
+    "state": "Shoes arrived two weeks late and in the wrong size. Also I see two charges on my card.",
+    "questions": {
+        "team":     {"type": "choice", "instructions": "Which team should handle this?",
+                     "criteria": {"returns": "Exchanges, refunds, wrong or damaged items",
+                                  "shipping": "Delivery status, delays, lost packages",
+                                  "billing":  "Charges, invoices, payment problems"}},
+        "escalate": {"type": "noul",   "instructions": "Does this need urgent human attention?"},
+        "anger":    {"type": "score",  "instructions": "How angry is the customer?",
+                     "criteria": ["calm", "frustrated", "very angry"]},
+    }})
+```
+
+On Apple Silicon you can quantize as it loads. Eight bits is free: half the memory, slightly faster,
+and it scored identically to full precision on our held-out set.
+
+```python
+agent = tinyjev.load("TinyJev-0.6B", quantize=8)
+```
+
+Serve it over HTTP, speaking the System One request shape:
+
+```bash
+tinyjev serve TinyJev-0.6B        # POST /v1/systemone on 127.0.0.1:8077
+```
+
+## What is in this repo
+
+`AutoModel.from_pretrained("AnkitAI/TinyJev-0.6B")` loads the backbone on its own, a standard
+`Qwen3Model` in fp16. The decision head lives in `head.safetensors`, and `tinyjev` is what turns hidden
+states into calibrated answers.
+
+## How it was built, and how it scores
+
+Qwen3-0.6B-Base with a pointer head, LoRA r16 at lr 5e-5 merged back into the base, trained on the
+public `jaredpalmer/kev-suites` decision-v7 split. No held-out transfer source was used in training.
+A fitted temperature of 1.46 is applied at inference.
+
+| | transfer-v4 dev | transfer-v4 test, read once | ECE on test |
+| --- | --- | --- | --- |
+| TinyJev-0.6B | 0.625 | 0.663 | 0.082 |
+| Same-size public anchor (Kev-0.6B) | 0.620 | 0.642 | 0.128 |
+
+Scored with the upstream harness on its frozen held-out suite. This matches the same-size public anchor
+and edges ahead on the locked test with lower calibration error. It is not 4B-class, and it is not
+meant to be. Full fine-tuning, distillation from a 4B teacher, and a 149M encoder were all tried and
+all lost to the configuration above.
+
+`TinyJev-0.6B` is done and published. Next is a smaller one, around 0.15B.
+
+## Support the Project
+
+If this model is useful in your work, you can support independent research:
+
+<p align="left">
+  <a href="https://www.buymeacoffee.com/AnkitAI" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="60" width="217" /></a>
+</p>
+
+## Credits
+
+Built on [Qwen3-0.6B-Base](https://huggingface.co/Qwen/Qwen3-0.6B-Base) (Apache-2.0). The training data,
+evaluation suites and the pointer-head design come from [Kev](https://github.com/jaredpalmer/kev) by
+Jared Palmer (Apache-2.0). The typed-decision interface follows
+[TypeSafe's Jev](https://docs.typesafe.ai/introduction). MIT licensed.
