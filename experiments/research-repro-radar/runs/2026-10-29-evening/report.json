@@ -1,0 +1,150 @@
+{
+  "run_id": "2026-10-29-evening",
+  "scheduled_at": "2026-10-29T09:00:00Z",
+  "backend": "native",
+  "recommended": [
+    {
+      "id": "hf:doofz/thx-01",
+      "title": "THX-01: 日本語の小型判定は追加検証B、明示ゲームルール置換C",
+      "url": "https://huggingface.co/doofz/THX-01",
+      "published_at": "2026-10-10",
+      "category": "deep_dive_value",
+      "verification_level": "compared",
+      "adoption": "B for additional NLP evaluation; C for explicit game rule replacement",
+      "reason": "第三者評価と独立派生実装の2信号＋公式モデル。実測は合成NLP22/24・ゲーム2/8で一般優位や大きな効果の認定なし。",
+      "measured_candidate_count": 1
+    }
+  ],
+  "digest": [
+    {
+      "id": "hf:liquidai/d1-omni-600m",
+      "title": "LiquidAI/d1-omni-600M",
+      "url": "https://huggingface.co/LiquidAI/d1-omni-600M",
+      "reason": "多言語テキスト・画像・音声を一回の推論で分類する587Mモデルで、用途は合う。readme上はTransformersの追加依存とremote codeが必要、ライセンスは独自lfm1.0、速度値なし。CPU/RAM適合と商用条件は未確認。",
+      "hold": "未実行。今回のモデル比較枠はTHX-01に使用。"
+    },
+    {
+      "id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+      "title": "Qwen2.5-Coder-1.5B-Instruct",
+      "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct",
+      "reason": "コード生成用途は開発支援に関連しApache-2.0だが、1.5Bの生成モデルは小型分類/抽出の直接用途から外れ、30分枠内のCPU評価も不確実。CPU速度・RAM・商用利用条件以外に、既存候補より有効か未確認。",
+      "hold": "未実行。今回のモデル比較枠はTHX-01に使用。"
+    },
+    {
+      "id": "2412.14219",
+      "title": "A Survey on Inference Optimization Techniques for Mixture of Experts\n  Models",
+      "url": "https://arxiv.org/abs/2412.14219",
+      "reason": "MoE推論最適化のサーベイで学習・背景把握には役立つが、検索可能な新規実装やモデルそのものではない。実務の新規発見範囲を単独で増やさず、CPU小型モデルへの直接適用も未確認。",
+      "hold": "未実行。今回のモデル比較枠はTHX-01に使用。"
+    },
+    {
+      "id": "2602.09373",
+      "title": "AfriNLLB: Efficient Translation Models for African Languages",
+      "url": "https://arxiv.org/abs/2602.09373",
+      "reason": "アフリカ諸語翻訳モデルの研究で、対象言語が明示された翻訳案件なら関連するが、一般分類/抽出との一致は弱い。効率性の主張だけではCPU/RAM適合や精度優位を確認できない。",
+      "hold": "未実行。今回のモデル比較枠はTHX-01に使用。"
+    },
+    {
+      "id": "2108.10197",
+      "title": "Deploying a BERT-based Query-Title Relevance Classifier in a Production System: a View from the Trenches",
+      "url": "https://arxiv.org/abs/2108.10197v1",
+      "reason": "本番BERTクエリ・タイトル関連度分類の実例で実務性はあるが、対象の小型CPU分類/抽出へ転用できるか、実装を現在の環境で再現できるかは未確認。導入可能な成果物と資源量を確認できるまで保留。",
+      "hold": "未実行。今回のモデル比較枠はTHX-01に使用。"
+    },
+    {
+      "id": "2601.22709",
+      "title": "Gated Relational Alignment via Confidence-based Distillation for Efficient VLMs",
+      "url": "https://arxiv.org/abs/2601.22709",
+      "reason": "効率的VLM向け蒸留の研究で軽量視覚と関連するが、実配布モデル・CPU実行性は資料上確証なし。比較対象と実測を確認する価値はあるものの、現時点で導入試験の根拠は不足。",
+      "hold": "未実行。今回のモデル比較枠はTHX-01に使用。"
+    },
+    {
+      "id": "2211.11014",
+      "title": "Understanding and Improving Knowledge Distillation for\n  Quantization-Aware Training of Large Transformer Encoders",
+      "url": "https://arxiv.org/abs/2211.11014",
+      "reason": "Transformer encoderの量子化対応学習を扱いCPU小型化の参考になるが、論文の手法を対象モデル/ツールへ適用できるか、現行の再現可能な実装があるかは未確認。導入可能性と比較実測を確認できるまで保留。",
+      "hold": "未実行。今回のモデル比較枠はTHX-01に使用。"
+    },
+    {
+      "id": "2207.01405",
+      "title": "I-ViT: Integer-only Quantization for Efficient Vision Transformer\n  Inference",
+      "url": "https://arxiv.org/abs/2207.01405",
+      "reason": "I-ViTは整数のみのViT推論を扱い軽量視覚に合うが、視覚タスク専用で現環境のCPU対応・導入容易性は未確認。性能比較の記述を確認してから優先度を判断する。",
+      "hold": "未実行。今回のモデル比較枠はTHX-01に使用。"
+    },
+    {
+      "id": "2609.05334",
+      "title": "Lightweight Vision Transformer Compression for On-Device Plant Disease Detection in Resource-Constrained Agricultural Field Conditions",
+      "url": "https://arxiv.org/abs/2609.05334v1",
+      "reason": "制約環境向け植物病害検出ViT圧縮で軽量視覚に一致するが、用途が特化し、実装・ライセンス・CPU測定は未確認。比較可能な実測確認後に試験判断。",
+      "hold": "未実行。今回のモデル比較枠はTHX-01に使用。"
+    },
+    {
+      "id": "2610.34886",
+      "title": "ThinkBit: Search Codewords, Recalibrate Scales, Select by Reasoning",
+      "url": "https://arxiv.org/abs/2610.34886",
+      "reason": "量子化コード語とスケール再調整に関する新しい論文だが、対象モデル規模・CPU小型モデルでの適用性・公開実装は資料から未確認。量子化に関心は合うものの試験根拠が足りない。",
+      "hold": "未実行。今回のモデル比較枠はTHX-01に使用。"
+    },
+    {
+      "id": "hf:arunp0/yama-indic",
+      "title": "Yama Indic v3 successor to laya-indic",
+      "url": "https://huggingface.co/arunp0/yama-indic",
+      "reason": "多言語分類には有望だが、指示の累積DL上限2 GBに対し重みだけで超過するため今回は保留。GPUへ切り替えて回避しない。Apache-2.0でも資源制約は解消しない。",
+      "hold": "累積DL2GB枠超過のため未取得。"
+    },
+    {
+      "id": "hf:ankitai/tinyjev-0.6b",
+      "title": "AnkitAI/TinyJev-0.6B",
+      "url": "https://huggingface.co/AnkitAI/TinyJev-0.6B",
+      "reason": "Qwen3 0.6Bを基盤とする英語の型付き判定モデルで関心に合い、MIT。指定の追加ダウンロード承認待ちのため、取得・導入・完了判定を進めず保留する。",
+      "hold": "TinyJev既存の追加DL承認待ち。再実行なし。"
+    },
+    {
+      "id": "2509.14001",
+      "title": "MOCHA: Multi-modal Objects-aware Cross-arcHitecture Alignment",
+      "url": "https://arxiv.org/abs/2509.14001v5",
+      "reason": "MOCHAはマルチモーダル物体認識と異種アーキテクチャ整合の研究で視覚に関連するが、CPU向け配布モデルか、実タスクに有用かは未確認。",
+      "hold": "未実行。今回のモデル比較枠はTHX-01に使用。"
+    },
+    {
+      "id": "2507.16782",
+      "title": "Task-Specific Zero-shot Quantization-Aware Training for Object Detection",
+      "url": "https://arxiv.org/abs/2507.16782",
+      "reason": "物体検出向けタスク特化ゼロショット量子化学習で視覚圧縮の関心には合うが、モデル導入やCPU実行の実用性は未確認。",
+      "hold": "未実行。今回のモデル比較枠はTHX-01に使用。"
+    },
+    {
+      "id": "2610.30067",
+      "title": "GoiBERT: Compact Vietnamese Language Models via Two-Stage Knowledge Distillation",
+      "url": "https://arxiv.org/abs/2610.30067",
+      "reason": "ベトナム語小型言語モデルの二段蒸留で、対象言語案件なら関連するが用途が限定的。論文記述だけではCPU要件・公開物・比較性能は確認できない。",
+      "hold": "未実行。今回のモデル比較枠はTHX-01に使用。"
+    }
+  ],
+  "completed_ids": [
+    "hf:doofz/thx-01"
+  ],
+  "counts": {
+    "collected_unique": 1939,
+    "primary_reading_unique": 24,
+    "actual_candidate_models_executed": 1,
+    "actual_candidate_inputs": 32,
+    "baseline_inputs": 32,
+    "pending_before": 9481,
+    "pending_after_expected": 9514,
+    "pending_after": 9514
+  },
+  "limits": {
+    "money_spent_jpy": 0,
+    "repairs": 0,
+    "gpu_used": false,
+    "maximum_download_gb": 2
+  },
+  "pending_restrictions_unchanged": [
+    "TinyJev original48 remains0; cumulative3GB restore approval pending; no duplicate/download/GPU reroute",
+    "Moli/Lightpanda repair pending",
+    "SKU untouched",
+    "PR19mLateOn stopped"
+  ]
+}

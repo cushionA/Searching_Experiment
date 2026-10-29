@@ -1,0 +1,90 @@
+[
+  {
+    "candidate_id": "hf:manjunathshiva/opendecider-nano",
+    "decision": "test",
+    "reason": "英語の分類・ルーティング候補として試す価値あり。Apache-2.0でCPU対応の記載があるが、初回0.8 GBに加え依存物が既試行分の残り枠へ収まるか要確認。まず英語の手元例で精度と実RAMを測る。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/manjunathshiva/opendecider-nano",
+        "quote": "~400M parameters, Apache-2.0."
+      },
+      {
+        "source_url": "https://huggingface.co/manjunathshiva/opendecider-nano",
+        "quote": "# 0.8 GB download on first use"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "CPU環境で依存物・重みの累積DL量とRAMを計測し、英語の代表例を評価。",
+    "unconfirmed": [
+      "CPU時間・RAMはカード記載値で、今回の環境では未確認",
+      "依存物込みの累積ダウンロード量は未確認"
+    ]
+  },
+  {
+    "candidate_id": "hf:manjunathshiva/opendecider-nano-onnx",
+    "decision": "defer",
+    "reason": "nanoと同系統の別ONNX形式で、ブラウザ等の用途が決まれば候補になる。現状は英語のみでCPU動作見積もりも未確認のため、用途と実行環境を絞ってから比較する。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/manjunathshiva/opendecider-nano-ONNX",
+        "quote": "as ONNX for the browser (**WebGPU** or **WebAssembly**), Node, Bun and Deno."
+      },
+      {
+        "source_url": "https://huggingface.co/manjunathshiva/opendecider-nano-ONNX",
+        "quote": "download (once, then the browser's cache) | 450 MiB | 755 MiB | 569 MiB"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "ブラウザ/Node等の実行先が必要になった時点で、nanoとの出力一致とCPU/RAMを比較。",
+    "unconfirmed": [
+      "CPUでの所要時間・RAMは未確認",
+      "既試行分を含む累積DL量は未確認"
+    ]
+  },
+  {
+    "candidate_id": "hf:arunp0/laya-indic",
+    "decision": "test",
+    "reason": "ヒンディー語・Hinglishなどを含む分類候補として試す価値あり。Apache-2.0でv2は322Mだが、Yama v3とは別ID・別エンコーダーの旧版なので、対象言語の実データで差を確認する。重みと依存物の容量は未確認。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/arunp0/laya-indic",
+        "quote": "This repository stays at v2 (mmBERT-base); v1 is at revision `v1.0`."
+      },
+      {
+        "source_url": "https://huggingface.co/arunp0/laya-indic",
+        "quote": "Parameters | about 322M (mmBERT-base encoder plus a 2-layer decision head)"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "v2の重みサイズを確認し、Hinglish/Indicの小さな代表サンプルで精度とCPU/RAMを測る。",
+    "unconfirmed": [
+      "重み・依存物を含む累積DL量とRAMは未確認",
+      "本環境での精度とCPU時間は未確認"
+    ]
+  },
+  {
+    "candidate_id": "hf:arunp0/yama-indic",
+    "decision": "defer",
+    "reason": "多言語分類には有望だが、指示の累積DL上限2 GBに対し重みだけで超過するため今回は保留。GPUへ切り替えて回避しない。Apache-2.0でも資源制約は解消しない。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/arunp0/yama-indic",
+        "quote": "Yama is its successor: v3 moved to a larger encoder (XLM-RoBERTa-large), so it was released as a separate model."
+      },
+      {
+        "source_url": "https://huggingface.co/arunp0/yama-indic",
+        "quote": "The model is released under the Apache License 2.0."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "累積DL上限に余裕のある別環境が用意できた場合に、対象Indic言語の代表例で評価。",
+    "unconfirmed": [
+      "CPU所要時間・RAMは今回の環境では未確認",
+      "性能値はカード記載で、独立検証していない"
+    ]
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "candidate_id": "hf:doofz/thx-01",
+  "decision": "test",
+  "reason": "The card describes a potentially relevant multilingual decision model with native classification, extraction, and citation outputs, and its stated package and weight sizes fit the available CPU and download budget. Its Japanese coverage makes it worth evaluating on the fixed suite, but Azerbaijani is emphasized and the card provides no results on that suite or on the game inputs. No independent discussion signals are confirmed, so deep-dive value is not established; the claimed benchmark results also do not establish the required large-effect threshold. Keep the evaluation bounded to the supplied fixed inputs and judge quality and resource use against the stated thresholds.",
+  "evidence": [
+    {
+      "source_url": "https://huggingface.co/doofz/THX-01",
+      "quote": "THX-01 is a non-autoregressive, multilingual decision model developed by HAL-X AI."
+    },
+    {
+      "source_url": "https://huggingface.co/doofz/THX-01",
+      "quote": "Post-training covers Azerbaijani, English, Russian, Turkish, German, French, Spanish, Arabic, Hindi, Chinese, Persian, Georgian, Japanese, Korean, Ukrainian, Kazakh, Uzbek and Italian, with Azerbaijani the largest in every synthetic component."
+    },
+    {
+      "source_url": "https://huggingface.co/doofz/THX-01",
+      "quote": "Fine-grained intent sets with many near-synonymous labels remain hard: Banking77 (77 intents) reaches 65.9%."
+    }
+  ],
+  "verification_level": "reading",
+  "recommended_category": null,
+  "next_check": "Run the candidate only on the fixed Japanese NLP and game inputs in the isolated CPU environment; compare quality and resource use with the existing comparator, checking for at least 5% relative quality gain or at least 30% resource reduction with no more than 2% quality loss.",
+  "unconfirmed": [
+    "Performance on the fixed Japanese NLP and game inputs; no measurements have been run.",
+    "Whether the candidate meets either large-effect threshold.",
+    "The card's benchmark methods, data independence, and reproducibility; no independent discussion signals are confirmed.",
+    "Actual CPU latency and peak memory on the fixed workload."
+  ]
+}

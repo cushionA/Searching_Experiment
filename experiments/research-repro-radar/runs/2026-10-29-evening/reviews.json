@@ -1,0 +1,375 @@
+{
+  "reviews": [
+    {
+      "candidate_id": "hf:liquidai/d1-omni-600m",
+      "decision": "test",
+      "reason": "多言語テキスト・画像・音声を一回の推論で分類する587Mモデルで、用途は合う。readme上はTransformersの追加依存とremote codeが必要、ライセンスは独自lfm1.0、速度値なし。CPU/RAM適合と商用条件は未確認。",
+      "evidence": [
+        {
+          "source_url": "https://huggingface.co/LiquidAI/d1-omni-600M/raw/main/README.md",
+          "quote": "587M parameters"
+        },
+        {
+          "source_url": "https://huggingface.co/LiquidAI/d1-omni-600M/raw/main/README.md",
+          "quote": "We don't report inference numbers"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "小規模CPU分類スモークと依存/RAM計測、lfm1.0商用条件確認",
+      "unconfirmed": [
+        "CPU速度・RAM・実タスク精度",
+        "lfm1.0の商用利用条件"
+      ]
+    },
+    {
+      "candidate_id": "hf:doofz/thx-01",
+      "decision": "test",
+      "reason": "322M多言語の非自己回帰型判定/抽出で対象に近く、Apache-2.0。GPU約10msとの著者記載はCPU性能の根拠にならない。別試行が進行中のため完了扱いにせず、CPU/RAM・依存と精度を追加確認。",
+      "evidence": [
+        {
+          "source_url": "https://huggingface.co/doofz/THX-01/raw/main/README.md",
+          "quote": "multilingual decision model"
+        },
+        {
+          "source_url": "https://huggingface.co/doofz/THX-01/raw/main/README.md",
+          "quote": "about 10 ms on one GPU"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": "進行中の別試行と重複しないCPU/RAM評価、精度・導入手順確認",
+      "unconfirmed": [
+        "CPU実行速度/RAM",
+        "著者報告以外の性能再現性"
+      ]
+    },
+    {
+      "candidate_id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+      "decision": "defer",
+      "reason": "コード生成用途は開発支援に関連しApache-2.0だが、1.5Bの生成モデルは小型分類/抽出の直接用途から外れ、30分枠内のCPU評価も不確実。CPU速度・RAM・商用利用条件以外に、既存候補より有効か未確認。",
+      "evidence": [
+        {
+          "source_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct/raw/main/README.md",
+          "quote": "pipeline_tag: text-generation"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "CPU推論時間とRAM",
+        "対象作業での品質差"
+      ]
+    },
+    {
+      "candidate_id": "2412.14219",
+      "decision": "defer",
+      "reason": "MoE推論最適化のサーベイで学習・背景把握には役立つが、検索可能な新規実装やモデルそのものではない。実務の新規発見範囲を単独で増やさず、CPU小型モデルへの直接適用も未確認。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2412.14219",
+          "quote": "A Survey on Inference Optimization Techniques"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "具体的な再現可能実装",
+        "対象CPUでの資源削減"
+      ]
+    },
+    {
+      "candidate_id": "2602.09373",
+      "decision": "defer",
+      "reason": "アフリカ諸語翻訳モデルの研究で、対象言語が明示された翻訳案件なら関連するが、一般分類/抽出との一致は弱い。効率性の主張だけではCPU/RAM適合や精度優位を確認できない。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2602.09373",
+          "quote": "Efficient Translation Models for African Languages"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "モデル配布・ライセンス",
+        "対象ハードウェア要件",
+        "比較精度"
+      ]
+    },
+    {
+      "candidate_id": "2108.10197",
+      "decision": "defer",
+      "reason": "本番BERTクエリ・タイトル関連度分類の実例で実務性はあるが、対象の小型CPU分類/抽出へ転用できるか、実装を現在の環境で再現できるかは未確認。導入可能な成果物と資源量を確認できるまで保留。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2108.10197v1",
+          "quote": "Query-Title Relevance Classifier in a Production System"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "コード/モデル公開とライセンス",
+        "CPU資源量と現行環境での再現性"
+      ]
+    },
+    {
+      "candidate_id": "2601.22709",
+      "decision": "defer",
+      "reason": "効率的VLM向け蒸留の研究で軽量視覚と関連するが、実配布モデル・CPU実行性は資料上確証なし。比較対象と実測を確認する価値はあるものの、現時点で導入試験の根拠は不足。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2601.22709",
+          "quote": "Gated Relational Alignment via Confidence-based Distillation"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "公開コード/重みとライセンス",
+        "CPUでの精度・速度・RAM"
+      ]
+    },
+    {
+      "candidate_id": "2211.11014",
+      "decision": "defer",
+      "reason": "Transformer encoderの量子化対応学習を扱いCPU小型化の参考になるが、論文の手法を対象モデル/ツールへ適用できるか、現行の再現可能な実装があるかは未確認。導入可能性と比較実測を確認できるまで保留。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2211.11014",
+          "quote": "Quantization-Aware Training of Large Transformer Encoders"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "利用可能な実装とライセンス",
+        "比較精度/資源差"
+      ]
+    },
+    {
+      "candidate_id": "2207.01405",
+      "decision": "defer",
+      "reason": "I-ViTは整数のみのViT推論を扱い軽量視覚に合うが、視覚タスク専用で現環境のCPU対応・導入容易性は未確認。性能比較の記述を確認してから優先度を判断する。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2207.01405",
+          "quote": "Integer-only Quantization for Efficient Vision Transformer Inference"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "CPU向け実装とライセンス",
+        "資源削減と精度損失"
+      ]
+    },
+    {
+      "candidate_id": "2609.05334",
+      "decision": "defer",
+      "reason": "制約環境向け植物病害検出ViT圧縮で軽量視覚に一致するが、用途が特化し、実装・ライセンス・CPU測定は未確認。比較可能な実測確認後に試験判断。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2609.05334v1",
+          "quote": "On-Device Plant Disease Detection"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "コード/モデル公開と利用条件",
+        "CPU/RAM実測と精度損失"
+      ]
+    },
+    {
+      "candidate_id": "2610.34886",
+      "decision": "defer",
+      "reason": "量子化コード語とスケール再調整に関する新しい論文だが、対象モデル規模・CPU小型モデルでの適用性・公開実装は資料から未確認。量子化に関心は合うものの試験根拠が足りない。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.34886",
+          "quote": "Search Codewords, Recalibrate Scales"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "対応モデル/ハードウェア",
+        "コードとライセンス",
+        "比較精度と資源差"
+      ]
+    },
+    {
+      "candidate_id": "hf:ankitai/tinyjev-0.6b",
+      "decision": "defer",
+      "reason": "Qwen3 0.6Bを基盤とする英語の型付き判定モデルで関心に合い、MIT。指定の追加ダウンロード承認待ちのため、取得・導入・完了判定を進めず保留する。",
+      "evidence": [
+        {
+          "source_url": "https://huggingface.co/AnkitAI/TinyJev-0.6B/raw/main/README.md",
+          "quote": "base_model: Qwen/Qwen3-0.6B-Base"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "承認後の取得可否",
+        "CPU/RAM・実タスク品質"
+      ]
+    },
+    {
+      "candidate_id": "2509.14001",
+      "decision": "defer",
+      "reason": "MOCHAはマルチモーダル物体認識と異種アーキテクチャ整合の研究で視覚に関連するが、CPU向け配布モデルか、実タスクに有用かは未確認。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2509.14001v5",
+          "quote": "Multi-modal Objects-aware Cross-arcHitecture Alignment"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "公開実装/重みとライセンス",
+        "CPU資源要件・精度差"
+      ]
+    },
+    {
+      "candidate_id": "2507.16782",
+      "decision": "defer",
+      "reason": "物体検出向けタスク特化ゼロショット量子化学習で視覚圧縮の関心には合うが、モデル導入やCPU実行の実用性は未確認。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2507.16782",
+          "quote": "Zero-shot Quantization-Aware Training for Object Detection"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "実装・ライセンス",
+        "CPU資源削減と精度損失"
+      ]
+    },
+    {
+      "candidate_id": "2610.30067",
+      "decision": "defer",
+      "reason": "ベトナム語小型言語モデルの二段蒸留で、対象言語案件なら関連するが用途が限定的。論文記述だけではCPU要件・公開物・比較性能は確認できない。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2610.30067",
+          "quote": "Compact Vietnamese Language Models"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "モデル/コード公開とライセンス",
+        "CPU/RAM・精度比較"
+      ]
+    },
+    {
+      "candidate_id": "2505.03113",
+      "decision": "defer",
+      "reason": "オンライン軽量ViTのサーベイで背景調査には使えるが、サーベイ自体は導入可能な成果物やfresh search範囲を提供しない。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2505.03113",
+          "quote": "Image Recognition with Online Lightweight Vision Transformer: A Survey"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "具体的な実装候補",
+        "CPU実測とライセンス"
+      ]
+    },
+    {
+      "candidate_id": "2405.03144",
+      "decision": "defer",
+      "reason": "Segment Anythingの事後量子化研究で視覚モデル圧縮には関係するが、SAMは対象の小型CPU用途に重い可能性があり、現環境での資源実測は未確認。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2405.03144",
+          "quote": "Post-Training Quantization for Segment Anything"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "CPU/RAMでの実行可否",
+        "量子化後の精度低下とライセンス"
+      ]
+    },
+    {
+      "candidate_id": "github:ankit-aglawe/tinyjev",
+      "decision": "defer",
+      "reason": "TinyJevのリポジトリは型付き判定の実装を示すが、モデル取得承認待ちの候補と同じ案件。明示された追加ダウンロード承認待ちのため、コード/モデルを取得せず保留。",
+      "evidence": [
+        {
+          "source_url": "https://raw.githubusercontent.com/ankit-aglawe/tinyjev/HEAD/README.md",
+          "quote": "Typed decisions on your laptop"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "承認後の導入可否",
+        "CPU/RAM/精度"
+      ]
+    },
+    {
+      "candidate_id": "2607.25180",
+      "decision": "defer",
+      "reason": "Bekkoは多言語検索向け超小型埋め込み器でモデル/データ公開の記述があるが、埋め込み検索単体は実務の新規情報探索を十分に代替しない。分類/抽出の主用途とは距離があり、CPU適合と商用条件も未確認。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2607.25180",
+          "quote": "Ultra-Compact Encoders"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "公開モデルの正確なライセンス",
+        "対象環境のRAM/速度"
+      ]
+    },
+    {
+      "candidate_id": "2609.31430",
+      "decision": "defer",
+      "reason": "ソフトウェアエージェントの観測履歴圧縮で開発支援に関連し、論文はQwen3-4B等で文脈43%削減を報告。ただしGPU/大規模エージェント実験で、CPU小型モデルの直接適用や実装ライセンスは未確認。",
+      "evidence": [
+        {
+          "source_url": "https://arxiv.org/abs/2609.31430v1",
+          "quote": "reduces context per call by 43% for Qwen3-4B"
+        }
+      ],
+      "verification_level": "reading",
+      "recommended_category": null,
+      "next_check": null,
+      "unconfirmed": [
+        "4Bモデルを超える導入資源",
+        "コード/ライセンス",
+        "CPU条件での品質と資源差"
+      ]
+    }
+  ]
+}
