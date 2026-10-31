@@ -1,0 +1,72 @@
+[
+  {
+    "candidate_id": "laya-v0.4.19",
+    "decision": "defer",
+    "reason": "READMEのskeleton表記だけでは実装不在とは言えず、入力のCMakeLists.txtとonnx.cppにはONNX backendのライブラリ構成とOrtSession/Run/Open実装がある。一方、今回そのnativeロードやgraph配布は未実測で、旧日本語品質試験の再試行も不要なため、確認できる実験条件が整うまでdeferする。",
+    "evidence": [
+      {
+        "source_url": "https://github.com/NandhaKishorM/laya/blob/v0.4.18/laya-cpp/CMakeLists.txt",
+        "quote": "add_library(laya_onnx src/onnx_graph.cpp src/onnx.cpp)"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "入力に記載された実装を使い、互換環境でONNX backendのnativeロードとgraph配布を確認できる条件が整った場合に再評価する。",
+    "unconfirmed": [
+      "互換環境でのnativeロード",
+      "graph配布"
+    ]
+  },
+  {
+    "candidate_id": "pagesift-v0.81.5",
+    "decision": "defer",
+    "reason": "配布hashは一致したが、制約下での起動は2回とも失敗し、原因は/tmpのnoexecと診断済み。修復枠は終了しており権限緩和は禁止、静的検査だけではglibc 2.28での起動や本文品質改善を示せない。",
+    "evidence": [],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "権限緩和なしで、glibc 2.28とnoexec制約を満たす新しい実行環境が用意された場合に起動を再確認する。",
+    "unconfirmed": [
+      "glibc 2.28上での起動",
+      "本文品質の改善"
+    ]
+  },
+  {
+    "candidate_id": "startlux-0.8b-instant",
+    "decision": "defer",
+    "reason": "Q4_K_M本体は529296992 bytesで別配布tokenizerも必要なため、単に2GB超とは判断しない。一方、CC-BY-NC条件と非因果attention設定の実行監査が未解決で、現資源枠での検証優先度を支える実測根拠がない。",
+    "evidence": [],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "利用条件を確認し、非因果attention設定の安全な実行監査が可能なときに小規模確認を行う。",
+    "unconfirmed": [
+      "利用条件への適合",
+      "非因果attention設定の実行"
+    ]
+  },
+  {
+    "candidate_id": "tokeneconomizer",
+    "decision": "defer",
+    "reason": "この候補の子CLI/model経路は今回の制約で禁止されているため、実験しない。実測なしではNLPやAI開発での便益を判断できない。",
+    "evidence": [],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "子CLI/model経路を使わずに有効性を測れる手順が許可された場合に再評価する。",
+    "unconfirmed": [
+      "実測でのトークン削減",
+      "NLPまたはAI開発での有用性"
+    ]
+  },
+  {
+    "candidate_id": "quantcheck-v3.4",
+    "decision": "defer",
+    "reason": "資料は量子化artifactの機能検査を扱うが、ゲームやNLPの品質を保証するものではない。AI開発への関連性はあるものの、今回の資源・制約下で実測価値を示す実験は未実施。",
+    "evidence": [],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "対象artifactの機能検査を再現でき、かつゲーム/NLP品質とは別の評価指標を設定できる場合に小規模検証する。",
+    "unconfirmed": [
+      "ユーザーの対象用途への適合",
+      "artifact機能検査の再現性"
+    ]
+  }
+]

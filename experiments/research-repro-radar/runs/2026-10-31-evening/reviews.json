@@ -1,0 +1,442 @@
+[
+  {
+    "candidate_id": "hf:liquidai/d1-omni-600m",
+    "decision": "defer",
+    "reason": "短い分類・判断と画像理解の両方に関係し、関心領域に合う。一方で重みの保存量が約4.72 GBと2 GB上限を超えるため、現状の取得予算では進められない。小型版や量子化版、CPU処理速度の確認待ち。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/LiquidAI/d1-omni-600M/raw/main/README.md",
+        "quote": "It returns typed answers with **zero output tokens**"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "hf:qwen/qwen2.5-coder-1.5b-instruct",
+    "decision": "defer",
+    "reason": "コーディングエージェントという明確な関心に合い、1.5Bの指示モデルとして小規模評価の価値はある。スクレイピング処理とは別の適用先なので、CPUでの実行可否とリポジトリ作業での品質を確認してから優先度を決める。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct/raw/main/README.md",
+        "quote": "A more comprehensive foundation for real-world applications such as **Code Agents**."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "2412.14219",
+    "decision": "defer",
+    "reason": "MoE推論の圧縮・ルーティング・スケジューリングを広く扱い、処理単価とスループットの関心には合う。ただし調査論文であり、今すぐ試せる単一のCPU手法やスクレイピング向け結果は特定されていない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2412.14219",
+        "quote": "This comprehensive survey analyzes optimization techniques for MoE models across the entire system stack."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "2602.09373",
+    "decision": "defer",
+    "reason": "軽量翻訳モデルと枝刈り・量子化は小型モデルの関心に沿うが、主題はアフリカ諸語の翻訳で、分類・構造化抽出とは用途が異なる。対象言語に該当するデータがある場合に再評価する。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2602.09373",
+        "quote": "AfriNLLB supports 15 language pairs (30 translation directions)"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "2108.10197",
+    "decision": "defer",
+    "reason": "BERTを蒸留してCPUで低遅延・高スループットを得た実運用報告は、低コスト分類の参考になる。特定の検索クエリと商品タイトル用なので、スクレイピング文書への転用性と再現可能な実装を確認してから試す。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2108.10197v1",
+        "quote": "The model is capable of inferring an input in at most 0.2ms on CPU."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "2601.22709",
+    "decision": "defer",
+    "reason": "視覚言語モデルの蒸留・量子化と推論効率を扱い、画像認識と小型モデルの関心に合う。教師モデルを含む学習コストやCPU推論の適性が未確認なので、実際に画像を扱う用途がある場合に絞って読む。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2601.22709",
+        "quote": "Using real INT4 kernel, we achieve 3$ imes$ throughput with 54% memory reduction."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "2211.11014",
+    "decision": "defer",
+    "reason": "Transformer encoderの量子化と蒸留を分析しており、文書分類・小型モデルの関心に直接関係する。これは学習方法の研究で、既成モデルの導入価値やCPUでの処理速度は入力資料から確認できない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2211.11014",
+        "quote": "We propose two KD methods; attention-map and attention-output losses."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "2207.01405",
+    "decision": "defer",
+    "reason": "Vision Transformerを整数演算で量子化する方法は、画像認識と効率化の関心に合う。記載された速度向上はGPU上の整数演算ユニットでの評価なので、CPU限定環境で同様の価値が出るかは未確認。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2207.01405",
+        "quote": "I-ViT, an integer-only quantization scheme for ViTs"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "2609.05334",
+    "decision": "defer",
+    "reason": "制約のある端末での画像分類モデル圧縮は、軽量ビジョンの関心と合致する。対象は唐辛子の病害検出で、統合圧縮手法のCPU処理量や他の画像分類への一般化はまだ確認できない。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2609.05334v1",
+        "quote": "We propose a unified Vision Transformer compression framework"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "hf:ankitai/tinyjev-0.6b",
+    "decision": "defer",
+    "reason": "短い型付き判断を一回の推論で返す設計は分類・抽出に合う。ただし追加3 GBの承認待ちなので再試行しない。記載済みのゲーム試験をスクレイピングや戦術判断の能力に外挿しない。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/AnkitAI/TinyJev-0.6B/raw/main/README.md",
+        "quote": "Typed decisions, on your laptop, in one forward pass."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "2509.14001",
+    "decision": "defer",
+    "reason": "視覚言語教師の領域表現を軽量検出器へ移す研究で、画像認識・モデル軽量化の関心に合う。数例から個別物体を検出する用途は限定的で、学生モデルのCPU実行条件と導入可能な重みを確認する必要がある。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2509.14001v5",
+        "quote": "transfers multimodal region-level knowledge from a frozen VLM teacher"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "2507.16782",
+    "decision": "defer",
+    "reason": "合成データを使う物体検出向け量子化は、画像認識とモデル効率化の関心に沿う。タスク固有の再学習を要する研究なので、既存の検出器へ少ない資源で適用できるかが次の確認点。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2507.16782",
+        "quote": "We propose a novel task-specific ZSQ framework for object detection"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "2610.34886",
+    "decision": "defer",
+    "reason": "2 bit量子化とスケール再調整で推論モデルを小さくする研究は、小型モデルの関心に合う。根拠は長い数学推論で、短い分類や抽出の品質・速度は示されていないため、まず適用タスクとの距離を確認する。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.34886",
+        "quote": "storing weights in two bits instead of bfloat16 can potentially make inference 8$ imes$ cheaper."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "2609.05881",
+    "decision": "test",
+    "reason": "量子化済みモデルの動作不良を短いスクリーニングで見つける手順は、低コストなローカルモデル選定に実用価値がある。まず利用候補1点を小さな機能テストに通し、合格後にスクレイピング品質とCPU処理速度を別途測る。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2609.05881",
+        "quote": "A 15-task code screen identified suspects"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "小規模の代表データで品質、CPU処理件数/秒、RAM、取得サイズを測り、API基準線と比較する。まだ実測していない。",
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "2505.03113",
+    "decision": "defer",
+    "reason": "軽量Vision Transformerの構成、動的ネットワーク、蒸留を画像認識の観点から整理しており、ビジョンの関心に合う。一方、調査論文なので、具体的な小型モデルや再現可能なCPU結果を選んでから評価する。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2505.03113",
+        "quote": "This paper surveys various online strategies for generating lightweight vision transformers"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "2405.03144",
+    "decision": "defer",
+    "reason": "Segment Anythingの後量子化と注意機構の扱いは、画像モデルを軽くする関心に合う。ただし対象は大規模な画像セグメンテーションで、記載の加速は理論値を含むため、CPUで使える重みや速度が確認できるまで保留する。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2405.03144",
+        "quote": "we achieve lossless accuracy for instance segmentation"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "2610.38681",
+    "decision": "defer",
+    "reason": "量子化や枝刈りを使う自己蒸留は、小型モデルとコーディング能力の両方に関係する。報告対象は大規模な数学・コード推論であり、訓練コスト、短い抽出処理への効果、CPU条件を確認する必要がある。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2610.38681",
+        "quote": "We evaluate WISD across diverse architectures and scales on mathematical and coding reasoning tasks."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "hf:arunp0/yama-indic",
+    "decision": "test",
+    "reason": "多言語・コード混在テキストのゼロショット分類は、雑で不揃いな収集テキストの分類に近い。付属の複数タスク比較を手掛かりに、小さな代表サンプルで対象言語の品質、CPU処理速度、8 GB内のRAMを測る価値がある。",
+    "evidence": [
+      {
+        "source_url": "https://huggingface.co/arunp0/yama-indic/raw/main/README.md",
+        "quote": "Zero-shot accuracy on 67 tasks"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "小規模の代表データで品質、CPU処理件数/秒、RAM、取得サイズを測り、API基準線と比較する。まだ実測していない。",
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "github:ankit-aglawe/tinyjev",
+    "decision": "defer",
+    "reason": "短い型付き判断をオフラインで行う設計は文書分類・抽出の関心に合う。追加3 GBの承認待ちなので再試行は保留し、既存のゲーム試験をスクレイピング性能の根拠にはしない。",
+    "evidence": [
+      {
+        "source_url": "https://raw.githubusercontent.com/ankit-aglawe/tinyjev/HEAD/README.md",
+        "quote": "Typed decisions on your laptop that know when to ask a human."
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": null,
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  },
+  {
+    "candidate_id": "2607.25180",
+    "decision": "test",
+    "reason": "8M active parametersの多言語埋め込みは、低コストな類似文書検索・重複整理の前処理候補としてCPU制約に合う。小さなスクレイピング標本で重複検出の品質、CPU件数/秒、RAMを測り、API基準線と比べる。",
+    "evidence": [
+      {
+        "source_url": "https://arxiv.org/abs/2607.25180",
+        "quote": "a8m is the fastest on both CPU and GPU -- 1.6x multilingual-e5-small on x86 CPU"
+      }
+    ],
+    "verification_level": "reading",
+    "recommended_category": null,
+    "next_check": "小規模の代表データで品質、CPU処理件数/秒、RAM、取得サイズを測り、API基準線と比較する。まだ実測していない。",
+    "unconfirmed": [
+      "ライセンスの適用範囲",
+      "商用利用条件",
+      "導入・依存関係",
+      "CPUでの実測速度",
+      "最大RAM使用量",
+      "後継版・保守状況"
+    ]
+  }
+]

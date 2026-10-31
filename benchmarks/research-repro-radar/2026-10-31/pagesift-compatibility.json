@@ -1,0 +1,50 @@
+{
+  "candidate": "PageSift v0.81.5",
+  "platform": "linux-x86_64",
+  "verification_level": "static artifact inspection; execution blocked",
+  "binary_sha256": "d8a482cdbd86dcc63615644c96bf5a2877faaf22a485131edaa99e82ccb59e1c",
+  "binary_bytes": 23621368,
+  "checksum_match": true,
+  "max_glibc_symbol_version": "2.28",
+  "needed_libraries": [
+    "libgcc_s.so.1",
+    "libpthread.so.0",
+    "libm.so.6",
+    "libdl.so.2",
+    "libc.so.6"
+  ],
+  "image": "python@sha256:aa943ce411423c7582288f18707ff66eddcbaeb510502d747a72aeb34f30d159",
+  "image_uncompressed_bytes": 119470714,
+  "isolation": {
+    "user": "65534:65534",
+    "network": "none",
+    "read_only": true,
+    "cap_drop": "ALL",
+    "no_new_privileges": true,
+    "memory_gb": 8,
+    "cpus": 2,
+    "pids_limit": 128
+  },
+  "attempts": [
+    {
+      "action": "launch --help via read-only bind",
+      "result": "OCI runtime stat /input/pagesift permission denied; candidate not started"
+    },
+    {
+      "action": "one repair: tar stdin into nonroot tmpfs, launch --help",
+      "result": "/tmp/input/pagesift Permission denied; candidate not started"
+    }
+  ],
+  "diagnostic": [
+    "755 65534 65534 23621368",
+    "tmpfs /tmp tmpfs rw,nosuid,nodev,noexec,relatime,size=262144k 0 0"
+  ],
+  "repair_count": 1,
+  "permission_relaxation": false,
+  "candidate_execution_successes": 0,
+  "model_inferences": 0,
+  "candidate_latency_ms": null,
+  "candidate_peak_rss_bytes": null,
+  "html_quality": null,
+  "old_glibc_runtime_compatibility": "unverified; symbol-version evidence only"
+}
