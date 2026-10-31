@@ -1,0 +1,50 @@
+[build-system]
+requires = ["scikit-build-core>=0.10"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "rapidocrlite"
+version = "5.0.0a15"
+description = "RapidOCRLite: lightweight, fast PP-OCRv6 native engine, API-compatible with RapidOCR; import name rapidocr"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+authors = [{ name = "SWHL", email = "liekkaskono@163.com" }]
+keywords = ["ocr", "ppocr", "ppocrv6", "rapidocr"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: C++",
+]
+dependencies = [
+    "numpy>=1.21",
+    "Pillow>=9.0",
+    "PyYAML>=6.0",
+    "requests",
+    "tqdm",
+]
+
+[project.urls]
+Documentation = "https://rapidai.github.io/RapidOCRDocs"
+Repository = "https://github.com/RapidAI/RapidOCRLite"
+
+[project.scripts]
+rapidocr = "rapidocr.main:main"
+
+[tool.scikit-build]
+cmake.source-dir = ".."
+cmake.build-type = "Release"
+cmake.args = ["-DPPOCR_BUILD_EXAMPLES=OFF", "-DPPOCR_BUILD_TESTS=OFF", "-DPPOCR_ENABLE_VULKAN=OFF"]
+wheel.packages = ["src/rapidocr"]
+minimum-version = "0.10"
+
+[tool.scikit-build.cmake.define]
+PPOCR_BUILD_SHARED = "ON"
+PPOCR_BUILD_STATIC = "OFF"
+PPOCR_ENABLE_VULKAN = "OFF"
+

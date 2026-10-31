@@ -1,0 +1,47 @@
+{
+  "candidate": "trafilaturacore 0.8.11",
+  "baseline": "trafilatura 2.3.1",
+  "status": "blocked_before_benchmark",
+  "candidate_code_started": false,
+  "candidate_inferences": 0,
+  "quality_metrics": null,
+  "latency_metrics": null,
+  "repairs_used": 1,
+  "repair_limit": 1,
+  "events": [
+    {
+      "action": "docker build using BuildKit",
+      "result": "ERROR: mkdir /home/agent/.docker/buildx: read-only file system"
+    },
+    {
+      "action": "repair 1: DOCKER_BUILDKIT=0; retain Docker config and local daemon; network-none build copies static wheel files only",
+      "result": "image built"
+    },
+    {
+      "action": "isolated nonroot read-only network-none run",
+      "exit_code": 2,
+      "result": "python: can't open file '/app/bench.py': [Errno 13] Permission denied"
+    },
+    {
+      "action": "read-only diagnostic with trusted base-image shell",
+      "result": "/app/bench.py root-owned mode 600; uid 65534 cannot read; additional repair not attempted"
+    }
+  ],
+  "image_id": "sha256:841d345a1b99be5b38528d7d693600ca1024d80545a6a8e6b0e11c897cff3780",
+  "base_digest": "sha256:aa943ce411423c7582288f18707ff66eddcbaeb510502d747a72aeb34f30d159",
+  "image_bytes": 177134389,
+  "limits": {
+    "memory_bytes": 8589934592,
+    "cpus": 2,
+    "pids": 128,
+    "timeout_seconds": 180,
+    "network": "none",
+    "user": "65534:65534",
+    "readonly": true,
+    "cap_drop": "ALL",
+    "no_new_privileges": true,
+    "tmpfs": "rw,nosuid,nodev,noexec,size=32m"
+  },
+  "approval_status": "additional repair pending; no auto-review denial",
+  "baseline_started": false
+}
