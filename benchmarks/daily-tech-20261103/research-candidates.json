@@ -1,0 +1,79 @@
+{
+  "date": "2026-11-03",
+  "mode": "static_primary_source_research_only",
+  "executed_candidate_code": false,
+  "downloaded_candidate_artifacts": false,
+  "published_or_pushed": false,
+  "candidates": [
+    {
+      "id": "deepseek-search-fetch-api",
+      "decision": "B_conditional",
+      "purpose": "Add a separate live-web discovery source and URL-to-Markdown fetch path for coverage comparisons.",
+      "public_update_date": "2026-10-17",
+      "exact_ids": ["POST /v1/tools/search", "POST /v1/tools/fetch"],
+      "stars_or_community": "Not applicable; hosted proprietary API, no public code repository identified.",
+      "license_commercial": "No software license. Metered hosted service; commercial-use terms not fully reviewed.",
+      "install": "No local install; API key and HTTPS JSON requests to api.deepseek.com.",
+      "hardware": "No local hardware requirement stated.",
+      "cost": {"search_usd_per_1000_successes": 0.75, "fetch_usd_per_1000_successes": 0.75},
+      "limits": {"query_unicode_chars": "1-128", "result_count": "1-50", "search_qps": 100, "fetch_qps": 25, "extra_fetch_per_domain_limit": true},
+      "novelty": "First-party search index API plus on-demand fetch; not a reranker-only package.",
+      "constraints": ["Japanese recall and unique-result rate unmeasured", "index/ranking internals opaque", "fetch depends on target-site access policy", "API terms and account enablement not verified"],
+      "verification_value": "Compare fixed Japanese queries against current independent-index targets; measure new-domain/unique-relevant URLs, official-source recall, date accuracy, fetch-success, and cost per useful URL.",
+      "evidence_urls": [
+        "https://api-docs.deepseek.com/news/news261017/",
+        "https://api-docs.deepseek.com/guides/search/",
+        "https://api-docs.deepseek.com/api/search/"
+      ]
+    },
+    {
+      "id": "chenzhwsysu57/SAGE",
+      "decision": "B_conditional",
+      "exact_commit": "5f5bbb49545756b00b0b1202f402f7d53cf0e3b2",
+      "commit_date_utc": "2026-10-14T07:05:00Z",
+      "paper_first_date": "2026-09-28",
+      "paper_v2_date": "2026-10-14T08:46:54Z",
+      "stars": 0,
+      "forks": 0,
+      "license": "MIT",
+      "commercial": "MIT code; upstream model API usage remains subject to its own price and terms.",
+      "runtime": "Python >=3.11; matplotlib, numpy, pydantic, openai, tqdm; OpenAI-compatible API key/base URL.",
+      "hardware": "No GPU or minimum RAM claim. Offline MCCFR/CFR baseline work runs locally; duration and RAM unreported. Goofspiel run imports OpenSpiel, absent from base pyproject dependencies.",
+      "mechanism": [
+        "Goofspiel opponent action likelihood over last q_window records (default 10).",
+        "EMA posterior update with default alpha 0.85; per-game belief snapshots.",
+        "Top-three similar-case retrieval gated on current step >=3 and similarity gradient.",
+        "API-generated counterfactual consideration memory, saved and reused in prompts.",
+        "CFR/MCCFR equilibrium strategy as prior plus LLM adjustment using opponent belief and case evidence."
+      ],
+      "offline_cost_requirement": "LLM training-free, but equilibrium strategy is separately precomputed: Leduc default max 500000 CFR+ iterations with exploitability target 0.01; Liar's Dice setup 500000 iterations, threshold 0.01; Goofspiel MCCFR default 500000 iterations. Wall-clock and RAM unreported.",
+      "api_model_id": "Paper used DeepSeek V4 Flash; current canonical DeepSeek API ID is deepseek-flash (V4.1-Flash-1017). Legacy deepseek-v4-flash is accepted but routed to current Flash, so paper results are not version-pinned/reproducible by alias.",
+      "novelty": "Structured inference-time baseline policy + soft opponent belief + state-similar counterfactual cases, beyond fixed if-else personality branches.",
+      "constraints": ["Only Leduc Hold'em, Liar's Dice, Goofspiel evaluated", "No evidence it transfers to the user's Unity game", "game-specific state/features/baselines need replacement", "API cost and experience-memory refresh cost unmeasured", "0-star research repository", "authors' payoff/token claims not independently replicated"],
+      "verification_value": "Design a bounded offline comparison for maintain/change/abandon decisions using probabilistic opponent behavior, recent tactical states, and counterfactual case evidence; assess decision freshness, allowed-action validity, and API cost.",
+      "evidence_urls": [
+        "https://arxiv.org/abs/2609.34342",
+        "https://github.com/chenzhwsysu57/SAGE/tree/5f5bbb49545756b00b0b1202f402f7d53cf0e3b2",
+        "https://github.com/chenzhwsysu57/SAGE/blob/5f5bbb49545756b00b0b1202f402f7d53cf0e3b2/methods/sage/goofspiel_tom.py",
+        "https://github.com/chenzhwsysu57/SAGE/blob/5f5bbb49545756b00b0b1202f402f7d53cf0e3b2/base/case_memory_runtime.py",
+        "https://github.com/chenzhwsysu57/SAGE/blob/5f5bbb49545756b00b0b1202f402f7d53cf0e3b2/runs/leduc/train_cfr.py",
+        "https://api-docs.deepseek.com/quick_start/pricing/"
+      ]
+    }
+  ],
+  "screened_out": [
+    {
+      "id": "alexandria-org/alexandria",
+      "decision": "C",
+      "stars": 199,
+      "license": "MIT",
+      "reason": "README requires predownloaded local test corpus/nginx and CMake Docker setup; no current update date, operational API, or Japanese index evidence verified. Not a substantiated archive-free new site discovery design.",
+      "evidence_url": "https://github.com/alexandria-org/alexandria"
+    }
+  ],
+  "scope_notes": [
+    "No reranking-only candidate accepted.",
+    "No PR19 change proposed.",
+    "No candidate software/model download, execution, API call, or publication."
+  ]
+}
