@@ -1,0 +1,88 @@
+{
+  "source_file_in_original_workspace": "lab-runs/au-rakuten-rerun-20261102/protocol/extra-content-route/findings.json",
+  "source_sha256": "cb1449d26dcef923c07bc6ac16c7f5b631160b7216578e319761cf735f8f9715",
+  "historical_observation": true,
+  "scope": "Inspect source-confirmed Next item data route and existing first-party item-page evidence; no guessed extraContent route.",
+  "confirmed_route": {
+    "confirmed_next_data_route": "/_next/data/{buildId}/item/{item_id}.json",
+    "standalone_extraContent_route_found": false,
+    "source_inventory": "protocol/extra-content-route/source-inventory.json"
+  },
+  "one_get_per_product_route_probes": [
+    {
+      "request_id": "extra-001",
+      "target": "au01",
+      "item_id": "321039323",
+      "method": "GET",
+      "host": "wowma.jp",
+      "path": "/_next/data/fgacmRudTi4GAf30cmItd/item/321039323.json",
+      "request_body": null,
+      "request_body_bytes": 0,
+      "tls_verification_disabled": false,
+      "status": 503,
+      "final_path": "/_next/data/fgacmRudTi4GAf30cmItd/item/321039323.json",
+      "response_headers": {
+        "content-length": "215",
+        "content-type": "text/plain",
+        "date": "Mon, 02 Nov 2026 15:27:46 GMT",
+        "server": "envoy"
+      },
+      "response_body_bytes": 215,
+      "response_body_sha256": "971f01aae81a63c435e602a1a728c8894b1527150a621d70d735aaca6ff930ea",
+      "response_body_blob": "blobs/97/971f01aae81a63c435e602a1a728c8894b1527150a621d70d735aaca6ff930ea"
+    },
+    {
+      "request_id": "extra-002",
+      "target": "au26",
+      "item_id": "721839278",
+      "method": "GET",
+      "host": "wowma.jp",
+      "path": "/_next/data/fgacmRudTi4GAf30cmItd/item/721839278.json",
+      "request_body": null,
+      "request_body_bytes": 0,
+      "tls_verification_disabled": false,
+      "status": 503,
+      "final_path": "/_next/data/fgacmRudTi4GAf30cmItd/item/721839278.json",
+      "response_headers": {
+        "content-length": "215",
+        "content-type": "text/plain",
+        "date": "Mon, 02 Nov 2026 15:27:46 GMT",
+        "server": "envoy"
+      },
+      "response_body_bytes": 215,
+      "response_body_sha256": "971f01aae81a63c435e602a1a728c8894b1527150a621d70d735aaca6ff930ea",
+      "response_body_blob": "blobs/97/971f01aae81a63c435e602a1a728c8894b1527150a621d70d735aaca6ff930ea"
+    },
+    {
+      "request_id": "extra-003",
+      "target": "au03",
+      "item_id": "788462991",
+      "method": "GET",
+      "host": "wowma.jp",
+      "path": "/_next/data/fgacmRudTi4GAf30cmItd/item/788462991.json",
+      "request_body": null,
+      "request_body_bytes": 0,
+      "tls_verification_disabled": false,
+      "status": 503,
+      "final_path": "/_next/data/fgacmRudTi4GAf30cmItd/item/788462991.json",
+      "response_headers": {
+        "content-length": "215",
+        "content-type": "text/plain",
+        "date": "Mon, 02 Nov 2026 15:27:46 GMT",
+        "server": "envoy"
+      },
+      "response_body_bytes": 215,
+      "response_body_sha256": "971f01aae81a63c435e602a1a728c8894b1527150a621d70d735aaca6ff930ea",
+      "response_body_blob": "blobs/97/971f01aae81a63c435e602a1a728c8894b1527150a621d70d735aaca6ff930ea"
+    }
+  ],
+  "api_role_and_content_path": {
+    "initial_document": "Both AU01 and AU26 HTTP200 document bodies contain __NEXT_DATA__ hydration with extraItemComment and extraItemCommentWithVideo as strings; same body also renders SuperComment seller description. No standalone extraContent path was observed in their 179/332 request ledgers.",
+    "next_data_route": "Whole Next page-data route; all three one-shot GETs yielded the same 215-byte Envoy 503, so no Next JSON item data came back in this test.",
+    "selection": "For AU01, prior guarded modal capture confirms GET /api/items/321039323/itemOptions supplies three delivery acknowledgement options. Color/size selection then changes hidden SKU indices from already-loaded skuInfo; no new product/SKU request occurs.",
+    "comparison": "The prior /api/items/{id}/comparison request is self-item plus recommendation data, not the seller description.",
+    "images": "Seller gallery and extraItemComment image URLs are separate image resource requests; many repeat the same image basenames/content, with occasional description-only images. The 400ml spec image adds dimensions/weight/origin not all present in structured text."
+  },
+  "phase_warning": "The probes failed at that time; latest native HTML product coverage is58/58, includingAU03. Do not reuse the historical AU03-unavailable limitation as current JSON coverage.",
+  "standalone_extraContent_endpoint_established": false
+}

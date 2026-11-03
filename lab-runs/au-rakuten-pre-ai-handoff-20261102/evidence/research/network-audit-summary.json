@@ -1,0 +1,223 @@
+{
+  "source_file_in_original_workspace": "lab-runs/au-rakuten-rerun-20261102/aggregate/network-audit/findings.json",
+  "source_sha256": "b3c3f0497547efbe4a476a54b490c5d6b30a658691ab753306e67b4f1d3dc5f0",
+  "historical_observation": true,
+  "scope": {
+    "network_added": false,
+    "baseline_capture_count": 58,
+    "baseline_groups": [
+      "group01_06/baseline-corrected",
+      "group07_12/baseline-corrected",
+      "group13_19/baseline-retry1",
+      "group20_25/baseline-corrected",
+      "group26_31/baseline-corrected"
+    ],
+    "additional_capture": "protocol/live-au01-guarded-04",
+    "total_capture_contexts": 59,
+    "all_response_requests": 2683,
+    "capture_manifest": "inventory.json per_capture"
+  },
+  "http_inventory": {
+    "exact_status_counts": {
+      "200": 1996,
+      "204": 13,
+      "302": 15,
+      "403": 24,
+      "503": 340,
+      "noHTTP": 295
+    },
+    "status_class_counts": {
+      "2xx": 2009,
+      "3xx": 15,
+      "4xx": 24,
+      "5xx": 340,
+      "noHTTP": 295
+    },
+    "response_body_saved_by_status_class": {
+      "2xx": 1940,
+      "4xx": 24,
+      "5xx": 340
+    },
+    "text_body_response_records_by_status_class": {
+      "2xx": 858,
+      "4xx": 24,
+      "5xx": 340
+    },
+    "text_body_saved_by_status_class": {
+      "2xx": 858,
+      "4xx": 24,
+      "5xx": 340
+    },
+    "missing_response_body_total": 379,
+    "all_saved_response_blobs_hash_verified": true,
+    "text_body_dedupe": {
+      "unique_sha256": 216,
+      "total_occurrences": 1222,
+      "by_mime": {
+        "image/svg+xml": 10,
+        "application/javascript": 58,
+        "text/html": 22,
+        "application/json": 86,
+        "text/javascript": 20,
+        "text/css": 9,
+        "application/x-javascript": 7,
+        "text/plain": 4
+      },
+      "by_type": {
+        "image": 12,
+        "script": 80,
+        "document": 23,
+        "xhr": 80,
+        "other": 6,
+        "stylesheet": 4,
+        "fetch": 11
+      }
+    },
+    "request_body_records_present": 165,
+    "request_body_records_saved_and_hash_verified": 165,
+    "unique_request_body_hashes": 118
+  },
+  "api_scan": {
+    "method": "Decoded each SHA-deduplicated text response body; recursively scanned parseable JSON keys and values for SKU/JAN/GTIN/barcode/MPN/model/item number/ingredients/spec/material and product title/item IDs; separately parsed 118 deduplicated request body payloads. Raw request payloads and user/account identifiers are not exported.",
+    "specific_code_keys_absent_from_api_json_and_request_payloads": [
+      "sku",
+      "jan",
+      "janCode",
+      "gtin",
+      "barcode",
+      "ean",
+      "upc",
+      "model/modelNo",
+      "maker/manufacturer item code or number",
+      "partNo",
+      "ingredients/inci",
+      "specification/material fields for target SKU mapping"
+    ],
+    "key_interpretation": "Parsed API JSON yielded productId/itemId, itemName/title, and price fields, plus delivery-option title/option fields from itemOptions. No API or request payload contained a seller variant SKU, JAN/GTIN/barcode, manufacturer part number, product model code, ingredients, or a product-specific dimension/material table beyond the storefront HTML. The `itemOptions` free option titles refer to delivery/shipping acknowledgments, not the item variant."
+  },
+  "api_scan_scope_warning": "Absence statements concern the scanned separate API JSON/request payloads, not HTML-embedded product JSON. Later full native JSON acquisition contains JAN evidence.",
+  "seller_list_apis": {
+    "comparison": {
+      "endpoint_count": 7,
+      "status_counts": {
+        "200": 5,
+        "noHTTP": 2
+      },
+      "catalog_object_role_counts": {
+        "self": 5,
+        "related_other": 49
+      }
+    },
+    "recommend": {
+      "endpoint_count": 24,
+      "status_counts": {
+        "200": 24
+      },
+      "catalog_object_role_counts": {
+        "related_other": 220
+      }
+    },
+    "shop_ranking": {
+      "endpoint_count": 7,
+      "status_counts": {
+        "200": 5,
+        "noHTTP": 2
+      },
+      "catalog_object_role_counts": {
+        "related_other": 57,
+        "self": 1
+      }
+    }
+  },
+  "endpoint_examples": [
+    {
+      "pair_id": "01",
+      "market": "au",
+      "request_id": "request-000344",
+      "method": "GET",
+      "status": 200,
+      "host": "api.wowma.net",
+      "path": "/api/items/321039323/comparison",
+      "response_body_bytes": 5547,
+      "response_body_sha256": "9dca893a92841ca33135e47f57e157cdcb85f0fb741c8a7ffbee60dbce5b28fc",
+      "response_body_blob": "blobs/9d/9dca893a92841ca33135e47f57e157cdcb85f0fb741c8a7ffbee60dbce5b28fc",
+      "source_network_json": "group01_06/baseline-corrected/01-au/network.json",
+      "object_role_counts": {
+        "self": 1,
+        "related_other": 10
+      }
+    },
+    {
+      "pair_id": "01",
+      "market": "au",
+      "request_id": "request-000178",
+      "method": "GET",
+      "status": 200,
+      "host": "wowma.jp",
+      "path": "/api/recommend",
+      "response_body_bytes": 49444,
+      "response_body_sha256": "1777d511222812c515b07cb7e232a6427153a2ac6f13e97ecba68209092a37b0",
+      "response_body_blob": "blobs/17/1777d511222812c515b07cb7e232a6427153a2ac6f13e97ecba68209092a37b0",
+      "source_network_json": "group01_06/baseline-corrected/01-au/network.json",
+      "object_role_counts": {
+        "related_other": 12
+      }
+    },
+    {
+      "pair_id": "01",
+      "market": "au",
+      "request_id": "request-000342",
+      "method": "GET",
+      "status": 200,
+      "host": "api.wowma.net",
+      "path": "/api/items/ranking/shop/6503072",
+      "response_body_bytes": 5326,
+      "response_body_sha256": "1865cf43ffff4518ae6773a0a9d289fd6d98b377ab47398edfcc4c1f2625e26a",
+      "response_body_blob": "blobs/18/1865cf43ffff4518ae6773a0a9d289fd6d98b377ab47398edfcc4c1f2625e26a",
+      "source_network_json": "group01_06/baseline-corrected/01-au/network.json",
+      "object_role_counts": {
+        "related_other": 10
+      }
+    }
+  ],
+  "final_guarded_protocol": {
+    "form": "AU01 options dialog, purchase/cart guard on",
+    "item_options_responses": [
+      {
+        "pair_id": "01",
+        "market": "au",
+        "request_id": "request-000168",
+        "method": "GET",
+        "status": 200,
+        "host": "wowma.jp",
+        "path": "/api/items/321039323/itemOptions",
+        "response_mime": "application/json",
+        "response_body_bytes": 679,
+        "response_body_sha256": "1dd2808ae09b7281bd40bf8a64349754da8485af4a2ef3c1a15cd07cd7ffecd6",
+        "response_body_blob": "blobs/1d/1dd2808ae09b7281bd40bf8a64349754da8485af4a2ef3c1a15cd07cd7ffecd6",
+        "source_network_json": "protocol/live-au01-guarded-04/network.json"
+      }
+    ],
+    "interpretation": "GET /api/items/321039323/itemOptions is a 200 response and returns three free delivery-method/shipping acknowledgments. It adds no SKU, model, JAN, or physical product specs. The cart form submit was prevented and all non-GET/HEAD routes were blocked; the request ledger contains no cart POST. Three UI option choices changed hidden `sku` indices in the DOM, but no variant API response carrying a concrete seller SKU/JAN appeared. See protocol/live-au01-guarded-04/guarded-actions.json and network.json."
+  },
+  "request_payload_audit": {
+    "raw_payloads_exported": false,
+    "unique_payloads": 118,
+    "request_occurrences": 165,
+    "payloads_with_product_context_fields": 16,
+    "findings": "POST /api/logger payloads include target itemId values and app error context. Analytics/event payloads include product-page title and/or visible price for tracking. No captured payload includes a selected `sku`/`skuId` mapping, JAN/GTIN/barcode, maker part number, ingredient list, or measurement table. Query parameter values and user/account/anonymous ID fields are omitted from all indexes."
+  },
+  "rendered_snapshots": {
+    "snapshot_html_occurrences": 219,
+    "deduplicated_snapshot_sha256": 45,
+    "frame_snapshot_files": 126,
+    "note": "Frame snapshots include repeated main-frame snapshots as page.frames[0]; they are not 126 distinct iframe pages. There were 12 distinct non-main frame host/path/status combinations across captured contexts. Most successful non-main documents were advertising synchronization pages; Wowma plus promotion/recommendation documents failed with 503."
+  },
+  "method_limitations": [
+    "The audit deduplicated saved response bodies by SHA-256 and parsed JSON plus bounded key/name scans over text responses, request bodies and rendered HTML snapshots.",
+    "Targeted manual review focused on structured marketplace APIs, comparison/recommendation/shop ranking, logger payloads, `itemOptions`, and the external document/frame types.",
+    "This is not a full semantic reverse engineering of every JavaScript bundle, ad tracker, third-party endpoint, or possible UI state.",
+    "Raw request payload values, query values, anonymous/user identifiers, and cookies were not copied into audit outputs.",
+    "A noHTTP capture means no HTTP status was observed; `ERR_FAILED` may be network/proxy failure, `ERR_BLOCKED_BY_CLIENT.Inspector` is the guarded non-GET behavior for final protocol capture, and 25 requests had no failure string before the bounded capture ended."
+  ]
+}

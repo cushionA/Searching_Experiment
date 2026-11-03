@@ -1,0 +1,320 @@
+au × 楽天：追加調査担当者向けの調査履歴
+整理日：2026-11-03 / 元の取得・比較：2026-11-02
+
+この追記は保存済み証拠の整理であり、新たな商品ページ通信は実施していない。
+最初にこの履歴を読み、実装条件はIMPLEMENTATION_HANDOFF.txtとrule-contract.jsonを参照する。
+
+1. 対象と、何が取得済みか
+
+対象はユーザー指定31組。重複を除くとau27 URL、楽天31 URL、合計58 URL。
+一覧はevidence/target-pairs.json。別ページ候補や同一性未確定の商品も含む。
+
+最新の到達点：
+  ・58 URLすべてで、成功したHTMLとそこに含まれる商品JSONを取得済み。
+  ・14件のau HTMLと2件の楽天HTMLを再利用し、残り42 URLを通常GETで補完した。
+  ・ブランチには、セッション系キーを除いた58個の商品JSONをevidence/products/に収録。
+  ・58 URLすべてのブラウザ内の全通信／全操作を取得したわけではない。
+
+時点を分けて読むこと：
+  A. 初期の楽天検索・一部詳細調査：成功した検索／商品ページとHARあり。
+  B. 31組のブラウザ再取得：au14/27ページが200、au残り13と楽天31ページは503。
+  C. その後のHTML補完：au・楽天の全58 URLで200と埋め込みJSON抽出に成功。
+
+Bの失敗を現在の「楽天JSON未取得」と読み替えない。
+Cの成功を「全58 URLの全ブラウザ通信取得済み」と読み替えない。
+途中で使った検索キャッシュ等の補助情報より、Cの商品JSONを優先する。
+11月3日時点の再取得性を確認したものではなく、最後の商品取得観測は11月2日のもの。
+
+2. 楽天の検索結果を調べた内容
+
+ReD COOL、Anker、PRESS BUTTER SAND、博多あごおとし、つきあかり等について、
+検索HTML、検索カード、商品詳細へのリンク、構造化データ、参照JSを確認した。
+入力URLの改行・連結・typoの補正や、食品キーワードの補助検索も行った。
+検索結果の全商品・全ページを巡回した調査ではない。取得失敗した検索もある。
+
+確認できたこと：
+  ・検索カードのshop/item ID、data-track-itemid、data-track-variantid、商品URL。
+  ・検索JSON-LDは商品名、画像、価格、レビュー、URL等が中心。
+  ・確認した検索HTMLでは全バリアントのJAN一覧は得られなかった。
+  ・ReDの代表カードから詳細ページの初期variantへつながる識別子はあった。
+  ・Anker検索には複数モデルが混在。検索ヒット全体を同じ商品とは扱っていない。
+  ・検索bundleにはapi-ichiba-gateway.rakuten.co.jp/graphql-common-bff/graphqlの文字列もあったが、
+    JAN等を返す用途や成功した実応答への対応は確認していない。
+
+補助例として、対象24の30W A2147以外に20W A2637も確認した。
+A2637には色別JANがある一方、A2147のJAN欄はexemptionReasonだった。
+この対照例は「同じ店舗でもJANの入り方が商品ごとに異なる」ことを示す。
+
+参照：evidence/research/rakuten-search-static.json
+
+3. 楽天Quickviewを調べた内容
+
+保存済み検索HTMLと検索JSから、次の経路を確認した。
+  ・カードのskuInfo.gspDocIdがQuickview URLのitems=へ入る。
+  ・overlayを開く処理がJSONPを要求し、modules.ichibaSearch.items等を読む。
+  ・items=00000432660-00010000056-1等のURLを、保存済みHTMLから取得した。
+
+ReDと米の2件に直接GETを行ったが、両方とも215-byteのEnvoy系503だった。
+Quickview応答の実データは取得できていない。
+JSに呼出処理があることと、応答にJANや追加の商品情報があることは別。
+独立した商品APIと確定したわけでもない。
+
+未確認：ブラウザで実際にoverlayを開き、成功した応答本文を取得して内容を比較すること。
+参照：evidence/research/rakuten-quickview.json
+
+4. 商品詳細の埋め込みJSONを調べた内容
+
+au：
+  __NEXT_DATA__.props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo
+楽天：
+  item-page-app-data.api.data.itemInfoSku
+
+全58商品JSONについて、商品名、商品番号候補、JAN、型番、説明HTML、仕様、
+ギャラリー画像、説明画像、選択肢を確認・比較した。
+JSONの文字列値に入ったHTMLも対象。専用キーだけの検索では終わらせていない。
+楽天のapiとnewApi、purchaseInfo等の複製データは別の独立根拠として数えない。
+
+auのinitialPropsには商品本体がなく、商品本体はinitialState側だった。
+過去の読み取りで「JSONにJANがない」と扱った箇所は、説明HTML文字列内のJANを再確認して訂正した。
+au02の色一覧はskuInfo.columnNames、au12の規格もcolumnNamesであり、
+商品ごとにrow/columnが異なる。固定でrowNamesだけを見ると取りこぼす。
+
+参照：evidence/manifest.json、evidence/products/、evidence/reports/strong-proofs.json
+
+5. JAN欄の形と実際の共通JANを調べた内容
+
+楽天の親articleNumber：31件中、valueあり3、exemptionReasonのみ5、キー欠落23。
+sku[]のarticleNumber：657エントリー中、valueあり357、exemptionReasonのみ300。
+親＋SKUのvalue出現数は360。そのうち359は13桁チェックデジット適合、1は16桁。
+これは値の出現数であり、ユニークなJAN数や物理商品数ではない。
+
+16桁の実例：23番のarticleNumber.value=1001000014474954。
+キー名や値の有無だけでJANと決められないため、桁数とチェックデジットを検証した。
+articleNumberの全値が公的な登録済みJANであることまでは照合していない。
+exemptionReason各番号の意味や、公式APIとの完全な対応は未確定。
+
+双方の商品JSONで明示JANが共通：
+  02：MILBONカラーガジェットの7JANが一致。
+      auはJAN一覧と色一覧が別で、楽天は各色とJANがSKUごとに結び付く。
+  11：4954835030748が、au説明HTMLと楽天articleNumber.valueで一致。
+
+18の4560131951467はauの画像名にも出るが、au本文のJAN欄から得たものではない。
+「両側に明記されたJAN一致」の件数には含めていない。
+
+参照：evidence/reports/jan-field-shapes.json、evidence/reports/strong-proofs.json
+
+6. 店舗商品番号・メーカー型番を調べた内容
+
+au：
+  ・lotNumberは27/27件でURL末尾と一致するモール側ID。
+  ・本文の「商品番号」「品番」等を調べたが、全商品共通の専用商品番号キーはなかった。
+  ・商品番号が本文にある例：01=60678、03=35290063、06=35279081、04=o2-030。
+  ・26は本文にo2-036が残る一方、画像・容量等はo2-037/400ml側。
+
+楽天：
+  ・manageNumber、newItemNumber、pcFields.itemNumberは31/31件で確認。
+  ・この3値が文字列として同じでないものは8件。大文字小文字だけの差も含む。
+  ・例：14のmanageNumber=medama-ladbag051、他2値=ladbag051。
+  ・例：30のmanageNumber=10000003、他2値=s-246。
+
+型番の本文一致：
+  03：MHD-1150-SB
+  06：MHI-3257-K
+  いずれもau商品名と楽天のメーカー型番が対応。
+  24のA2147はau画像パスだけに出るため、本文型番一致の例にはしていない。
+
+03の35290063は楽天の35290063ZZ/a35290063というセットSKUに入る。
+セットまでつながる有力な補助根拠だが、楽天の親管理番号35290043との完全一致ではない。
+自動ルールでは末尾や接頭辞を勝手に除去せず、03は型番一致で扱う。
+
+参照：evidence/research/scope.json、evidence/reports/manufacturer-models.json
+
+7. 通信監査の実施範囲と量
+
+31組のbaseline 58 URLの記録2,356件と、au01の最終操作記録327件を合わせて監査した。
+途中で中断した取得試行や別の古いHARまで足し込んだ合計ではない。
+
+対象通信：2,683 request records
+  HTTP 200=1,996、204=13、302=15、403=24、503=340、HTTP状態未観測=295。
+  保存されたresponse body=2,304件。本文未保存は379記録。
+  text body=1,222出現、SHA重複排除後216本文。
+  request body=165出現、SHA重複排除後118本文。
+  rendered HTML=219 snapshot、重複排除後45。
+
+保存済みの応答JSON、テキスト、要求payload、DOM/iframeを、
+SKU/JAN/GTIN/barcode/model/MPN/商品番号/成分/寸法/素材等のキー・文字列で横断調査した。
+JS bundleは取得・文字列走査・一部の呼出箇所の静的確認を行った。
+全bundle・全広告SDKの意味を完全に解析したわけではない。
+frame snapshotにはmain frameの反復もあり、独立iframeの数として数えない。
+
+この通信集計は時点Bのもの。後の42回のHTML補完GETとは別に管理している。
+「追加APIで共通JAN等を得られなかった」という結論は、取得済みAPI応答の範囲。
+初期HTML内の商品JSONにJANがあることを否定する結論ではない。
+
+参照：evidence/research/network-audit-summary.json、network-audit-findings.txt
+
+8. auのAPI・画面操作を調べた内容
+
+初期ページ表示、スクロール、画像等の読み込みに伴う通信を記録した。
+au01では選択ダイアログを開き、色／サイズを3通り操作した。
+skuのhidden値は列・行の数値indexであり、メーカーSKUやJANではなかった。
+seq_sku_id等のグループIDも、モール間の共通商品コードとは扱っていない。
+
+観測した代表的なAPIと結果：
+  /api/items/{id}/itemOptions
+    au01で200、679 bytes。配送方法等の承諾項目3件。SKU/JAN/物理仕様ではなかった。
+    19に対する別途1回のGETは404。同じURL形式で全商品から同じ情報が取れるとは未確認。
+  /api/items/{id}/comparison
+    成功した5応答は対象自身＋他の商品。SKU選択APIではなかった。
+  /api/recommend
+    他商品の推薦・空配列等。対象商品のJAN対応は得られなかった。
+  /api/items/ranking/shop
+    店舗ランキング。対象商品が入る場合はあっても、SKU対応データではなかった。
+  coupon / campaign / promotion / category / review
+    商品ID・商品名・価格等の文脈はあるが、今回の対象を結ぶ新しい共通識別子は未確認。
+  favorite / benefit / shipmentPriceInfo
+    403を確認。ログイン必須や送料の意味を、この403だけから断定していない。
+
+要求payload内の商品ID・title・priceは、主にanalytics/loggerの画面文脈だった。
+variant_group_id等も、商品SKUではなくメッセージ／ABテスト用途の例があった。
+
+最終au01操作時はカート送信を防ぎ、非GET/HEADを遮断した。
+このため読み取り用POSTが存在した場合も見落とす余地はある。
+購入・カート変更を伴う確定操作後の応答は取得していない。
+
+参照：evidence/research/network-audit-summary.json
+
+9. auの商品詳細・extraContent系を調べた内容
+
+au01と26の成功済みHTMLで、extraItemCommentとextraItemCommentWithVideoが
+初期の__NEXT_DATA__内に文字列として存在し、その説明もページに描画されることを確認した。
+説明画像は別のCDN画像GETとして取得される。
+
+ソースで確認したNextのページデータ経路：
+  /_next/data/{buildId}/item/{item_id}.json
+01・26・03で各1回GETしたが、当時は3件とも同じ215-byte Envoy系503。
+この経路からの商品JSONは得られなかった。後の通常HTML取得の成功とは別の話。
+再調査時はbuildIdを現在のHTMLから取り直す必要がある。
+
+今回確認したHTML・参照ソース・記録通信から、独立したextraContent専用経路は特定できなかった。
+全商品の全詳細表示操作を調べたわけではなく、そのような経路が存在しないとは言っていない。
+未観測のURLを推測して総当たりしていない。
+
+参照：evidence/research/au-extra-description.json
+
+10. 画像と画像内情報を調べた内容
+
+全31組のギャラリーと説明HTML中の画像URLを抽出し、
+au CDNの変換部分を外したパス、ファイル名stem、複数画像の集合を比較した。
+
+ギャラリーの共通ユニークstem：
+  1個以上25組、2個以上21組、3個以上20組。
+ギャラリー全stem集合一致、かつ3個以上：
+  02=8個、11=4個、26=10個。今回の別候補間では同じ全集合の衝突は得なかった。
+ただし、これはファイル名の比較であり、画像バイトの一致ではない。
+
+画像の使い回しの実例：
+  ・13/14と20/21は、別管理番号の楽天ページが同じ画像URLを共有。
+  ・03ドライヤーと06アイロンも、付属品等の画像stemを2個共有。
+  ・07のインナーにはladinner021とladinner016の画像名が混在。
+  ・au01はギャラリー20画像、説明内31参照。説明にしかない画像もある。
+
+説明画像は一部を実物確認し、特に15の素材、26の容量・製造国・箱表記を確認した。
+全31組の全画像にOCRをかけた調査ではない。
+クロスモールの画像バイトhash比較、知覚hashによる大規模比較も未実施。
+
+参照：evidence/reports/image-overlap.json、full-gallery-set-equality.json
+
+11. 商品名・説明文・リンクについて試した条件
+
+商品名全文：HTML実体、NFKC、空白を正規化して完全一致を比較。
+  02・10・11で一致。近似一致や販促文言の削除はしていない。
+説明文：指定した説明フィールド間でタグ除去等を行い、100文字以上の全文一致を比較。
+  今回の方法では一致0件。
+リンク：対になるモールの商品URLの直接記載、共通の非モールURL、メーカーURL/PDF等を調べた。
+  今回の抽出・正規化では追加の独立した一致根拠を得られなかった。
+makerCreativeInfoのvariant等も調べたが、追加の汎用的な橋渡しにはならなかった。
+
+参照：evidence/reports/title-and-text.json、crosslinks.json、additional-rules-summary.json
+
+12. 個別商品の確認結果で、追加調査に重要なもの
+
+13/14、20/21：
+  同じ商品に複数の楽天販売ページが対応する例。商品単位では1対1に絞る必要はない。
+  これらは最新のnative商品JSONも取得済み。古いキャッシュだけに依存した状態ではない。
+
+15/16：
+  auのLPコードは1507320101系。
+  au説明画像の綿67%／ポリエステル30%／ポリウレタン3%が、楽天15のトップス属性と一致。
+  楽天16は1718520101系かつポリエステル68%／レーヨン23%／ポリウレタン9%。
+  「トップスのみ」の選択肢は両方にあるが、15を強く支持し16を不支持とする証拠がある。
+  個別サイズ・色・包装の一意なSKU確定は、現在の目的では必須ではない。
+  参照：evidence/research/red-disambiguation.json、AU15-product-info.jpg
+
+26：
+  au本文のo2-036／300mlと、画像・仕様等のo2-037／400mlが混在。
+  au仕様欄の日本と説明画像等の中国にも不整合。
+  「商品番号」と明記された値自体が古い場合がある実例。
+
+27：auの現行extraItemCommentはドリップ8g×3、楽天newProductDescriptionは10g×3。
+28/29：同じau服にdrgl002とdds003が候補。画像コードはdds003を支持するが一意に未確定。
+30：カレーチャーハンがau200g、楽天230gという現行説明の差。
+31：auの500ml×2と楽天2本SKU属性は整合する一方、楽天説明に500g×2も残る。
+
+これらの矛盾は観測事実として記録する。
+ユーザー合意により、容量・数量・セット内容の照合を自動判定の必須条件へ戻さない。
+
+13. まだ調べ切っていない領域と、追加調査の優先順
+
+優先1：ブラウザ通信取得が可能になった後に、楽天31ページとau未成功13ページを再確認する。
+  初期表示、詳細展開、タブ、Quickview等の操作を、商品ページ取得と区別して記録する。
+  HTTP200、各応答本文の保存、操作前後差分を確認し、503/未保存を無情報と区別する。
+  初期runで成功HARがある対象は既存記録を再利用し、未取得の操作・応答を優先する。
+
+優先2：楽天Quickviewの成功応答を取得する。
+  静的に確認した呼び出しと、実際の応答フィールドを結び付ける。JANがあるかは未確認。
+
+優先3：auの詳細説明の別通信と、商品ごとの画面遷移差を再確認する。
+  extraItemComment初期埋め込みは確認済み。独立した詳細経路は未特定。
+  画面上のリンクや参照ソースにある経路から調べ、古いbuildIdを固定しない。
+
+優先4：画像の集合一致の評価を広げる。
+  画像バイト／知覚hash、商品固有画像と店舗共通・付属品画像の区別、兄弟商品での衝突を確認。
+  「数枚一致」の閾値だけを検証なしで自動条件に追加しない。
+
+優先5：別店舗・別商品へ標本を広げ、番号抽出と4ルールの誤一致を独立に評価する。
+  ラベル付き商品番号が古い26のようなケースも含める。
+  現在の31組には未確定候補を含むため、そのまま精度の正解データとみなさない。
+
+目的に応じた個別調査：28/29の兄弟商品識別、26/27/30/31の記載差の由来。
+SKUの色・サイズ・包装を一意に確定する調査は、現在のユーザー要件では後回しにできる。
+
+未実施／未完了として残すこと：
+  ・全58 URL、全操作、全状態、全応答の完全な通信取得
+  ・全JS bundleと全第三者SDKの完全な意味解析
+  ・未観測のAPI全体の列挙や存在しないことの証明
+  ・公式商品APIや公的登録情報を使った全JANの対応確認
+  ・4ルールの独立データによる精度測定
+
+14. ブランチにある証拠と、元環境だけの生データ
+
+ブランチに収録：
+  ・58個の商品JSON、31組の対象一覧、4ルールと13fixture
+  ・既存の比較レポート
+  ・今回追加した通信調査の要約、Quickview観測、説明経路の観測、ReD画像証拠
+  ・evidence/research/index.jsonのファイル一覧とhash
+
+元環境に保持、ブランチには全量を収録していないもの：
+  ・古いHAR、すべてのHTML/DOM snapshot、response blobs、全request payload
+  ・調査途中の失敗・中断取得、検索キャッシュの全出力
+
+元の保存先（/workspace/Searching_Experiment/以下）：
+  lab-runs/rakuten-sku-20261102/              初期の楽天検索・詳細・HAR・JS確認
+  lab-runs/au-rakuten-deep-20261102/          接続失敗時の補助調査等
+  lab-runs/proxy-recheck-20261102/            接続再確認
+  lab-runs/au-rakuten-rerun-20261102/          ブラウザ再取得・通信監査・au01操作
+  lab-runs/au-rakuten-strong-json-20261102/    全58JSON補完・商品比較・条件探索
+  rule-exploration/crosslinks/               商品リンク等の比較
+
+元環境の全生データがGitブランチで取得できるという意味ではない。
+追加の新規観測は新しいrunディレクトリに保存し、今回の取得日時・失敗履歴を上書きしない。

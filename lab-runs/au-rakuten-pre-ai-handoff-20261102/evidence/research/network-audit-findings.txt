@@ -1,0 +1,37 @@
+# Native通信・追加HTML 横断監査
+
+保存済みbaseline 58 URLとAU01最終guarded captureだけをオフライン走査した。追加通信はなし。対象の全request/responseは`response-index.jsonl`、本文は共通blobをSHA-256で重複排除して索引化。
+
+## 収集量とHTTP結果
+
+全2,683 request records: HTTP 200 1,996、204 13、302 15、403 24、503 340、HTTP statusなし295。保存されたresponse bodyは2,304件で全件SHA照合済み。2xxのうち69件、全302、全noHTTPには保存本文なし。text bodyは1,222件で全件保存、SHA重複排除すると216本文。POST request bodyは165件（118 unique hash）、全保存・hash照合済み。
+
+503の340件は同じ意味ではない。238件は215-byte Envoy/Cloudflare tunnel error、71件はempty body、31件は別内容（23 unique hashes）。HTTP 403は3 schema×8件: 還元ポイントAPI不可、favorite API混雑、shipping price API `API_ITEMS_ERR019`。送料の無料/有料判定はこの403から確定できない。
+
+noHTTP 295件は `net::ERR_FAILED` 232、最終guardの非GET遮断 `net::ERR_BLOCKED_BY_CLIENT.Inspector` 31、`net::ERR_ABORTED` 6、`net::ERR_BLOCKED_BY_ORB` 1、failure文字列なし25。failure文字列なしはcapture終了時にHTTP statusが観測されなかった記録。
+
+## API・payloadの追加発見
+
+重複排除したtext応答JSONとrequest payload 118種を、sku/JAN/GTIN/barcode/model/MPN/商品番号/成分/仕様のキー群で走査した。商品API JSONで取れた商品レコードの値はitemId/productId、itemName/title、price。variant seller SKU、JAN、GTIN、barcode、maker part number、ingredients、SKU対応寸法は見つからなかった。request payloadは商品ID・画面title・価格の分析イベント/エラーloggerで、raw本文は出力せず、user/account/anonymous ID類をマスクしている。各field evidenceは`product-field-hits.json`と`request-payload-index.json`を参照。
+
+`/comparison`は200の5応答で各1件self＋9〜10件related-other。11と25はnoHTTP。`/recommend`は関連外の商品ID/title/priceを返し、空配列もある。`/items/ranking/shop`はショップランキングで、pair13の応答だけランキング内に対象selfが1件、残りは別商品。どれもSKU選択APIではない。正確なrequest ID/status/hash/blob/source pathとobject分類は`list-api-index.json`。
+
+最終guarded captureのGET `/api/items/321039323/itemOptions`（request-000168、200、679 bytes、SHA `1dd2808ae09b7281bd40bf8a64349754da8485af4a2ef3c1a15cd07cd7ffecd6`）は配送方法・配送条件の無料承諾option 3件。SKU/JAN/specは含まない。variant dialogの色/サイズ変更は画面上のnumeric `sku` indexのみで、新しいSKU応答はなく、POST/cart submitは遮断された。
+
+## HTML/iframeと誤読防止
+
+保存rendered HTMLは219 snapshots（45 unique hashes）、frame snapshotsは126件。これはpage.frames[0]のmain frame反復を含み、126個の独立iframeを意味しない。取得されたnon-main frame documentsは広告同期系が中心で、一部のPlusキャンペーン/推薦documentは503。追加HTML JSONから得られたのは既存の`skuInfo.skuId`等で、JAN/GTIN/MPNや別variant seller-code対応はなかった。`v3/internal/web_messages`には`variant_group_id`/`web_message_variant_id`があるが、URL triggerが`/concept/ladies-fashion`のメッセージ/AB-test用で、商品SKUではない。
+
+## 出力
+
+- `findings.json` — 集計、API結果、代表エラーbody、出典参照、範囲制約。
+- `inventory.json` — capture単位のHTTP/text/request body集計。
+- `response-index.jsonl` — 2,683 request/response全記録のmachine index。query値は除去。
+- `unique-text-body-index.json` — 216 unique text bodyのSHAと全出典。
+- `snapshot-html-index.json` — 45 unique rendered DOM HTMLのSHA、frame/JSON field索引。
+- `request-payload-index.json` — 118 unique request payload hashと安全な構造field scan。raw payloadなし。
+- `product-field-hits.json` — dedupeしたresponse JSONとrequest payloadのproduct field scan。
+- `list-api-index.json` — comparison/recommend/rankingのself・related-other分類。
+- `audit_network.py` — オフライン再生成用scanner。
+
+API field scanは構造化JSONとテキスト照合、手動確認はcommerce APIと関連fieldに絞った。全JS bundleや第三者広告endpointの完全な意味解析をしたとは扱わない。

@@ -68,9 +68,16 @@ def verify():
                 checks += 1
 
     assert actual == 9 and synthetic == 4 and checks == 59
+    research = read_json(BASE / "evidence/research/index.json")
+    for record in research["files"]:
+        file = BASE / record["file"]
+        assert file.is_file(), record["file"]
+        assert file.stat().st_size == record["bytes"], record["file"]
+        assert sha256(file) == record["sha256"], record["file"]
     print(json.dumps({
         "result": "PASS", "product_documents": len(records),
         "fixtures": actual + synthetic, "actual_excerpt_checks": checks,
+        "research_evidence_files": len(research["files"]),
         "scope": "portable evidence hashes and fixture excerpts; not matching accuracy",
     }, ensure_ascii=False))
 

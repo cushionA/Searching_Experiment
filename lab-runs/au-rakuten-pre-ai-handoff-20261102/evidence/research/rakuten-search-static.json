@@ -1,0 +1,63 @@
+{
+  "source_file_in_original_workspace": "lab-runs/rakuten-sku-20261102/protocol/findings.json",
+  "source_sha256": "62920033cec90bf3e7313f2f7caa51c137e3e922771c67b5c012af1ceb55cac9",
+  "historical_observation": true,
+  "search": {
+    "url": "https://search.rakuten.co.jp/search/mall/ReD%20%E3%83%9C%E3%82%AF%E3%82%B5%E3%83%BC%E3%83%91%E3%83%B3%E3%83%84%20COOL/?sid=432660",
+    "final_url": "https://search.rakuten.co.jp/search/mall/ReD+%E3%83%9C%E3%82%AF%E3%82%B5%E3%83%BC%E3%83%91%E3%83%B3%E3%83%84+COOL/?sid=432660",
+    "status": 200,
+    "bytes": 169904,
+    "evidence": "search.html",
+    "sha256": "bc2372484de658f9a218fd924d9791a9c86e2d3d2339128f518a6d728690fd9a",
+    "one_card_identifiers": {
+      "shopId": "432660",
+      "itemId": "10000056",
+      "data-track-itemid": "432660/10000056",
+      "data-track-variantid": "1643020101_a",
+      "item_url": "https://item.rakuten.co.jp/red-jpn/1643020101/"
+    },
+    "jsonld": "ItemList/Product name/image/price/review/url; no JAN observed"
+  },
+  "detail_summary": {
+    "url": "https://item.rakuten.co.jp/red-jpn/1643020101/",
+    "status": 200,
+    "encoding": "EUC-JP",
+    "json_path": "api.data.itemInfoSku (same payload is also duplicated at newApi.itemInfoSku)",
+    "variant_count": 8
+  },
+  "public_bundles": {
+    "search_urls": "search_script_urls.txt",
+    "captured": [
+      "item_bundle_29.js",
+      "item_bundle_30.js",
+      "item_bundle_31.js"
+    ],
+    "item_urls": "item_script_urls.txt",
+    "observation": "Page-specific bundles include itemInfoSku/selectors and tracking components; actual catalog payload already server-embedded. Bundle strings include unrelated shipping/coupon/cart APIs; no SKU-JAN endpoint is established by static source review. This is not proof that the live browser makes no additional requests."
+  },
+  "search_page_hydration_addendum": {
+    "source": "search.html captured for GET 200",
+    "next_data": "No __NEXT_DATA__ script/Next.js data container observed.",
+    "application_json_scripts": [
+      {
+        "id": "bdg-point-display-settings",
+        "purpose": "point calculation UI settings; contains NCP benefitsCalculation endpoint/config, not product-result or SKU records"
+      },
+      {
+        "id": "__LOADABLE_REQUIRED_CHUNKS__",
+        "value": []
+      },
+      {
+        "id": "__LOADABLE_REQUIRED_CHUNKS___ext",
+        "value": {
+          "namedChunks": []
+        }
+      }
+    ],
+    "jsonld": "One ItemList with Product name/image/offer price/aggregate rating/url; no JAN/articleNumber observed.",
+    "per_result_html": "Initial cards expose shopId, itemId, data-track-itemid, one data-track-variantid and item URL. No articleNumber or all-variant SKU array observed in search HTML.",
+    "bundle_review": "Captured page-specific bundle references /search/mall routes, UI filters, and shared api-ichiba-gateway.rakuten.co.jp/graphql-common-bff/graphql string. No statically identified search-result API returning articleNumber/JAN or full variant records. Bundle strings do not prove absence of runtime requests; live network trace belongs to separate capture."
+  },
+  "addendum_original_sha256": "8cf4d22fe0cac226e25f13bd5f0ed92f65ad2edb4561fb02487c9df41f1ae2f5",
+  "warning": "Static findings and initial successful example, not all31page browsertraffic. Availability observations from this phase are superseded by later HTML coverage."
+}

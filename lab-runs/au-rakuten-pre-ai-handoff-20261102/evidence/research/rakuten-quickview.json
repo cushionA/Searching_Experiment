@@ -1,0 +1,76 @@
+{
+  "source_file_in_original_workspace": "lab-runs/rakuten-sku-20261102/protocol/quickview_findings.json",
+  "source_sha256": "265f52b55ee25e1caa4920cca1011d66e89a868f9b796d980d3433235a9c6682",
+  "historical_observation": true,
+  "observation": {
+    "scope": "Two one-off direct GETs to quickview URLs extracted from already saved search HTML; static JS review only; no retries.",
+    "urls": [
+      {
+        "case": "ReD",
+        "url": "https://search.rakuten.co.jp/search/mall/ReD+%E3%83%9C%E3%82%AF%E3%82%B5%E3%83%BC%E3%83%91%E3%83%B3%E3%83%84+COOL/?items=00000432660-00010000056-1&lang=ja&pref=tokyo&res=qv&sid=432660&v=3",
+        "source_html": "../goods/red_search.html",
+        "card_selector": "div.dui-card[data-id=\"10000056\"]",
+        "gspDocId": "00000432660-00010000056-1",
+        "url_items_value": "00000432660-00010000056-1",
+        "shop_id": "432660",
+        "item_code": "10000056"
+      },
+      {
+        "case": "Food / tsukiakari 10kg",
+        "url": "https://search.rakuten.co.jp/search/mall/%E3%81%A4%E3%81%8D%E3%81%82%E3%81%8B%E3%82%8A+%E7%84%A1%E6%B4%97%E7%B1%B3+10kg/?items=00000194822-00010008458-1&lang=ja&pref=tokyo&res=qv&sid=194822&v=3",
+        "source_html": "../food/tsukiakari_10kg/search.html",
+        "card_selector": "div.dui-card[data-id=\"10008458\"]",
+        "gspDocId": "00000194822-00010008458-1",
+        "url_items_value": "00000194822-00010008458-1",
+        "shop_id": "194822",
+        "item_code": "10008458"
+      }
+    ],
+    "static_bundle_review": {
+      "evidence_file": "../food/tsukiakari_10kg/response-011-r.r10s.jp_com_assets_app_pages_search_javascript_pc-4940e729dfd924e0e1bc.bundle.js.txt",
+      "observed_behavior": [
+        "The search card constructs quickviewQuestion via generateUrl({page:0, advanced:undefined, items:[gspDocId], route:Route.quickview, ...}).",
+        "gspDocId comes from item.skuInfo.gspDocId, falling back to shop.id/code. The value becomes the `items=` query token.",
+        "Opening quickview dispatches fetchQuickviewData with the data-quickview URL.",
+        "fetchQuickviewData calls requestData(url,{method:\"jsonp\",cache:\"no-cache\",credentials:\"include\"}) and expects response JSON at modules.ichibaSearch.items, plus modules.itemCoupon.",
+        "This is a search route invoked on opening the overlay and may be a partial search result response. Static code does not prove any direct URL response field contents or API semantics."
+      ],
+      "classification": "A plausible quickview/search endpoint, not established as an independent product API."
+    },
+    "direct_gets": [
+      {
+        "case": "red",
+        "method": "GET",
+        "url": "https://search.rakuten.co.jp/search/mall/ReD+%E3%83%9C%E3%82%AF%E3%82%B5%E3%83%BC%E3%83%91%E3%83%B3%E3%83%84+COOL/?items=00000432660-00010000056-1&lang=ja&pref=tokyo&res=qv&sid=432660&v=3",
+        "request_cookie_header": false,
+        "status": 503,
+        "content_type": "text/plain",
+        "bytes": 215,
+        "body_sha256": "971f01aae81a63c435e602a1a728c8894b1527150a621d70d735aaca6ff930ea",
+        "error": "HTTPError",
+        "body_file": "quickview_red.error.body",
+        "body_preview": "upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: immediate connect error: Invalid argument|remote address:envoy://cloudflare_https_tunnel/"
+      },
+      {
+        "case": "food",
+        "method": "GET",
+        "url": "https://search.rakuten.co.jp/search/mall/%E3%81%A4%E3%81%8D%E3%81%82%E3%81%8B%E3%82%8A+%E7%84%A1%E6%B4%97%E7%B1%B3+10kg/?items=00000194822-00010008458-1&lang=ja&pref=tokyo&res=qv&sid=194822&v=3",
+        "request_cookie_header": false,
+        "status": 503,
+        "content_type": "text/plain",
+        "bytes": 215,
+        "body_sha256": "971f01aae81a63c435e602a1a728c8894b1527150a621d70d735aaca6ff930ea",
+        "error": "HTTPError",
+        "body_file": "quickview_food.error.body",
+        "body_preview": "upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: immediate connect error: Invalid argument|remote address:envoy://cloudflare_https_tunnel/"
+      }
+    ],
+    "conclusion": "Both one-off direct GETs returned the same proxy/upstream HTTP 503 before a usable response. No response data to inspect for variants or articleNumber/JAN. Do not retry per scope; candidate remains unconfirmed.",
+    "files": {
+      "observations": "quickview_get_observations.json",
+      "red_body": "quickview_red.error.body",
+      "food_body": "quickview_food.error.body"
+    }
+  },
+  "current_status": "response not acquired in recorded attempts"
+}

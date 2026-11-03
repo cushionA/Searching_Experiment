@@ -1,0 +1,374 @@
+{
+  "source_file_in_original_workspace": "lab-runs/au-rakuten-strong-json-20261102/red/disambiguation.json",
+  "source_sha256": "48136faa1c05ffbb09c6015ff6d82666640ce833a211ca9c3b1811691c93122b",
+  "historical_observation": true,
+  "observation": {
+    "purpose": "Disambiguate the common AU target against saved Rakuten candidates 15 and 16 by exact saved JSON paths and previously saved AU image evidence; no new network access.",
+    "sources": [
+      {
+        "id": "AU shared target 15/16",
+        "url": "https://wowma.jp/item/787814450",
+        "appdata_file": "Searching_Experiment/lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/AU787814450.json",
+        "appdata_sha256": "8ac02734aeb02a66f6c02c9810273bf2f706feab07367b08b5a1a63a05718f2a",
+        "embedded_json_path": "props.pageProps.initialState.itemDetails.itemPageInfo (reduced extract fields.itemInfo equivalent)",
+        "product_extract_file": "Searching_Experiment/lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/AU787814450-product.json",
+        "product_extract_sha256": "20d5f85b81b7b49283729fb3d84209f653b62b88fb63dc83774ed145a7ac9814",
+        "response_blob": "Searching_Experiment/lab-runs/au-rakuten-strong-json-20261102/acquire/rawbody/AU787814450.body",
+        "response_sha256": "855f88c92b8e9fdc708452c3f50f88d2e91ca9981ec4bd6bc0c274cdf9f401ad"
+      },
+      {
+        "id": "Rakuten candidate 15",
+        "url": "https://item.rakuten.co.jp/red-jpn/1507320101/",
+        "appdata_file": "Searching_Experiment/lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/RA3c0b1230.json",
+        "appdata_sha256": "bba30bf657fe5b60a9fe1099b10ca1ad7ee0b7919547d270c7e8bd4e6a62fcb9",
+        "embedded_json_path": "api.data.itemInfoSku",
+        "product_extract_file": "Searching_Experiment/lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/RA3c0b1230-product.json",
+        "product_extract_sha256": "0dae5fc8cbfd9fb12c6c8b8c5c3315e6d7d2c4302188ee046aec9ac8ee271e13",
+        "response_blob": "Searching_Experiment/lab-runs/au-rakuten-strong-json-20261102/acquire/rawbody/RA3c0b1230.body",
+        "response_sha256": "531ffeeed1e7bef0623176c7949c7f7373bcb1edc7d9f00841836fd033ddf0aa"
+      },
+      {
+        "id": "Rakuten candidate 16",
+        "url": "https://item.rakuten.co.jp/red-jpn/1718520101/",
+        "appdata_file": "Searching_Experiment/lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/RA3066f433.json",
+        "appdata_sha256": "cc32c3f400a3f0d3469b11a9b450d70e213f78541fa6defe0bee0da577da1b6c",
+        "embedded_json_path": "api.data.itemInfoSku",
+        "product_extract_file": "Searching_Experiment/lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/RA3066f433-product.json",
+        "product_extract_sha256": "4601e1f978ed2e09b3d302617b0138d35260631026b32a36168c8a62ae8c6b03",
+        "response_blob": "Searching_Experiment/lab-runs/au-rakuten-strong-json-20261102/acquire/rawbody/RA3066f433.body",
+        "response_sha256": "19d221eac36d1662bbdeedec3c710573a1b88c72db0173c611a32611018d66fb"
+      }
+    ],
+    "verdict": {
+      "candidate_15": "Strongly supported as the same exact AU top garment/item family. AU extraItemComment asset names use 1507320101, the Rakuten 15 manageNumber/newItemNumber/itemNumber and SKU manufacturer model for top-only S/black. The saved AU image sourced from its 1507320101 LP visibly states the cotton/polyester/polyurethane composition that matches the RA15 SKU attributes. AU size/color choices also align with the RA15 top-only family.",
+      "candidate_16": "Strongly disfavored. Its exact 1718520101 S/black top-only model is polyester68/rayon23/polyurethane9 and has a separate lp_1718520101 image family. AU embeds the 1507320101 family; its saved product-information image says cotton67/polyester30/polyurethane3, matching RA15 and conflicting with RA16 exact-model composition. Sizes/colors overlap partially and do not by themselves exclude RA16.",
+      "granularity": "This supports the item family; AU lists 16 size/color choices and the selected AU SKU is unknown. The 1507320101 LP stem and RA15 JAN provide S/black model evidence, but do not prove AU selected S/black. Wrapping does not distinguish the two candidates."
+    },
+    "AU_observation": {
+      "paths": {
+        "title": "itemTitle",
+        "embedded_lp": "extraItemComment",
+        "axes": "skuInfo.rowNames",
+        "axis_label": "skuInfo.optionName.row"
+      },
+      "title": "【上下2セットで15％OFF】リカバリーウェア ReD ぐっすりパジャマ スウェット メンズ クルーネック 長袖 [上のみ] トップス リカバリーパジャマ パジャマ メンズ ギフト 疲労回復 一般医療機器",
+      "lp_filenames": [
+        "lp_1507320101_01_au_tops.jpg",
+        "lp_1507320101_02.jpg",
+        "lp_1507320101_04.jpg",
+        "lp_1507320101_05.jpg",
+        "lp_1507320101_06_01.jpg",
+        "lp_1507320101_06_02.jpg",
+        "lp_1507320101_06_03.jpg",
+        "lp_1507320101_06_04.jpg",
+        "lp_1507320101_06_05.jpg",
+        "lp_1507320101_06_06.jpg",
+        "lp_1507320101_07_au_tops_01.jpg",
+        "lp_1507320101_07_au_tops_02.jpg",
+        "lp_1507320101_08_yahoo_tops.jpg"
+      ],
+      "axes": [
+        "S×ブラック",
+        "S×オフホワイト",
+        "S×ネイビー",
+        "S×レッド",
+        "M×ブラック",
+        "M×オフホワイト",
+        "M×ネイビー",
+        "M×レッド",
+        "L×ブラック",
+        "L×オフホワイト",
+        "L×ネイビー",
+        "L×レッド",
+        "LL×ブラック",
+        "LL×オフホワイト",
+        "LL×ネイビー",
+        "LL×レッド"
+      ],
+      "matrix": "rowCount=16; size×color; 4 sizes × 4 colors",
+      "material_or_jan": "Neither material attributes nor per-SKU JAN values occur in the reduced AU product JSON.",
+      "cross_code_checks": {
+        "serialized_product_json_contains_1507320101": true,
+        "serialized_product_json_contains_1718520101": false,
+        "serialized_product_json_contains_RA15_base_model_JAN_4974011905073": false,
+        "serialized_product_json_contains_RA16_base_model_JAN_4974011817185": false,
+        "serialized_product_json_contains_explicit_fabric_composition": false
+      }
+    },
+    "RA15_observation": {
+      "paths": [
+        "manageNumber",
+        "newItemNumber",
+        "pcFields.itemNumber",
+        "sku[*].attributes[title=メーカー型番]",
+        "sku[*].attributes[title=素材（生地・毛糸）]",
+        "sku[*].articleNumber.value",
+        "variantSelectors",
+        "salesDescription"
+      ],
+      "product_codes": {
+        "manageNumber": "1507320101",
+        "newItemNumber": "1507320101",
+        "pcFields.itemNumber": "1507320101",
+        "sales_description_lp_filenames": [
+          "lp_1507320101_01.jpg",
+          "lp_1507320101_02.jpg",
+          "lp_1507320101_04.jpg",
+          "lp_1507320101_05.jpg",
+          "lp_1507320101_06.jpg",
+          "lp_1507320101_07.jpg",
+          "lp_1507320101_08.jpg"
+        ]
+      },
+      "top_only_choices": {
+        "sku_count": 40,
+        "sizes": [
+          "L",
+          "LL",
+          "M",
+          "S"
+        ],
+        "colors": [
+          "オフホワイト",
+          "カーキ",
+          "ネイビー",
+          "ブラック",
+          "レッド"
+        ],
+        "unique_model_count": 20,
+        "unique_jan_count": 20,
+        "unique_jan_values": [
+          "4974011905073",
+          "4974011905097",
+          "4974011905103",
+          "4974011905110",
+          "4974011905127",
+          "4974011905134",
+          "4974011905158",
+          "4974011905165",
+          "4974011905172",
+          "4974011905189",
+          "4974011905196",
+          "4974011905219",
+          "4974011905226",
+          "4974011905233",
+          "4974011905240",
+          "4974011905257",
+          "4974011905271",
+          "4974011905288",
+          "4974011905295",
+          "4974011905301"
+        ]
+      },
+      "exact_1507320101_model_rows": [
+        {
+          "variantId": "1507320101_b",
+          "selectors": [
+            "トップスのみ",
+            "S",
+            "ブラック",
+            "ラッピング"
+          ],
+          "maker_model": "1507320101",
+          "material": "本体 綿67% ポリエステル30% ポリウレタン3% / リブ ポリエステル62% 綿35% ポリウレタン3%",
+          "jan": "4974011905073"
+        },
+        {
+          "variantId": "1507320101_a",
+          "selectors": [
+            "トップスのみ",
+            "S",
+            "ブラック",
+            "ラッピング無"
+          ],
+          "maker_model": "1507320101",
+          "material": "本体 綿67% ポリエステル30% ポリウレタン3% / リブ ポリエステル62% 綿35% ポリウレタン3%",
+          "jan": "4974011905073"
+        }
+      ],
+      "size_color_match": "RA15 top-only family spans S/M/L/LL and black/off-white/navy/red plus khaki. AU has exactly S/M/L/LL and black/off-white/navy/red among its 16 combinations."
+    },
+    "RA16_observation": {
+      "paths": [
+        "manageNumber",
+        "newItemNumber",
+        "pcFields.itemNumber",
+        "sku[*].attributes[title=メーカー型番]",
+        "sku[*].attributes[title=素材（生地・毛糸）]",
+        "sku[*].articleNumber.value",
+        "variantSelectors",
+        "salesDescription"
+      ],
+      "product_codes": {
+        "manageNumber": "1718520101",
+        "newItemNumber": "1718520101",
+        "pcFields.itemNumber": "1718520101",
+        "sales_description_lp_filenames": [
+          "lp_1718520101_01.jpg",
+          "lp_1718520101_02.jpg",
+          "lp_1718520101_03_02.jpg",
+          "lp_1718520101_05.jpg",
+          "lp_1718520101_06.jpg",
+          "lp_1718520101_07.jpg",
+          "lp_1718520101_08.jpg"
+        ]
+      },
+      "top_only_choices": {
+        "sku_count": 114,
+        "sizes": [
+          "3L",
+          "4L",
+          "5L",
+          "L",
+          "LL",
+          "M",
+          "S",
+          "SS"
+        ],
+        "colors": [
+          "グレー",
+          "ダークネイビー",
+          "ネイビー",
+          "ピンク",
+          "ブラック",
+          "ブルー",
+          "ベージュ",
+          "モスグリーン",
+          "ライトグリーン",
+          "ライトグレー",
+          "ラベンダー",
+          "レッド"
+        ],
+        "unique_model_count": 57,
+        "unique_jan_count": 57,
+        "unique_jan_values": [
+          "4974011817185",
+          "4974011817192",
+          "4974011817215",
+          "4974011817222",
+          "4974011817239",
+          "4974011817246",
+          "4974011817253",
+          "4974011817277",
+          "4974011817284",
+          "4974011817291",
+          "4974011817307",
+          "4974011817314",
+          "4974011817338",
+          "4974011817345",
+          "4974011817352",
+          "4974011817369",
+          "4974011817376",
+          "4974011817390",
+          "4974011817406",
+          "4974011817413",
+          "4974011819509",
+          "4974011819516",
+          "4974011819523",
+          "4974011819530",
+          "4974011827429",
+          "4974011827436",
+          "4974011827443",
+          "4974011827450",
+          "4974011827467",
+          "4974011827474",
+          "4974011827481",
+          "4974011827498",
+          "4974011844976",
+          "4974011844983",
+          "4974011844990",
+          "4974011845003",
+          "4974011845010",
+          "4974011845027",
+          "4974011845034",
+          "4974011845041",
+          "4974011845058",
+          "4974011845065",
+          "4974011845072",
+          "4974011845089",
+          "4974011901419",
+          "4974011904533",
+          "4974011904540",
+          "4974011904557",
+          "4974011904564",
+          "4974011904571",
+          "4974011904588",
+          "4974011904595",
+          "4974011904601",
+          "4974011914327",
+          "4974011914334",
+          "4974011914341",
+          "4974011914358"
+        ]
+      },
+      "exact_1718520101_model_rows": [
+        {
+          "variantId": "1718520101_b",
+          "selectors": [
+            "トップスのみ",
+            "S",
+            "ブラック",
+            "ラッピング"
+          ],
+          "maker_model": "1718520101",
+          "material": "ポリエステル68% レーヨン23% ポリウレタン9%",
+          "jan": "4974011817185"
+        },
+        {
+          "variantId": "1718520101_a",
+          "selectors": [
+            "トップスのみ",
+            "S",
+            "ブラック",
+            "ラッピング無"
+          ],
+          "maker_model": "1718520101",
+          "material": "ポリエステル68% レーヨン23% ポリウレタン9%",
+          "jan": "4974011817185"
+        }
+      ],
+      "note": "The larger RA16 listing contains other top-only SKU models/material values too; the comparison is scoped to top-only rows and the exact 1718520101 S/black model.",
+      "AU_code_test": "The entire serialized AU reduced product JSON contains 1507320101 in LP filenames but has no 1718520101 token. The AU LP family therefore points directly to RA15 code family."
+    },
+    "saved_AU_image_evidence": [
+      {
+        "image": "Searching_Experiment/lab-runs/au-rakuten-rerun-20261102/evidence/pair15-info.jpg",
+        "sha256": "b81e64b4fb33906f812654dcd3eaa404efc285b81c862fd484faab9230ec4483",
+        "source_blob_sha256": "b81e64b4fb33906f812654dcd3eaa404efc285b81c862fd484faab9230ec4483",
+        "source_request": {
+          "source_network": "group13_19/baseline-retry1/15-au/network.json",
+          "request_id": "request-000051",
+          "url": "https://ic4-a.wowma.net/mis/w/640/h/3072/q/90/image.wowma.jp/94778209/LP/item/lp_1507320101_08_yahoo_tops.jpg"
+        },
+        "visible_content": "Product-info panel identifies ReD recovery wear sweatshirt fleece, men’s crew-neck long sleeve and states 綿67%、ポリエステル30%、ポリウレタン3%. Served from AU LP asset lp_1507320101_08_yahoo_tops.jpg."
+      },
+      {
+        "image": "Searching_Experiment/lab-runs/au-rakuten-rerun-20261102/evidence/pair15-sizes-colors.jpg",
+        "sha256": "a72d069f6d7c0ba684320fe6a07254f8d0638b85c992cee2736d9185ede9e4a0",
+        "source_blob_sha256": "a72d069f6d7c0ba684320fe6a07254f8d0638b85c992cee2736d9185ede9e4a0",
+        "source_request": {
+          "source_network": "group13_19/baseline-retry1/15-au/network.json",
+          "request_id": "request-000047",
+          "url": "https://ic4-a.wowma.net/mis/w/640/h/3072/q/90/image.wowma.jp/94778209/LP/item/lp_1507320101_07_au_tops_01.jpg"
+        },
+        "visible_content": "AU size/color image; product JSON enumerates the same 16 size×color choices."
+      }
+    ],
+    "JAN_intersection": {
+      "AU": "No JAN values in AU reduced itemInfo JSON.",
+      "RA15_top_only_unique_count": 20,
+      "RA16_top_only_unique_count": 57,
+      "intersect": [],
+      "exact_base_model_S_black_JAN_candidates": {
+        "RA15": "4974011905073",
+        "RA16": "4974011817185"
+      },
+      "note": "JANs are Rakuten metadata; they do not occur in this AU JSON."
+    },
+    "limitations": [
+      "The AU item is a 16-variant size/color product; its LP stem is a product/base-variant code and does not mean the whole listing is one S/black SKU.",
+      "The reference JANs and variant mapping distinguish the Rakuten records; AU exposes no JAN with which to map an individually selected variant.",
+      "Both Rakuten candidates expose wrapping choices, so wrapping does not distinguish them."
+    ]
+  }
+}
