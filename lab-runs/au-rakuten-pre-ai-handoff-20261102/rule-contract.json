@@ -1,0 +1,182 @@
+{
+  "rules_version": "1.0",
+  "purpose": "product-level deterministic positive matching before AI",
+  "same_seller_assumed": true,
+  "sku_level_alignment_required": false,
+  "capacity_quantity_set_consistency_required": false,
+  "multiple_rakuten_pages_per_au_product_allowed": true,
+  "automatic_negative_rules": [],
+  "fallback_decision": "AI_REQUIRED",
+  "rule_order": [
+    "JAN",
+    "MERCHANT_CODE",
+    "MODEL",
+    "TITLE"
+  ],
+  "positive_decision": "MATCH",
+  "raw_sources": {
+    "AU": {
+      "script_id": "__NEXT_DATA__",
+      "product_path": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo",
+      "title_field": "itemTitle",
+      "body_fields": [
+        "itemComment",
+        "extraItemComment",
+        "detailComment"
+      ],
+      "spec_label_field": "specNames",
+      "spec_value_field": "specValues",
+      "platform_id_field": "lotNumber"
+    },
+    "Rakuten": {
+      "script_id": "item-page-app-data",
+      "product_path": "api.data.itemInfoSku",
+      "title_field": "title",
+      "jan_fields": [
+        "articleNumber.value",
+        "sku[].articleNumber.value"
+      ],
+      "merchant_code_fields": [
+        "manageNumber",
+        "newItemNumber",
+        "pcFields.itemNumber"
+      ],
+      "model_attribute_arrays": [
+        "attributes",
+        "sku[].attributes"
+      ],
+      "model_attribute_label_field": "title",
+      "model_attribute_label": "メーカー型番",
+      "model_attribute_value_field": "value",
+      "body_fields": [
+        "pcFields.productDescription",
+        "newProductDescription",
+        "salesDescription"
+      ],
+      "platform_id_field": "itemId"
+    }
+  },
+  "JAN": {
+    "enabled": true,
+    "supported_digit_lengths_v1": [
+      13
+    ],
+    "validate_ean13_check_digit": true,
+    "reject_all_zero": true,
+    "keep_leading_zeros": true,
+    "allow_45_49_prefixes_only": false,
+    "au_requires_label_or_explicit_labeled_spec": true,
+    "au_labels": [
+      "JAN",
+      "JANコード",
+      "EAN",
+      "EANコード"
+    ],
+    "rakuten_structured_value_validated": true,
+    "rakuten_labeled_body_fallback_allowed": true,
+    "exclude_urls_attributes_images_recommendations": true,
+    "aggregate_all_product_variants": true,
+    "condition": "intersection(au.valid_jans, rakuten.valid_jans) is nonempty"
+  },
+  "MERCHANT_CODE": {
+    "enabled": true,
+    "au_explicit_labels": [
+      "商品番号",
+      "商品コード",
+      "品番"
+    ],
+    "normalization": [
+      "NFKC",
+      "trim",
+      "casefold"
+    ],
+    "preserve_internal_spaces_hyphens_prefixes_suffixes": true,
+    "reject_empty_and_ambiguous_extractions": true,
+    "image_or_url_derived_codes_allowed": false,
+    "variant_id_substring_or_suffix_stripping_allowed": false,
+    "condition": "intersection(au.explicit_merchant_codes, rakuten.merchant_codes) is nonempty"
+  },
+  "MODEL": {
+    "enabled": true,
+    "normalization": [
+      "NFKC",
+      "trim",
+      "casefold"
+    ],
+    "au_visible_product_title_or_body_only": true,
+    "match_complete_model_and_suffix": true,
+    "preserve_internal_hyphens": true,
+    "reject_placeholders": [
+      "",
+      "-",
+      "--",
+      "なし",
+      "無し",
+      "該当なし",
+      "不明",
+      "未設定",
+      "N/A",
+      "NA",
+      "null",
+      "undefined"
+    ],
+    "exclude_urls_attributes_images_recommendations": true,
+    "condition": "valid RA manufacturer model equals complete AU labeled model or bounded visible model token"
+  },
+  "TITLE": {
+    "enabled": true,
+    "normalization": [
+      "html_entity_decode",
+      "visible_text",
+      "NFKC",
+      "collapse_whitespace",
+      "trim"
+    ],
+    "casefold": false,
+    "remove_promotional_model_quantity_size_or_other_tokens": false,
+    "require_both_nonempty": true,
+    "condition": "au.normalized_title equals rakuten.normalized_title"
+  },
+  "images": {
+    "automatic_match_enabled": false,
+    "pass_as_ai_features": true,
+    "full_gallery_filename_equality_status": "evaluation_candidate_only"
+  },
+  "output": {
+    "decision_enum": [
+      "MATCH",
+      "AI_REQUIRED"
+    ],
+    "rule_enum": [
+      "JAN",
+      "MERCHANT_CODE",
+      "MODEL",
+      "TITLE",
+      null
+    ],
+    "required_fields": [
+      "decision",
+      "rule",
+      "rules_version",
+      "au_url",
+      "rakuten_url",
+      "matched_values",
+      "evidence"
+    ],
+    "evidence_fields": [
+      "side",
+      "source_path",
+      "source_kind",
+      "value",
+      "normalized_value",
+      "excerpt"
+    ]
+  },
+  "fixture_route_to_output_rule": {
+    "JAN": "JAN",
+    "MERCHANT_CODE": "MERCHANT_CODE",
+    "MODEL": "MODEL",
+    "TITLE": "TITLE",
+    "AI": null
+  }
+}

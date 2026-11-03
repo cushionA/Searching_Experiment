@@ -1,0 +1,116 @@
+{
+  "scope": {
+    "run": "lab-runs/au-rakuten-strong-json-20261102/acquire/manifest.json",
+    "coverage": "31 paired listings; 58/58 HTTP 200 responses and embedded JSON extracts",
+    "local_only": true,
+    "assumption": "same seller",
+    "sources": [
+      "lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/*.json",
+      "lab-runs/au-rakuten-strong-json-20261102/acquire/rawbody/*.body"
+    ]
+  },
+  "new_conditions": [],
+  "negative_findings": [
+    {
+      "condition": "AU description or appdata/raw HTML contains its paired Rakuten item URL, or Rakuten contains its paired AU item URL",
+      "result": "none across 31 pairs",
+      "evidence_scope": "full embedded JSON serialization and complete raw HTML bodies for all paired captures",
+      "interpretation": "No direct cross-mall product-link rule found. Generic brand/shop/category/recommendation links are not counted."
+    },
+    {
+      "condition": "same exact non-marketplace URL on both paired product pages, including manufacturer product pages, catalogue PDFs, or canonical original image URLs",
+      "result": "none across 31 pairs",
+      "evidence_scope": "absolute URLs in all recursively traversed appdata strings and raw HTML",
+      "interpretation": "No shared exact manufacturer URL, PDF, or canonical image URL found. Platform-hosted image URLs and similar filename/product-code strings are not URL matches."
+    },
+    {
+      "condition": "RA itemInfoSku.makerCreativeInfo.sku[].variantId yields an additional exact or model-prefix match in AU productImageUrls[]",
+      "result": "none",
+      "interpretation": "Where populated, makerCreativeInfo carries variant IDs (e.g. RA02 milbon7-1milbon1675; RA13/14 04-051kh; RA16 suffix variants), not shared manufacturer asset codes found in the AU product image URL list."
+    }
+  ],
+  "existing_code_field_observations": [
+    {
+      "candidate_rule": "RA itemInfoSku.sku[].attributes entry titled メーカー型番 equals a code in AU productImageUrls[]",
+      "observed_pairs": ["01", "04", "07", "09", "13", "14", "26"],
+      "examples": [
+        {
+          "pair_id": "01",
+          "value": "60678",
+          "rakuten_path": "api.data.itemInfoSku.sku[].attributes[title=メーカー型番].value",
+          "au_path": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo.productImageUrls[]",
+          "au_example": ".../60678_01a.jpg"
+        },
+        {
+          "pair_id": "04",
+          "value": "o2-030",
+          "rakuten_path": "api.data.itemInfoSku.sku[].attributes[title=メーカー型番].value",
+          "au_path": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo.productImageUrls[]",
+          "au_example": ".../www.plata.co.jp/user/img2/o/o2-030new-01.jpg"
+        },
+        {
+          "pair_id": "07",
+          "value": "ladinner021",
+          "rakuten_path": "api.data.itemInfoSku.sku[].attributes[title=メーカー型番].value",
+          "au_path": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo.productImageUrls[]",
+          "au_example": ".../image/ladinner021/ladinner021-thum740-001.jpg"
+        },
+        {
+          "pair_id": "09",
+          "value": "mp-sp603",
+          "rakuten_path": "api.data.itemInfoSku.sku[].attributes[title=メーカー型番].value",
+          "au_path": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo.productImageUrls[]",
+          "au_example": ".../mp-sp603/mp-sp603-1.jpg"
+        },
+        {
+          "pair_id": "13/14",
+          "value": "ladbag051",
+          "rakuten_path": "api.data.itemInfoSku.sku[].attributes[title=メーカー型番].value",
+          "au_path": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo.productImageUrls[]",
+          "au_example": ".../images/thumb05/ladbag051-001.jpg"
+        },
+        {
+          "pair_id": "26",
+          "value": "o2-037",
+          "rakuten_path": "api.data.itemInfoSku.sku[].attributes[title=メーカー型番].value",
+          "au_path": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo.productImageUrls[]",
+          "au_example": ".../www.plata.co.jp/user/img2/o/o2-037-01.jpg"
+        }
+      ],
+      "status": "corroboration only; these codes already occur in the captured AU product image paths and/or existing product descriptions, so this adds no independent deterministic condition beyond code matching already explored."
+    },
+    {
+      "candidate_rule": "RA manufacturer model attribute equals AU title/description text",
+      "observed_pairs": ["03", "06"],
+      "examples": [
+        {
+          "pair_id": "03",
+          "value": "MHD-1150-SB",
+          "rakuten_path": "api.data.itemInfoSku.sku[].attributes[title=メーカー型番].value",
+          "au_path": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo.itemTitle"
+        },
+        {
+          "pair_id": "06",
+          "value": "MHI-3257-K",
+          "rakuten_path": "api.data.itemInfoSku.sku[].attributes[title=メーカー型番].value",
+          "au_path": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo.itemTitle"
+        }
+      ],
+      "status": "same-product corroboration, but not new relative to existing model/title evidence."
+    },
+    {
+      "candidate_rule": "RA model attributes encode a new AU cross-page global identifier",
+      "observed_pairs": ["02"],
+      "detail": "The seven RA メーカー型番 values are the same JANs already present in AU extraItemComment/extraItemCommentWithVideo; these duplicate the previously inspected JAN evidence rather than add a new field-level edge."
+    },
+    {
+      "candidate_rule": "RA makerCreativeInfo carries an additional manufacturer asset code",
+      "result": "none identified",
+      "detail": "Nonempty values are variant IDs; exact and suffix-stripped prefix checks against AU productImageUrls[] yielded no match. Empty makerCreativeInfo objects were ignored."
+    }
+  ],
+  "limits": [
+    "Exact URL equality was evaluated; URL aliases, resized/proxied copies, and byte-level image similarity are not established by this exploration.",
+    "No network requests were made."
+  ]
+}

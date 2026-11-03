@@ -1,0 +1,72 @@
+{
+  "scope": "31 user-supplied pairs / 58 existing native embedded JSON documents; offline comparison; coverage is not accuracy",
+  "new_rules": [
+    {
+      "rule": "nonempty normalized whole product title equality",
+      "fields": [
+        "AU itemInfo.itemTitle",
+        "Rakuten itemInfoSku.title"
+      ],
+      "normalization": "HTML entities, Unicode NFKC, whitespace collapse; do not remove model/capacity/quantity tokens",
+      "observed_pair_ids": [
+        "02",
+        "10",
+        "11"
+      ]
+    },
+    {
+      "rule": "manufacturer model exact complete token in AU visible product title/text equals Rakuten manufacturer model attribute",
+      "fields": [
+        "AU itemInfo.itemTitle",
+        "Rakuten itemInfoSku.attributes or sku[].attributes, title=メーカー型番"
+      ],
+      "observed_pairs": [
+        {
+          "pair_id": "03",
+          "model": "MHD-1150-SB"
+        },
+        {
+          "pair_id": "06",
+          "model": "MHI-3257-K"
+        }
+      ],
+      "excluded": "AU24 A2147 only appears in image paths; not counted as prose model evidence"
+    }
+  ],
+  "image_candidate": {
+    "rule": "entire unique gallery filename-stem set equality, at least 3 images",
+    "observed_pair_ids": [
+      "02",
+      "11",
+      "26"
+    ],
+    "counted_assets": [
+      8,
+      4,
+      10
+    ],
+    "status": "candidate requiring broader evaluation, not asserted as a safe automatic rule",
+    "warning": "filename stems, not image byte equality"
+  },
+  "rejected_or_no_yield": [
+    {
+      "rule": "at least two shared gallery image filenames",
+      "reason": "AU03 dryer and RA06 iron share 35279021om2 and 35290048-sab2; this alone falsely merges different products"
+    },
+    {
+      "rule": "cleaned full description equality",
+      "reason": "no qualifying full-field matches in these pairs"
+    },
+    {
+      "rule": "direct counterpart-product URL or exact shared external manufacturer URL",
+      "reason": "not found in the saved native JSON/raw HTML inspected"
+    }
+  ],
+  "source_reports": [
+    "text/findings.json",
+    "models/findings.json",
+    "images/findings.json",
+    "images/full-gallery-set-equality.json",
+    "../../../rule-exploration/crosslinks/findings.json"
+  ]
+}

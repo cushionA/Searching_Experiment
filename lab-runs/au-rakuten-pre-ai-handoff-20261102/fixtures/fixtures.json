@@ -1,0 +1,801 @@
+{
+  "schema_version": 2,
+  "purpose": "Portable routing fixtures for user-accepted pre-AI handoff rules. Route assertions only; no gold product labels or accuracy claim.",
+  "rules_priority": [
+    "JAN",
+    "MERCHANT_CODE",
+    "MODEL",
+    "TITLE",
+    "AI"
+  ],
+  "same_seller_assumed": true,
+  "product_level": true,
+  "fixture_count": 13,
+  "fixtures": [
+    {
+      "id": "pair-11-jan",
+      "case": "actual",
+      "pair": "11",
+      "expected_route": "JAN",
+      "evidence": {
+        "AU": {
+          "source": {
+            "appdata_file": "AU741337142.json",
+            "appdata_sha256": "ffccd612a05c4f9214c7e43657498e810d75feb2e32b180ced19a98d382d571d",
+            "product_file": "AU741337142-product.json",
+            "product_sha256": "7dc80ffb72703baaf8f7912d4a14309b26f24dad511e2d8307c2feacdc0503ef",
+            "product_root_in_appdata": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo",
+            "export_file": "evidence/products/AU741337142-product.json",
+            "export_sha256": "b7be32c490f916242fdd15ed3909426cde900ef0fcce870e7c94edf710de2023"
+          },
+          "fields": [
+            {
+              "path": "itemComment",
+              "value": "JAN 4954835030748",
+              "comparison_mode": "contains"
+            }
+          ]
+        },
+        "Rakuten": {
+          "source": {
+            "appdata_file": "RA11.json",
+            "appdata_sha256": "4ea6646cc696fc9444abc5fea58f4627d409965cb8ce0fb2aa1e38e944634d05",
+            "product_file": "RA11-product.json",
+            "product_sha256": "69ce01ce6bc0a829bfede70aa9a010f808ce23054b21209e3a2339f8ca6061a5",
+            "product_root_in_appdata": "api.data.itemInfoSku",
+            "export_file": "evidence/products/RA11-product.json",
+            "export_sha256": "a9f884a431c12955daaea6cf9b17d8c7f911e23e13c29a03e10a0c03795dd1c2"
+          },
+          "fields": [
+            {
+              "path": "articleNumber.value",
+              "value": "4954835030748",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "title",
+              "value": "MILBON ミルボン エルジューダ エクストラリペア ミルキーセラム 120ml ヘアトリートメント[ギフトラッピング対応]",
+              "comparison_mode": "equals"
+            }
+          ]
+        }
+      },
+      "input_kind": "source_backed_product_field_excerpts",
+      "comparison_pair": {
+        "AU": "AU",
+        "Rakuten": "Rakuten"
+      }
+    },
+    {
+      "id": "pair-02-jan-set",
+      "case": "actual",
+      "pair": "02",
+      "expected_route": "JAN",
+      "evidence": {
+        "AU": {
+          "source": {
+            "appdata_file": "AU642991515.json",
+            "appdata_sha256": "8ac54433cf2ce45866e8f32dbdd7fe03064bc17345740f97fda6fb80160b7bb8",
+            "product_file": "AU642991515-product.json",
+            "product_sha256": "b520854b7d3a2060144de07dce530f5a4aa2861c31fde6448591088f078e1e9c",
+            "product_root_in_appdata": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo",
+            "export_file": "evidence/products/AU642991515-product.json",
+            "export_sha256": "480a0b51c6903d028fb4ff3deca5d1fb07ccdf84652adfa3311a4d193e3d717c"
+          },
+          "fields": [
+            {
+              "path": "itemComment",
+              "value": "JAN 4954835291651<BR>\nJAN 4954835291668<BR>\nJAN 4954835291675<BR>\nJAN 4954835291682<BR>\nJAN 4954835291699<BR>\nJAN 4954835291705<BR>\nJAN 4954835291712",
+              "comparison_mode": "contains"
+            }
+          ]
+        },
+        "Rakuten": {
+          "source": {
+            "appdata_file": "RA02.json",
+            "appdata_sha256": "4ef3c5e222b2e447672b255a08957e3369f9e11c7a268211e00b6b1a8d3a7fc7",
+            "product_file": "RA02-product.json",
+            "product_sha256": "f47d6688c2028e648b3a434307b63f7f1a48570cac52384292102eb20a568a72",
+            "product_root_in_appdata": "api.data.itemInfoSku",
+            "export_file": "evidence/products/RA02-product.json",
+            "export_sha256": "614b5df12a8c0040b676b9756f10bc1874ec177512b48694fd4762206bc0528b"
+          },
+          "fields": [
+            {
+              "path": "sku[0].articleNumber.value",
+              "value": "4954835291675",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "sku[1].articleNumber.value",
+              "value": "4954835291651",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "sku[2].articleNumber.value",
+              "value": "4954835291682",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "sku[3].articleNumber.value",
+              "value": "4954835291705",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "sku[4].articleNumber.value",
+              "value": "4954835291668",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "sku[5].articleNumber.value",
+              "value": "4954835291712",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "sku[6].articleNumber.value",
+              "value": "4954835291699",
+              "comparison_mode": "equals"
+            }
+          ]
+        }
+      },
+      "input_kind": "source_backed_product_field_excerpts",
+      "comparison_pair": {
+        "AU": "AU",
+        "Rakuten": "Rakuten"
+      }
+    },
+    {
+      "id": "pair-01-explicit-code",
+      "case": "actual",
+      "pair": "01",
+      "expected_route": "MERCHANT_CODE",
+      "evidence": {
+        "AU": {
+          "source": {
+            "appdata_file": "AU321039323.json",
+            "appdata_sha256": "83c2780756c5adad1274b63576577f65d7edea10a012b18fcc7615680ae450c0",
+            "product_file": "AU321039323-product.json",
+            "product_sha256": "2237b50987789ad44feb6d142a4966bd0ea16ce4536ddfaf4863ddbf1eabb090",
+            "product_root_in_appdata": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo",
+            "export_file": "evidence/products/AU321039323-product.json",
+            "export_sha256": "cea37c897700054836f7c93aaa2dd74b6eb74df639333cf491ff3f614ac8ecc6"
+          },
+          "fields": [
+            {
+              "path": "itemTitle",
+              "value": "オーバーサイズ パーカー メンズ 薄手 ビッグシルエット ビッグパーカー プルオーバー 半袖パーカー 5分袖 6分袖 半袖 無地 黒 ブラック グレー ブルー ネイビー ワイン グリーン 大きいサイズ 夏 夏服 夏物 メンズファッション マイノリティ minority",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "itemComment",
+              "value": "商品番号:60678",
+              "comparison_mode": "contains"
+            }
+          ]
+        },
+        "Rakuten": {
+          "source": {
+            "appdata_file": "RA0ef552f3.json",
+            "appdata_sha256": "aa68618de4a3f63c549bf0b1b3bba1d0e8b3727728e18701d5fa4e13abb05c60",
+            "product_file": "RA0ef552f3-product.json",
+            "product_sha256": "395eccf679b899277d43fef6f86c8cadd6275aa17334191b31d525c6f4e8ca93",
+            "product_root_in_appdata": "api.data.itemInfoSku",
+            "export_file": "evidence/products/RA0ef552f3-product.json",
+            "export_sha256": "1b1d57c063ce04a8c298eede2204aa0343960617756a4312e2452ab99f0c0345"
+          },
+          "fields": [
+            {
+              "path": "manageNumber",
+              "value": "60678",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "newItemNumber",
+              "value": "60678",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "pcFields.itemNumber",
+              "value": "60678",
+              "comparison_mode": "equals"
+            }
+          ]
+        }
+      },
+      "input_kind": "source_backed_product_field_excerpts",
+      "comparison_pair": {
+        "AU": "AU",
+        "Rakuten": "Rakuten"
+      }
+    },
+    {
+      "id": "pair-03-model-over-conflicting-code",
+      "case": "actual",
+      "pair": "03",
+      "expected_route": "MODEL",
+      "evidence": {
+        "AU": {
+          "source": {
+            "appdata_file": "AU788462991.json",
+            "appdata_sha256": "7168c93981036a23a994c50eec6e78df5dadee3355879f3c24311f7b146990e6",
+            "product_file": "AU788462991-product.json",
+            "product_sha256": "c5a7cf8a48dd5714a03a29793d083c90aec1b5bcb34b6fe01aaf33f997ba4e9a",
+            "product_root_in_appdata": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo",
+            "export_file": "evidence/products/AU788462991-product.json",
+            "export_sha256": "ed0a8d9173d3975d374196c4d0203f5ef8f8d98301118dcd56ba1e0e267b9bff"
+          },
+          "fields": [
+            {
+              "path": "itemTitle",
+              "value": "【特典付】モッズヘア アドバンス ラピッドエリート BLDCマイナスイオンヘアードライヤー MHD-1150-SB ＋ ミルキーセラムセット ヘアミルク 100ml mods hair モッズ・ヘア ヘアドライヤー 大風量 速乾 ドライヤー マイナスイオン 1200W 冷風 温風 送料無料",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "itemComment",
+              "value": "商品番号:35290063",
+              "comparison_mode": "contains"
+            }
+          ]
+        },
+        "Rakuten": {
+          "source": {
+            "appdata_file": "RA77023369.json",
+            "appdata_sha256": "13941b280f7fe23d758eb656db64fa853c40b6d3bcc988823d1d6a2d5de7883f",
+            "product_file": "RA77023369-product.json",
+            "product_sha256": "5cf47453bc0cb5ad9ca7b83a230393d934d93a46b0e7cb21aefb5eea56786d44",
+            "product_root_in_appdata": "api.data.itemInfoSku",
+            "export_file": "evidence/products/RA77023369-product.json",
+            "export_sha256": "7496934a53df2fe63fb7dad1424834bed237866cc1ea31b0c634f4be0822a24e"
+          },
+          "fields": [
+            {
+              "path": "manageNumber",
+              "value": "35290043",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "newItemNumber",
+              "value": "35290043",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "pcFields.itemNumber",
+              "value": "35290043",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "sku[0].attributes[2].value",
+              "value": "MHD-1150-SB",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "sku[0].attributes[2].title",
+              "value": "メーカー型番",
+              "comparison_mode": "equals"
+            }
+          ]
+        }
+      },
+      "input_kind": "source_backed_product_field_excerpts",
+      "comparison_pair": {
+        "AU": "AU",
+        "Rakuten": "Rakuten"
+      }
+    },
+    {
+      "id": "pair-06-code-before-model",
+      "case": "actual",
+      "pair": "06",
+      "expected_route": "MERCHANT_CODE",
+      "evidence": {
+        "AU": {
+          "source": {
+            "appdata_file": "AU651484814.json",
+            "appdata_sha256": "3cb0f873d98768075ec460943ba4e4b94f89624d08fa3d5878594ae057cd1786",
+            "product_file": "AU651484814-product.json",
+            "product_sha256": "b517ad4293edac05b50d6f068d7b9ee5141b06a1132bee44d794b8327fc586e4",
+            "product_root_in_appdata": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo",
+            "export_file": "evidence/products/AU651484814-product.json",
+            "export_sha256": "a3b139d7b6e9efaec7fcf32c71c15a05631e16662ec9092ddaed75d086fe037b"
+          },
+          "fields": [
+            {
+              "path": "itemComment",
+              "value": "商品番号:35279081",
+              "comparison_mode": "contains"
+            },
+            {
+              "path": "itemTitle",
+              "value": "【特典付】モッズヘア ヘアアイロン カール ストレート 海外対応 mods hair アドバンス フレックススムーズ 2wayアイロン 32mm MHI-3257-K コテ ラウンドモデル アイロン 軽量 温度調節 ストレートアイロン ケース付き 1台2役 【12時迄のご注文は当日発送★送料無料★P10倍】",
+              "comparison_mode": "equals"
+            }
+          ]
+        },
+        "Rakuten": {
+          "source": {
+            "appdata_file": "RA6249aa92.json",
+            "appdata_sha256": "6a0a23e0e83cd4b9ecf49c941a44c5422a12aaa27182939732fc16b538dfbf67",
+            "product_file": "RA6249aa92-product.json",
+            "product_sha256": "f26d9ca6a7a4286eefc5a2e5003db261446443d9f266c318ab13363d92552eca",
+            "product_root_in_appdata": "api.data.itemInfoSku",
+            "export_file": "evidence/products/RA6249aa92-product.json",
+            "export_sha256": "2c3128e7b88f27fabd8cc7344f67b5993aebf7b8cc93022b4982568d56f62090"
+          },
+          "fields": [
+            {
+              "path": "manageNumber",
+              "value": "35279081",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "sku[0].attributes[2].value",
+              "value": "MHI-3257-K",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "sku[0].attributes[2].title",
+              "value": "メーカー型番",
+              "comparison_mode": "equals"
+            }
+          ]
+        }
+      },
+      "input_kind": "source_backed_product_field_excerpts",
+      "comparison_pair": {
+        "AU": "AU",
+        "Rakuten": "Rakuten"
+      }
+    },
+    {
+      "id": "pair-10-exact-title",
+      "case": "actual",
+      "pair": "10",
+      "expected_route": "TITLE",
+      "evidence": {
+        "AU": {
+          "source": {
+            "appdata_file": "AU781881517.json",
+            "appdata_sha256": "4776ccb9dc3f73dd7781fc96cca9456460d797311b228684536a241ffa0c1cf5",
+            "product_file": "AU781881517-product.json",
+            "product_sha256": "1d46f1446ee60f3abbdfe2989af9dcff1fc6083868f9df1b654a037c43798bcc",
+            "product_root_in_appdata": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo",
+            "export_file": "evidence/products/AU781881517-product.json",
+            "export_sha256": "0e233ccae8fda33348296f6ae592705d9066e0c9af7b55288db4ab21a4cdb5d7"
+          },
+          "fields": [
+            {
+              "path": "itemTitle",
+              "value": "Cle de Peau Beaute(クレ・ド・ポー ボーテ) エマルションプロテクトゥリス(ジュール) 30mL SPF25・PA+++",
+              "comparison_mode": "equals"
+            }
+          ]
+        },
+        "Rakuten": {
+          "source": {
+            "appdata_file": "RAfcafb2ab.json",
+            "appdata_sha256": "ab6d0f3ea1fcd0a59884781b4986fe13eb5bbe32706a9aa23c46762655f2e5fb",
+            "product_file": "RAfcafb2ab-product.json",
+            "product_sha256": "73b96067b8115991bc4e2a4c282d8ffe7ad5ae46d991da5384f98880f1fba742",
+            "product_root_in_appdata": "api.data.itemInfoSku",
+            "export_file": "evidence/products/RAfcafb2ab-product.json",
+            "export_sha256": "6f3af0f15fa3b91bd273dbaa1e23e282799a046a908f8dba6c750db63328bec8"
+          },
+          "fields": [
+            {
+              "path": "title",
+              "value": "Cle de Peau Beaute(クレ・ド・ポー ボーテ) エマルションプロテクトゥリス(ジュール) 30mL SPF25・PA+++",
+              "comparison_mode": "equals"
+            }
+          ]
+        }
+      },
+      "input_kind": "source_backed_product_field_excerpts",
+      "comparison_pair": {
+        "AU": "AU",
+        "Rakuten": "Rakuten"
+      }
+    },
+    {
+      "id": "pair-18-image-code-only",
+      "case": "actual",
+      "pair": "18",
+      "expected_route": "AI",
+      "evidence": {
+        "AU": {
+          "source": {
+            "appdata_file": "AU549836231.json",
+            "appdata_sha256": "7a7fc824ea4b90ea471f3a266ee4e9657abe0890b4e39f32a236e728c054cdb0",
+            "product_file": "AU549836231-product.json",
+            "product_sha256": "ba987746b7063bd15937323a4dfc99432c103b96e33851d9153f36eba6798241",
+            "product_root_in_appdata": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo",
+            "export_file": "evidence/products/AU549836231-product.json",
+            "export_sha256": "21f8ed6b7c2ca5ea8d87928ba92145c18f7efb8db0cb4270e5f828dea3d0c0f3"
+          },
+          "fields": [
+            {
+              "path": "itemTitle",
+              "value": "【新米】令和8年産 福島県産つきあかり 無洗米 長期保存 送料無料 10kg (5kg×2袋) 米 お米 無洗米 コメ こめ 無洗米 10kg",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "productImageUrls[0]",
+              "value": "https://ic4-a.wowma.net/mis/gr/135/image.wowma.jp/46962414/TOP/4560131951467-2.png",
+              "comparison_mode": "equals"
+            }
+          ]
+        },
+        "Rakuten": {
+          "source": {
+            "appdata_file": "RA9052f3de.json",
+            "appdata_sha256": "7b60b2c2aa721cd4bea276953ad01af04c2ee3079ba588e5274bfe6756e3e2b3",
+            "product_file": "RA9052f3de-product.json",
+            "product_sha256": "d065961ad6b0f666ba425177f6968b0b0adabf20305f02239ffd7037c91a7f84",
+            "product_root_in_appdata": "api.data.itemInfoSku",
+            "export_file": "evidence/products/RA9052f3de-product.json",
+            "export_sha256": "e2f097c8cc869828c3db8182141e40e58ba5598cb86caa329d7a007ef0645505"
+          },
+          "fields": [
+            {
+              "path": "title",
+              "value": "【新米】令和8年産 福島県産つきあかり 無洗米 長期保存 脱酸素剤入り 送料無料 5kg 10kg 20kg 30kg 米 お米 無洗米 コメ こめ 無洗米 5kg 無洗米 10kg 無洗米 20kg 無洗米 30kg",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "manageNumber",
+              "value": "4560131951467-2",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "pcFields.images[0].location",
+              "value": "/6-ra.jpg",
+              "comparison_mode": "equals"
+            }
+          ]
+        }
+      },
+      "input_kind": "source_backed_product_field_excerpts",
+      "comparison_pair": {
+        "AU": "AU",
+        "Rakuten": "Rakuten"
+      }
+    },
+    {
+      "id": "pair-26-stale-image-code",
+      "case": "actual",
+      "pair": "26",
+      "expected_route": "AI",
+      "evidence": {
+        "AU": {
+          "source": {
+            "appdata_file": "AU721839278.json",
+            "appdata_sha256": "7666a93ed294b28db57c600c0ce6e058ef9ff30fa295bb3c5e9ed51cda095296",
+            "product_file": "AU721839278-product.json",
+            "product_sha256": "f99feea2ed315c6c0e7976840745ad4e03ac0bc764b229c824ac9a2fb04c755f",
+            "product_root_in_appdata": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo",
+            "export_file": "evidence/products/AU721839278-product.json",
+            "export_sha256": "242eea29e16f735ed30cab224181d80fe2ba9c4d709155e68d99ec77ae3f37d2"
+          },
+          "fields": [
+            {
+              "path": "itemTitle",
+              "value": "ステンレススープポット 400ml もふさんど mofusand お弁当グッズ お出かけ 遠足 ランチポット スープジャー 麺つゆ 保冷 保温 スープ ポタージュ サラダ 果物 おしゃれ かわいい ランチ 弁当箱 ギフト 女性 プレセント もふさんどグッズ 学生 社会人 節約 お弁当 猫柄 新生活",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "productImageUrls[0]",
+              "value": "https://ic4-a.wowma.net/mi/gr/135/www.plata.co.jp/user/img2/o/o2-037-01.jpg",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "itemComment",
+              "value": "【品番】o2-036",
+              "comparison_mode": "contains"
+            }
+          ]
+        },
+        "Rakuten": {
+          "source": {
+            "appdata_file": "RA43628938.json",
+            "appdata_sha256": "38ed20704b99cafb48aeabfb8e28aac5536c5406d058954aa037319bc28f4ac7",
+            "product_file": "RA43628938-product.json",
+            "product_sha256": "82929024680d2565ffb93f91f99055c2e779d0551aa42640a5c3c55f9eed7d48",
+            "product_root_in_appdata": "api.data.itemInfoSku",
+            "export_file": "evidence/products/RA43628938-product.json",
+            "export_sha256": "d81a5764ef3026dbf3f3292e8073623878d9a4d616eb5bbf08d50471a181f944"
+          },
+          "fields": [
+            {
+              "path": "title",
+              "value": "送料無料【 もふさんど ステンレス スープポット 400ml 蓋つき 】もふサンド グッズ 保温 保冷 真空二重構造 コップ  ステンレスカップ 猫 サメにゃん うさにゃん ホットケーキにゃん ぢゅの じゅの ネコ ねこ キャット かわいい mofusand スープ サラダ お弁当に 箱付き",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "manageNumber",
+              "value": "o2-037",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "pcFields.images[0].location",
+              "value": "/picture01/picture02/picture27/o2-037-01.jpg",
+              "comparison_mode": "equals"
+            }
+          ]
+        }
+      },
+      "input_kind": "source_backed_product_field_excerpts",
+      "comparison_pair": {
+        "AU": "AU",
+        "Rakuten": "Rakuten"
+      }
+    },
+    {
+      "id": "cross-pair-03-06-shared-gallery",
+      "case": "actual",
+      "pair": [
+        "03",
+        "06"
+      ],
+      "expected_route": "AI",
+      "evidence": {
+        "AU03": {
+          "source": {
+            "appdata_file": "AU788462991.json",
+            "appdata_sha256": "7168c93981036a23a994c50eec6e78df5dadee3355879f3c24311f7b146990e6",
+            "product_file": "AU788462991-product.json",
+            "product_sha256": "c5a7cf8a48dd5714a03a29793d083c90aec1b5bcb34b6fe01aaf33f997ba4e9a",
+            "product_root_in_appdata": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo",
+            "export_file": "evidence/products/AU788462991-product.json",
+            "export_sha256": "ed0a8d9173d3975d374196c4d0203f5ef8f8d98301118dcd56ba1e0e267b9bff"
+          },
+          "fields": [
+            {
+              "path": "itemTitle",
+              "value": "【特典付】モッズヘア アドバンス ラピッドエリート BLDCマイナスイオンヘアードライヤー MHD-1150-SB ＋ ミルキーセラムセット ヘアミルク 100ml mods hair モッズ・ヘア ヘアドライヤー 大風量 速乾 ドライヤー マイナスイオン 1200W 冷風 温風 送料無料",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "itemComment",
+              "value": "商品番号:35290063",
+              "comparison_mode": "contains"
+            },
+            {
+              "path": "productImageUrls[2]",
+              "value": "https://ic4-a.wowma.net/mis/gr/135/image.wowma.jp/39725750/plywood/kaden13/35290048-sab2.jpg",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "productImageUrls[3]",
+              "value": "https://ic4-a.wowma.net/mis/gr/135/image.wowma.jp/39725750/plywood/om1/35279021om2.jpg",
+              "comparison_mode": "equals"
+            }
+          ]
+        },
+        "RA03": {
+          "source": {
+            "appdata_file": "RA77023369.json",
+            "appdata_sha256": "13941b280f7fe23d758eb656db64fa853c40b6d3bcc988823d1d6a2d5de7883f",
+            "product_file": "RA77023369-product.json",
+            "product_sha256": "5cf47453bc0cb5ad9ca7b83a230393d934d93a46b0e7cb21aefb5eea56786d44",
+            "product_root_in_appdata": "api.data.itemInfoSku",
+            "export_file": "evidence/products/RA77023369-product.json",
+            "export_sha256": "7496934a53df2fe63fb7dad1424834bed237866cc1ea31b0c634f4be0822a24e"
+          },
+          "fields": [
+            {
+              "path": "title",
+              "value": "【特典付】モッズヘア アドバンス ラピッドエリート BLDCマイナスイオンヘアードライヤー [本体単品 / 本体＋マルチオイル / 本体＋ヘアミルク] MHD-1150-SB<br><br>mods hair モッズ・ヘア ヘアドライヤー 大風量◇速乾 ドライヤー マイナスイオン 1200W 送料無料 P10倍",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "manageNumber",
+              "value": "35290043",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "sku[0].attributes[2].value",
+              "value": "MHD-1150-SB",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "pcFields.images[5].location",
+              "value": "/kaden13/35290048-sab2.jpg",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "pcFields.images[6].location",
+              "value": "/om1/35279021om2.jpg",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "sku[0].attributes[2].title",
+              "value": "メーカー型番",
+              "comparison_mode": "equals"
+            }
+          ]
+        },
+        "AU06": {
+          "source": {
+            "appdata_file": "AU651484814.json",
+            "appdata_sha256": "3cb0f873d98768075ec460943ba4e4b94f89624d08fa3d5878594ae057cd1786",
+            "product_file": "AU651484814-product.json",
+            "product_sha256": "b517ad4293edac05b50d6f068d7b9ee5141b06a1132bee44d794b8327fc586e4",
+            "product_root_in_appdata": "props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo",
+            "export_file": "evidence/products/AU651484814-product.json",
+            "export_sha256": "a3b139d7b6e9efaec7fcf32c71c15a05631e16662ec9092ddaed75d086fe037b"
+          },
+          "fields": [
+            {
+              "path": "itemTitle",
+              "value": "【特典付】モッズヘア ヘアアイロン カール ストレート 海外対応 mods hair アドバンス フレックススムーズ 2wayアイロン 32mm MHI-3257-K コテ ラウンドモデル アイロン 軽量 温度調節 ストレートアイロン ケース付き 1台2役 【12時迄のご注文は当日発送★送料無料★P10倍】",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "itemComment",
+              "value": "商品番号:35279081",
+              "comparison_mode": "contains"
+            }
+          ]
+        },
+        "RA06": {
+          "source": {
+            "appdata_file": "RA6249aa92.json",
+            "appdata_sha256": "6a0a23e0e83cd4b9ecf49c941a44c5422a12aaa27182939732fc16b538dfbf67",
+            "product_file": "RA6249aa92-product.json",
+            "product_sha256": "f26d9ca6a7a4286eefc5a2e5003db261446443d9f266c318ab13363d92552eca",
+            "product_root_in_appdata": "api.data.itemInfoSku",
+            "export_file": "evidence/products/RA6249aa92-product.json",
+            "export_sha256": "2c3128e7b88f27fabd8cc7344f67b5993aebf7b8cc93022b4982568d56f62090"
+          },
+          "fields": [
+            {
+              "path": "title",
+              "value": "【特典付】モッズヘア ヘアアイロン カール ストレート 海外対応<br>mods hair アドバンス フレックススムーズ 2wayアイロン 32mm [本体単品 / 本体＋マルチオイル / 本体＋ヘアミルク] MHI-3257-K<br><br>コテ◇ラウンドモデル アイロン ケース付き 軽量 送料無料 P10倍",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "manageNumber",
+              "value": "35279081",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "sku[0].attributes[2].value",
+              "value": "MHI-3257-K",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "pcFields.images[6].location",
+              "value": "/kaden13/35290048-sab2.jpg",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "pcFields.images[7].location",
+              "value": "/om/35279021om2.jpg",
+              "comparison_mode": "equals"
+            },
+            {
+              "path": "sku[0].attributes[2].title",
+              "value": "メーカー型番",
+              "comparison_mode": "equals"
+            }
+          ]
+        }
+      },
+      "input_kind": "source_backed_product_field_excerpts",
+      "comparison_pair": {
+        "AU": "AU03",
+        "Rakuten": "RA06"
+      }
+    },
+    {
+      "id": "synthetic-empty-codes",
+      "case": "synthetic",
+      "expected_route": "AI",
+      "evidence": {
+        "AU": {
+          "fields": [
+            {
+              "path": "itemComment",
+              "value": ""
+            }
+          ]
+        },
+        "Rakuten": {
+          "fields": [
+            {
+              "path": "manageNumber",
+              "value": ""
+            },
+            {
+              "path": "newItemNumber",
+              "value": null
+            },
+            {
+              "path": "pcFields.itemNumber",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "input_kind": "synthetic_product_field_excerpts"
+    },
+    {
+      "id": "synthetic-invalid-article-number",
+      "case": "synthetic",
+      "expected_route": "AI",
+      "evidence": {
+        "AU": {
+          "fields": [
+            {
+              "path": "itemComment",
+              "value": "JAN 1001000014474954"
+            }
+          ]
+        },
+        "Rakuten": {
+          "fields": [
+            {
+              "path": "articleNumber.value",
+              "value": "1001000014474954"
+            }
+          ]
+        }
+      },
+      "input_kind": "synthetic_product_field_excerpts"
+    },
+    {
+      "id": "synthetic-casefold-code-suffix-preserved",
+      "case": "synthetic",
+      "expected_route": "AI",
+      "evidence": {
+        "AU": {
+          "fields": [
+            {
+              "path": "itemComment",
+              "value": "商品番号:AbC-42"
+            }
+          ]
+        },
+        "Rakuten": {
+          "fields": [
+            {
+              "path": "manageNumber",
+              "value": "abc-42-extra"
+            }
+          ]
+        }
+      },
+      "note": "Case folding may normalize letter case; suffix remains and prevents equality.",
+      "input_kind": "synthetic_product_field_excerpts"
+    },
+    {
+      "id": "synthetic-partial-model",
+      "case": "synthetic",
+      "expected_route": "AI",
+      "evidence": {
+        "AU": {
+          "fields": [
+            {
+              "path": "itemTitle",
+              "value": "ドライヤー MHD-1150-SB"
+            }
+          ]
+        },
+        "Rakuten": {
+          "fields": [
+            {
+              "path": "attributes[0].title",
+              "value": "メーカー型番"
+            },
+            {
+              "path": "attributes[0].value",
+              "value": "MHD-1150"
+            }
+          ]
+        }
+      },
+      "note": "A model substring is not a full-model match.",
+      "input_kind": "synthetic_product_field_excerpts"
+    }
+  ]
+}

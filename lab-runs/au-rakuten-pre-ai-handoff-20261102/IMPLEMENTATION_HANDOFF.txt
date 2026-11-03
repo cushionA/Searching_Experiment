@@ -1,0 +1,296 @@
+au PAY マーケット × 楽天：AI判定前の商品紐付け条件 実装引き継ぎ
+版：1.0 / 作成日：2026-11-02
+
+実装担当への依頼
+既存の商品突合処理の「AIを呼び出す直前」に、以下の4条件による判定を追加する。
+1条件でも成立したペアはMATCHとしてAI呼び出しを省略する。すべて不成立の場合は既存のAI判定へ渡す。
+この資料は仕様・出典・動作確認用fixtureの引き継ぎであり、本番への組み込みコードは含まない。
+実装先の言語・ディレクトリ構成は、組み込み先の既存コードに合わせる。
+
+1. ユーザーと合意した前提
+
+・au側と楽天側の店舗は同じ前提。店舗同一性を判定する条件は追加しない。
+・紐付ける粒度は商品。色・サイズ別SKUの一意な対応は要求しない。
+・容量・数量・セット内容の表記一致をAND条件や拒否条件にしない。
+  ユーザーは、両モールで表記が異なることから、この条件を外すよう指定した。
+・条件に使う識別子がない／一致しない場合はAIへ渡す。自動で不一致とはしない。
+・同じ商品が楽天の複数ページに掲載される場合を許容する。必ず1対1に絞る必要はない。
+
+2. 判定ルールと優先順位
+
+順位 ルールID        条件
+1    JAN             双方から抽出・検証したJAN集合に共通要素がある。
+2    MERCHANT_CODE   au本文に明記された店舗商品番号と、楽天の商品番号候補集合に共通要素がある。
+3    MODEL           auの商品名／商品説明本文のメーカー型番が、楽天のメーカー型番と完全一致する。
+4    TITLE           双方の空でない商品名全文が、規定の正規化後に完全一致する。
+
+擬似コード：
+
+    if au.valid_jans & rakuten.valid_jans:
+        MATCH(rule="JAN")
+    elif au.explicit_merchant_codes & rakuten.merchant_codes:
+        MATCH(rule="MERCHANT_CODE")
+    elif matched_complete_models(au, rakuten):
+        MATCH(rule="MODEL")
+    elif au.normalized_title and au.normalized_title == rakuten.normalized_title:
+        MATCH(rule="TITLE")
+    else:
+        AI_REQUIRED
+
+最初に成立したルールを採用理由にする。抽出情報と比較値を保存し、理由を後から確認可能にする。
+空文字・null同士の一致、部分一致、あいまい一致によってルールを成立させない。
+
+3. 取得するJSONと取得位置
+
+HTMLからscript要素をidで選び、テキストをJSONとして解析する。
+属性の並び順に依存した正規表現でscriptを抜き出さない。JavaScriptとして実行しない。
+楽天はEUC-JPのHTMLもあるため、HTTP charset／HTMLの文字コード指定を考慮してデコードする。
+
+au：
+  script id="__NEXT_DATA__"
+  商品オブジェクト：
+    props.pageProps.initialState.itemDetails.itemPageInfo.itemInfo
+
+  使用するフィールド：
+    itemTitle              商品名
+    itemComment            商品説明HTML／商品番号が書かれることがある
+    extraItemComment       商品説明HTML／JANや型番が書かれることがある
+    detailComment          追加説明HTML
+    specNames/specValues   仕様ラベルと値。JAN／型番の明示欄が存在する場合のみ抽出候補
+    productImageUrls        AIへの補助情報用
+    lotNumber              au側の商品ID。出典管理用
+
+  注意：initialPropsではなくinitialStateを見る。
+  lotNumberはURL末尾のau商品IDであり、店舗商品番号との比較には使わない。
+  au_item_codeという固定の実在キーはない。会話中のau_item_codeは抽出後の変数名。
+  今回確認した27件のau商品JSONには、JAN専用キーも確認できなかった。
+
+楽天：
+  script id="item-page-app-data"
+  商品オブジェクト：
+    api.data.itemInfoSku
+
+  使用するフィールド：
+    title                              商品名
+    articleNumber.value                親商品側のJAN候補
+    sku[].articleNumber.value          各バリアントのJAN候補。商品単位では集合化する
+    manageNumber                       URL側の商品管理番号
+    newItemNumber                      商品番号候補
+    pcFields.itemNumber                ページの商品番号候補
+    attributes[]                       メーカー型番など。title/value形式
+    sku[].attributes[]                 各バリアントのメーカー型番など
+    pcFields.productDescription        商品説明HTML
+    newProductDescription              商品説明HTML
+    salesDescription                   商品説明HTML
+    media.images                       AIへの補助情報用
+    itemId                             楽天側の商品ID。出典管理用
+
+  apiとnewApiの同じデータ、purchaseInfo等の重複コピーを別の独立根拠として数えない。
+  itemIdやskuInfo.skuId等、モール内部ID同士の偶然の一致は採用しない。
+
+4. 抽出・正規化の仕様
+
+4-1. HTMLの扱い
+商品オブジェクト内の対象フィールドごとにHTMLを解析する。
+エンティティを復号し、タグを外して本文を得る。br、段落、表のセル境界は保持する。
+script/style/comment、タグ属性、画像URL、リンクURLは本文識別子の抽出元にしない。
+関連商品・おすすめ・カテゴリ誘導の識別子を、現在の商品自身の識別子へ混入させない。
+商品自身の説明か判断できない箇所は推測で採用せず、抽出保留にする。
+extraItemCommentWithVideo等の複製フィールドは重複根拠として加算しない。
+
+4-2. JAN
+初期版の自動判定対象は、今回検証した13桁のJAN/EAN。
+楽天のarticleNumber.valueは文字列として読む。整数変換して先頭0を失わない。
+auでは「JAN」「JANコード」「EAN」等のラベルと結び付いた本文中の値を抽出する。
+ラベル付き仕様欄を読む場合も、ラベルと同じセル／行の値を対応付ける。
+ページ内のすべての13桁数字を拾う実装にはしない。
+
+検証：
+  ・NFKC後、前後空白を除く。桁を補完したり、長い数字を切り詰めたりしない。
+  ・13桁の数字列であること。
+  ・全桁0等の明らかな未設定値は除外する。
+  ・最初の12桁に左から1,3,1,3,...を掛けた合計をSとし、
+    (10 - S % 10) % 10 が13桁目と一致すること。
+  ・45/49始まりだけに限定しない。
+
+articleNumberには次の形がある：
+  {"value":"4954835030748"}             → 検証後に採用
+  {"exemptionReason":5}                  → JAN値なし
+  キー欠落                               → 他の規定フィールドを調べる
+  {"value":"1001000014474954"}          → 実データの16桁例。JANとして採用しない
+
+exemptionReasonの番号の意味を推測して処理を分岐しない。
+親欄が欠落していてもsku[]側に値がある場合がある。
+楽天の規定の商品説明本文に明示的なJANラベルがある場合も、同じ検証で補完してよい。
+商品単位では、各バリアントのJANを重複排除して集合化する。
+JAN集合が一致しないことは、色・サイズ違いの可能性もあるため拒否条件にしない。
+JAN8、UPC、GTIN14等への対応は別途仕様化する。初期版ではAIに渡す。
+
+4-3. 店舗商品番号
+au：itemComment／extraItemComment／detailComment等の本文で、
+「商品番号」「商品コード」「品番」等のラベルに明示的に結び付いた完全な値を抽出する。
+商品番号が独立したJSONキーにある前提を置かない。書かれていない商品もある。
+HTMLの同じ行／セルの値を取り、次の文章やリンクまで連結しない。
+明示的ラベルのある商品仕様欄も候補にできる。
+
+楽天：次の空でない値を重複排除して集合化する。
+  manageNumber / newItemNumber / pcFields.itemNumber
+
+コードの正規化：
+  NFKC、前後空白除去、英字のcasefold。
+  内部のハイフン・数字・接頭辞・接尾辞は保持する。
+  内部空白を勝手に削除せず、入力が不自然／曖昧なら抽出保留にする。
+
+採用しない方法：
+  画像ファイル名からの推測、URL末尾からのAU店舗番号推測、任意の数字抽出、
+  prefix/suffixの勝手な除去、部分一致、sku[].variantIdとのあいまい一致。
+
+例：
+  au本文「商品番号:60678」→60678
+  楽天manageNumber=60678 → MERCHANT_CODE成立
+
+  au本文「商品番号:35290063」
+  楽天manageNumber=35290043、variantId=35290063ZZ／a35290063
+  → 規定の商品番号完全一致には該当しない。接頭辞・末尾を削って成立させない。
+     この03番の事例はMODELルールで拾う。
+
+4-4. メーカー型番
+楽天のattributes[]とsku[].attributes[]から、title="メーカー型番"のvalueを集める。
+空文字、-、--、なし、該当なし、不明、未設定、N/A等は除く。
+JAN値をそのままメーカー型番にも格納している商品がある。JANを独立した別根拠として二重計上しない。
+
+auの照合元は商品名と、商品自身の説明の可視本文。
+NFKCとcasefold後、型番の末尾まで完全一致させる。
+「型番」「メーカー型番」「Model」「MPN」のラベル付き値は、値全体を比較する。
+ラベルのない商品名／本文も、楽天から得た型番の完全トークン一致で照合する。
+英数字の特定形式だけに型番を限定しない。
+
+英数字・ハイフン等を含む長いコードの一部に一致しただけでは成立させない。
+例えばMHI-3257-KはMHI-3257-K2に一致させない。型番内のハイフンを除去しない。
+画像名・URL・HTML属性・関連商品の中にだけある型番は採用しない。
+
+確認例：
+  03：MHD-1150-SB   au商品名 ↔ 楽天メーカー型番
+  06：MHI-3257-K    au商品名 ↔ 楽天メーカー型番
+  24：A2147         auでは画像パス由来。MODELルールの成立例に含めない
+
+4-5. 商品名全文
+au itemTitleと楽天titleを、次の順に正規化する。
+  HTMLエンティティ復号 → タグ等除去 → Unicode NFKC → 連続空白を1個へ → 前後空白除去
+正規化後の非空文字列が全文一致した場合だけTITLEを成立させる。
+このルールでは英字のcasefoldは行わない（今回の検証条件と合わせる）。
+数量・容量・色・サイズ・型番・販促文言・括弧部分等のトークンを削除しない。
+タイトルが異なるだけで不一致にはせず、TITLEが不成立だったと扱う。
+今回の31組では02・10・11で成立。これはカバー件数であり、精度の測定値ではない。
+
+5. 画像の扱い
+
+画像は候補検索とAIへの補助情報に使う。初期4条件の自動MATCH理由にはしない。
+同じ画像URLでも楽天の商品管理番号が違う例がある：
+  ladbag051 / medama-ladbag051
+  fruitnuts6-500 / fruitnuts6-500-c
+また、別製品のドライヤーとアイロンでも共通画像名が2個あった。
+「画像が2枚一致したらMATCH」のような条件は追加しない。
+
+ギャラリー全体のファイル名stem集合一致（3個以上）は02・11・26で見つかったが、
+まだ評価用の候補に留める。ファイル名一致と画像バイトの同一性は区別する。
+
+6. 入出力の最小契約
+
+入力：
+  au_url, rakuten_url
+  au商品オブジェクト, 楽天商品オブジェクト
+  取得／解析の状態
+  原本参照または元データhash
+
+抽出結果の各値には、少なくとも次を持たせる：
+  value              元の値
+  normalized_value   比較用の値
+  source_path        元JSON内の具体的な位置。配列番号も保持
+  source_kind        structured_value / labeled_text / title_token
+  excerpt            短い原文抜粋
+
+出力例：
+  {
+    "decision": "MATCH",
+    "rule": "JAN",
+    "rules_version": "1.0",
+    "matched_values": ["4954835030748"],
+    "au_url": "https://wowma.jp/item/741337142",
+    "rakuten_url": "https://item.rakuten.co.jp/cosme21/milbon0748/",
+    "evidence": [
+      {"side":"AU", "source_path":"itemInfo.itemComment", "source_kind":"labeled_text", "value":"4954835030748", "normalized_value":"4954835030748", "excerpt":"JAN 4954835030748"},
+      {"side":"Rakuten", "source_path":"itemInfoSku.articleNumber.value", "source_kind":"structured_value", "value":"4954835030748", "normalized_value":"4954835030748", "excerpt":"4954835030748"}
+    ]
+  }
+
+不成立時：decision="AI_REQUIRED", rule=null。
+JSON欠落、デコード失敗、曖昧な番号抽出も自動NO_MATCHにはしない。
+既存の取得失敗処理／AI入力作成処理に状態を渡す。情報がないままAIに同一性を推測させない。
+本仕様に自動NO_MATCHのルールはない。
+
+7. 組み込み手順
+
+1) 既存の商品取得処理・AI呼び出し箇所・商品粒度を確認する。
+2) 既に取得済みのHTML／JSONを再利用し、上記の正規化済み商品情報を作る。
+3) 抽出と判定を分け、判定関数はネットワークを呼ばない純粋な処理にする。
+4) 4ルールを評価し、MATCHならAIを省略。AI_REQUIREDなら既存AI処理へ渡す。
+5) ルールID、比較値、出典、抽出失敗理由を記録する。
+6) 同梱fixtureで、規定ルートと値の抽出を確認する。
+
+検索範囲の拡張、新APIの探索、新しいクローラーの構築はこの実装作業の必須項目ではない。
+既存の呼び出し側に合わせ、関数やデータ型を追加する範囲で組み込む。
+
+8. 動作確認用fixtureと受け入れ条件
+
+fixtures/fixtures.json：実データ9例＋合成境界例4例。
+expected_routeはJAN / MERCHANT_CODE / MODEL / TITLE / AIのいずれか。
+これは今回のルール動作確認用であり、独立した商品同一性の正解データではない。
+
+主な例：
+  11 → JAN
+  02 → JAN（TITLEも一致するがJANが優先）
+  01 → MERCHANT_CODE（60678）
+  03 → MODEL（35290063と35290043を商品番号一致にしない）
+  06 → MERCHANT_CODE（MODELも一致するが商品番号が優先）
+  10 → TITLE
+  18 → AI（番号の共通根拠が画像名だけ）
+  26 → AI（画像一致を採用せず、au本文036と楽天037を勝手に補正しない）
+  au03 × 楽天06 → AI（共通画像はあっても、4条件では成立しない）
+
+確認項目：
+  ・空同士の値、16桁値、チェックデジット不正値をJAN一致にしない。
+  ・exemptionReasonをJANとして使わない。
+  ・親JANがなくてもsku[]のJANを集める。
+  ・画像URLのJANらしい数字や型番を本文由来の識別子として使わない。
+  ・MHI-3257-KをMHI-3257-K2に一致させない。
+  ・商品番号の末尾や接頭辞を削って一致させない。
+  ・コードはNFKC/casefold後の完全一致。型番は完全トークン一致。
+  ・タイトルは規定の正規化だけを行い、情報を削らない。
+  ・容量・数量・セット内容の一致チェックや矛盾による自動vetoを追加しない。
+  ・未一致の最終ルートはAI。NO_MATCHを自動出力しない。
+
+9. 同梱証拠と再現範囲
+
+rule-contract.json                 実装用の機械可読ルール設定・契約
+fixtures/fixtures.json             13個の抽出／判定fixture
+fixtures/README.txt                fixtureの読み方・出典の扱い
+evidence/manifest.json             58商品の出典と原本hash／配布JSON hash
+evidence/products/                58個の商品JSON（セッション系キーを除去）
+evidence/target-pairs.json          調査対象31組。未確定候補を含む
+evidence/reports/                  調査結果の参照用コピー
+verify_handoff.py                  同梱ファイルだけで動くhash・抜粋検証
+
+Gitブランチ：handoff/au-rakuten-pre-ai-20261103
+リポジトリのルートから次を実行すると、配布ファイルと実データ抜粋を検証できる。
+  python3 -B lab-runs/au-rakuten-pre-ai-handoff-20261102/verify_handoff.py
+元の未配布調査ファイルやZIPは不要。このスクリプトは判定エンジンや精度テストではない。
+
+配布JSONは原本からセッション等のキーを除き、再整形している。
+原本hashと配布ファイルhashを混同しない。商品フィールドの抜粋は配布JSONでも検証できる。
+元の調査ファイルは/workspace/Searching_Experiment/lab-runs/以下に保持している。
+
+確認範囲：31組・58 URLの埋め込みJSON。
+42 URLはHTMLの通常GETで補完したもの。全58 URLの全操作・全通信を網羅したHARではない。
+4ルールは今回の観測とユーザーの運用方針に基づく事前判定ルールで、精度100%の保証ではない。
+ルール別のヒット数・AIへの残件数を記録し、精度を評価する場合は独立した確認データを使う。

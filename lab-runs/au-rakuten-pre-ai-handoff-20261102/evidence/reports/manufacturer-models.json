@@ -1,0 +1,92 @@
+{
+  "task": "offline deterministic model-token and fixed-spec rule exploration",
+  "source_run": "lab-runs/au-rakuten-strong-json-20261102",
+  "source_manifest": "lab-runs/au-rakuten-strong-json-20261102/acquire/manifest.json",
+  "scope": {
+    "manifest_records": 58,
+    "sides": {"AU": 27, "Rakuten": 31},
+    "pair_ids": 31,
+    "source_files": "manifest-listed native product JSON under acquire/.appdata; no network",
+    "seller_assumption": "same seller",
+    "ignored": ["color", "size", "capacity", "quantity", "set reconciliation"]
+  },
+  "model_token_rule": {
+    "candidate_source": "Rakuten product JSON recursive attributes whose title equals メーカー型番",
+    "AU_search_fields": ["itemTitle", "itemComment", "extraItemComment"],
+    "equality": "casefolded exact token with ASCII alphanumeric boundaries; preserve punctuation and suffix exactly",
+    "high_precision_shapes": ["letter-led alphanumeric code containing digit and internal hyphen segments (e.g. MHD-1150-SB)", "compact brand product code with leading letter and digits (e.g. A2147), only if the AU occurrence is textually attributable to the product"],
+    "reject": ["numeric-only EAN/JAN values", "generic seller listing/manage numbers (including lowercase seller slugs)", "generic title terms, capacities and sizes", "near matches obtained by dropping a suffix or punctuation"],
+    "result": "3 AU-to-Rakuten pairs have a matching candidate model token in the extracted AU title/comment fields; 2 are strong body-title matches and 1 is a comment asset-path-only match requiring lower confidence. No model token was normalized by removing its suffix."
+  },
+  "model_matches": [
+    {
+      "pair_id": "03",
+      "token": "MHD-1150-SB",
+      "confidence": "strong",
+      "AU": {"url": "https://wowma.jp/item/788462991", "file": "lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/AU788462991-product.json", "json_path": "$.itemTitle", "value": "【特典付】モッズヘア アドバンス ラピッドエリート BLDCマイナスイオンヘアードライヤー MHD-1150-SB ＋ ミルキーセラムセット ヘアミルク 100ml mods hair モッズ・ヘア ヘアドライヤー 大風量 速乾 ドライヤー マイナスイオン 1200W 冷風 温風 送料無料"},
+      "Rakuten": {"url": "https://item.rakuten.co.jp/plywood/35290043/", "file": "lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/RA77023369-product.json", "json_path": "$.sku[0].attributes[2]", "value": {"title": "メーカー型番", "value": "MHD-1150-SB"}, "title_path": "$.title", "title_contains": "MHD-1150-SB"}
+    },
+    {
+      "pair_id": "06",
+      "token": "MHI-3257-K",
+      "confidence": "strong",
+      "AU": {"url": "https://wowma.jp/item/651484814", "file": "lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/AU651484814-product.json", "json_path": "$.itemTitle", "value": "【特典付】モッズヘア ヘアアイロン カール ストレート 海外対応 mods hair アドバンス フレックススムーズ 2wayアイロン 32mm MHI-3257-K コテ ラウンドモデル アイロン 軽量 温度調節 ストレートアイロン ケース付き 1台2役 【12時迄のご注文は当日発送★送料無料★P10倍】"},
+      "Rakuten": {"url": "https://item.rakuten.co.jp/plywood/35279081/", "file": "lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/RA6249aa92-product.json", "json_path": "$.sku[0].attributes[2]", "value": {"title": "メーカー型番", "value": "MHI-3257-K"}, "title_path": "$.title", "title_contains": "MHI-3257-K"}
+    },
+    {
+      "pair_id": "24",
+      "token": "A2147",
+      "confidence": "medium_comment_asset_path_only",
+      "AU": {"url": "https://wowma.jp/item/607529325", "file": "lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/AU607529325-product.json", "json_path": "$.extraItemComment", "value_excerpt": "<img src=\"https://ic4-a.wowma.net/mis/w/640/h/3072/q/90/image.wowma.jp/47994123/anker/cabinet/a2147/a2147_sub_2.jpg\"", "note": "The model string occurs in the AU comment's product-image directory/filename, not in its visible prose title/comment text."},
+      "Rakuten": {"url": "https://item.rakuten.co.jp/anker/a2147/", "file": "lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/RA42ae55f4-product.json", "json_path": "$.sku[0].attributes[1]", "value": {"title": "メーカー型番", "value": "A2147"}, "title_path": "$.title", "title_contains": "Anker 511 Charger (Nano 3, 30W)"}
+    }
+  ],
+  "excluded_exact_text_matches": [
+    {"pair_id": "01", "RA_value": "60678", "reason": "merchant/item listing identifier in AU comment, numeric-only; not treated as manufacturer model"},
+    {"pair_id": "02", "RA_values": ["4954835291675", "4954835291651", "4954835291682", "4954835291705", "4954835291668", "4954835291712", "4954835291699"], "reason": "numeric JAN/EAN identifiers; a distinct verified-JAN rule covers this evidence"},
+    {"pair_id": "04", "RA_value": "o2-030", "reason": "retailer/manage listing slug in comment, not manufacturer model"},
+    {"pair_id": "07", "RA_value": "ladinner021", "reason": "seller listing slug in AU comment, not manufacturer model"},
+    {"pair_id": "09", "RA_value": "mp-sp603", "reason": "seller's listing code in AU comment; lacks independent evidence it is manufacturer-assigned"},
+    {"pair_id": "11", "RA_value": "4954835030748", "reason": "numeric JAN/EAN identifier"},
+    {"pair_id": "13", "pair_id_also": "14", "RA_value": "ladbag051", "reason": "seller listing slug in AU comment"},
+    {"pair_id": "15", "RA_value": "1507320101", "reason": "one of many ReD variant/article codes in comment; AU [上のみ] offer differs from Rakuten set offer, not a safe standalone model key"},
+    {"pair_id": "19", "RA_value": "1643020101", "reason": "ReD apparel variant/article code in comment; not a unique product model and other article values enumerate variants"},
+    {"pair_id": "26", "RA_value": "o2-037", "reason": "retailer/manage listing slug in AU comment"}
+  ],
+  "structured_specs": {
+    "AU_pairs_with_nonempty_specNames_specValues": 3,
+    "findings": [
+      {
+        "pair_id": "04",
+        "AU_file": "lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/AU583453474-product.json",
+        "AU_json_path": "$.specNames / $.specValues",
+        "AU_pairs": [["サイズcm", "幅8.6×奥8.6×高12.2"], ["内容量", "450ml"], ["重さ(約)", "170g"], ["材質", "ステンレス鋼"], ["生産国", "中国"]],
+        "RA_file": "lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/RAd8b48ef2-product.json",
+        "RA_json_path": "$.sku[0].attributes",
+        "RA_relevant_values": [["原産国／製造国", "中国"], ["キッチン用品の素材", "ステンレス"]],
+        "observation": "Two fixed-key facts align by direct label/value meaning; 450ml is visible in the RA title but not as a structured RA attribute. No manual capacity threshold was used."
+      },
+      {
+        "pair_id": "26",
+        "AU_file": "lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/AU721839278-product.json",
+        "AU_json_path": "$.specNames / $.specValues",
+        "AU_pairs": [["サイズmm", "直径88×高さ117"], ["内容量", "400ml"], ["重さ(約)", "247g"], ["生産国", "日本"]],
+        "RA_file": "lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/RA43628938-product.json",
+        "RA_json_path": "$.sku[0].attributes",
+        "RA_relevant_values": [["原産国／製造国", "中国"], ["メーカー型番", "o2-037"]],
+        "observation": "Country conflicts. Treat fixed country fields as a disagreement/abstention signal; the same model-token rule rejects o2-037 as a retailer listing slug."
+      },
+      {
+        "pair_id": "30",
+        "AU_file": "lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/AU118200387-product.json",
+        "AU_json_path": "$.specNames / $.specValues",
+        "AU_pairs": [["肉餃子/たれ", "1袋50個入タレ付"], ["炒めチャーハン", "1袋(200g)"], ["カレーチャーハン", "1袋(200g)"], ["大粒焼売", "8個(240g)"], ["餃子のタレ", "6袋"]],
+        "RA_file": "lab-runs/au-rakuten-strong-json-20261102/acquire/.appdata/RAe9138d70-product.json",
+        "RA_json_path": "$.attributes",
+        "RA_relevant_values": [["シリーズ名", "大阪王将"], ["ブランド名", "大阪王将"], ["原産国／製造国", "日本"], ["総個数", "4"], ["総重量", "1550", "g"]],
+        "observation": "AU fixed specs name component facts while RA attributes expose only overall count/weight; there is no fixed-key component-level comparison here."
+      }
+    ]
+  },
+  "recommendation": "Implement a conservative exact manufacturer-model rule over explicit RA manufacturer-model attributes and AU title/comment text. Accept code-shaped values with retained punctuation/suffix and reject bare numeric identifiers and seller-like slugs. Count pair 24 separately or at lower confidence when the only occurrence is in an AU asset path; if the rule is restricted to visible prose, the strong observed coverage is 2/31 pairs. Fixed-spec comparisons should use only a small explicit label map, surface direct conflicts such as pair 26 country, and abstain where source grains differ."
+}

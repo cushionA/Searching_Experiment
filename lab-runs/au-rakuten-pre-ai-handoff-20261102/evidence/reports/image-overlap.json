@@ -1,0 +1,1105 @@
+{
+  "scope": "Offline comparison of the 31 saved AU/Rakuten product JSON pairs; no network access and no image bytes fetched or hashed.",
+  "sources": {
+    "manifest": "acquire/manifest.json",
+    "product_json": "acquire/.appdata/*-product.json",
+    "AU_gallery": "productImageUrls",
+    "Rakuten_gallery": "media.images[].location",
+    "AU_description": "extraItemComment/extraItemCommentWithVideo/itemComment/detailComment img src",
+    "Rakuten_description": "salesDescription/newProductDescription img src"
+  },
+  "normalization": {
+    "wowma": "URL path is unquoted; if it contains image.wowma.jp/, strip everything up to that actual upstream host, ignoring nested /mis/gr/135 or /mis/w/width/h/height/q/quality proxy/rendition prefix. Preserve upstream merchant and directory components.",
+    "rakuten": "For gallery structures, use the location path; @0_mall/@0_gold prefixes are stripped. Ignore scheme/host/query and case-fold basename stem.",
+    "matching_unit": "Deduplicate by lowercase filename stem with extension removed. Full unwrapped origin-relative paths were compared separately and do not match across malls in this sample. A stem match is filename evidence only, not byte identity."
+  },
+  "summary": {
+    "pairs": 31,
+    "gallery_pairs_with_any_shared_stem": 25,
+    "gallery_pairs_with_at_least_2_shared_stems": 21,
+    "gallery_pairs_with_at_least_3_shared_stems": 20,
+    "pairs_with_shared_full_unwrapped_paths": 0,
+    "description_pairs_with_any_shared_stem": 21
+  },
+  "pair_results": [
+    {
+      "pair_id": "01",
+      "name": "minority ビッグシルエット半袖パーカー60678",
+      "AU_gallery_unique_stems": 20,
+      "RA_gallery_unique_stems": 20,
+      "gallery_shared_unique_stems": 0,
+      "gallery_shared_stems": [],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 31,
+      "description_unique_stems_RA": 60,
+      "description_shared_unique_stems": 0,
+      "description_shared_stems_sample": []
+    },
+    {
+      "pair_id": "02",
+      "name": "MILBON カラーガジェット150ml",
+      "AU_gallery_unique_stems": 8,
+      "RA_gallery_unique_stems": 8,
+      "gallery_shared_unique_stems": 8,
+      "gallery_shared_stems": [
+        "milbon1651_001",
+        "milbon1668_001",
+        "milbon1675_001",
+        "milbon1682_001",
+        "milbon1699_001",
+        "milbon1705_001",
+        "milbon1712_001",
+        "milbon7-1_001"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 10,
+      "description_unique_stems_RA": 10,
+      "description_shared_unique_stems": 10,
+      "description_shared_stems_sample": [
+        "gift3-1",
+        "milbon1651_001",
+        "milbon1668_001",
+        "milbon1675_001",
+        "milbon1682_001",
+        "milbon1699_001",
+        "milbon1705_001",
+        "milbon1712_001",
+        "milbon7-1_001",
+        "yu_packet"
+      ]
+    },
+    {
+      "pair_id": "03",
+      "name": "モッズヘアMHD-1150-SB＋ヘアミルク",
+      "AU_gallery_unique_stems": 14,
+      "RA_gallery_unique_stems": 17,
+      "gallery_shared_unique_stems": 12,
+      "gallery_shared_stems": [
+        "35279021om2",
+        "35290043-sab1",
+        "35290043-sab10",
+        "35290043-sab2",
+        "35290043-sab3",
+        "35290043-sab4",
+        "35290043-sab5",
+        "35290043-sab6",
+        "35290043-sab7",
+        "35290043-sab8",
+        "35290048-sab2",
+        "35290062e"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 11,
+      "description_unique_stems_RA": 21,
+      "description_shared_unique_stems": 10,
+      "description_shared_stems_sample": [
+        "35279085om2",
+        "35290043a",
+        "35290043b",
+        "35290043c",
+        "35290062a",
+        "35290062b",
+        "35290062c",
+        "35290062d",
+        "35290062e",
+        "modshair"
+      ]
+    },
+    {
+      "pair_id": "04",
+      "name": "もふさんど2way真空タンブラー450ml",
+      "AU_gallery_unique_stems": 7,
+      "RA_gallery_unique_stems": 9,
+      "gallery_shared_unique_stems": 0,
+      "gallery_shared_stems": [],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 15,
+      "description_unique_stems_RA": 9,
+      "description_shared_unique_stems": 0,
+      "description_shared_stems_sample": []
+    },
+    {
+      "pair_id": "05",
+      "name": "4color混紡玄関マット",
+      "AU_gallery_unique_stems": 3,
+      "RA_gallery_unique_stems": 5,
+      "gallery_shared_unique_stems": 3,
+      "gallery_shared_stems": [
+        "dd001s3_1",
+        "dd001s3_2",
+        "dd001s3_3"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 0,
+      "description_unique_stems_RA": 13,
+      "description_shared_unique_stems": 0,
+      "description_shared_stems_sample": []
+    },
+    {
+      "pair_id": "06",
+      "name": "モッズヘア2wayアイロンMHI-3257-K",
+      "AU_gallery_unique_stems": 13,
+      "RA_gallery_unique_stems": 19,
+      "gallery_shared_unique_stems": 11,
+      "gallery_shared_stems": [
+        "35279021om2",
+        "35279081",
+        "35279081sub-11",
+        "35279081sub-12",
+        "35279081sub-2",
+        "35279081sub-3",
+        "35279081sub-4",
+        "35279081sub-5",
+        "35279081sub-6",
+        "35279081sub-8",
+        "35279081sub-9"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 12,
+      "description_unique_stems_RA": 22,
+      "description_shared_unique_stems": 11,
+      "description_shared_stems_sample": [
+        "35279081a",
+        "35279081b",
+        "35279081c",
+        "35279081sub-11",
+        "35279085om2",
+        "35290056a",
+        "35290056b",
+        "35290056c",
+        "35290056d",
+        "35290056e",
+        "modshair"
+      ]
+    },
+    {
+      "pair_id": "07",
+      "name": "LAD WEATHER メンズVネック防寒インナー",
+      "AU_gallery_unique_stems": 18,
+      "RA_gallery_unique_stems": 19,
+      "gallery_shared_unique_stems": 18,
+      "gallery_shared_stems": [
+        "ladinner016-thum740-002",
+        "ladinner016-thum740-003",
+        "ladinner016-thum740-004",
+        "ladinner016-thum740-005",
+        "ladinner016-thum740-006",
+        "ladinner016-thum740-007",
+        "ladinner016-thum740-008",
+        "ladinner016-thum740-010",
+        "ladinner016-thum740-011",
+        "ladinner016-thum740-012",
+        "ladinner016-thum740-016",
+        "ladinner021-thum740-001",
+        "ladinner021-thum740-009",
+        "ladinner021-thum740-013",
+        "ladinner021-thum740-014",
+        "ladinner021-thum740-015",
+        "ladinner021-thum740-016",
+        "ladinner021-thum740-018"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 33,
+      "description_unique_stems_RA": 32,
+      "description_shared_unique_stems": 27,
+      "description_shared_stems_sample": [
+        "ladinner016-002",
+        "ladinner016-003",
+        "ladinner016-004",
+        "ladinner016-005",
+        "ladinner016-006",
+        "ladinner016-008",
+        "ladinner016-009",
+        "ladinner016-011",
+        "ladinner016-012",
+        "ladinner016-013",
+        "ladinner016-014-1",
+        "ladinner021-001"
+      ]
+    },
+    {
+      "pair_id": "08",
+      "name": "NEKODOROBO パドルブラシ",
+      "AU_gallery_unique_stems": 11,
+      "RA_gallery_unique_stems": 15,
+      "gallery_shared_unique_stems": 0,
+      "gallery_shared_stems": [],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 0,
+      "description_unique_stems_RA": 18,
+      "description_shared_unique_stems": 0,
+      "description_shared_stems_sample": []
+    },
+    {
+      "pair_id": "09",
+      "name": "メディックピエドひざサポーター1枚",
+      "AU_gallery_unique_stems": 9,
+      "RA_gallery_unique_stems": 7,
+      "gallery_shared_unique_stems": 7,
+      "gallery_shared_stems": [
+        "mp-sp603-1",
+        "mp-sp603-2",
+        "mp-sp603-3",
+        "mp-sp603-4",
+        "mp-sp603-5",
+        "mp-sp603-6",
+        "mp-sp603-7"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 13,
+      "description_unique_stems_RA": 19,
+      "description_shared_unique_stems": 8,
+      "description_shared_stems_sample": [
+        "mp-sp603-1",
+        "mp-sp603-2",
+        "mp-sp603-3",
+        "mp-sp603-4",
+        "mp-sp603-5",
+        "mp-sp603-6",
+        "mp-sp603-7",
+        "sentaku03"
+      ]
+    },
+    {
+      "pair_id": "10",
+      "name": "クレ・ド・ポー ボーテ日中用乳液30ml",
+      "AU_gallery_unique_stems": 1,
+      "RA_gallery_unique_stems": 1,
+      "gallery_shared_unique_stems": 1,
+      "gallery_shared_stems": [
+        "2606cp009ems_001"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 0,
+      "description_unique_stems_RA": 0,
+      "description_shared_unique_stems": 0,
+      "description_shared_stems_sample": []
+    },
+    {
+      "pair_id": "11",
+      "name": "MILBON エルジューダ エクストラリペア ミルキーセラム120ml",
+      "AU_gallery_unique_stems": 4,
+      "RA_gallery_unique_stems": 4,
+      "gallery_shared_unique_stems": 4,
+      "gallery_shared_stems": [
+        "milbon0748_001",
+        "milbon0748_002",
+        "milbon0748_003",
+        "milbon0748_004"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 6,
+      "description_unique_stems_RA": 6,
+      "description_shared_unique_stems": 6,
+      "description_shared_stems_sample": [
+        "gift3-1",
+        "milbon0748_001",
+        "milbon0748_002",
+        "milbon0748_003",
+        "milbon0748_004",
+        "yu_packet"
+      ]
+    },
+    {
+      "pair_id": "12",
+      "name": "北海道産たこスライス",
+      "AU_gallery_unique_stems": 11,
+      "RA_gallery_unique_stems": 12,
+      "gallery_shared_unique_stems": 0,
+      "gallery_shared_stems": [],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 18,
+      "description_unique_stems_RA": 14,
+      "description_shared_unique_stems": 0,
+      "description_shared_stems_sample": []
+    },
+    {
+      "pair_id": "13",
+      "name": "LAD WEATHER25Lリュック",
+      "AU_gallery_unique_stems": 19,
+      "RA_gallery_unique_stems": 19,
+      "gallery_shared_unique_stems": 18,
+      "gallery_shared_stems": [
+        "ladbag051-001",
+        "ladbag051-002",
+        "ladbag051-003",
+        "ladbag051-004",
+        "ladbag051-005",
+        "ladbag051-006",
+        "ladbag051-007",
+        "ladbag051-008",
+        "ladbag051-009",
+        "ladbag051-010",
+        "ladbag051-011",
+        "ladbag051-012",
+        "ladbag051-013",
+        "ladbag051-014",
+        "ladbag051-015",
+        "ladbag051-016",
+        "ladbag051-017",
+        "ladbag051-018"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 21,
+      "description_unique_stems_RA": 20,
+      "description_shared_unique_stems": 19,
+      "description_shared_stems_sample": [
+        "henpin",
+        "ladbag051-001",
+        "ladbag051-002",
+        "ladbag051-003",
+        "ladbag051-004",
+        "ladbag051-005",
+        "ladbag051-006",
+        "ladbag051-007",
+        "ladbag051-008",
+        "ladbag051-009",
+        "ladbag051-010",
+        "ladbag051-011"
+      ]
+    },
+    {
+      "pair_id": "14",
+      "name": "LAD WEATHER25Lリュック別候補",
+      "AU_gallery_unique_stems": 19,
+      "RA_gallery_unique_stems": 19,
+      "gallery_shared_unique_stems": 18,
+      "gallery_shared_stems": [
+        "ladbag051-001",
+        "ladbag051-002",
+        "ladbag051-003",
+        "ladbag051-004",
+        "ladbag051-005",
+        "ladbag051-006",
+        "ladbag051-007",
+        "ladbag051-008",
+        "ladbag051-009",
+        "ladbag051-010",
+        "ladbag051-011",
+        "ladbag051-012",
+        "ladbag051-013",
+        "ladbag051-014",
+        "ladbag051-015",
+        "ladbag051-016",
+        "ladbag051-017",
+        "ladbag051-018"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 21,
+      "description_unique_stems_RA": 20,
+      "description_shared_unique_stems": 19,
+      "description_shared_stems_sample": [
+        "henpin",
+        "ladbag051-001",
+        "ladbag051-002",
+        "ladbag051-003",
+        "ladbag051-004",
+        "ladbag051-005",
+        "ladbag051-006",
+        "ladbag051-007",
+        "ladbag051-008",
+        "ladbag051-009",
+        "ladbag051-010",
+        "ladbag051-011"
+      ]
+    },
+    {
+      "pair_id": "15",
+      "name": "ReDぐっすりパジャマ長袖トップス",
+      "AU_gallery_unique_stems": 15,
+      "RA_gallery_unique_stems": 18,
+      "gallery_shared_unique_stems": 2,
+      "gallery_shared_stems": [
+        "251205_lp_attention",
+        "emblem_thumb"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 18,
+      "description_unique_stems_RA": 17,
+      "description_shared_unique_stems": 5,
+      "description_shared_stems_sample": [
+        "faq_a",
+        "lineup_a",
+        "lp_1507320101_02",
+        "lp_1507320101_04",
+        "lp_1507320101_05"
+      ]
+    },
+    {
+      "pair_id": "16",
+      "name": "ReDぐっすりパジャマ長袖トップス別候補",
+      "AU_gallery_unique_stems": 15,
+      "RA_gallery_unique_stems": 20,
+      "gallery_shared_unique_stems": 1,
+      "gallery_shared_stems": [
+        "emblem_thumb"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 18,
+      "description_unique_stems_RA": 19,
+      "description_shared_unique_stems": 3,
+      "description_shared_stems_sample": [
+        "260209_shopper",
+        "faq_a",
+        "lineup_a"
+      ]
+    },
+    {
+      "pair_id": "17",
+      "name": "PRESS BUTTER SANDショコラバターサンド4個",
+      "AU_gallery_unique_stems": 12,
+      "RA_gallery_unique_stems": 16,
+      "gallery_shared_unique_stems": 12,
+      "gallery_shared_stems": [
+        "1010900_0",
+        "1010900_1",
+        "1010900_3",
+        "1010900_4",
+        "1010900_6",
+        "1010900_7",
+        "1016094_10",
+        "1016094_13",
+        "1016094_17",
+        "1016094_20",
+        "1016094_21",
+        "imgrc0095693363"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 0,
+      "description_unique_stems_RA": 0,
+      "description_shared_unique_stems": 0,
+      "description_shared_stems_sample": []
+    },
+    {
+      "pair_id": "18",
+      "name": "福島県産つきあかり無洗米10kg",
+      "AU_gallery_unique_stems": 9,
+      "RA_gallery_unique_stems": 11,
+      "gallery_shared_unique_stems": 1,
+      "gallery_shared_stems": [
+        "kaifuutyui"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 14,
+      "description_unique_stems_RA": 10,
+      "description_shared_unique_stems": 4,
+      "description_shared_stems_sample": [
+        "gen_30k",
+        "haku_tuki_05k",
+        "haku_tuki_30k",
+        "imgrc0079662960"
+      ]
+    },
+    {
+      "pair_id": "19",
+      "name": "ReD Boxer Pants COOL",
+      "AU_gallery_unique_stems": 17,
+      "RA_gallery_unique_stems": 17,
+      "gallery_shared_unique_stems": 3,
+      "gallery_shared_stems": [
+        "251205_lp_attention",
+        "emblem_thumb",
+        "thumb_1536x1536_b"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 9,
+      "description_unique_stems_RA": 14,
+      "description_shared_unique_stems": 4,
+      "description_shared_stems_sample": [
+        "1643020101_lp_size",
+        "260209_shopper",
+        "faq_b",
+        "thumb_1536x1536_b"
+      ]
+    },
+    {
+      "pair_id": "20",
+      "name": "6種のフルーツナッツ500g",
+      "AU_gallery_unique_stems": 19,
+      "RA_gallery_unique_stems": 20,
+      "gallery_shared_unique_stems": 18,
+      "gallery_shared_stems": [
+        "doukon",
+        "fruitnuts6-500_0",
+        "fruitnuts6-500_1",
+        "fruitnuts6-500_17",
+        "fruitnuts6-500_18",
+        "fruitnuts6-500_19",
+        "fruitnuts6-500_2",
+        "fruitnuts6-500_20",
+        "fruitnuts6-500_21",
+        "fruitnuts6-500_22",
+        "fruitnuts6-500_3",
+        "fruitnuts7-600_101",
+        "fruitnuts7-600_102",
+        "fruitnuts7-600_103",
+        "fruitnuts7-600_104",
+        "fruitnuts7-600_105",
+        "fruitnuts7-600_106",
+        "yuumail2"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 8,
+      "description_unique_stems_RA": 14,
+      "description_shared_unique_stems": 6,
+      "description_shared_stems_sample": [
+        "doukon",
+        "fruitnuts6-500_lp1",
+        "fruitnuts6-500_lp2",
+        "fruitnuts6-500_lp3",
+        "fruitnuts6-500_lp4",
+        "yuumail2"
+      ]
+    },
+    {
+      "pair_id": "21",
+      "name": "6種のフルーツナッツ500g別候補",
+      "AU_gallery_unique_stems": 19,
+      "RA_gallery_unique_stems": 20,
+      "gallery_shared_unique_stems": 18,
+      "gallery_shared_stems": [
+        "doukon",
+        "fruitnuts6-500_0",
+        "fruitnuts6-500_1",
+        "fruitnuts6-500_17",
+        "fruitnuts6-500_18",
+        "fruitnuts6-500_19",
+        "fruitnuts6-500_2",
+        "fruitnuts6-500_20",
+        "fruitnuts6-500_21",
+        "fruitnuts6-500_22",
+        "fruitnuts6-500_3",
+        "fruitnuts7-600_101",
+        "fruitnuts7-600_102",
+        "fruitnuts7-600_103",
+        "fruitnuts7-600_104",
+        "fruitnuts7-600_105",
+        "fruitnuts7-600_106",
+        "yuumail2"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 8,
+      "description_unique_stems_RA": 14,
+      "description_shared_unique_stems": 6,
+      "description_shared_stems_sample": [
+        "doukon",
+        "fruitnuts6-500_lp1",
+        "fruitnuts6-500_lp2",
+        "fruitnuts6-500_lp3",
+        "fruitnuts6-500_lp4",
+        "yuumail2"
+      ]
+    },
+    {
+      "pair_id": "22",
+      "name": "松屋プレミアム牛めしの具135g×30袋",
+      "AU_gallery_unique_stems": 18,
+      "RA_gallery_unique_stems": 20,
+      "gallery_shared_unique_stems": 14,
+      "gallery_shared_stems": [
+        "2025_us-lp2_01_01",
+        "2025_us-lp_01_02",
+        "2025_us-lp_01_05",
+        "2025_us-lp_01_06",
+        "2025_us-lp_02_01",
+        "2025_us-lp_02_02",
+        "2025_us-lp_02_03",
+        "2025_us-lp_02_04",
+        "2025_us-lp_02_05",
+        "2025_us-lp_02_06",
+        "2025_us-lp_03_01",
+        "2025_us-lp_03_02",
+        "2025_us-lp_04_01",
+        "2606_us_oshirase"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 24,
+      "description_unique_stems_RA": 32,
+      "description_shared_unique_stems": 0,
+      "description_shared_stems_sample": []
+    },
+    {
+      "pair_id": "23",
+      "name": "博多あごおとし無着色辛子明太子500g",
+      "AU_gallery_unique_stems": 9,
+      "RA_gallery_unique_stems": 13,
+      "gallery_shared_unique_stems": 1,
+      "gallery_shared_stems": [
+        "imgrc0075773815"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 20,
+      "description_unique_stems_RA": 24,
+      "description_shared_unique_stems": 14,
+      "description_shared_stems_sample": [
+        "imgrc0068729379",
+        "imgrc0068729383",
+        "imgrc0068729384",
+        "imgrc0068729385",
+        "imgrc0074547991",
+        "imgrc0074547992",
+        "imgrc0074547993",
+        "imgrc0074547994",
+        "imgrc0074547995",
+        "imgrc0075237913",
+        "imgrc0075237914",
+        "imgrc0075773814"
+      ]
+    },
+    {
+      "pair_id": "24",
+      "name": "Anker511 Charger Nano3 30W A2147",
+      "AU_gallery_unique_stems": 7,
+      "RA_gallery_unique_stems": 7,
+      "gallery_shared_unique_stems": 4,
+      "gallery_shared_stems": [
+        "a2147_3",
+        "a2147_normal",
+        "a2147_pse",
+        "a2147_sub_2"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 5,
+      "description_unique_stems_RA": 19,
+      "description_shared_unique_stems": 2,
+      "description_shared_stems_sample": [
+        "a2147_3",
+        "a2147_sub_2"
+      ]
+    },
+    {
+      "pair_id": "25",
+      "name": "寺嶋農園ゆら早生みかん5kg",
+      "AU_gallery_unique_stems": 13,
+      "RA_gallery_unique_stems": 12,
+      "gallery_shared_unique_stems": 10,
+      "gallery_shared_stems": [
+        "m-terayura_fk02",
+        "m-terayura_fk03",
+        "m-terayura_fk04",
+        "m-terayura_fk05",
+        "m-terayura_fk06",
+        "m-terayura_fk07",
+        "m-terayura_fk08",
+        "m-terayura_fk09",
+        "m-terayura_fk10",
+        "m_kyotu_601"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 8,
+      "description_unique_stems_RA": 6,
+      "description_shared_unique_stems": 5,
+      "description_shared_stems_sample": [
+        "m-terayura_lp01",
+        "m-terayura_lp02",
+        "m-terayura_lp03",
+        "m-terayura_lp05",
+        "m_kyotu_01"
+      ]
+    },
+    {
+      "pair_id": "26",
+      "name": "要確認もふさんどスープポット400ml",
+      "AU_gallery_unique_stems": 10,
+      "RA_gallery_unique_stems": 10,
+      "gallery_shared_unique_stems": 10,
+      "gallery_shared_stems": [
+        "o2-037-01",
+        "o2-037-02",
+        "o2-037-03",
+        "o2-037-04",
+        "o2-037-05",
+        "o2-037-06",
+        "o2-037-07",
+        "o2-037-08",
+        "o2-037-09",
+        "o2-037-10"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 18,
+      "description_unique_stems_RA": 10,
+      "description_shared_unique_stems": 10,
+      "description_shared_stems_sample": [
+        "o2-037-01",
+        "o2-037-02",
+        "o2-037-03",
+        "o2-037-04",
+        "o2-037-05",
+        "o2-037-06",
+        "o2-037-07",
+        "o2-037-08",
+        "o2-037-09",
+        "o2-037-10"
+      ]
+    },
+    {
+      "pair_id": "27",
+      "name": "要確認THYMUS COFFEEコピルアク豆＋ドリップ",
+      "AU_gallery_unique_stems": 4,
+      "RA_gallery_unique_stems": 4,
+      "gallery_shared_unique_stems": 3,
+      "gallery_shared_stems": [
+        "t10970003_1",
+        "t10970003_2",
+        "t10970003_3"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 1,
+      "description_unique_stems_RA": 17,
+      "description_shared_unique_stems": 1,
+      "description_shared_stems_sample": [
+        "icon_ship-normal7"
+      ]
+    },
+    {
+      "pair_id": "28",
+      "name": "要確認裏起毛/シースルーカットソー",
+      "AU_gallery_unique_stems": 19,
+      "RA_gallery_unique_stems": 20,
+      "gallery_shared_unique_stems": 0,
+      "gallery_shared_stems": [],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 0,
+      "description_unique_stems_RA": 29,
+      "description_shared_unique_stems": 0,
+      "description_shared_stems_sample": []
+    },
+    {
+      "pair_id": "29",
+      "name": "要確認裏起毛/シースルーカットソー別候補",
+      "AU_gallery_unique_stems": 19,
+      "RA_gallery_unique_stems": 20,
+      "gallery_shared_unique_stems": 16,
+      "gallery_shared_stems": [
+        "dds003",
+        "dds003_1",
+        "dds003_11",
+        "dds003_13",
+        "dds003_16",
+        "dds003_17",
+        "dds003_18",
+        "dds003_19",
+        "dds003_2",
+        "dds003_3",
+        "dds003_4",
+        "dds003_5",
+        "dds003_6",
+        "dds003_7",
+        "dds003_8",
+        "dds003_9"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 0,
+      "description_unique_stems_RA": 29,
+      "description_shared_unique_stems": 0,
+      "description_shared_stems_sample": []
+    },
+    {
+      "pair_id": "30",
+      "name": "要確認大阪王将お試しセットver.8",
+      "AU_gallery_unique_stems": 7,
+      "RA_gallery_unique_stems": 17,
+      "gallery_shared_unique_stems": 6,
+      "gallery_shared_stems": [
+        "cm_currychahan_00",
+        "cm_itamechahan_00",
+        "cm_nikugyoza_00",
+        "cm_nikushumai_00",
+        "cm_osakaohsho",
+        "s-246_2025ssr_01"
+      ],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 7,
+      "description_unique_stems_RA": 9,
+      "description_shared_unique_stems": 6,
+      "description_shared_stems_sample": [
+        "cm_currychahan_00",
+        "cm_itamechahan_00",
+        "cm_nikugyoza_00",
+        "cm_nikushumai_00",
+        "cm_osakaohsho",
+        "s-246_2025ssr_01"
+      ]
+    },
+    {
+      "pair_id": "31",
+      "name": "要確認伊藤農園梅ぴゅあシロップ",
+      "AU_gallery_unique_stems": 7,
+      "RA_gallery_unique_stems": 14,
+      "gallery_shared_unique_stems": 0,
+      "gallery_shared_stems": [],
+      "shared_full_unwrapped_paths": [],
+      "description_unique_stems_AU": 7,
+      "description_unique_stems_RA": 18,
+      "description_shared_unique_stems": 1,
+      "description_shared_stems_sample": [
+        "syosai01"
+      ]
+    }
+  ],
+  "off_diagonal_gallery_overlaps_at_least_2_stems": [
+    {
+      "AU_pair_id": "03",
+      "RA_candidate_pair_id": "06",
+      "shared_unique_stems": 2,
+      "stems": [
+        "35279021om2",
+        "35290048-sab2"
+      ]
+    },
+    {
+      "AU_pair_id": "13",
+      "RA_candidate_pair_id": "14",
+      "shared_unique_stems": 18,
+      "stems": [
+        "ladbag051-001",
+        "ladbag051-002",
+        "ladbag051-003",
+        "ladbag051-004",
+        "ladbag051-005",
+        "ladbag051-006",
+        "ladbag051-007",
+        "ladbag051-008",
+        "ladbag051-009",
+        "ladbag051-010",
+        "ladbag051-011",
+        "ladbag051-012",
+        "ladbag051-013",
+        "ladbag051-014",
+        "ladbag051-015",
+        "ladbag051-016",
+        "ladbag051-017",
+        "ladbag051-018"
+      ]
+    },
+    {
+      "AU_pair_id": "14",
+      "RA_candidate_pair_id": "13",
+      "shared_unique_stems": 18,
+      "stems": [
+        "ladbag051-001",
+        "ladbag051-002",
+        "ladbag051-003",
+        "ladbag051-004",
+        "ladbag051-005",
+        "ladbag051-006",
+        "ladbag051-007",
+        "ladbag051-008",
+        "ladbag051-009",
+        "ladbag051-010",
+        "ladbag051-011",
+        "ladbag051-012",
+        "ladbag051-013",
+        "ladbag051-014",
+        "ladbag051-015",
+        "ladbag051-016",
+        "ladbag051-017",
+        "ladbag051-018"
+      ]
+    },
+    {
+      "AU_pair_id": "15",
+      "RA_candidate_pair_id": "19",
+      "shared_unique_stems": 2,
+      "stems": [
+        "251205_lp_attention",
+        "emblem_thumb"
+      ]
+    },
+    {
+      "AU_pair_id": "16",
+      "RA_candidate_pair_id": "15",
+      "shared_unique_stems": 2,
+      "stems": [
+        "251205_lp_attention",
+        "emblem_thumb"
+      ]
+    },
+    {
+      "AU_pair_id": "16",
+      "RA_candidate_pair_id": "19",
+      "shared_unique_stems": 2,
+      "stems": [
+        "251205_lp_attention",
+        "emblem_thumb"
+      ]
+    },
+    {
+      "AU_pair_id": "19",
+      "RA_candidate_pair_id": "15",
+      "shared_unique_stems": 2,
+      "stems": [
+        "251205_lp_attention",
+        "emblem_thumb"
+      ]
+    },
+    {
+      "AU_pair_id": "20",
+      "RA_candidate_pair_id": "21",
+      "shared_unique_stems": 18,
+      "stems": [
+        "doukon",
+        "fruitnuts6-500_0",
+        "fruitnuts6-500_1",
+        "fruitnuts6-500_17",
+        "fruitnuts6-500_18",
+        "fruitnuts6-500_19",
+        "fruitnuts6-500_2",
+        "fruitnuts6-500_20",
+        "fruitnuts6-500_21",
+        "fruitnuts6-500_22",
+        "fruitnuts6-500_3",
+        "fruitnuts7-600_101",
+        "fruitnuts7-600_102",
+        "fruitnuts7-600_103",
+        "fruitnuts7-600_104",
+        "fruitnuts7-600_105",
+        "fruitnuts7-600_106",
+        "yuumail2"
+      ]
+    },
+    {
+      "AU_pair_id": "21",
+      "RA_candidate_pair_id": "20",
+      "shared_unique_stems": 18,
+      "stems": [
+        "doukon",
+        "fruitnuts6-500_0",
+        "fruitnuts6-500_1",
+        "fruitnuts6-500_17",
+        "fruitnuts6-500_18",
+        "fruitnuts6-500_19",
+        "fruitnuts6-500_2",
+        "fruitnuts6-500_20",
+        "fruitnuts6-500_21",
+        "fruitnuts6-500_22",
+        "fruitnuts6-500_3",
+        "fruitnuts7-600_101",
+        "fruitnuts7-600_102",
+        "fruitnuts7-600_103",
+        "fruitnuts7-600_104",
+        "fruitnuts7-600_105",
+        "fruitnuts7-600_106",
+        "yuumail2"
+      ]
+    },
+    {
+      "AU_pair_id": "28",
+      "RA_candidate_pair_id": "29",
+      "shared_unique_stems": 16,
+      "stems": [
+        "dds003",
+        "dds003_1",
+        "dds003_11",
+        "dds003_13",
+        "dds003_16",
+        "dds003_17",
+        "dds003_18",
+        "dds003_19",
+        "dds003_2",
+        "dds003_3",
+        "dds003_4",
+        "dds003_5",
+        "dds003_6",
+        "dds003_7",
+        "dds003_8",
+        "dds003_9"
+      ]
+    }
+  ],
+  "interpretation": {
+    "best_positive_groups": [
+      {
+        "pair_ids": [
+          "02"
+        ],
+        "shared_unique_gallery_stems": 8,
+        "evidence": "milbon7-1_001 and seven color/JAN image files; gallery set aligns across malls."
+      },
+      {
+        "pair_ids": [
+          "07"
+        ],
+        "shared_unique_gallery_stems": 18,
+        "evidence": "ladinner016/021 image sequence."
+      },
+      {
+        "pair_ids": [
+          "09"
+        ],
+        "shared_unique_gallery_stems": 7,
+        "evidence": "mp-sp603-1 through -7."
+      },
+      {
+        "pair_ids": [
+          "11"
+        ],
+        "shared_unique_gallery_stems": 4,
+        "evidence": "milbon0748_001 through _004."
+      },
+      {
+        "pair_ids": [
+          "13",
+          "14"
+        ],
+        "shared_unique_gallery_stems": 18,
+        "evidence": "same LAD WEATHER 25L backpack image sequence; expected catalogue-group duplicate."
+      },
+      {
+        "pair_ids": [
+          "20",
+          "21"
+        ],
+        "shared_unique_gallery_stems": 18,
+        "evidence": "same fruit-nut image sequence; expected catalogue-group duplicate."
+      },
+      {
+        "pair_ids": [
+          "26"
+        ],
+        "shared_unique_gallery_stems": 10,
+        "evidence": "o2-037-01 through -10."
+      }
+    ],
+    "one_or_few_image_risk": [
+      {
+        "pair_ids": [
+          "15",
+          "16"
+        ],
+        "shared_unique_gallery_stems": 0,
+        "description": "AU listing vs Rakuten candidate galleries have no shared unique product-image stems; their description/gallery commonality is limited to shop/campaign material. Pair 15 Rakuten manageNumber 1507320101 and pair 16 manageNumber 1718520101 have distinct item image sequences. Do not join them from emblem_thumb or campaign assets."
+      },
+      {
+        "pair_ids": [
+          "03",
+          "06"
+        ],
+        "cross_candidate_AU03_to_RA06_shared_unique_gallery_stems": 2,
+        "shared": [
+          "35279021om2",
+          "35290048-sab2"
+        ],
+        "description": "Different MHD-1150-SB dryer bundle vs MHI-3257-K iron; two seller images cross-match, showing multi-image overlap alone is not an exact-item guarantee."
+      },
+      {
+        "pair_ids": [
+          "15",
+          "16",
+          "19"
+        ],
+        "shared_gallery_shop_assets": [
+          "emblem_thumb",
+          "251205_lp_attention"
+        ],
+        "description": "Same ReD shop/campaign assets recur across pajama and boxer listings; these are template/shop imagery."
+      }
+    ],
+    "description_images": "Description-image overlap is broader and noisier than gallery overlap. It includes shop banners, common delivery/return images, cross-sells and embedded gallery repeats; evaluate separately and never add it to gallery overlap as independent evidence unless asset roles are classified."
+  },
+  "decision_guidance": {
+    "safe_automatic": "No image-only standalone automatic product match is supported by this 31-pair sample. A multi-stem exact filename gallery intersection is a deterministic, useful pre-AI candidate/evidence feature after robust URL unwrapping. It can corroborate product-level matching, with catalogue-group deduplication handled separately for 13/14 and 20/21.",
+    "ai_feature": "Use overlap count and fraction of each gallery covered, sequence/order agreement, shared seller/path prefix and whether stems look product-specific vs known shop assets as features; preserve gallery and description channels separately. Do not claim calibrated thresholds or byte-level identity.",
+    "limitations": "No downloaded image files or raw image hashes were available/used. Filename stems can be stale, reused, or versioned; matching stems do not prove identical bytes or current product image content."
+  }
+}

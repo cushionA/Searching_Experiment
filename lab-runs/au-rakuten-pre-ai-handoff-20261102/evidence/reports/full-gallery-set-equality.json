@@ -1,0 +1,56 @@
+{
+  "scope": "Offline saved embedded product JSON only; AU productImageUrls vs Rakuten media.images[].location. No network, image downloads, or byte hashes.",
+  "rule": "Deduplicated complete gallery sets of lowercase filename stems (extensions removed) are equal; require at least 3 unique stems. AU Wowma proxy paths are unwrapped at image.wowma.jp/ before basename extraction.",
+  "summary": {
+    "target_pairs_checked": 31,
+    "within_pair_full_set_matches_ge3": 3,
+    "off_diagonal_full_set_matches_ge3": 0
+  },
+  "within_pair_matches": [
+    {
+      "AU_pair_id": "02",
+      "Rakuten_candidate_pair_id": "02",
+      "unique_gallery_stems": 8,
+      "stems": [
+        "milbon1651_001",
+        "milbon1668_001",
+        "milbon1675_001",
+        "milbon1682_001",
+        "milbon1699_001",
+        "milbon1705_001",
+        "milbon1712_001",
+        "milbon7-1_001"
+      ]
+    },
+    {
+      "AU_pair_id": "11",
+      "Rakuten_candidate_pair_id": "11",
+      "unique_gallery_stems": 4,
+      "stems": [
+        "milbon0748_001",
+        "milbon0748_002",
+        "milbon0748_003",
+        "milbon0748_004"
+      ]
+    },
+    {
+      "AU_pair_id": "26",
+      "Rakuten_candidate_pair_id": "26",
+      "unique_gallery_stems": 10,
+      "stems": [
+        "o2-037-01",
+        "o2-037-02",
+        "o2-037-03",
+        "o2-037-04",
+        "o2-037-05",
+        "o2-037-06",
+        "o2-037-07",
+        "o2-037-08",
+        "o2-037-09",
+        "o2-037-10"
+      ]
+    }
+  ],
+  "off_diagonal_matches": [],
+  "caveat": "Filename-stem set equality is deterministic filename evidence only; it does not prove image-byte identity or that image files remain current."
+}

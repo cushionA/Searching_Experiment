@@ -1,0 +1,78 @@
+{
+  "experiment": "Exact normalized title and full-description equality as deterministic product-level match candidates",
+  "source_run": "../au-rakuten-strong-json-20261102/acquire/manifest.json; native extracted *-product.json only",
+  "dataset": {
+    "labeled_pair_ids": 31,
+    "unique_au_pages": 27,
+    "rakuten_pages": 31,
+    "pair_ids_examined": 31
+  },
+  "normalization": {
+    "text": "HTML entity decode; discard HTML tags/comments, script and style contents; Unicode NFKC; collapse whitespace; trim ends. No token removal, quantity/model-variant normalization, fuzzy match, substring matching, or keyword selection.",
+    "description_minimum_normalized_characters": 100
+  },
+  "fields": {
+    "AU_title": "itemTitle",
+    "Rakuten_title": "title",
+    "AU_descriptions": [
+      "itemComment",
+      "extraItemComment",
+      "detailComment"
+    ],
+    "Rakuten_descriptions": [
+      "newProductDescription",
+      "pcFields.productDescription",
+      "pcFields.salesDescription",
+      "tagline"
+    ]
+  },
+  "results": {
+    "exact_title_pairs": [
+      {
+        "au_pair_id": "02",
+        "rakuten_pair_id": "02",
+        "au_field_path": "itemTitle",
+        "rakuten_field_path": "title",
+        "normalized_title": "MILBON ミルボン カラーガジェット カラーシャンプー ピンク オレンジベージュ グリーン アッシュ グレージュ パープル ベージュ 150ml[7種類から選べる][ギフトラッピング対応]",
+        "au_url": "https://wowma.jp/item/642991515",
+        "rakuten_url": "https://item.rakuten.co.jp/cosme21/milbon7-1/",
+        "au_product_json": "AU642991515-product.json",
+        "rakuten_product_json": "RA02-product.json"
+      },
+      {
+        "au_pair_id": "11",
+        "rakuten_pair_id": "11",
+        "au_field_path": "itemTitle",
+        "rakuten_field_path": "title",
+        "normalized_title": "MILBON ミルボン エルジューダ エクストラリペア ミルキーセラム 120ml ヘアトリートメント[ギフトラッピング対応]",
+        "au_url": "https://wowma.jp/item/741337142",
+        "rakuten_url": "https://item.rakuten.co.jp/cosme21/milbon0748/",
+        "au_product_json": "AU741337142-product.json",
+        "rakuten_product_json": "RA11-product.json"
+      },
+      {
+        "au_pair_id": "10",
+        "rakuten_pair_id": "10",
+        "au_field_path": "itemTitle",
+        "rakuten_field_path": "title",
+        "normalized_title": "Cle de Peau Beaute(クレ・ド・ポー ボーテ) エマルションプロテクトゥリス(ジュール) 30mL SPF25・PA+++",
+        "au_url": "https://wowma.jp/item/781881517",
+        "rakuten_url": "https://item.rakuten.co.jp/cinderellabeaute/2606cp009ems/",
+        "au_product_json": "AU781881517-product.json",
+        "rakuten_product_json": "RAfcafb2ab-product.json"
+      }
+    ],
+    "exact_title_count": 3,
+    "exact_title_cross_pair_matches": 0,
+    "exact_substantive_full_description_pair_matches": 0,
+    "exact_substantive_full_description_cross_pair_matches": 0,
+    "description_matches": [],
+    "description_candidate_rule": "No exact full-description matches found in the examined field combinations."
+  },
+  "interpretation": "Exact normalized full-title equality is a newly observed deterministic candidate on 3 of 31 labeled pair IDs, conditional on the stated same-seller assumption. This is a dataset coverage count, not precision or accuracy. Exact full-description equality yielded no candidate. No quantity, capacity, size, color, set, or model-variant text was removed.",
+  "cautions": [
+    "The ReD examples (pair IDs 15, 16, 19) show that related product families can have similar titles while referring to different products; exact full-title equality did not match these.",
+    "Three observed title matches do not establish general accuracy or seller-level uniqueness.",
+    "The description procedure compares each complete cleaned field as a whole; it does not search for shared fragments."
+  ]
+}
