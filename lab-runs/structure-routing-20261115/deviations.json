@@ -1,0 +1,50 @@
+{
+  "final_experiment_complete": false,
+  "stop_reason": "ユーザー指定の練習10サイト終了時の区切りでpush・クラウドへ引き継ぐ",
+  "protocol_deviations": [
+    {
+      "id": "document_counter_mismatch",
+      "site_id": "07",
+      "method": "C1",
+      "reserved_route_document_requests": 40,
+      "observed_document_responses": 41,
+      "authorized_document_limit": 40,
+      "status": "unresolved",
+      "required_before_more_live_runs": "redirectとiframeを含むfixtureで予約数と実通信の差を診断し、厳密なハード上限を修正する。既存測定は書き換えず、予算逸脱として残す。",
+      "cause": "未確定。Playwright routeを通らないredirect等の可能性。断定しない。"
+    },
+    {
+      "id": "accidental_preflight_flag_parse",
+      "origin": "challenges.mjs --self-test の末尾boolean flagをundefinedと解釈した",
+      "requests": 8,
+      "document_loads": 0,
+      "record_rows": 20,
+      "status": "recorded_and_cli_guard_corrected",
+      "note": "robots.txtのみ。公開課題本番の完了とは扱わない。元の20行はimplementation-snapshotsに保存。"
+    },
+    {
+      "id": "preflight_v1_selection_and_validator",
+      "status": "superseded_before_candidate_measurement",
+      "requests": 742,
+      "captured_documents": 25,
+      "document_attempts": null,
+      "xhr_fetch": null,
+      "note": "v1のナビゲーション選定と偽ブロック判定を候補測定前に修正。原本とコピーを保持し、費用に含める。goldはv2に固定。"
+    },
+    {
+      "id": "resume_boolean_parser",
+      "status": "corrected_after_measurement",
+      "note": "mainrunner末尾--resumeの解釈を修正。測定済みソースをimplementation-snapshots/runner-measured.mjsに保持。実測アルゴリズムは変更なし。完了01のcoldを--resumeで再実行し、公開通信せず60結果行のまま終了した。"
+    }
+  ],
+  "usage": {
+    "page_judgment_llm_calls": 0,
+    "candidate_external_api_calls": 0,
+    "candidate_external_embedding_tokens": 0,
+    "candidate_local_inference_calls": 0,
+    "orchestration_research_report_llm_usage": null,
+    "orchestration_research_report_note": "Codex nativeモデルの使用量は実行環境に公開されていない。0として報告しない。",
+    "research_delegation_requested_model": "gpt-6-luna",
+    "model_runtime_verified": false
+  }
+}

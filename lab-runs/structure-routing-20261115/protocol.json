@@ -1,0 +1,57 @@
+{
+  "protocol_version": 2,
+  "purpose": "独立したサイト構造ナビゲーション評価のgold対象選定と検証",
+  "frozen_before_v2_live_measurement": true,
+  "browser": {
+    "engine": "Playwright Chromium",
+    "executable": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+    "headless": true,
+    "context": "新規cold contextをサイトごとに作成。cookie、storage、service worker、browser cacheを共有しない。serviceWorkers=block",
+    "locale": "ja-JP",
+    "timezone_id": "Asia/Tokyo",
+    "viewport": {"width": 1365, "height": 900},
+    "cache": "CDP Network.setCacheDisabled(true)"
+  },
+  "scope": {
+    "visibility": "公開ページの通常閲覧のみ",
+    "hosts": "targets.jsonlのallowed_hostsはtop-level document/navigationの遷移制限として適用。通常のCDN/JS/画像等subresourceはblockせず通信計測する。外部frameは保存対象外でURL hostを記録",
+    "entry_and_depth": "入口ページと入口から選んだ文書。遷移先からさらに遷移しない",
+    "max_documents_per_site": 3,
+    "max_targets_per_site": {"practice": 10, "real": 3},
+    "practice_ids": ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10"],
+    "real_ids": "残りのtargets.jsonl全ID",
+    "target_selection": "入口のrendered DOMからheader/nav/footer/asideとnavigation/banner/contentinfo内リンクを除外し、main/article/[role=main]または同じ親内に2件以上あるli/tr/card/product/item兄弟の実ancestorに含まれるリンクのみ候補にする。候補URLはhttp/httpsかつallowed_hosts内でquery/hashを保持する。非root入口からrootへのリンク、/api、/faq、/privacy、/terms、/about、/contact、/login、/cart、/checkout等utility path、ログイン・会員登録・cart/basket/checkoutリンクを除外する。表示ラベルはリンクテキスト、aria-label、画像alt、繰返し領域見出しの順で採取する。task textを空白・読点・句点・中点・slashで分割し2文字以上のtokenを得て、商品/製品/本→product,item,book,price,catalogue,catalog、記事/論文/ニュース/書籍/出版物→article,paper,news,publication,journal、文書/ガイド/章/節/トピック→docs,guide,documentation,tutorial,chapterの固定語を加える。score=4* task tokenの表示ラベル+周辺コンテキスト+pathnameへの出現数 + (繰返し兄弟領域8、main/article内4) + (入口path prefix一致8) + (入口pathnameと異なる場合1)。入口path prefixは入口pathnameが末尾slashなら全体、それ以外は最後のpath segmentを除いた親directoryとする。score降順、URL辞書順でtie-breakし、先頭2件を選ぶ。query/hash付きURLを保って重複排除する。URL、表示ラベル、周辺コンテキスト、score、semantic container情報を記録する。候補無しや検証失敗も80サイト分母に残しunverifiedとする",
+    "candidate_independence": "候補実装、候補実行結果、候補側のリンク・対象選定を閲覧または入力に使わない"
+  },
+  "request_policy": {
+    "delay_seconds": {"practice": 1, "real": 5},
+    "parallel_sites_max": 4,
+    "robots": "robots-parser packageで確認し、入口と各遷移対象URLを照合する。明示的なrobots制限を検出したURLへのアクセスを止め、確認リクエスト数・bytesを記録する",
+    "stop_on": ["明示的なrobots制限", "HTTP 429", "アクセス拒否またはブロック画面"],
+    "no_bypass": true,
+    "network_accounting": "Playwright request/response eventからtop-level document_attempts/document_responsesを記録し、request resourceType=xhr/fetchをxhr_fetchとして別記。全page request数、CDP encodedDataLength bytes、status、robots request数/bytesも記録。elapsed_msはrobots確認からcontext closeまで、browser_msは各page.goto開始からrendered DOM抽出完了までの合計。sourcegold保存文書数はロード数代理にしない"
+  },
+  "gold_validation": {
+    "must_verify": ["HTTP 200", "title非空", "body textが41文字以上", "main/article/list/table/product/card structural signature countが1以上", "表示リンクラベルがtitle/bodyに存在するか、generic titleを除く4文字以上のh1-h3とsignatureがある", "product_detailはproduct markerが1以上かつclass名productを持つ要素が4以下", "challengeはtitle/h1-h2の代表文言と完全一致、captcha iframe、またはlogin/sign-in見出しとpassword formで検出。本文中のcaptcha等の単語だけではblockにしない"],
+    "evidence": "入口と遷移先のsource HTMLはPlaywright response.body()から保存し、rendered DOM、URL、status、title、headings、本文、期待する型と構造signature、表示ラベルとの一致、検証結果をgold-private-v2/{id}/result.jsonとHTMLへ保存。これは汎用構造と表示ラベルによるgold proxyであり、意味上の完全な正しさの保証ではない",
+    "unverified": "リンク候補として選んだだけで対象ページの検証ができない場合gold_status=unverifiedと記録し、gold分母に含めない",
+    "failure": "拒否、429、robots制限、非200、空本文、タイトル不在、期待型不一致は理由付きでunverifiedまたはblockedと記録し、推測でgoldにしない"
+  },
+  "automation": {
+    "page_judgment": "固定ルールによるDOM・テキスト特徴の抽出のみ。LLMまたは手動で内容を読んだ判定を行わない",
+    "recording": "実行結果とJSONLを保存し、各サイトの対象選択根拠、通信量、検証根拠を追跡可能にする"
+  },
+  "large_stage": {
+    "enabled": false,
+    "proposed_initial_sites": ["01", "02"],
+    "target_count": 100,
+    "requires_parent_instruction": true
+  },
+  "target_groups": {"A":"01-10", "B":"11-20", "C":"21-30", "D":"31-40", "E":"41-50", "F":"51-60", "G":"61-70", "H":"71-80"},
+  "preflight_v1": {"archive": "gold-private/preflight-v1/", "results": "evaluator-results.preflight-v1.jsonl", "captured_documents": 25, "document_attempts": null, "document_responses": null, "xhr_fetch": null, "elapsed_ms": null, "browser_ms": null, "requests": 742, "bytes": 20701758, "included_in_total_budget": true},
+  "challenge_tasks": {
+    "manifest": "challenge_tasks.json",
+    "run_after": "全メインgoldの検証終了後",
+    "success_rule": "実DOM状態とDOM内リンクhrefの妥当性を確認する。URL直達だけでは成功にしない"
+  }
+}
