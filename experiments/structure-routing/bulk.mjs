@@ -1,3 +1,5 @@
+import {environmentContextOptions} from './environment.mjs';
+import {installDocumentGuard} from './document-guard.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -39,7 +41,7 @@ const ledger = {id, method: 'C1', stage: 'C', started_at: new Date().toISOString
   observations: [], milestones: [], stop_reason: null};
 const persist = () => fs.writeFileSync(path.join(directory, 'ledger.json'), JSON.stringify(ledger, null, 2));
 const browser = await chromium.launch({headless: true, executablePath: process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe'});
-const context = await browser.newContext({locale: 'ja-JP', timezoneId: 'Asia/Tokyo', viewport: {width: 1365, height: 900}, serviceWorkers: 'block'});
+const context = await browser.newContext({...environmentContextOptions(), locale: 'ja-JP', timezoneId: 'Asia/Tokyo', viewport: {width: 1365, height: 900}, serviceWorkers: 'block'});
 const page = await context.newPage();
 const client = await context.newCDPSession(page);
 await client.send('Network.enable');
@@ -51,20 +53,17 @@ page.on('request', request => {
 });
 page.on('response', response => { if (response.request().resourceType() === 'document') ledger.document_responses++; });
 let previousDocument = 0;
-await page.route('**/*', async route => {
-  const request = route.request();
-  if (request.isNavigationRequest()) {
-    const mainNavigation = request.frame() === page.mainFrame();
-    if ((mainNavigation && !safe(request.url())) || ledger.document_attempts >= budget) return route.abort('blockedbyclient');
-    ledger.document_attempts++;
-    persist();
-    if (mainNavigation) {
+const documentGuard = await installDocumentGuard(page, {limit: budget,
+  onReserved: (_info, counters) => { ledger.document_attempts = counters.reserved; persist(); },
+  beforeRequest: async ({url, mainFrame, method}) => {
+    if (method !== 'GET') return false;
+    if (mainFrame) {
+      if (!safe(url) || !await permitted(url)) return false;
       await wait(Math.max(0, 1000 - (Date.now() - previousDocument)));
       previousDocument = Date.now();
     }
-  }
-  return route.continue();
-});
+    return true;
+  }});
 const robots = new Map();
 async function permitted(url) {
   const origin = new URL(url).origin;
@@ -146,8 +145,12 @@ try {
 } catch (error) {
   ledger.stop_reason = error.message;
 } finally {
+  ledger.document_guard = documentGuard.counters;
+  ledger.environment_layer = process.env.STRUCTURE_ENVIRONMENT_LAYER || "unspecified";
+  ledger.browser_version = browser.version();
   ledger.elapsed_ms = Date.now() - started;
   ledger.finished_at = new Date().toISOString();
+  await documentGuard.seal();
   await context.close();
   await browser.close();
   persist();

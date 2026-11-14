@@ -1,3 +1,5 @@
+import {environmentContextOptions} from './environment.mjs';
+import {installDocumentGuard} from './document-guard.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createRequire} from 'node:module';
@@ -115,7 +117,7 @@ async function runOne(target, method, mode, runDir, resume) {
       status: 'skipped_due_access_condition', stop_reason: 'prior_access_condition_stop',
       stop_trigger: {method: accessStop.method, mode: accessStop.mode, status: accessStop.status}, robots: accessStop.robots,
       discovered_documents: 0, document_requests: 0, document_responses: 0,
-      total_method_documents: priorRows.reduce((sum, x) => sum + (x.document_requests || 0), 0),
+      total_method_documents: priorRows.reduce((sum, x) => sum + Math.max(x.document_requests || 0, x.document_responses || 0), 0),
       total_method_operations: priorRows.reduce((sum, x) => sum + (x.operations || 0), 0), http_requests: 0,
       xhr_fetch_requests: 0, operations: 0, elapsed_ms: 0,
       external_llm_calls: 0, local_inference: {calls: 0, input_tokens: 0, runtime_ms: 0},
@@ -129,14 +131,27 @@ async function runOne(target, method, mode, runDir, resume) {
   const explorationLimit = configuredObserve ? Math.min(baseExplore, configuredObserve) : baseExplore;
   if (!Number.isInteger(explorationLimit) || explorationLimit < 1) throw new Error('observe_limit_must_be_positive_integer');
   const totalLimit = method === 'B0' ? 3 : practice ? 40 : 15;
-  const priorDocuments = priorRows.reduce((sum, x) => sum + (x.document_requests || 0), 0);
+  const interruptedFile = path.join(runDir, 'interrupted-executions.json');
+  const interrupted = fs.existsSync(interruptedFile) ? JSON.parse(fs.readFileSync(interruptedFile, 'utf8')) : {};
+  const interruptedReservation = interrupted.main?.find(x => x.id === id)?.method_unlogged_document_reservation?.[method] || 0;
+  const priorDocuments = interruptedReservation + priorRows.reduce((sum, x) => sum + Math.max(x.document_requests || 0, x.document_responses || 0), 0);
   const priorOperations = priorRows.reduce((sum, x) => sum + (x.operations || 0), 0);
   const priorElapsed = priorRows.reduce((sum, x) => sum + (x.elapsed_ms || 0), 0);
   const documentAllowance = Math.max(0, totalLimit - priorDocuments);
+  if (documentAllowance === 0) {
+    const result = {id, domain: target.domain, method, mode, status: interruptedReservation ? 'interrupted_budget_reserved' : 'document_budget_reached',
+      stop_reason: interruptedReservation ? 'unlogged_interrupted_cost_reserved_not_reacquired' : 'method_document_budget',
+      trial_type: mode === 'G' ? 'graph_replay' : mode === 'R' ? 'generalization' : 'discovery',
+      document_requests: 0, document_responses: 0, http_requests: 0, xhr_fetch_requests: 0, operations: 0,
+      total_method_documents: priorDocuments, total_method_operations: priorOperations, elapsed_ms: 0,
+      interrupted_document_reservation: interruptedReservation, pages: [], external_llm_calls: 0,
+      local_inference: {calls:0,input_tokens:0,runtime_ms:0}, environment_layer: process.env.STRUCTURE_ENVIRONMENT_LAYER || 'unspecified'};
+    state.completed.push(stateKey); saveJson(statePath, state); appendJsonl(path.join(runDir, 'results.jsonl'), result); return result;
+  }
   let interval = practice ? 1000 : 5000;
   const hosts = new Set([new URL(target.start_url).hostname.toLowerCase(), ...(target.allowed_hosts || [])].map(x => x.toLowerCase()));
   const browser = await chromium.launch({headless: true, ...(process.env.CHROME_PATH ? {executablePath: process.env.CHROME_PATH} : {})});
-  const context = await browser.newContext({serviceWorkers: 'block', ignoreHTTPSErrors: false, locale: 'ja-JP', timezoneId: 'Asia/Tokyo', viewport: {width: 1365, height: 900}});
+  const context = await browser.newContext({...environmentContextOptions(), serviceWorkers: 'block', ignoreHTTPSErrors: false, locale: 'ja-JP', timezoneId: 'Asia/Tokyo', viewport: {width: 1365, height: 900}});
   const page = await context.newPage();
   const cdp = await context.newCDPSession(page);
   await cdp.send('Network.setCacheDisabled', {cacheDisabled: true});
@@ -155,38 +170,37 @@ async function runOne(target, method, mode, runDir, resume) {
       response.body().then(body => responseBodies.set(documentKey(response.url()), body)).catch(() => {});
     }
   });
-  await page.route('**/*', async route => {
-    const url = route.request().url();
-    if (route.request().isNavigationRequest()) {
-      if (docRequests >= documentAllowance) return await route.abort('blockedbyclient');
-      const mainNavigation = route.request().frame() === page.mainFrame();
-      if (mainNavigation) {
-        try { if (!allowed(url, hosts) || !/^https?:$/.test(new URL(url).protocol)) return await route.abort('blockedbyclient'); }
-        catch { return await route.abort('blockedbyclient'); }
-      }
-      docRequests++;
-      if (mainNavigation) {
+  const documentGuard = await installDocumentGuard(page, {
+    limit: documentAllowance,
+    onReserved: (_info, counters) => { docRequests = counters.reserved; },
+    beforeRequest: async ({url, mainFrame, method}) => {
+      if (method !== 'GET') return false;
+      if (mainFrame) {
+        if (!allowed(url, hosts) || !/^https?:$/.test(new URL(url).protocol)) return false;
+        const check = await fetchRobots(url);
+        if (!check.allowed) return false;
+        interval = Math.max(interval, check.crawl_delay_ms || 0);
         const spacing = Math.max(0, interval - (Date.now() - lastNavigationStart));
         if (spacing) await wait(spacing);
         lastNavigationStart = Date.now();
       }
+      return true;
     }
-    return route.continue();
   });
   const robotsByOrigin = new Map();
   const fetchRobots = async url => {
     const origin = new URL(url).origin;
     if (robotsByOrigin.has(origin)) {
       const cached = robotsByOrigin.get(origin);
-      return {...cached.metadata, allowed: cached.parser ? cached.parser.isAllowed(url, '*') !== false : true};
+      return {...cached.metadata, allowed: cached.metadata.access_refused ? false : cached.parser ? cached.parser.isAllowed(url, '*') !== false : true};
     }
     try {
-      const response = await context.request.get(new URL('/robots.txt', origin).href, {timeout: 10000});
       requests++;
+      const response = await context.request.get(new URL('/robots.txt', origin).href, {timeout: 10000});
       const text = await response.text();
       if (response.status() >= 400) {
-        const result = {status: response.status(), source: 'unavailable'};
-        robotsByOrigin.set(origin, {metadata: result, parser: null}); return {...result, allowed: true};
+        const result = {status: response.status(), source: 'unavailable', access_refused: [401,403,429].includes(response.status())};
+        robotsByOrigin.set(origin, {metadata: result, parser: null}); return {...result, allowed: !result.access_refused};
       }
       const parser = require('robots-parser')(new URL('/robots.txt', origin).href, text);
       const result = {status: response.status(), source: 'robots-parser',
@@ -298,15 +312,17 @@ async function runOne(target, method, mode, runDir, resume) {
   } catch (error) {
     status = 'error'; stopReason = String(error.message).slice(0, 300);
   } finally {
+    await documentGuard.seal();
     await context.close(); await browser.close();
   }
   saveJson(path.join(dir, 'observations.json'), {observations, network, robots});
   state.completed.push(stateKey); saveJson(statePath, state);
   const result = {id, domain: target.domain, method, mode, trial_type: mode === 'G' ? 'graph_replay' : mode === 'R' ? 'generalization' : 'discovery',
+    environment_layer: process.env.STRUCTURE_ENVIRONMENT_LAYER || 'unspecified', browser_version: browser.version(),
     status, stop_reason: stopReason, robots, rule_provenance: mode === 'R' ? 'frozen_cold_rules' : mode === 'G' ? 'saved_cold_graph_paths' : null,
     rule_source_pages: mode === 'R' && fs.existsSync(path.join(base, 'cold', 'rules.json'))
       ? JSON.parse(fs.readFileSync(path.join(base, 'cold', 'rules.json'), 'utf8')).source_pages : [],
-    discovered_documents: observations.length, document_requests: docRequests, document_responses: docLoads,
+    document_guard: documentGuard.counters, discovered_documents: observations.length, document_requests: docRequests, document_responses: docLoads,
     total_method_documents: priorDocuments + docRequests, total_method_operations: priorOperations + operations, http_requests: requests,
     xhr_fetch_requests: xhr, operations, elapsed_ms: Date.now() - started, external_llm_calls: 0,
     local_inference: {calls: 0, input_tokens: 0, runtime_ms: 0}, initial_elapsed_ms: mode === 'cold' ? Date.now() - started : 0,

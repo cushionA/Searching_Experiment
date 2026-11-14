@@ -1,3 +1,5 @@
+import {environmentContextOptions} from './environment.mjs';
+import {installDocumentGuard} from './document-guard.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
@@ -207,15 +209,25 @@ async function runTask(task, target, method, runDir, mainRows, priorChallengeRow
   const practice = !!target.practice;
   const methodRows = mainRows.filter(row => row.id === task.site_id && row.method === method);
   const challengeRows = priorChallengeRows.filter(row => row.site_id === task.site_id && row.method === method);
-  const mainDocs = methodRows.reduce((sum, row) => sum + (row.document_requests || 0), 0);
+  const mainDocs = methodRows.reduce((sum, row) => sum + Math.max(row.document_requests || 0, row.document_responses || 0), 0);
   const mainOps = methodRows.reduce((sum, row) => sum + (row.operations || 0), 0);
   const mainTime = methodRows.reduce((sum, row) => sum + (row.elapsed_ms || 0), 0);
-  const challengeDocs = challengeRows.reduce((sum, row) => sum + (row.document_requests || 0), 0);
+  const challengeDocs = challengeRows.reduce((sum, row) => sum + Math.max(row.document_requests || 0, row.document_responses || 0), 0);
   const challengeOps = challengeRows.reduce((sum, row) => sum + (row.operations || 0), 0);
   const challengeTime = challengeRows.reduce((sum, row) => sum + (row.elapsed_ms || 0), 0);
   const documentCap = practice ? 40 : 15, operationCap = practice ? 100 : 30;
   let interval = practice ? 1000 : 5000;
-  const remainingDocs = Math.max(0, documentCap - mainDocs - challengeDocs);
+  const docCost = row => Math.max(row.document_requests || 0, row.document_responses || 0);
+  const globalSpent = readJSONL(path.join(runDir, 'evaluator-results.preflight-v1.jsonl')).reduce((n,r)=>n+(r.requests||0),0)
+    + readJSONL(path.join(runDir, 'evaluator-results-v2.jsonl')).reduce((n,r)=>n+(r.document_attempts||0),0)
+    + mainRows.reduce((n,r)=>n+docCost(r),0)
+    + readJSONL(path.join(runDir, 'challenge-results.jsonl')).reduce((n,r)=>n+docCost(r),0)
+    + readJSONL(path.join(runDir, 'b0-results.jsonl')).reduce((n,r)=>n+docCost(r),0);
+  const interruptionFile = path.join(runDir, 'interrupted-executions.json');
+  const interruption = fs.existsSync(interruptionFile) ? JSON.parse(fs.readFileSync(interruptionFile, 'utf8')) : {};
+  const unloggedGlobal = interruption.main_unlogged_reserved_documents || 0;
+  const unloggedMethod = interruption.main?.find(x=>x.id === task.site_id)?.method_unlogged_document_reservation?.[method] || 0;
+  const remainingDocs = Math.max(0, Math.min(3500-globalSpent-unloggedGlobal, documentCap - mainDocs - challengeDocs-unloggedMethod));
   const remainingOps = Math.max(0, operationCap - mainOps - challengeOps);
   const priorLimit = Math.max(0, 600000 - mainTime - challengeTime);
   const dir = path.join(runDir, 'artifacts', task.site_id, method, 'challenges', task.id);
@@ -237,7 +249,7 @@ async function runTask(task, target, method, runDir, mainRows, priorChallengeRow
 
   const allowedHosts = new Set([new URL(task.start_url).hostname.toLowerCase(), ...(target.allowed_hosts || [])].map(x => x.toLowerCase()));
   const browser = await chromium.launch({headless: true, ...(process.env.CHROME_PATH ? {executablePath: process.env.CHROME_PATH} : {})});
-  const context = await browser.newContext({serviceWorkers: 'block', ignoreHTTPSErrors: false,
+  const context = await browser.newContext({...environmentContextOptions(), serviceWorkers: 'block', ignoreHTTPSErrors: false,
     locale: 'ja-JP', timezoneId: 'Asia/Tokyo', viewport: {width: 1365, height: 900}});
   const page = await context.newPage();
   await (await context.newCDPSession(page)).send('Network.setCacheDisabled', {cacheDisabled: true});
@@ -249,15 +261,15 @@ async function runTask(task, target, method, runDir, mainRows, priorChallengeRow
     const origin = new URL(url).origin;
     if (robotsByOrigin.has(origin)) {
       const cached = robotsByOrigin.get(origin);
-      return {...cached.metadata, allowed: cached.parser ? cached.parser.isAllowed(url, '*') !== false : true};
+      return {...cached.metadata, allowed: cached.metadata.access_refused ? false : cached.parser ? cached.parser.isAllowed(url, '*') !== false : true};
     }
     try {
-      const response = await context.request.get(new URL('/robots.txt', origin).href, {timeout: 10000});
       requests++;
+      const response = await context.request.get(new URL('/robots.txt', origin).href, {timeout: 10000});
       const body = await response.text(); bytes += Buffer.byteLength(body);
       if (response.status() >= 400) {
-        const metadata = {status: response.status(), source: 'unavailable'};
-        robotsByOrigin.set(origin, {metadata, parser: null}); return {...metadata, allowed: true};
+        const metadata = {status: response.status(), source: 'unavailable', access_refused: [401,403,429].includes(response.status())};
+        robotsByOrigin.set(origin, {metadata, parser: null}); return {...metadata, allowed: !metadata.access_refused};
       }
       const parser = require('robots-parser')(new URL('/robots.txt', origin).href, body);
       const metadata = {status: response.status(), source: 'robots-parser', crawl_delay_ms: Math.ceil((parser.getCrawlDelay('*') || 0) * 1000)};
@@ -268,7 +280,7 @@ async function runTask(task, target, method, runDir, mainRows, priorChallengeRow
   page.on('request', request => {
     requests++;
     if (['xhr', 'fetch'].includes(request.resourceType())) xhr++;
-    if (request.isNavigationRequest()) documentRequests++;
+
     network.push({url: request.url(), method: request.method(), type: request.resourceType()});
   });
   page.on('response', response => {
@@ -282,26 +294,22 @@ async function runTask(task, target, method, runDir, mainRows, priorChallengeRow
       response.body().then(body => { bodies.set(u.href, body); if (!(contentLength > 0)) bytes += body.length; }).catch(() => {});
     }
   });
-  await page.route('**/*', async route => {
-    const request = route.request();
-    const url = request.url();
-    if (request.isNavigationRequest()) {
-      documentReservations++;
-      if (documentReservations > remainingDocs || documentRequests > remainingDocs) return route.abort('blockedbyclient');
-      const mainFrame = request.frame()?.parentFrame() === null;
+  const documentGuard = await installDocumentGuard(page, {limit: remainingDocs,
+    onReserved: (_info, counters) => { documentReservations = counters.reserved; documentRequests = counters.reserved; },
+    beforeRequest: async ({url, mainFrame, method}) => {
+      if (method !== 'GET') return false;
       if (mainFrame) {
-        if (!/^https?:$/.test(new URL(url).protocol) || !allowedHosts.has(new URL(url).hostname.toLowerCase())) return route.abort('blockedbyclient');
+        if (!/^https?:$/.test(new URL(url).protocol) || !allowedHosts.has(new URL(url).hostname.toLowerCase())) return false;
         const robotsCheck = await robotsFor(url);
-        if (!robotsCheck.allowed) { robotsDenied = true; return route.abort('blockedbyclient'); }
+        if (!robotsCheck.allowed) { robotsDenied = true; return false; }
         const delay = Math.max(0, interval - (Date.now() - lastNavigation));
         if (delay) await wait(delay);
         lastNavigation = Date.now();
       }
-    }
-    return route.continue();
-  });
+      return true;
+    }});
   let robots = {allowed: true, status: null, source: 'unavailable'};
-  let status = 'completed', stopReason = 'content_unchanged';
+  let status = 'completed', stopReason = 'content_unchanged', finalOutput = null;
   try {
     robots = await robotsFor(task.start_url);
       if (!robots.allowed) { status = 'robots_disallowed'; stopReason = 'blocked'; }
@@ -399,15 +407,23 @@ async function runTask(task, target, method, runDir, mainRows, priorChallengeRow
       cumulative_document_requests: mainDocs + challengeDocs + Math.max(documentRequests, documentReservations),
         cumulative_operations: mainOps + challengeOps + operations,
         cumulative_elapsed_ms: mainTime + challengeTime + (Date.now() - started)};
-      return output;
+      finalOutput = output;
     }
   } catch (error) {
     status = robotsDenied ? 'robots_disallowed' : 'error'; stopReason = robotsDenied ? 'blocked' : 'error'; failures.push({kind: error.name || 'Error', message: String(error.message).slice(0, 240)});
   } finally {
+    await documentGuard.seal().catch(() => {});
     await context.close().catch(() => {});
     await browser.close().catch(() => {});
   }
-  return {...base, status, task_success: false, stop_reason: stopReason, robots, requests,
+  if (finalOutput) return {...finalOutput, document_guard: documentGuard.counters,
+    environment_layer: process.env.STRUCTURE_ENVIRONMENT_LAYER || 'unspecified', browser_version: browser.version(),
+    requests, document_requests: documentReservations, document_reservations: documentReservations,
+    document_responses: documentResponses, xhr_fetch_requests: xhr, transferred_bytes: bytes,
+    cumulative_document_requests: mainDocs + challengeDocs + documentReservations};
+  return {...base, document_guard: documentGuard.counters,
+    environment_layer: process.env.STRUCTURE_ENVIRONMENT_LAYER || 'unspecified', browser_version: browser.version(),
+    status, task_success: false, stop_reason: stopReason, robots, requests,
     document_requests: Math.max(documentRequests, documentReservations), document_reservations: documentReservations,
     document_responses: documentResponses, xhr_fetch_requests: xhr, transferred_bytes: bytes, operations,
     elapsed_ms: Date.now() - started, browser_seconds: (Date.now() - started) / 1000, failures,

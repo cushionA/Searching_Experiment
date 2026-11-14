@@ -49,9 +49,19 @@ def main():
     def main_spent():
         preflight = sum(row.get("requests", 0) for row in rows(run / "evaluator-results.preflight-v1.jsonl"))
         gold = sum(row.get("document_attempts", 0) for row in rows(run / "evaluator-results-v2.jsonl"))
-        candidate = sum(row.get("document_requests", 0) for row in rows(run / "results.jsonl"))
-        challenges = sum(row.get("document_requests", 0) for row in rows(run / "challenge-results.jsonl"))
-        return preflight + gold + candidate + challenges
+        candidate = sum(max(row.get("document_requests", 0), row.get("document_responses", 0)) for row in rows(run / "results.jsonl"))
+        challenges = sum(max(row.get("document_requests", 0), row.get("document_responses", 0)) for row in rows(run / "challenge-results.jsonl"))
+        interrupted_file = run / "interrupted-executions.json"
+        interrupted = json.loads(interrupted_file.read_text()) if interrupted_file.exists() else {}
+        b0 = sum(max(row.get("document_requests", 0), row.get("document_responses", 0)) for row in rows(run / "b0-results.jsonl"))
+        return preflight + gold + candidate + challenges + b0 + interrupted.get("main_unlogged_reserved_documents", 0)
+
+    def outstanding():
+        current = rows(run / "results.jsonl")
+        return sum(max(0, entry["reserved"] - (sum(
+            max(row.get("document_requests", 0), row.get("document_responses", 0))
+            for row in current if row["id"] == site
+        ) - entry["initial"])) for site, entry in reservations.items())
 
     def execute(target):
         site_started = time.monotonic()
@@ -59,13 +69,18 @@ def main():
         with budget_lock:
             prior = rows(run / "results.jsonl")
             allowance = 40 if target["practice"] else 15
-            reserve = sum(max(0, (3 if method == "B0" else allowance) - sum(
-                row.get("document_requests", 0) for row in prior
+            interrupted_file = run / "interrupted-executions.json"
+            interruption = json.loads(interrupted_file.read_text()) if interrupted_file.exists() else {}
+            unlogged = next((x["method_unlogged_document_reservation"] for x in interruption.get("main", []) if x["id"] == target["id"]), {})
+            reserve = sum(max(0, (3 if method == "B0" else allowance) - unlogged.get(method, 0) - sum(
+                max(row.get("document_requests", 0), row.get("document_responses", 0)) for row in prior
                 if row["id"] == target["id"] and row["method"] == method
             )) for method in args.methods.split(","))
-            if main_spent() + sum(reservations.values()) + reserve > 3500:
+            if main_spent() + outstanding() + reserve > 3500:
                 return {"id": target["id"], "status": "global_budget_reservation_reached", "processes": []}
-            reservations[target["id"]] = reserve
+            reservations[target["id"]] = {"reserved": reserve, "initial": sum(
+                max(row.get("document_requests", 0), row.get("document_responses", 0))
+                for row in prior if row["id"] == target["id"])}
         for phase in phases:
             command = ["node", str(ROOT / "experiments/structure-routing/runner.mjs"),
                        "--run", str(run), "--ids", target["id"], "--methods", args.methods,

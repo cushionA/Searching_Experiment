@@ -1,3 +1,32 @@
+# Cloud継続追記 2026-11-15（この節を先に読む）
+
+**全工程未完了。環境上流503で新規公開取得を停止中。** 最新の保存メタデータは `CLOUD-CHECKPOINT.json`。下の旧引き継ぎは元資料として保持し、Cloudの現在値には `report.md`、`verify-cloud.json`、`cloud-failure-analysis.json` を使う。
+
+- 元ZIP SHA256一致、inventory1277全件復元。元60行はそのまま保持。独立gold v2は再取得も再選定もしていない。
+- 主比較390行。01〜64は各6行（アクセス停止・中断予算・上流503を含む処理記録）、65〜67はcold2行のみ、68〜80は未実行。完了行を再取得しない。
+- 07/C1等の元逸脱はdeviations.json、Cloud13/B1の追加計数差はcloud-deviations.json。**現在のguardは `seal()` でcontextをofflineにしてからcontext.closeする。** root/iframe全targetでNetwork.enableとcache無効化、再帰OOPIF、非同期callback後の上限再確認を含む。5 guard tests +8 integration tests +動的課題localhost +lab81/0fail/2skipを確認。
+- 途中で古いguardを読み込んだ18/20/21の実行を停止し、未記録分は各方式の残枠全部を予約した。interrupted-executions.jsonの77文書を全体・サイト方式の両方で計上する。追加取得しない。正確な費用はunknown。段階C v2中断も60文書予約、保存済み部分HTML/DOMは維持。
+- 主比較予約1556/3500、残1944。段階C予約62/400、残338。v1予約742、C1/B1既知費用と中断費用を0扱いしない。最新値は `python3 -B experiments/structure-routing/verify.py --run lab-runs/structure-routing-20261115 --allow-incomplete`。
+- 直接通信のrobots接続失敗後、Cloudの継承プロキシを明示した。v2独立選定では一部200取得があったが、その後Playwright、curl（booksとpython.org）、GitHub git ls-remoteも同じ上流503。Cloud statusのconnected/unrestrictedは実通信の健康を意味しない。原因unknown。サイト側ブロックや対象不存在として扱わない。
+- Cloudブラウザは `/usr/bin/chromium` 151.0.7922.173、Playwright1.63.0。旧Windows157と比較差を混同しない。`STRUCTURE_USE_ENV_PROXY=true` の時だけ既存proxy変数を使用、認証値は保存しない。TLS検証は有効。
+
+## 通信復旧後の続行
+
+既存承認内で進め、許可を聞き直さない。新規robots診断をする場合も費用をcloud-network-diagnostic.jsonへ追記する。継続503では多数サイトへ繰り返さない。復旧が確認できてから以下を行う。
+
+1. 65〜80の未完了phaseのみresume。同時最大4サイト・サイト内1。`CHROME_PATH=/usr/bin/chromium STRUCTURE_USE_ENV_PROXY=true STRUCTURE_ENVIRONMENT_LAYER=cloud-linux-chromium151-proxy-sealed-20261115 python3 -B experiments/structure-routing/orchestrate.py --run lab-runs/structure-routing-20261115 --ids 65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80 --jobs 4`。他の完了行を再取得しない。上流503の既存記録を置換しない。
+2. 公開動的課題は元の `--execute=true --run ...` 必須。20 accidental行を除外し、本番20行を別途記録。主比較残枠と共有する。
+3. B0は新しい `b0.mjs --run ...`。独立gold固定URLだけをB0へ渡し、B1/C1へ渡さない。各サイト3文書・全体3500以内、独立goldのverified target優先。B0はb0-results.jsonl、採点はscore.mjsへ `--results=.../b0-results.jsonl --methods=B0 --outdir=.../score-b0`。
+4. 段階Cのv1/v3は接続失敗で対象0、v2は中断。既存ファイルを上書きせず `stage-c-evaluate.mjs --mode select --revision v4` で新たな独立対象をbulk前に固定する。候補資産を読ませない。現在累積選定予約62、新規選定は最大58文書、2サイト合計400内。候補bulkは各140文書まで（合計280）とすれば上限400。新規選定revisionのmanifest hashと時刻を保持し、bulkへgold URLを入力しない。
+5. 各siteのC1 frozen rulesをそのまま `bulk.mjs --run ... --id 01 --documents 140` と08へ1回ずつ連続取得。明確な拒否・429は止める。100が固定/存在/取得できなければ理由を残す。既存HTMLは新規取得へ数えない。後で `stage-c-evaluate.mjs --mode score --revision v4 --manifest-sha256 HASH`、`stage-c-report.py --revision v4`。10/30/100は独立成功数で累積・増分を出す。未到達はnull。
+6. C2は通信障害やUI失敗をモデルで直せるとせず、200/有効HTMLの候補選択失敗に限定して追加。現時点では追加モデル0、nativeモデル費用unknown。B2へ比較を置き換えない。
+7. 独立score新出力先、全80/verified47、G/R・HTML保存・誤成功・重複・欠測費用・楽天61/auPAY62・モデル価値・Skill案をreport更新。現在の `summarize_cloud.py` は390行時点のCloud障害報告用であり、全工程完了版を自動生成するものではない。
+8. verify（完了時はallow-incompleteなし）と新しい名前へのpackage.py export、SHA256/CRC/inventory照合、Git永続化を行う。元archiveを上書きしない。
+
+`verify.py --allow-incomplete` のokは証拠整合性であり、完成や方式性能の合格ではない。候補比較結果は外部製品pinchtab-webgraphの実績ではない。設計・調査・報告nativeモデルの使用量はunknown。Luna指定は行ったが実モデル独立検証はできていない。
+
+---
+
 # クラウド継続用の引き継ぎ
 
 ユーザーは2026-11-15、練習10サイトの比較が一巡した区切りでpushし、クラウドで続きを行うよう依頼した。元の80サイト検証は完了していない。原依頼の最重要条件は、各対象ページのHTMLをLLMへ送って判断させず、保存した構造・規則をプログラムから再利用すること。SKU・価格・属性の抽出精度は評価対象外。
