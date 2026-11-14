@@ -1,3 +1,13 @@
+# 最終判断と保存未完了（この節を先に読む）
+
+現C1の本番採用は見送り。ローカルで全80主比較480行・B0 80行・公開課題20行・商品補足12行まで処理した。100対象は固定したがbulkは両サイト入口503で0/100。主予約1794/3500、段階C124/400。最終試験15/15成功、整合性検証エラー0。
+
+**最終ZIP・全480行証跡・最終ソースのリモート保存は未完了。** Cloud環境がunavailableになった。report.mdは最終判断概要、FINAL-DECISION.jsonは検証済みZIP先頭からCRC照合で回収した正確な結果、PERSISTENCE-STATUS.jsonは保存状況。現在GitにあるCLOUD-CHECKPOINT.json・CSV・旧scoreと完全ZIPは390行時点であり、最終値ではない。
+
+復旧対象: ローカルcommit29ca3ba、/workspace/Searching_Experiment/lab-runs/structure-routing-20261115-final-checkpoint.zip、40,251,701 bytes、SHA256 f019935119dac6bf2a9cc2fdc9547879bf00de53a9ad78cbcf6228466f87b69d、4,123 inventory。既存環境のファイルを復旧してから保存する。**旧390行stateから完了済みを再取得しない。** 残予算もリセットしない。以下は旧資料として保持する。
+
+---
+
 # Cloud継続追記 2026-11-15（この節を先に読む）
 
 **全工程未完了。環境上流503で新規公開取得を停止中。** 最新の保存メタデータは `CLOUD-CHECKPOINT.json`。下の旧引き継ぎは元資料として保持し、Cloudの現在値には `report.md`、`verify-cloud.json`、`cloud-failure-analysis.json` を使う。
