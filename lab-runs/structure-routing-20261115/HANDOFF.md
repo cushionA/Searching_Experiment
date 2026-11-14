@@ -2,7 +2,7 @@
 
 ユーザーは2026-11-15、練習10サイトの比較が一巡した区切りでpushし、クラウドで続きを行うよう依頼した。元の80サイト検証は完了していない。原依頼の最重要条件は、各対象ページのHTMLをLLMへ送って判断させず、保存した構造・規則をプログラムから再利用すること。SKU・価格・属性の抽出精度は評価対象外。
 
-ブランチは `codex/structure-routing-20261115`、リポジトリは `https://github.com/cushionA/Searching_Experiment`。runは `lab-runs/structure-routing-20261115`。このチャットのIDは `01a1db17-919a-7ca3-8076-fff5a754c879`。
+ブランチは `codex-structure-routing-20261115`、リポジトリは `https://github.com/cushionA/Searching_Experiment`。runは `lab-runs/structure-routing-20261115`。このチャットのIDは `01a1db17-919a-7ca3-8076-fff5a754c879`。
 
 ## 現在の区切り
 
@@ -25,8 +25,8 @@ challenges自己テストの末尾フラグ解釈ミスでrobots.txtへ8 request
 証拠HTMLはGit直下へ大量に追加せず、リポジトリ内の `lab-runs/structure-routing-20261115-checkpoint.zip` に保存する。`CHECKPOINT.json` のSHA256を確認してリポジトリのルートへ展開する。ZIPにはstate、独立gold、HTML/DOM、graphs/rules/paths、実行ログ、監査ログ、ソースとinventoryを含む。モデル重み・インストール環境・公開候補のclone全体は含まない。
 
 ```bash
-git fetch origin codex/structure-routing-20261115
-git switch codex/structure-routing-20261115
+git fetch origin codex-structure-routing-20261115
+git switch codex-structure-routing-20261115
 python3 -m zipfile -e lab-runs/structure-routing-20261115-checkpoint.zip .
 npm install --prefix .deps/bot-diagnostics --ignore-scripts --no-audit --no-fund playwright@1.63.0 robots-parser@3.0.1
 ```
