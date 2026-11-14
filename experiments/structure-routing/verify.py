@@ -70,15 +70,24 @@ def main():
         preflight = jsonl(run / "evaluator-results.preflight-v1.jsonl")
         challenges = jsonl(run / "challenge-results.jsonl")
         b0 = jsonl(run / "b0-results.jsonl")
+        recovery = jsonl(run / "recovery-results.jsonl")
     except ValueError as exc:
         errors.append(str(exc))
-        targets = results = gold_meta = preflight = challenges = b0 = []
+        targets = results = gold_meta = preflight = challenges = b0 = recovery = []
 
     ids = [str(row.get("id", "")) for row in targets]
     target_ids = set(ids)
     check(len(targets) == EXPECTED_TARGETS, f"targets: expected 80, found {len(targets)}")
     check(len(target_ids) == EXPECTED_TARGETS, f"targets: expected 80 unique IDs, found {len(target_ids)}")
     report["target_count"] = len(targets)
+    check(len(b0) == 80 and len({r.get("id") for r in b0}) == 80, "B0 matrix must contain 80 unique sites", incomplete=True)
+    report["B0_sites"] = len(b0)
+    check(len({(r.get("id"),r.get("method"),r.get("mode")) for r in recovery}) == len(recovery), "duplicate recovery keys")
+    for row in recovery:
+        key = f"{row['id']}:{row['method']}:{row['mode']}"
+        f = run / "site-state" / f"{row['id']}.network_recovery.json"
+        check(f.exists() and key in json.loads(f.read_text()).get("completed", []), f"recovery state missing {key}")
+    report["network_recovery_rows"] = len(recovery)
 
     # Verify the frozen initial 60 rows against the checkpoint archive, without
     # inspecting any independent-evaluation content.
@@ -141,7 +150,7 @@ def main():
 
     # Each referenced saved page must be a nonempty file below this row's artifact folder.
     checked_paths = 0
-    for row in results:
+    for row in results + recovery + b0:
         site, method = str(row.get("id", "")), str(row.get("method", ""))
         for page_index, page in enumerate(row.get("pages") or []):
             for field in ("response_html", "rendered_dom"):
@@ -196,7 +205,7 @@ def main():
     overages = []
     targets_by_id = {str(row.get("id")): row for row in targets}
     shared_spend = {}
-    for row in results:
+    for row in results + recovery + b0:
         site = str(row.get("id", ""))
         allowance = 3 if row.get("method") == "B0" else (40 if targets_by_id.get(site, {}).get("practice") else 15)
         spent = doc_cost(row)
@@ -206,8 +215,11 @@ def main():
         record = {"id": row.get("id"), "method": row.get("method"), "mode": row.get("mode"),
                   "spent": spent, "reserved": row.get("reserved_document_budget", allowance), "allowance": allowance,
                   "environment_layer": layer}
-        if layer == SEALED_CLOUD_LAYER:
+        if "sealed" in str(layer):
             guard = row.get("document_guard")
+            if row.get("method") == "B0" and not isinstance(guard, dict):
+                trace = run / "artifacts" / site / "B0" / "cold" / "observations.json"
+                if trace.exists(): guard = json.loads(trace.read_text()).get("document_guard")
             if not isinstance(guard, dict):
                 if spent or row.get("http_requests", 0):
                     errors.append(f"sealed cloud communication row lacks document_guard: {record}")
@@ -257,14 +269,15 @@ def main():
     gold_cost = sum(int(r.get("document_attempts") or 0) for r in gold_meta)
     v1_cost = sum(int(r.get("requests") or 0) for r in preflight)
     candidate_cost = sum(doc_cost(r) for r in results)
+    recovery_cost = sum(doc_cost(r) for r in recovery)
     b0_cost = sum(doc_cost(r) for r in b0)
     challenge_cost = sum(doc_cost(r) for r in challenges)
     interrupted_main = int(interrupted.get("main_unlogged_reserved_documents") or 0)
     interrupted_stage_c = int((interrupted.get("stage_c") or {}).get("unlogged_document_reservation") or 0)
-    main_cost = v1_cost + gold_cost + candidate_cost + b0_cost + challenge_cost + interrupted_main
+    main_cost = v1_cost + gold_cost + candidate_cost + recovery_cost + b0_cost + challenge_cost + interrupted_main
     check(main_cost <= MAIN_BUDGET, f"main document budget exceeded: {main_cost}/{MAIN_BUDGET}")
     report["main_budget"] = {"v1_requests": v1_cost, "v2_attempts": gold_cost,
-                             "candidate": candidate_cost, "b0": b0_cost,
+                             "candidate": candidate_cost, "recovery": recovery_cost, "b0": b0_cost,
                              "challenges_including_accidental": challenge_cost,
                              "interrupted_main_unlogged_reserved": interrupted_main,
                              "total": main_cost, "limit": MAIN_BUDGET}
@@ -313,9 +326,11 @@ def main():
         if file.exists():
             obj = json.loads(file.read_text(encoding="utf-8"))
             bulk_documents += int(obj.get("document_attempts") or 0)
-    stage_cost += bulk_documents
+    diagnostic = run / "artifacts" / "stage-c-transport-diagnostic" / "result.json"
+    diagnostic_documents = int(json.loads(diagnostic.read_text()).get("document_attempts", 0)) if diagnostic.exists() else 0
+    stage_cost += bulk_documents + diagnostic_documents
     check(stage_cost <= STAGE_C_BUDGET, f"stage C selection+bulk document cost exceeds {STAGE_C_BUDGET}: {stage_cost}")
-    report["stage_c"] = {"selection_and_bulk_document_cost": stage_cost, "bulk_documents": bulk_documents,
+    report["stage_c"] = {"selection_and_bulk_document_cost": stage_cost, "bulk_documents": bulk_documents, "diagnostic_documents": diagnostic_documents,
                          "limit": STAGE_C_BUDGET, "manifests": manifests,
                          "interrupted_v2_reserved": interrupted_stage_c}
 

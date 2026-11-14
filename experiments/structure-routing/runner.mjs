@@ -52,6 +52,24 @@ function documentKey(value) {
 function allowed(url, hosts) {
   try { return hosts.has(new URL(url).hostname.toLowerCase()); } catch { return false; }
 }
+function globalDocumentBudget(runDir) {
+  const read = name => jsonl(path.join(runDir, name));
+  const sumV1 = read('evaluator-results.preflight-v1.jsonl').reduce((sum, row) => sum + Number(row.requests?.count ?? row.requests ?? 0), 0);
+  const v1 = Math.max(742, sumV1);
+  const v2 = read('evaluator-results-v2.jsonl').reduce((sum, row) => sum + Number(row.document_attempts || 0), 0);
+  const candidateRows = [...read('results.jsonl'), ...read('recovery-results.jsonl')].filter(row => ['B1', 'C1'].includes(row.method));
+  const candidate = candidateRows.reduce((sum, row) => sum + Math.max(Number(row.document_requests || 0), Number(row.document_responses || 0)), 0);
+  const challenges = read('challenge-results.jsonl').reduce((sum, row) => sum + Math.max(Number(row.document_requests || 0), Number(row.document_responses || 0)), 0);
+  const b0 = read('b0-results.jsonl').reduce((sum, row) => sum + Math.max(Number(row.document_requests || 0), Number(row.document_responses || 0)), 0);
+  const interruptedFile = path.join(runDir, 'interrupted-executions.json');
+  const interrupted = fs.existsSync(interruptedFile) ? JSON.parse(fs.readFileSync(interruptedFile, 'utf8')) : {};
+  const reservationRows = [...(interrupted.main || []), ...(interrupted.network_recovery || interrupted.recovery || [])];
+  const interruptedDocuments = reservationRows.reduce((sum, row) => sum +
+    Object.values(row.method_unlogged_document_reservation || {}).reduce((subtotal, value) => subtotal + Number(value || 0), 0), 0);
+  return {v1_requests_as_documents: v1, v2_document_attempts: v2, candidate_documents: candidate,
+    challenge_documents: challenges, b0_documents: b0, interrupted_documents: interruptedDocuments,
+    spent: v1 + v2 + candidate + challenges + b0 + interruptedDocuments};
+}
 function selectorFor(link) {
   const p = link.parent || {};
   const tag = String(p.tag || 'div').toLowerCase();
@@ -98,12 +116,20 @@ export {pageType, learnRules, selectLinks};
 async function runOne(target, method, mode, runDir, resume) {
   const started = Date.now();
   const id = target.id;
-  const dir = path.join(runDir, 'artifacts', id, method, mode);
-  const base = path.join(runDir, 'artifacts', id, method);
+  const measurement = args.measurement || 'main';
+  if (!['main', 'network_recovery'].includes(measurement)) throw new Error('measurement_must_be_main_or_network_recovery');
+  const methodBase = path.join(runDir, 'artifacts', id, method);
+  const base = measurement === 'network_recovery' ? path.join(methodBase, 'network_recovery') : methodBase;
+  const dir = path.join(base, mode);
+  const resultFile = path.join(runDir, measurement === 'network_recovery' ? 'recovery-results.jsonl' : 'results.jsonl');
   fs.mkdirSync(dir, {recursive: true});
-  const sitePriorRows = jsonl(path.join(runDir, 'results.jsonl')).filter(x => x.id === id);
+  const mainRows = jsonl(path.join(runDir, 'results.jsonl'));
+  const recoveryRows = jsonl(path.join(runDir, 'recovery-results.jsonl'));
+  const sitePriorRows = [...mainRows, ...recoveryRows].filter(x => String(x.id) === String(id));
   const priorRows = sitePriorRows.filter(x => x.method === method);
-  const statePath = path.join(runDir, 'site-state', `${id}.json`);
+  const statePath = measurement === 'network_recovery'
+    ? path.join(runDir, 'site-state', `${id}.network_recovery.json`)
+    : path.join(runDir, 'site-state', `${id}.json`);
   const state = fs.existsSync(statePath) ? JSON.parse(fs.readFileSync(statePath, 'utf8')) : {completed: []};
   const stateKey = `${id}:${method}:${mode}`;
   if (state.completed.includes(stateKey)) {
@@ -122,7 +148,8 @@ async function runOne(target, method, mode, runDir, resume) {
       xhr_fetch_requests: 0, operations: 0, elapsed_ms: 0,
       external_llm_calls: 0, local_inference: {calls: 0, input_tokens: 0, runtime_ms: 0},
       initial_elapsed_ms: 0, replay_elapsed_ms: 0, repair_elapsed_ms: 0, manual_interventions: 0, pages: []};
-    state.completed.push(stateKey); saveJson(statePath, state); appendJsonl(path.join(runDir, 'results.jsonl'), result);
+      if (measurement === 'network_recovery') result.execution_origin = measurement;
+      state.completed.push(stateKey); saveJson(statePath, state); appendJsonl(resultFile, result);
     return result;
   }
   const practice = !!target.practice;
@@ -133,20 +160,29 @@ async function runOne(target, method, mode, runDir, resume) {
   const totalLimit = method === 'B0' ? 3 : practice ? 40 : 15;
   const interruptedFile = path.join(runDir, 'interrupted-executions.json');
   const interrupted = fs.existsSync(interruptedFile) ? JSON.parse(fs.readFileSync(interruptedFile, 'utf8')) : {};
-  const interruptedReservation = interrupted.main?.find(x => x.id === id)?.method_unlogged_document_reservation?.[method] || 0;
+  const interruptedRows = measurement === 'network_recovery'
+    ? [...(interrupted.main || []), ...(interrupted.network_recovery || interrupted.recovery || [])]
+    : (interrupted.main || []);
+  const interruptedReservation = interruptedRows.filter(x => String(x.id) === String(id))
+    .reduce((sum, row) => sum + Number(row.method_unlogged_document_reservation?.[method] || 0), 0);
   const priorDocuments = interruptedReservation + priorRows.reduce((sum, x) => sum + Math.max(x.document_requests || 0, x.document_responses || 0), 0);
   const priorOperations = priorRows.reduce((sum, x) => sum + (x.operations || 0), 0);
   const priorElapsed = priorRows.reduce((sum, x) => sum + (x.elapsed_ms || 0), 0);
-  const documentAllowance = Math.max(0, totalLimit - priorDocuments);
+  const globalBudget = measurement === 'network_recovery' ? globalDocumentBudget(runDir) : null;
+  const globalAllowance = globalBudget ? Math.max(0, 3500 - globalBudget.spent) : Infinity;
+  const documentAllowance = Math.max(0, Math.min(totalLimit - priorDocuments, globalAllowance));
   if (documentAllowance === 0) {
-    const result = {id, domain: target.domain, method, mode, status: interruptedReservation ? 'interrupted_budget_reserved' : 'document_budget_reached',
-      stop_reason: interruptedReservation ? 'unlogged_interrupted_cost_reserved_not_reacquired' : 'method_document_budget',
+    const globalUnavailable = globalAllowance === 0;
+    const result = {id, domain: target.domain, method, mode, status: globalUnavailable ? 'global_budget_unavailable' : interruptedReservation ? 'interrupted_budget_reserved' : 'document_budget_reached',
+      stop_reason: globalUnavailable ? 'global_3500_document_budget' : interruptedReservation ? 'unlogged_interrupted_cost_reserved_not_reacquired' : 'method_document_budget',
       trial_type: mode === 'G' ? 'graph_replay' : mode === 'R' ? 'generalization' : 'discovery',
       document_requests: 0, document_responses: 0, http_requests: 0, xhr_fetch_requests: 0, operations: 0,
       total_method_documents: priorDocuments, total_method_operations: priorOperations, elapsed_ms: 0,
       interrupted_document_reservation: interruptedReservation, pages: [], external_llm_calls: 0,
-      local_inference: {calls:0,input_tokens:0,runtime_ms:0}, environment_layer: process.env.STRUCTURE_ENVIRONMENT_LAYER || 'unspecified'};
-    state.completed.push(stateKey); saveJson(statePath, state); appendJsonl(path.join(runDir, 'results.jsonl'), result); return result;
+      local_inference: {calls:0,input_tokens:0,runtime_ms:0}, environment_layer: process.env.STRUCTURE_ENVIRONMENT_LAYER || 'unspecified',
+      ...(measurement === 'network_recovery' ? {execution_origin: measurement} : {}),
+      ...(globalBudget ? {global_budget: {...globalBudget, remaining: globalAllowance}} : {})};
+    state.completed.push(stateKey); saveJson(statePath, state); appendJsonl(resultFile, result); return result;
   }
   let interval = practice ? 1000 : 5000;
   const hosts = new Set([new URL(target.start_url).hostname.toLowerCase(), ...(target.allowed_hosts || [])].map(x => x.toLowerCase()));
@@ -219,7 +255,7 @@ async function runOne(target, method, mode, runDir, resume) {
     else if (method === 'B0') {
       await page.goto(target.start_url, {waitUntil: 'domcontentloaded', timeout: 30000});
       await wait(interval);
-      const capture = await capturePage(page, target.start_url, hosts, dir, 0, responseStatus.get(documentKey(page.url())), responseBodies.get(documentKey(page.url())));
+      const capture = await capturePage(page, target.start_url, hosts, dir, 0, responseStatus.get(documentKey(page.url())), responseBodies.get(documentKey(page.url())), methodBase);
       observations.push(capture.meta); savedPages.push(capture.page);
       stopReason = 'direct_navigation';
     } else {
@@ -277,7 +313,7 @@ async function runOne(target, method, mode, runDir, resume) {
         }
         catch (error) { navigationError = String(error.message).slice(0, 300); }
         await wait(Math.min(1200, interval));
-        const capture = await capturePage(page, item.url, hosts, dir, observations.length, responseStatus.get(documentKey(page.url())), responseBodies.get(documentKey(page.url())));
+        const capture = await capturePage(page, item.url, hosts, dir, observations.length, responseStatus.get(documentKey(page.url())), responseBodies.get(documentKey(page.url())), methodBase);
         const record = {...capture.meta, trial_type: mode === 'G' ? 'graph_replay' : mode === 'R' ? 'generalization' : 'discovery',
           from: item.from, link_kind: item.kind, navigation_error: navigationError};
         observations.push(record);
@@ -317,7 +353,9 @@ async function runOne(target, method, mode, runDir, resume) {
   }
   saveJson(path.join(dir, 'observations.json'), {observations, network, robots});
   state.completed.push(stateKey); saveJson(statePath, state);
-  const result = {id, domain: target.domain, method, mode, trial_type: mode === 'G' ? 'graph_replay' : mode === 'R' ? 'generalization' : 'discovery',
+  const result = {id, domain: target.domain, method, mode,
+    ...(measurement === 'network_recovery' ? {execution_origin: measurement} : {}),
+    trial_type: mode === 'G' ? 'graph_replay' : mode === 'R' ? 'generalization' : 'discovery',
     environment_layer: process.env.STRUCTURE_ENVIRONMENT_LAYER || 'unspecified', browser_version: browser.version(),
     status, stop_reason: stopReason, robots, rule_provenance: mode === 'R' ? 'frozen_cold_rules' : mode === 'G' ? 'saved_cold_graph_paths' : null,
     rule_source_pages: mode === 'R' && fs.existsSync(path.join(base, 'cold', 'rules.json'))
@@ -327,12 +365,14 @@ async function runOne(target, method, mode, runDir, resume) {
     xhr_fetch_requests: xhr, operations, elapsed_ms: Date.now() - started, external_llm_calls: 0,
     local_inference: {calls: 0, input_tokens: 0, runtime_ms: 0}, initial_elapsed_ms: mode === 'cold' ? Date.now() - started : 0,
     replay_elapsed_ms: mode === 'G' || mode === 'R' ? Date.now() - started : 0, repair_elapsed_ms: 0, manual_interventions: 0,
-    pages: observations.map(x => ({...x, duplicate: observations.findIndex(y => y.url === x.url) !== observations.indexOf(x)}))};
-  appendJsonl(path.join(runDir, 'results.jsonl'), result);
+    pages: observations.map(x => ({...x, duplicate: observations.findIndex(y => y.url === x.url) !== observations.indexOf(x)})),
+    ...(globalBudget ? {global_budget: {...globalBudget, spent_after: globalBudget.spent + Math.max(docRequests, docLoads),
+      remaining_after: 3500 - globalBudget.spent - Math.max(docRequests, docLoads)}} : {})};
+  appendJsonl(resultFile, result);
   return result;
 }
 
-async function capturePage(page, requestedURL, hosts, dir, index, status = null, responseBody = null) {
+async function capturePage(page, requestedURL, hosts, dir, index, status = null, responseBody = null, artifactPathBase = path.dirname(dir)) {
   const url = page.url() || requestedURL;
   const safe = await page.evaluate(({hosts}) => {
     const links = [...document.querySelectorAll('a[href]')].map(a => {
@@ -369,8 +409,8 @@ async function capturePage(page, requestedURL, hosts, dir, index, status = null,
   if (responseHTML) fs.writeFileSync(responseFile, responseHTML);
   fs.writeFileSync(domFile, safe.html);
   const meta = {url, requested_url: requestedURL, title: safe.title, page_type: type, state_id: safe.stateId,
-    status, response_html: responseHTML ? path.relative(path.dirname(dir), responseFile) : null,
-    rendered_dom: path.relative(path.dirname(dir), domFile),
+    status, response_html: responseHTML ? path.relative(artifactPathBase, responseFile) : null,
+    rendered_dom: path.relative(artifactPathBase, domFile),
     body_length: safe.bodyLength, link_count: safe.links.length, repeated_link_max: safe.repeated, html_length: safe.htmlLength,
     canonical_href: safe.canonicalHref, schema_types: safe.schemaTypes, schema_item_count: safe.schemaCount, link_path_shapes: linkShapes};
   return {meta, page: {url, title: safe.title, page_type: type, links: safe.links, state_id: safe.stateId}};
@@ -379,10 +419,14 @@ async function capturePage(page, requestedURL, hosts, dir, index, status = null,
 async function main() {
   const runDir = path.resolve(args.run || '');
   if (!args.run) throw new Error('required_argument:--run');
+  const measurement = args.measurement || 'main';
+  if (!['main', 'network_recovery'].includes(measurement)) throw new Error('measurement_must_be_main_or_network_recovery');
   const targetsPath = path.resolve(args.targets || path.join(runDir, 'targets.jsonl'));
   const ids = new Set(String(args.ids || '').split(',').filter(Boolean));
   const methods = String(args.methods || 'B1,C1').split(',').filter(Boolean);
   if (methods.some(x => !['B0', 'B1', 'C1'].includes(x))) throw new Error('methods_must_be_B0_B1_C1');
+  if (measurement === 'network_recovery' && methods.some(method => !['B1', 'C1'].includes(method)))
+    throw new Error('network_recovery_supports_only_B1_C1');
   const targets = jsonl(targetsPath).filter(x => !ids.size || ids.has(String(x.id)));
   if (!targets.length) throw new Error('no_targets_selected');
   const phase = args.phase || 'both';

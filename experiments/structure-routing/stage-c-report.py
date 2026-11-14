@@ -26,10 +26,13 @@ def main() -> None:
         if attempt.get('record_type') == 'interrupted_reservation':
             print(f"  Exact documents/requests: {attempt.get('exact_documents')} / {attempt.get('exact_requests')}; reason: {attempt.get('reason')}")
             print(f"  Partial evidence retained at: {attempt.get('partial_evidence_preserved')}")
-    print(f"Documents: prior selection {data.get('prior_selection_documents', 0)}, current selection {data['selection_documents']}, "
+    print(f"Documents: prior selection {data.get('prior_selection_documents', 0)}, current selection {data['selection_documents']} charged "
+          f"({data.get('observed_list_documents', 0)} list documents observed), "
           f"bulk {data['bulk_documents']}, total {data['total_documents']} / 400")
     if data.get('total_selection_requests') is None:
-        print(f"Selection requests: unknown exact total; known lower bound {data.get('total_selection_requests_known_lower_bound', 0)}")
+        print(f"Selection requests: unknown exact total; known lower bound {data.get('total_selection_requests_known_lower_bound', 0)}; "
+              f"{data.get('total_selection_request_unknown_attempts', 0)} attempt(s) with unknown count")
+        print(f"Current selection request lower bound: {data.get('current_selection_requests_known_lower_bound', 0)}")
     else:
         print(f"Selection requests: {data['total_selection_requests']} total")
     print(f"Bulk document budget remaining after selection: {data.get('bulk_document_budget', 'unknown')} total; up to {data.get('bulk_document_budget_per_site', 'unknown')} per site")

@@ -46,7 +46,7 @@ export function globalCommitted(runDir, fixture = null) {
   const readRows = (name) => fixture?.[name] ?? jsonl(path.join(runDir, name));
   const interruptedFile = path.join(runDir, 'interrupted-executions.json');
   const interruptedCost = !fixture && fs.existsSync(interruptedFile) ? JSON.parse(fs.readFileSync(interruptedFile, 'utf8')).main_unlogged_reserved_documents || 0 : 0;
-  const rows = readRows('results.jsonl');
+  const rows = [...readRows('results.jsonl'), ...readRows('recovery-results.jsonl')];
   const candidates = rows.filter(row => ['B1', 'C1'].includes(row.method));
   const candidateCost = candidates.reduce((sum, row) => sum + Math.max(Number(row.document_requests || 0), Number(row.document_responses || 0)), 0);
   const challengeFiles = [path.join(runDir, 'challenge-results.jsonl'), path.join(runDir, 'challenges-results.jsonl')];

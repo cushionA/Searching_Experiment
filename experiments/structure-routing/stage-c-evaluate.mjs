@@ -21,6 +21,7 @@ const suffix = revision === 'v1' ? '' : `-${revision}`;
 const manifestFile = path.join(runDir, `stage-c-independent-manifest${suffix}.json`);
 const ledgerFile = path.join(runDir, `stage-c-selection-ledger${suffix}.json`);
 const evidenceRoot = path.join(runDir, 'artifacts', `stage-c-selection${suffix}`);
+const progressFile=path.join(runDir,`stage-c-selection-progress-${revision}.json`);
 const targets = fs.readFileSync(path.join(runDir, 'targets.jsonl'), 'utf8').trim().split(/\r?\n/).map(JSON.parse);
 const selectedTargets = ['01', '08'].map(id => targets.find(x => x.id === id));
 if (selectedTargets.some(x => !x?.practice)) throw new Error('authorized practice targets missing');
@@ -51,7 +52,7 @@ function collectPriorSelectionAttempts(currentRevision){
 }
 function requestAccounting(attempts){
   const unknown=attempts.filter(item=>item.requests===null||item.requests===undefined).length;
-  const known=attempts.reduce((sum,item)=>sum+(Number(item.requests)||0),0);
+  const known=attempts.reduce((sum,item)=>sum+(item.requests!==null&&item.requests!==undefined?Number(item.requests)||0:Number(item.requests_known_lower_bound)||0),0);
   return {known_lower_bound:known,unknown_attempts:unknown,exact:unknown?null:known};
 }
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -68,6 +69,7 @@ const sameDocument = (a, b) => {
 
 if (mode === 'select') {
   if (fs.existsSync(manifestFile) || fs.existsSync(ledgerFile)) throw new Error('Stage C selection is already frozen');
+  if (fs.existsSync(progressFile)) throw new Error('Stage C selection progress already exists; use a new revision');
   fs.mkdirSync(evidenceRoot, {recursive:true});
   const browser = await chromium.launch({headless:true, executablePath:process.env.CHROME_PATH || undefined});
   const priorAttempts=collectPriorSelectionAttempts(revision);
@@ -89,6 +91,9 @@ if (mode === 'select') {
       await client.send('Network.setCacheDisabled', {cacheDisabled:true});
       const robots = new Map();
       const siteLimit=Math.min(MAX_PER_SITE,Math.max(0,availableSelectionDocuments-ledger.total_documents));
+      const persistProgress=()=>fs.writeFileSync(progressFile,JSON.stringify({revision,updated_at:new Date().toISOString(),
+        selection_documents_so_far:ledger.total_documents+(guard?.counters.reserved??0),selection_requests_known_lower_bound:ledger.sites.reduce((n,s)=>n+(Number(s.network?.requests_known_lower_bound??s.network?.requests)||0),0)+(Number(site.network?.requests_known_lower_bound??site.network?.requests)||0),
+        current_site:{id:target.id,observed_documents:site.documents,guard:guard?{...guard.counters}:null,network:site.network},prior_attempts:ledger.prior_attempts},null,2)+'\n');
       const site = {id:target.id,start_url:target.start_url,allowed_hosts:hosts,documents:[],candidates:[],stopped:null,
         network:{requests:0,robots_attempts:0,redirect_requests:0,xhr_fetch:0,bytes:0,statuses:{}}};
       const bodyTasks=[];
@@ -180,6 +185,7 @@ if (mode === 'select') {
           fs.writeFileSync(path.join(siteDir,entry.source_file),source);
           fs.writeFileSync(path.join(siteDir,entry.dom_file),rendered,'utf8');
           site.documents.push(entry);
+          persistProgress();
           if(!response||[401,403,429].includes(response.status())) throw new Error(`access_refused:${response?.status()??'navigation_error'}`);
           for(const raw of await extract()){
             const c=scoreLink(raw,finalUrl); if(!c) continue;
@@ -192,12 +198,15 @@ if (mode === 'select') {
         if(candidateMap.size<MAX_TARGETS_PER_SITE) site.stopped ||= 'fewer_public_list_candidates_observed';
       }catch(error){site.stopped=String(error.message||error);}
       await guard.seal();
-      await Promise.allSettled(bodyTasks);
       site.guard={...guard.counters};
       site.network.document_attempts=guard.counters.reserved;
       site.network.document_denied=guard.counters.denied;
       ledger.total_documents+=guard.counters.reserved;
-      await guard.cleanup(); await context.close(); ledger.sites.push(site);
+      persistProgress();
+      await Promise.race([guard.cleanup().catch(()=>{}),wait(3000)]);
+      await context.close().catch(()=>{});
+      await Promise.race([Promise.allSettled(bodyTasks),wait(2000)]);
+      ledger.sites.push(site);
       if(ledger.total_documents>=availableSelectionDocuments) break;
     }
   }finally{await browser.close();}
@@ -207,7 +216,7 @@ if (mode === 'select') {
   const manifest={schema:'stage-c-independent-targets-v1',revision,network_layer:networkLayer,proxy_context_enabled:proxyEnabled,frozen_at:new Date().toISOString(),source:'public-list discovery on authorized practice targets',
     selection_documents:ledger.total_documents,prior_selection_documents:priorDocuments,total_cap:400,independent_targets:ledger.sites.map(site=>({id:site.id,start_url:site.start_url,
       targets:site.candidates.slice(0,MAX_TARGETS_PER_SITE).map((x,i)=>({rank:i+1,url:x.url,title_proxy:x.title_proxy,source_url:x.source_url,label_status:'unverified_proxy'})),stopped:site.stopped}))};
-  const bytes=JSON.stringify(manifest,null,2)+'\n'; fs.writeFileSync(manifestFile,bytes); fs.writeFileSync(ledgerFile,JSON.stringify({...ledger,prior_selection_requests:priorRequestAccounting.exact,prior_selection_requests_known_lower_bound:priorRequestAccounting.known_lower_bound,prior_selection_request_unknown_attempts:priorRequestAccounting.unknown_attempts,current_selection_requests:currentSelectionRequests,total_selection_requests:totalRequestAccounting.exact,total_selection_requests_known_lower_bound:totalRequestAccounting.known_lower_bound,manifest_sha256:sha(bytes)},null,2)+'\n');
+  const bytes=JSON.stringify(manifest,null,2)+'\n'; fs.writeFileSync(manifestFile,bytes); fs.writeFileSync(ledgerFile,JSON.stringify({...ledger,prior_selection_requests:priorRequestAccounting.exact,prior_selection_requests_known_lower_bound:priorRequestAccounting.known_lower_bound,prior_selection_request_unknown_attempts:priorRequestAccounting.unknown_attempts,current_selection_requests:currentSelectionRequests,current_selection_requests_known_lower_bound:currentSelectionRequestLowerBound,total_selection_requests:totalRequestAccounting.exact,total_selection_requests_known_lower_bound:totalRequestAccounting.known_lower_bound,total_selection_request_unknown_attempts:totalRequestAccounting.unknown_attempts,manifest_sha256:sha(bytes)},null,2)+'\n');
   console.log(JSON.stringify({manifest:manifestFile,sha256:sha(bytes),selection_documents:ledger.total_documents,targets:manifest.independent_targets.map(s=>({id:s.id,count:s.targets.length}))}));
 }else if(mode==='score'){
   const bytes=fs.readFileSync(manifestFile); const manifest=JSON.parse(bytes); const actualHash=sha(bytes);
@@ -251,16 +260,21 @@ if (mode === 'select') {
   }
   const bulkDocuments=evaluation.reduce((sum,site)=>sum+site.bulk_document_attempts,0);
   const priorSelectionDocuments=priorLedgers.reduce((sum,item)=>sum+item.documents,0);
-  const totalDocuments=priorSelectionDocuments+manifest.selection_documents+bulkDocuments;
+  const diagnosticFile=path.join(runDir,'artifacts/stage-c-transport-diagnostic/result.json');
+  const diagnosticDocuments=fs.existsSync(diagnosticFile)?Number(JSON.parse(fs.readFileSync(diagnosticFile,'utf8')).document_attempts||0):0;
+  const totalDocuments=priorSelectionDocuments+manifest.selection_documents+bulkDocuments+diagnosticDocuments;
   const priorRequestAccounting=requestAccounting(priorLedgers);
-  const currentSelectionRequests=JSON.parse(fs.readFileSync(ledgerFile,'utf8')).sites.reduce((sum,s)=>sum+(Number(s.network?.requests)||0),0);
-  const totalRequestAccounting=requestAccounting([...priorLedgers,{revision,requests:currentSelectionRequests}]);
+  const selectionLedger=JSON.parse(fs.readFileSync(ledgerFile,'utf8'));
+  const currentSelectionRequests=Object.hasOwn(selectionLedger,'current_selection_requests')?selectionLedger.current_selection_requests:(selectionLedger.sites.every(s=>s.network?.requests!==null&&s.network?.requests!==undefined&&Number.isFinite(Number(s.network.requests)))?selectionLedger.sites.reduce((sum,s)=>sum+(Number(s.network?.requests)||0),0):null);
+  const currentSelectionRequestLowerBound=Number(selectionLedger.current_selection_requests_known_lower_bound)||selectionLedger.sites.reduce((sum,s)=>sum+(Number(s.network?.requests_known_lower_bound)||0),0);
+  const currentObservedListDocuments=Number(selectionLedger.observed_list_documents)||selectionLedger.sites.reduce((sum,s)=>sum+(Number(s.observed_list_documents)||0),0);
+  const totalRequestAccounting=requestAccounting([...priorLedgers,{revision,requests:currentSelectionRequests,requests_known_lower_bound:currentSelectionRequestLowerBound}]);
   if(Number(manifest.prior_selection_documents)!==priorSelectionDocuments) throw new Error('prior_selection_document_accounting_mismatch');
   if(priorSelectionDocuments+manifest.selection_documents>CUMULATIVE_SELECTION_CAP) throw new Error(`Cumulative Stage C selection cap exceeded: ${priorSelectionDocuments+manifest.selection_documents}/${CUMULATIVE_SELECTION_CAP}`);
   if(totalDocuments>400) throw new Error(`Stage C document cap exceeded: ${totalDocuments}/400`);
   const out={schema:`stage-c-score-${revision}`,revision,network_layer:manifest.network_layer||'unknown',proxy_context_enabled:manifest.proxy_context_enabled??false,scored_at:new Date().toISOString(),manifest_sha256:actualHash,selection_documents:manifest.selection_documents,
-    prior_selection_documents:priorSelectionDocuments,bulk_documents:bulkDocuments,total_documents:totalDocuments,
-    prior_selection_requests:priorRequestAccounting.exact,prior_selection_requests_known_lower_bound:priorRequestAccounting.known_lower_bound,prior_selection_request_unknown_attempts:priorRequestAccounting.unknown_attempts,current_selection_requests:currentSelectionRequests,total_selection_requests:totalRequestAccounting.exact,total_selection_requests_known_lower_bound:totalRequestAccounting.known_lower_bound,
+    prior_selection_documents:priorSelectionDocuments,observed_list_documents:currentObservedListDocuments,bulk_documents:bulkDocuments,diagnostic_documents:diagnosticDocuments,total_documents:totalDocuments,
+    prior_selection_requests:priorRequestAccounting.exact,prior_selection_requests_known_lower_bound:priorRequestAccounting.known_lower_bound,prior_selection_request_unknown_attempts:priorRequestAccounting.unknown_attempts,current_selection_requests:currentSelectionRequests,current_selection_requests_known_lower_bound:currentSelectionRequestLowerBound,total_selection_requests:totalRequestAccounting.exact,total_selection_requests_known_lower_bound:totalRequestAccounting.known_lower_bound,total_selection_request_unknown_attempts:totalRequestAccounting.unknown_attempts,
     prior_selection_attempts:priorLedgers,cumulative_selection_cap:CUMULATIVE_SELECTION_CAP,bulk_document_budget:400-totalDocuments+bulkDocuments,bulk_document_budget_per_site:Math.floor((400-totalDocuments+bulkDocuments)/2),stage_c_total_cap:400,sites:evaluation};
   const output=path.join(runDir,`stage-c-score${suffix}.json`); fs.writeFileSync(output,JSON.stringify(out,null,2)+'\n');
   console.log(JSON.stringify({output,manifest_sha256:actualHash,total_documents:totalDocuments,sites:evaluation.map(x=>({id:x.id,targets:x.frozen_target_count,reached:x.independent_targets_reached}))}));

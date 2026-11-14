@@ -221,6 +221,7 @@ async function runTask(task, target, method, runDir, mainRows, priorChallengeRow
   const globalSpent = readJSONL(path.join(runDir, 'evaluator-results.preflight-v1.jsonl')).reduce((n,r)=>n+(r.requests||0),0)
     + readJSONL(path.join(runDir, 'evaluator-results-v2.jsonl')).reduce((n,r)=>n+(r.document_attempts||0),0)
     + mainRows.reduce((n,r)=>n+docCost(r),0)
+    + readJSONL(path.join(runDir, 'recovery-results.jsonl')).reduce((n,r)=>n+docCost(r),0)
     + readJSONL(path.join(runDir, 'challenge-results.jsonl')).reduce((n,r)=>n+docCost(r),0)
     + readJSONL(path.join(runDir, 'b0-results.jsonl')).reduce((n,r)=>n+docCost(r),0);
   const interruptionFile = path.join(runDir, 'interrupted-executions.json');

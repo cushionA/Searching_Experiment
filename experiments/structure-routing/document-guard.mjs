@@ -4,7 +4,7 @@ export async function installDocumentGuard(page, {limit, beforeRequest, onReserv
   const context = page.context();
   const states = new Map();
   const chains = new Map();
-  const counters = {reserved: 0, denied: 0, continued: 0, failed: 0, callbackErrors: 0};
+  const counters = {reserved: 0, denied: 0, continued: 0, failed: 0, callbackErrors: 0, drainTimeouts: 0};
   let mainFrameId = null;
   let nextMessageId = 1;
   let closed = false;
@@ -135,22 +135,23 @@ export async function installDocumentGuard(page, {limit, beforeRequest, onReserv
   await pageSession.send('Target.setAutoAttach', {autoAttach: true, waitForDebuggerOnStart: true, flatten: false});
   await pageSession.send('Fetch.enable', {patterns: [{urlPattern: '*', resourceType: 'Document', requestStage: 'Request'}]});
 
-  const disableTree = async state => {
-    for (const child of [...state.children.values()]) await disableTree(child);
-    if (state.targetInfo.type === 'iframe' && state.attached) await send(state, 'Fetch.disable').catch(() => {});
-    if (state.targetInfo.type === 'iframe' && state.attached) await send(state, 'Network.setCacheDisabled', {cacheDisabled: false}).catch(() => {});
-    if (state.targetInfo.type === 'iframe' && state.attached) await send(state, 'Network.disable').catch(() => {});
-    if (state.targetInfo.type === 'iframe' && state.attached) await send(state, 'Target.setAutoAttach', {autoAttach: false, waitForDebuggerOnStart: false, flatten: false}).catch(() => {});
-    if (state.id !== null && state.attached) await send(state, 'Runtime.runIfWaitingForDebugger').catch(() => {});
-  };
-
-  const seal = async () => {
-    if (closed) return;
+  let sealPromise;
+  const seal = () => {
+    if (sealPromise) return sealPromise;
     closed = true;
-    // Take the context offline before browser teardown can release Fetch-paused
-    // requests. Draining lets in-flight policy callbacks fail those requests.
-    await context.setOffline(true).catch(() => {});
-    await Promise.all([...chains.values()].map(chain => chain.catch(() => {})));
+    sealPromise = (async () => {
+      // Take the context offline before browser teardown can release Fetch-paused
+      // requests. Drain callbacks for at most five seconds; offline remains on.
+      await context.setOffline(true).catch(() => {});
+      let timer;
+      const drained = await Promise.race([
+        Promise.all([...chains.values()].map(chain => chain.catch(() => {}))).then(() => true),
+        new Promise(resolve => { timer = setTimeout(() => resolve(false), 5000); }),
+      ]);
+      clearTimeout(timer);
+      if (!drained) counters.drainTimeouts++;
+    })();
+    return sealPromise;
   };
 
   return {
@@ -158,18 +159,15 @@ export async function installDocumentGuard(page, {limit, beforeRequest, onReserv
     seal,
     async cleanup() {
       await seal();
-      await pageSession.send('Target.setAutoAttach', {autoAttach: false, waitForDebuggerOnStart: false, flatten: false}).catch(() => {});
-      await disableTree(root);
-      for (const chain of chains.values()) await chain.catch(() => {});
+      // Context is offline and closed to new guarded sends. Reject outstanding
+      // nested command waiters before detaching only the root CDP session.
+      for (const state of states.values()) failPending(state, new Error('Document guard cleaned up'));
+      failPending(root, new Error('Document guard cleaned up'));
       pageSession.off('Fetch.requestPaused', onPaused);
       pageSession.off('Target.attachedToTarget', onAttached);
       pageSession.off('Target.receivedMessageFromTarget', onMessage);
       pageSession.off('Target.detachedFromTarget', onDetached);
-      await pageSession.send('Fetch.disable').catch(() => {});
-      await pageSession.send('Network.setCacheDisabled', {cacheDisabled: false}).catch(() => {});
-      await pageSession.send('Network.disable').catch(() => {});
       await pageSession.detach().catch(() => {});
-      for (const state of states.values()) failPending(state, new Error('Document guard cleaned up'));
       states.clear();
     },
   };

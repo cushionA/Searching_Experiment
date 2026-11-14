@@ -1,0 +1,137 @@
+{
+  "review_id": "final-failure-review-2026-11-14-final",
+  "scope": "Metadata-only final assessment of C1 failure attribution, C2 value, adoption, and completed downstream measurements",
+  "sources": [
+    "score-final-main/summary.json",
+    "score-final-main/scores.jsonl",
+    "challenge-results.jsonl",
+    "HANDOFF.md",
+    "report.md",
+    "cloud-failure-analysis.json",
+    "b0-results.jsonl",
+    "recovery-results.jsonl",
+    "stage-c-score-v4.json",
+    "artifacts/stage-c-transport-diagnostic/result.json"
+  ],
+  "main_c1": {
+    "score_rows": 240,
+    "gold_targets_denominator": 88,
+    "unique_gold_targets_reached": 3,
+    "http_200_page_records": 129,
+    "http_503_page_records": 54,
+    "http_status_missing_and_raw_html_missing": 27,
+    "http_200_with_saved_raw_html_and_no_navigation_error": 113,
+    "click_timeout_page_records": 15,
+    "other_navigation_error_page_records": 1,
+    "click_timeout_overlap": "The 15 click-timeout page records are also HTTP 200 page records; they are not an additional disjoint failure count.",
+    "selection_attributable_failures": null,
+    "selection_attribution_reason": "The scored records contain visited pages and outcomes, but not the full candidate set available at each decision. A valid-HTML target-selection error cannot be identified or counted from these metadata alone. The 3 reached unique targets do not make the other 85 targets selection failures.",
+    "saved_path_link_missing_records": 0,
+    "saved_path_link_missing_note": "No saved_path_link_missing category appears in current C1 scored metadata; do not infer B1 counts for C1."
+  },
+  "access_and_environment": {
+    "main_c1_access_condition_rows": 14,
+    "main_c1_access_condition_detail": "12 skipped_due_access_condition rows and 2 robots_disallowed rows.",
+    "main_c1_interrupted_budget_reserved_rows": 8,
+    "main_c1_upstream_503_page_records": 54,
+    "attribution": "503 is an environment/upstream transport failure in this run's evidence and is not classified as a site block or C1 selection failure. Access-condition skips are separate from executed failures."
+  },
+  "public_challenges": {
+    "production_rows": 20,
+    "successes": 0,
+    "completed_rows": 8,
+    "completed_failure_detail": "All 8 completed rows ended content_unchanged, with no recorded navigation errors.",
+    "skipped_due_access_condition": 12,
+    "accidental_preflight_rows_excluded": 20,
+    "c2_relevance": "No challenge failure is evidence of candidate-ranking failure; completed rows show unchanged content, and access skips did not exercise the method."
+  },
+  "c2_recommendation": {
+    "decision": "Skip C2 for this experiment. Do not claim numeric model value.",
+    "why": "Observed failures are dominated by transport 503, UI/navigation errors, access conditions, and missing evidence. The available scored metadata does not preserve all alternatives at each decision, so actual selection errors remain unknown. A model cannot be credited for fixing transport or UI execution.",
+    "reconsideration_condition": "Reconsider only if a later offline audit of frozen candidate sets establishes that viable candidates were available and C1 selected poorly.",
+    "model_values": {
+      "local_ranking": 0,
+      "external_api": 0,
+      "native_model_usage": "unknown"
+    }
+  },
+  "integration_and_adoption": {
+    "final_adoption": "Do not adopt C1 as a production Skill: volume and G/R benefit are not established, and the observed run is not a full healthy-environment comparison. Separate infrastructure failures from algorithm performance.",
+    "minimal_skill_proposal": "The source Skill's parser_flow is a static AST-derived hint for representative paths. A minimal integration can pass its start/candidate/transition hints to a non-LLM, budgeted runner and retain frozen graph/rules/path provenance, raw HTML/DOM, state and cost records, and independent G/R scoring. This is a proposal, not measured production performance.",
+    "candidate_audit": "Reuse the existing candidate-audit for revision, dependency, licensing/distribution, and install checks. Candidate-audit is not a product-performance score and must not be presented as one.",
+    "b2_recommendation": "Conditional only; do not reject B2 as universally unsuccessful because primary C1 did reach 3 unique targets. Compare B2 only under a healthy, adequately covered evaluation."
+  },
+  "limitations": [
+    "Metadata only; no HTML, DOM, live network, or primary result changes were used.",
+    "The 113 eligible page records are page observations, not 113 independent candidates or 113 selection failures.",
+    "Challenge result counts exclude 20 accidental preflight rows.",
+    "All 80 sites have operational records, but upstream 503/access/incomplete conditions mean this is not a full healthy-environment comparison.",
+    "B0 produced 84 page records with HTTP 503; 33 site rows had no valid manifest target and 2 stopped at access conditions.",
+    "Stage C froze 100 targets for each of two sites but reached zero independent targets; 10/30/100 milestone costs remain null, not zero.",
+    "Connectivity checks (robots 404 and successful Git) coexist with browser target-page 503 responses; they do not establish healthy target-page access."
+  ],
+  "all_measurements": {
+    "main_comparison": {
+      "sites": 80,
+      "rows_total": 480,
+      "rows_per_method": 240,
+      "completion_interpretation": "All 80 sites have operational records, but this is not a full healthy-environment comparison; B1/C1 include upstream 503, access conditions, and incomplete trials."
+    },
+    "main_c1": {
+      "gold_unique_reached": 3,
+      "gold_target_denominator": 88
+    },
+    "b0": {
+      "site_rows": 80,
+      "completed_fixed_url_rows": 45,
+      "no_valid_manifest_target_rows": 33,
+      "access_stopped_rows": 2,
+      "page_records_http_503": 84,
+      "interpretation": "B0 ran where fixed manifest URLs were available; observed page records were 503. B0 does not establish a healthy-environment comparison."
+    },
+    "public_challenges": {
+      "production_rows": 20,
+      "successes": 0,
+      "completed": 8,
+      "access_skips": 12
+    },
+    "recovery": {
+      "rows": 12,
+      "sites": [
+        "61",
+        "62"
+      ],
+      "shared_document_budget": 15,
+      "page_records_http_503": 4,
+      "interpretation": "All 12 records completed; 4 page records were 503. Not evidence of healthy target-page access."
+    },
+    "stage_c": {
+      "independent_manifest_revision": "v4",
+      "manifest_sha256": "56e0834d4ace84cb3d984ad77f3c72de66ae875b76dc209974a4dc0470aa2a1e",
+      "frozen_targets_per_site": 100,
+      "sites": [
+        "01",
+        "08"
+      ],
+      "selection_reservations_total": 120,
+      "bulk_document_attempts": 2,
+      "bulk_http_503": 2,
+      "useful_html_documents": 0,
+      "independent_targets_reached": 0,
+      "document_cap_usage_including_transport_diagnostic": "124/400",
+      "milestones_10_30_100": {
+        "reached": false,
+        "cumulative_and_incremental_document_request_time_costs": null
+      },
+      "interpretation": "100 targets per site were frozen, but not reached. Milestone costs remain null because milestones were unmet; they are not zero."
+    },
+    "transport_diagnostic": {
+      "document_attempts": 2,
+      "inherited_proxy_http1_status": 503,
+      "browser_direct_status": 503,
+      "curl_robots_status": 404,
+      "git_connectivity": "succeeded",
+      "interpretation": "Connectivity was partly restored, but browser requests to target pages still returned 503. This does not show site-side blocking or a healthy page-comparison environment."
+    }
+  }
+}

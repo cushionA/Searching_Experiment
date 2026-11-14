@@ -1,3 +1,19 @@
+# 最終記録 2026-11-15（以下の旧再開コマンドは実施済み）
+
+**比較試行・採点・採否判断を終了。現C1は本番採用見送り。100対象の連続取得目標は未達。** 最新アーカイブとSHA256は `CLOUD-CHECKPOINT.json`。最終判断は `FINAL-DECISION.json`、主報告は `report.md`、全80台帳は `cloud-all-80-sites.csv`。
+
+- 主比較480行（80×B1/C1×cold/G/R）、B0 80行、公開課題本番20行（旧accidental20行は別保持）、楽天/au PAY補足12行を保存。独立gold v2を再選定・候補入力していない。元練習60行は不変。
+- 主比較gold到達・期待型HTML保存 B1 1/88、C1 3/88、G13/80対15/80、R7/80対9/80。全80と独立verified47分母は併記。異なる環境層と503が多く方式優劣を断定しない。
+- B0は45サイト84文書が全503、33サイトはverified固定URLなし、2アクセス停止。公開課題は12アクセス停止、8実行/成功0。楽天61/auPAY62の補足4入口も503で、商品リンクからの一般化は未成立。
+- 段階Cは既存の独立一覧DOM11件から各100URLをbulk前にv4として固定。hash `56e0834d4ace84cb3d984ad77f3c72de66ae875b76dc209974a4dc0470aa2a1e`。候補にgold URLは入力せず、各1本の連続取得は入口503で1文書終了・到達0/100。10/30/100費用・増分はnull。HTMLキャッシュやfixtureを新規100件へ数えない。
+- 主予算1794/3500、残1706。段階C124/400、残276（選定課金/保守的予約120 +bulk2 +通信診断2）。unknownを0にしない。中断77文書、段階C中断v2/60・v4/58の予約と証跡は維持。
+- proxy HTTP1/ブラウザdirect各1文書も503。curl robots404/Git接続の回復だけではブラウザの健康を証明しない。C2は通信/UIの問題を直せると仮定せず追加せず、価値は未測定。B2へ置換なし。native使用量unknown。
+- guardは終了前offline seal、5秒有界drain、pending拒否後rootdetachを使用。6guard +8integration +1recovery localhost tests。旧逸脱はdeviations.json/cloud-deviations.jsonに保持。最新verifyはallow-incompleteなし。
+
+追加研究をする場合は既存結果を置換せず、ブラウザの有効HTML取得を残予算内の最小診断で確認してから別環境層として比較する。完了480行のresume再取得や予算リセットはしない。下の390行時点・旧手順は履歴資料であり、未完了65〜80の再開命令は既に実施済み。
+
+---
+
 # Cloud継続追記 2026-11-15（この節を先に読む）
 
 **全工程未完了。環境上流503で新規公開取得を停止中。** 最新の保存メタデータは `CLOUD-CHECKPOINT.json`。下の旧引き継ぎは元資料として保持し、Cloudの現在値には `report.md`、`verify-cloud.json`、`cloud-failure-analysis.json` を使う。

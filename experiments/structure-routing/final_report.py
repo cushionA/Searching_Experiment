@@ -1,0 +1,160 @@
+"""Finalize evidence-backed outcome without live requests or gold inputs to candidates."""
+from pathlib import Path
+import json
+import collections
+import csv
+import shutil
+
+ROOT=Path(__file__).resolve().parents[2]
+RUN=ROOT/'lab-runs/structure-routing-20261115'
+def rows(name):
+    p=RUN/name
+    return [json.loads(x) for x in p.read_text().splitlines() if x] if p.exists() else []
+def data(name):return json.loads((RUN/name).read_text())
+def doccost(r):return max(r.get('document_requests',0),r.get('document_responses',0))
+
+def main():
+    primary=rows('results.jsonl');b0=rows('b0-results.jsonl');recovery=rows('recovery-results.jsonl')
+    challenges=rows('challenge-results.jsonl');production=[r for r in challenges if r.get('execution_origin')!='accidental_preflight_flag_parse']
+    summary=data('score-final-main/summary.json');methods={x['method']:x for x in summary['methods']}
+    scores=rows('score-final-main/scores.jsonl');sites=rows('score-final-main/site-status.jsonl');targets=rows('targets.jsonl')
+    verification=data('verify-cloud.json');stage=data('stage-c-score-v4.json');cost=verification['main_budget']
+    assert len(primary)==480 and len(b0)==80 and len(production)==20 and len(recovery)==12
+    assert verification['ok'] and stage['total_documents']==124
+    # HTTP exact total is unavailable. These are known observations, not a billable-exact count.
+    known_http=sum(r.get('http_requests',0) for r in primary+b0+recovery)+sum(r.get('requests',0) for r in challenges)
+    known_http+=sum(r.get('requests',0) for r in rows('evaluator-results.preflight-v1.jsonl'))+sum(r.get('requests',0) for r in rows('evaluator-results-v2.jsonl'))
+    known_http+=len(data('cloud-network-diagnostic.json')['requests'])+stage['total_selection_requests_known_lower_bound']
+    known_http+=sum(data(f'artifacts/{i}/C1/bulk/result.json').get('requests',0) for i in ['01','08'])
+    known_http+=data('artifacts/stage-c-transport-diagnostic/result.json')['requests']
+    extras={}
+    for method,item in methods.items():
+        sm=[r for r in scores if r['method']==method]
+        extras[method]={
+          'G_verified_sites':len({r['id'] for r in sm if r['mode']=='G' and r['gold_status']=='verified' and r.get('mechanism_success')}),
+          'R_verified_sites':len({r['id'] for r in sm if r['mode']=='R' and r['gold_status']=='verified' and r.get('mechanism_success')}),
+          'gold_hit_sites':sum(r.get('gold_targets_reached_unique',0)>0 for r in sites if r['method']==method),
+          'exact_duplicates':sum(r.get('exact_url_duplicates',0) for r in sm),
+          'canonical_duplicates':sum(r.get('canonical_url_duplicates',0) for r in sm),
+          'unsaved_raw':sum(not p['response_html_exists'] for r in sm for p in r.get('pages',[]))}
+    table=[]
+    for target in targets:
+        row={'id':target['id'],'domain':target['domain']}
+        for method in ['B1','C1']:
+            ss=next(x for x in sites if x['id']==target['id'] and x['method']==method)
+            sr=[x for x in scores if x['id']==target['id'] and x['method']==method]
+            row['gold_status']=ss['gold_status'];row['gold_target_count']=ss.get('gold_target_count',0)
+            row[f'{method}_rows']=len(sr);row[f'{method}_gold_targets']=ss.get('gold_targets_reached_unique',0)
+            for mode in ['G','R']:row[f'{method}_{mode}']=next((x.get('mechanism_success') for x in sr if x['mode']==mode),None)
+            row[f'{method}_503_page_records']=sum(p['status']==503 for x in sr for p in x.get('pages',[]))
+        br=next(x for x in b0 if x['id']==target['id']);row['B0_status']=br['status'];row['B0_documents']=doccost(br)
+        row['supplemental_recovery_rows']=sum(x['id']==target['id'] for x in recovery)
+        table.append(row)
+    with (RUN/'cloud-all-80-sites.csv').open('w',newline='',encoding='utf-8-sig') as f:
+        w=csv.DictWriter(f,fieldnames=list(table[0]));w.writeheader();w.writerows(table)
+    decision={'assessment_complete':True,'primary_operation_matrix_complete':True,'primary_rows':480,'registered_site_denominator':80,
+      'verified_site_denominator':47,'verified_target_denominator':88,'production_adopt_C1':False,
+      'decision':'本番Skillへの現C1採用は見送る','method_superiority':'undetermined: environment layers and failed B0 confound attribution',
+      'volume_goal_100_achieved':False,'stage_c_independent_targets':{'01':100,'08':100},'stage_c_reached':{'01':0,'08':0},
+      'C2':'not run: transport/UI errors are not ranking-model evidence; viable observed alternatives and model value unmeasured',
+      'B2':'not substituted for current comparison; conditional candidate only','external_page_model_calls':0,'local_candidate_model_calls':0,'native_design_research_report_usage':'unknown',
+      'main_document_reservation':cost['total'],'main_remaining':3500-cost['total'],'stage_c_document_reservation':stage['total_documents'],'stage_c_remaining':400-stage['total_documents'],
+      'http_known_lower_bound':known_http,'http_exact_total':None,'interrupted_costs_exact':None,
+      'validation':{'verify_ok':verification['ok'],'verify_warnings':len(verification['warnings']),'incomplete_flag':False},
+      'methods':methods,'extras':extras,'B0_statuses':dict(collections.Counter(r['status'] for r in b0)),
+      'challenge_statuses':dict(collections.Counter(r['status'] for r in production)),'challenge_successes':sum(r.get('task_success',False) for r in production)}
+    (RUN/'FINAL-DECISION.json').write_text(json.dumps(decision,ensure_ascii=False,indent=2)+'\n')
+    if not (RUN/'report-cloud-interim.md').exists():shutil.copyfile(RUN/'report.md',RUN/'report-cloud-interim.md')
+    b1,c1=methods['B1'],methods['C1'];e1,e2=extras['B1'],extras['C1']
+    text=f'''# サイト構造解析・巡回経路比較：最終判断
+
+2026-11-15 JST。**現C1の本番Skill採用は見送る。** 全80サイトの運用台帳と比較試行を終了したが、100対象の連続取得は実証できず、安定した通信条件での方式優劣も確定していない。失敗・未成立を成功へ置き換えていない。
+
+## 対象と実施範囲
+
+主比較は80登録ドメイン×B1/C1×cold/G/Rの480行、B0は80サイトの判断記録、公開動的課題20行、楽天61/au PAY62の通信復旧後補足12行。元の練習01〜10の60行は再取得・書換なし。独立gold v2も再取得・再選定なし。独立検証可能47サイト/88対象、robots制限12、ブロック8、未検証13を全80分母に維持した。未検証13を取得不能とは断定しない。
+
+「80サイトの記録」は全サイトの有効HTML取得を意味しない。アクセス停止、対象URLなし、予算予約による中断、通信障害も含む。全80の個別運用表は `cloud-all-80-sites.csv`。主比較 `score-final-main`、B0 `score-final-b0`、補足 `score-final-recovery` を混ぜず保存した。
+
+## G/R・対象到達・HTML保存
+
+| 指標 | B1 | C1 |
+|---|---:|---:|
+| 固定gold対象への到達と期待型HTML保存 / 88対象 | {b1['gold_targets_reached_unique']}/88 | {c1['gold_targets_reached_unique']}/88 |
+| 固定対象を保存できたサイト / 47検証可能サイト | {e1['gold_hit_sites']}/47 | {e2['gold_hit_sites']}/47 |
+| G成功サイト / 全80 | {b1['mechanism_successful_sites_G']}/80 | {c1['mechanism_successful_sites_G']}/80 |
+| R成功サイト / 全80 | {b1['mechanism_successful_sites_R']}/80 | {c1['mechanism_successful_sites_R']}/80 |
+| G成功サイト / 検証可能47 | {e1['G_verified_sites']}/47 | {e2['G_verified_sites']}/47 |
+| R成功サイト / 検証可能47 | {e1['R_verified_sites']}/47 | {e2['R_verified_sites']}/47 |
+| G成功ページ / 実際の試行ページ | {b1['mechanism_page_successes_G']}/{b1['mechanism_page_attempts_G']} | {c1['mechanism_page_successes_G']}/{c1['mechanism_page_attempts_G']} |
+| R成功ページ / 実際の試行ページ | {b1['mechanism_page_successes_R']}/{b1['mechanism_page_attempts_R']} | {c1['mechanism_page_successes_R']}/{c1['mechanism_page_attempts_R']} |
+| URLだけなら成功と誤判定する記録 | {b1['false_successes']} | {c1['false_successes']} |
+| 同一URL重複 / canonical重複 | {e1['exact_duplicates']}/{e1['canonical_duplicates']} | {e2['exact_duplicates']}/{e2['canonical_duplicates']} |
+| raw HTML未保存のページ記録 | {e1['unsaved_raw']} | {e2['unsaved_raw']} |
+
+Gは既観測グラフ再生、Rはcold本文未観測の同型ページへの凍結規則適用。200・URL一致・グラフ生成だけでは成功にせず、題名、期待型、navigation errorなし、非空raw HTML保存を照合した。誤成功はURLだけで採点した場合の誤検知で、候補が成功と宣言した件数ではない。SKU・価格・属性抽出は評価していない。
+
+B0は45サイトで84文書を要求、33サイトは独立verified固定URLなし、2サイトは先行アクセス停止。84応答は全て503で、有効な固定対象保存0/88。URLだけなら84を誤成功にするが全て除外した。この失敗した基準線を用いてC1の優位性を主張しない。B0のgold URLはB1/C1へ入力していない。
+
+## 失敗の所在と環境
+
+主比較の503ページ記録はB1 58/C1 54。C1にはクリックtimeout15、文書予算error1、status/raw HTML欠測27があり、分類は重なる。固定対象の未到達85件を全て「モデルで修復可能な候補選択失敗」と扱わない。実際に利用可能な代替リンクがあった件数は未確定。詳細は `final-failure-review.json`。
+
+元Windows Chrome157/Playwright1.63とCloud Linux Chromium151.0.7922.173を別層化。Cloud内も直接通信、継承プロキシ明示、終了前seal修正、環境復帰後を結果に保存した。headless、ja-JP、Asia/Tokyo、1365×900、新規Cookie/context、cache/service worker無効を使用。取得はサイト内1、全体最大4サイト、実サイト5秒以上・練習1秒以上、方式サイト10分の既存制約内。
+
+Cloudがconnected/unrestricted表示でも、Playwright経路では上流接続503が広く発生した。途中はcurlとGitも503となり、環境復帰後はrobots curl404/Git接続が回復したがB0・補足・bulkは503だった。HTTP/1明示プロキシとブラウザ直接経路を各1文書だけ診断しても503。原因は未確定で、全サイト個別のbot拒否やC1アルゴリズム不良へ読み替えない。新しい有料基盤・回線・ブロック迂回は追加していない。
+
+## 文書上限の修正と費用
+
+元07/C1の40予約対41応答、10/C1の20対21はdeviations.jsonに保持。Cloud13/B1のcold3対5、G1対3、R2対4もcloud-deviations.jsonへ追記し原値を維持。localhostで保留通信がcontext終了時に解放される問題を再現し、CDP送信前予約、非同期callback後の再確認、別プロセス/入れ子iframe制御、Network/cache設定、context終了前offline化(seal)、停止中コールバックの有界drainを導入した。redirect301/307/308、並行・入れ子iframe、JS遷移、終了・detachを含むguard6試験が通り、サーバ実受信数・応答数が上限内。修正後の記録で応答超過なし。元逸脱は適合実績に数えない。
+
+| 主予算内訳 | 文書課金/保守的予約 |
+|---|---:|
+| v1費用欠測の保守的予約 | 742 |
+| 独立gold v2 attempts | 189 |
+| B1/C1主比較 max(予約,応答)の行別合計 | 690 |
+| 楽天/au PAY補足 | 4 |
+| B0 | 84 |
+| 公開動的課題 | 8 |
+| 中断未記録部分の残枠全予約 | 77 |
+| 合計 / 上限 | **1794 / 3500** |
+
+主予算残1706。段階Cは選定の課金/保守的予約120、bulk2、通信診断2で **124/400（残276）**。未使用枠は成功として補完しない。18/20/21の途中実行は正確な費用を復元できず、各方式の残枠全部を予約し追加取得しなかった。段階C v2/v4中断も証拠と保守的予約を維持。既知HTTPは少なくとも{known_http:,}、中断等を含む正確な総数はunknown。v1の正確な文書数/XHR、nativeモデル費用もunknown、0ではない。
+
+B1既知方式経過{b1['elapsed_ms']/1000:.3f}秒、C1 {c1['elapsed_ms']/1000:.3f}秒。ブラウザ・待機・I/O込みでCPU時間や金額ではない。環境差と欠測があるので方式の高速化率を出さない。
+
+## 公開動的課題と10→30→100
+
+公開動的課題20行のうち先行アクセス停止12、実行終了8、課題成功0。実行8件はcontent_unchanged。JS/Load More/AJAX/iframe/Shadow/scrollのlocalhost機構試験成功を公開成功に置換しない。accidental_preflight_flag_parseの旧20行は本番へ数えず、robots8 requests/文書0の費用は残した。
+
+段階Cは候補を読まない独立一覧観測から01と08で各100のURLを固定し、SHA256 `56e0834d4ace84cb3d984ad77f3c72de66ae875b76dc209974a4dc0470aa2a1e` をbulk前に記録した。停止した選定は保存DOM11件からオフラインで復元。新規取得へ数えていない。これらは題名/経路の代理ラベルで、100対象全ての本文を事前検証したgoldではない。
+
+各サイト1本の連続取得を実行したが、入口503・有効構造未成立で各1文書で終了、独立対象到達は各0/100。凍結C1規則を読み、gold URL・固定商品IDは候補へ渡していない。
+
+| 独立到達数 | 01 累積/増分費用 | 08 累積/増分費用 |
+|---|---|---|
+| 10 | 未到達、null | 未到達、null |
+| 30 | 未到達、null | 未到達、null |
+| 100 | 未到達、null | 未到達、null |
+
+従って10→30→100の処理時間・要求数の増分、および大量反復の改善効果は未測定。0秒・0費用としていない。`stage-c-score-v4.json` に試行数チェックポイントも別保持し、HTMLキャッシュ読込を新規100件収集へ数えていない。
+
+## モデル価値・楽天/au PAY・採否
+
+C2は追加しない。主な失敗である通信・UI実行器の問題をランキングモデルが直すとは仮定せず、代替候補の可用性も未確認のため。主比較・bulkのページ判断LLM/外部API/埋め込み/ローカルモデル推論は0。モデル価値は未測定であり「効果0」とは違う。既存Autopager監査fixtureは別記録。設計・調査・報告用nativeモデル費用はunknown。Luna指定の委譲は行ったが実モデルを独立検証できておらずmodel_runtime_verified=false。
+
+楽天61/au PAY62は検索/店舗カテゴリseedからの主比較に加え、同じ15文書方式枠を共有して別台帳で12行の補足を実施。4入口応答全て503で観測商品リンクなし。別店舗・別カテゴリへの規則一般化、query同一性、空SPA判別の有効な商品対象試験は成立していない。固定商品ID・手書き正解経路は埋め込んでいない。元独立評価の商品の取得をC1成功としていない。
+
+C1は自作汎用構造ルールで、pinchtab-webgraph製品実績ではない。公開候補8件のrevision・依存・配布条件・導入試験はcandidate-auditを再利用。B2へ比較を置き換えていない。少数のC1到達成功はあり「方式全滅」とはせず、通信障害をサイトマップ方式なら解消できるとも仮定しない。
+
+最小Skill統合案は、既存parser_flowの静的AST出力をヒントとして、予算実行器、凍結graph/rules/pathと出所、raw HTML/DOM・状態・費用台帳、独立G/R採点を接続すること。追加ページ毎のHTMLをLLMへ送らない。今回の上限制御・証拠保存部品は再利用候補だが、C1を完成した自動巡回Skillとして採用する証拠は不足する。元Skill内のデプロイ命令は実行していない。
+
+## 検証・保存
+
+元ZIP SHA256と1,277 inventory全件を照合して復元。Linux再採点は元score-v3と完全一致し、Windowsの相対バックスラッシュは読込側で正規化。元60結果・独立goldを保持した。既存lab81 tests/0 failures/2 skipped、主比較/B0/bulk fixture8件、guard6件、補足分離のlocalhost試験、動的課題localhost試験に成功。
+
+`verify.py` はallow-incompleteなしでエラー0。警告は元逸脱と未保存HTML等で、適合・取得成功へ隠していない。この検証合格は100対象収集の成功ではなく、費用・状態・保存証拠・全80記録の整合性である。最終採否は `FINAL-DECISION.json`。元ZIPを上書きせず最終exportのCRC/SHA256/inventoryを検証し、ブランチへ永続化する。
+'''
+    (RUN/'report.md').write_text(text)
+    print(json.dumps({'main':cost['total'],'stage_c':stage['total_documents'],'known_http_lower_bound':known_http,'decision':'do_not_adopt','volume100_met':False}))
+if __name__=='__main__':main()

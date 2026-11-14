@@ -54,7 +54,8 @@ def main():
         interrupted_file = run / "interrupted-executions.json"
         interrupted = json.loads(interrupted_file.read_text()) if interrupted_file.exists() else {}
         b0 = sum(max(row.get("document_requests", 0), row.get("document_responses", 0)) for row in rows(run / "b0-results.jsonl"))
-        return preflight + gold + candidate + challenges + b0 + interrupted.get("main_unlogged_reserved_documents", 0)
+        recovery = sum(max(row.get("document_requests", 0), row.get("document_responses", 0)) for row in rows(run / "recovery-results.jsonl"))
+        return preflight + gold + candidate + challenges + b0 + recovery + interrupted.get("main_unlogged_reserved_documents", 0)
 
     def outstanding():
         current = rows(run / "results.jsonl")

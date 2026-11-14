@@ -207,3 +207,44 @@ test('seal fails a document paused in an asynchronous policy callback before con
     await new Promise(resolve => server.close(resolve));
   }
 });
+
+
+test('cleanup stays bounded when a detached OOPIF has a pending policy callback', {timeout: 12000}, async () => {
+  const hits = [];
+  const server = http.createServer((req, res) => {
+    const pathname = new URL(req.url, `http://${req.headers.host}`).pathname;
+    if (pathname === '/favicon.ico') { res.writeHead(204); res.end(); return; }
+    hits.push(pathname);
+    res.setHeader('content-type', 'text/html; charset=utf-8');
+    if (pathname === '/') res.end(`<iframe id="child" src="http://localhost:${server.address().port}/child"></iframe><script>setTimeout(() => document.querySelector('#child').remove(), 250)</script>`);
+    else if (pathname === '/child') res.end('<script>setTimeout(() => { location.href = "/late" }, 20)</script>');
+    else res.end('<p>late</p>');
+  });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  const browser = await chromium.launch({headless: true, executablePath: process.env.CHROME_PATH || '/usr/bin/chromium', args: ['--no-sandbox', '--site-per-process']});
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  let markStarted;
+  const callbackStarted = new Promise(resolve => { markStarted = resolve; });
+  const guard = await installDocumentGuard(page, {limit: 10, beforeRequest: info => {
+    if (info.url.endsWith('/late')) { markStarted(); return new Promise(() => {}); }
+    return true;
+  }});
+  try {
+    await page.goto(`http://127.0.0.1:${server.address().port}/`, {waitUntil: 'load', timeout: 5000});
+    await callbackStarted;
+    await page.waitForFunction(() => !document.querySelector('#child'), null, {timeout: 3000});
+    const started = Date.now();
+    await guard.cleanup();
+    const elapsed = Date.now() - started;
+    assert.ok(elapsed < 6500, `cleanup took ${elapsed}ms`);
+    assert.equal(guard.counters.drainTimeouts, 1);
+    assert.deepEqual(hits.sort(), ['/', '/child']);
+    await context.close();
+  } finally {
+    await guard.cleanup();
+    await context.close().catch(() => {});
+    await browser.close();
+    await new Promise(resolve => server.close(resolve));
+  }
+});
