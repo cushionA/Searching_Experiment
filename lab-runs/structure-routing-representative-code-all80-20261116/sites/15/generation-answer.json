@@ -1,0 +1,15 @@
+{
+  "site_id": "15",
+  "selector": "main a[href]",
+  "operation_rule": "Collect same-origin links from the main content before saving. After bounded scrolling, save only links observed in the current page or scroll results. Saving moves the browser to the detail page, so collect the candidate URLs first.",
+  "assumptions": [
+    "The supplied start_url is already open and is a listing or documentation navigation page.",
+    "Same-origin links under the main content represent candidate public detail pages.",
+    "The API resolves href values to absolute URLs."
+  ],
+  "limitations": [
+    "At most three candidates are saved; only six scroll actions and twelve total iterations are allowed.",
+    "A category page whose useful links are outside the selected content region may yield fewer candidates.",
+    "No behavior was inferred from pages beyond the supplied representatives."
+  ]
+}

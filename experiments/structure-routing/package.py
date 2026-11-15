@@ -1,6 +1,7 @@
 import argparse
 import hashlib
 import json
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import zipfile
 
@@ -8,6 +9,12 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[2]
 EXCLUDED = {".git", "__pycache__", "node_modules", ".venv", "venv"}
 UPSTREAM = {"pinchtab-webgraph", "smart-crawler", "smart-crawler-upstream", "autopager", "co-scraper", "webNavigator"}
+
+
+def inventory_entry(file):
+    return str(file.relative_to(ROOT)).replace("\\", "/"), {
+        "bytes": file.stat().st_size, "sha256": hashlib.sha256(file.read_bytes()).hexdigest()
+    }
 
 
 def included(run, file):
@@ -33,9 +40,8 @@ def main():
     assert len(targets) == args.expected_targets and len({row["domain"] for row in targets}) == args.expected_targets
     files = [file for file in sorted(run.rglob("*")) if file.is_file() and included(run, file)]
     code = [file for file in sorted(Path(__file__).parent.iterdir()) if file.suffix in {".py", ".mjs"}]
-    inventory = {str(file.relative_to(ROOT)).replace("\\", "/"): {
-        "bytes": file.stat().st_size, "sha256": hashlib.sha256(file.read_bytes()).hexdigest()
-    } for file in files + code}
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        inventory = dict(executor.map(inventory_entry, files + code))
     (run / "inventory.json").write_text(json.dumps(inventory, ensure_ascii=False, indent=2), encoding="utf-8")
     verification = {"target_count": len(targets), "registered_domains": len({row["domain"] for row in targets}),
                     "files": len(inventory), "bytes": sum(row["bytes"] for row in inventory.values())}

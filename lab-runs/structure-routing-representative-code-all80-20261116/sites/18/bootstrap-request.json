@@ -1,0 +1,531 @@
+{
+  "site_id": "18",
+  "entry_url": "https://docs.docker.com/",
+  "task": "Reach public detail/document pages and save HTML; no SKU, price or attribute extraction.",
+  "site_tasks": [
+    "ドキュメントナビから個別文書へ進む"
+  ],
+  "representative_html_projection": "<main class=\"flex-1\"><section class=\"relative overflow-hidden py-16 md:py-20\"><div class=\"absolute inset-0 bg-[center_top] bg-no-repeat opacity-100 [mix-blend-mode:multiply] dark:opacity-60 dark:[mix-blend-mode:normal] dark:[filter:invert(1)_brightness(1.5)]\" style=\"background-image:url(/assets/images/dot-pattern.svg)\"></div><div class=\"relative z-10 container mx-auto max-w-4xl px-4 text-center\"><h1 class=\"mb-4 text-3xl font-semibold text-balance text-gray-900 md:text-4xl dark:text-white\">How can we help?</h1><div class=\"mx-auto max-w-2xl py-6\" x-data=\"{ query: '' }\"><div class=\"group flex items-center gap-3 rounded-2xl border-2 border-gray-200 bg-white p-4 shadow-lg transition focus-within:scale-[1.02] focus-within:border-blue-500 hover:border-blue-500 dark:border-gray-700 dark:bg-gray-900\"><div class=\"shrink-0 rounded-xl text-blue-500\"><span class=\"icon-svg group-hover:hidden\"> </span><span class=\"icon-svg hidden group-hover:block\"></span></div><input x-model=\"query\" type=\"text\" placeholder=\"Ask anything about Docker and get instant answers…\" @keydown.enter=\"if (query.trim()) { $store.gordon.open(query.trim(), true); query = ''; }\" class=\"flex-1 bg-transparent text-lg text-gray-900 placeholder-gray-500 focus:outline-none dark:text-white dark:placeholder-gray-400\"> <button @click=\"if (query.trim()) { $store.gordon.open(query.trim(), true); query = ''; }\" :disabled=\"!query.trim()\" class=\"shrink-0 rounded-xl bg-blue-500 p-2 text-white transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-300 dark:disabled:bg-gray-700\" disabled=\"disabled\"> <span class=\"icon-svg\"></span></button></div></div><div class=\"mt-6 flex flex-wrap justify-center gap-3\" x-data=\"\"><button @click=\"$store.gordon.open($el.textContent.trim(), true);\" class=\"ai-suggestion cursor-pointer rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-600 transition hover:border-blue-400 hover:bg-blue-50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-blue-500 dark:hover:bg-gray-700 dark:hover:text-white\"> How do I get started with Docker? </button> <button @click=\"$store.gordon.open($el.textContent.trim(), true);\" class=\"ai-suggestion cursor-pointer rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-600 transition hover:border-blue-400 hover:bg-blue-50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-blue-500 dark:hover:bg-gray-700 dark:hover:text-white\"> Can I run my AI agent in a sandbox? </button> <button @click=\"$store.gordon.open($el.textContent.trim(), true);\" class=\"ai-suggestion cursor-pointer rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-600 transition hover:border-blue-400 hover:bg-blue-50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-blue-500 dark:hover:bg-gray-700 dark:hover:text-white\"> How do I containerize an application? </button> <button @click=\"$store.gordon.open($el.textContent.trim(), true);\" class=\"ai-suggestion cursor-pointer rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-600 transition hover:border-blue-400 hover:bg-blue-50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-blue-500 dark:hover:bg-gray-700 dark:hover:text-white\"> What are Docker Hardened Images? </button> <button @click=\"$store.gordon.open($el.textContent.trim(), true);\" class=\"ai-suggestion cursor-pointer rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-600 transition hover:border-blue-400 hover:bg-blue-50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-blue-500 dark:hover:bg-gray-700 dark:hover:text-white\"> Why should I use Docker Compose?</button></div></div></section><section class=\"py-8\"><div class=\"container mx-auto px-4 xl:max-w-[1200px]\"><div class=\"grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4\"><a href=\"/get-started/\" class=\"group block rounded-xl border border-gray-200 bg-white p-6 transition hover:scale-[1.02] hover:border-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-blue-500\"><div class=\"flex items-start gap-4\"><div class=\"shrink-0 rounded-lg bg-blue-100 p-3 text-blue-500 dark:bg-gray-700 dark:text-blue-400\"><span class=\"icon-svg\"></span></div><div><h3 class=\"mb-1 text-lg font-semibold text-gray-900 transition group-hover:text-blue-500 dark:text-white dark:group-hover:text-blue-400\">Get started</h3><p class=\"text-sm leading-relaxed text-gray-600 dark:text-gray-300\">Containerize an app, sandbox an agent, or pilot Docker for your organization.</p></div></div></a><a href=\"/guides/\" class=\"group block rounded-xl border border-gray-200 bg-white p-6 transition hover:scale-[1.02] hover:border-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-blue-500\"><div class=\"flex items-start gap-4\"><div class=\"shrink-0 rounded-lg bg-blue-100 p-3 text-blue-500 dark:bg-gray-700 dark:text-blue-400\"><span class=\"icon-svg\"></span></div><div><h3 class=\"mb-1 text-lg font-semibold text-gray-900 transition group-hover:text-blue-500 dark:text-white dark:group-hover:text-blue-400\">Guides</h3><p class=\"text-sm leading-relaxed text-gray-600 dark:text-gray-300\">Optimize your development workflows with Docker.</p></div></div></a><a href=\"/manuals/\" class=\"group block rounded-xl border border-gray-200 bg-white p-6 transition hover:scale-[1.02] hover:border-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-blue-500\"><div class=\"flex items-start gap-4\"><div class=\"shrink-0 rounded-lg bg-blue-100 p-3 text-blue-500 dark:bg-gray-700 dark:text-blue-400\"><span class=\"icon-svg\"></span></div><div><h3 class=\"mb-1 text-lg font-semibold text-gray-900 transition group-hover:text-blue-500 dark:text-white dark:group-hover:text-blue-400\">Manuals</h3><p class=\"text-sm leading-relaxed text-gray-600 dark:text-gray-300\">Install, set up, configure, and use Docker products.</p></div></div></a><a href=\"/reference/\" class=\"group block rounded-xl border border-gray-200 bg-white p-6 transition hover:scale-[1.02] hover:border-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-blue-500\"><div class=\"flex items-start gap-4\"><div class=\"shrink-0 rounded-lg bg-blue-100 p-3 text-blue-500 dark:bg-gray-700 dark:text-blue-400\"><span class=\"icon-svg\"></span></div><div><h3 class=\"mb-1 text-lg font-semibold text-gray-900 transition group-hover:text-blue-500 dark:text-white dark:group-hover:text-blue-400\">Reference</h3><p class=\"text-sm leading-relaxed text-gray-600 dark:text-gray-300\">Browse the CLI and API documentation.</p></div></div></a></div></div></section><section class=\"py-10 md:py-12\" x-data=\"{ expanded: false }\"><div class=\"container mx-auto max-w-4xl px-4\"><header class=\"mb-6 border-b border-gray-200 pb-4 dark:border-gray-800\"><h2 class=\"text-2xl font-semibold text-gray-900 dark:text-white\">What's new</h2></header><ol><li class=\"grid grid-cols-[1fr] md:grid-cols-[5rem_1fr] md:gap-x-6\"><time class=\"hidden pt-5 text-right text-sm text-gray-500 md:block dark:text-gray-400\" datetime=\"2026-09-29\">Sep 29</time> <a href=\"/accounts/organization/manage/manage-licenses/#teams\" class=\"group relative block border-l border-gray-200 py-5 pl-7 dark:border-gray-700\"><span aria-hidden=\"true\" class=\"absolute top-6 -left-[5px] size-[9px] rounded-full bg-gray-300 ring-4 ring-gray-50 transition group-hover:bg-blue-500 dark:bg-gray-600 dark:ring-gray-950 dark:group-hover:bg-blue-400\"></span> <span class=\"mb-1 flex flex-wrap items-center gap-x-2 text-sm font-medium text-blue-600 dark:text-blue-400\">Docker Home <time class=\"font-normal text-gray-500 md:hidden dark:text-gray-400\" datetime=\"2026-09-29\">Sep 29</time> </span><span class=\"flex items-center gap-2\"><span class=\"font-medium text-gray-900 transition group-hover:text-blue-500 dark:text-white dark:group-hover:text-blue-400\">Assign licenses to teams</span> <span class=\"icon-svg shrink-0 text-gray-400 transition group-hover:translate-x-1 group-hover:text-blue-500 dark:text-gray-500 dark:group-hover:text-blue-400\"> </span></span><span class=\"mt-1 block text-sm text-gray-600 dark:text-gray-300\">Assign a product license to a team so every current and future member receives it. The Licenses page in Docker Home shows available licenses and whether they are assigned to teams or individuals.</span></a></li><li class=\"grid grid-cols-[1fr] md:grid-cols-[5rem_1fr] md:gap-x-6\"><time class=\"hidden pt-5 text-right text-sm text-gray-500 md:block dark:text-gray-400\" datetime=\"2026-09-24\">Sep 24</time> <a href=\"/ai/sandboxes/cloud/\" class=\"group relative block border-l border-gray-200 py-5 pl-7 dark:border-gray-700\"><span aria-hidden=\"true\" class=\"absolute top-6 -left-[5px] size-[9px] rounded-full bg-gray-300 ring-4 ring-gray-50 transition group-hover:bg-blue-500 dark:bg-gray-600 dark:ring-gray-950 dark:group-hover:bg-blue-400\"></span> <span class=\"mb-1 flex flex-wrap items-center gap-x-2 text-sm font-medium text-blue-600 dark:text-blue-400\">Docker Sandboxes <time class=\"font-normal text-gray-500 md:hidden dark:text-gray-400\" datetime=\"2026-09-24\">Sep 24</time> </span><span class=\"flex items-center gap-2\"><span class=\"font-medium text-gray-900 transition group-hover:text-blue-500 dark:text-white dark:group-hover:text-blue-400\">Run sandboxes on Docker-managed cloud infrastructure</span> <span class=\"icon-svg shrink-0 text-gray-400 transition group-hover:translate-x-1 group-hover:text-blue-500 dark:text-gray-500 dark:group-hover:text-blue-400\"> </span></span><span class=\"mt-1 block text-sm text-gray-600 dark:text-gray-300\">Create and manage cloud sandboxes with the sbx CLI, including cloud-specific credentials, network policies, lifecycle controls, and transfers between local and cloud environments.</span></a></li><li class=\"grid grid-cols-[1fr] md:grid-cols-[5rem_1fr] md:gap-x-6\"><time class=\"hidden pt-5 text-right text-sm text-gray-500 md:block dark:text-gray-400\" datetime=\"2026-09-24\">Sep 24</time> <a href=\"/ai/sandboxes-api/\" class=\"group relative block border-l border-gray-200 py-5 pl-7 dark:border-gray-700\"><span aria-hidden=\"true\" class=\"absolute top-6 -left-[5px] size-[9px] rounded-full bg-gray-300 ring-4 ring-gray-50 transition group-hover:bg-blue-500 dark:bg-gray-600 dark:ring-gray-950 dark:group-hover:bg-blue-400\"></span> <span class=\"mb-1 flex flex-wrap items-center gap-x-2 text-sm font-medium text-blue-600 dark:text-blue-400\">Docker Sandboxes <time class=\"font-normal text-gray-500 md:hidden dark:text-gray-400\" datetime=\"2026-09-24\">Sep 24</time> </span><span class=\"flex items-center gap-2\"><span class=\"font-medium text-gray-900 transition group-hover:text-blue-500 dark:text-white dark:group-hover:text-blue-400\">Manage cloud sandboxes with the API and TypeScript SDK</span> <span class=\"icon-svg shrink-0 text-gray-400 transition group-hover:translate-x-1 group-hover:text-blue-500 dark:text-gray-500 dark:group-hover:text-blue-400\"> </span></span><span class=\"mt-1 block text-sm text-gray-600 dark:text-gray-300\">Create cloud sandboxes, run commands, transfer files, and manage images, snapshots, volumes, and secrets from applications and automated workflows.</span></a></li><li class=\"grid grid-cols-[1fr] md:grid-cols-[5rem_1fr] md:gap-x-6\"><time class=\"hidden pt-5 text-right text-sm text-gray-500 md:block dark:text-gray-400\" datetime=\"2026-09-24\">Sep 24</time> <a href=\"/ai/sandboxes/customize/\" class=\"group relative block border-l border-gray-200 py-5 pl-7 dark:border-gray-700\"><span aria-hidden=\"true\" class=\"absolute top-6 -left-[5px] size-[9px] rounded-full bg-gray-300 ring-4 ring-gray-50 transition group-hover:bg-blue-500 dark:bg-gray-600 dark:ring-gray-950 dark:group-hover:bg-blue-400\"></span> <span class=\"mb-1 flex flex-wrap items-center gap-x-2 text-sm font-medium text-blue-600 dark:text-blue-400\">Docker Sandboxes <time class=\"font-normal text-gray-500 md:hidden dark:text-gray-400\" datetime=\"2026-09-24\">Sep 24</time> </span><span class=\"flex items-center gap-2\"><span class=\"font-medium text-gray-900 transition group-hover:text-blue-500 dark:text-white dark:group-hover:text-blue-400\">Compose sandbox environments with kits v3</span> <span class=\"icon-svg shrink-0 text-gray-400 transition group-hover:translate-x-1 group-hover:text-blue-500 dark:text-gray-500 dark:group-hover:text-blue-400\"> </span></span><span class=\"mt-1 block text-sm text-gray-600 dark:text-gray-300\">Build sandbox environments from workload and mixin kits, combine them into reusable kit sets, and publish the result as a container image.</span></a></li><li class=\"grid grid-cols-[1fr] md:grid-cols-[5rem_1fr] md:gap-x-6\"><time class=\"hidden pt-5 text-right text-sm text-gray-500 md:block dark:text-gray-400\" datetime=\"2026-09-24\">Sep 24</time> <a href=\"/ai/skills/\" class=\"group relative block border-l border-gray-200 py-5 pl-7 dark:border-gray-700\"><span aria-hidden=\"true\" class=\"absolute top-6 -left-[5px] size-[9px] rounded-full bg-gray-300 ring-4 ring-gray-50 transition group-hover:bg-blue-500 dark:bg-gray-600 dark:ring-gray-950 dark:group-hover:bg-blue-400\"></span> <span class=\"mb-1 flex flex-wrap items-center gap-x-2 text-sm font-medium text-blue-600 dark:text-blue-400\">Docker Skills <time class=\"font-normal text-gray-500 md:hidden dark:text-gray-400\" datetime=\"2026-09-24\">Sep 24</time> </span><span class=\"flex items-center gap-2\"><span class=\"font-medium text-gray-900 transition group-hover:text-blue-500 dark:text-white dark:group-hover:text-blue-400\">Give coding agents guidance with Docker Skills</span> <span class=\"icon-svg shrink-0 text-gray-400 transition group-hover:translate-x-1 group-hover:text-blue-500 dark:text-gray-500 dark:group-hover:text-blue-400\"> </span></span><span class=\"mt-1 block text-sm text-gray-600 dark:text-gray-300\">Install Docker's official open-source skills in compatible coding agents to give them guidance for Dockerfiles, Compose applications, and other Docker tasks.</span></a></li><li ",
+  "observed_links": [
+    {
+      "url": "https://www.docker.com/c/sbx-promo/",
+      "text": "Get $250 in credits for Cloud Sandboxes. Claim credits",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://docs.docker.com/",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://docs.docker.com/get-started/",
+      "text": "Get started",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "border-b-4",
+          "border-transparent",
+          "hover:border-white/20"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://docs.docker.com/guides/",
+      "text": "Guides",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "border-b-4",
+          "border-transparent",
+          "hover:border-white/20"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://docs.docker.com/manuals/",
+      "text": "Manuals",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "border-b-4",
+          "border-transparent",
+          "hover:border-white/20"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://docs.docker.com/reference/",
+      "text": "Reference",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "border-b-4",
+          "border-transparent",
+          "hover:border-white/20"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://github.com/docker/docs/issues/23966",
+      "text": "Share feedback",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "flex",
+          "items-center",
+          "justify-between"
+        ]
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://docs.docker.com/get-started/",
+      "text": "Get started\n\nContainerize an app, sandbox an agent, or pilot Docker for your organization.",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "grid",
+          "grid-cols-1",
+          "gap-4",
+          "md:grid-cols-2",
+          "lg:grid-cols-4"
+        ]
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://docs.docker.com/guides/",
+      "text": "Guides\n\nOptimize your development workflows with Docker.",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "grid",
+          "grid-cols-1",
+          "gap-4",
+          "md:grid-cols-2",
+          "lg:grid-cols-4"
+        ]
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://docs.docker.com/manuals/",
+      "text": "Manuals\n\nInstall, set up, configure, and use Docker products.",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "grid",
+          "grid-cols-1",
+          "gap-4",
+          "md:grid-cols-2",
+          "lg:grid-cols-4"
+        ]
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://docs.docker.com/reference/",
+      "text": "Reference\n\nBrowse the CLI and API documentation.",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "grid",
+          "grid-cols-1",
+          "gap-4",
+          "md:grid-cols-2",
+          "lg:grid-cols-4"
+        ]
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://docs.docker.com/accounts/organization/manage/manage-licenses/#teams",
+      "text": "Docker Home\nAssign licenses to teams\nAssign a product license to a team so every current and future member receives it. The Licenses page in Docker Home shows a",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "grid",
+          "grid-cols-[1fr]",
+          "md:grid-cols-[5rem_1fr]",
+          "md:gap-x-6"
+        ]
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://docs.docker.com/ai/sandboxes/cloud/",
+      "text": "Docker Sandboxes\nRun sandboxes on Docker-managed cloud infrastructure\nCreate and manage cloud sandboxes with the sbx CLI, including cloud-specific credentials, ",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "grid",
+          "grid-cols-[1fr]",
+          "md:grid-cols-[5rem_1fr]",
+          "md:gap-x-6"
+        ]
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://docs.docker.com/ai/sandboxes-api/",
+      "text": "Docker Sandboxes\nManage cloud sandboxes with the API and TypeScript SDK\nCreate cloud sandboxes, run commands, transfer files, and manage images, snapshots, volu",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "grid",
+          "grid-cols-[1fr]",
+          "md:grid-cols-[5rem_1fr]",
+          "md:gap-x-6"
+        ]
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://docs.docker.com/ai/sandboxes/customize/",
+      "text": "Docker Sandboxes\nCompose sandbox environments with kits v3\nBuild sandbox environments from workload and mixin kits, combine them into reusable kit sets, and pub",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "grid",
+          "grid-cols-[1fr]",
+          "md:grid-cols-[5rem_1fr]",
+          "md:gap-x-6"
+        ]
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://docs.docker.com/ai/skills/",
+      "text": "Docker Skills\nGive coding agents guidance with Docker Skills\nInstall Docker's official open-source skills in compatible coding agents to give them guidance for ",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "grid",
+          "grid-cols-[1fr]",
+          "md:grid-cols-[5rem_1fr]",
+          "md:gap-x-6"
+        ]
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://docs.docker.com/ai/sandboxes/workflows/agent-skills/#shared-store-behavior",
+      "text": "Docker Sandboxes\nSep 15\nShare agent skills read-only by default\n\nSandboxes created with version 0.43.0 mount shared agent skills read-only by default. Choose re",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "grid",
+          "grid-cols-[1fr]",
+          "md:grid-cols-[5rem_1fr]",
+          "md:gap-x-6"
+        ]
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://docs.docker.com/ai/sandboxes/usage/#choose-a-workspace",
+      "text": "Docker Sandboxes\nSep 7\nRun agents without mounting host files\n\nCreate a sandbox without a host workspace mount. Keep agent files inside the sandbox across stops",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "grid",
+          "grid-cols-[1fr]",
+          "md:grid-cols-[5rem_1fr]",
+          "md:gap-x-6"
+        ]
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://docs.docker.com/ai/sandboxes/workflows/agent-skills/",
+      "text": "Docker Sandboxes\nSep 7\nInstall and update shared skills from Git repositories\n\nInstall agent skills from Git repositories into a persistent store shared across ",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "grid",
+          "grid-cols-[1fr]",
+          "md:grid-cols-[5rem_1fr]",
+          "md:gap-x-6"
+        ]
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://docs.docker.com/build/builders/drivers/cloud/",
+      "text": "Docker Build Cloud\nSep 3\nUse Docker Build Cloud with standard Buildx\n\nBuildx 0.37.0 includes the cloud driver, so you can connect to Docker Build Cloud from the",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "grid",
+          "grid-cols-[1fr]",
+          "md:grid-cols-[5rem_1fr]",
+          "md:gap-x-6"
+        ]
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://www.linkedin.com/company/docker",
+      "text": "LinkedIn",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "flex",
+          "min-w-20",
+          "flex-wrap",
+          "items-center",
+          "gap-1"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://x.com/docker/",
+      "text": "Twitter",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "flex",
+          "min-w-20",
+          "flex-wrap",
+          "items-center",
+          "gap-1"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.facebook.com/docker.run",
+      "text": "Facebook",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "flex",
+          "min-w-20",
+          "flex-wrap",
+          "items-center",
+          "gap-1"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "http://www.youtube.com/user/dockerrun",
+      "text": "YouTube",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "flex",
+          "min-w-20",
+          "flex-wrap",
+          "items-center",
+          "gap-1"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.instagram.com/dockerinc/",
+      "text": "Instagram",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "flex",
+          "min-w-20",
+          "flex-wrap",
+          "items-center",
+          "gap-1"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.docker.com/",
+      "text": "Product offerings",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "flex",
+          "items-center",
+          "justify-center",
+          "gap-3"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.docker.com/pricing?ref=Docs&refAction=DocsFooter",
+      "text": "Pricing",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "flex",
+          "items-center",
+          "justify-center",
+          "gap-3"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.docker.com/company/",
+      "text": "About us",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "flex",
+          "items-center",
+          "justify-center",
+          "gap-3"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://docs.docker.com/llms.txt",
+      "text": "llms.txt",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "flex",
+          "items-center",
+          "justify-center",
+          "gap-3"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://docs.docker.com/llms-full.txt",
+      "text": "llms-full.txt",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "flex",
+          "items-center",
+          "justify-center",
+          "gap-3"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.docker.com/legal/docker-terms-use/",
+      "text": "Terms of Use",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "flex",
+          "items-center",
+          "justify-end"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.dockerstatus.com/",
+      "text": "Status",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "flex",
+          "items-center",
+          "justify-end"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.docker.com/legal",
+      "text": "Legal",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "flex",
+          "items-center",
+          "justify-end"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://docs.docker.com/bot-detection/",
+      "text": "Automated traffic detection",
+      "parent": {
+        "tag": "footer",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://cookiepedia.co.uk/giving-consent-to-cookies",
+      "text": "More information",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.onetrust.com/products/cookie-consent/",
+      "text": "Powered by OneTrust Opens in a new Tab",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "ot-pc-footer-logo"
+        ]
+      },
+      "region": "nav"
+    }
+  ],
+  "controls": [
+    "<button x-data=\"\" @click=\"$store.gordon.toggle()\" aria-label=\"Ask Gordon, AI assistant\" aria-describedby=\"gordon-tooltip\" class=\"group shimmer flex cursor-pointer items-center gap-2 rounded-lg border border-blue-500 bg-blue-700 p-2 text-white transition-colors focus:ring focus:ring-blue-400 focus:outline-none\">\n<span class=\"icon-svg group-hover:hidden\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M15.1329 9.83887C16.0755 9.95803 16.7429 10.8191 16.6241 11.7617L16.4786 12.915C16.3541 13.8995 15.5254 14.689 14.5411 14.5635 13.5522 14.4372 12.9407 13.4627 13.0655 12.4736L13.21 11.3311C13.3291 10.3882 14.19 9.71983 15.1329 9.83887z\" fill=\"currentColor\"></path><path d=\"M8.",
+    "<button type=\"button\" aria-label=\"Search\" class=\"cursor-pointer flex items-center gap-2 p-2 rounded-lg bg-blue-700 border border-blue-500 text-white transition-colors focus:outline-none focus:ring focus:ring-blue-400 hover:bg-blue-800 hover:border-blue-400\" id=\"search-modal-trigger\">\n<span class=\"icon-svg\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\"><path fill-rule=\"evenodd\" d=\"M10.5 3.75a6.75 6.75.0 100 13.5 6.75 6.75.0 000-13.5zM2.25 10.5a8.25 8.25.0 1114.59 5.28l4.69 4.69a.75.75.0 11-1.06 1.06l-4.69-4.69A8.25 8.25.0 012.25 10.5z\" clip-rule=\"evenodd\"></path></svg>\n</span><span class=\"hidden px-1 lg:inline\">Search</span></button>",
+    "<button aria-label=\"Theme switch\" id=\"theme-switch\" class=\"cursor-pointer rounded-lg border border-blue-500 bg-blue-700 p-2 transition-colors hover:border-blue-400 hover:bg-blue-800 focus:ring focus:ring-blue-400 focus:outline-none\" x-data=\"{ theme: localStorage.getItem('theme-preference') || 'auto' }\" x-init=\"\n            let mql = window.matchMedia('(prefers-color-scheme: dark)');\n            function applyTheme(val) {\n              if (val === 'auto') {\n                localStorage.removeItem('theme-preference');\n                document.firstElementChild.className = mql.matches ? 'dark' : 'light';\n              } else {\n                localStorage.setItem('theme-preference', val);\n     ",
+    "<button @click=\"clearChat()\" aria-label=\"Start a new chat\" class=\"cursor-pointer rounded p-2 text-white transition-colors enabled:hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-50\" :disabled=\"messages.length === 0\" disabled=\"disabled\">\n<span class=\"icon-svg\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\"><path fill-rule=\"evenodd\" d=\"M4.755 10.059a7.5 7.5.0 0112.548-3.364l1.903 1.903h-3.183a.75.75.0 100 1.5h4.992a.75.75.0 00.75-.75V4.356a.75.75.0 00-1.5.0v3.18l-1.9-1.9A9 9 0 003.306 9.67a.75.75.0 101.45.388zm15.408 3.352a.75.75.0 00-.919.53A7.5 7.5.0 016.696 17.305l-1.902-1.903h3.183a.75.75.0 000-1.5H2.984a.75.75.0 00-.75.75v4.992a.75.75.0 001",
+    "<button @click=\"$store.gordon.close()\" title=\"Close chat drawer\" class=\"cursor-pointer rounded p-2 text-white transition-colors hover:bg-white/15\" aria-label=\"Close chat\">\n<span class=\"icon-svg\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\"><path fill-rule=\"evenodd\" d=\"M5.47 5.47a.75.75.0 011.06.0L12 10.94l5.47-5.47a.75.75.0 111.06 1.06L13.06 12l5.47 5.47a.75.75.0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75.0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75.0 010-1.06z\" clip-rule=\"evenodd\"></path></svg></span></button>",
+    "<button @click=\"currentQuestion = &quot;Help me get started with Docker. What should I do first?&quot;; askQuestion()\" class=\"cursor-pointer rounded-xl border border-gray-200 bg-white p-3 transition hover:scale-[1.02] hover:border-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-blue-500\"><div class=\"flex items-center gap-3\"><span class=\"icon-svg shrink-0 rounded-lg bg-blue-100 p-1 text-blue-500 dark:bg-gray-700 dark:text-blue-400\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\"><path fill-rule=\"evenodd\" d=\"M9.315 7.584C12.195 3.883 16.695 1.5 21.75 1.5a.75.75.0 01.75.75c0 5.056-2.383 9.555-6.084 12.436A6.75 6.75.0 019.75 22.5.75.75.0 019 21.7",
+    "<button @click=\"currentQuestion = &quot;How do Docker Hardened Images work?&quot;; askQuestion()\" class=\"cursor-pointer rounded-xl border border-gray-200 bg-white p-3 transition hover:scale-[1.02] hover:border-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-blue-500\"><div class=\"flex items-center gap-3\"><span class=\"icon-svg shrink-0 rounded-lg bg-blue-100 p-1 text-blue-500 dark:bg-gray-700 dark:text-blue-400\"><svg class=\"w-5 h-5\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" focusable=\"false\" aria-hidden=\"true\"><path d=\"M18.1639 21.6147v-3m0 0v-3m0 3h-3m3 0h3m-1.2947-5.2866C19.9541 12.8974 20 12.4544 20",
+    "<button @click=\"currentQuestion = &quot;What is MCP Toolkit?&quot;; askQuestion()\" class=\"cursor-pointer rounded-xl border border-gray-200 bg-white p-3 transition hover:scale-[1.02] hover:border-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-blue-500\"><div class=\"flex items-center gap-3\"><span class=\"icon-svg shrink-0 rounded-lg bg-blue-100 p-1 text-blue-500 dark:bg-gray-700 dark:text-blue-400\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M14.1604 16.8125C14.3454 16.4613 14.8724 16.4613 15.0575 16.8125 15.1827 17.0508 15.2459 17.1704 15.3296 17.2737 15.4038 17.3652 15.49 17.4472 15.5863 17.5178 15.6948 17.5974 15.8201 17.6576 16.0707 17.7768 16.4403 ",
+    "<button @click=\"currentQuestion = &quot;How do I create an org?&quot;; askQuestion()\" class=\"cursor-pointer rounded-xl border border-gray-200 bg-white p-3 transition hover:scale-[1.02] hover:border-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-blue-500\"><div class=\"flex items-center gap-3\"><span class=\"icon-svg shrink-0 rounded-lg bg-blue-100 p-1 text-blue-500 dark:bg-gray-700 dark:text-blue-400\"><svg width=\"10\" height=\"12\" viewBox=\"0 0 10 12\" fill=\"none\"><path stroke=\"currentColor\" stroke-width=\".5\" d=\"M8.55237 2.00563C8.09228 1.53094 7.54504 1.15362 6.94199.895266 6.33893.636909 5.69191.50259 5.03796.5H4.99998C3.6739.5 2.40214 1.03807 1.46446 1.99585.526782 2.95362.0 4.2",
+    "<button type=\"submit\" :disabled=\"!currentQuestion.trim() || isLoading || isThreadLimitReached()\" :title=\"isLoading ? 'Sending...' : (isThreadLimitReached() ? 'Thread limit reached. Start a new thread.' : 'Send question')\" class=\"absolute top-2 right-2 cursor-pointer rounded p-2 text-blue-500 transition-colors enabled:hover:bg-blue-500/15 disabled:cursor-not-allowed disabled:text-gray-500\" disabled=\"disabled\" title=\"Send question\">\n<template x-if=\"!isLoading\"><span class=\"icon-svg\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\"><path d=\"M3.478 2.404a.75.75.0 00-.926.941l2.432 7.905H13.5a.75.75.0 010 1.5H4.984l-2.432 7.905a.75.75.0 00.926.94 60.519 60.519.0 00",
+    "<button @click=\"if (query.trim()) { $store.gordon.open(query.trim(), true); query = ''; }\" :disabled=\"!query.trim()\" class=\"shrink-0 rounded-xl bg-blue-500 p-2 text-white transition hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-300 dark:disabled:bg-gray-700\" disabled=\"disabled\">\n<span class=\"icon-svg\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\"><path fill-rule=\"evenodd\" d=\"M12.97 3.97a.75.75.0 011.06.0l7.5 7.5a.75.75.0 010 1.06l-7.5 7.5a.75.75.0 11-1.06-1.06l6.22-6.22H3a.75.75.0 010-1.5h16.19l-6.22-6.22a.75.75.0 010-1.06z\" clip-rule=\"evenodd\"></path></svg></span></button>",
+    "<button @click=\"$store.gordon.open($el.textContent.trim(), true);\" class=\"ai-suggestion cursor-pointer rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-600 transition hover:border-blue-400 hover:bg-blue-50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-blue-500 dark:hover:bg-gray-700 dark:hover:text-white\">\nHow do I get started with Docker?\n</button>",
+    "<button @click=\"$store.gordon.open($el.textContent.trim(), true);\" class=\"ai-suggestion cursor-pointer rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-600 transition hover:border-blue-400 hover:bg-blue-50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-blue-500 dark:hover:bg-gray-700 dark:hover:text-white\">\nCan I run my AI agent in a sandbox?\n</button>",
+    "<button @click=\"$store.gordon.open($el.textContent.trim(), true);\" class=\"ai-suggestion cursor-pointer rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-600 transition hover:border-blue-400 hover:bg-blue-50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-blue-500 dark:hover:bg-gray-700 dark:hover:text-white\">\nHow do I containerize an application?\n</button>",
+    "<button @click=\"$store.gordon.open($el.textContent.trim(), true);\" class=\"ai-suggestion cursor-pointer rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-600 transition hover:border-blue-400 hover:bg-blue-50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-blue-500 dark:hover:bg-gray-700 dark:hover:text-white\">\nWhat are Docker Hardened Images?\n</button>",
+    "<button @click=\"$store.gordon.open($el.textContent.trim(), true);\" class=\"ai-suggestion cursor-pointer rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-600 transition hover:border-blue-400 hover:bg-blue-50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-blue-500 dark:hover:bg-gray-700 dark:hover:text-white\">\nWhy should I use Docker Compose?</button>",
+    "<button type=\"button\" @click=\"expanded = !expanded\" :aria-expanded=\"expanded\" class=\"mt-4 ml-7 inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-500 md:ml-[6.5rem] dark:text-blue-400 dark:hover:text-blue-300\" aria-expanded=\"false\">\n<span x-text=\"expanded ? 'Show less' : 'Show more'\">Show more</span>\n<span class=\"icon-svg icon-sm\" x-show=\"!expanded\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\"><path fill-rule=\"evenodd\" d=\"M12.53 16.28a.75.75.0 01-1.06.0l-7.5-7.5a.75.75.0 011.06-1.06L12 14.69l6.97-6.97a.75.75.0 111.06 1.06l-7.5 7.5z\" clip-rule=\"evenodd\"></path></svg>\n</span><span class=\"icon-svg icon-sm\" x-show=\"expanded\" style",
+    "<button type=\"button\" id=\"ot-sdk-btn\" class=\"ot-sdk-show-settings whitespace-normal md:truncate\">Cookies Settings</button>",
+    "<button class=\"pf-input-clear\" type=\"button\" data-pf-suppressed=\"true\">Clear</button>",
+    "<button type=\"button\" class=\"pf-modal-close\" aria-label=\"Close\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M15 5L5 15M5 5l10 10\"></path></svg></button>",
+    "<button id=\"onetrust-pc-btn-handler\">Cookies Settings</button>",
+    "<button id=\"onetrust-reject-all-handler\">Reject All</button>",
+    "<button id=\"onetrust-accept-btn-handler\">Accept All Cookies</button>",
+    "<button class=\"onetrust-close-btn-handler onetrust-close-btn-ui banner-close-button ot-close-icon\" style=\"background-image: url(&quot;https://cdn.cookielaw.org/logos/static/ot_close.svg&quot;);\" aria-label=\"Close\"></button>",
+    "<button id=\"close-pc-btn-handler\" class=\"ot-close-icon\" aria-label=\"Close\" style=\"background-image: url(&quot;https://cdn.cookielaw.org/logos/static/ot_close.svg&quot;);\"></button>",
+    "<button id=\"accept-recommended-btn-handler\">Allow All</button>",
+    "<button aria-expanded=\"false\" ot-accordion=\"true\" aria-controls=\"ot-desc-id-C0003\" aria-labelledby=\"ot-header-id-C0003\"></button>",
+    "<button aria-expanded=\"false\" ot-accordion=\"true\" aria-controls=\"ot-desc-id-C0001\" aria-labelledby=\"ot-header-id-C0001\"></button>",
+    "<button aria-expanded=\"false\" ot-accordion=\"true\" aria-controls=\"ot-desc-id-C0002\" aria-labelledby=\"ot-header-id-C0002\"></button>",
+    "<button aria-expanded=\"false\" ot-accordion=\"true\" aria-controls=\"ot-desc-id-C0004\" aria-labelledby=\"ot-header-id-C0004\"></button>"
+  ],
+  "response_format": {
+    "listing_url": "Copy exactly the entry URL or an observed link URL",
+    "item_selector": "CSS selector for representative detail anchors; a hypothesis if listing differs",
+    "max_scroll_actions": "integer 0..3",
+    "reason": "brief rationale"
+  }
+}

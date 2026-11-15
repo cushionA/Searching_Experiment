@@ -1,0 +1,15 @@
+{
+  "site_id": "25",
+  "learned_selector": "a.article-url, .article-block h2.title a[href]",
+  "operation_rule": "PLOS代表一覧で確認した .article-block の記事リンクだけを候補にする。scrollの返却リンクを先に候補化し、query文字列を保持する。",
+  "assumptions": [
+    "input.start_urlは実行器が開いた一覧ページ",
+    "api.scroll()のlinksは観測済みリンクとして扱える",
+    "api.save成功時のみmax_itemsに計上"
+  ],
+  "limitations": [
+    "同一originかつ観測済みURLのみ保存",
+    "scrollの返却リンクに対象URLが含まれない場合、初期一覧候補だけを使う",
+    "queryとfragmentを正規化しない"
+  ]
+}

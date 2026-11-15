@@ -1,0 +1,6 @@
+{
+  "site_id": "61",
+  "learned_selector": "Product title anchors under h2.title-link-wrapper--25--s, with a[href] fallback; retain only item.rakuten.co.jp/{shop}/{item}/ URLs. This excludes ad redirect hosts, store pages, and search/category URLs.",
+  "operation_rule": "Collect product links while the search results are open, deduplicate by item URL without query/fragment, then save up to max_items. Scroll at most six times when needed; save navigates to each detail page.",
+  "assumptions_and_limits": "Uses the observed item-host/two-path-segment product URL structure. Variant query parameters are retained from the observed link; no SKU or price is extracted."
+}

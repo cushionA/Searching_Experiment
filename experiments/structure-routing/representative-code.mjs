@@ -102,6 +102,7 @@ async function session(root, target, phase, start, work) {
     };
     state.navigate = async (url, label) => {
       if (!allowed(url, target)) throw new Stop('navigation_outside_scope');
+      if (browser.guard.counters.reserved >= remaining) throw new Stop('document_budget');
       state.act(); state.response = null;
       state.response = await browser.page.goto(url, {waitUntil: 'domcontentloaded', timeout: 45000}).catch(error => {
         state.events.push({action: 'navigation_error', url, error: String(error.message).slice(0, 250)}); return null;
@@ -159,6 +160,8 @@ async function discover(root, target) {
 
 async function prepare(root, target, warm) {
   const directory = site(root, target.id);
+  const representativeFile = path.join(directory, 'representative.json');
+  if (fs.existsSync(representativeFile) && read(representativeFile).blocked) return {id: target.id, status: 'access_stopped'};
   if (warm) {
     const final = path.join(directory, 'evaluation', 'listing-after.json');
     if (fs.existsSync(final)) return {id: target.id, status: 'already_recorded'};
@@ -228,6 +231,13 @@ async function execute(root, target, phase) {
   const directory = site(root, target.id);
   const resultFile = path.join(directory, phase, 'result.json');
   if (fs.existsSync(resultFile)) return {id: target.id, phase, status: 'already_recorded'};
+  const representativeFile = path.join(directory, 'representative.json');
+  if (fs.existsSync(representativeFile) && read(representativeFile).blocked) return {id: target.id, phase, status: 'access_stopped'};
+  if (!fs.existsSync(path.join(directory, 'representatives.json')) || !fs.existsSync(path.join(directory, 'code-request.json'))) return {id: target.id, phase, status: 'prepare_incomplete'};
+  if (phase === 'warm') {
+    const coldFile = path.join(directory, 'cold', 'result.json');
+    if (!fs.existsSync(coldFile) || read(coldFile).status === 'access_stopped') return {id: target.id, phase, status: 'cold_phase_ineligible'};
+  }
   const loaded = loadCrawler(path.join(directory, 'crawl.js'));
   const manifest = path.join(directory, 'code-manifest.json');
   if (fs.existsSync(manifest) && read(manifest).sha256 !== loaded.hash) throw new Stop('frozen_code_changed');
@@ -308,7 +318,7 @@ export function verify(root) {
     if (sha(fs.readFileSync(path.join(site(root, result.id), 'crawl.js'))) !== result.crawl_sha256) failures.push(`code_changed:${key}`);
     for (const item of result.selected_items) for (const [field, hash] of [['source_html', 'source_sha256'], ['rendered_dom', 'rendered_sha256']]) {
       if (!item[field]) continue;
-      const file = path.resolve(root, item[field]);
+      const file = path.resolve(root, item[field].replaceAll('\\', '/'));
       if (rel(root, file).startsWith('..') || !fs.existsSync(file) || sha(fs.readFileSync(file)) !== item[hash]) failures.push(`html_hash:${key}:${field}`);
     }
   }
@@ -324,11 +334,18 @@ export async function runAction({runDir, action, ids = [], phase = 'cold', live 
   const root = path.resolve(runDir);
   const targets = rows(path.join(root, 'targets.jsonl')).filter(target => !ids.length || ids.includes(String(target.id)));
   if (['discover', 'prepare', 'execute'].includes(action)) {
-    if (!live) throw new Stop('live_flag_required'); const outcomes = [];
-    for (const target of targets) {
-      try { outcomes.push(action === 'discover' ? await discover(root, target) : action === 'prepare' ? await prepare(root, target, phase === 'warm') : await execute(root, target, phase)); }
-      catch (error) { const record = {id: target.id, action, phase, status: 'stopped', error: String(error.message).slice(0, 400)}; write(path.join(site(root, target.id), `${action}-${phase}-status.json`), record); outcomes.push(record); }
-    }
+    if (!live) throw new Stop('live_flag_required');
+    const protocol = read(path.join(root, 'protocol.json'));
+    const concurrency = protocol.max_concurrent_sites;
+    if (!Number.isSafeInteger(concurrency) || concurrency < 1 || concurrency > 4 || new Set(targets.map(target => String(target.id))).size !== targets.length) throw new Stop('invalid_site_concurrency_or_duplicate_targets');
+    const outcomes = new Array(targets.length); let next = 0;
+    await Promise.all(Array.from({length: Math.min(concurrency, targets.length)}, async () => {
+      while (next < targets.length) {
+        const index = next++; const target = targets[index];
+        try { outcomes[index] = action === 'discover' ? await discover(root, target) : action === 'prepare' ? await prepare(root, target, phase === 'warm') : await execute(root, target, phase); }
+        catch (error) { const record = {id: target.id, action, phase, status: 'stopped', error: String(error.message).slice(0, 400)}; write(path.join(site(root, target.id), `${action}-${phase}-status.json`), record); outcomes[index] = record; }
+      }
+    }));
     return {action, outcomes};
   }
   const checked = verify(root); write(path.join(root, 'verification.json'), checked);

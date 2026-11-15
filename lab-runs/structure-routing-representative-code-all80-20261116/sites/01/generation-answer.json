@@ -1,0 +1,5 @@
+{
+  "assumptions": ["The supplied API accepts CSS selectors against the currently open listing and resolves discovered anchor URLs.", "Book detail pages have catalogue paths ending in a numeric book identifier and index.html.", "Scroll result links are newly revealed or currently observed links; retaining all observed candidates is safe.", "api.save reports whether a page was saved and leaves the browser on that detail page."],
+  "learned_selectors": ["article.product_pod a[href]"],
+  "reason": "The observed listing uses product_pod articles with anchors around each book image and title. Collecting from those cards and scroll results accommodates a different starting listing while excluding navigation links, and bounded scrolling prioritizes revealed candidates. The initial representative detail is skipped through exclude_urls."
+}

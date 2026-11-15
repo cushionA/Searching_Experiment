@@ -1,0 +1,600 @@
+{
+  "site_id": "07",
+  "entry_url": "https://www.automationexercise.com/products",
+  "task": "Reach public detail/document pages and save HTML; no SKU, price or attribute extraction.",
+  "site_tasks": [
+    "商品一覧から商品詳細へ進む"
+  ],
+  "representative_html_projection": "<body style=\"\"> <header id=\"header\"> <div class=\"header-middle\"> <div class=\"container\"> <div class=\"row\"> <div class=\"col-sm-4\"> <div class=\"logo pull-left\"> <a href=\"/\"><img src=\"/static/images/home/logo.png\" alt=\"Website for automation practice\"></a> </div> </div> <div class=\"col-sm-8\"> <div class=\"shop-menu pull-right\"> <ul class=\"nav navbar-nav\"> <li><a href=\"/\"><i class=\"fa fa-home\"></i> Home</a></li> <li><a href=\"/products\" style=\"color: orange;\"><i class=\"material-icons card_travel\" style=\"font-size: 16px;\"></i> Products</a></li> <li><a href=\"/view_cart\"><i class=\"fa fa-shopping-cart\"></i> Cart</a></li> <li><a href=\"/login\"><i class=\"fa fa-lock\"></i> Signup / Login</a></li> <li><a href=\"/test_cases\"><i class=\"fa fa-list\"></i> Test Cases</a></li> <li><a href=\"/api_list\"><i class=\"fa fa-list\"></i> API Testing</a></li> <li><a href=\"https://www.youtube.com/c/AutomationExercise\"><i class=\"fa fa-youtube-play\"></i> Video Tutorials</a></li> <li><a href=\"/contact_us\"><i class=\"fa fa-envelope\"></i> Contact us</a></li> </ul> </div> </div> </div> </div> </div> </header> <section id=\"advertisement\"> <div class=\"container\"> <br> <img src=\"/static/images/shop/sale.jpg\" id=\"sale_image\" alt=\"Website for practice\"> <input type=\"text\" name=\"search\" id=\"search_product\" value=\"\" placeholder=\"Search Product\" class=\"form-control input-lg\"> <button type=\"button\" id=\"submit_search\" class=\"btn btn-default btn-lg\"><i class=\"fa fa-search\"></i></button> </div> </section> <section> <div class=\"container\"> <div class=\"row\"> <div class=\"col-sm-3\"> <div class=\"left-sidebar\"> <h2>Category</h2> <div class=\"panel-group category-products\" id=\"accordian\"> <div class=\"panel panel-default\"> <div class=\"panel-heading\"> <h4 class=\"panel-title\"> <a data-toggle=\"collapse\" data-parent=\"#accordian\" href=\"#Women\"> <span class=\"badge pull-right\"><i class=\"fa fa-plus\"></i></span> Women </a> </h4> </div> <div id=\"Women\" class=\"panel-collapse collapse\"> <div class=\"panel-body\"> <ul> <li><a href=\"/category_products/1\">Dress </a></li> <li><a href=\"/category_products/2\">Tops </a></li> <li><a href=\"/category_products/7\">Saree </a></li> </ul> </div> </div> </div> <div class=\"panel panel-default\"> <div class=\"panel-heading\"> <h4 class=\"panel-title\"> <a data-toggle=\"collapse\" data-parent=\"#accordian\" href=\"#Men\"> <span class=\"badge pull-right\"><i class=\"fa fa-plus\"></i></span> Men </a> </h4> </div> <div id=\"Men\" class=\"panel-collapse collapse\"> <div class=\"panel-body\"> <ul> <li><a href=\"/category_products/3\">Tshirts </a></li> <li><a href=\"/category_products/6\">Jeans </a></li> </ul> </div> </div> </div> <div class=\"panel panel-default\"> <div class=\"panel-heading\"> <h4 class=\"panel-title\"> <a data-toggle=\"collapse\" data-parent=\"#accordian\" href=\"#Kids\"> <span class=\"badge pull-right\"><i class=\"fa fa-plus\"></i></span> Kids </a> </h4> </div> <div id=\"Kids\" class=\"panel-collapse collapse\"> <div class=\"panel-body\"> <ul> <li><a href=\"/category_products/4\">Dress </a></li> <li><a href=\"/category_products/5\">Tops &amp; Shirts </a></li> </ul> </div> </div> </div> </div> <div class=\"brands_products\"> <h2>Brands</h2> <div class=\"brands-name\"> <ul class=\"nav nav-pills nav-stacked\"> <li><a href=\"/brand_products/Polo\"> <span class=\"pull-right\">(6)</span>Polo</a></li> <li><a href=\"/brand_products/H&amp;M\"> <span class=\"pull-right\">(5)</span>H&amp;M</a></li> <li><a href=\"/brand_products/Madame\"> <span class=\"pull-right\">(5)</span>Madame</a></li> <li><a href=\"/brand_products/Mast &amp; Harbour\"> <span class=\"pull-right\">(3)</span>Mast &amp; Harbour</a></li> <li><a href=\"/brand_products/Babyhug\"> <span class=\"pull-right\">(4)</span>Babyhug</a></li> <li><a href=\"/brand_products/Allen Solly Junior\"> <span class=\"pull-right\">(3)</span>Allen Solly Junior</a></li> <li><a href=\"/brand_products/Kookie Kids\"> <span class=\"pull-right\">(3)</span>Kookie Kids</a></li> <li><a href=\"/brand_products/Biba\"> <span class=\"pull-right\">(5)</span>Biba</a></li> </ul> </div> </div> </div> </div> <div class=\"col-sm-9 padding-right\"> <div class=\"features_items\"> <h2 class=\"title text-center\">All Products</h2> <!-- Modal HTML --> <div id=\"cartModal\" class=\"modal fade\"> <div class=\"modal-dialog modal-confirm\"> <div class=\"modal-content\"> <div class=\"modal-header\"> <div class=\"icon-box\"> <i class=\"material-icons\"></i> </div> <h4 class=\"modal-title w-100\">Added!</h4> </div> <div class=\"modal-body\"> <p class=\"text-center\">Your product has been added to cart.</p> <p class=\"text-center\"><a href=\"/view_cart\"><u>View Cart</u></a></p> </div> <div class=\"modal-footer\"> <button class=\"btn btn-success close-modal btn-block\" data-dismiss=\"modal\">Continue Shopping</button> </div> </div> </div> </div> <div class=\"col-sm-4\"> <div class=\"product-image-wrapper\"> <div class=\"single-products\"> <div class=\"productinfo text-center\"> <img src=\"/get_product_picture/1\" alt=\"ecommerce website products\"> <h2>Rs. 500</h2> <p>Blue Top</p> <a data-product-id=\"1\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> <div class=\"product-overlay\"> <div class=\"overlay-content\"> <h2>Rs. 500</h2> <p>Blue Top</p> <a data-product-id=\"1\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> </div> </div> <div class=\"choose\"> <ul class=\"nav nav-pills nav-justified\"> <li><a href=\"/product_details/1\" style=\"color: brown;\"><i class=\"fa fa-plus-square\"></i>View Product</a></li> </ul> </div> </div> </div> <div class=\"col-sm-4\"> <div class=\"product-image-wrapper\"> <div class=\"single-products\"> <div class=\"productinfo text-center\"> <img src=\"/get_product_picture/2\" alt=\"ecommerce website products\"> <h2>Rs. 400</h2> <p>Men Tshirt</p> <a data-product-id=\"2\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> <div class=\"product-overlay\"> <div class=\"overlay-content\"> <h2>Rs. 400</h2> <p>Men Tshirt</p> <a data-product-id=\"2\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> </div> </div> <div class=\"choose\"> <ul class=\"nav nav-pills nav-justified\"> <li><a href=\"/product_details/2\" style=\"color: brown;\"><i class=\"fa fa-plus-square\"></i>View Product</a></li> </ul> </div> </div> </div> <div class=\"col-sm-4\"> <div class=\"product-image-wrapper\"> <div class=\"single-products\"> <div class=\"productinfo text-center\"> <img src=\"/get_product_picture/3\" alt=\"ecommerce website products\"> <h2>Rs. 1000</h2> <p>Sleeveless Dress</p> <a data-product-id=\"3\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> <div class=\"product-overlay\"> <div class=\"overlay-content\"> <h2>Rs. 1000</h2> <p>Sleeveless Dress</p> <a data-product-id=\"3\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> </div> </div> <div class=\"choose\"> <ul class=\"nav nav-pills nav-justified\"> <li><a href=\"/product_details/3\" style=\"color: brown;\"><i class=\"fa fa-plus-square\"></i>View Product</a></li> </ul> </div> </div> </div> <div class=\"col-sm-4\"> <div class=\"product-image-wrapper\"> <div class=\"single-products\"> <div class=\"productinfo text-center\"> <img src=\"/get_product_picture/4\" alt=\"ecommerce website products\"> <h2>Rs. 1500</h2> <p>Stylish Dress</p> <a data-product-id=\"4\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> <div class=\"product-overlay\"> <div class=\"overlay-content\"> <h2>Rs. 1500</h2> <p>Stylish Dress</p> <a data-product-id=\"4\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> </div> </div> <div class=\"choose\"> <ul class=\"nav nav-pills nav-justified\"> <li><a href=\"/product_details/4\" style=\"color: brown;\"><i class=\"fa fa-plus-square\"></i>View Product</a></li> </ul> </div> </div> </div> <div class=\"col-sm-4\"> <div class=\"product-image-wrapper\"> <div class=\"single-products\"> <div class=\"productinfo text-center\"> <img src=\"/get_product_picture/5\" alt=\"ecommerce website products\"> <h2>Rs. 600</h2> <p>Winter Top</p> <a data-product-id=\"5\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> <div class=\"product-overlay\"> <div class=\"overlay-content\"> <h2>Rs. 600</h2> <p>Winter Top</p> <a data-product-id=\"5\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> </div> </div> <div class=\"choose\"> <ul class=\"nav nav-pills nav-justified\"> <li><a href=\"/product_details/5\" style=\"color: brown;\"><i class=\"fa fa-plus-square\"></i>View Product</a></li> </ul> </div> </div> </div> <div class=\"col-sm-4\"> <div class=\"product-image-wrapper\"> <div class=\"single-products\"> <div class=\"productinfo text-center\"> <img src=\"/get_product_picture/6\" alt=\"ecommerce website products\"> <h2>Rs. 400</h2> <p>Summer White Top</p> <a data-product-id=\"6\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> <div class=\"product-overlay\"> <div class=\"overlay-content\"> <h2>Rs. 400</h2> <p>Summer White Top</p> <a data-product-id=\"6\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> </div> </div> <div class=\"choose\"> <ul class=\"nav nav-pills nav-justified\"> <li><a href=\"/product_details/6\" style=\"color: brown;\"><i class=\"fa fa-plus-square\"></i>View Product</a></li> </ul> </div> </div> </div> <div class=\"col-sm-4\"> <div class=\"product-image-wrapper\"> <div class=\"single-products\"> <div class=\"productinfo text-center\"> <img src=\"/get_product_picture/7\" alt=\"ecommerce website products\"> <h2>Rs. 1000</h2> <p>Madame Top For Women</p> <a data-product-id=\"7\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> <div class=\"product-overlay\"> <div class=\"overlay-content\"> <h2>Rs. 1000</h2> <p>Madame Top For Women</p> <a data-product-id=\"7\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> </div> </div> <div class=\"choose\"> <ul class=\"nav nav-pills nav-justified\"> <li><a href=\"/product_details/7\" style=\"color: brown;\"><i class=\"fa fa-plus-square\"></i>View Product</a></li> </ul> </div> </div> </div> <div class=\"col-sm-4\"> <div class=\"product-image-wrapper\"> <div class=\"single-products\"> <div class=\"productinfo text-center\"> <img src=\"/get_product_picture/8\" alt=\"ecommerce website products\"> <h2>Rs. 700</h2> <p>Fancy Green Top</p> <a data-product-id=\"8\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> <div class=\"product-overlay\"> <div class=\"overlay-content\"> <h2>Rs. 700</h2> <p>Fancy Green Top</p> <a data-product-id=\"8\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> </div> </div> <div class=\"choose\"> <ul class=\"nav nav-pills nav-justified\"> <li><a href=\"/product_details/8\" style=\"color: brown;\"><i class=\"fa fa-plus-square\"></i>View Product</a></li> </ul> </div> </div> </div> <div class=\"col-sm-4\"> <div class=\"product-image-wrapper\"> <div class=\"single-products\"> <div class=\"productinfo text-center\"> <img src=\"/get_product_picture/11\" alt=\"ecommerce website products\"> <h2>Rs. 499</h2> <p>Sleeves Printed Top - White</p> <a data-product-id=\"11\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> <div class=\"product-overlay\"> <div class=\"overlay-content\"> <h2>Rs. 499</h2> <p>Sleeves Printed Top - White</p> <a data-product-id=\"11\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> </div> </div> <div class=\"choose\"> <ul class=\"nav nav-pills nav-justified\"> <li><a href=\"/product_details/11\" style=\"color: brown;\"><i class=\"fa fa-plus-square\"></i>View Product</a></li> </ul> </div> </div> </div> <div class=\"col-sm-4\"> <div class=\"product-image-wrapper\"> <div class=\"single-products\"> <div class=\"productinfo text-center\"> <img src=\"/get_product_picture/12\" alt=\"ecommerce website products\"> <h2>Rs. 359</h2> <p>Half Sleeves Top Schiffli Detailing - Pink</p> <a data-product-id=\"12\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> <div class=\"product-overlay\"> <div class=\"overlay-content\"> <h2>Rs. 359</h2> <p>Half Sleeves Top Schiffli Detailing - Pink</p> <a data-product-id=\"12\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> </div> </div> <div class=\"choose\"> <ul class=\"nav nav-pills nav-justified\"> <li><a href=\"/product_details/12\" style=\"color: brown;\"><i class=\"fa fa-plus-square\"></i>View Product</a></li> </ul> </div> </div> </div> <div class=\"col-sm-4\"> <div class=\"product-image-wrapper\"> <div class=\"single-products\"> <div class=\"productinfo text-center\"> <img src=\"/get_product_picture/13\" alt=\"ecommerce website products\"> <h2>Rs. 278</h2> <p>Frozen Tops For Kids</p> <a data-product-id=\"13\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> <div class=\"product-overlay\"> <div class=\"overlay-content\"> <h2>Rs. 278</h2> <p>Frozen Tops For Kids</p> <a data-product-id=\"13\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> </div> </div> <div class=\"choose\"> <ul class=\"nav nav-pills nav-justified\"> <li><a href=\"/product_details/13\" style=\"color: brown;\"><i class=\"fa fa-plus-square\"></i>View Product</a></li> </ul> </div> </div> </div> <div class=\"col-sm-4\"> <div class=\"product-image-wrapper\"> <div class=\"single-products\"> <div class=\"productinfo text-center\"> <img src=\"/get_product_picture/14\" alt=\"ecommerce website products\"> <h2>Rs. 679</h2> <p>Full Sleeves Top Cherry - Pink</p> <a data-product-id=\"14\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> <div class=\"product-overlay\"> <div class=\"overlay-content\"> <h2>Rs. 679</h2> <p>Full Sleeves Top Cherry - Pink</p> <a data-product-id=\"14\" class=\"btn btn-default add-to-cart\"><i class=\"fa fa-shopping-cart\"></i>Add to cart</a> </div> </div> </div> <div class=\"choose\"",
+  "observed_links": [
+    {
+      "url": "https://www.automationexercise.com/",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "logo",
+          "pull-left"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/",
+      "text": "Home",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/products",
+      "text": " Products",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/view_cart",
+      "text": "Cart",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/login",
+      "text": "Signup / Login",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/test_cases",
+      "text": "Test Cases",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/api_list",
+      "text": "API Testing",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.youtube.com/c/AutomationExercise",
+      "text": "Video Tutorials",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/contact_us",
+      "text": "Contact us",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/products#Women",
+      "text": "WOMEN",
+      "parent": {
+        "tag": "h4",
+        "classes": [
+          "panel-title"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/category_products/1",
+      "text": "Dress",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/category_products/2",
+      "text": "Tops",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/category_products/7",
+      "text": "Saree",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/products#Men",
+      "text": "MEN",
+      "parent": {
+        "tag": "h4",
+        "classes": [
+          "panel-title"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/category_products/3",
+      "text": "Tshirts",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/category_products/6",
+      "text": "Jeans",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/products#Kids",
+      "text": "KIDS",
+      "parent": {
+        "tag": "h4",
+        "classes": [
+          "panel-title"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/category_products/4",
+      "text": "Dress",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/category_products/5",
+      "text": "Tops & Shirts",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/brand_products/Polo",
+      "text": "(6)\nPOLO",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/brand_products/H&M",
+      "text": "(5)\nH&M",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/brand_products/Madame",
+      "text": "(5)\nMADAME",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/brand_products/Mast%20&%20Harbour",
+      "text": "(3)\nMAST & HARBOUR",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/brand_products/Babyhug",
+      "text": "(4)\nBABYHUG",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/brand_products/Allen%20Solly%20Junior",
+      "text": "(3)\nALLEN SOLLY JUNIOR",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/brand_products/Kookie%20Kids",
+      "text": "(3)\nKOOKIE KIDS",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/brand_products/Biba",
+      "text": "(5)\nBIBA",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/view_cart",
+      "text": "View Cart",
+      "parent": {
+        "tag": "p",
+        "classes": [
+          "text-center"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/1",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/2",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/3",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/4",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/5",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/6",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/7",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/8",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/11",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/12",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/13",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/14",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/15",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/16",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/18",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/19",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/20",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/21",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/22",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/23",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/24",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/28",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/29",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/30",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/31",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/33",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/35",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/37",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/38",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/39",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/40",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/41",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/42",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/product_details/43",
+      "text": "View Product",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.automationexercise.com/products#top",
+      "text": "",
+      "parent": {
+        "tag": "body",
+        "classes": []
+      },
+      "region": "body"
+    }
+  ],
+  "controls": [
+    "<button type=\"button\" id=\"submit_search\" class=\"btn btn-default btn-lg\"><i class=\"fa fa-search\"></i></button>",
+    "<button class=\"btn btn-success close-modal btn-block\" data-dismiss=\"modal\">Continue Shopping</button>",
+    "<button type=\"submit\" id=\"subscribe\" class=\"btn btn-default\"><i class=\"fa fa-arrow-circle-o-right\"></i></button>"
+  ],
+  "response_format": {
+    "listing_url": "Copy exactly the entry URL or an observed link URL",
+    "item_selector": "CSS selector for representative detail anchors; a hypothesis if listing differs",
+    "max_scroll_actions": "integer 0..3",
+    "reason": "brief rationale"
+  }
+}

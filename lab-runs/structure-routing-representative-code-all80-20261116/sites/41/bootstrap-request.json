@@ -1,0 +1,1498 @@
+{
+  "site_id": "41",
+  "entry_url": "https://www.gutenberg.org/ebooks/",
+  "task": "Reach public detail/document pages and save HTML; no SKU, price or attribute extraction.",
+  "site_tasks": [
+    "電子書籍一覧から書籍詳細へ進む"
+  ],
+  "representative_html_projection": "<body class=\"search-options-body\"> <div class=\"container\"><!-- start body --><header> <input type=\"radio\" name=\"toggle\" id=\"search-toggle\" style=\"display: none\"> <input type=\"radio\" name=\"toggle\" id=\"search-close\" style=\"display: none\"> <input type=\"checkbox\" id=\"about-toggle\" style=\"display: none\"> <div class=\"logo-container\"> <a id=\"main_logo\" href=\"/\" class=\"no-hover\"> <img src=\"/gutenberg/pg-logo-new.jpg\" alt=\"Project Gutenberg\" draggable=\"false\"> </a> </div> <div class=\"top-header\"> <form class=\"search-form\" method=\"get\" action=\"/ebooks/search/\" accept-charset=\"utf-8\"> <label for=\"search-toggle\" class=\"search-icon-btn\"> <span class=\"visually-hidden\">Open Search</span> </label> <label for=\"search-close\" class=\"search-close-btn\"><span aria-hidden=\"true\">X</span><span class=\"visually-hidden\">Close Search</span></label> <input type=\"text\" class=\"search-input\" name=\"query\" placeholder=\"Quick search\" aria-label=\"Search books\"> <button type=\"submit\" class=\"search-button\">Go!</button> </form> <div class=\"donate-container\"> <form class=\"donatelink\" action=\"https://www.paypal.com/cgi-bin/webscr\" method=\"post\" target=\"new\"> <input type=\"hidden\" name=\"cmd\" value=\"_s-xclick\"> <input type=\"hidden\" name=\"hosted_button_id\" value=\"XKAL6BZL3YPSN\"> <input class=\"donbtn\" type=\"image\" src=\"/pics/en_US.gif\" name=\"submit\" alt=\"Donate via PayPal\"> </form> <a href=\"/donate/\" class=\"donate-link\"> Donate </a> </div> </div> <div class=\"lower-header\" role=\"navigation\"> <div class=\"dropdown\" tabindex=\"0\"> <label for=\"about-toggle\" class=\"dropdown-button\">About<span aria-hidden=\"true\" class=\"dropdown-icon\">▼</span></label> <div class=\"dropdown-content\"> <a href=\"/about/\">About Project Gutenberg </a> <a href=\"/help/reading_options.html\">Reading Options &amp; Kindle</a> <a href=\"/about/contact_information.html\">Contact Us</a> <a href=\"/about/background/\">History &amp; Philosophy</a> <a href=\"/help/\">Help Pages</a> <a href=\"/ebooks/offline_catalogs.html\">Offline Catalogs</a> <a href=\"/donate/\">Donate</a> </div> </div> <div class=\"main-links\"> <a href=\"/browse/scores/top\" class=\"link-freq-downloaded\">Frequently Downloaded</a> <a href=\"/ebooks/categories\" class=\"link-main-categories\">Main Categories</a> <a href=\"/ebooks/bookshelf/\" class=\"link-reading-lists\">Reading Lists</a> <a href=\"/ebooks/\" class=\"link-advanced-search\">Search Options</a> </div> </div> <div class=\"tertiary-header\"> <a href=\"/browse/scores/top\" class=\"tertiary-link link-freq-downloaded\">Frequently Downloaded</a> <a href=\"/ebooks/categories\" class=\"tertiary-link link-main-categories\">Main Categories</a> </div> </header> <div class=\"page_content\"><!-- start content --> <div class=\"page\"> <!-- Three Icons on top --> <div class=\"icons-section\"> <ul class=\"navlinks\"> <li class=\"navlink\"> <a class=\"link\" href=\"/ebooks/search/?sort_order=downloads\" accesskey=\"0\"> <span class=\"cell leftcell without-cover\"> <span class=\"icon-wrapper\"> <span class=\"icon icon_popular\"></span> </span> </span> <span class=\"cell content\"> <span class=\"title\">Most Popular</span> </span> <span class=\"hstrut\"></span> </a> </li> <li class=\"navlink\"> <a class=\"link\" href=\"/ebooks/search/?sort_order=release_date\" accesskey=\"1\"> <span class=\"cell leftcell without-cover\"> <span class=\"icon-wrapper\"> <span class=\"icon icon_date\"></span> </span> </span> <span class=\"cell content\"> <span class=\"title\">New Releases</span> </span> <span class=\"hstrut\"></span> </a> </li> <li class=\"navlink\"> <a class=\"link\" href=\"/ebooks/search/?sort_order=random\" accesskey=\"2\"> <span class=\"cell leftcell without-cover\"> <span class=\"icon-wrapper\"> <span class=\"icon icon_random\"></span> </span> </span> <span class=\"cell content\"> <span class=\"title\">Random Suggestions </span> </span> <span class=\"hstrut\"></span> </a> </li> </ul> </div> <!-- The Three Tabs and their Content --> <div class=\"menu-and-content\"> <input type=\"radio\" name=\"ebook-tabs\" id=\"tab-advanced\" class=\"tab-input\" checked=\"\"> <input type=\"radio\" name=\"ebook-tabs\" id=\"tab-fulltext\" class=\"tab-input\"> <input type=\"radio\" name=\"ebook-tabs\" id=\"tab-categories\" class=\"tab-input\"> <div class=\"tabs-container\"> <label for=\"tab-advanced\">Advanced Search</label> <label for=\"tab-fulltext\">Full Text Search</label> <label for=\"tab-categories\">Languages &amp; Catalogs</label> </div> <!-- Tab 1 - Advanced Search --> <div id=\"advanced-search\" class=\"tabcontent\"> <!-- Modal Trigger and Modal --> <input type=\"checkbox\" id=\"info-toggle\" aria-labelledby=\"more-info-button close-info-button\" class=\"info-checkbox\"> <label id=\"more-info-button\" for=\"info-toggle\" class=\"info-icon-label\" title=\"More Information\" aria-label=\"More Information\">i</label> <div class=\"info-modal-overlay\"> <div class=\"info-modal\"> <label id=\"close-info-button\" for=\"info-toggle\" class=\"info-modal-close\" title=\"Close\" aria-label=\"Close Information\">×</label> <div class=\"modal-content\"> <h2>Information</h2> <p> - Advanced Search is case insensitive. </p> <p> - Fill in as many fields you like. </p> <p> - Enter one or more space separated words in each field. Avoid punctuation characters. </p> <p> - The result will match all of the words you entered in all of the fields. Eg. Author: Jules Verne, Title: 20, Language: French will get 20.000 Leagues Under The Sea in French. </p> <p> - Select Language: English only if you explicitly want to exclude works in languages other than English. Eg. Author: Molière Language: English will get all the works of Molière translated into English. </p> </div> </div> </div> <!-- Advanced Search Form --> <div class=\"box\"> <form method=\"post\" action=\"/ebooks/results/\" accept-charset=\"utf-8\" enctype=\"multipart/form-data\"> <h2> Advanced Search </h2> <p> You can use any one search option or multiple at the same time. <br> e.g. Author=Goethe and Language=German searches for works by Goethe in German. </p> <div class=\"form-group\"> <label for=\"author\">Author</label> <input type=\"text\" name=\"author\" id=\"author\"> </div> <div class=\"form-group\"> <label for=\"title\">Title</label> <input type=\"text\" name=\"title\" id=\"title\"> </div> <div class=\"form-group\"> <label for=\"subject\">Subject</label> <input type=\"text\" name=\"subject\" id=\"subject\"> </div> <div class=\"form-group\"> <label for=\"locc\" accesskey=\"o\">Subject Areas</label> <select id=\"locc\" name=\"locc\" title=\"Please choose a Library of Congress Class.\"> <option selected=\"\" value=\"\">Any</option> <option value=\"AC\">AC General Works: Collections, Series, Collected works, Pamphlets</option> <option value=\"AE\">AE General Works: Encyclopedias</option> <option value=\"AG\">AG General Works: Dictionaries and other general reference books</option> <option value=\"AM\">AM General Works: Museums, Collectors and collecting</option> <option value=\"AP\">AP General Works: Periodicals</option> <option value=\"AS\">AS General Works: Academies and International Associations, Congresses</option> <option value=\"AY\">AY General Works: Yearbooks, Almanacs, Directories</option> <option value=\"AZ\">AZ General Works: History of scholarship and learning, The humanities</option> <option value=\"B\">B Philosophy, Psychology, Religion</option> <option value=\"BC\">BC Philosophy, Psychology, Religion: Logic</option> <option value=\"BD\">BD Philosophy, Psychology, Religion: Speculative Philosophy, General Philosophical works</option> <option value=\"BF\">BF Philosophy, Psychology, Religion: Psychology, Philosophy, Psychoanalysis</option> <option value=\"BH\">BH Philosophy, Psychology, Religion: Aesthetics</option> <option value=\"BJ\">BJ Philosophy, Psychology, Religion: Ethics, Social usages, Etiquette, Religion</option> <option value=\"BL\">BL Philosophy, Psychology, Religion: Religion: General, Miscellaneous and Atheism</option> <option value=\"BM\">BM Philosophy, Psychology, Religion: Judaism</option> <option value=\"BP\">BP Philosophy, Psychology, Religion: Islam, Bahaism, Theosophy, Other and new beliefs</option> <option value=\"BQ\">BQ Philosophy, Psychology, Religion: Buddhism</option> <option value=\"BR\">BR Philosophy, Psychology, Religion: Christianity</option> <option value=\"BS\">BS Philosophy, Psychology, Religion: Christianity: The Bible, Old and New Testament</option> <option value=\"BT\">BT Philosophy, Psychology, Religion: Christianity: Doctrinal theology, God, Christology</option> <option value=\"BV\">BV Philosophy, Psychology, Religion: Christianity: Practical theology, Worship</option> <option value=\"BX\">BX Philosophy, Psychology, Religion: Christianity: Churches, Church movements</option> <option value=\"CB\">CB History: History of civilization</option> <option value=\"CC\">CC History: Archaeology</option> <option value=\"CE\">CE History: Technical Chronology, Calendar</option> <option value=\"CJ\">CJ History: Numismatics</option> <option value=\"CN\">CN History: Inscriptions, Epigraphy</option> <option value=\"CR\">CR History: Heraldry</option> <option value=\"CS\">CS History: Genealogy</option> <option value=\"CT\">CT History: Biography</option> <option value=\"D\">D History: General and Eastern Hemisphere</option> <option value=\"D501\">D501 History: General and Eastern Hemisphere: World War I</option> <option value=\"D731\">D731 History: General and Eastern Hemisphere: World War II</option> <option value=\"DA\">DA History: General and Eastern Hemisphere: Great Britain, Ireland, Central Europe</option> <option value=\"DB\">DB History: General and Eastern Hemisphere: Austria, Hungary, Czech Republic, Slovakia</option> <option value=\"DC\">DC History: General and Eastern Hemisphere: France, Andorra, Monaco</option> <option value=\"DD\">DD History: General and Eastern Hemisphere: Germany</option> <option value=\"DE\">DE History: General and Eastern Hemisphere: The Mediterranean Region, The Greco-Roman World</option> <option value=\"DF\">DF History: General and Eastern Hemisphere: Greece</option> <option value=\"DG\">DG History: General and Eastern Hemisphere: Italy, Vatican City, Malta</option> <option value=\"DH\">DH History: General and Eastern Hemisphere: Netherlands, Belgium, Luxemburg</option> <option value=\"DJ\">DJ History: General and Eastern Hemisphere: Netherlands</option> <option value=\"DJK\">DJK History: General and Eastern Hemisphere: Eastern Europe</option> <option value=\"DK\">DK History: General and Eastern Hemisphere: Russia, Former Soviet Republics, Poland</option> <option value=\"DL\">DL History: General and Eastern Hemisphere: Northern Europe, Scandinavia</option> <option value=\"DP\">DP History: General and Eastern Hemisphere: Spain, Portugal</option> <option value=\"DQ\">DQ History: General and Eastern Hemisphere: Switzerland</option> <option value=\"DR\">DR History: General and Eastern Hemisphere: Balkan Peninsula, Turkey</option> <option value=\"DS\">DS History: General and Eastern Hemisphere: Asia</option> <option value=\"DT\">DT History: General and Eastern Hemisphere: Africa</option> <option value=\"DU\">DU History: General and Eastern Hemisphere: History of Oceania (South Seas)</option> <option value=\"DX\">DX History: General and Eastern Hemisphere: History of Romanies</option> <option value=\"E011\">E011 History: America: America</option> <option value=\"E151\">E151 History: America: United States</option> <option value=\"E186\">E186 History: America: Colonial History</option> <option value=\"E201\">E201 History: America: Revolution</option> <option value=\"E300\">E300 History: America: Revolution to the Civil War</option> <option value=\"E456\">E456 History: America: Civil War period</option> <option value=\"E660\">E660 History: America: Late nineteenth century</option> <option value=\"E740\">E740 History: America: Twentieth century</option> <option value=\"E838\">E838 History: America: Later twentieth century</option> <option value=\"E895\">E895 History: America: Twenty-first century</option> <option value=\"F001\">F001 United States local history: New England</option> <option value=\"F1001\">F1001 North America local history: Canada</option> <option value=\"F106\">F106 United States local history: Atlantic coast. Middle Atlantic States</option> <option value=\"F1201\">F1201 North America local history: Mexico</option> <option value=\"F1401\">F1401 Latin America local history: General</option> <option value=\"F1461\">F1461 Latin America local history: Guatemala</option> <option value=\"F1481\">F1481 Latin America local history: El Salvador</option> <option value=\"F1501\">F1501 Latin America local history: Honduras</option> <option value=\"F1521\">F1521 Latin America local history: Nicaragua</option> <option value=\"F1541\">F1541 Latin America local history: Costa Rica</option> <option value=\"F1561\">F1561 Latin America local history: Panama</option> <option value=\"F1601\">F1601 History of the Americas: West Indies</option> <option value=\"F1751\">F1751 History of the Americas: West Indies. Cuba</option> <option value=\"F1861\">F1861 History of the Americas: West Indies. Jamaica</option> <option value=\"F1900\">F1900 West Indies local history: Hispaniola (Haiti and Dominican Republic)</option> <option value=\"F1951\">F1951 West Indies local history: Puerto Rico</option> <option value=\"F2001\">F2001 History of the Americas: Lesser Antilles</option> <option value=\"F206\">F206 United States local history: The South. South Atlantic States</option> <option value=\"F2131\">F2131 History of the Americas: West Indies. British West Indies</option> <option value=\"F2155\">F2155 History of the Americas: Caribbean area. Caribbean sea</option> <option value=\"F2201\">F2201 Latin America local history: South America. General</option> <option value=\"F2251\">F2251 Latin America local history: Colombia</option> <option value=\"F2301\">F2301 Latin America local history: Venezuela</option> <option value=\"F2351\">F2351 Latin America local history: Guiana</option> <option value=\"F2501\">F2501 Latin America local history: Brazil</option> <option value=\"F2661\">F2661 Latin America local history: Paraguay</option> <option value=\"F2701\">F2701 Latin America local history: Uruguay</option> <option value=\"F2801\">F2801 Latin America local history: Argentina</option> <option value=\"F296\">F296 United States local history: Gulf States. West",
+  "observed_links": [
+    {
+      "url": "https://www.gutenberg.org/",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "logo-container"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/donate/",
+      "text": "Donate",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "donate-container"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/about/",
+      "text": "About Project Gutenberg",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "dropdown-content"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/help/reading_options.html",
+      "text": "Reading Options & Kindle",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "dropdown-content"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/about/contact_information.html",
+      "text": "Contact Us",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "dropdown-content"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/about/background/",
+      "text": "History & Philosophy",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "dropdown-content"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/help/",
+      "text": "Help Pages",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "dropdown-content"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/offline_catalogs.html",
+      "text": "Offline Catalogs",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "dropdown-content"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/donate/",
+      "text": "Donate",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "dropdown-content"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/scores/top",
+      "text": "Frequently Downloaded",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "main-links"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/categories",
+      "text": "Main Categories",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "main-links"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/bookshelf/",
+      "text": "Reading Lists",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "main-links"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/",
+      "text": "Search Options",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "main-links"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/scores/top",
+      "text": "Frequently Downloaded",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "tertiary-header"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/categories",
+      "text": "Main Categories",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "tertiary-header"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?sort_order=downloads",
+      "text": "Most Popular",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "navlink"
+        ]
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?sort_order=release_date",
+      "text": "New Releases",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "navlink"
+        ]
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?sort_order=random",
+      "text": "Random Suggestions",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "navlink"
+        ]
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/help/bibliographic_record.html",
+      "text": "Download Formats and Bibliographic Record",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.ca",
+      "text": "Catalan",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.zh",
+      "text": "Chinese",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.da",
+      "text": "Danish",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.nl",
+      "text": "Dutch",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.en",
+      "text": "English",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.eo",
+      "text": "Esperanto",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.fi",
+      "text": "Finnish",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.fr",
+      "text": "French",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.de",
+      "text": "German",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.el",
+      "text": "Greek",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.hu",
+      "text": "Hungarian",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.it",
+      "text": "Italian",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.la",
+      "text": "Latin",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.pt",
+      "text": "Portuguese",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.es",
+      "text": "Spanish",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.sv",
+      "text": "Swedish",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.tl",
+      "text": "Tagalog",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.af",
+      "text": "Afrikaans",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.ale",
+      "text": "Aleut",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.ar",
+      "text": "Arabic",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.arp",
+      "text": "Arapaho",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.brx",
+      "text": "Bodo",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.br",
+      "text": "Breton",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.bg",
+      "text": "Bulgarian",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.rmq",
+      "text": "Caló",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.ceb",
+      "text": "Cebuano",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.cs",
+      "text": "Czech",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.et",
+      "text": "Estonian",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.fa",
+      "text": "Farsi",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.fy",
+      "text": "Frisian",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.fur",
+      "text": "Friulian",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.gla",
+      "text": "Gaelic, Scottish",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.gl",
+      "text": "Galician",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.kld",
+      "text": "Gamilaraay",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.grc",
+      "text": "Greek, Ancient",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.hai",
+      "text": "Haida",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.he",
+      "text": "Hebrew",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.is",
+      "text": "Icelandic",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.ilo",
+      "text": "Iloko",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.ia",
+      "text": "Interlingua",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.iu",
+      "text": "Inuktitut",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.ga",
+      "text": "Irish",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.ja",
+      "text": "Japanese",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.csb",
+      "text": "Kashubian",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.kha",
+      "text": "Khasi",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.ko",
+      "text": "Korean",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.lt",
+      "text": "Lithuanian",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.mi",
+      "text": "Maori",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.myn",
+      "text": "Mayan Languages",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.enm",
+      "text": "Middle English",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.nah",
+      "text": "Nahuatl",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.nap",
+      "text": "Napoletano-Calabrese",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.nav",
+      "text": "Navajo",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.nai",
+      "text": "North American Indian",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.no",
+      "text": "Norwegian",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.oc",
+      "text": "Occitan",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.oji",
+      "text": "Ojibwa",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.ang",
+      "text": "Old English",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.pl",
+      "text": "Polish",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.ro",
+      "text": "Romanian",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.ru",
+      "text": "Russian",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.sa",
+      "text": "Sanskrit",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.sco",
+      "text": "Scots",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.sr",
+      "text": "Serbian",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.sl",
+      "text": "Slovenian",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.bgs",
+      "text": "Tagabawa",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.te",
+      "text": "Telugu",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.bo",
+      "text": "Tibetan",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.cy",
+      "text": "Welsh",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/ebooks/search/?query=l.yi",
+      "text": "Yiddish",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/a",
+      "text": "A",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/b",
+      "text": "B",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/c",
+      "text": "C",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/d",
+      "text": "D",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/e",
+      "text": "E",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/f",
+      "text": "F",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/g",
+      "text": "G",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/h",
+      "text": "H",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/i",
+      "text": "I",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/j",
+      "text": "J",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/k",
+      "text": "K",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/l",
+      "text": "L",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/m",
+      "text": "M",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/n",
+      "text": "N",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/o",
+      "text": "O",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/p",
+      "text": "P",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/q",
+      "text": "Q",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/r",
+      "text": "R",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/s",
+      "text": "S",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/t",
+      "text": "T",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/u",
+      "text": "U",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/v",
+      "text": "V",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/w",
+      "text": "W",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/x",
+      "text": "X",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/y",
+      "text": "Y",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/z",
+      "text": "Z",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/authors/other",
+      "text": "other",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/a",
+      "text": "A",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/b",
+      "text": "B",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/c",
+      "text": "C",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/d",
+      "text": "D",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/e",
+      "text": "E",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/f",
+      "text": "F",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/g",
+      "text": "G",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/h",
+      "text": "H",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/i",
+      "text": "I",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/j",
+      "text": "J",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/k",
+      "text": "K",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/l",
+      "text": "L",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/m",
+      "text": "M",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/n",
+      "text": "N",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/o",
+      "text": "O",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/p",
+      "text": "P",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/q",
+      "text": "Q",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/r",
+      "text": "R",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/s",
+      "text": "S",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/t",
+      "text": "T",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/u",
+      "text": "U",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/v",
+      "text": "V",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/w",
+      "text": "W",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/x",
+      "text": "X",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/y",
+      "text": "Y",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/z",
+      "text": "Z",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/titles/other",
+      "text": "other",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/categories/2",
+      "text": "Audio Book, computer-generated",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/categories/1",
+      "text": "Audio Book, human-read",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/categories/9",
+      "text": "Compilations",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/categories/8",
+      "text": "Data",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/categories/3",
+      "text": "Music, recorded",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/categories/4",
+      "text": "Music, Sheet",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/categories/6",
+      "text": "Other recordings",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/categories/7",
+      "text": "Pictures, moving",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/browse/categories/5",
+      "text": "Pictures, still",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.gutenberg.org/about/",
+      "text": "About Project Gutenberg",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/policy/privacy_policy.html",
+      "text": "Privacy policy",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/policy/permission.html",
+      "text": "Permissions",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/policy/terms_of_use.html",
+      "text": "Terms of Use",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/a11y/",
+      "text": "Accessibility",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/about/contact_information.html",
+      "text": "Contact Us",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.gutenberg.org/help/",
+      "text": "Help",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.ibiblio.org/",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "footer"
+        ]
+      },
+      "region": "nav"
+    }
+  ],
+  "controls": [
+    "<button type=\"submit\" class=\"search-button\">Go!</button>"
+  ],
+  "response_format": {
+    "listing_url": "Copy exactly the entry URL or an observed link URL",
+    "item_selector": "CSS selector for representative detail anchors; a hypothesis if listing differs",
+    "max_scroll_actions": "integer 0..3",
+    "reason": "brief rationale"
+  }
+}

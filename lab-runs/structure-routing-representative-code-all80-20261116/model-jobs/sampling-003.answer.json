@@ -1,0 +1,40 @@
+{
+  "job_id": "sampling-003",
+  "answers": [
+    {
+      "id": "16",
+      "listing_url": "https://go.dev/doc/",
+      "item_selector": "main#main-content .Masonry a",
+      "max_scroll_actions": 0,
+      "reason": "代表HTMLのDocumentationページでは、main内のMasonryにGetting Startedや各種ガイドのカードが並び、各カード内の見出しリンクが個別文書へ進む。"
+    },
+    {
+      "id": "17",
+      "listing_url": "https://kubernetes.io/docs/home/",
+      "item_selector": "main .td-content .launch-cards a",
+      "max_scroll_actions": 0,
+      "reason": "代表HTMLのlaunch-cardsに概念・チュートリアル等のリンクが集まり、各カードの文書リンクから個別ページへ進める。"
+    },
+    {
+      "id": "18",
+      "listing_url": "https://docs.docker.com/manuals/",
+      "item_selector": "main a[href^=\"/manuals/\"]",
+      "max_scroll_actions": 1,
+      "reason": "ホームにはManualsの文書カテゴリ入口があり、マニュアル一覧を起点にする。代表HTMLでは一覧ページ本体を観測していないため、main内の同カテゴリ相対リンクを詳細文書候補とする仮説。"
+    },
+    {
+      "id": "19",
+      "listing_url": "https://docs.djangoproject.com/en/stable/",
+      "item_selector": "#docs-content a.reference.internal",
+      "max_scroll_actions": 1,
+      "reason": "Django documentation本文の各節にclass reference internalの内部文書リンクが並び、目次・ガイドから各文書へ進める。"
+    },
+    {
+      "id": "20",
+      "listing_url": "https://scikit-learn.org/stable/user_guide.html",
+      "item_selector": ".toctree-wrapper > ul > li.toctree-l1 > a.reference.internal",
+      "max_scroll_actions": 3,
+      "reason": "User Guideのtoctreeに各章の内部文書リンクがあり、最上位目次項目が詳細ガイドへ進む入口。長い目次の後半確認用にスクロールを許容する。"
+    }
+  ]
+}

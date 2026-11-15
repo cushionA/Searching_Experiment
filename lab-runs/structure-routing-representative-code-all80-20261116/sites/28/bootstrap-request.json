@@ -1,0 +1,403 @@
+{
+  "site_id": "28",
+  "entry_url": "https://www.semanticscholar.org/",
+  "task": "Reach public detail/document pages and save HTML; no SKU, price or attribute extraction.",
+  "site_tasks": [
+    "論文探索入口から論文詳細へ進む"
+  ],
+  "representative_html_projection": "<div class=\"hero-content\" role=\"main\" id=\"main-content\"><div class=\"container hero-container\"><div class=\"s2-homepage-logo\"><h2 class=\"hero-search__sublabel\">A free, AI-powered research tool for scientific literature</h2></div><form class=\"search-bar v2-search-bar\" id=\"search-form\" role=\"search\" autocomplete=\"off\" action=\"/search\"><div class=\"flex-row-vcenter input-container\"><div class=\"flex-row-vcenter input-bg\"><label for=\"q\" class=\"search-input__label\">Search 241,222,225 papers from all fields of science</label><input type=\"search\" name=\"q\" aria-label=\"Search text\" class=\"legacy__input input form-input search-bar__input\" autofocus=\"\" value=\"\"><button disabled=\"\" aria-label=\"Submit\" aria-disabled=\"true\" data-test-id=\"search__form-submit\" class=\"form-submit form-submit__icon-text\"><div class=\"flex-row-vcenter\"><span class=\"form-submit-label\">Search</span></div></button></div></div></form><div class=\"sample-queries\"><span class=\"sample-queries__label\">Try:</span><ul class=\"sample-queries__list\"><li class=\"sample-queries__list_item\"><a class=\"\" aria-label=\"Try searching for Diane Bodart\" href=\"/search?q=%22Diane%20Bodart%22&amp;sort=relevance\">Diane Bodart</a></li><li class=\"sample-queries__list_item\"><a class=\"\" aria-label=\"Try searching for Antibiotic Resistance\" href=\"/search?q=Antibiotic%20Resistance&amp;sort=relevance\">Antibiotic Resistance</a></li><li class=\"sample-queries__list_item\"><a class=\"\" aria-label=\"Try searching for Bioremediation\" href=\"/search?q=Bioremediation&amp;sort=relevance\">Bioremediation</a></li></ul></div></div><div class=\"homepage-announcements\"><div class=\"homepage-announcement\"><div class=\"homepage-announcement__announcement-column\"><div class=\"homepage-announcement__announcement\"><div class=\"homepage-announcement__announcement__header\"><h3 class=\"homepage-announcement__announcement__headline\">New &amp; Improved API for Developers</h3></div><div class=\"homepage-announcement__announcement__content\">Our API now includes paper search, better documentation, and increased stability. Join hundreds of other developers and start building your scholarly app today.</div><div class=\"homepage-announcement__announcement__actions\"><a href=\"/product/api\" class=\"\"><button data-heap-id=\"homepage_public_api_ad\" type=\"submit\" class=\"cl-button cl-button--no-arrow-divider cl-button--not-icon-only cl-button--no-icon cl-button--has-label cl-button--font-size- cl-button--icon-pos-left cl-button--shape-rectangle cl-button--size-default cl-button--type-default cl-button--density-default homepage-announcement__announcement__actions__button\"><span class=\"cl-button__label\">Get Started</span></button></a></div></div></div><div class=\"homepage-announcement__graphic-column\"><div class=\"homepage-announcement__graphic\"><img class=\"homepage-announcements__graphic__foreground homepage-announcements__graphic__foreground--public-api\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnUAAAKACAMAAADNdn7MAAAC+lBMVEUAAAA9gOwvhfgiM2cgMGMyhPUiM2cvhfguhfgnhvgvhfghM2ciM2ciMmYiMmciM2gjNGciM2QiM2ciM2cvhfgvhfciM2gvhfciM2gvhfgiNm0vhfcvhPchM2gvhfcvhfciM2cvhfghMmUiM2YiM2gvhfcvhPYuhfYiM2cvhfgvhfgvhfguhfcvhPcuhfcvhfcvhfciNWsvhfcvhfciMmYiMmcvhfcvhPYvhfcvhfgvhfcvhfcvhfciM2giMmYvhvkiMmUiM2giM2goYLYug/QkSIwfCx0cBA4tfOcqbc0mUp0lTpYsdtwsc9gpZsEoX7MfAw8mWakiM2cvhff/+ej/xy4iM2gdPX7/uwAvg/QiNWowif8jN28iMWQwiP0vh/sjOnQjPHcjPnoiN24iNmwkQ4MvhvkjP30lSY4eMWYkQYAlTJMiL2H99+YugfEpaMQoYbghKVYkRIYjOXEsd98hLl4mUZwnVKIkRoklSpEqaccmU58teeMoXrIoX7UpZb8rb88uf+4mVqQlTZYmT5goXK8hIUksdtwlSIwpY7wmUJr+xi8oW60nWashLFsrbc0rcdQmNGcsc9cnWKknV6cufuoqZ8IkR4opYrosdNkyjf88RW4hJU8hNm0xjP8AAGotfOgte+YrcNIqbMv/zSYqa8k7Pmb/++r//+wzkf8cMGYAAFT//+8hJ1IcPX//yiopN2j/wgD18OE3QmwuOGf+uQUTLGb6wzEyPmsAG2kyj/8AKGg2O2b/yyj9ug7i3dMAAFEAFWDVqEUxOWYAI2ceOnhtcIQAAFqyjlKIiZYAAE3Woj/59OQGLGd7fY4ALGgAAFDNm0SlpakAEmm7k00gHUJ/al4ACmnGnEqPdljyvTRvXmCFblvr5tpzdokCMWhaUWIAAE/uujjgsD6wr7Cbmp9HR2O/vLienqOegFbsuTxVXHpBS3P/ymnBv7vU0cnQpEpASG+khFWXl50gEzHdpTcZNWhQTGOee1b/yVldYn0fAQvpri82PmlY4clLAAAAUnRSTlMAA/v+Bwj6+fcG/Yr2cWCUDybSpPNxU3y+th6sh3SQyEahFoA9vxoO5yLQQhQ4SlxUMtdm3sjrKpjv4ufdnKwxtGntyfvkSTLt26Ry9reQSmRcPaUvAgAAl0NJREFUeNrsnM2OqjAUgKUJaWEtIQSCcYEGRDGa+DcmPkSXTcquD9VF97wCT3cpHe/MTe6dO/7MDOj5kpkYoyD285y25+gAeI/l2A3W+7vsPN3OZ4ti7flRvBuPwzAIgtErSXM7DMe7OI58b10sZvNtmtuDd7QHdKwBAPxXt2l6WhRetAuD0eqwGWLBmZKybqg08kyl0XdLqRinZL85ZqMg3EVeMTul07fjt4cH+YA34d58m25nhR+HSXbYI649Mz4xXgpKXYRwAyEEt7zdRsilVJScqfNzWIn3hywJY285/22fBXEPGFhvvtnpbB2Nk9UGl0o2KMUa0VrNjFbIdekHuI2S7x5NdXA0BxLkZZWM/WKeOq9JF9R7ViznLJyVzrxdsNogrlrZeCubEY1ei3bwD/0Uxy9ZEK9nE1DvOWmMc0w+PRVRsNpTpqRiJrYZ1+6Hi1qoKFl7FneThf5y6xj1wLznwHLMQDvbIk6OhCkT3dwLdLvePkrbqZ/i5BhEy9QyLwjMe2is10VkPvPDI2ay9Y26DfS7MCdrV8SMrEJvlptXBsvbx+R1XNNlPNpr4UojAf0JzGlLJiXfJNHCTPVAvMckLXYZllKVeti7gOtSrqQajuLlZAA8DucIMlnGGZK1Egh1w7gzCLmlqiUZRYt8AEGv/5xnS9O5nwxlpQTGiHYRhFGpKrUPvJMN87w+cx64tBgfWCVLTLpp3BlMEJcVX+2WExCvn1hmN8Kee8mwrhgiHQ1yf4IIcVUl98Ha7OdZsKfSH14HK59FmajqkhBM+wMmmFcVSvz5FMTrDZbjtMot4hWrpCAdz6t/F4+UdSWyaNaK11wQ0Gkc+51yVCsnaP8QOtcKWfEsXmjxLBvE6yxmcKaNcrzHyv0pXvka8RwbMm0XcWz9r53LSdFv5d7E06kWjfz5oAECXtcwYe7kJ7iuyz7O5f4tHua1HAZeqr2DgNch2jCXF+FG1Qw9jHJnMEGsVi/j5RQCXnewtXPz+MhrRXu1SfJ5MBZKiiw6mcsFfhhLJ518nRCpSoS7VWG9JwgjLtUwKKawsvhprDbM7Q5MMtqL6sNt4lEm+THaNtcM3v0YjtP8FQlSrHONJF+Dq9tTFAkW4N1PoYvjE//IFKdPoZwBIcoVy7x8MIBa2bej3/HTeCiZoM+jnMGlgslNvIVGvG/FOLcISlnS58SlXKJQ7x2Dd9+IU2RK0kdfP3wEEpIliwHwDZikMvWOtULP7JwGuUpmhQMB74sxzk38l4o9/D7JZ8BY1av1FL5q8ZUY56JNxR6u6nUtmKjq4OXg3Vdh6VySRvuKg3N/eMeqF09/1QIqtIOvc274mKXWG+Od33hngXf3xbG0cxtw7q8Q8O7umNJXqtcQ4NwH3h29HDqh7lriz/1DpR60jele3km9noUC7d2cm3qrWmJCgY8gSKpR0bxl0IB3G+aTW4yURODc/xCU0LqtVzjg3a2t6YuE15Q8W4n/KgQioqbhHNLsjcl1G7qyhA26T4Mwl2Q3gTR7LXpCFw8lh+LXRWDE5IvvwC7KtdvC64NiLjh3KZgqtVpCmr2cxrn5iLGnbma6GhcJxYItpNmLuzbzsVBd+SHX/tF4J1FkQ0/AZdKtN1KAcjfguqU8LKH37gLnTiPJIbfeCmIySMG7TzpnR1yCc3cAIYk96DX+VOPm4ljBIuIXO3fTk0YQx3F8cTcrAURKiTG1DxpMTVurjaKxxto24RUMyWwcdpSEDWcbzu1b6LUh2b31sAd5Ab3v++oMpEp8AGV2V+38Picv/2jcb/6sy0hMZjvh2/c48jlx0b1e6QV49ys2uWzQfLmGdTd+0W3uhjM4WhKjTjYXHmxg3d1EHqJb+tOsNCBOnVwlCPbWccL9ptPC2x/D2exj/4jNh6eTnQn3P+AjKq4avNHfa1Ye/ee6PkRi3fWCFRwJuOZ0yfYuFl1yso3wAG/NXl50b5aCoJJDdEnpzGR7zb11nEQZjW5zP2zgeUmysifh1sb/8SprxcBY2zsJ6vXGESSqXu8dPc/Ec8nuUSaeb/9uKwyOm5C841746nM8Vz5j3I+MTK60Wqzm1cz/+H16+usUEid/yz+/z+fVVIurJXHl76c7S3S38LRWoJ4il599g5ScnRHXU8Ts2mGxJAtI1zC6ubIojlFKlFDCCaSGc6J6wShjHqtVS6mvO/HtlsuiONO2bVMVhTSZquQ1p8yrLaS77mR0ecaI+AkI6MgUmPcp1ewyRuaLS5Cc1kzbdBdLqWUnN92ia6M53Zm2u1MSNSRvGN0hogOh0F3MpJSdZVRdvLrCMLu8kUp2lrFqUkQHkm17y8lXNwh7x8PrK0gmLXhlK4XsLKNIqU0ABJMU3K9G4uTfrx6ig38Gyy5h8q6uwFAdnJN3dkmzjKpHcFcH5wruvDGZ+gNirDoY3XXljJEsy3hWw20djDCp/cS4DLd1kKzkH9lZxgLBcxMYZbvFxKsrMlQHowruHKqDlBXcF6gOJsCug8cP1QHhQorDqE53ohjq+W3fZ9P84910w6hOb5z6UeQ4fcFxoi672zDxWxfDLXbr8FCdzjjtOjKZIflV5N9lOLoYdu4yjOp01patjJDtRIwrDHu3GkZ12uI0Etlc0XfaKsNdcguoTlfcE41cp99vTR5mUd+5fjoik6E6TQ2jm7IczhSGBVSnKdnNjSZtOyo3nUJ2qE5Topsx+m2uMNziZDxUpyU+vhuxB9mY4W7fGT/tT8gO1emIe8NupnuZZI7C8ACq01LUn1iOrzLc5pSMger0Q7nvONPvK6YyPITq9POXnTu6iR0GwijcwG3hNpUHW4oYyVLSgetJC9OF+4KAEEK7eCbrRUKe8z2AePjfjpJNDCRpmm1r51OdRY/uxY7qAkrZE06Vzg3WoI3qYN5g/XfJ1TnuobpwklTNNs3p3loOzR7r0kF14SRpA+FI9Y27H+yoLh5vdfvdcXGNdaM6GM8D/hMGcY4r1YHq8CS/Xd1CdTA8/2mCz3V4luQM54c3J5tvvFMdvlW36cCL3j07aOb0H48cLxQZOE5rsnRQXUTNdYA/8LZPK+ewuH4kpu2nbA7Ntn5zVBdRcl2tjCvlwA2W6gIyLnbG44AcOnr2T3UxNTXftw2MC3+tg1uyj/x+3JrVGBuoLiap6nuUuP6mWO37K9UFJUV73cjDzWo+ZDFQXVhFu9FZ2elAdFQXltR8txzXf7CTLWunWAPVxSV7U73NpvjG672xtuSJjupCq1n1WzX5vNA5be1mfPjGVBeavKWT9VPOZZXHx21fnGuqC04kHaWdSj2ruTyu7V3dk39MdcGlsx2R96/nTxd9jeXCmOqQUvr49vg4XRtTHZ6D6vDXUR1MVIcJUB1MVIcJUB1MVIcJUB1MVIcJUB1MVIcJUB1MVIcJUB1MVIcJUB1MVIcJUB1MVIcJ/Hv5//vVpfWVnbt3cSKIwzj+m5F1J1ufBFFOLIz4LgmcLymu0EbsMqTQ1UQQFgKChdhYWdkIahrBKTYoIbDX5IoDuZg0OQsbq1PjvRSiINgdNrZq4+ZlN6876OLz/Rfy4RlmNyzUob6t05Ov7vKd67tyCP1p9x3NW2fQkUs37l7NIeSru3tBKzpGdPD5o1tQh7q69v5ZkhKkLYNOuk8eXYc61NXNB/cKZ/SdsQk6fMB7fAtbh3rVPfX2alPHiJKqcP8u1KFedbcL7ikySEsJOnPOLryAOjSgzs4e9tcu6quEN2dj69CgOq7m9Ywdo5O2vAh1KECdVbQWdbBjZBxozF2BOhSgTlrqkJ4jdo8nLKhDweocW8OFglFqwTYdqEOB6iR304aGZ8Xz3pyUUIeC1VmOm4x67BgtFiWHOhSmTnJ34UjU7GhvQzhQh0LVSUudJcaifWqiTCmhDoWrM21xIuKxO+pCHRqqTppqLxGLcOoyDSGhDg1VxwvO6SjHzsgWONSh4eqkaBxKUCKy1/7JhimhDo1Qxx07E5U6Rqm5ooQ6NEqdFOro4YjYGTSvONSh0eosrvYQi+Z8PWI6EurQaHWOUOlUJGNn0EHFoQ6NVPc700sSsQimbtEqSqhD46hzhHs+irFL0D5laVdXQn65eNWzdVJEMXYGnbCKutWVcs1arVmLXU09rZRjBa9PnZtNEYtg6qTUrG5tZb3yH9YJaXWpuZaLT766mcfOnzpe4HrVldcqqx/e7LQD2/k4vHfDezNb34a3MaLt4X0I6dNypbOynItLfepMe2HWsWP+1OlSt7xU2fiSr/6TtYZXn618SC8/72x3Xq/kYpKvzh+7WadO2FyruuW3rz+2WvmH/2T5v1O91Wr/6MSFna8umrFjjA4qS+vWlcur7eqvnxd19ct7dXOrE5ND1lcXzdgZtDhnmzrVlWqVd1WYG+xla/PTajzYDagz7ezxmaburLKkRnWl5vpWPg91Qeyq7ddL5VwM8tX5YzfD21iDziy4pk51uVplpwV0gT2sbsTjjB1Ux+3zxgwX2P3K0rl1pbVXXzfrUBeirr0e062TopEhNvXnYM+7QupUV6tsP8QBG6Kuvvn1VRzYBajjdnr6qUsqaelUt1SrfKtDXWhbsbhPBKiTpjo93dgl6HhaCalZ3XeoCx+7D+txeGYXpI67B6ZVl3Elh7pxg7ruLPsYJaZBZxzyhIS6cYO67rjaN526k0WHQ93YQV1PjjXFd9kZ0T5PSKgbO6jrG7uzZEzxx3Vhm1A3flDXW+HccWITT928JyTUjR/U9aWSZEyqLpV1oW6SoK43y04zYjRZGU9IqJsgqOvNcuzTZEz8wXXhQN1P9u7kp4koDuD4m9dMpp0zxBANhAMQqCLBxD3hf+jThGSS9tZkDvwlnnodkuFiCi0kFilIW0SURgRFVIzgvi9xX4JbNLFDgbLNmzZTfp2Jv68gRhK9fHizvvdKCNVtTq8hQmnq/Ios41hXSqhuU3JQ6iBiqdvohFFdKaG6Lem1palrrgpShupKCdVtjupH9xJfaTuaMFRXUqhuczSkHChlsPO16KiuxFDdlqjWUMqEbL8uMVRXWqhuS1SpKmVV9vqYF9VBxFf3wOXqZKbXFn9i11gVoqiu4uXGOre+S7ySpLUXez0h5K8lYNTdxYmJJuUmlLj3DfaVaDBU/E6KdboEok6dzP64d+YkZjJbJzrr0tk6G17uJEJRQ92+oMwK7fB82Es4H9ZsGvZnt86HLSTpxw4RsSh1tWkJSJ06tnAHD7Hbd+r8A1ec1nHVyUyvLu7ETjyqUBh1Brue27i4jsmKEynVE3BBHHVFb7cjkDadMih1gUQg+/n0yXPobmOnzp1+9iPriqGOq66wkaL1OomA6tRkZm7xfM7dDnTKtZ07dfrZfVfcrLNSx2h6j4HKCt3eIyEGp85gN79Da3Wet9UZm9m5UXf6zGf3rpq4+RBbxCZPPrJfo3DqjJIjC3P3vy5+3tolWz236C2/Zxbd43fOIrNrqNxJ7rm3i3dSqaQrTuos1UlB1mqpTiA1ugyrLpCIzKZ6Fua3luKX5ZeZ5TU3kuQ3FuU1Fn3F7wm/+5yeJOfnR9xxTmetjnljtQYrPrpmb4gBqwt4EpFIQC25OL8Ri2b5zWXmzMvMZSzKWsT7aZoNRNxwezifpTrrp2KisbgJtDojTwRby03mLNXRcLDVcqxr2O4Ai/uIYXx1dg6xPuPVdYbqsFLV2TnEiqRaZ6gOK6c6yhT+IVYgNagOs6GOc4jlHGCPKDKqw8qrTmtvIgLvClYJV0SdGlfLWtxWqpMKrH4JOHT3WEt1lAX9ROA9g9UZg1enBka7HdXQTjbKjfPtyXzJSV7JBCePgRZcHfPGOM9ifaTxmELh1cWHurP9E09nns6s9XSCX/+ONmWvi/YaMSuz3Ag/NWJeciw6qVZCnVYnmqoTyf5QqALqvlycGbk8/W1D0/yu83t0+dFl04zv8fv9jt97fqP8EhFeCdWc43ejx3O8HmdS5i309GSiyTi4OhqWOzhjXb3OGLQ6T/fE0K1PZ6+dWF/XNX5nd7SHFl3Y0T6Z9XnJ6Cq/m5wWrzxI9ETGysuOr66wsZgpuqZ2nUKrU4cmpi/0DfT1llTfzjZgfOQ+ja/Lrf55+XsDlSj3/37oHLTb+NLPbDYaB1eXrjE7sROJnyrA6jzx7ok3XQMnujDrPgyPj48P26mzc7DzZjQ1pgZsV5I6GqxqNj2t26MzGVZdfKh/+kRfV9cJzLqcuk575dh2Di5Fs2MqrDrmTe83XbSuQaMMVl1yZPRhH5oDUmc0Pjx4MzObhFYXq+ftBgurLv5l5sUAogNTZ5Qb7e4uJD2w6iTleJPpg4kQ8FiXCGRxqANVZ7AbvPo9MwmrjlFln8l26/UaZaDq4kNTj671ojpgdZ3j9+eh1Xlju0zum7RoErC6LzMve0+gOkB1RsODP+cjEVh1ktZgct/Eq8Cru4XqwNWND15JxROw6mioqnHbsa5aZzKqc3DlU3cbXB2TtFYibLdHYlpiqM7BuVqdN1a7VZ1IGo9rXlTn5Fytjup1253WtVIFxzpH52p1LCw1bxnsBLJLk2VU5+TcrY5qbUTYdutrVOfk3K1OSh/erM5nnNahOmfnbnVUb9l638RPgxKqc3TuVsfC3s0ndgKp1qiM6hydy9XJehvxbdma08tQnaNzuTqq1W5U5yN7WzRU5/Bcrk7W64iwUd0+ryKhOmfncnUseGTvBnYC2a/LMqpzdm5XxxQ/8a1HR2pjXobqnJ3b1cnaLiKuVyc2oDrH53p1+m7i27CW0zEd1Tk9t6tjynEfEdaNdf5QmKI6h+d6dSHp0IZ7J9UxiRnhG+wOrpzvEquVUMeUdbvFCoQcjnkroE4dmrqMs3X+i3kT+bTa9erEujS4OqNE4uIFnJlYiTliyUAl1Ok1RCioaz6oAB9hCyd2qA58PuxSIjtZCXWyclwkQuFiIsgouDqjROTihQFc5qSYervKNvf/50IyUhF1Qe/6nbEPxLysIurio1OXzyK74tT9Koe64dzU/8eZSbUi6sJKGxHXXUxUVUadJz7Uf/3sQG8Xtlxh2UjjY+3T+L0s6nL/wuCfHyngNZ0K6XsK6oSGNPRYV2DX3f/7U9fAQF/Z6t3R8uPOyq+VVv+yiLq4v7ggDXXD/MYtGu4cHFx6khoLlKnS1e0mwqq6xqM6tLpC8e6pqemPFx6eLbpr/CyHE372UPZZZGetzl/21+rs/HPleyqqVkqdrLcIRFhR18HCFF5dgV3kaf/o73WrVfO7btE0v28v+b3hd4vfC4te8/vI6fXiTYuuWrX480dPpoAOXp1ysHnt6USbJjF4dQV2yS/Ji/3FN8HvBr8Zi57yu8FvYue2LJhaSGUz3OYeWzTfkxqbjAcqpo4GmX/tInZXzAugjucuMdTtkmztYfJ3NMkvwSsSiY/wy1gUiUY9aqBy6uSwUk3EtTkTVQDquKmO2XApYCtPhJcnkrBVkt+kVYkAwN463PTaVXW+uvVzJnDPRPdm4ycKRp2s1RBByF/CHlQkVIcBqKN6u7hyOdERZhTVYRDqjItYce0SFtVhIOqof0VddcyL6jAQdaHggRV1h1EdBqNODq89ia1JozoMQJ2RVp9/JCa263heh8Goo1oDWWbXeCRIUR0Go05vb1q+ddIRYjKqw4DUHcu/TtyqSQzVYTDqFK+fiPnX11EdBqQuGMrPid2D6jAwdWE9/9bJblSHQamT2cqKnXV4XodBqWNU201yiccVVIfBqWsgK7frUB0GpE7SWpoIIYcYk1EdBqVOP9pMCPHrlKE6DEzdkQ5CSFtaQnUYlDqq0Nb823WoDgNTFwruN24SozoMUJ0xOZGQ+jSqw8DUyUzbQwip0fC8DgNTx6h22Hg0oaM6DFBdejchvnYF75xgcOqkdA0hTceCqA6DVFcnksaqkMxQ3T/27h5FYSgKw/DBJiF9CCFBsZiB8W+GEYw6gos4ZUA7F3WL9NlCVjcGFxCw+CTyPr3di5Jcz7mQVRcWK6v65qgOquricPq0df8JqoPsu67ZVY9jWKqDrrrD+rHkhOogq66OlralOkjf1118Y2lHdVBW1x//Zy3VQVndrd5aSXWQVudNant+YaGsLvGQ2ZynCUirS0JpBdVBWZ1PuqnlgbfEUFf3QXWQVhd1e5txIgZxdXNbUB201bWF/dZUB3V1xzpxd6qDqrq4ze1EdZBXd7xQHdTVHa5+R3WQVddRHeRPE2FGdaA6jA7VYRDV4Q1QHQZRHd7AM9XtqA7qt8Scw4JzWIwO1WHQy6uL2oJ/dYLqMDpPVMfcBPRzE8yI4QUzYjlT2FDPwzL7D3l1JXtOIN9zktmUnU6QVudNxv46qLcmNim7OqHf1cleYqj3El9/7JunCSiri/od7Buqg7S6Ol5ytw7kd+uc7cx/iaGt7q+yr8nNneogq66/M3HF/bD4Z+8OUhMGAigMvwSkiesWEUXIIkjT2ooBK+2ih+gykO481Cxmnyt4OmckZ3ir/z/DB8m8CcSrrttr/80f2Mmp7tbWKk4RdWT+77/aNJ2gjmwr8a2RtEEdOW//w07SZar+UEcWdfMnJ9IKdeRSN1/+Sz3qyKhuvB4lHXmvI5e6+RpWOgysxORTF8+/Ur4SW6KObOrShZj0fh5L1JFLXegWkupTfEIduU4TYa1cGyrUkWuvC40KSc2EOvKoyyPxVrWkLerIpC6PxC/KL3Y96simLo/EWd1b5AxLLnXD8+Gh7is9bVFHHnXx5zWpy4PdUKKOPOryXFdLKrpYoY5M6tZJnFKbCXVk2uvCRbVyO9SRR93yGldaKNejjjzqyvH/c1b3ETlNkEfdcGfv3HYbpsE4DtyAuAYhhATiAhAIEAIJEPAURrKE8Qc+4siJWBfTHJa13ZKUpVXbIVrWgujEQFxwsRfgPXgf4o1xEBK0Ugc3/auxbCf+FCe/fPZX9/DIK79R99ZDnzy0p26v/4K6y3efvw1hH3j5ncuH99Tt9Z9Q98yDPoT123M/P7Knbq//Iob95qkb6Hzy9k+P7anb6/6p85848dO6Gz3+097X7fVfUPfxh2946u6C2Ef31O1179Q99NHDPoS9HWLfeuTjh/bU7XX/vu7D2xD2Noh9/fKRPXV73T91l8943lr59MmfHttTt9f9x7CXz3pXd0ud/xD7ptR9vwV1WBFFsJdc+xzCuE0I8RVtgRD/uj3yRnfN7jaf3On3PCEIrSlVlK6lN0CJVMSbujXf1vnMjRRt81vrpnmbeilyW/AJIX8+O4z+b21/Bnd98bmb7vzt4mN/z2723w91d6uwXv5PJzal7nwGm/u6w2jWhQggur6ezboIAXQBHc4A4DBC7b7ubBbddDGCCBD81lVot7aIwVfcKbrLtHbw9eefzz7/5fo6gtns8+71YdSdRd3WYpt8ewiAoM0CQtefQ1vYRr6tt9MaAF887GLwitrarj/v2x3ghf5nbX8GvmMQgW8IeDa7vdI+uekV3Lyiw0PwldtQd/HRpiHsx6+21N05u1fe33RN7KPV9ab+A4NsbBUzI5hJp2GQea9kOQ4axWm4JLQJgrDSWCEggguGKeCbh423jZ2kREmPHabEOzjhsxgBbmI8qyaTvOwXpeZLXcZlaHUjtMFMxDytDEfUWcsoCVPjON3cEwAWggvLjTbMcMaZqDNpjBFGC8N1I3grKzgzoi2rHfilzfW3qw5Meue+jQnJuZOGU4eB4WWOsfIu3GFCkWFYKkQUmDpniBB1L9R99NiL7Qh7R93z72waTnzU/5ZsSl0k+vMf5lanWXA2WpyPAhar0MCiHJvqeDELkyAMJzkhWPDQUGEpeKqcdAQTu8ZKyIgpRNaeN+DYs8gimWfu84PT784/Oz74vkg7wy8GX16U036YB6DzXpIuNGNFaOIm170fK8O2uuGMYc5NzgWzjijER2XUcM7q",
+  "observed_links": [
+    {
+      "url": "https://allenai.org/privacy-policy/2025-02-19",
+      "text": "プライバシーポリシー",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "osano-cm-dialog__content",
+          "osano-cm-content"
+        ]
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://www.semanticscholar.org/#search-form",
+      "text": "Skip to search form",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://www.semanticscholar.org/#main-content",
+      "text": "Skip to main content",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://www.semanticscholar.org/#account-menu",
+      "text": "Skip to account menu",
+      "parent": {
+        "tag": "div",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://www.semanticscholar.org/search?q=%22Diane%20Bodart%22&sort=relevance",
+      "text": "Diane Bodart",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "sample-queries__list_item"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://www.semanticscholar.org/search?q=Antibiotic%20Resistance&sort=relevance",
+      "text": "Antibiotic Resistance",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "sample-queries__list_item"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://www.semanticscholar.org/search?q=Bioremediation&sort=relevance",
+      "text": "Bioremediation",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "sample-queries__list_item"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://www.semanticscholar.org/product/api",
+      "text": "Get Started",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "homepage-announcement__announcement__actions"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://www.semanticscholar.org/product/semantic-reader",
+      "text": "Learn More",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "homepage-announcement__announcement__actions"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://www.semanticscholar.org/about",
+      "text": "Learn More",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__links-about-s2"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.semanticscholar.org/about",
+      "text": "About Us",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.semanticscholar.org/about/publishers",
+      "text": "Publishers",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://allenai.org/blog",
+      "text": "Blog\n(opens in a new tab)",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://allenai.org/careers?team=semantic+scholar#current-openings",
+      "text": "Ai2 Careers\n(opens in a new tab)",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.semanticscholar.org/product",
+      "text": "Product Overview",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.semanticscholar.org/product/semantic-reader",
+      "text": "Semantic Reader",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.semanticscholar.org/product/scholars-hub",
+      "text": "Scholar's Hub",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.semanticscholar.org/product/beta-program",
+      "text": "Beta Program",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.semanticscholar.org/product/release-notes",
+      "text": "Release Notes",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.semanticscholar.org/product/api",
+      "text": "API Overview",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.semanticscholar.org/product/api%2Ftutorial",
+      "text": "API Tutorials",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://api.semanticscholar.org/api-docs/",
+      "text": "API Documentation\n(opens in a new tab)",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.semanticscholar.org/product/api%2Fgallery",
+      "text": "API Gallery",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://allenai.org/papers?tag=Semantic%20Scholar",
+      "text": "Publications\n(opens in a new tab)",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://allenai.org/careers",
+      "text": "Research Careers\n(opens in a new tab)",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://allenai.org/ai-for-science",
+      "text": "Resources\n(opens in a new tab)",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.semanticscholar.org/faq",
+      "text": "FAQ",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.semanticscholar.org/about/librarians",
+      "text": "Librarians",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.semanticscholar.org/product/tutorials",
+      "text": "Tutorials",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "about-us__link-list"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "http://allenai.org/",
+      "text": "Ai2\n(opens in a new tab)",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "footer__row"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://allenai.org/terms",
+      "text": "Terms of Service\n(opens in a new tab)",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "footer__row"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://allenai.org/privacy-policy.html",
+      "text": "Privacy Policy\n(opens in a new tab)",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "footer__row"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://www.semanticscholar.org/product/api/license",
+      "text": "API License Agreement",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "footer__row"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "http://allenai.org/",
+      "text": "The Allen Institute for AI\n(opens in a new tab)",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "container",
+          "flex-row-vcenter",
+          "footer__bottom-links__container"
+        ]
+      },
+      "region": "nav"
+    }
+  ],
+  "controls": [
+    "<button class=\" osano-cm-dialog__close osano-cm-close \"> <!--?lit$8566466879$--><svg width=\"20px\" height=\"20px\" viewBox=\"0 0 20 20\" aria-labelledby=\"3a217f30-01f7-44bf-868f-d9c5a5a296c3\"> <title id=\"3a217f30-01f7-44bf-868f-d9c5a5a296c3\"><!---->このダイアログを閉じる<!----></title> <line role=\"presentation\" x1=\"2\" y1=\"2\" x2=\"18\" y2=\"18\"></line> <line role=\"presentation\" x1=\"2\" y1=\"18\" x2=\"18\" y2=\"2\"></line> </svg> </button>",
+    "<button class=\" osano-cm-manage osano-cm-buttons__button osano-cm-button osano-cm-button--type_manage \" tabindex=\"0\"> <!--?lit$8566466879$-->設定の管理 </button>",
+    "<button id=\"c938fbb4-6ff7-4114-b4ff-7f1132ff19c0\" class=\" osano-cm-window__widget osano-cm-widget osano-cm-widget--hidden osano-cm-widget--position_right \" title=\"Cookieの設定\" aria-label=\"Cookieの設定\"> <svg role=\"img\" width=\"40\" height=\"40\" viewBox=\"0 0 71.85 72.23\" xmlns=\"http://www.w3.org/2000/svg\" aria-labelledby=\"c938fbb4-6ff7-4114-b4ff-7f1132ff19c0\"> <path d=\"m67.6 36.73a6.26 6.26 0 0 1 -3.2-2.8 5.86 5.86 0 0 0 -5.2-3.1h-.3a11 11 0 0 1 -11.4-9.5 6 6 0 0 1 -.1-1.4 9.2 9.2 0 0 1 .4-2.9 8.65 8.65 0 0 0 .2-1.6 5.38 5.38 0 0 0 -1.9-4.3 7.3 7.3 0 0 1 -2.5-5.5 3.91 3.91 0 0 0 -3.5-3.9 36.46 36.46 0 0 0 -15 1.5 33.14 33.14 0 0 0 -22.1 22.7 35.62 35.62 0 0 0 -1.5 10.2 34.07 34.07 0 0 0 4.8 17.6.75.7",
+    "<button class=\" osano-cm-info-dialog-header__close osano-cm-close \"> <!--?lit$8566466879$--><svg width=\"20px\" height=\"20px\" viewBox=\"0 0 20 20\" aria-labelledby=\"c9c22f36-7c4f-4892-9f62-f7a573bb8127\"> <title id=\"c9c22f36-7c4f-4892-9f62-f7a573bb8127\"><!---->Cookieの設定を閉じる<!----></title> <line role=\"presentation\" x1=\"2\" y1=\"2\" x2=\"18\" y2=\"18\"></line> <line role=\"presentation\" x1=\"2\" y1=\"18\" x2=\"18\" y2=\"2\"></line> </svg> </button>",
+    "<button aria-label=\"Sign In\" data-test-id=\"reading-list-sign-in\" data-heap-id=\"sign_in_modal_button\" type=\"submit\" class=\"cl-button cl-button--no-arrow-divider cl-button--not-icon-only cl-button--no-icon cl-button--has-label cl-button--font-size- cl-button--icon-pos-left cl-button--shape-rectangle cl-button--size-default cl-button--type-secondary cl-button--density-default button button--secondary account-menu__sign-in-button\"><span class=\"cl-button__label\">Sign In</span></button>",
+    "<button aria-label=\"Create Free Account\" data-test-id=\"reading-list-sign-in\" data-heap-id=\"sign_up_modal_button\" type=\"submit\" class=\"cl-button cl-button--no-arrow-divider cl-button--not-icon-only cl-button--no-icon cl-button--has-label cl-button--font-size- cl-button--icon-pos-left cl-button--shape-rectangle cl-button--size-default cl-button--type-primary cl-button--density-default button button--primary account-menu__sign-up-button\"><span class=\"cl-button__label\">Create Free Account</span></button>",
+    "<button disabled=\"\" aria-label=\"Submit\" aria-disabled=\"true\" data-test-id=\"search__form-submit\" class=\"form-submit form-submit__icon-text\"><div class=\"flex-row-vcenter\"><span class=\"form-submit-label\">Search</span><svg aria-hidden=\"true\" width=\"13\" height=\"13\" alt=\"\" class=\"icon-svg icon-search-small\" data-test-id=\"icon-search-small\"><use xlink:href=\"#search-small\"></use></svg></div></button>",
+    "<button data-heap-id=\"homepage_public_api_ad\" type=\"submit\" class=\"cl-button cl-button--no-arrow-divider cl-button--not-icon-only cl-button--no-icon cl-button--has-label cl-button--font-size- cl-button--icon-pos-left cl-button--shape-rectangle cl-button--size-default cl-button--type-default cl-button--density-default homepage-announcement__announcement__actions__button\"><span class=\"cl-button__label\">Get Started</span></button>",
+    "<button data-heap-id=\"semantic_reader_ad_button\" type=\"submit\" class=\"cl-button cl-button--no-arrow-divider cl-button--not-icon-only cl-button--no-icon cl-button--has-label cl-button--font-size- cl-button--icon-pos-left cl-button--shape-rectangle cl-button--size-default cl-button--type-default cl-button--density-default homepage-announcement__announcement__actions__button\"><span class=\"cl-button__label\">Learn More</span></button>",
+    "<button type=\"submit\" class=\"cl-button cl-button--no-arrow-divider cl-button--not-icon-only cl-button--no-icon cl-button--has-label cl-button--font-size- cl-button--icon-pos-left cl-button--shape-rectangle cl-button--size-default cl-button--type-primary cl-button--density-default subscribe-form__submit-button\"><span class=\"cl-button__label\">Sign Up</span></button>",
+    "<button class=\"flex-row feedback-link link-button\" aria-label=\"Contact\" data-test-id=\"footer-feedback-link\">Contact</button>",
+    "<button class=\"link-button\" data-test-id=\"footer-collab-link\">Collaborators &amp; Attributions </button>",
+    "<button class=\"link-button cookie-preferences-link\" data-test-id=\"footer-cookie-preferences-link\">Cookie preferences</button>"
+  ],
+  "response_format": {
+    "listing_url": "Copy exactly the entry URL or an observed link URL",
+    "item_selector": "CSS selector for representative detail anchors; a hypothesis if listing differs",
+    "max_scroll_actions": "integer 0..3",
+    "reason": "brief rationale"
+  }
+}

@@ -57,7 +57,7 @@ function fixtureServer({entryStatus = 200} = {}) {
 function makeRun(root, origin, chrome) {
   putJson(path.join(root, 'protocol.json'), {chrome_executable: chrome || 'C:/Program Files/Google/Chrome/Application/chrome.exe', robots_policy: 'sitemap_discovery_only',
     max_phase_seconds: 600, global_doc_cap: 150, practice_site_doc_cap: 40, real_site_doc_cap: 15, practice_site_ui_cap: 100, real_site_ui_cap: 30,
-    max_sampling_scroll_actions: 3, practice_wait_ms: 0, real_wait_ms: 0});
+    max_sampling_scroll_actions: 3, max_concurrent_sites: 2, practice_wait_ms: 0, real_wait_ms: 0});
   fs.writeFileSync(path.join(root, 'targets.jsonl'), JSON.stringify({id: 'fixture', domain: '127.0.0.1', start_url: `${origin}/entry`, allowed_hosts: ['127.0.0.1'], practice: true, tasks: ['Open item details']}) + '\n');
 }
 
@@ -103,6 +103,10 @@ test('representative sampling and frozen code crawl unseen scroll items in a fre
   const saved = result.selected_items.find(item => item.url === `${origin}/item/9`);
   assert.equal(saved.source_sha256, crypto.createHash('sha256').update(fs.readFileSync(path.resolve(root, saved.source_html))).digest('hex'));
   assert.ok(fs.existsSync(path.resolve(root, saved.rendered_dom)));
+  const resultsFile = path.join(root, 'results.jsonl');
+  const portableRows = fs.readFileSync(resultsFile, 'utf8').trim().split('\n').map(JSON.parse);
+  for (const row of portableRows) for (const item of row.selected_items) for (const field of ['source_html', 'rendered_dom']) if (item[field]) item[field] = item[field].replaceAll('/', '\\');
+  fs.writeFileSync(resultsFile, portableRows.map(row => JSON.stringify(row)).join('\n') + '\n');
   assert.deepEqual(await runAction({runDir: root, action: 'verify'}).then(r => r.failures), []);
 });
 
@@ -115,6 +119,10 @@ test('blocked main document terminates discovery while child host denial leaves 
   makeRun(root, origin);
   const blocked = await runAction({runDir: root, action: 'discover', ids: ['fixture'], live: true});
   assert.equal(blocked.outcomes[0].status, 'access_stopped');
+  const ledger = fs.readFileSync(path.join(root, 'cost-ledger.jsonl'), 'utf8');
+  assert.equal((await runAction({runDir: root, action: 'prepare', ids: ['fixture'], live: true})).outcomes[0].status, 'access_stopped');
+  assert.equal((await runAction({runDir: root, action: 'execute', ids: ['fixture'], phase: 'cold', live: true})).outcomes[0].status, 'access_stopped');
+  assert.equal(fs.readFileSync(path.join(root, 'cost-ledger.jsonl'), 'utf8'), ledger);
 
   const server = http.createServer((req, res) => {
     res.setHeader('content-type', 'text/html; charset=utf-8');
@@ -131,6 +139,29 @@ test('blocked main document terminates discovery while child host denial leaves 
   const denied = fs.readFileSync(path.join(validRoot, 'artifacts/fixture/discover/session-1/document-denials.jsonl'), 'utf8');
   assert.match(denied, /localhost/);
   assert.match(denied, /"main_frame":false/);
+});
+
+test('document cap stops before another navigation without reporting access refusal', async t => {
+  const server = fixtureServer();
+  const origin = await listen(server);
+  t.after(() => server.close());
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'representative-budget-'));
+  cleanup(t, root, 'representative-budget-');
+  makeRun(root, origin);
+  const protocolFile = path.join(root, 'protocol.json');
+  putJson(protocolFile, {...JSON.parse(fs.readFileSync(protocolFile)), practice_site_doc_cap: 1});
+  const dir = path.join(root, 'sites', 'fixture');
+  putJson(path.join(dir, 'representatives.json'), {listing_url: `${origin}/listing`, initial_document_urls: []});
+  putJson(path.join(dir, 'code-request.json'), {});
+  fs.writeFileSync(path.join(dir, 'crawl.js'), 'async function crawl(api, input) { const links = await api.links(".item a"); await api.save(links[0].url); }\n');
+  await runAction({runDir: root, action: 'execute', ids: ['fixture'], phase: 'cold', live: true});
+  const result = JSON.parse(fs.readFileSync(path.join(dir, 'cold', 'result.json')));
+  assert.equal(result.error, 'document_budget');
+  assert.equal(result.status, 'error');
+  assert.equal(result.refusal, null);
+  assert.equal(result.cost.document_reserved, 1);
+  assert.equal(result.selected_items.length, 0);
+  assert.deepEqual((await runAction({runDir: root, action: 'verify'})).failures, []);
 });
 
 test('VM rejects process and network primitives in generated crawl code', t => {

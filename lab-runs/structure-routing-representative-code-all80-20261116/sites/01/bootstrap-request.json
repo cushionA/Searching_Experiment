@@ -1,0 +1,930 @@
+{
+  "site_id": "01",
+  "entry_url": "https://books.toscrape.com/",
+  "task": "Reach public detail/document pages and save HTML; no SKU, price or attribute extraction.",
+  "site_tasks": [
+    "本の一覧からタイトル・価格・評価を持つ商品詳細へ進む"
+  ],
+  "representative_html_projection": "<article class=\"product_pod\"> <div class=\"image_container\"> <a href=\"catalogue/a-light-in-the-attic_1000/index.html\"><img src=\"media/cache/2c/da/2cdad67c44b002e7ead0cc35693c0e8b.jpg\" alt=\"A Light in the Attic\" class=\"thumbnail\"></a> </div> <p class=\"star-rating Three\"> <i class=\"icon-star\"></i> <i class=\"icon-star\"></i> <i class=\"icon-star\"></i> <i class=\"icon-star\"></i> <i class=\"icon-star\"></i> </p> <h3><a href=\"catalogue/a-light-in-the-attic_1000/index.html\" title=\"A Light in the Attic\">A Light in the ...</a></h3> <div class=\"product_price\"> <p class=\"price_color\">£51.77</p> <p class=\"instock availability\"> <i class=\"icon-ok\"></i> In stock </p> <form> <button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button> </form> </div> </article>",
+  "observed_links": [
+    {
+      "url": "https://books.toscrape.com/index.html",
+      "text": "Books to Scrape",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "col-sm-8",
+          "h1"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/index.html",
+      "text": "Home",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books_1/index.html",
+      "text": "Books",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/travel_2/index.html",
+      "text": "Travel",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html",
+      "text": "Mystery",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/historical-fiction_4/index.html",
+      "text": "Historical Fiction",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html",
+      "text": "Sequential Art",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/classics_6/index.html",
+      "text": "Classics",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/philosophy_7/index.html",
+      "text": "Philosophy",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/romance_8/index.html",
+      "text": "Romance",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/womens-fiction_9/index.html",
+      "text": "Womens Fiction",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/fiction_10/index.html",
+      "text": "Fiction",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/childrens_11/index.html",
+      "text": "Childrens",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/religion_12/index.html",
+      "text": "Religion",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/nonfiction_13/index.html",
+      "text": "Nonfiction",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/music_14/index.html",
+      "text": "Music",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/default_15/index.html",
+      "text": "Default",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/science-fiction_16/index.html",
+      "text": "Science Fiction",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/sports-and-games_17/index.html",
+      "text": "Sports and Games",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/add-a-comment_18/index.html",
+      "text": "Add a comment",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/fantasy_19/index.html",
+      "text": "Fantasy",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/new-adult_20/index.html",
+      "text": "New Adult",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/young-adult_21/index.html",
+      "text": "Young Adult",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/science_22/index.html",
+      "text": "Science",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/poetry_23/index.html",
+      "text": "Poetry",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/paranormal_24/index.html",
+      "text": "Paranormal",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/art_25/index.html",
+      "text": "Art",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/psychology_26/index.html",
+      "text": "Psychology",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/autobiography_27/index.html",
+      "text": "Autobiography",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/parenting_28/index.html",
+      "text": "Parenting",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/adult-fiction_29/index.html",
+      "text": "Adult Fiction",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/humor_30/index.html",
+      "text": "Humor",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/horror_31/index.html",
+      "text": "Horror",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/history_32/index.html",
+      "text": "History",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/food-and-drink_33/index.html",
+      "text": "Food and Drink",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/christian-fiction_34/index.html",
+      "text": "Christian Fiction",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/business_35/index.html",
+      "text": "Business",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/biography_36/index.html",
+      "text": "Biography",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/thriller_37/index.html",
+      "text": "Thriller",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/contemporary_38/index.html",
+      "text": "Contemporary",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/spirituality_39/index.html",
+      "text": "Spirituality",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/academic_40/index.html",
+      "text": "Academic",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/self-help_41/index.html",
+      "text": "Self Help",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/historical_42/index.html",
+      "text": "Historical",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/christian_43/index.html",
+      "text": "Christian",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/suspense_44/index.html",
+      "text": "Suspense",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/short-stories_45/index.html",
+      "text": "Short Stories",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/novels_46/index.html",
+      "text": "Novels",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/health_47/index.html",
+      "text": "Health",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/politics_48/index.html",
+      "text": "Politics",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/cultural_49/index.html",
+      "text": "Cultural",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/erotica_50/index.html",
+      "text": "Erotica",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/category/books/crime_51/index.html",
+      "text": "Crime",
+      "parent": {
+        "tag": "li",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html",
+      "text": "A Light in the ...",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/tipping-the-velvet_999/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/tipping-the-velvet_999/index.html",
+      "text": "Tipping the Velvet",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/soumission_998/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/soumission_998/index.html",
+      "text": "Soumission",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/sharp-objects_997/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/sharp-objects_997/index.html",
+      "text": "Sharp Objects",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/sapiens-a-brief-history-of-humankind_996/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/sapiens-a-brief-history-of-humankind_996/index.html",
+      "text": "Sapiens: A Brief History ...",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/the-requiem-red_995/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/the-requiem-red_995/index.html",
+      "text": "The Requiem Red",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/the-dirty-little-secrets-of-getting-your-dream-job_994/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/the-dirty-little-secrets-of-getting-your-dream-job_994/index.html",
+      "text": "The Dirty Little Secrets ...",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/the-coming-woman-a-novel-based-on-the-life-of-the-infamous-feminist-victoria-woodhull_993/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/the-coming-woman-a-novel-based-on-the-life-of-the-infamous-feminist-victoria-woodhull_993/index.html",
+      "text": "The Coming Woman: A ...",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/the-boys-in-the-boat-nine-americans-and-their-epic-quest-for-gold-at-the-1936-berlin-olympics_992/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/the-boys-in-the-boat-nine-americans-and-their-epic-quest-for-gold-at-the-1936-berlin-olympics_992/index.html",
+      "text": "The Boys in the ...",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/the-black-maria_991/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/the-black-maria_991/index.html",
+      "text": "The Black Maria",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/starving-hearts-triangular-trade-trilogy-1_990/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/starving-hearts-triangular-trade-trilogy-1_990/index.html",
+      "text": "Starving Hearts (Triangular Trade ...",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/shakespeares-sonnets_989/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/shakespeares-sonnets_989/index.html",
+      "text": "Shakespeare's Sonnets",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/set-me-free_988/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/set-me-free_988/index.html",
+      "text": "Set Me Free",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/scott-pilgrims-precious-little-life-scott-pilgrim-1_987/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/scott-pilgrims-precious-little-life-scott-pilgrim-1_987/index.html",
+      "text": "Scott Pilgrim's Precious Little ...",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/rip-it-up-and-start-again_986/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/rip-it-up-and-start-again_986/index.html",
+      "text": "Rip it Up and ...",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/our-band-could-be-your-life-scenes-from-the-american-indie-underground-1981-1991_985/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/our-band-could-be-your-life-scenes-from-the-american-indie-underground-1981-1991_985/index.html",
+      "text": "Our Band Could Be ...",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/olio_984/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/olio_984/index.html",
+      "text": "Olio",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/mesaerion-the-best-science-fiction-stories-1800-1849_983/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/mesaerion-the-best-science-fiction-stories-1800-1849_983/index.html",
+      "text": "Mesaerion: The Best Science ...",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/libertarianism-for-beginners_982/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/libertarianism-for-beginners_982/index.html",
+      "text": "Libertarianism for Beginners",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/its-only-the-himalayas_981/index.html",
+      "text": "",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "image_container"
+        ]
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/its-only-the-himalayas_981/index.html",
+      "text": "It's Only the Himalayas",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "section"
+    },
+    {
+      "url": "https://books.toscrape.com/catalogue/page-2.html",
+      "text": "next",
+      "parent": {
+        "tag": "li",
+        "classes": [
+          "next"
+        ]
+      },
+      "region": "section"
+    }
+  ],
+  "controls": [
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>",
+    "<button type=\"submit\" class=\"btn btn-primary btn-block\" data-loading-text=\"Adding...\">Add to basket</button>"
+  ],
+  "response_format": {
+    "listing_url": "Copy exactly the entry URL or an observed link URL",
+    "item_selector": "CSS selector for representative detail anchors; a hypothesis if listing differs",
+    "max_scroll_actions": "integer 0..3",
+    "reason": "brief rationale"
+  }
+}

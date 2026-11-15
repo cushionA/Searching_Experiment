@@ -1,0 +1,9 @@
+{
+  "learned_selectors": [
+    "a[href^=\"/products/\"]",
+    "a[rel=\"next\"]"
+  ],
+  "operation_rule": "products配下の詳細パスの実リンクを蓄積し、スクロールを確認後、観測されたrel=nextを有限回クリックして追加一覧リンクを集めてから保存する。",
+  "assumptions": "start_urlは既に開かれた一覧。詳細リンクは /products/{slug} 形式、次ページは rel=next として観測された。",
+  "limitations": "カテゴリリンク、一覧自体、ページネーションリンクは詳細として扱わない。次ページがない場合は現在の一覧だけを対象にする。"
+}

@@ -1,0 +1,375 @@
+{
+  "site_id": "10",
+  "entry_url": "https://magicscraper.app/demo/",
+  "task": "Reach public detail/document pages and save HTML; no SKU, price or attribute extraction.",
+  "site_tasks": [
+    "デモ内の繰返し項目から詳細へ進む"
+  ],
+  "representative_html_projection": "<main id=\"main\"> <div class=\"wrap\"> <div class=\"hero\"> <p class=\"eyebrow\">Free practice site</p> <h1>Somewhere safe to point a <i>scraper</i>.</h1> <p class=\"standfirst\">A fictional shop, built to be scraped. Twenty pages, each one a different thing that breaks scrapers — up to and including shadow DOM, iframes and a returns log with nothing tidy in it. Nothing here is real, nothing is rate-limited, and there is no login and no bot detection. Try Magic Scraper on it before you point it at a real site — or try any other tool you are weighing up.</p> <div class=\"actions\"> <a class=\"btn\" href=\"/demo/catalogue\">Start with the catalogue</a> <span class=\"aside\">No sign-up. Scrape it as hard as you like.</span> </div> </div> </div> <div class=\"wrap\"> <section id=\"why\"> <h2>Why not just practise on a real site?</h2> <div class=\"claim\"> <p>Because a real shop will rate-limit you, ban your IP, or quietly serve you different markup once it decides you are a bot — and none of that teaches you anything about scraping. You end up debugging someone's defences instead of your selector.</p> <p>There is also the question of whether you should be pointing a half-finished script at a business's servers at all. Here, that question does not arise.</p> </div> </section> <section id=\"pages\"> <h2>Start here: the four common ones</h2> <p class=\"deck\">Each page is a different thing that breaks scrapers. Expected results are listed so you can tell whether yours is right.</p> <div class=\"steps\"> <div class=\"step\"> <span class=\"n\">01</span> <h3><a href=\"/demo/catalogue\">Paginated card grid</a></h3> <p>Products in <code>&lt;article&gt;</code> cards, not a table — nine per page, six pages, a <b>Next</b> button at the bottom. Tests detection on repeated markup and following pagination.<br> <b>Expected: 54 rows across 6 pages.</b></p> </div> <div class=\"step\"> <span class=\"n\">02</span> <h3><a href=\"/demo/table\">A plain HTML table</a></h3> <p>A real <code>&lt;table&gt;</code> with a <code>&lt;thead&gt;</code>. The easy case, and a good first target for anything you are writing from scratch.<br> <b>Expected: 50 rows and 8 columns — the seven in the table, plus the product link the extension keeps as a column of its own.</b></p> </div> <div class=\"step\"> <span class=\"n\">03</span> <h3><a href=\"/demo/scroll\">Infinite scroll</a></h3> <p>Eight rows on load, then more appended each time you reach the bottom, five batches before it stops. Tests whether your scraper scrolls, waits, and knows when to give up.<br> <b>Expected: 8 rows on load, 40 after scrolling to the end.</b></p> </div> <div class=\"step\"> <span class=\"n\">04</span> <h3><a href=\"/demo/awkward\">A value outside the table</a></h3> <p>A discount that applies to every row but is written once, above the table, and never repeated inside it. No amount of automatic detection can infer that — it is what picking by hand is for: click a row, shift-click the discount, and it is a column on every row.<br> <b>Expected: 10 rows, plus one discount no row contains.</b></p> </div> </div> </section> <section id=\"harder\"> <h2>Then the seven that actually catch people out</h2> <p class=\"deck\">These are the ones people discover their tool cannot do, usually halfway through a job. Same shop, same styling — what changes is the markup underneath.</p> <div class=\"steps\"> <div class=\"step\"> <span class=\"n\">05</span> <h3><a href=\"/demo/shadow\">Products inside a shadow root</a></h3> <p>The gallery is a web component, and its markup lives in an <b>open shadow root</b>. <code>document.querySelectorAll('article')</code> returns nothing: there is not one product in the light DOM. A closed root is beyond any extension. An open one is only beyond the ones that never look.<br> <b>Expected: 12 products, none of them in the page's own DOM.</b></p> </div> <div class=\"step\"> <span class=\"n\">06</span> <h3><a href=\"/demo/iframe\">A table inside an iframe</a></h3> <p>The stock table is a separate document in a <b>same-origin iframe</b>. Point a scraper at the page URL and it will report that there is no table here, and it will be telling the truth about this document.<br> <b>Expected: 24 rows and 7 columns (six in the table, plus the product link), and 0 tables in the parent page.</b></p> </div> <div class=\"step\"> <span class=\"n\">07</span> <h3><a href=\"/demo/feed\">JSON-LD and microdata</a></h3> <p>Twenty products marked up twice over: <b>schema.org microdata</b> in the HTML and <b>JSON-LD</b> in the head. The two agree exactly, so you can check one against the other — and the machine-readable price sits in a <code>content</code> attribute, not in the visible text.<br> <b>Expected: 20 products, identical read either way.</b></p> </div> <div class=\"step\"> <span class=\"n\">08</span> <h3><a href=\"/demo/reviews\">A Load more button</a></h3> <p>Not pagination and not infinite scroll: a button that fetches the next batch, with a deliberate delay, so clicking without waiting gets you nothing. Three clicks to the end, and then the button is removed rather than just going quiet.<br> <b>Expected: 12 on load, 48 after three clicks.</b></p> </div> <div class=\"step\"> <span class=\"n\">09</span> <h3><a href=\"/demo/stock\">A grid with no table in it</a></h3> <p><code>&lt;div&gt;</code> elements wearing <code>role=\"table\"</code>, <code>role=\"row\"</code> and <code>role=\"cell\"</code>. This is how most JavaScript data grids render, and why <code>table tr td</code> comes back empty on half the web apps you will ever point a scraper at.<br> <b>Expected: 30 rows and 7 columns (six of data, plus the link), 0 &lt;table&gt; elements.</b></p> </div> <div class=\"step\"> <span class=\"n\">10</span> <h3><a href=\"/demo/returns\">Data that is a mess</a></h3> <p>Dates in three formats, money in three more, empty cells, <code>N/A</code> where a number should be, entity-encoded names, and two parcels logged twice by two different people. Getting it out is the easy part. This page is about what happens next.<br> <b>Expected: 24 rows, 13 empty cells, 2 rows that repeat exactly.</b></p> </div> <div class=\"step\"> <span class=\"n\">11</span> <h3><a href=\"/demo/rates\">Two tables on one page</a></h3> <p>Different widths, both real. Automatic detection takes the bigger one, so getting the other means asking for it — which is what an <b>Another table</b> control is for, in any tool that has one.<br> <b>Expected: 8 rows and 5 columns, or 14 rows and 6.</b></p> </div> <div class=\"step\"> <span class=\"n\">12</span> <h3><a href=\"/demo/bulk\">A long one: 2,000 rows</a></h3> <p>Forty pages of fifty, with a pager that shows a window rather than every page number — so the <b>Next</b> control is the only reliable way through, which is how most real shops of this size work. Long enough to see what the others are too small to show: the preview capping at 100 rows while the export stays whole, and the row counter climbing past what any one page holds.<br> <b>Expected: 2,000 rows and 11 columns, across 40 pages.</b></p> </div> <div class=\"step\"> <span class=\"n\">13</span> <h3><a href=\"/demo/live\">A board that changes every minute</a></h3> <p>Every other page here is fixed, which makes comparing one run with the next impossible to show. This one derives its own prices, stock and line-up from the clock: a few move each minute, one sells out, one goes, one arrives. Scrape it, wait for the minute to turn, scrape it again. It prints what moved underneath, so you can check the answer rather than take it.<br> <b>Expected: 25 rows and 6 columns, a few of them different every minute.</b></p> </div> </div> </section> <section id=\"newer\"> <h2>And seven for what scrapers learned lately</h2> <p class=\"deck\">Pagination that isn’t a Next link, lists split under headings, prices that live on each product’s own page, the directory every lead list starts from, a page of five tables where only one is wanted, a catalogue of categories to go through one by one, and a PDF to screenshot.</p> <div class=\"steps\"> <div class=\"step\"> <span class=\"n\">14</span> <h3><a href=\"/demo/pagers\">Seven kinds of Next button</a></h3> <p>The same thirty products paged seven ways: an icon arrow, page numbers only, <i>Older posts</i>, German, Japanese, a class name and nothing else, and a JavaScript button with no address.<br> <b>Expected: 30 items from each, across 3 pages.</b></p> </div> <div class=\"step\"> <span class=\"n\">15</span> <h3><a href=\"/demo/stockists\">A store locator split A to Z</a></h3> <p>Stockists listed under letter headings, the way store locators and member lists often are. A scraper that stops at the first heading gets three shops.<br> <b>Expected: 14 rows in one table, with the letter as a column.</b></p> </div> <div class=\"step\"> <span class=\"n\">16</span> <h3><a href=\"/demo/wholesale-prices\">Volume pricing on product pages</a></h3> <p>Four products; the price breaks are only on each product’s own page, in a table of quantity, unit price and discount, next to a spec table.<br> <b>Expected: 4 rows, or 12 — one per price tier — with the specs on each.</b></p> </div> <div class=\"step\"> <span class=\"n\">17</span> <h3><a href=\"/demo/directory\">A business directory with profile pages</a></h3> <p>Twenty-four local trades over three pages. The list shows the name, trade and phone; the address, email, website and hours are on each profile, as label and value pairs.<br> <b>Expected: 24 rows; with each profile read, 6 more columns.</b></p> </div> <div class=\"step\"> <span class=\"n\">18</span> <h3><a href=\"/demo/account\">Five tables, each with its own pager</a></h3> <p>A trade account page: orders, invoices, shipments, returns and messages, each paged its own way — two by address with identical Next links, one by a JavaScript button, one by Show more, one not at all. Choose one table and page only that one.<br> <b>Expected: 40 invoices over 4 pages, and no rows from the other tables.</b></p> </div> <div class=\"step\"> <span class=\"n\">19</span> <h3><a href=\"/demo/parts\">Categories beside a paged table</a></h3> <p>A parts catalogue the way wholesale sites are built: a category sidebar with counts, a brand filter, a featured carousel with its own Next arrow, a paged table, and a footer of links. Page the table, then go through every category, every page of each.<br> <b>Expected: 26 fasteners over 3 pages; 74 parts from six categories.</b></p> </div> <div class=\"step\"> <span class=\"n\">20</span> <h3><a href=\"/demo/journal\">A PDF to screenshot</a></h3> <p><i>GRIT</i>, a five-page short story, as a PDF. Chrome opens it in its own viewer, which a page screenshot cannot see past; a capture tool has to read the file itself.<br> <b>Expected: one image of all 5 pages, or a scrolling video from the title to THE END.</b></p> </div> </div> </section> <section id=\"chain\"> <h2>A ten-level link chain</h2> <p class=\"deck\">One hop proves nothing, and three is where most practice sites stop. Northwind traces a material all the way back to the standard its auditor worked to, which is what a real traceability record looks like — and gives you ten levels of genuinely different fields to chain through.</p> <table class=\"compare\"> <thead><tr><th>Level</th><th>Page</th><th>Fields only found there</th></tr></thead> <tbody> <tr><td>The list</td><td><a href=\"/demo/catalogue\">Catalogue</a></td><td>Name, maker, price, rating, stock</td></tr> <tr><td>→ 1</td><td>Product</td><td>SKU, material, made in, weight, lead time, warranty</td></tr> <tr><td>→ 2</td><td>Maker</td><td>Founded, based in, workshop, typical lead time, minimum order</td></tr> <tr><td>→ 3</td><td>Sourcing</td><td>Primary material, sourced from, certification, recycled content, last audited</td></tr> <tr><td>→ 4</td><td>Material lot</td><td>Lot reference, region of origin, received, quantity, storage</td></tr> <tr><td>→ 5</td><td>Supplier</td><td>Founded, based in, people, contract since, payment terms</td></tr> <tr><td>→ 6</td><td>Origin site</td><td>Coordinates, land, practice, season</td></tr> <tr><td>→ 7</td><td>Certificate</td><td>Number, scheme owner, issued, expires, scope</td></tr> <tr><td>→ 8</td><td>Certifying body</td><td>Accreditation, scope, accredited since</td></tr> <tr><td>→ 9</td><td>Audit report</td><td>Audit date, outcome, findings, next audit due</td></tr> <tr><td>→ 10</td><td>Standard</td><td>Owner, audit type, sampling rule, cycle, published</td></tr> </tbody> </table> <div class=\"claim\" style=\"margin-top:30px\"> <p>Every product links to its maker through an identically-worded <b>“About the maker →”</b>, not through the maker's name. That is deliberate, and it is how real shops label such links: a chain you confirm on one row only works on the rest if the label is the same everywhere. If your scraper works on row one and fails on row two, that is usually why. Every hop below it works the same way — <b>Material lot</b>, <b>Supplier</b>, <b>Origin site</b> and the rest are worded identically on every page at that level.</p> <p>120 product pages, 8 makers, 8 sourcing pages and 30 traceability pages behind them. <b>Ten levels is expensive on purpose</b>: a row costs ten page loads, so fifty rows is five hundred. If you are going to learn what pacing a run means, learn it here rather than on somebody's shop.</p> </div> </section> <section id=\"others\"> <h2>Other web scraping test sites</h2> <p class=\"deck\">Practising on more than one site is how you find out whether your scraper generalises. These are the long-standing ones, all built to be scraped.</p> <div class=\"claim\"> <p><a href=\"https://books.toscrape.com/\" rel=\"noopener\">Books to Scrape</a> — a thousand books over fifty pages, with a detail page for each. The classic first exercise in pagination and following links.</p> <p><a href=\"https://quotes.toscrape.com/\" rel=\"noopener\">Quotes to Scrape</a> — the same quotes served several ways: plain pages, infinite scroll, JavaScript-rendered, behind a login form and with a delayed load.</p> <p><a href=\"https://www.scrapethissite.com/pages/\" rel=\"noopener\">Scrape This Site</a> — a sandbox of tables, forms, search, A",
+  "observed_links": [
+    {
+      "url": "https://magicscraper.app/demo/#main",
+      "text": "Skip to content",
+      "parent": {
+        "tag": "body",
+        "classes": []
+      },
+      "region": "body"
+    },
+    {
+      "url": "https://magicscraper.app/",
+      "text": "Magic Scraper",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "masthead"
+        ]
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://magicscraper.app/#price",
+      "text": "Pricing",
+      "parent": {
+        "tag": "nav",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://magicscraper.app/drill-down",
+      "text": "Drill-down",
+      "parent": {
+        "tag": "nav",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://magicscraper.app/demo/",
+      "text": "Sandbox",
+      "parent": {
+        "tag": "nav",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://magicscraper.app/instant-data-scraper-alternative",
+      "text": "Compare",
+      "parent": {
+        "tag": "nav",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://magicscraper.app/services",
+      "text": "Services",
+      "parent": {
+        "tag": "nav",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://magicscraper.app/support",
+      "text": "Support",
+      "parent": {
+        "tag": "nav",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://magicscraper.app/demo/catalogue",
+      "text": "Start with the catalogue",
+      "parent": {
+        "tag": "div",
+        "classes": [
+          "actions"
+        ]
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/catalogue",
+      "text": "Paginated card grid",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/table",
+      "text": "A plain HTML table",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/scroll",
+      "text": "Infinite scroll",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/awkward",
+      "text": "A value outside the table",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/shadow",
+      "text": "Products inside a shadow root",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/iframe",
+      "text": "A table inside an iframe",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/feed",
+      "text": "JSON-LD and microdata",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/reviews",
+      "text": "A Load more button",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/stock",
+      "text": "A grid with no table in it",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/returns",
+      "text": "Data that is a mess",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/rates",
+      "text": "Two tables on one page",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/bulk",
+      "text": "A long one: 2,000 rows",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/live",
+      "text": "A board that changes every minute",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/pagers",
+      "text": "Seven kinds of Next button",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/stockists",
+      "text": "A store locator split A to Z",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/wholesale-prices",
+      "text": "Volume pricing on product pages",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/directory",
+      "text": "A business directory with profile pages",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/account",
+      "text": "Five tables, each with its own pager",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/parts",
+      "text": "Categories beside a paged table",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/journal",
+      "text": "A PDF to screenshot",
+      "parent": {
+        "tag": "h3",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/demo/catalogue",
+      "text": "Catalogue",
+      "parent": {
+        "tag": "td",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://books.toscrape.com/",
+      "text": "Books to Scrape",
+      "parent": {
+        "tag": "p",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://quotes.toscrape.com/",
+      "text": "Quotes to Scrape",
+      "parent": {
+        "tag": "p",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://www.scrapethissite.com/pages/",
+      "text": "Scrape This Site",
+      "parent": {
+        "tag": "p",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://webscraper.io/test-sites",
+      "text": "Web Scraper test sites",
+      "parent": {
+        "tag": "p",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/",
+      "text": "Magic Scraper",
+      "parent": {
+        "tag": "p",
+        "classes": []
+      },
+      "region": "main"
+    },
+    {
+      "url": "https://magicscraper.app/",
+      "text": "Magic Scraper",
+      "parent": {
+        "tag": "footer",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://magicscraper.app/drill-down",
+      "text": "Drill-down guide",
+      "parent": {
+        "tag": "footer",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://magicscraper.app/privacy",
+      "text": "Privacy",
+      "parent": {
+        "tag": "footer",
+        "classes": []
+      },
+      "region": "nav"
+    },
+    {
+      "url": "https://magicscraper.app/support",
+      "text": "Support",
+      "parent": {
+        "tag": "footer",
+        "classes": []
+      },
+      "region": "nav"
+    }
+  ],
+  "controls": [
+    "<button class=\"burger\" type=\"button\" aria-label=\"Menu\" aria-expanded=\"false\" aria-controls=\"site-nav\"><span class=\"bars\"></span></button>"
+  ],
+  "response_format": {
+    "listing_url": "Copy exactly the entry URL or an observed link URL",
+    "item_selector": "CSS selector for representative detail anchors; a hypothesis if listing differs",
+    "max_scroll_actions": "integer 0..3",
+    "reason": "brief rationale"
+  }
+}

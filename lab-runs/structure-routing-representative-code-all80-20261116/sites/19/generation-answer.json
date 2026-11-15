@@ -1,0 +1,7 @@
+{
+  "site_id": "19",
+  "learned_selector": "#main-content a[href]",
+  "operation_rule": "Collect API-observed anchor URLs before saving; prefer scroll-returned links; save at most input.max_items, skipping the start URL and excluded URLs. Scroll and iteration counts are bounded.",
+  "assumptions": "Django documentation presents its documentation tree as anchors within #main-content. Resolve only links returned by the API, keep links on the starting origin and documentation path, and ignore fragments, version/language switch links outside that path.",
+  "limitations": "Only representative markup was observed; unseen listing structures may expose different links. No execution or held-out repair was performed."
+}

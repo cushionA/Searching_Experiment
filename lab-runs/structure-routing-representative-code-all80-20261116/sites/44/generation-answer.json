@@ -1,0 +1,18 @@
+{
+  "site_id": "44",
+  "stage": "code",
+  "learned_selector": "a[href*=\"/cards/\"] — Aozora work/card links; traverse observed person_all index and person detail links when needed",
+  "operation_rule": "Use only links returned by the supplied API; collect candidate URLs before saving because save navigates the browser. Save at most input.max_items (capped at 3), excluding input.exclude_urls.",
+  "assumptions": [
+    "The runtime opens input.start_url before crawl begins.",
+    "Returned link URLs are resolved absolute URLs.",
+    "A page without matching observed detail links yields no saves."
+  ],
+  "limitations": {
+    "representative_only": true,
+    "max_items": 3,
+    "max_scroll_actions": 6,
+    "max_loop_iterations": 12,
+    "bulk_file_downloads": false
+  }
+}

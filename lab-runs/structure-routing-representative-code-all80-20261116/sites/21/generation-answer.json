@@ -1,0 +1,15 @@
+{
+  "site_id": "21",
+  "learned_selector": "a[href^=\"/abs/\"]",
+  "operation_rule": "arXivの一覧構造から #articles 内に限定した a[href^=\"/abs/\"] を候補にする。scrollの返却リンクを先に候補化し、固定IDや一覧URLを保存しない。",
+  "assumptions": [
+    "input.start_urlは実行器が開いた一覧ページ",
+    "api.scroll()のlinksは観測済みリンクとして扱える",
+    "api.save成功時のみmax_itemsに計上"
+  ],
+  "limitations": [
+    "同一originかつ観測済みURLのみ保存",
+    "scrollの返却リンクに対象URLが含まれない場合、初期一覧候補だけを使う",
+    "queryとfragmentを正規化しない"
+  ]
+}

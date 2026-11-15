@@ -1,0 +1,15 @@
+{
+  "site_id": "26",
+  "learned_selector": ".JournalCard__title a[href], .JournalCard__maskWrapper a[href]",
+  "operation_rule": "Frontiers代表一覧で確認したJournalCardのタイトル/マスクリンクに限定し、/journals/配下の詳細候補を得る。",
+  "assumptions": [
+    "input.start_urlは実行器が開いた一覧ページ",
+    "api.scroll()のlinksは観測済みリンクとして扱える",
+    "api.save成功時のみmax_itemsに計上"
+  ],
+  "limitations": [
+    "同一originかつ観測済みURLのみ保存",
+    "scrollの返却リンクに対象URLが含まれない場合、初期一覧候補だけを使う",
+    "queryとfragmentを正規化しない"
+  ]
+}
