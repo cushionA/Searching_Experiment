@@ -70,7 +70,8 @@ export function groupUrls(input) {
 
 export function buildRequest(target, inventory) {
   const grouped = groupUrls(inventory.urls);
-  const request = {request_id: `sitemap-url-choice-${target.id}`, task: `${target.tasks.join(' / ')}. Find item-detail and listing/hub candidates for this task, preferring lists that reveal more links by scrolling. Training/demo scope is the supplied entry URL, not the operator blog, documentation or scraper marketplace. Avoid login, carts, purchases and registration.`,
+  const scope = target.practice ? ' Training/demo scope is the supplied entry URL. Avoid login, carts, purchases and registration.' : '';
+  const request = {request_id: `sitemap-url-choice-${target.id}`, task: `${target.tasks.join(' / ')}. Find item-detail and listing/hub candidates for this task, preferring lists that reveal more links by scrolling.${scope}`,
     user_supplied_entry_scope: target.start_url,
     site_id: String(target.id), domain: target.domain, url_count: grouped.unique_urls, total_groups: grouped.groups.length,
     sitemap_partial: !!inventory.truncated, groups: grouped.groups.slice(0, 32), hub_candidates: grouped.hub_candidates.slice(0, 28),
@@ -79,6 +80,30 @@ export function buildRequest(target, inventory) {
   while (JSON.stringify(request).length > 14000 && request.groups.length > 4) request.groups.pop();
   request.omitted_groups = grouped.groups.length - request.groups.length;
   return {request, grouped};
+}
+
+export async function runBoundedPool(items, concurrency, worker) {
+  if (!Number.isSafeInteger(concurrency) || concurrency < 1 || concurrency > 4) throw new Error('invalid_site_concurrency');
+  const results = new Array(items.length);
+  let next = 0;
+  await Promise.all(Array.from({length: Math.min(concurrency, items.length)}, async () => {
+    while (true) {
+      const index = next++;
+      if (index >= items.length) return;
+      results[index] = await worker(items[index], index);
+    }
+  }));
+  return results;
+}
+
+export function coldWarmSkipReason(coldResult) {
+  if (!coldResult) return null;
+  if (coldResult.status === 'access_stopped' || coldResult.status === 'error' || coldResult.stop_reason === 'error' || coldResult.refusal) return 'cold_access_or_error';
+  if ((coldResult.selected_items || []).some(item => {
+    const reason = item.basic_html_check?.reason || '';
+    return reason === 'blocked_or_login' || reason === 'error_page' || /^http_(?!200$)\d+$/.test(reason);
+  })) return 'cold_access_or_error';
+  return null;
 }
 
 export function validateAnswer(request, answer) {
@@ -121,49 +146,97 @@ export function recoverInterruptedPhase(runDir, target, phase) {
   return record;
 }
 
-async function discover(runDir, target, protocol) {
+export async function discover(runDir, target, protocol) {
   const directory = path.join(runDir, 'sites', String(target.id));
   const file = path.join(directory, 'inventory.json');
   if (fs.existsSync(file)) return {id: target.id, status: 'already_recorded', urls: read(file).urls.length};
   fs.mkdirSync(directory, {recursive: true});
   const hosts = new Set(target.allowed_hosts);
-  const cost = {requests: 0, responses: 0, bytes: 0, elapsed_ms: 0};
+  const requestFile = path.join(directory, 'metadata-requests.jsonl');
+  const responseFile = path.join(directory, 'metadata-responses.jsonl');
+  const requestRows = readLedger(requestFile);
+  const responseRows = readLedger(responseFile);
+  const priorResponseRows = responseRows.length;
+  const priorRequests = Math.max(requestRows.length, ...requestRows.map(row => Number(row.sequence) || 0), 0);
+  let cacheReads = 0;
+  const priorBytes = responseRows.reduce((sum, row) => sum + (Number(row.bytes) || 0), 0);
+  const cost = {requests: priorRequests, prior_requests: priorRequests, new_http_requests: 0, cache_reads: 0,
+    responses: responseRows.length, responses_exact: responseRows.length === priorRequests, bytes: priorBytes,
+    bytes_exact: responseRows.length === priorRequests && responseRows.every(row => Number.isFinite(Number(row.bytes))), elapsed_ms: 0};
   const started = Date.now();
   let lastAt = 0;
   const fetchMetadata = async (url, options) => {
     for (let redirect = 0; redirect < 4; redirect++) {
       if (!safeUrl(url, hosts)) throw new Error('metadata_out_of_scope');
-      if (cost.requests >= protocol.metadata_requests_per_site) throw new Error('metadata_request_limit');
-      if (lastAt) await new Promise(resolve => setTimeout(resolve, Math.max(0, (target.practice ? 1000 : 5000) - (Date.now() - lastAt))));
-      lastAt = Date.now();
-      cost.requests++;
-      append(path.join(directory, 'metadata-requests.jsonl'), {sequence: cost.requests, url, reserved_at: new Date().toISOString()});
-      const signal = options.signal ? AbortSignal.any([options.signal, AbortSignal.timeout(20000)]) : AbortSignal.timeout(20000);
-      const response = await fetch(url, {...options, redirect: 'manual', signal});
-      cost.responses++;
-      const chunks = [];
-      let size = 0;
-      for await (const chunk of response.body || []) {
-        size += chunk.length;
-        if (size > protocol.metadata_bytes_per_response) throw new Error('metadata_body_limit');
-        chunks.push(Buffer.from(chunk));
+      const cached = cachedMetadataResponse(directory, responseRows, url);
+      let response = cached;
+      if (response && response.status >= 300 && response.status < 400 && !response.headers.get('location')) response = null;
+      if (response) cacheReads++;
+      else {
+        if (cost.requests >= protocol.metadata_requests_per_site) throw new Error('metadata_request_limit');
+        if (lastAt) await new Promise(resolve => setTimeout(resolve, Math.max(0, (target.practice ? 1000 : 5000) - (Date.now() - lastAt))));
+        lastAt = Date.now();
+        const sequence = ++cost.requests;
+        cost.new_http_requests++;
+        append(requestFile, {sequence, url, reserved_at: new Date().toISOString()});
+        const signal = options.signal ? AbortSignal.any([options.signal, AbortSignal.timeout(20000)]) : AbortSignal.timeout(20000);
+        response = await fetch(url, {...options, redirect: 'manual', signal});
+        cost.responses++;
+        const chunks = [];
+        let size = 0;
+        for await (const chunk of response.body || []) {
+          size += chunk.length;
+          if (size > protocol.metadata_bytes_per_response) throw new Error('metadata_body_limit');
+          chunks.push(Buffer.from(chunk));
+        }
+        const body = Buffer.concat(chunks);
+        cost.bytes += body.length;
+        const relative = `metadata/${sequence}.body`;
+        fs.mkdirSync(path.join(directory, 'metadata'), {recursive: true});
+        fs.writeFileSync(path.join(directory, relative), body);
+        const record = {sequence, url, status: response.status, bytes: body.length, file: relative, sha256: sha(body),
+          content_type: response.headers.get('content-type'), location: response.headers.get('location'), content_encoding: response.headers.get('content-encoding')};
+        append(responseFile, record);
+        responseRows.push(record);
+        response = {status: response.status, headers: response.headers, arrayBuffer: async () => body};
       }
-      const body = Buffer.concat(chunks);
-      cost.bytes += body.length;
-      const relative = `metadata/${cost.requests}.body`;
-      fs.mkdirSync(path.join(directory, 'metadata'), {recursive: true});
-      fs.writeFileSync(path.join(directory, relative), body);
-      append(path.join(directory, 'metadata-responses.jsonl'), {sequence: cost.requests, url, status: response.status, bytes: body.length, file: relative, sha256: sha(body), content_type: response.headers.get('content-type')});
+      cost.cache_reads = cacheReads;
       if ([301, 302, 303, 307, 308].includes(response.status) && response.headers.get('location')) { url = new URL(response.headers.get('location'), url).href; continue; }
-      return {status: response.status, headers: response.headers, arrayBuffer: async () => body};
+      return response;
     }
     throw new Error('metadata_redirect_limit');
   };
   const inventory = await discoverSitemapUrls({startUrl: target.start_url, allowedHosts: target.allowed_hosts, fetch: fetchMetadata, robotsPolicy: protocol.robots_policy || 'enforce',
     limits: {documents: protocol.sitemap_documents_per_site, urls: 20000, bytes: protocol.metadata_bytes_per_response, elapsedMs: 90000}});
   cost.elapsed_ms = Date.now() - started;
-  write(file, {...inventory, acquisition: 'fresh', acquisition_cost: cost});
+  cost.cache_reads = cacheReads;
+  const currentResponses = responseRows.length - priorResponseRows;
+  if (currentResponses !== cost.new_http_requests) cost.responses_exact = false;
+  if (priorRequests !== responseRows.length || currentResponses !== cost.new_http_requests || !responseRows.every(row => Number.isFinite(Number(row.bytes)))) cost.bytes_exact = false;
+  write(file, {...inventory, acquisition: priorRequests ? 'resumed' : 'fresh', acquisition_cost: cost});
   return {id: target.id, status: inventory.urls.length ? 'discovered' : 'no_urls', urls: inventory.urls.length, requests: cost.requests};
+}
+
+function readLedger(file) {
+  if (!fs.existsSync(file)) return [];
+  return fs.readFileSync(file, 'utf8').split(/\r?\n/).filter(Boolean).flatMap(line => {
+    try { return [JSON.parse(line)]; } catch { return []; }
+  });
+}
+
+export function cachedMetadataResponse(directory, responseRows, url) {
+  const row = [...responseRows].reverse().find(value => value.url === url);
+  if (!row?.file || !row.sha256 || !Number.isInteger(Number(row.status))) return null;
+  const file = path.resolve(directory, row.file);
+  const relative = path.relative(directory, file);
+  if (relative.startsWith('..') || path.isAbsolute(relative) || !fs.existsSync(file)) return null;
+  const body = fs.readFileSync(file);
+  if (sha(body) !== row.sha256) return null;
+  const headers = new Map();
+  if (row.content_type) headers.set('content-type', row.content_type);
+  if (row.location) headers.set('location', row.location);
+  if (row.content_encoding) headers.set('content-encoding', row.content_encoding);
+  return {status: Number(row.status), headers: {get: name => headers.get(String(name).toLowerCase()) || null}, arrayBuffer: async () => body};
 }
 
 function verify(runDir) {
@@ -180,6 +253,7 @@ function verify(runDir) {
   const sharedPriorDocuments = protocol.prior_shared_browser_document_reservations_upper_bound ?? 0;
   for (const [id, count] of Object.entries(protocol.prior_shared_site_document_reservations || {})) documentsBySite.set(String(id), count);
   for (const attempt of rows(path.join(runDir, 'attempts.jsonl'))) {
+    if (attempt.document_requests == null && attempt.document_requests_reserved_upper_bound == null) failures.push(`unknown_attempt_document_cost:${attempt.id}:${attempt.phase}`);
     const count = attempt.document_requests ?? attempt.document_requests_reserved_upper_bound ?? 0;
     abortedDocumentUpperBound += count;
     documentsBySite.set(String(attempt.id), (documentsBySite.get(String(attempt.id)) || 0) + count);
@@ -223,6 +297,8 @@ async function main() {
   const args = Object.fromEntries(arguments_.flatMap((value, index) => value.startsWith('--') ? [[value.slice(2), arguments_[index + 1]?.startsWith('--') || !arguments_[index + 1] ? true : arguments_[index + 1]]] : []));
   const runDir = path.resolve(String(args.run));
   const protocol = read(path.join(runDir, 'protocol.json'));
+  const concurrency = protocol.max_concurrent_sites ?? 4;
+  if (!Number.isSafeInteger(concurrency) || concurrency < 1 || concurrency > 4) throw new Error('invalid_site_concurrency');
   if (!['enforce', 'sitemap_discovery_only'].includes(protocol.robots_policy || 'enforce')) throw new Error('unknown_robots_policy');
   if (!Number.isSafeInteger(protocol.prior_shared_browser_document_reservations_upper_bound ?? 0) || (protocol.prior_shared_browser_document_reservations_upper_bound ?? 0) < 0) throw new Error('invalid_prior_document_reservations');
   if (Object.values(protocol.prior_shared_site_document_reservations || {}).some(count => !Number.isSafeInteger(count) || count < 0)) throw new Error('invalid_prior_site_document_reservations');
@@ -232,8 +308,7 @@ async function main() {
   let result;
   if (args.action === 'discover') {
     if (!args.live) throw new Error('live_flag_required');
-    const outcomes = [];
-    for (let index = 0; index < targets.length; index += 4) outcomes.push(...await Promise.all(targets.slice(index, index + 4).map(target => discover(runDir, target, protocol))));
+    const outcomes = await runBoundedPool(targets, concurrency, target => discover(runDir, target, protocol));
     result = {action: 'discover', outcomes};
   } else if (args.action === 'prepare') {
     const outcomes = [];
@@ -243,7 +318,7 @@ async function main() {
       if (fs.existsSync(path.join(directory, 'request.json'))) { outcomes.push({id: target.id, status: 'already_prepared'}); continue; }
       const {request, grouped} = buildRequest(target, inventory);
       write(path.join(directory, 'groups.json'), grouped);
-      if (inventory.urls.length) write(path.join(directory, 'request.json'), request);
+      if (inventory.urls.length) fs.writeFileSync(path.join(directory, 'request.json'), JSON.stringify(request) + '\n');
       write(path.join(directory, 'preparation.json'), {urls: grouped.unique_urls, groups: grouped.groups.length, presented_groups: request.groups.length, request_bytes: Buffer.byteLength(JSON.stringify(request)), native_input_tokens: null, external_llm_calls: 0, model_runtime_verified: false});
       outcomes.push({id: target.id, urls: inventory.urls.length, groups: grouped.groups.length, request_chars: JSON.stringify(request).length});
     }
@@ -251,23 +326,42 @@ async function main() {
   } else if (args.action === 'execute') {
     if (!args.live) throw new Error('live_flag_required');
     const {executeRoute} = await import('./sitemap-agent-browser.mjs');
-    const outcomes = [];
-    for (const target of targets) {
+    const phase = String(args.phase || 'cold');
+    const outcomes = await runBoundedPool(targets, concurrency, async target => {
       const directory = path.join(runDir, 'sites', String(target.id));
-      const phase = String(args.phase || 'cold');
-      const resultFile = path.join(directory, phase, 'result.json');
-      if (reconcileCompletedPhase(runDir, target, phase)) { outcomes.push({id: target.id, phase, status: 'already_recorded'}); continue; }
-      if (!fs.existsSync(path.join(directory, 'answer.json'))) { outcomes.push({id: target.id, phase, status: 'no_agent_answer'}); continue; }
-      const request = read(path.join(directory, 'request.json'));
-      const answer = read(path.join(directory, 'answer.json'));
-      const plan = validateAnswer(request, answer);
-      write(path.join(directory, 'plan.json'), plan);
-      recoverInterruptedPhase(runDir, target, phase);
-      const priorDocuments = (protocol.prior_shared_site_document_reservations?.[String(target.id)] ?? 0) + rows(path.join(runDir, 'attempts.jsonl')).filter(row => String(row.id) === String(target.id)).reduce((sum, row) => sum + (row.document_requests ?? row.document_requests_reserved_upper_bound ?? 0), 0);
-      const outcome = await executeRoute({runDir, target, plan, phase, options: {protocol, robots_policy: protocol.robots_policy || 'enforce', executablePath: protocol.chrome_executable, prior_document_requests: priorDocuments}});
-      append(path.join(runDir, 'results.jsonl'), outcome);
-      outcomes.push({id: target.id, phase, status: outcome.status, items: outcome.selected_items?.length ?? null, candidate_html_success: outcome.task_success ?? null, candidate_scroll_growth: outcome.scroll_growth_success ?? null});
-    }
+      try {
+        if (reconcileCompletedPhase(runDir, target, phase)) return {id: target.id, phase, status: 'already_recorded'};
+        if (phase === 'warm') {
+          const cold = fs.existsSync(path.join(directory, 'cold', 'result.json')) ? read(path.join(directory, 'cold', 'result.json')) : null;
+          const reason = coldWarmSkipReason(cold);
+          if (reason) return {id: target.id, phase, status: 'skipped', reason};
+        }
+        if (!fs.existsSync(path.join(directory, 'answer.json'))) return {id: target.id, phase, status: 'no_agent_answer'};
+        const request = read(path.join(directory, 'request.json'));
+        const answer = read(path.join(directory, 'answer.json'));
+        const plan = validateAnswer(request, answer);
+        write(path.join(directory, 'plan.json'), plan);
+        recoverInterruptedPhase(runDir, target, phase);
+        const priorDocuments = (protocol.prior_shared_site_document_reservations?.[String(target.id)] ?? 0) + rows(path.join(runDir, 'attempts.jsonl')).filter(row => String(row.id) === String(target.id)).reduce((sum, row) => sum + (row.document_requests ?? row.document_requests_reserved_upper_bound ?? 0), 0);
+        const outcome = await executeRoute({runDir, target, plan, phase, options: {protocol, robots_policy: protocol.robots_policy || 'enforce', executablePath: protocol.chrome_executable, prior_document_requests: priorDocuments}});
+        append(path.join(runDir, 'results.jsonl'), outcome);
+        return {id: target.id, phase, status: outcome.status, items: outcome.selected_items?.length ?? null, candidate_html_success: outcome.task_success ?? null, candidate_scroll_growth: outcome.scroll_growth_success ?? null};
+      } catch (error) {
+        const partial = path.join(runDir, 'artifacts', String(target.id), 'sitemap-agent-browser', phase);
+        const progressFile = path.join(partial, 'progress.jsonl');
+        const ledgerFile = path.join(partial, 'document-reservations.jsonl');
+        const hasPartial = fs.existsSync(partial);
+        const resultFile = path.join(directory, phase, 'result.json');
+        const completed = fs.existsSync(resultFile) ? read(resultFile) : null;
+        const reservations = fs.existsSync(ledgerFile) ? rows(ledgerFile).length : completed?.budget?.document_reserved ?? (hasPartial ? null : 0);
+        const attemptsFile = path.join(runDir, 'attempts.jsonl');
+        const attempt = rows(attemptsFile).filter(row => String(row.id) === String(target.id) && row.phase === phase).length + 1;
+        append(attemptsFile, {id: String(target.id), phase, attempt, status: 'site_execution_error', partial_evidence: hasPartial ? path.relative(runDir, partial) : null,
+          document_requests: null, document_requests_reserved_upper_bound: reservations, http_requests: null, xhr_fetch: null, browser_ms: null,
+          error: String(error?.message || error).slice(0, 500), progress_available: fs.existsSync(progressFile)});
+        return {id: target.id, phase, status: 'error', error: String(error?.message || error).slice(0, 500), partial_evidence: hasPartial ? path.relative(runDir, partial) : null};
+      }
+    });
     result = {action: 'execute', outcomes};
   } else if (args.action === 'verify') {
     result = verify(runDir);

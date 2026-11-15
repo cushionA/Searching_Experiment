@@ -5,7 +5,7 @@ import re
 import sys
 from collections import Counter
 from pathlib import Path
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlsplit
 
 from lxml import html
 
@@ -50,8 +50,6 @@ def visible_body_text(tree):
 
 
 def page_gate(item, run_root):
-    if str(item.get("status", "")) != "200":
-        return None, "http_status_not_200"
     source_path, source_data, source_error = read_html_ref(item.get("source_html"), run_root)
     rendered_path, rendered_data, rendered_error = read_html_ref(item.get("rendered_dom"), run_root)
     if source_error:
@@ -81,7 +79,7 @@ def page_gate(item, run_root):
         return None, "login"
     if len(body_text) < 80:
         return None, "empty_or_spa_shell"
-    return {"source_path": str(source_path), "rendered_path": str(rendered_path), "tree": tree, "source_tree": source_tree}, "saved_html_valid"
+    return {"source_path": str(source_path), "rendered_path": str(rendered_path), "tree": tree, "source_tree": source_tree, "status": item.get("status")}, "saved_html_valid"
 
 
 def normalized_url(item):
@@ -90,6 +88,39 @@ def normalized_url(item):
 
 def matches_case(url, case):
     return any(re.search(pattern, url, re.I) for pattern in case.get("url_patterns", []))
+
+
+NEW_EXPECTED_TYPES = {
+    "documentation_page", "scholarly_article", "bibliographic_record", "public_dataset", "report",
+    "book_or_museum_item", "news_article", "travel_accommodation_property",
+}
+
+
+def typed_scope(item, case):
+    original_url = str(item.get("url") or "")
+    final_url = str(item.get("final_url") or original_url)
+    allowed_hosts = case.get("allowed_hosts", [])
+    allowed_hosts = {str(value).casefold().rstrip(".") for value in allowed_hosts} if isinstance(allowed_hosts, list) else set()
+    original_host = (urlsplit(original_url).hostname or "").casefold().rstrip(".")
+    if allowed_hosts:
+        original_allowed = original_host in allowed_hosts
+    else:
+        original_allowed = matches_case(original_url, case)
+    if not original_allowed:
+        return False, "url_outside_evaluator_scope"
+    if final_url == original_url:
+        return True, None
+    if any(re.search(pattern, final_url, re.I) for pattern in case.get("allowed_final_url_patterns", [])):
+        return True, None
+    allowed_canonicals = case.get("canonical_urls", [])
+    if isinstance(allowed_canonicals, list) and final_url in {str(value) for value in allowed_canonicals}:
+        return True, None
+    if any(re.search(pattern, final_url, re.I) for pattern in case.get("canonical_url_patterns", [])):
+        return True, None
+    final_host = (urlsplit(final_url).hostname or "").casefold().rstrip(".")
+    if allowed_hosts and final_host in allowed_hosts:
+        return True, None
+    return False, "final_url_outside_evaluator_scope"
 
 
 def schema_types(tree):
@@ -116,6 +147,117 @@ def schema_types(tree):
     return found
 
 
+def meta_values(tree):
+    values = []
+    for node in tree.xpath("//meta[@name or @property or @itemprop]"):
+        key = " ".join(str(node.get(attr) or "") for attr in ("name", "property", "itemprop")).casefold()
+        value = str(node.get("content") or "").strip()
+        if key and value:
+            values.append((key, value))
+    return values
+
+
+def typed_page_context(tree):
+    body = visible_body_text(tree)
+    headings = [re.sub(r"\s+", " ", " ".join(node.itertext())).strip() for node in tree.xpath("//h1")]
+    title = text_content(tree, "//title")
+    generic_heading = re.compile(r"^(?:search(?: results)?|results|all (?:items|products|articles|books)|browse|catalog|category|home|latest news)$", re.I)
+    has_detail_heading = any(value and not generic_heading.fullmatch(value) for value in headings)
+    main_text = text_content(tree, "//main | //article")
+    has_detail_region = len(main_text) >= 120 or (has_detail_heading and len(body) >= 160)
+    listing_shell = not has_detail_heading or not has_detail_region
+    return body, headings, title, main_text, listing_shell
+
+
+def typed_schema_match(expected, types):
+    families = {
+        "scholarly_article": {"scholarlyarticle", "medicalscholarlyarticle"},
+        "bibliographic_record": {"book", "periodical", "chapter"},
+        "public_dataset": {"dataset"},
+        "report": {"report"},
+        "book_or_museum_item": {"book", "visualartwork", "painting", "sculpture"},
+        "news_article": {"newsarticle", "analysisnewsarticle", "reportagenewsarticle"},
+        "travel_accommodation_property": {"lodgingbusiness", "hotel", "hostel", "resort", "apartment", "residence", "realestatelisting", "vacationrental", "touristattraction"},
+    }
+    return bool(types & families.get(expected, set()))
+
+
+def has_expected_entity_type(expected, types):
+    families = {
+        "documentation_page": {"techarticle", "apireference", "technicalarticle"},
+        "scholarly_article": {"scholarlyarticle", "medicalscholarlyarticle"},
+        "bibliographic_record": {"book", "periodical", "chapter"},
+        "public_dataset": {"dataset"},
+        "report": {"report"},
+        "book_or_museum_item": {"book", "visualartwork", "painting", "sculpture"},
+        "news_article": {"newsarticle", "analysisnewsarticle", "reportagenewsarticle"},
+        "travel_accommodation_property": {"lodgingbusiness", "hotel", "hostel", "resort", "apartment", "residence", "realestatelisting", "vacationrental", "touristattraction", "place"},
+    }
+    return bool(types & families.get(expected, set()))
+
+
+def has_citation_metadata(tree):
+    return any(
+        re.search(r"(?:^|\s)(?:citation_(?:title|doi|publication_date|journal_title|isbn)|dc\.?\s*(?:title|type|identifier)|dcterms\.title)(?:$|\s)", key)
+        for key, _ in meta_values(tree)
+    )
+
+
+def typed_classification(expected, tree):
+    types = schema_types(tree)
+    body, headings, title, main_text, listing_shell = typed_page_context(tree)
+    if types & {"collectionpage", "searchresultspage", "itemlist"} and not has_expected_entity_type(expected, types):
+        return "unverified", "listing_schema_without_expected_entity_type"
+    if listing_shell:
+        return "unverified", "detail_page_or_entity_heading_missing"
+    if expected == "documentation_page":
+        if tree.xpath("//h1") and tree.xpath("//main | //article") and has_nonempty_main(tree):
+            return "strict_success", "documentation_heading_and_article_content"
+        return "unverified", "documentation_heading_or_article_content_missing"
+    if expected == "scholarly_article":
+        if typed_schema_match(expected, types) and len(main_text) >= 120:
+            return "strict_success", "scholarly_article_schema_and_article_content"
+        if has_citation_metadata(tree) and len(main_text) >= 120:
+            return "strict_success", "scholarly_citation_metadata_and_article_content"
+        return "unverified", "scholarly_article_evidence_missing"
+    if expected == "bibliographic_record":
+        if (typed_schema_match(expected, types) or has_citation_metadata(tree)) and len(body) >= 160:
+            return "strict_success", "bibliographic_schema_or_citation_metadata_and_record_content"
+        return "unverified", "bibliographic_record_evidence_missing"
+    if expected == "public_dataset":
+        download_links = tree.xpath("//a[@href]/@href")
+        download_text = " ".join(tree.xpath("//a[@href]//text()"))
+        download_evidence = bool(re.search(r"download|\.csv(?:$|[?#])|\.json(?:$|[?#])|\.zip(?:$|[?#])|\.parquet(?:$|[?#])", " ".join(download_links) + " " + download_text, re.I))
+        if "dataset" in types and len(body) >= 160 and download_evidence:
+            return "strict_success", "dataset_schema_and_downloadable_resource"
+        return "unverified", "public_dataset_evidence_missing"
+    if expected == "report":
+        if "report" in types and len(main_text) >= 120:
+            return "strict_success", "report_schema_and_article_content"
+        return "unverified", "report_evidence_missing"
+    if expected == "book_or_museum_item":
+        if typed_schema_match(expected, types) and len(body) >= 160:
+            return "strict_success", "book_or_museum_schema_and_item_content"
+        if has_citation_metadata(tree) and len(body) >= 160:
+            return "strict_success", "bibliographic_metadata_and_item_content"
+        return "unverified", "book_or_museum_item_evidence_missing"
+    if expected == "news_article":
+        metadata = meta_values(tree)
+        article_meta = any(key in ("og:type", "property og:type") and value.casefold() == "article" for key, value in metadata)
+        published = any(re.search(r"(?:published_time|datepublished|article:published_time)", key) for key, _ in metadata) or bool(tree.xpath("//time[@datetime]"))
+        if typed_schema_match(expected, types) and len(main_text) >= 120:
+            return "strict_success", "news_article_schema_and_article_content"
+        if article_meta and published and len(main_text) >= 120:
+            return "strict_success", "article_metadata_and_publication_date"
+        return "unverified", "news_article_evidence_missing"
+    if expected == "travel_accommodation_property":
+        strong_types = {"lodgingbusiness", "hotel", "hostel", "resort", "apartment", "residence", "realestatelisting", "vacationrental", "touristattraction", "place"}
+        if (types & strong_types) and len(body) >= 160:
+            return "strict_success", "accommodation_or_property_schema_and_item_content"
+        return "unverified", "accommodation_or_property_evidence_missing"
+    return "unverified", "unsupported_expected_type"
+
+
 def has_product_action(tree):
     for node in tree.xpath("//form | //button | //a | //*[@role='button']"):
         attrs = " ".join(str(node.get(key) or "") for key in ("id", "class", "name", "value", "aria-label", "data-testid"))
@@ -127,6 +269,11 @@ def has_product_action(tree):
 
 def independent_type(item, case, tree):
     expected = case.get("expected_type")
+    if expected in NEW_EXPECTED_TYPES:
+        in_scope, reason = typed_scope(item, case)
+        if not in_scope:
+            return "unverified", reason
+        return typed_classification(expected, tree)
     url = normalized_url(item)
     if not matches_case(url, case):
         return "unverified", "url_outside_evaluator_scope"
@@ -230,15 +377,21 @@ def evaluate_item(item, case, run_root):
         "candidate_valid": item.get("valid"), "candidate_saved": item.get("saved"),
         "classification": "unverified",
         "rationale": None,
+        "saved_html_valid": False,
     }
     evidence, reason = page_gate(item, run_root)
     if evidence is None:
         result["rationale"] = reason
         return result
+    result["saved_html_valid"] = True
+    result["http_status"] = evidence.get("status")
+    result["saved_files"] = {"source_html": evidence["source_path"], "rendered_dom": evidence["rendered_path"]}
+    if str(evidence.get("status", "")) != "200":
+        result["rationale"] = "http_status_not_200"
+        return result
     classification, rationale = independent_type(item, case, evidence["tree"])
     result["classification"] = classification
     result["rationale"] = rationale
-    result["saved_files"] = {"source_html": evidence["source_path"], "rendered_dom": evidence["rendered_path"]}
     return result
 
 
@@ -284,7 +437,7 @@ def evaluate_row(row, policy, run_root):
     ]
     return {
         "id": row.get("id"), "phase": row.get("phase"), "stateid": row.get("stateid"),
-        "attempted_items": len(items), "strict_success": counts["strict_success"],
+        "attempted_items": len(items), "saved_html_valid_count": sum(item["saved_html_valid"] for item in items), "strict_success": counts["strict_success"],
         "unverified": counts["unverified"], "false_candidate_flags": false_flags,
         "candidate_saved_without_strict_evidence": saved_without_evidence,
         "scroll_growth_successes": len(scroll_successes),
@@ -302,7 +455,7 @@ def evaluate(run_dir, policy_path):
     reports = [evaluate_row(row, policy, run_root) for row in rows]
     total = Counter()
     for report in reports:
-        for key in ("attempted_items", "strict_success", "unverified", "false_candidate_flags", "candidate_saved_without_strict_evidence", "scroll_growth_successes"):
+        for key in ("attempted_items", "saved_html_valid_count", "strict_success", "unverified", "false_candidate_flags", "candidate_saved_without_strict_evidence", "scroll_growth_successes"):
             total[key] += report[key]
     return {
         "evaluation": "sitemap_url_group_targeted_pilot",

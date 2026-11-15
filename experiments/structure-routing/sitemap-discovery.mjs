@@ -6,9 +6,100 @@ import {fileURLToPath} from 'node:url';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const require = createRequire(path.join(repo, '.deps/structure-routing-sitemaps/package.json'));
-const {parseSitemap} = require('@crawlee/utils');
+const sax = require('sax');
+const SAX_VERSION = require('sax/package.json').version;
 const robotsParser = require('robots-parser');
 const KNOWN_SITEMAPS = ['/sitemap.xml', '/sitemap_index.xml', '/sitemap-index.xml'];
+const MAX_SITEMAP_ENTRIES = 20000;
+
+function parseSitemapEntries(xml, {onEntry, deadline}) {
+  const content = xml.replace(/^\uFEFF/, '');
+  if (!content.trimStart().startsWith('<')) {
+    let entryCount = 0;
+    let error = null;
+    let stopped = false;
+    for (const line of content.split(/\r?\n/)) {
+      if (Date.now() >= deadline) { stopped = true; break; }
+      const loc = line.trim();
+      if (!loc) continue;
+      let url;
+      try { url = new URL(loc); } catch { error = new Error('invalid sitemap text URL'); break; }
+      if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) { error = new Error('invalid sitemap text URL'); break; }
+      entryCount++;
+      if (entryCount > MAX_SITEMAP_ENTRIES) { stopped = true; break; }
+      if (onEntry({type: 'url', loc}) === false) { stopped = true; break; }
+    }
+    if (!error && !stopped && entryCount === 0) error = new Error('empty sitemap text');
+    return {error, stopped, entryCount, format: 'text'};
+  }
+  const parser = sax.parser(true, {xmlns: true});
+  const stack = [];
+  let root = null;
+  let entry = null;
+  let capture = null;
+  let parseError = null;
+  let entryCount = 0;
+  let stopped = false;
+
+  const checkDeadline = () => {
+    if (Date.now() >= deadline) stopped = true;
+    return stopped;
+  };
+  parser.onerror = error => { parseError = error; stopped = true; };
+  parser.onopentag = node => {
+    if (checkDeadline()) return;
+    const name = node.local || node.name;
+    const parent = stack.at(-1);
+    if (!parent) {
+      if (root || !['urlset', 'sitemapindex'].includes(name)) {
+        parseError = new Error('sitemap root must be urlset or sitemapindex');
+        stopped = true;
+        return;
+      }
+      root = {name, uri: node.uri};
+    } else if (node.uri === root.uri && parent.name === root.name &&
+      ((root.name === 'urlset' && name === 'url') || (root.name === 'sitemapindex' && name === 'sitemap'))) {
+      entry = {type: root.name === 'urlset' ? 'url' : 'sitemap', depth: stack.length, loc: '', lastmod: ''};
+    } else if (entry && parent.depth === entry.depth && node.uri === root.uri &&
+      ((name === 'loc') || (entry.type === 'url' && name === 'lastmod'))) {
+      capture = {name, value: ''};
+    }
+    stack.push({name, uri: node.uri, depth: stack.length});
+  };
+  const append = value => {
+    if (checkDeadline()) return;
+    if (capture) capture.value += value;
+  };
+  parser.ontext = append;
+  parser.oncdata = append;
+  parser.onclosetag = () => {
+    if (checkDeadline()) return;
+    const closed = stack.pop();
+    if (capture && closed?.name === capture.name) {
+      entry[capture.name] = capture.value.trim();
+      capture = null;
+    }
+    if (entry && closed?.depth === entry.depth && closed.name === (entry.type === 'url' ? 'url' : 'sitemap')) {
+      entryCount++;
+      if (entryCount > MAX_SITEMAP_ENTRIES) {
+        stopped = true;
+        return;
+      }
+      const lastmod = entry.lastmod ? new Date(entry.lastmod) : null;
+      if (onEntry({type: entry.type, loc: entry.loc, ...(lastmod && !Number.isNaN(lastmod.getTime()) ? {lastmod} : {})}) === false) stopped = true;
+      entry = null;
+      if (checkDeadline()) return;
+    }
+  };
+  try {
+    parser.write(content).close();
+  } catch (error) {
+    parseError ??= error;
+  }
+  if (parser.error) parseError ??= parser.error;
+  if (!parseError && (!root || stack.length)) parseError = new Error('incomplete sitemap XML');
+  return {error: parseError, stopped, entryCount, format: 'xml'};
+}
 
 function asBytes(response) {
   if (typeof response.arrayBuffer === 'function') return response.arrayBuffer().then(value => Buffer.from(value));
@@ -131,8 +222,8 @@ export async function discoverSitemapUrls({startUrl, allowedHosts = [], fetch: i
     const body = await request(sitemapUrl, 'sitemap');
     if (body === null) continue;
     try {
-      for await (const entry of parseSitemap([{type: 'raw', content: body}], undefined, {emitNestedSitemaps: true, maxDepth: 0, sitemapRetries: 0, enqueueStrategy: 'all', reportNetworkErrors: false})) {
-        if (entry.originSitemapUrl === null) {
+      const parsed = parseSitemapEntries(body, {deadline, onEntry: entry => {
+        if (entry.type === 'sitemap') {
           const child = new URL(entry.loc, sitemapUrl).href;
           if (!hostAllowed(child, hosts)) statuses.push({url: child, kind: 'sitemap-reference', status: null, outcome: 'observed-out-of-scope'});
           else if (!seenDocs.has(child) && !queue.includes(child)) queue.push(child);
@@ -140,11 +231,16 @@ export async function discoverSitemapUrls({startUrl, allowedHosts = [], fetch: i
           const target = new URL(entry.loc, sitemapUrl).href;
           if (!hostAllowed(target, hosts)) statuses.push({url: target, kind: 'page-reference', status: null, outcome: 'observed-out-of-scope'});
           else if (!seenUrls.has(target)) {
-            if (urls.length >= maxUrls) { truncated = true; break; }
+            if (urls.length >= maxUrls) { truncated = true; return false; }
             seenUrls.add(target); urls.push({url: target, sitemap: sitemapUrl, ...(entry.lastmod ? {lastmod: entry.lastmod.toISOString()} : {})});
           }
         }
-      }
+        return true;
+      }});
+      const sitemapStatus = statuses.findLast(row => row.url === sitemapUrl && row.kind === 'sitemap');
+      if (sitemapStatus) sitemapStatus.sitemap_format = parsed.format;
+      if (parsed.stopped) truncated = true;
+      if (parsed.error) throw parsed.error;
     } catch (error) {
       const row = {url: sitemapUrl, kind: 'sitemap', status: 200, outcome: 'parse-error', error: String(error?.message ?? error).slice(0, 240)};
       statuses.push(row); errors.push(row);
@@ -154,6 +250,6 @@ export async function discoverSitemapUrls({startUrl, allowedHosts = [], fetch: i
   return result();
 
   function result() {
-    return {urls, statuses, errors, truncated, robotsPolicy, cost: {requests: requestCount, responses: responseCount, decodedBufferBytes, wireContentLengthBytes, wireContentLengthKnownResponses, wireContentLengthUnknownResponses, sitemapDocuments: seenDocs.size, extractedUrls: urls.length}, library: {name: '@crawlee/utils', version: '3.18.2', api: 'parseSitemap', scope: 'XML sitemap URL/index parsing from locally fetched response text; all robots and sitemap HTTP requests, decompression, host scope, and budgets are orchestrated by this module'}};
+    return {urls, statuses, errors, truncated, robotsPolicy, cost: {requests: requestCount, responses: responseCount, decodedBufferBytes, wireContentLengthBytes, wireContentLengthKnownResponses, wireContentLengthUnknownResponses, sitemapDocuments: seenDocs.size, extractedUrls: urls.length}, library: {parser: {name: 'sax', version: SAX_VERSION, api: 'SAXParser', contentHashCalls: 0, textCompatibility: 'newline-separated absolute HTTP(S) URLs'}, priorParser: {name: '@crawlee/utils', version: '3.18.2', api: 'parseSitemap', historicalRecordSource: 'prior sitemap-discovery implementation'}, scope: 'XML sitemap URL/index parsing from locally fetched response text; all robots and sitemap HTTP requests, decompression, host scope, and budgets are orchestrated by this module'}};
   }
 }

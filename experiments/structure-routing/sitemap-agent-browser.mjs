@@ -178,15 +178,20 @@ export async function observePage(page, response, options = {}) {
   return observe(page, response, options);
 }
 
-function basicValidity(status, data, listing) {
+function basicValidity(status, data, listing, hosts) {
   const d = data.dom;
   if (status !== 200) return {basic_html_ok: false, reason: `http_${status ?? 'error'}`};
+  if (!hostAllowed(d.url, hosts) || !safeRoute(d.url)) return {basic_html_ok: false, reason: 'main_scope'};
   if (d.challenge || /verify you are human|access denied|robot check|captcha|request blocked|security check|log in|sign in/i.test(`${d.title} ${d.headings.join(' ')}`)) return {basic_html_ok: false, reason: 'blocked_or_login'};
   if (/maintenance|temporarily unavailable|not found|page not found|404|ページが見つかりません/i.test(`${d.title} ${d.headings.join(' ')}`)) return {basic_html_ok: false, reason: 'error_page'};
   if (d.body_length < 80 || d.html_length < 100 || d.content_length < 40) return {basic_html_ok: false, reason: 'empty_or_shell'};
   if (d.state_id === listing.state_id || d.url === listing.url) return {basic_html_ok: false, reason: 'listing_repeated'};
   if (!d.title && !d.headings.length) return {basic_html_ok: false, reason: 'no_detail_heading'};
   return {basic_html_ok: true, reason: 'detail_html'};
+}
+
+function safeLoggedUrl(value) {
+  try { const url = new URL(value); url.username = ''; url.password = ''; url.search = ''; url.hash = ''; return url.href; } catch { return 'invalid_url'; }
 }
 
 async function makeBrowserPage(target, seed, options, budget) {
@@ -201,6 +206,7 @@ async function makeBrowserPage(target, seed, options, budget) {
   const page = await withTimeout(context.newPage(), 15000, 'new_page');
   const hosts = new Set([new URL(target.start_url || target.url || target.entry_url).hostname.toLowerCase(), ...(target.allowed_hosts || []).map(host => String(host).toLowerCase())]);
   const robots = options.robots || new Map();
+  const denialEvents = options.denialEvents || [];
   const robotsPolicy = options.robots_policy === 'sitemap_discovery_only' ? 'sitemap_discovery_only' : 'enforced';
   const metadata = {requests: 0, responses: 0, xhr_fetch: 0, bytes: 0, operations: 0, robot_requests: 0, documents: 0, document_requests: 0, document_responses: 0};
   let lastAt = 0;
@@ -236,9 +242,23 @@ async function makeBrowserPage(target, seed, options, budget) {
   };
   const guard = await withTimeout(installDocumentGuard(page, {limit: budget.documents, beforeRequest: async info => {
     if (info.resourceType !== 'Document') return true;
-    if (info.method !== 'GET' || !hostAllowed(info.url, hosts) || !safeRoute(info.url)) return false;
+    let reason = null;
+    if (info.method !== 'GET') reason = 'method';
+    else if (!hostAllowed(info.url, hosts)) reason = 'host_scope';
+    else if (!safeRoute(info.url)) reason = 'unsafe_route';
+    if (reason) {
+      const event = {url: safeLoggedUrl(info.url), main_frame: info.mainFrame, reason};
+      denialEvents.push(event);
+      if (budget.denialFile) progress(budget.denialFile, 'document_denied', event);
+      return false;
+    }
     const allowed = await robotAllowed(info.url);
-    if (!allowed) return false;
+    if (!allowed) {
+      const event = {url: safeLoggedUrl(info.url), main_frame: info.mainFrame, reason: 'robots'};
+      denialEvents.push(event);
+      if (budget.denialFile) progress(budget.denialFile, 'document_denied', event);
+      return false;
+    }
     if (info.mainFrame) {
       if (lastAt) await new Promise(resolve => setTimeout(resolve, Math.max(0, delay - (Date.now() - lastAt))));
       lastAt = Date.now();
@@ -268,7 +288,7 @@ async function makeBrowserPage(target, seed, options, budget) {
   await withTimeout(page.waitForLoadState('networkidle', {timeout: target.practice ? 1000 : 5000}), target.practice ? 1500 : 6000, 'initial_networkidle').catch(() => {});
   await withTimeout(page.waitForTimeout(500), 1000, 'initial_pause').catch(() => {});
   metadata.operations++;
-  return {browser, context, page, guard, response, hosts, metadata, robots, robotsPolicy, hardTimer};
+  return {browser, context, page, guard, response, hosts, metadata, robots, robotsPolicy, denialEvents, hardTimer};
   } catch (error) {
     clearTimeout(hardTimer);
     await withTimeout(context?.close().catch(() => {}), 10000, 'failed_context_close').catch(() => {});
@@ -376,9 +396,11 @@ export async function executeRoute({runDir, target, plan, phase, options = {}} =
   const beforeHtml = path.join(base, 'listing-before.dom.html');
   const afterHtml = path.join(base, 'listing-after.dom.html');
   const listingSourceFile = path.join(base, 'listing-before.source.html');
+  const denialFile = path.join(base, 'document-denials.jsonl');
   budget.deadlineMs = phaseDeadline;
   budget.progressFile = progressFile;
   budget.ledgerFile = ledgerFile;
+  budget.denialFile = denialFile;
   progress(progressFile, 'phase_start', {phase, seed, document_cap: budget.documents, prior_document_requests: priorDocuments});
   const group = routeGroup(executionPlan);
   const graph = [];
@@ -392,14 +414,21 @@ export async function executeRoute({runDir, target, plan, phase, options = {}} =
   let explorationPages = 0;
   let refusal = null;
   let explorationStop = null;
+  const denialEvents = [];
   let session = null;
   let result = null;
   try {
-  session = await makeBrowserPage(target, seed, {...options, robots_policy: robotsPolicy}, budget);
-  for (let i = 0; i < queue.length && explorationPages < explorationLimit; i++) {
+  session = await makeBrowserPage(target, seed, {...options, robots_policy: robotsPolicy, denialEvents}, budget);
+  if (denialEvents.some(event => event.main_frame)) refusal = 'main_scope';
+  for (let i = 0; !refusal && i < queue.length && explorationPages < explorationLimit; i++) {
     const currentCandidate = queue[i];
-    if (session.guard.counters.reserved >= budget.documents || session.metadata.operations >= budget.operations) { explorationStop = 'budget'; break; }
+    if (session.guard.counters.reserved >= budget.documents || session.metadata.operations >= budget.operations) {
+      explorationStop = 'budget';
+      progress(denialFile, 'document_budget', {main_frame: true, reason: 'reserved_cap', reserved: session.guard.counters.reserved, cap: budget.documents});
+      break;
+    }
     let response = session.response;
+    const candidateDenialStart = denialEvents.length;
     if (currentCandidate.url !== session.page.url()) {
       session.metadata.operations++;
       const remainingMs = phaseDeadline - Date.now();
@@ -415,6 +444,7 @@ export async function executeRoute({runDir, target, plan, phase, options = {}} =
     graph.push({from: currentCandidate.url, source: currentCandidate.source || null, links_observed: observed.dom.links.length,
       group_link_count: matching.length, repeated_group_count: repeatedAnchorGroups(observed.dom.links).length,
       edges: observed.dom.links.filter(link => candidates.some(candidate => matchesCandidatePrefix(link.url, candidate))).map(link => link.url)});
+    if (denialEvents.slice(candidateDenialStart).some(event => event.main_frame)) { refusal = 'main_scope'; break; }
     if (response && [401, 403, 429].includes(response.status())) { refusal = `http_${response.status()}`; break; }
     if (observed.dom.challenge || /verify you are human|access denied|robot check|captcha|request blocked|security check|log in|sign in/i.test(`${observed.dom.title} ${observed.dom.headings.join(' ')}`)) { refusal = 'blocked_or_login'; break; }
     if (matching.length >= 2) { listing = observed; listingCandidate = currentCandidate; break; }
@@ -422,7 +452,6 @@ export async function executeRoute({runDir, target, plan, phase, options = {}} =
       const next = candidates.find(candidate => matchesCandidatePrefix(link.url, candidate));
       if (next && !queued.has(link.url) && visited.length + queue.length < 6) { queue.push({...next, url: link.url, declared_url: next.url}); queued.add(link.url); }
     }
-    if (session.guard.counters.denied) { refusal = [...session.robots.values()].find(row => !row.allowed)?.reason || 'robots_or_document_guard'; break; }
   }
   if (!listing && !refusal) explorationStop = explorationStop || (explorationPages >= 6 ? 'budget' : 'content_unchanged');
   const beforeObservation = listing || await observe(session.page, null, {progressFile, tag: 'listing-before-fallback'});
@@ -433,7 +462,6 @@ export async function executeRoute({runDir, target, plan, phase, options = {}} =
   if (beforeObservation.source) fs.writeFileSync(listingSourceFile, beforeObservation.source);
   try {
     if (session.response && [401, 403, 429].includes(session.response.status())) refusal = `http_${session.response.status()}`;
-    if (session.guard.counters.denied) refusal = [...session.robots.values()].find(row => !row.allowed)?.reason || 'robots_or_document_guard';
     if (before.challenge || /verify you are human|access denied|robot check|captcha|request blocked|security check|log in|sign in/i.test(`${before.title} ${before.headings.join(' ')}`)) refusal = 'blocked_or_login';
     const actions = listing ? (phase === 'warm' ? recipe.scroll_actions.length : Math.min(6, Math.max(3, Number(plan.max_scroll_actions) || 4))) : 0;
     for (let i = 0; i < actions && !refusal; i++) {
@@ -452,7 +480,6 @@ export async function executeRoute({runDir, target, plan, phase, options = {}} =
         fresh_links: current.dom.links.filter(link => !beforeLinks.has(link.url)).length, ...scrolled, snapshot: path.relative(runDir, stateFile),
         rendered_dom: path.relative(runDir, stateHtmlFile), observation_errors: current.errors});
       progress(progressFile, 'scroll_end', {index: i + 1, state_id: current.dom.state_id, links: current.dom.links.length});
-      if (session.guard.counters.denied) { refusal = [...session.robots.values()].find(row => !row.allowed)?.reason || 'robots_or_document_guard'; break; }
     }
   } catch (error) { refusal = `browser_error:${error.message}`; }
   const after = listing ? await observe(session.page, null, {progressFile, tag: 'listing-after-scroll'}).catch(error => ({...listing, errors: [...(listing.errors || []), String(error?.message || error)]})) : null;
@@ -465,17 +492,23 @@ export async function executeRoute({runDir, target, plan, phase, options = {}} =
   const observedItems = itemSelection.links;
   const picked = prioritizeFreshLinks(observedItems, beforeLinks, 3).filter(link => hostAllowed(link.url, session.hosts) && safeRoute(link.url));
   for (const [index, link] of picked.entries()) {
-    if (itemResults.length >= 3 || session.guard.counters.reserved >= budget.documents || refusal) break;
+    if (itemResults.length >= 3 || refusal) break;
+    if (session.guard.counters.reserved >= budget.documents) {
+      explorationStop = 'budget';
+      progress(denialFile, 'document_budget', {main_frame: true, reason: 'reserved_cap', reserved: session.guard.counters.reserved, cap: budget.documents});
+      break;
+    }
     const remainingMs = phaseDeadline - Date.now();
     if (remainingMs <= 0) { explorationStop = 'budget'; break; }
-    const deniedBefore = session.guard.counters.denied;
+    const denialEventCountBefore = denialEvents.length;
     session.metadata.operations++;
     progress(progressFile, 'goto_start', {url: link.url, kind: 'item', index: index + 1});
     const response = await withTimeout(session.page.goto(link.url, {waitUntil: 'domcontentloaded', timeout: Math.min(45000, remainingMs)}), Math.min(46000, remainingMs), `item_goto:${index + 1}`).catch(() => null);
     progress(progressFile, 'goto_end', {url: link.url, status: response?.status() ?? null, kind: 'item', index: index + 1});
     const status = response?.status() ?? null;
     const data = await observe(session.page, response, {progressFile, tag: `item-${index + 1}`});
-    const htmlCheck = session.guard.counters.denied > deniedBefore ? {basic_html_ok: false, reason: 'robots_or_document_guard'} : basicValidity(status, data, before);
+    const mainDenied = denialEvents.slice(denialEventCountBefore).some(event => event.main_frame);
+    const htmlCheck = mainDenied ? {basic_html_ok: false, reason: 'main_scope'} : basicValidity(status, data, before, session.hosts);
     const stem = `item-${index + 1}-${sha(link.url).slice(0, 10)}`;
     const htmlFile = path.join(base, `${stem}.dom.html`);
     const sourceFile = path.join(base, `${stem}.source.html`);
@@ -485,7 +518,7 @@ export async function executeRoute({runDir, target, plan, phase, options = {}} =
       html_length: data.html.length, observation_errors: data.errors, rendered_sha256: sha(data.html), source_sha256: data.source ? sha(data.source) : null,
       rendered_dom: path.relative(runDir, htmlFile), source_html: data.source ? path.relative(runDir, sourceFile) : null,
       saved: Boolean(htmlCheck.basic_html_ok && data.source && data.html)});
-    if (['blocked_or_login', 'http_401', 'http_403', 'http_429', 'robots_or_document_guard'].includes(htmlCheck.reason)) refusal = htmlCheck.reason;
+    if (['blocked_or_login', 'http_401', 'http_403', 'http_429', 'main_scope'].includes(htmlCheck.reason)) refusal = htmlCheck.reason;
   }
   await withTimeout(session.guard.seal(), 6000, 'document_guard_seal').catch(() => {});
   const afterListing = after;
@@ -507,6 +540,18 @@ export async function executeRoute({runDir, target, plan, phase, options = {}} =
   const savedItemUrls = new Set(itemResults.filter(item => item.saved).map(item => item.url));
   const freshSaved = [...matchingFresh].filter(url => savedItemUrls.has(url));
   const scrollGrowthSuccess = freshSaved.length > 0;
+  if (session.guard.counters.denied > denialEvents.length && session.guard.counters.reserved >= budget.documents) {
+    progress(denialFile, 'document_budget', {main_frame: null, reason: 'reserved_cap', reserved: session.guard.counters.reserved, denied: session.guard.counters.denied, cap: budget.documents});
+  }
+  const childDenialWithMainOk = denialEvents.some(event => !event.main_frame) && !denialEvents.some(event => event.main_frame)
+    && hostAllowed(before.url, session.hosts) && safeRoute(before.url);
+  const sourceFailureStage = refusal === 'main_scope' ? 'main_scope'
+    : /^http_(401|403|429)$/.test(refusal || '') ? 'main_http_status'
+      : refusal === 'blocked_or_login' ? 'main_content_block'
+    : explorationStop === 'budget' || (session.guard.counters.denied > 0 && session.guard.counters.reserved >= budget.documents && !taskSuccess) ? 'document_budget'
+      : childDenialWithMainOk ? 'child_scope_denied_but_main_ok'
+        : !taskSuccess && itemResults.some(item => item.status == null) ? 'main_navigation_failed'
+          : !taskSuccess ? 'detail_invalid' : null;
   result = {id: target.id, phase, robots_policy: robotsPolicy, status: refusal ? 'access_stopped' : taskSuccess ? 'html_saved' : 'no_valid_detail', task_success: taskSuccess,
     scroll_growth_success: scrollGrowthSuccess, external_llm_calls: 0, local_inference: {calls: 0},
     seed_url: listingCandidate?.url || seed, selected_candidate_id: listingCandidate?.id || initialCandidate?.id || null,
@@ -527,7 +572,7 @@ export async function executeRoute({runDir, target, plan, phase, options = {}} =
       robots_requests: session.metadata.robot_requests, robots: session.metadata.robot_requests, browser_document_requests: session.metadata.document_requests, browser_document_responses: session.metadata.document_responses,
       ui_operations: session.metadata.operations, browser_ms: Date.now() - browserStarted}, budget: {cumulative_document_cap: siteDocumentCap, cumulative_document_requests: stableRecipe.cumulative_document_requests,
       document_cap: budget.documents, document_reserved: session.guard.counters.reserved, operation_cap: budget.operations, operations: session.metadata.operations},
-    refusal, partial: false, progress: path.relative(runDir, progressFile), document_ledger: path.relative(runDir, ledgerFile), recipe: path.relative(runDir, recipeFile)};
+    refusal, source_failure_stage: sourceFailureStage, document_denials: path.relative(runDir, denialFile), partial: false, progress: path.relative(runDir, progressFile), document_ledger: path.relative(runDir, ledgerFile), recipe: path.relative(runDir, recipeFile)};
   result.budget = resultBudget(session, budget, cumulativeBase);
   } catch (error) {
     result = {id: target.id, phase, robots_policy: robotsPolicy, status: 'error', task_success: false, scroll_growth_success: false, external_llm_calls: 0, local_inference: {calls: 0},

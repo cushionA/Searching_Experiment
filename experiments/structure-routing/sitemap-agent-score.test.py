@@ -116,6 +116,120 @@ class SitemapAgentScoreTests(unittest.TestCase):
         self.assertIsNone(result["items"][0]["candidate_valid"])
         self.assertIs(result["items"][0]["candidate_saved"], True)
 
+    def test_non_200_saved_html_is_measured_separately_from_http_status(self):
+        source = "<html><head><title>Page</title></head><body><main><h1>Page</h1><p>" + ("Useful saved page content. " * 8) + "</p></main></body></html>"
+        result = score.evaluate_item(self.write_item(source, status=503), self.case, self.root)
+        self.assertTrue(result["saved_html_valid"])
+        self.assertEqual(result["http_status"], 503)
+        self.assertEqual(result["classification"], "unverified")
+        self.assertEqual(result["rationale"], "http_status_not_200")
+
+    def test_scholarly_article_schema_and_article_region(self):
+        source = """<html><head><script type="application/ld+json">{"@type":"ScholarlyArticle"}</script></head><body><main><h1>Measuring urban heat patterns</h1><p>""" + ("The study reports a measured scientific result. " * 8) + """</p></main></body></html>"""
+        item = self.write_item(source, url="https://journal.example/article/42", final_url="https://journal.example/article/42")
+        case = {"expected_type": "scholarly_article", "url_patterns": [r"/article/\d+$"]}
+        result = score.evaluate_item(item, case, self.root)
+        self.assertEqual(result["classification"], "strict_success")
+        self.assertEqual(result["rationale"], "scholarly_article_schema_and_article_content")
+
+    def test_news_article_rejects_search_shell_even_with_article_schema(self):
+        source = """<html><head><script type="application/ld+json">{"@type":"NewsArticle"}</script></head><body><main><h1>Search results</h1><p>""" + ("Browse the latest headlines and related stories. " * 8) + """</p><a href="/news/1">Story</a></main></body></html>"""
+        item = self.write_item(source, url="https://news.example/search?q=x", final_url="https://news.example/search?q=x")
+        case = {"expected_type": "news_article", "url_patterns": [r"/search"]}
+        result = score.evaluate_item(item, case, self.root)
+        self.assertEqual(result["classification"], "unverified")
+        self.assertEqual(result["rationale"], "detail_page_or_entity_heading_missing")
+
+    def test_dataset_requires_dataset_schema_and_download_resource(self):
+        source = """<html><head><script type="application/ld+json">{"@type":"Dataset"}</script></head><body><main><h1>Annual rainfall observations</h1><p>""" + ("This public dataset contains observations by region and year. " * 5) + """</p><a href="/files/rainfall.csv">Download CSV</a></main></body></html>"""
+        item = self.write_item(source, url="https://data.example/datasets/rainfall", final_url="https://data.example/datasets/rainfall")
+        case = {"expected_type": "public_dataset", "url_patterns": [r"/datasets/[^/?]+$" ]}
+        result = score.evaluate_item(item, case, self.root)
+        self.assertEqual(result["classification"], "strict_success")
+        source_without_download = source.replace('<a href="/files/rainfall.csv">Download CSV</a>', "")
+        result = score.evaluate_item(self.write_item(source_without_download, url="https://data.example/datasets/rainfall", final_url="https://data.example/datasets/rainfall"), case, self.root)
+        self.assertEqual(result["classification"], "unverified")
+
+    def test_bibliographic_and_book_item_evidence(self):
+        body = "<p>" + ("Bibliographic record with publication details, author information, identifiers, and edition data. " * 4) + "</p>"
+        source = "<html><head><meta name='citation_title' content='A collected work'><script type='application/ld+json'>{\"@type\":\"Book\"}</script></head><body><main><h1>A collected work</h1>" + body + "</main></body></html>"
+        item = self.write_item(source, url="https://library.example/item/123", final_url="https://library.example/item/123")
+        for expected in ("bibliographic_record", "book_or_museum_item"):
+            case = {"expected_type": expected, "allowed_hosts": ["library.example"]}
+            result = score.evaluate_item(item, case, self.root)
+            self.assertEqual(result["classification"], "strict_success", expected)
+
+    def test_report_documentation_and_accommodation_types(self):
+        content = "<p>" + ("This page provides detailed information about its subject and context. " * 4) + "</p>"
+        cases = [
+            ("report", "Report", "https://reports.example/publication/2026", "reports.example", "report_schema_and_article_content"),
+            ("documentation_page", "TechArticle", "https://docs.example/reference/widget", "docs.example", "documentation_heading_and_article_content"),
+            ("travel_accommodation_property", "Hotel", "https://stay.example/hotels/harbor", "stay.example", "accommodation_or_property_schema_and_item_content"),
+        ]
+        for expected, schema_type, url, host, rationale in cases:
+            source = "<html><head><script type='application/ld+json'>{\"@type\":\"" + schema_type + "\"}</script></head><body><main><h1>Harbor House details</h1>" + content + "</main></body></html>"
+            item = self.write_item(source, url=url, final_url=url)
+            case = {"expected_type": expected, "allowed_hosts": [host]}
+            result = score.evaluate_item(item, case, self.root)
+            self.assertEqual(result["classification"], "strict_success", expected)
+            self.assertEqual(result["rationale"], rationale)
+
+    def test_touristattraction_and_place_with_entity_heading_and_detail_content(self):
+        content = "<p>" + ("Visitor information describes the site's history, location, opening details, and notable features. " * 4) + "</p>"
+        for schema_type in ("TouristAttraction", "Place"):
+            source = "<html><head><script type='application/ld+json'>{\"@type\":\"" + schema_type + "\"}</script></head><body><main><h1>North Ridge Observatory</h1>" + content + "</main></body></html>"
+            item = self.write_item(source, url="https://visit.example/places/observatory", final_url="https://visit.example/places/observatory")
+            case = {"expected_type": "travel_accommodation_property", "allowed_hosts": ["visit.example"]}
+            result = score.evaluate_item(item, case, self.root)
+            self.assertEqual(result["classification"], "strict_success", schema_type)
+
+    def test_explicit_listing_schema_without_expected_entity_is_unverified(self):
+        content = "<p>" + ("Browse available resources and review information for each result. " * 5) + "</p>"
+        for schema_type in ("CollectionPage", "SearchResultsPage", "ItemList"):
+            source = "<html><head><script type='application/ld+json'>{\"@type\":\"" + schema_type + "\"}</script></head><body><main><h1>Rainfall resources</h1>" + content + "<a href='/rainfall.csv'>Download CSV</a></main></body></html>"
+            item = self.write_item(source, url="https://data.example/datasets/rainfall", final_url="https://data.example/datasets/rainfall")
+            case = {"expected_type": "public_dataset", "allowed_hosts": ["data.example"]}
+            result = score.evaluate_item(item, case, self.root)
+            self.assertEqual(result["classification"], "unverified", schema_type)
+            self.assertEqual(result["rationale"], "listing_schema_without_expected_entity_type")
+
+    def test_itemlist_related_to_expected_entity_does_not_reject_detail(self):
+        source = """<html><head><script type="application/ld+json">{"@type":["TouristAttraction","ItemList"]}</script></head><body><main><h1>North Ridge Observatory</h1><p>""" + ("Visitor information describes the site's history, location, opening details, and notable features. " * 4) + """</p></main></body></html>"""
+        item = self.write_item(source, url="https://visit.example/places/observatory", final_url="https://visit.example/places/observatory")
+        case = {"expected_type": "travel_accommodation_property", "allowed_hosts": ["visit.example"]}
+        result = score.evaluate_item(item, case, self.root)
+        self.assertEqual(result["classification"], "strict_success")
+
+    def test_new_type_redirect_requires_frozen_final_url_allowance(self):
+        source = """<html><head><script type="application/ld+json">{"@type":"NewsArticle"}</script></head><body><article><h1>Local transit expands service</h1><p>""" + ("The city announced new service and detailed its route changes. " * 6) + """</p></article></body></html>"""
+        item = self.write_item(source, url="https://news.example/story?id=7", final_url="https://www.news.example/2026/story-7")
+        case = {"expected_type": "news_article", "url_patterns": [r"/story\?id=7$"], "allowed_final_url_patterns": [r"/2026/story-7$"]}
+        result = score.evaluate_item(item, case, self.root)
+        self.assertEqual(result["classification"], "strict_success")
+        case["allowed_final_url_patterns"] = []
+        result = score.evaluate_item(item, case, self.root)
+        self.assertEqual(result["classification"], "unverified")
+        self.assertEqual(result["rationale"], "final_url_outside_evaluator_scope")
+
+    def test_new_type_redirect_does_not_rescue_out_of_scope_original_url(self):
+        source = """<html><head><script type="application/ld+json">{"@type":"NewsArticle"}</script></head><body><article><h1>Local transit expands service</h1><p>""" + ("The city announced new service and detailed its route changes. " * 6) + """</p></article></body></html>"""
+        item = self.write_item(source, url="https://news.example/unlisted", final_url="https://news.example/2026/story-7")
+        case = {"expected_type": "news_article", "url_patterns": [r"/story/"], "allowed_final_url_patterns": [r"/2026/story-7$"]}
+        result = score.evaluate_item(item, case, self.root)
+        self.assertEqual(result["classification"], "unverified")
+        self.assertEqual(result["rationale"], "url_outside_evaluator_scope")
+
+    def test_host_scope_keeps_original_and_allows_listed_final_host(self):
+        source = """<html><head><script type="application/ld+json">{"@type":"NewsArticle"}</script></head><body><article><h1>Local transit expands service</h1><p>""" + ("The city announced new service and detailed its route changes. " * 6) + """</p></article></body></html>"""
+        item = self.write_item(source, url="https://news.example/story/7", final_url="https://www.news.example/story/7")
+        case = {"expected_type": "news_article", "allowed_hosts": ["news.example", "www.news.example"]}
+        result = score.evaluate_item(item, case, self.root)
+        self.assertEqual(result["classification"], "strict_success")
+        case["allowed_hosts"] = ["www.news.example"]
+        result = score.evaluate_item(item, case, self.root)
+        self.assertEqual(result["classification"], "unverified")
+        self.assertEqual(result["rationale"], "url_outside_evaluator_scope")
+
 
 if __name__ == "__main__":
     unittest.main()

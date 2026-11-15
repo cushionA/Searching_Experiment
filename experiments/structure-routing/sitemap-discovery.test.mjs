@@ -29,6 +29,50 @@ test('discovers nested XML and gzipped sitemap URLs through only injected fetch,
   assert.equal(result.truncated, false);
 });
 
+test('parses namespaced sitemap entries, decodes XML entities, and ignores image loc and invalid lastmod', async () => {
+  const xml = '<sm:urlset xmlns:sm="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:xhtml="http://www.w3.org/1999/xhtml"><sm:url><sm:loc>https://fixture.test/p?a=1&amp;b=2</sm:loc><sm:lastmod>not-a-date</sm:lastmod><image:image><image:loc>https://fixture.test/image.jpg</image:loc></image:image><xhtml:link rel="alternate" href="https://fixture.test/alt"/></sm:url></sm:urlset>';
+  const result = await discoverSitemapUrls({startUrl: 'https://fixture.test/', fetch: async url => url.endsWith('/robots.txt') ? response(200, 'Sitemap: https://fixture.test/map.xml\n') : response(200, xml)});
+  assert.deepEqual(result.urls, [{url: 'https://fixture.test/p?a=1&b=2', sitemap: 'https://fixture.test/map.xml'}]);
+  assert.equal(result.statuses.some(row => row.url.includes('image.jpg') || row.url.includes('/alt')), false);
+  assert.equal(result.library.parser.name, 'sax');
+  assert.equal(result.library.parser.version, '1.6.1');
+  assert.equal(result.library.priorParser.name, '@crawlee/utils');
+});
+
+test('malformed and unsupported XML roots are parse errors with no extracted URLs', async () => {
+  for (const xml of [
+    '<html><url><loc>https://fixture.test/false-positive</loc></url></html>',
+    '<urlset><url><loc>https://fixture.test/broken</loc></urlset>',
+  ]) {
+    const result = await discoverSitemapUrls({startUrl: 'https://fixture.test/', fetch: async url => url.endsWith('/robots.txt') ? response(200, 'Sitemap: https://fixture.test/map.xml\n') : response(200, xml)});
+    assert.deepEqual(result.urls, []);
+    assert.equal(result.errors.at(-1).outcome, 'parse-error');
+  }
+});
+
+test('supports newline-separated HTTP(S) sitemap text and rejects non-URL text', async () => {
+  const result = await discoverSitemapUrls({startUrl: 'https://fixture.test/', fetch: async url => {
+    if (url.endsWith('/robots.txt')) return response(200, 'Sitemap: https://fixture.test/map.txt\n');
+    return response(200, 'https://fixture.test/a\n\nhttps://fixture.test/b?q=1&x=2\n', {'content-type': 'text/plain'});
+  }});
+  assert.deepEqual(result.urls.map(row => row.url), ['https://fixture.test/a', 'https://fixture.test/b?q=1&x=2']);
+  assert.equal(result.library.parser.textCompatibility, 'newline-separated absolute HTTP(S) URLs');
+  assert.equal(result.statuses.find(row => row.kind === 'sitemap').sitemap_format, 'text');
+  for (const body of ['Access denied', 'https://user:secret@fixture.test/private']) {
+    const invalid = await discoverSitemapUrls({startUrl: 'https://fixture.test/', fetch: async url => url.endsWith('/robots.txt') ? response(200, 'Sitemap: https://fixture.test/map.txt\n') : response(200, body)});
+    assert.deepEqual(invalid.urls, []);
+    assert.equal(invalid.errors.at(-1).outcome, 'parse-error');
+  }
+});
+
+test('bounds SAX sitemap parsing at 20,000 entries without per-URL content hashing', async () => {
+  const entries = Array.from({length: 20002}, (_, index) => `<url><loc>https://fixture.test/p${index}</loc></url>`).join('');
+  const result = await discoverSitemapUrls({startUrl: 'https://fixture.test/', limits: {urls: 30000}, fetch: async url => url.endsWith('/robots.txt') ? response(200, 'Sitemap: https://fixture.test/map.xml\n') : response(200, `<urlset>${entries}</urlset>`)});
+  assert.equal(result.urls.length, 20000);
+  assert.equal(result.truncated, true);
+  assert.equal(result.library.parser.contentHashCalls, 0);
+});
+
 test('robots sitemap 404 stays unavailable and tries known sitemap locations after an initial 404', async () => {
   const calls = [];
   const result = await discoverSitemapUrls({startUrl: 'https://fixture.test/base', fetch: async url => {

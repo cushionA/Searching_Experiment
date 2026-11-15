@@ -73,7 +73,7 @@ test('local browser route follows observed listing edges, saves new scroll links
     const listings = {'/browse': '<a href="/catalog">Catalog</a>', '/catalog': listingPage([1, 2], [3, 4, 5], '/archive'), '/archive': listingPage([10, 11], [12, 13, 14], null)};
     if (Object.hasOwn(listings, req.url)) { res.end(listings[req.url]); return; }
     const match = req.url.match(/^\/product\/(\d+)$/);
-    if (match) { res.end(`<html><head><title>Product ${match[1]}</title></head><body><main><h1>Product ${match[1]}</h1><p>${'Detail content '.repeat(12)}</p></main></body></html>`); return; }
+    if (match) { res.end(`<html><head><title>Product ${match[1]}</title></head><body><iframe src="http://localhost:${server.address().port}/frame"></iframe><main><h1>Product ${match[1]}</h1><p>${'Detail content '.repeat(12)}</p></main></body></html>`); return; }
     res.statusCode = 404;
     res.end('<title>Not found</title><h1>Not found</h1>');
   });
@@ -104,6 +104,12 @@ test('local browser route follows observed listing edges, saves new scroll links
   assert.equal(cold.selected_items.length, 3);
   assert.ok(cold.selected_items.every(row => /\/(3|4|5)$/.test(row.url)));
   assert.ok(cold.selected_items.every(row => row.source_sha256 && row.rendered_sha256 && fs.statSync(path.join(root, row.source_html)).size > 0));
+  assert.ok(cold.selected_items.every(row => row.saved));
+  const denials = fs.readFileSync(path.join(root, 'artifacts/fixture/sitemap-agent-browser/cold/document-denials.jsonl'), 'utf8');
+  assert.match(denials, /"main_frame":false,"reason":"host_scope"/);
+  assert.equal(cold.status, 'html_saved');
+  assert.equal(cold.refusal, null);
+  assert.equal(cold.source_failure_stage, 'child_scope_denied_but_main_ok');
   assert.ok(cold.snapshots.before_source_sha256);
   assert.equal(cold.external_llm_calls, 0);
   const coldResult = fs.readFileSync(path.join(root, 'sites/fixture/cold/result.json'), 'utf8');
@@ -114,7 +120,7 @@ test('local browser route follows observed listing edges, saves new scroll links
   assert.equal(fs.readFileSync(path.join(root, 'sites/fixture/cold/result.json'), 'utf8'), coldResult);
   assert.ok(fs.existsSync(path.join(root, 'artifacts/fixture/sitemap-agent-browser/warm/listing-before.source.html')));
   assert.ok(requests.includes('/archive'));
-  assert.ok(cold.cost.browser_document_requests <= 9 && warm.cost.browser_document_requests <= 4);
+  assert.ok(cold.cost.browser_document_requests <= 12 && warm.cost.browser_document_requests <= 7);
   assert.ok(cold.cost.ui_operations > 0 && cold.cost.http_requests >= cold.cost.browser_document_requests);
   assert.ok(cold.cost.browser_document_responses > 0 && cold.cost.http_responses >= cold.cost.browser_document_responses);
 });
@@ -122,14 +128,16 @@ test('local browser route follows observed listing edges, saves new scroll links
 test('robots sitemap discovery condition can inspect disallowed detail pages while retaining HTTP and host stops', async t => {
   const requests = [];
   let forbiddenPath = null;
+  let forbiddenStatus = 403;
   const server = http.createServer((req, res) => {
     requests.push({url: req.url, host: req.headers.host});
     res.setHeader('content-type', 'text/html; charset=utf-8');
     if (req.url === '/robots.txt') { res.end('User-agent: *\nDisallow: /product\n'); return; }
+    if (req.url === '/redirect-out') { res.statusCode = 302; res.setHeader('location', `http://localhost:${server.address().port}/outside`); res.end(); return; }
     if (req.url === '/browse') { res.end('<a href="/catalog">Catalog</a>'); return; }
     if (req.url === '/catalog') { res.end(listingPage([1, 2], [3, 4, 5], null).replace('</ul>', `<li class="card"><a href="http://localhost:${server.address().port}/product/99">Out of scope</a></li></ul>`)); return; }
     const match = req.url.match(/^\/product\/(\d+)$/);
-    if (match && req.url === forbiddenPath) { res.statusCode = 403; res.end('<title>Forbidden</title><h1>Forbidden</h1>'); return; }
+    if (match && req.url === forbiddenPath) { res.statusCode = forbiddenStatus; res.end('<title>Forbidden</title><h1>Forbidden</h1>'); return; }
     if (match) { res.end(`<html><head><title>Product ${match[1]}</title></head><body><main><h1>Product ${match[1]}</h1><p>${'Detail content '.repeat(12)}</p></main></body></html>`); return; }
     res.statusCode = 404;
     res.end('<title>Not found</title><h1>Not found</h1>');
@@ -148,10 +156,20 @@ test('robots sitemap discovery condition can inspect disallowed detail pages whi
   const plan = {listing_candidates: [{id: 'browse', url: `${origin}/browse`, source: 'sitemap'}, {id: 'catalog', url: `${origin}/catalog`, source: 'sitemap'}],
     hub_candidates: [], item_groups: [], max_explore_documents: 2, max_scroll_actions: 3};
 
+  const redirectTarget = {...target, start_url: `${origin}/redirect-out`};
+  const redirected = await executeRoute({runDir: path.join(root, 'redirect-out'), target: redirectTarget,
+    plan: {listing_candidates: [{id: 'redirect', url: `${origin}/redirect-out`, source: 'sitemap'}], hub_candidates: [], item_groups: []}, phase: 'cold'});
+  assert.equal(redirected.status, 'access_stopped');
+  assert.equal(redirected.refusal, 'main_scope');
+  assert.equal(redirected.source_failure_stage, 'main_scope');
+  assert.equal(redirected.task_success, false);
+
   const enforced = await executeRoute({runDir: path.join(root, 'enforced'), target, plan, phase: 'cold'});
   assert.equal(enforced.robots_policy, 'enforced');
   assert.equal(enforced.status, 'access_stopped');
-  assert.equal(enforced.selected_items[0].basic_html_check.reason, 'robots_or_document_guard');
+  assert.equal(enforced.refusal, 'main_scope');
+  assert.equal(enforced.source_failure_stage, 'main_scope');
+  assert.equal(enforced.selected_items[0].basic_html_check.reason, 'main_scope');
   assert.equal(enforced.cost.robots, 1);
   assert.equal(requests.some(row => row.url.startsWith('/product/')), false);
 
@@ -171,10 +189,13 @@ test('robots sitemap discovery condition can inspect disallowed detail pages whi
   assert.equal(recipe.robots_policy, 'sitemap_discovery_only');
 
   forbiddenPath = '/product/3';
-  const forbidden = await executeRoute({runDir: path.join(root, 'http-forbidden'), target, plan, phase: 'cold', options: {robots_policy: 'sitemap_discovery_only'}});
-  assert.equal(forbidden.status, 'access_stopped');
-  assert.equal(forbidden.selected_items[0].basic_html_check.reason, 'http_403');
-  assert.equal(forbidden.selected_items.length, 1);
+  for (const deniedStatus of [401, 403, 429]) {
+    forbiddenStatus = deniedStatus;
+    const forbidden = await executeRoute({runDir: path.join(root, `http-${deniedStatus}`), target, plan, phase: 'cold', options: {robots_policy: 'sitemap_discovery_only'}});
+    assert.equal(forbidden.status, 'access_stopped');
+    assert.equal(forbidden.selected_items[0].basic_html_check.reason, `http_${deniedStatus}`);
+    assert.equal(forbidden.selected_items.length, 1);
+  }
   const forbiddenRequests = requests.filter(row => row.url.startsWith('/product/'));
   assert.ok(forbiddenRequests.some(row => row.url === '/product/3'));
   assert.equal(forbiddenRequests.some(row => row.url === '/product/99' || row.host.startsWith('localhost:')), false);
