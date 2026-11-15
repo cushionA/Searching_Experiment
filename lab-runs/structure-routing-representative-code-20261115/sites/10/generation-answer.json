@@ -1,0 +1,11 @@
+{
+  "learned_selectors": [
+    "article.product a[href]"
+  ],
+  "rationale": "代表DOMでは繰返し商品がarticle.productで、カード画像と見出し内のa[href]が詳細への実リンク。スクロール後も同じカード構造を保つため、その配下のリンクだけを収集する。",
+  "assumptions": [
+    "api.linksは指定CSS内のリンクを絶対URLで返す。",
+    "詳細保存後は一覧へ再openすればスクロール済みの一覧状態へ戻れる。",
+    "新規スクロールで現れたリンクを優先し、入力除外URLは保存しない。"
+  ]
+}

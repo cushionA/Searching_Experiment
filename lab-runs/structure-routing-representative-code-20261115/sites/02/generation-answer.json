@@ -1,0 +1,10 @@
+{
+  "selector": ".test-items-container .card-head-url[href]",
+  "pagination": ".page-link.next[href]",
+  "rationale": "商品カードのリンクだけを取得し、実際に存在する次ページ操作で後続の一覧リンクも観測する。各一覧でリンクを記録してから保存し、保存で詳細ページへ移動する影響を避ける。",
+  "assumptions": [
+    "一覧の商品カードは .test-items-container 内にあり、カード詳細リンクに .card-head-url が付く。",
+    "ページ送りがある場合は .page-link.next が次の一覧へ移動する。",
+    "保存対象は一覧から観測したリンクで、input.exclude_urls と input.start_url を除外する。"
+  ]
+}

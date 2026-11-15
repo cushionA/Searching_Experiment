@@ -1,0 +1,112 @@
+{
+  "version": "representative-code-v1",
+  "frozen_at": "2026-11-15T14:04:41.965449+00:00",
+  "source_master_sha256": "1c704a5ef83db823402c550e0b2f04344fd486203bef7488d32e1a740563eef8",
+  "scope": "Conservative automated task/type validation; uncertain pages stayunverified; no fixedURLgoldrecall",
+  "fixed_url_recall": null,
+  "candidate_never_receives_policy": true,
+  "no_posthoc_classifier_repairs_based_on_results": true,
+  "sites": {
+    "01": {
+      "expected_type": "product",
+      "allowed_hosts": [
+        "books.toscrape.com"
+      ],
+      "url_patterns": [
+        "^https?://(?:books\\.toscrape\\.com)(?::\\d+)?/"
+      ],
+      "allowed_final_url_patterns": [
+        "^https?://(?:books\\.toscrape\\.com)(?::\\d+)?/"
+      ],
+      "frozen_task": [
+        "本の一覧からタイトル・価格・評価を持つ商品詳細へ進む"
+      ],
+      "no_evaluator_page_selectors": true
+    },
+    "02": {
+      "expected_type": "product",
+      "allowed_hosts": [
+        "webscraper.io"
+      ],
+      "url_patterns": [
+        "^https?://(?:webscraper\\.io)(?::\\d+)?/"
+      ],
+      "allowed_final_url_patterns": [
+        "^https?://(?:webscraper\\.io)(?::\\d+)?/"
+      ],
+      "frozen_task": [
+        "ページネーション付き商品一覧から商品詳細へ進む"
+      ],
+      "no_evaluator_page_selectors": true
+    },
+    "09": {
+      "expected_type": "product",
+      "allowed_hosts": [
+        "scrapingsandbox.com"
+      ],
+      "url_patterns": [
+        "^https?://(?:scrapingsandbox\\.com)(?::\\d+)?/"
+      ],
+      "allowed_final_url_patterns": [
+        "^https?://(?:scrapingsandbox\\.com)(?::\\d+)?/"
+      ],
+      "frozen_task": [
+        "サンプル一覧から詳細ページへ進む"
+      ],
+      "no_evaluator_page_selectors": true
+    },
+    "10": {
+      "expected_type": "product",
+      "allowed_hosts": [
+        "magicscraper.app"
+      ],
+      "url_patterns": [
+        "^https?://(?:magicscraper\\.app)(?::\\d+)?/"
+      ],
+      "allowed_final_url_patterns": [
+        "^https?://(?:magicscraper\\.app)(?::\\d+)?/"
+      ],
+      "frozen_task": [
+        "デモ内の繰返し項目から詳細へ進む"
+      ],
+      "no_evaluator_page_selectors": true
+    },
+    "14": {
+      "expected_type": "documentation_page",
+      "allowed_hosts": [
+        "www.typescriptlang.org"
+      ],
+      "url_patterns": [
+        "^https?://(?:www\\.typescriptlang\\.org)(?::\\d+)?/"
+      ],
+      "allowed_final_url_patterns": [
+        "^https?://(?:www\\.typescriptlang\\.org)(?::\\d+)?/"
+      ],
+      "frozen_task": [
+        "ドキュメント目次から個別ガイドへ進む"
+      ],
+      "no_evaluator_page_selectors": true
+    },
+    "67": {
+      "expected_type": "product",
+      "allowed_hosts": [
+        "www.kingjim.co.jp"
+      ],
+      "url_patterns": [
+        "^https?://(?:www\\.kingjim\\.co\\.jp)(?::\\d+)?/"
+      ],
+      "allowed_final_url_patterns": [
+        "^https?://(?:www\\.kingjim\\.co\\.jp)(?::\\d+)?/"
+      ],
+      "frozen_task": [
+        "製品一覧から製品詳細へ進む"
+      ],
+      "no_evaluator_page_selectors": true
+    }
+  },
+  "selection_protocol": "Choose heldout listing from actual seed links by fixed URL/text listing-likelihood and SHA256 rank, excluding all representative-body URLs. Before code generation, independently acquire that listing and deterministically fix up to3 task-type eligible item targets; no candidate selectors or generated code used. Rank candidates by seed-keyedSHA256. Selection fetches counted. URLs/gold/type selectors isolated from code-generation requests. If no separate listing exists record no_holdout_listing, retain site denominator.",
+  "target_count_cap_per_site": 3,
+  "target_seed_sha256": "c186f8328eff7f37d51bad105bf3cc38c846ec46c6ae01376e28e7ed9c01bc94",
+  "R_definition": "Unseen page bodies using identical code in fresh Node+browser process. Detail URLs never supplied as start_url; observe actual listing links.",
+  "G_definition": "Saved route same-URL replay reported separately; graph path search not measured."
+}

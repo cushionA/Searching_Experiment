@@ -1,0 +1,12 @@
+{
+  "learned_selectors": {
+    "listing_links": "main a[href]",
+    "documentation_url_rule": "same-origin /docs/*.html links"
+  },
+  "rationale": "The representative documentation index places guide and handbook links in main, while shared navigation contains unrelated links. The URL rule limits collection to individual documentation pages. Scroll results are accumulated because scrolling may reveal further listing links.",
+  "assumptions": [
+    "The runtime opens input.start_url before crawl begins.",
+    "Listing page scroll results expose newly visible links through result.links.",
+    "api.save can save an already observed link directly and leaves the browser on that detail page."
+  ]
+}

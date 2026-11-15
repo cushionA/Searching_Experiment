@@ -1,0 +1,25 @@
+{
+  "answers": [
+    {
+      "site_id": "10",
+      "listing_url": "https://magicscraper.app/demo/scroll",
+      "item_selector": "article a[href]",
+      "max_scroll_actions": 3,
+      "reason": "The observed demo index explicitly links to the infinite-scroll example; article detail anchors are a reasonable sample selector for its repeated product rows, and up to three scroll actions sample appended items."
+    },
+    {
+      "site_id": "14",
+      "listing_url": "https://www.typescriptlang.org/docs/",
+      "item_selector": "main .handbook-content a[href]",
+      "max_scroll_actions": 0,
+      "reason": "The documentation index exposes its guide links inside the observed main handbook-content list; the selector targets guide anchors directly without needing scrolling."
+    },
+    {
+      "site_id": "67",
+      "listing_url": "https://www.kingjim.co.jp/products/type/pipe-file.html",
+      "item_selector": "main .contents a[href*=\"/products/\"]",
+      "max_scroll_actions": 0,
+      "reason": "This observed category URL is a product-listing route; links within main contents are a suitable hypothesis for product detail anchors while excluding global navigation and avoiding SKU or price extraction."
+    }
+  ]
+}

@@ -107,7 +107,8 @@ def grade(store, gold, output):
 
 def run_structure_routing(args):
     run_path = args.run.resolve()
-    script = Path(__file__).resolve().parents[2] / "experiments" / "structure-routing" / "sitemap-agent-routing.mjs"
+    entry = "representative-code.mjs" if args.method == "representative-code" else "sitemap-agent-routing.mjs"
+    script = Path(__file__).resolve().parents[2] / "experiments" / "structure-routing" / entry
     with locked(run_path):
         if (run_path / "state.json").exists():
             raise LabError("grounding実験のstate.jsonがあるrunではstructure-routingを実行できません")
@@ -145,6 +146,7 @@ def main(argv=None):
         command = commands.add_parser(name)
         command.add_argument("--run", required=True, type=Path)
         if name == "structure-routing":
+            command.add_argument("--method", choices=("sitemap-agent", "representative-code"), default="sitemap-agent")
             command.add_argument("--action", required=True, choices=("discover", "prepare", "execute", "verify", "export"))
             command.add_argument("--ids")
             command.add_argument("--phase", choices=("cold", "warm"), default="cold")

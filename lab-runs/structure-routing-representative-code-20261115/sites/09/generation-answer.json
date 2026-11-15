@@ -1,0 +1,12 @@
+{
+  "learned_selectors": [
+    "main a.product-card[href]",
+    "main a[href] (fallback for unseen listing layouts)"
+  ],
+  "rationale": "The supplied listing evidence identifies product detail links by product-card anchors inside the main content. Scrolling exposes additional listing anchors, so links are collected after each bounded scroll and prioritized over initially visible links.",
+  "assumptions": [
+    "Detail pages are same-origin links from the main listing content.",
+    "api.scroll performs a bounded scroll gesture and may reveal additional anchors.",
+    "The runtime has already opened input.start_url, and api.save records a previously observed detail link."
+  ]
+}

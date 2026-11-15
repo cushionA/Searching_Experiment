@@ -1,0 +1,13 @@
+{
+  "learned_selectors": [
+    "ul.link-button a.gp-fl-h-left (observed on the listing as links to /products/type/*.html pages)",
+    ".column-layout .index-layout-v5 a.block (observed listing cards linking to /products/brand/*.html pages)",
+    "a[href*='/products/'][href$='.html'] (generic extraction selector used to accommodate varying listing layouts)"
+  ],
+  "rationale": "The crawl scrolls the supplied listing first and collects links returned by each scroll, then saves at most input.max_items unique same-origin /products/*.html destinations, excluding the start and input.exclude_urls. The supplied representative listing exposes type links in ul.link-button and brand cards in .column-layout. No destination IDs or starting listing URL are fixed. Links are collected before save because save changes the browser page.",
+  "assumptions": [
+    "Product detail/document destinations on listing pages use same-origin /products/ paths ending in .html.",
+    "api.scroll returns links visible or newly exposed after scrolling; repeated scroll actions are bounded by six and the overall iteration cap is twelve.",
+    "The selected public pages can be saved without interacting with forms or purchase controls."
+  ]
+}

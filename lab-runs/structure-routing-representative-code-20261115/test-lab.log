@@ -1,0 +1,83 @@
+.....................................Fss.....................ss.F.....s.............{"error": "exportには--outputが必要です"}
+...
+======================================================================
+FAIL: test_offline_runtime_guards (test_lab_camoufox.CamoufoxTests.test_offline_runtime_guards)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tatuk\Desktop\SearchEngine\tests\test_lab_camoufox.py", line 41, in test_offline_runtime_guards
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : TAP version 13
+# Subtest: uses isolated Firefox launch options, inherited proxy and natural browser identity
+not ok 1 - uses isolated Firefox launch options, inherited proxy and natural browser identity
+  ---
+  duration_ms: 16.6798
+  type: 'test'
+  location: 'C:\\Users\\tatuk\\Desktop\\SearchEngine\\experiments\\bot-diagnostics\\camoufox-runtime.test.mjs:49:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /browser\/fontconfig\/linux$/. Input:
+    
+    'C:\\Users\\tatuk\\AppData\\Local\\Temp\\camoufox-runtime-test-W8i52l\\deps\\browser\\fontconfig\\linux'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'C:\\Users\\tatuk\\AppData\\Local\\Temp\\camoufox-runtime-test-W8i52l\\deps\\browser\\fontconfig\\linux'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/tatuk/Desktop/SearchEngine/experiments/bot-diagnostics/camoufox-runtime.test.mjs:76:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: imports an explicit fixture CA into the disposable Firefox profile
+ok 2 - imports an explicit fixture CA into the disposable Firefox profile
+  ---
+  duration_ms: 14.5075
+  type: 'test'
+  ...
+# Subtest: fixture mode ignores the environment proxy CA unless an explicit fixture CA is set
+ok 3 - fixture mode ignores the environment proxy CA unless an explicit fixture CA is set
+  ---
+  duration_ms: 7.7103
+  type: 'test'
+  ...
+# Subtest: rejects unsupported extensions before loading optional dependencies
+ok 4 - rejects unsupported extensions before loading optional dependencies
+  ---
+  duration_ms: 1.1819
+  type: 'test'
+  ...
+# Subtest: cleans its temporary profile when Firefox startup fails
+ok 5 - cleans its temporary profile when Firefox startup fails
+  ---
+  duration_ms: 4.7654
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 4
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 212.3032
+
+
+======================================================================
+FAIL: test_cli_proxy_precedes_environment_and_sets_only_child_environment (test_lab_proxy_launcher.ProxyLauncherTests.test_cli_proxy_precedes_environment_and_sets_only_child_environment)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tatuk\Desktop\SearchEngine\tests\test_lab_proxy_launcher.py", line 40, in test_cli_proxy_precedes_environment_and_sets_only_child_environment
+    self.assertEqual(child["NO_PROXY"], "localhost")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'internal.example' != 'localhost'
+- internal.example
++ localhost
+
+
+----------------------------------------------------------------------
+Ran 87 tests in 24.587s
+
+FAILED (failures=2, skipped=5)

@@ -10,7 +10,7 @@ from jse.lab.state import LabError
 
 class StructureRoutingCliTests(unittest.TestCase):
     def args(self, run, *options):
-        return lab_main.argparse.Namespace(run=Path(run), action="execute", ids="a,b", phase="warm",
+        return lab_main.argparse.Namespace(run=Path(run), method="sitemap-agent", action="execute", ids="a,b", phase="warm",
                                            live=True, output=None)
 
     @patch("jse.lab.__main__.subprocess.run")
@@ -31,6 +31,15 @@ class StructureRoutingCliTests(unittest.TestCase):
             self.assertIn("--live", command)
             self.assertEqual(node_run.call_args.kwargs["cwd"], Path(lab_main.__file__).resolve().parents[2])
             self.assertIs(node_run.call_args.kwargs["shell"], False)
+
+    @patch("jse.lab.__main__.subprocess.run")
+    def test_dispatches_representative_code_method(self, node_run):
+        node_run.return_value = subprocess.CompletedProcess([], 0, '{"status":"ok"}', "")
+        with tempfile.TemporaryDirectory() as temp:
+            args = self.args(Path(temp) / "representative-run")
+            args.method = "representative-code"
+            self.assertEqual(lab_main.run_structure_routing(args), {"status": "ok"})
+            self.assertEqual(Path(node_run.call_args.args[0][1]).name, "representative-code.mjs")
 
     @patch("jse.lab.__main__.subprocess.run")
     def test_export_output_is_forwarded(self, node_run):

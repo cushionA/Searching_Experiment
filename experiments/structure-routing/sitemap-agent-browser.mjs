@@ -194,7 +194,7 @@ function safeLoggedUrl(value) {
   try { const url = new URL(value); url.username = ''; url.password = ''; url.search = ''; url.hash = ''; return url.href; } catch { return 'invalid_url'; }
 }
 
-async function makeBrowserPage(target, seed, options, budget) {
+export async function makeBrowserPage(target, seed, options, budget) {
   let browser = null;
   let context = null;
   let hardTimer = null;
