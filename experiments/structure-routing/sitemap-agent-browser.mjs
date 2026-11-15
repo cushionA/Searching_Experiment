@@ -201,10 +201,12 @@ async function makeBrowserPage(target, seed, options, budget) {
   const page = await withTimeout(context.newPage(), 15000, 'new_page');
   const hosts = new Set([new URL(target.start_url || target.url || target.entry_url).hostname.toLowerCase(), ...(target.allowed_hosts || []).map(host => String(host).toLowerCase())]);
   const robots = options.robots || new Map();
+  const robotsPolicy = options.robots_policy === 'sitemap_discovery_only' ? 'sitemap_discovery_only' : 'enforced';
   const metadata = {requests: 0, responses: 0, xhr_fetch: 0, bytes: 0, operations: 0, robot_requests: 0, documents: 0, document_requests: 0, document_responses: 0};
   let lastAt = 0;
   const delay = target.practice ? 1000 : 5000;
   const robotAllowed = async url => {
+    if (robotsPolicy === 'sitemap_discovery_only') return true;
     const origin = new URL(url).origin;
     if (!robots.has(origin)) {
       const robotsUrl = new URL('/robots.txt', origin).href;
@@ -266,7 +268,7 @@ async function makeBrowserPage(target, seed, options, budget) {
   await withTimeout(page.waitForLoadState('networkidle', {timeout: target.practice ? 1000 : 5000}), target.practice ? 1500 : 6000, 'initial_networkidle').catch(() => {});
   await withTimeout(page.waitForTimeout(500), 1000, 'initial_pause').catch(() => {});
   metadata.operations++;
-  return {browser, context, page, guard, response, hosts, metadata, robots, hardTimer};
+  return {browser, context, page, guard, response, hosts, metadata, robots, robotsPolicy, hardTimer};
   } catch (error) {
     clearTimeout(hardTimer);
     await withTimeout(context?.close().catch(() => {}), 10000, 'failed_context_close').catch(() => {});
@@ -348,6 +350,7 @@ export async function executeRoute({runDir, target, plan, phase, options = {}} =
   const originalCandidates = declaredCandidates(plan);
   if (!candidates.length && phase === 'cold' && !plan.seed_url) throw new Error('plan_missing_listing_candidates');
   const route = chooseRoute(plan, {phase, recipe});
+  const robotsPolicy = options.robots_policy === 'sitemap_discovery_only' || (options.robots_policy == null && phase === 'warm' && recipe?.robots_policy === 'sitemap_discovery_only') ? 'sitemap_discovery_only' : 'enforced';
   const executionPlan = {...plan, selected_group: route.group};
   const initialCandidate = route.candidate;
   const seed = initialCandidate?.url || plan.seed_url;
@@ -356,7 +359,7 @@ export async function executeRoute({runDir, target, plan, phase, options = {}} =
   if (!hostAllowed(seed, new Set([new URL(target.start_url || target.url || target.entry_url).hostname.toLowerCase(), ...(target.allowed_hosts || []).map(x => String(x).toLowerCase())]))) throw new Error('seed_out_of_scope');
   const siteDocumentCap = target.practice ? 40 : 15;
   const priorDocuments = phase === 'cold' ? Number(options.prior_document_requests || 0) : 0;
-  if (!Number.isSafeInteger(priorDocuments) || priorDocuments < 0 || priorDocuments > 9) throw new Error('prior_document_requests_must_be_0_to_9');
+  if (!Number.isSafeInteger(priorDocuments) || priorDocuments < 0 || priorDocuments > siteDocumentCap) throw new Error(`prior_document_requests_must_be_0_to_${siteDocumentCap}`);
   const cumulativeBase = phase === 'cold' ? priorDocuments : Number(recipe?.cumulative_document_requests || 0);
   const warmRemaining = Math.max(0, siteDocumentCap - cumulativeBase);
   const budget = {documents: phase === 'cold' ? Math.min(siteDocumentCap - priorDocuments, Math.min(6, Number(plan.max_explore_documents || 6)) + 3) : Math.min(warmRemaining, 12),
@@ -392,7 +395,7 @@ export async function executeRoute({runDir, target, plan, phase, options = {}} =
   let session = null;
   let result = null;
   try {
-  session = await makeBrowserPage(target, seed, options, budget);
+  session = await makeBrowserPage(target, seed, {...options, robots_policy: robotsPolicy}, budget);
   for (let i = 0; i < queue.length && explorationPages < explorationLimit; i++) {
     const currentCandidate = queue[i];
     if (session.guard.counters.reserved >= budget.documents || session.metadata.operations >= budget.operations) { explorationStop = 'budget'; break; }
@@ -492,7 +495,7 @@ export async function executeRoute({runDir, target, plan, phase, options = {}} =
   }
   const listingSource = beforeObservation.source;
   const selectedItemGroup = group.pattern || group.segments ? routePattern(executionPlan) : itemSelection.url_shape ? {id: group.id || null, url_shape: itemSelection.url_shape, fallback: itemSelection.fallback} : routePattern(executionPlan);
-  const stableRecipe = {version: 1, seed_url: listingCandidate?.url || seed, selected_candidate_id: listingCandidate?.id || initialCandidate?.id || null,
+  const stableRecipe = {version: 1, robots_policy: robotsPolicy, seed_url: listingCandidate?.url || seed, selected_candidate_id: listingCandidate?.id || initialCandidate?.id || null,
     selected_candidate_source: listingCandidate?.source || initialCandidate?.source || null, selected_group: selectedItemGroup,
     scroll_actions: scrolls.map(row => row.index), observed_state_ids: scrolls.map(row => row.state_id), visited_candidate_ids: visited.map(row => row.id).filter(Boolean),
     observed_candidate_urls: [...new Set(graph.flatMap(row => row.edges))], candidate_order_rule: 'prioritize scroll/infinite path tokens, otherwise original agent order',
@@ -504,7 +507,7 @@ export async function executeRoute({runDir, target, plan, phase, options = {}} =
   const savedItemUrls = new Set(itemResults.filter(item => item.saved).map(item => item.url));
   const freshSaved = [...matchingFresh].filter(url => savedItemUrls.has(url));
   const scrollGrowthSuccess = freshSaved.length > 0;
-  result = {id: target.id, phase, status: refusal ? 'access_stopped' : taskSuccess ? 'html_saved' : 'no_valid_detail', task_success: taskSuccess,
+  result = {id: target.id, phase, robots_policy: robotsPolicy, status: refusal ? 'access_stopped' : taskSuccess ? 'html_saved' : 'no_valid_detail', task_success: taskSuccess,
     scroll_growth_success: scrollGrowthSuccess, external_llm_calls: 0, local_inference: {calls: 0},
     seed_url: listingCandidate?.url || seed, selected_candidate_id: listingCandidate?.id || initialCandidate?.id || null,
     selected_candidate_source: listingCandidate?.source || initialCandidate?.source || null, listing_found: Boolean(listing),
@@ -521,13 +524,13 @@ export async function executeRoute({runDir, target, plan, phase, options = {}} =
       before_rendered_sha256: sha(beforeObservation.html || ''), observation_errors: beforeObservation.errors || []},
     state_ids: {before: before.state_id, after: afterListing?.dom.state_id || before.state_id},
     cost: {http_requests: session.metadata.requests, http_responses: session.metadata.responses, xhr_fetch: session.metadata.xhr_fetch, response_bytes: session.metadata.bytes,
-      robots_requests: session.metadata.robot_requests, browser_document_requests: session.metadata.document_requests, browser_document_responses: session.metadata.document_responses,
+      robots_requests: session.metadata.robot_requests, robots: session.metadata.robot_requests, browser_document_requests: session.metadata.document_requests, browser_document_responses: session.metadata.document_responses,
       ui_operations: session.metadata.operations, browser_ms: Date.now() - browserStarted}, budget: {cumulative_document_cap: siteDocumentCap, cumulative_document_requests: stableRecipe.cumulative_document_requests,
       document_cap: budget.documents, document_reserved: session.guard.counters.reserved, operation_cap: budget.operations, operations: session.metadata.operations},
     refusal, partial: false, progress: path.relative(runDir, progressFile), document_ledger: path.relative(runDir, ledgerFile), recipe: path.relative(runDir, recipeFile)};
   result.budget = resultBudget(session, budget, cumulativeBase);
   } catch (error) {
-    result = {id: target.id, phase, status: 'error', task_success: false, scroll_growth_success: false, external_llm_calls: 0, local_inference: {calls: 0},
+    result = {id: target.id, phase, robots_policy: robotsPolicy, status: 'error', task_success: false, scroll_growth_success: false, external_llm_calls: 0, local_inference: {calls: 0},
       seed_url: listingCandidate?.url || seed, selected_candidate_id: listingCandidate?.id || initialCandidate?.id || null, listing_found: Boolean(listing),
       stop_reason: String(error?.message || error).startsWith('timeout:') ? 'budget' : 'error', partial: true,
       selected_items: itemResults, graph, listing_candidates_visited: visited, scroll_states: scrolls,
@@ -536,6 +539,7 @@ export async function executeRoute({runDir, target, plan, phase, options = {}} =
         after: fs.existsSync(afterFile) ? path.relative(runDir, afterFile) : null},
       error: String(error?.message || error), cost: {http_requests: session?.metadata.requests || 0, http_responses: session?.metadata.responses || 0,
         xhr_fetch: session?.metadata.xhr_fetch || 0, response_bytes: session?.metadata.bytes || 0, robots_requests: session?.metadata.robot_requests || 0,
+        robots: session?.metadata.robot_requests || 0,
         browser_document_requests: session?.metadata.document_requests || 0, browser_document_responses: session?.metadata.document_responses || 0,
         ui_operations: session?.metadata.operations || 0, browser_ms: Date.now() - browserStarted},
       budget: resultBudget(session, budget, cumulativeBase), recipe: path.relative(runDir, recipeFile)};

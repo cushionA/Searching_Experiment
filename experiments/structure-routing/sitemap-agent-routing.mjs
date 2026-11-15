@@ -159,7 +159,7 @@ async function discover(runDir, target, protocol) {
     }
     throw new Error('metadata_redirect_limit');
   };
-  const inventory = await discoverSitemapUrls({startUrl: target.start_url, allowedHosts: target.allowed_hosts, fetch: fetchMetadata,
+  const inventory = await discoverSitemapUrls({startUrl: target.start_url, allowedHosts: target.allowed_hosts, fetch: fetchMetadata, robotsPolicy: protocol.robots_policy || 'enforce',
     limits: {documents: protocol.sitemap_documents_per_site, urls: 20000, bytes: protocol.metadata_bytes_per_response, elapsedMs: 90000}});
   cost.elapsed_ms = Date.now() - started;
   write(file, {...inventory, acquisition: 'fresh', acquisition_cost: cost});
@@ -177,6 +177,8 @@ function verify(runDir) {
   let abortedDocumentUpperBound = 0;
   const documentsBySite = new Map();
   const protocol = read(path.join(runDir, 'protocol.json'));
+  const sharedPriorDocuments = protocol.prior_shared_browser_document_reservations_upper_bound ?? 0;
+  for (const [id, count] of Object.entries(protocol.prior_shared_site_document_reservations || {})) documentsBySite.set(String(id), count);
   for (const attempt of rows(path.join(runDir, 'attempts.jsonl'))) {
     const count = attempt.document_requests ?? attempt.document_requests_reserved_upper_bound ?? 0;
     abortedDocumentUpperBound += count;
@@ -201,7 +203,7 @@ function verify(runDir) {
       }
     }
   }
-  if (documents + abortedDocumentUpperBound > protocol.total_browser_documents_limit) failures.push('global_document_cap');
+  if (documents + abortedDocumentUpperBound + sharedPriorDocuments > protocol.total_browser_documents_limit) failures.push('global_document_cap');
   for (const target of targets) if ((documentsBySite.get(String(target.id)) || 0) > (target.practice ? protocol.practice_document_cap_cold_warm : protocol.real_document_cap_cold_warm)) failures.push(`site_document_cap:${target.id}`);
   const candidates = [];
   const walk = directory => { for (const entry of fs.readdirSync(directory, {withFileTypes: true})) { const file = path.join(directory, entry.name); if (entry.isDirectory()) walk(file); else if (entry.name.endsWith('.json')) candidates.push(file); } };
@@ -213,7 +215,7 @@ function verify(runDir) {
       checkedFiles++;
     }
   }
-  return {ok: failures.length === 0, sites: targets.length, result_tuples: tuples.size, url_only_requests_checked: checkedFiles, saved_html_files_verified: verifiedHtml, completed_browser_document_requests: documents, aborted_document_reservations_upper_bound: abortedDocumentUpperBound, accounted_document_requests_upper_bound: documents + abortedDocumentUpperBound, failures};
+  return {ok: failures.length === 0, sites: targets.length, result_tuples: tuples.size, url_only_requests_checked: checkedFiles, saved_html_files_verified: verifiedHtml, completed_browser_document_requests: documents, aborted_document_reservations_upper_bound: abortedDocumentUpperBound, shared_prior_document_reservations_upper_bound: sharedPriorDocuments, accounted_document_requests_upper_bound: documents + abortedDocumentUpperBound + sharedPriorDocuments, robots_policy: protocol.robots_policy || 'enforce', failures};
 }
 
 async function main() {
@@ -221,6 +223,9 @@ async function main() {
   const args = Object.fromEntries(arguments_.flatMap((value, index) => value.startsWith('--') ? [[value.slice(2), arguments_[index + 1]?.startsWith('--') || !arguments_[index + 1] ? true : arguments_[index + 1]]] : []));
   const runDir = path.resolve(String(args.run));
   const protocol = read(path.join(runDir, 'protocol.json'));
+  if (!['enforce', 'sitemap_discovery_only'].includes(protocol.robots_policy || 'enforce')) throw new Error('unknown_robots_policy');
+  if (!Number.isSafeInteger(protocol.prior_shared_browser_document_reservations_upper_bound ?? 0) || (protocol.prior_shared_browser_document_reservations_upper_bound ?? 0) < 0) throw new Error('invalid_prior_document_reservations');
+  if (Object.values(protocol.prior_shared_site_document_reservations || {}).some(count => !Number.isSafeInteger(count) || count < 0)) throw new Error('invalid_prior_site_document_reservations');
   if (fs.existsSync(path.join(runDir, 'state.json'))) throw new Error('grounding_run_not_supported');
   const selected = new Set(String(args.ids || '').split(',').filter(Boolean));
   const targets = rows(path.join(runDir, 'targets.jsonl')).filter(row => !selected.size || selected.has(String(row.id)));
@@ -258,8 +263,8 @@ async function main() {
       const plan = validateAnswer(request, answer);
       write(path.join(directory, 'plan.json'), plan);
       recoverInterruptedPhase(runDir, target, phase);
-      const priorDocuments = rows(path.join(runDir, 'attempts.jsonl')).filter(row => String(row.id) === String(target.id)).reduce((sum, row) => sum + (row.document_requests ?? row.document_requests_reserved_upper_bound ?? 0), 0);
-      const outcome = await executeRoute({runDir, target, plan, phase, options: {protocol, executablePath: protocol.chrome_executable, prior_document_requests: priorDocuments}});
+      const priorDocuments = (protocol.prior_shared_site_document_reservations?.[String(target.id)] ?? 0) + rows(path.join(runDir, 'attempts.jsonl')).filter(row => String(row.id) === String(target.id)).reduce((sum, row) => sum + (row.document_requests ?? row.document_requests_reserved_upper_bound ?? 0), 0);
+      const outcome = await executeRoute({runDir, target, plan, phase, options: {protocol, robots_policy: protocol.robots_policy || 'enforce', executablePath: protocol.chrome_executable, prior_document_requests: priorDocuments}});
       append(path.join(runDir, 'results.jsonl'), outcome);
       outcomes.push({id: target.id, phase, status: outcome.status, items: outcome.selected_items?.length ?? null, candidate_html_success: outcome.task_success ?? null, candidate_scroll_growth: outcome.scroll_growth_success ?? null});
     }

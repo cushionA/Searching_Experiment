@@ -34,8 +34,9 @@ function decodeBody(bytes, response) {
   return {text: bytes.toString('utf8'), decompression: 'none'};
 }
 
-export async function discoverSitemapUrls({startUrl, allowedHosts = [], fetch: injectedFetch, limits = {}, robotsUserAgent = '*'} = {}) {
+export async function discoverSitemapUrls({startUrl, allowedHosts = [], fetch: injectedFetch, limits = {}, robotsUserAgent = '*', robotsPolicy = 'enforce'} = {}) {
   if (typeof injectedFetch !== 'function') throw new TypeError('fetch is required');
+  if (!['enforce', 'sitemap_discovery_only'].includes(robotsPolicy)) throw new TypeError('robotsPolicy must be enforce or sitemap_discovery_only');
   const start = new URL(startUrl);
   const hosts = new Set([start.hostname.toLowerCase(), ...allowedHosts.map(host => String(host).toLowerCase())]);
   const maxDocuments = limits.documents ?? limits.maxDocuments ?? 20;
@@ -79,7 +80,11 @@ export async function discoverSitemapUrls({startUrl, allowedHosts = [], fetch: i
     if (row.wire_size.known) { wireContentLengthBytes += contentLength; wireContentLengthKnownResponses++; }
     else wireContentLengthUnknownResponses++;
     statuses.push(row);
-    if (status === 403 || status === 429 || status === 401) { row.outcome = 'refused'; truncated = true; return null; }
+    if (status === 403 || status === 429 || status === 401) {
+      row.outcome = 'refused';
+      if (!(kind === 'robots' && robotsPolicy === 'sitemap_discovery_only' && status !== 429)) truncated = true;
+      return null;
+    }
     if (status < 200 || status >= 300) return null;
     try {
       const bytes = await asBytes(response);
@@ -106,7 +111,7 @@ export async function discoverSitemapUrls({startUrl, allowedHosts = [], fetch: i
     if (robotStatus) robotStatus.robots = 'available';
   } else {
     if (robotStatus?.status === 404 || !robotStatus) { if (robotStatus) robotStatus.robots = 'unavailable'; }
-    if (robotStatus?.outcome === 'refused' || robotStatus?.outcome === 'error' || (robotStatus && robotStatus.status !== 404 && robotStatus.status !== null)) {
+    if (robotStatus?.status === 429 || (robotsPolicy === 'enforce' && (robotStatus?.outcome === 'refused' || robotStatus?.outcome === 'error' || (robotStatus && robotStatus.status !== 404 && robotStatus.status !== null)))) {
       return result();
     }
   }
@@ -119,7 +124,7 @@ export async function discoverSitemapUrls({startUrl, allowedHosts = [], fetch: i
     if (!hostAllowed(sitemapUrl, hosts)) {
       statuses.push({url: sitemapUrl, kind: 'sitemap', status: null, outcome: 'observed-out-of-scope'}); continue;
     }
-    if (new URL(sitemapUrl).origin === origin && robots?.isAllowed(sitemapUrl, robotsUserAgent) === false) {
+    if (robotsPolicy === 'enforce' && new URL(sitemapUrl).origin === origin && robots?.isAllowed(sitemapUrl, robotsUserAgent) === false) {
       statuses.push({url: sitemapUrl, kind: 'sitemap', status: null, outcome: 'blocked-by-robots'}); continue;
     }
     seenDocs.add(sitemapUrl);
@@ -149,6 +154,6 @@ export async function discoverSitemapUrls({startUrl, allowedHosts = [], fetch: i
   return result();
 
   function result() {
-    return {urls, statuses, errors, truncated, cost: {requests: requestCount, responses: responseCount, decodedBufferBytes, wireContentLengthBytes, wireContentLengthKnownResponses, wireContentLengthUnknownResponses, sitemapDocuments: seenDocs.size, extractedUrls: urls.length}, library: {name: '@crawlee/utils', version: '3.18.2', api: 'parseSitemap', scope: 'XML sitemap URL/index parsing from locally fetched response text; all robots and sitemap HTTP requests, decompression, host scope, and budgets are orchestrated by this module'}};
+    return {urls, statuses, errors, truncated, robotsPolicy, cost: {requests: requestCount, responses: responseCount, decodedBufferBytes, wireContentLengthBytes, wireContentLengthKnownResponses, wireContentLengthUnknownResponses, sitemapDocuments: seenDocs.size, extractedUrls: urls.length}, library: {name: '@crawlee/utils', version: '3.18.2', api: 'parseSitemap', scope: 'XML sitemap URL/index parsing from locally fetched response text; all robots and sitemap HTTP requests, decompression, host scope, and budgets are orchestrated by this module'}};
   }
 }

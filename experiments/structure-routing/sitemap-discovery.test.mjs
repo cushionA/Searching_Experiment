@@ -53,6 +53,73 @@ test('refusal stops sitemap discovery without trying fallback paths', async () =
   assert.equal(result.statuses.at(-1).outcome, 'refused');
 });
 
+test('sitemap_discovery_only ignores robots XML disallow rules while enforce still applies them', async () => {
+  const xml = '<urlset><url><loc>https://fixture.test/p</loc></url></urlset>';
+  const callsFor = async robotsPolicy => {
+    const calls = [];
+    const result = await discoverSitemapUrls({startUrl: 'https://fixture.test/', robotsPolicy, fetch: async url => {
+      calls.push(url);
+      if (url.endsWith('/robots.txt')) return response(200, 'User-agent: *\nDisallow: /sitemap.xml\nSitemap: https://fixture.test/sitemap.xml\n');
+      return response(200, xml);
+    }});
+    return {calls, result};
+  };
+  const enforced = await callsFor('enforce');
+  assert.deepEqual(enforced.calls, ['https://fixture.test/robots.txt']);
+  assert.equal(enforced.result.statuses.at(-1).outcome, 'blocked-by-robots');
+  const experimental = await callsFor('sitemap_discovery_only');
+  assert.deepEqual(experimental.calls, ['https://fixture.test/robots.txt', 'https://fixture.test/sitemap.xml']);
+  assert.equal(experimental.result.urls[0].url, 'https://fixture.test/p');
+  assert.equal(experimental.result.robotsPolicy, 'sitemap_discovery_only');
+});
+
+test('robots 403 stops by default but sitemap_discovery_only falls back to known sitemap paths', async () => {
+  const discover = async robotsPolicy => {
+    const calls = [];
+    const result = await discoverSitemapUrls({startUrl: 'https://fixture.test/', robotsPolicy, fetch: async url => {
+      calls.push(url);
+      if (url.endsWith('/robots.txt')) return response(403);
+      if (url.endsWith('/sitemap.xml')) return response(200, '<urlset><url><loc>https://fixture.test/p</loc></url></urlset>');
+      return response(404);
+    }});
+    return {calls, result};
+  };
+  const enforced = await discover('enforce');
+  assert.deepEqual(enforced.calls, ['https://fixture.test/robots.txt']);
+  assert.equal(enforced.result.truncated, true);
+  const experimental = await discover('sitemap_discovery_only');
+  assert.deepEqual(experimental.calls.slice(0, 2), ['https://fixture.test/robots.txt', 'https://fixture.test/sitemap.xml']);
+  assert.equal(experimental.result.urls[0].url, 'https://fixture.test/p');
+  assert.equal(experimental.result.truncated, false);
+});
+
+test('robots 503 falls back to known sitemap paths under sitemap_discovery_only', async () => {
+  const calls = [];
+  const result = await discoverSitemapUrls({startUrl: 'https://fixture.test/', robotsPolicy: 'sitemap_discovery_only', fetch: async url => {
+    calls.push(url);
+    if (url.endsWith('/robots.txt')) return response(503);
+    if (url.endsWith('/sitemap.xml')) return response(200, '<urlset><url><loc>https://fixture.test/p</loc></url></urlset>');
+    return response(404);
+  }});
+  assert.deepEqual(calls.slice(0, 2), ['https://fixture.test/robots.txt', 'https://fixture.test/sitemap.xml']);
+  assert.equal(result.urls[0].url, 'https://fixture.test/p');
+  assert.equal(result.robotsPolicy, 'sitemap_discovery_only');
+});
+
+test('actual sitemap HTTP 401, 403, and 429 still stop discovery under sitemap_discovery_only', async t => {
+  for (const status of [401, 403, 429]) await t.test(String(status), async () => {
+    const calls = [];
+    const result = await discoverSitemapUrls({startUrl: 'https://fixture.test/', robotsPolicy: 'sitemap_discovery_only', fetch: async url => {
+      calls.push(url);
+      if (url.endsWith('/robots.txt')) return response(200, '');
+      return response(status);
+    }});
+    assert.deepEqual(calls, ['https://fixture.test/robots.txt', 'https://fixture.test/sitemap.xml']);
+    assert.equal(result.truncated, true);
+    assert.equal(result.statuses.at(-1).outcome, 'refused');
+  });
+});
+
 test('accepts upstream-decompressed XML when gzip headers remain and records byte certainty', async () => {
   const calls = [];
   const result = await discoverSitemapUrls({startUrl: 'https://fixture.test/', fetch: async url => {
