@@ -1,5 +1,6 @@
 import argparse
 import json
+import subprocess
 import sys
 import zipfile
 from pathlib import Path
@@ -104,15 +105,52 @@ def grade(store, gold, output):
     return result
 
 
+def run_structure_routing(args):
+    run_path = args.run.resolve()
+    script = Path(__file__).resolve().parents[2] / "experiments" / "structure-routing" / "sitemap-agent-routing.mjs"
+    with locked(run_path):
+        if (run_path / "state.json").exists():
+            raise LabError("grounding実験のstate.jsonがあるrunではstructure-routingを実行できません")
+        command = ["node", str(script), "--run", str(run_path), "--action", args.action]
+        if args.ids is not None:
+            command.extend(("--ids", args.ids))
+        command.extend(("--phase", args.phase))
+        if args.live:
+            command.append("--live")
+        if args.output is not None:
+            command.extend(("--output", str(args.output.resolve())))
+        try:
+            completed = subprocess.run(command, cwd=script.parents[2], capture_output=True,
+                                       text=True, encoding="utf-8", errors="replace", shell=False)
+        except OSError as error:
+            raise LabError(f"structure-routingのNode実行に失敗しました: {error}") from None
+        if completed.returncode:
+            detail = completed.stderr.strip()[:2000]
+            raise LabError("structure-routingが失敗しました" + (f": {detail}" if detail else ""))
+        try:
+            result = json.loads(completed.stdout)
+        except (ValueError, TypeError):
+            raise LabError("structure-routingがJSON以外の出力を返しました") from None
+        if not isinstance(result, dict):
+            raise LabError("structure-routingのJSON出力はobjectである必要があります")
+        return result
+
+
 def main(argv=None):
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stderr.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description="発見型クロールの実験・承認・検証。Codex Cloudのエージェントが回答する。")
     commands = parser.add_subparsers(dest="command", required=True)
-    for name in ("topic", "init", "run", "status", "answer", "review-tail", "decide", "retry", "diagnose", "agent", "pause", "resume", "verify", "export", "grade", "demo"):
+    for name in ("topic", "init", "run", "status", "answer", "review-tail", "decide", "retry", "diagnose", "agent", "pause", "resume", "verify", "export", "grade", "demo", "structure-routing"):
         command = commands.add_parser(name)
         command.add_argument("--run", required=True, type=Path)
-        if name == "topic":
+        if name == "structure-routing":
+            command.add_argument("--action", required=True, choices=("discover", "prepare", "execute", "verify", "export"))
+            command.add_argument("--ids")
+            command.add_argument("--phase", choices=("cold", "warm"), default="cold")
+            command.add_argument("--live", action="store_true")
+            command.add_argument("--output", type=Path)
+        elif name == "topic":
             from .discovery import PROVIDERS
             command.add_argument("--topic", required=True)
             command.add_argument("--provider", action="append", choices=tuple(PROVIDERS))
@@ -149,6 +187,12 @@ def main(argv=None):
     try:
         if args.command == "demo":
             result = run_demo(args.run)
+        elif args.command == "structure-routing":
+            if args.action == "export" and args.output is None:
+                raise LabError("exportには--outputが必要です")
+            if args.action != "export" and args.output is not None:
+                raise LabError("--outputはexportでのみ指定できます")
+            result = run_structure_routing(args)
         elif args.command == "pause":
             if not (args.run / "state.json").is_file():
                 raise LabError("実験がありません")

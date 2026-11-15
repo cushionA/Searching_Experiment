@@ -1,0 +1,61 @@
+{
+  "request_id": "sitemap-agent-batch-20261115",
+  "answers": [
+    {
+      "request_id": "sitemap-url-choice-02",
+      "item_group_ids": [],
+      "listing_urls": ["https://webscraper.io/test-sites/pagination", "https://webscraper.io/test-sites/scroll"],
+      "hub_urls": ["https://webscraper.io/test-sites"],
+      "reason": "一覧としては指定されたpaginationのURLと、スクロールでリンクを増やすデモURLが候補です。提示グループには商品詳細らしいURL群がなく、marketplaceはスクレイパー販売用なので除外しました。",
+      "insufficient_evidence": true
+    },
+    {
+      "request_id": "sitemap-url-choice-05",
+      "item_group_ids": ["g2"],
+      "listing_urls": ["https://web-scraping.dev/products"],
+      "hub_urls": ["https://web-scraping.dev/", "https://web-scraping.dev/product"],
+      "reason": "product/:numberの28件が商品詳細候補で、指定された/productsが一覧候補です。URL構造だけからの推定です。",
+      "insufficient_evidence": false
+    },
+    {
+      "request_id": "sitemap-url-choice-06",
+      "item_group_ids": [],
+      "listing_urls": ["https://test.listly.io/en/loadbutton", "https://test.listly.io/en/pagination/type1"],
+      "hub_urls": ["https://test.listly.io/en/"],
+      "reason": "デモ範囲内ではloadbuttonが追加項目の表示、paginationが一覧巡回の候補です。提示URL群に詳細項目のパターンは見当たらないため、詳細グループは選びません。",
+      "insufficient_evidence": true
+    },
+    {
+      "request_id": "sitemap-url-choice-09",
+      "item_group_ids": [],
+      "listing_urls": ["https://scrapingsandbox.com/infinite-scroll", "https://scrapingsandbox.com/data-table"],
+      "hub_urls": ["https://scrapingsandbox.com/"],
+      "reason": "infinite-scrollはスクロールで項目が増える一覧候補で、data-tableもサンプル一覧の候補です。詳細URL群を示すパターンは提示されていません。",
+      "insufficient_evidence": true
+    },
+    {
+      "request_id": "sitemap-url-choice-10",
+      "item_group_ids": [],
+      "listing_urls": ["https://magicscraper.app/demo/scroll", "https://magicscraper.app/demo/catalogue", "https://magicscraper.app/demo/parts"],
+      "hub_urls": ["https://magicscraper.app/demo"],
+      "reason": "demo/scrollはスクロール型デモ、catalogueとpartsは繰返し項目の一覧候補です。提示されたdemo配下グループは個別デモページをまとめた形で、詳細項目群とは判別できません。",
+      "insufficient_evidence": true
+    },
+    {
+      "request_id": "sitemap-url-choice-14",
+      "item_group_ids": ["g2", "g3"],
+      "listing_urls": ["https://www.typescriptlang.org/docs/handbook", "https://www.typescriptlang.org/docs/handbook/release-notes"],
+      "hub_urls": ["https://www.typescriptlang.org/docs", "https://www.typescriptlang.org/docs/handbook"],
+      "reason": "handbook配下のg3とrelease-notes配下のg2は個別ガイド群の候補です。docsとhandbookの派生prefixは目次候補ですが、実在やリンク関係はURL構造からは確定できません。",
+      "insufficient_evidence": false
+    },
+    {
+      "request_id": "sitemap-url-choice-36",
+      "item_group_ids": [],
+      "listing_urls": ["https://www.nasa.gov/missions", "https://www.nasa.gov/missions/artemis"],
+      "hub_urls": ["https://www.nasa.gov/missions"],
+      "reason": "missions配下が指定された一覧の範囲に近い候補です。提示されたミッション関連グループは記事URL群に見え、個別ミッション詳細の群は特定できません。",
+      "insufficient_evidence": true
+    }
+  ]
+}
