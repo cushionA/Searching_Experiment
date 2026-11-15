@@ -1,0 +1,190 @@
+{
+  "scope": "Autopager, PinchTab webgraph, Smart Crawler, WebNavigator",
+  "autopager": {
+    "distribution": "PyPI autopager 0.3.1; upstream checkout 0.4.0 had no pretrained model",
+    "dependency_bytes": 259363077,
+    "model_bytes": 1093573,
+    "package_import_seconds": 5.189947,
+    "seed1_model_calls": 2,
+    "seed1": [
+      {
+        "case": "01",
+        "candidate_links": 94,
+        "html_bytes": 51024,
+        "next_count": 1,
+        "runtime_seconds": 0.050019
+      },
+      {
+        "case": "08",
+        "candidate_links": 77,
+        "html_bytes": 216714,
+        "next_count": 1,
+        "runtime_seconds": 0.029497
+      }
+    ],
+    "rule_application_model_calls": 0,
+    "rule_application": [
+      {
+        "case": "01",
+        "seed": 2,
+        "candidate_links": 94,
+        "matches": 1,
+        "runtime_seconds": 0.006098
+      },
+      {
+        "case": "01",
+        "seed": 3,
+        "candidate_links": 76,
+        "matches": 0,
+        "runtime_seconds": 0.0041
+      },
+      {
+        "case": "08",
+        "seed": 2,
+        "candidate_links": 77,
+        "matches": 1,
+        "runtime_seconds": 0.009752
+      },
+      {
+        "case": "08",
+        "seed": 3,
+        "candidate_links": 77,
+        "matches": 1,
+        "runtime_seconds": 0.009937
+      }
+    ],
+    "heldout_native": [
+      {
+        "case": "01",
+        "candidate_links": 95,
+        "html_bytes": 50600,
+        "model_calls": 1,
+        "package_import_seconds": 4.322188,
+        "runtime_seconds": 0.0391,
+        "next_count": 1,
+        "next_url": "https://books.toscrape.com/catalogue/page-3.html",
+        "new_acquisitions": 0
+      },
+      {
+        "case": "08",
+        "candidate_links": 78,
+        "html_bytes": 204230,
+        "model_calls": 1,
+        "package_import_seconds": 4.320134,
+        "runtime_seconds": 0.054097,
+        "next_count": 1,
+        "next_url": "https://sandbox.oxylabs.io/products?page=3",
+        "new_acquisitions": 0
+      }
+    ],
+    "native_cli": "python -B experiments/structure-routing/candidate-others-probe.py --autopager-native --html <path> --url <listing-url> --out <result.json>",
+    "resident_service": false
+  },
+  "pinchtab_webgraph": {
+    "pinchtab_version": "0.15.2",
+    "binary_bytes": 29242368,
+    "chrome_binary": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+    "isolated_config": ".deps/structure-routing-all-others/pinchtab-config.json",
+    "allow_evaluate": false,
+    "allowed_domains": [
+      "127.0.0.1",
+      "localhost",
+      "::1"
+    ],
+    "graph_crawl": {
+      "states": 0,
+      "edges": 0,
+      "stopped": "wedge-gave-up",
+      "reason": "evaluate endpoint returned 403 evaluate_disabled"
+    },
+    "manual_flow": {
+      "status": "ok",
+      "steps": 2,
+      "duration_seconds": 2.1,
+      "selector_intervention": true
+    },
+    "manual_selector_count": 1,
+    "fixture_adapter_adjustments": 1,
+    "fixture_csp": "default-src self/data/blob; connect-src self; img-src self/data; scripts/styles self-only",
+    "fixture_external_resource_loads": 0,
+    "saved_html_bytes": 38433,
+    "saved_dom_snapshot_bytes": 132203,
+    "snapshot_nodes": 413,
+    "bridge_startup_seconds": 2.5,
+    "resident_memory_bytes": {
+      "server": 29884416,
+      "instance": 33344716,
+      "chrome": 159068979
+    },
+    "profile_bytes": 86202914,
+    "state_bytes": 28575,
+    "resident_service_required": true,
+    "browser_calls_offline_paths_howto": 0
+  },
+  "smart_crawler": {
+    "revision": "f9d3be0b5d51c29832e83d74cbf6739644471a88",
+    "toolchain": {
+      "jdk": "Temurin 8u512",
+      "jdk_extracted_bytes": 199765423,
+      "maven": "3.9.16",
+      "maven_extracted_bytes": 10869833
+    },
+    "build_attempted": true,
+    "build_status": "failed before compilation",
+    "build_error": "Maven Central repo.maven.apache.org DNS resolution failed while resolving maven-resources-plugin",
+    "entrypoint_attempted": "it.uniroma3.crawler.MasterMain",
+    "runtime_blocker": "no compiled target/classes; Maven dependencies could not be resolved",
+    "main_class_attempt_result": "could not load main class because package step never emitted target/classes",
+    "required_resident_service": "Neo4j"
+  },
+  "webNavigator": {
+    "revision": "67746c05c13b329efffaabb1a86b41638a643598",
+    "entrypoint": "eval.py --help (safe isolated child)",
+    "dependency_bytes": 285434649.0,
+    "local_dependency_additions": [
+      "beartype 0.12.0",
+      "gymnasium 1.4.0",
+      "boto3 and required dependencies",
+      "google-generativeai and required dependencies",
+      "nltk",
+      "text-generation --no-deps",
+      "aiolimiter --no-deps"
+    ],
+    "stop_error": "No import blocker after isolated lightweight SDK additions; eval.py enters runner then stops at benchmark configuration validation before external API use",
+    "api_calls": 0,
+    "external_services_required": [
+      "OpenAI-compatible LLM",
+      "Jina embeddings API",
+      "WebArena runtime",
+      "released graph and embedding assets"
+    ],
+    "resident_service_requirements": [
+      "WebArena",
+      "browser runtime",
+      "model endpoint"
+    ],
+    "help_exit_code": 0,
+    "minimal_entry": {
+      "exit_code": 0,
+      "elapsed_seconds": 28.65,
+      "stop_error": "ValueError: benchmark or benchmark.name is not set",
+      "credential_env_passed": false,
+      "aws_metadata_disabled": true,
+      "dotenv_disabled": true,
+      "network_egress": "blocked through refused loopback proxy",
+      "nltk_attempt": "Import-time downloader was blocked by local proxy; an earlier unsanitized attempt downloaded punkt and punkt_tab under AppData nltk_data, preserved"
+    },
+    "example_config_entry": {
+      "config": "configs/webarena/webNavigator-all-gpt4o.yml",
+      "benchmark_name": "webarena",
+      "task_name": "webarena_test",
+      "exit_code": 0,
+      "elapsed_seconds": 28.71,
+      "runner_stop": "FileNotFoundError: config_files/webarena/webarena_test is absent from the isolated cwd",
+      "external_api_calls": 0,
+      "credential_env_passed": false,
+      "network_egress": "blocked through refused loopback proxy",
+      "interpretation": "Example config is valid; execution cannot enumerate benchmark task JSONs. README also requires local WebArena services/auth setup and released interaction graphs/embeddings."
+    }
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "status": "ready_for_parent_review",
+  "upload_files": [
+    {
+      "path": "inputs-manifest.json",
+      "size_bytes": 946,
+      "sha256": "800053355164cc358504e3d9cfc3691ddfe2eb82ffb8643d2cc65cb69ffcc96f"
+    },
+    {
+      "path": "kernel-metadata.json",
+      "size_bytes": 430,
+      "sha256": "9589d5d2aaab64ed490a655d9a03d4159fe1f60097fc374beb33bbd37a50c2d8"
+    },
+    {
+      "path": "qwen-html-kernel.py",
+      "size_bytes": 45853,
+      "sha256": "748b23719493da7c4b56275c67224756f24efa761b30187bf50bad0b8d239d71"
+    },
+    {
+      "path": "qwen-html-routing-v2.ipynb",
+      "size_bytes": 53179,
+      "sha256": "710345c5381b057900cd8f361b3283eb24697b6fdcf0cb84c819df63250914ee"
+    },
+    {
+      "path": "requirements.txt",
+      "size_bytes": 133,
+      "sha256": "78f68737522b9da6e928f21f1e74b4435434386504dc5a86835608c04c3c4568"
+    },
+    {
+      "path": "training-params.json",
+      "size_bytes": 951,
+      "sha256": "c28eda1b6bb6ae4b861ffe08b0d21a7a19a58aef35a98cec9078900b300439fd"
+    }
+  ],
+  "notebook_python_cell_matches_source": true,
+  "kernel_source_ast_compiles": true,
+  "metadata": {
+    "id": "superbigzabuton/qwen-html-routing-probe-20261115",
+    "title": "Qwen HTML routing probe 20261115",
+    "is_private": true,
+    "enable_gpu": true,
+    "enable_internet": true,
+    "enable_tpu": false
+  },
+  "training_params": {
+    "timeout_seconds": 1800,
+    "model_id": "Ambition0303/Qwen-HTML",
+    "model_revision": "b1b061d3f708807534d3796414e0c882ac46e883",
+    "coscraper_revision": "a83a1b9740b8883c25365316728c890d4ff68c0e",
+    "quantization": "bitsandbytes NF4 4-bit, double quantization, float16 compute",
+    "trust_remote_code": false,
+    "prefill_method": "Transformers DynamicCache; 512-token chunks with full-prefix attention masks and absolute cache_position",
+    "prefill_equivalence_check": "qwen-html/cache-prefill-check.json",
+    "seed_case": "01",
+    "other_case_ids_not_run": [
+      "08"
+    ],
+    "seed_count": 3,
+    "direct_max_new_tokens": 512,
+    "id_max_tokens": 2048,
+    "code_max_tokens": 1024,
+    "max_attempts": 1,
+    "heldout_html_included": false,
+    "gold_included": false,
+    "weights_saved_to_kernel_output": false,
+    "previous_kernel_ref": "superbigzabuton/qwen-html-routing-probe-20261115",
+    "previous_kernel_version": 1,
+    "output_folder": "qwen-html/kaggle-job-002"
+  },
+  "seed01_input_sha256": [
+    "569f5535da173563ade6cb45bd3f92018d2a691421f889e8e7f669b604235309",
+    "76bfd7882d13781c4dd6c84f164086ab5fe48096df9304902586d818eacf10a5",
+    "b8964c11fe0eb48843f5e4521fcc8b5c0ec0078d2fee9087c9fe583d263bffb1"
+  ],
+  "seed08_not_run": true,
+  "no_model_weights_or_secrets_in_upload": true,
+  "dynamic_cache_fixture": {
+    "architecture": "Qwen3ForCausalLM with a tiny randomized config",
+    "model_weights_loaded": false,
+    "input_tokens": 31,
+    "chunk_size": 7,
+    "chunk_count": 5,
+    "full_forward_seconds": 0.0141,
+    "max_abs_logit_difference": 2.086162567138672e-07,
+    "mean_abs_logit_difference": 3.532083781010442e-08,
+    "logits_close": true,
+    "greedy_tokens_full": [
+      20,
+      20,
+      20,
+      20,
+      20
+    ],
+    "greedy_tokens_chunked": [
+      20,
+      20,
+      20,
+      20,
+      20
+    ],
+    "greedy_tokens_equal": true,
+    "dynamic_cache_length": 35
+  }
+}

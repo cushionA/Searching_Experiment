@@ -1,0 +1,90 @@
+{
+  "model_id": "Ambition0303/Qwen-HTML",
+  "revision": "b1b061d3f708807534d3796414e0c882ac46e883",
+  "weight_bytes": 8045981992,
+  "weight_download_seconds_by_shard": {
+    "model-00001-of-00002.safetensors": 274.1,
+    "model-00002-of-00002.safetensors": 510.5
+  },
+  "weight_sha256_verified_against_hub_lfs": true,
+  "local_environment": {
+    "python": "3.13.7",
+    "torch": "2.7.1+cu118",
+    "transformers": "5.3.0",
+    "accelerate": "1.10.1",
+    "bitsandbytes": "0.48.1",
+    "venv": ".deps/structure-routing-qwen-html",
+    "venv_system_site_packages": true,
+    "gpu": "NVIDIA GeForce RTX 2070 Super",
+    "gpu_total_bytes": 8589934592
+  },
+  "local_quantization": {
+    "method": "bitsandbytes NF4 4-bit double quantization",
+    "compute_dtype": "float16",
+    "trust_remote_code": false,
+    "load_seconds_latest_saved_attempt": 11.125,
+    "source": "selector-result.json"
+  },
+  "local_raw_selector": {
+    "inference_attempts_known": 3,
+    "structured_attempts_saved": 1,
+    "input_chars": 51004,
+    "input_tokens_latest_saved": 10388,
+    "output_tokens_latest_saved": 0,
+    "elapsed_seconds_latest_saved": 16.721,
+    "rule": null,
+    "error": "CUDA OOM requesting 12.87 GiB on 8 GiB RTX 2070 Super; no usable rule",
+    "gpu_nvidia_smi_observed_peak_bytes": 8079286272,
+    "torch_reported_peak_bytes": 18107811840,
+    "process_peak_rss_bytes": 15035879424,
+    "source": "selector-result.json; failed earlier invocations had no structured artifact"
+  },
+  "local_coscraper": {
+    "pipeline_attempts_started": 1,
+    "stage": "first useful-item-ID selection call started, not completed",
+    "measured_input_tokens": 5439,
+    "output_tokens": null,
+    "elapsed_seconds": null,
+    "completed": false,
+    "reason": "interrupted before generated-code review because the running version had an incomplete safety gate",
+    "execution_attempted": false
+  },
+  "kaggle": {
+    "quota_snapshot": "qwen-html/kaggle-quota-before.json",
+    "remaining_seconds": 108000,
+    "kernel_metadata_prepared": "qwen-html/kaggle-upload/kernel-metadata.json",
+    "kernel_submitted": false,
+    "submit_owner": "root"
+  },
+  "notes": [
+    "Local 4-bit path reduced model placement constraints, but its full raw seed still OOMed on quadratic attention.",
+    "The Co-Scraper run had not produced generated Python before it was interrupted; no extraction result is claimed.",
+    "Attempt counts distinguish observed invocations from the one saved metrics artifact."
+  ],
+  "local_disk_measurement": {
+    "verified_model_weight_bytes": 8045981992,
+    "model_directory_bytes_including_partial_hf_downloads": 10072745987,
+    "unverified_interrupted_snapshot_download_bytes": 2011845978,
+    "model_directory_additional_metadata_bytes": 14918017,
+    "dedicated_venv_directory_bytes": 11065912,
+    "dedicated_venv_uses_system_site_packages": true,
+    "kaggle_upload_folder_bytes": 79497,
+    "measurements_collected_at": "2026-11-15"
+  },
+  "local_peak_measurements": {
+    "process_peak_rss_bytes_from_saved_selector_run": 15035879424,
+    "torch_reported_peak_allocated_bytes_from_saved_selector_run": 18107811840,
+    "physical_gpu_bytes": 8589934592,
+    "nvidia_smi_sample_during_co_attempt_used_mib": 7705,
+    "raw_selector_allocation_failure": "12.87 GiB requested; 0 bytes free on 8 GiB GPU"
+  },
+  "local_invocations": {
+    "raw_selector_known_attempts": 3,
+    "raw_selector_structured_result_attempts": 1,
+    "earlier_raw_attempts_without_structured_artifact": 2,
+    "coscraper_first_id_call_started_attempts": 1,
+    "coscraper_measured_input_tokens": 5439,
+    "coscraper_output_tokens_and_elapsed_seconds": "unknown; stopped before response was persisted",
+    "generated_code_execution_attempts": 0
+  }
+}

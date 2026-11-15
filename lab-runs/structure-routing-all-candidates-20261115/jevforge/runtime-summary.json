@@ -1,0 +1,57 @@
+{
+  "model_id": "AndeyTait/JevForge-0.8B",
+  "model_revision": "5ca7c0861a0d9b72629a7bc40130a8f154c4840f",
+  "model_card": "https://huggingface.co/AndeyTait/JevForge-0.8B",
+  "license": "apache-2.0",
+  "weights": {
+    "path": ".deps/structure-routing-models/JevForge-0.8B/best.safetensors",
+    "bytes": 3416206444,
+    "sha256": "74753ad36736c454fac84e5b8d1616542ea93b504efdacab2c9c5d27fb789c52"
+  },
+  "inference_code": {
+    "repository": "https://github.com/zwliJay/jev-forge",
+    "revision": "039badbafc242b4f8105a59e27f789320efe6e9c",
+    "license": "MIT",
+    "trust_remote_code": false
+  },
+  "runtime": {
+    "python": "3.13.7",
+    "torch": "2.14.0",
+    "transformers": "5.17.0",
+    "device": "cpu",
+    "torch_threads": 4,
+    "gpu_required": false,
+    "dedicated_venv_path": ".deps/structure-routing-jevforge",
+    "dedicated_venv_bytes": 861486640,
+    "model_directory_bytes_after_partial_cleanup": 3439134629,
+    "sampled_working_set_bytes_case_01_during_inference": 4234145792,
+    "optimized_causal_conv1d_and_flash_linear_attention": false,
+    "runtime_fallbacks": "PyTorch reference implementations; inference succeeded"
+  },
+  "runs": [
+    {
+      "result": "01-seed-1.json",
+      "html_anchor_candidates": 94,
+      "group_candidates": 6,
+      "input_tokens": 548,
+      "model_load_seconds": 39.81684779999887,
+      "inference_seconds": 15.761965100000452,
+      "predictor_calls": 1,
+      "candidate_path_forwards": 6,
+      "selected_rule": "li a[href]"
+    },
+    {
+      "result": "08-seed-1.json",
+      "html_anchor_candidates": 45,
+      "group_candidates": 7,
+      "input_tokens": 695,
+      "model_load_seconds": 44.55953280000176,
+      "inference_seconds": 17.57046730000002,
+      "predictor_calls": 1,
+      "candidate_path_forwards": 7,
+      "selected_rule": "li.active a[href]"
+    }
+  ],
+  "interpretation": "JevForge is a structured candidate-ranking model, not a free-text rule generator. It ranked observed group selectors and the adapter saved the selected observed selector. This run establishes execution cost and outputs only; it does not establish selector correctness or Skill readiness.",
+  "scope": "Two representative seed-1 DOMs only. No heldout HTML, evaluation-private data, or new network page loads were used."
+}

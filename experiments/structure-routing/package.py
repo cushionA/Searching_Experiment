@@ -18,7 +18,7 @@ def included(run, file):
         return False
     if relative.parts[0] == "candidate-audit" and len(relative.parts) > 1 and relative.parts[1] in UPSTREAM:
         return False
-    return file.suffix.lower() not in {".exe", ".bin", ".safetensors", ".pyc", ".zip"} and file != run / "inventory.json" and file.name not in {"CLOUD-CHECKPOINT.json", "B2-CHECKPOINT.json"}
+    return file.suffix.lower() not in {".exe", ".bin", ".safetensors", ".pyc", ".zip"} and file != run / "inventory.json" and file.name not in {"CLOUD-CHECKPOINT.json", "B2-CHECKPOINT.json", "ALL-CANDIDATES-CHECKPOINT.json"}
 
 
 def main():

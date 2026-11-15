@@ -176,7 +176,7 @@ async function closePage(session) {
   await session.guard.cleanup().catch(() => {});
 }
 
-async function acquire(target, url, runDir, method, phase, options, counter) {
+export async function acquire(target, url, runDir, method, phase, options, counter) {
   if (counter.documents >= counter.limit) return null;
   const started = Date.now();
   const hosts = new Set([new URL(target.start_url || target.url || target.entry_url).hostname.toLowerCase(), ...(target.allowed_hosts || []).map(x => String(x).toLowerCase())]);

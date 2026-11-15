@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-15",
+  "scope": "Static audit and local-fixture execution only; no public-site crawl; no model weights downloaded.",
+  "candidates": [
+    {"url":"https://github.com/egouilliard/pinchtab-webgraph","revision":"542f44d82d062ac4416ff1c99b08dc444ba1633c","license":"MIT","dependencies":"Python >=3.10, base pure stdlib; requires external PinchTab CLI/browser bridge for live crawl; optional extras for MCP/UI/login","input_output":"crawl --start URL -> interaction/content graph JSON; howto/paths query graph offline","fit":"Potential graph-based route discovery, but broad exploratory crawl rather than targeted failed-route fallback.","execution":"CLI source invoked. PinchTab 0.15.2 Windows binary worked with local path alias; localhost fixture produced 1 state/1 link, then failed materialization. See logs."},
+    {"url":"https://github.com/TeamHG-Memex/autopager","revision":"990e480bee9f780088db05e7586b2b84e255abeb","license":"MIT (README claim; no root LICENSE file)","dependencies":"w3lib, parsel, tldextract, docopt, sklearn-crfsuite; requirements additionally scikit-learn, eli5, backports.csv","input_output":"autopager.urls(html_or_response[, base_url]) -> pagination URLs; extract -> PAGE/PREV/NEXT tuples","fit":"C2 pagination-only helper, not site-wide next-route discovery.","execution":"Git source 0.4.0 clone has no bundled CRF: default extract/urls both fail `CRF is not trained`. Toy CRF trained on four fixture pages works (5 links; runtimes 0.0025s/0.0013s). Separate PyPI 0.3.1 wheel includes usable pretrained model and returns expected PREV/PAGE/PAGE/PAGE/NEXT for same fixture; 248 bytes, 5 candidates, 2 calls, 0.0273s extract then 0.0014s urls. See logs/dependency freezes."},
+    {"url":"https://github.com/fcibecchini/smart-crawler","revision":"f9d3be0b5d51c29832e83d74cbf6739644471a88","license":"No root LICENSE in HEAD","dependencies":"Maven/JRE 8+, Neo4j; Akka, HtmlUnit, javacsv and LevelDB; Windows checkout blocked by colon path. java/mvn/javac unavailable locally.","input_output":"README describes distributed crawler inferring navigation models/page classes, with XPath navigation/extraction rules","fit":"Conceptually close to structure induction, but dated stack, no runnable environment, license unclear."},
+    {"url":"https://huggingface.co/McGill-NLP/MiniLM-L6-dmr","revision":"e9b9dd566fa1a146eb00b8f3230b87870144084a","license":"No license field in model Hub metadata; verify upstream model/data license","dependencies":"sentence-transformers or transformers + PyTorch; WebLINX DMR serialization/features for task-aligned ranking","input_output":"Task/action history and candidate DOM element representations -> per-element relevance scores/rank; generic card also documents 384-dimensional sentence embeddings","fit":"Potentially useful for C1 clickable-element shortlist ranking if WebLINX preprocessing is adapted; not a path planner. pytorch_model.bin is 90,887,145 bytes; not downloaded."},
+    {"url":"https://huggingface.co/AndeyTait/JevForge-0.8B","revision":"5ca7c0861a0d9b72629a7bc40130a8f154c4840f","license":"Apache-2.0 (model card); base backbone has its own license","dependencies":"Qwen3.5-0.8B text backbone + scalar candidate head; native jevforge.predict.Predictor; CUDA-oriented training stack noted in card","input_output":"whole-question candidate set with choice/noul/score decision outputs; not free-text generation","fit":"Potential candidate-choice reranker only if C1 exposes consistent action candidates; not a structural extractor. best.safetensors 3,416,206,444 bytes. Weights not downloaded."},
+    {"url":"https://huggingface.co/Ambition0303/Qwen-HTML","revision":"b1b061d3f708807534d3796414e0c882ac46e883","license":"Apache-2.0; base model Qwen/Qwen3-4B has separate terms","dependencies":"Transformers/vLLM OpenAI-compatible serving; model card recommends bfloat16, tensor parallel GPU, up to 131072 context","input_output":"Given pruned HTML/query: node-identification task selects relevant DOM record/attribute nodes; scraper-synthesis task generates reusable Python extraction code. Co-Scraper command takes query, schema.json, and three seed HTML files, returning parser/results.","fit":"Two safetensors shards total 8,045,982,992 bytes; no weights fetched. Extraction model, not C1 route planner; deployment too heavy."},
+    {"url":"https://github.com/Ambition-0303/Co-Scraper","revision":"a83a1b9740b8883c25365316728c890d4ff68c0e","license":"Apache-2.0","dependencies":"Python >=3.10, lxml, OpenAI-compatible endpoint; Playwright browser extra","input_output":"Three seed HTML/URLs + query + schema -> pruned DOM and reusable Python XPath parser","fit":"Extraction/parser synthesis, external model service required; not suitable as on-demand C1 routing fallback under current constraints."},
+    {"url":"https://github.com/fate-ubw/webNavigator","revision":"67746c05c13b329efffaabb1a86b41638a643598","license":"Not verified (no root license file seen)","dependencies":"Requirements + Playwright; OpenAI-compatible and Jina APIs required unless self-hosted; precomputed graph/embedding assets separately downloaded","input_output":"Task/goal + interaction graph retrieval -> route/actions; graph release covers five WebArena domains","fit":"Research system but setup/data/API requirements too heavy and domain assets not generic C1 fallback."}
+  ],
+  "model_file_metadata": {
+    "MiniLM-L6-dmr": "pytorch_model.bin is 90,887,145 bytes; no weight fetched.",
+    "JevForge-0.8B": "best.safetensors is 3,416,206,444 bytes; no weight fetched.",
+    "Qwen-HTML": "two shards are 4,967,215,360 and 3,077,766,632 bytes; no weights fetched."
+  },
+  "local_execution": {
+    "pinchtab_webgraph": {"npx_package":"pinchtab@0.15.2","fixture_pages":3,"graph_states":1,"graph_edges":0,"controls_observed":1,"route_resolution":"failed after first state: materialize command did not complete","model_calls":0,"external_public_requests":0},
+    "autopager": {"source_version":"0.4.0","source_default_model":"missing; both default API calls raise ValueError: CRF is not trained","source_dependency_lock":"logs/autopager-dependencies.txt","toy_model":"locally trained CRF from 4 fixture pages","pypi_latest":"0.3.1","pypi_dependency_lock":"logs/autopager-pypi-dependencies.txt","pypi_default_model":"fixture inference passed","inference_calls":2,"candidate_links_per_call":5,"input_html_bytes":248,"pypi_extract_seconds":0.027271,"pypi_urls_seconds":0.001367,"public_requests":0}
+  },
+  "sources": [
+    "https://github.com/egouilliard/pinchtab-webgraph",
+    "https://github.com/TeamHG-Memex/autopager",
+    "https://pypi.org/project/autopager/",
+    "https://github.com/fcibecchini/smart-crawler",
+    "https://huggingface.co/McGill-NLP/MiniLM-L6-dmr",
+    "https://huggingface.co/AndeyTait/JevForge-0.8B",
+    "https://huggingface.co/Ambition0303/Qwen-HTML",
+    "https://github.com/Ambition-0303/Co-Scraper",
+    "https://github.com/fate-ubw/webNavigator",
+    "https://mcgill-nlp.github.io/weblinx/docs/",
+    "https://github.com/McGill-NLP/weblinx/blob/main/modeling/README.md"
+  ],
+  "logs": ["logs/autopager-smoke.log", "logs/autopager-pypi-smoke.log", "logs/autopager-dependencies.txt", "logs/autopager-pypi-dependencies.txt", "logs/fixture-crawl.log", "logs/fixture-crawl-pathfix.log", "logs/fixture-crawl-pathfix-yolo-utf8.log", "logs/pinchtab-fixture-graph.json"]
+}

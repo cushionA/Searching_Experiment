@@ -1,0 +1,92 @@
+{
+  "model": {
+    "repo_id": "McGill-NLP/MiniLM-L6-dmr",
+    "revision": "e9b9dd566fa1a146eb00b8f3230b87870144084a",
+    "weight_file": ".deps/structure-routing-models/MiniLM-L6-dmr/pytorch_model.bin",
+    "weight_bytes": 90887145,
+    "weight_sha256": "49230f8ec5764fcd0d1c3d83ea87387d602e3c0343efbbb2d96452702ed651dd",
+    "pooling": "attention-mask weighted mean from 1_Pooling/config.json; L2 normalization",
+    "max_sequence_length": 512,
+    "bbox": "missing for every input candidate, as in the shared baseline"
+  },
+  "runtime": {
+    "dedicated_venv": ".deps/structure-routing-minilm-onnx",
+    "venv_bytes": 168576187,
+    "onnx_artifact_directory": ".deps/structure-routing-models/MiniLM-L6-dmr-onnx",
+    "onnx_artifact_bytes_both_files": 148991883,
+    "onnx_fp32_bytes": 90375136,
+    "onnx_dynamic_int8_bytes": 58616747,
+    "torch_import_spec": null,
+    "sentence_transformers_import_spec": null,
+    "onnx_import_spec": null,
+    "onnxruntime": "1.32.0",
+    "tokenizers": "0.23.3",
+    "numpy": "2.5.4",
+    "lxml": "6.1.3",
+    "provider": "CPUExecutionProvider",
+    "intra_op_threads": 4,
+    "inter_op_threads": 1
+  },
+  "conversion": {
+    "export_framework": "existing global PyTorch 2.7.1+cu118 and sentence-transformers, CPU only",
+    "torch_model_load_seconds": 0.36304050000035204,
+    "fp32_export_seconds": 2.4357639999998355,
+    "int8_quantization": "ONNX Runtime dynamic QInt8 weights on MatMul/Gemm",
+    "int8_quantization_seconds": 2.464184299999033,
+    "reference_source": "experiments/structure-routing/minilm-ranking.py::_run_model semantics"
+  },
+  "cases": [
+    {
+      "case_id": "01",
+      "html_anchor_candidates": 94,
+      "group_candidates": 6,
+      "tokenized_inputs": 95,
+      "input_token_total": 11073,
+      "input_token_max": 169,
+      "forward_calls": 3,
+      "bbox_missing_candidates": 94,
+      "pytorch_inference_seconds": 2.49159959999997,
+      "fp32_session_load_seconds": 0.2334752999995544,
+      "fp32_inference_seconds": 2.3862810999999056,
+      "fp32_peak_working_set_bytes": 363835392,
+      "fp32_max_cosine_abs_delta_vs_pytorch": 5.960464477539062e-07,
+      "fp32_token_ids_candidate_rank_and_selector_match": true,
+      "pytorch_and_fp32_selector": "section > div > ol.row > li.col-lg-3.col-md-3.col-sm-4.col-xs-6 a[href]",
+      "int8_inference_seconds": 1.7736903000004531,
+      "int8_peak_working_set_bytes": 335200256,
+      "int8_max_cosine_abs_delta_vs_pytorch": 0.14065837860107422,
+      "int8_candidate_rank_exact": false,
+      "int8_selected_group_matches_pytorch": true,
+      "int8_selector": "section > div > ol.row > li.col-lg-3.col-md-3.col-sm-4.col-xs-6 a[href]"
+    },
+    {
+      "case_id": "08",
+      "html_anchor_candidates": 45,
+      "group_candidates": 7,
+      "tokenized_inputs": 46,
+      "input_token_total": 5547,
+      "input_token_max": 169,
+      "forward_calls": 2,
+      "bbox_missing_candidates": 45,
+      "pytorch_inference_seconds": 0.843237299999601,
+      "fp32_session_load_seconds": 0.24855790000037814,
+      "fp32_inference_seconds": 1.1362755000009201,
+      "fp32_peak_working_set_bytes": 363835392,
+      "fp32_max_cosine_abs_delta_vs_pytorch": 2.123415470123291e-07,
+      "fp32_token_ids_candidate_rank_and_selector_match": true,
+      "pytorch_and_fp32_selector": "li.active a[href]",
+      "int8_inference_seconds": 0.6989742000005208,
+      "int8_peak_working_set_bytes": 335200256,
+      "int8_max_cosine_abs_delta_vs_pytorch": 0.11154501140117645,
+      "int8_candidate_rank_exact": false,
+      "int8_selected_group_matches_pytorch": false,
+      "int8_selector": "li.disabled.previous a[href]"
+    }
+  ],
+  "result": "FP32 ONNX reproduced both PyTorch selectors with identical token IDs and candidate order. FP32 showed no reliable speedup on these two CPU cases. Dynamic int8 was faster and smaller but shifted cosine scores and candidate order; it changed the selected group on case 08, so it is not equivalent for this workflow.",
+  "reference_docs": [
+    "https://sbert.net/docs/sentence_transformer/usage/efficiency.html",
+    "https://onnxruntime.ai/docs/performance/model-optimizations/quantization.html"
+  ],
+  "scope": "Only common-inputs case 01 seed 1 and case 08 seed 1. No heldout HTML, evaluation-private files, new page loads, or manually supplied gold selectors were used."
+}

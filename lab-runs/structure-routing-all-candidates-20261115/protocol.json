@@ -1,0 +1,37 @@
+{
+  "created_at": "2026-11-15T04:11:53.665110+00:00",
+  "user_authorization": "全部試してみて; earlier budget relaxation retained",
+  "candidates": [
+    "B1",
+    "C1",
+    "pinchtab-webgraph",
+    "smart-crawler",
+    "MiniLM-L6-dmr",
+    "JevForge-0.8B",
+    "autopager",
+    "Qwen-HTML",
+    "Co-Scraper",
+    "WebNavigator"
+  ],
+  "cases": [
+    "01",
+    "08"
+  ],
+  "seeds_max_per_case": 3,
+  "future_page_model_calls_target": 0,
+  "warm_new_target_html_per_case": 3,
+  "access_policy": "Public GET/read-only, reject robots/auth/429/blocked; existing Chrome157 cache/cookies reset, 1s practice delay, per-site concurrency1",
+  "evaluation": "Evaluator selects first 3 detail links from heldout listings by rules fixed separately before any candidate prediction. Gold and heldout HTML are withheld from candidates. Preserve failed and unrun candidates.",
+  "models": "Local inference only; no paid API or new paid cloud. Count input/output tokens, candidates, batches and inference time. Model failures are not successful trials.",
+  "initial_targets_master": "structure-routing-20261115-cloud-restored/targets.jsonl; selected practice sites are from authorized 80",
+  "candidate_output_contract": {
+    "kind": "selector",
+    "selector": "CSS string or xpath=...",
+    "selector_type": "css or xpath",
+    "attribute": "href"
+  },
+  "evaluation_human_intervention": "Two evaluator-only site target-link patterns will be recorded, never passed to candidates. Candidate-specific manual selector additions are forbidden unless separately marked as intervention.",
+  "all_requested_models_must_attempt_install_and_real_entrypoint": true,
+  "gold_frozen": true,
+  "gold_sha256": "1dec9706bc6ee3c5f7cc717518a0263cdef3c3069a3e00e7ddbed92176e8d9ca"
+}
