@@ -1,0 +1,119 @@
+{
+  "kernel": {
+    "ref": "superbigzabuton/qwen-html-routing-probe-20261115",
+    "version": 2,
+    "case_id": "01",
+    "other_case_ids_not_run": [
+      "08"
+    ],
+    "total_elapsed_seconds": 1273.186
+  },
+  "model": {
+    "id": "Ambition0303/Qwen-HTML",
+    "revision": "b1b061d3f708807534d3796414e0c882ac46e883",
+    "license": "Apache-2.0; Qwen/Qwen3-4B base terms separately apply",
+    "weight_bytes_on_disk": 8044981992,
+    "weight_download_seconds": 28.948,
+    "weight_hash_seconds": 23.608,
+    "load_seconds": 11.28,
+    "quantization": "bitsandbytes NF4 4-bit, double quantization, float16 compute",
+    "trust_remote_code": false,
+    "weight_hashes_match_hub": true
+  },
+  "hardware": {
+    "gpu": "Tesla T4",
+    "gpu_total_bytes": 15636037632,
+    "torch": "2.11.0+cu130",
+    "transformers": "5.3.0",
+    "peak_torch_gpu_allocated_bytes": 5918034944,
+    "peak_process_rss_bytes": 9665220608
+  },
+  "inference": {
+    "calls": 5,
+    "input_tokens": 40971,
+    "output_tokens": 5639,
+    "elapsed_seconds": 1206.925,
+    "prefill_chunk_tokens": 512,
+    "truncation_tokens": 0,
+    "direct_selector": {
+      "status": "no_rule",
+      "input_tokens": 10365,
+      "output_tokens": 512,
+      "output_limit": 512,
+      "generation_limit_hit": true,
+      "rule_created": false
+    },
+    "coscraper": {
+      "status": "generated_code_ready",
+      "node_identification_calls": 3,
+      "node_identification_input_tokens": [
+        5927,
+        5819,
+        3717
+      ],
+      "node_identification_output_tokens": [
+        1142,
+        1681,
+        1684
+      ],
+      "code_generation_input_tokens": 15143,
+      "code_generation_output_tokens": 620,
+      "native_generated_code_executed": false,
+      "native_safety_rejected": {
+        "safe": false,
+        "imports": [
+          "json",
+          "pathlib",
+          "lxml"
+        ],
+        "blocked_modules": [
+          "pathlib"
+        ],
+        "rejected_operations": [
+          "attribute call: exists",
+          "attribute call: read_text"
+        ]
+      },
+      "pruned_seed_chars": [
+        19368,
+        35077,
+        12072
+      ]
+    }
+  },
+  "generated_parser": {
+    "artifact": "kaggle-job-002/artifacts/generated_parser.py",
+    "bytes": 894,
+    "sha256": "b29d59e37e57f57955b51b3882bd9c3bfcb9d57406aca018b416e041a342f4e3",
+    "loader_status": "validated_class_only_loader",
+    "class_ast_unchanged": true,
+    "loader_seed_counts": [
+      20,
+      20,
+      11
+    ],
+    "loader_seed_elapsed_seconds": [
+      0.0039,
+      0.004016,
+      0.002182
+    ],
+    "new_test_cli_contract_passed": true,
+    "loader_cli_elapsed_seconds": [
+      0.272912,
+      0.257489,
+      0.248864
+    ],
+    "raw_source_sha256": "b29d59e37e57f57955b51b3882bd9c3bfcb9d57406aca018b416e041a342f4e3",
+    "sanitized_source_sha256": "d7028e9429191a6c799d952ff1649c12736d8a344076fe13f3e68b7b9e5f29f7",
+    "retained_imports": [
+      "from lxml import html as lxml_html"
+    ],
+    "removed_imports": [
+      "json",
+      "pathlib as Path"
+    ],
+    "excluded_main_guard": true
+  },
+  "outcome": "Raw HTML selector output exhausted its 512-token generation cap while still in reasoning, so no selector rule was produced. Co-Scraper completed three ID calls and one code call and generated a reusable parser class; its original pipeline safety check rejected the accompanying pathlib-based CLI. The class-only loader excludes that CLI and pathlib import, preserves the class AST exactly, and parsed all three supplied seed DOMs.",
+  "output_policy": "Only counts, hashes, timing, and metadata are recorded here; extracted URLs and HTML content are omitted."
+}

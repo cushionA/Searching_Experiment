@@ -45,6 +45,18 @@ export function linksFromDom(html, base) {
 }
 
 export function selectedUrls(rule, html, base, observation, target) {
+  if (rule.kind === 'parser_class') {
+    const code = path.resolve(observation.run_root_absolute, rule.parser_file);
+    const relative = path.relative(observation.run_root_absolute, code);
+    if (relative.startsWith('..') || path.isAbsolute(relative) || sha(fs.readFileSync(code)) !== rule.parser_sha256)
+      throw new Error('parser_artifact_path_or_hash_mismatch');
+    const environment = Object.fromEntries(['PATH', 'SYSTEMROOT', 'WINDIR', 'TEMP', 'TMP'].filter(key => process.env[key]).map(key => [key, process.env[key]]));
+    environment.PYTHONUTF8 = '1';
+    environment.PYTHONDONTWRITEBYTECODE = '1';
+    const output = JSON.parse(execFileSync('python', ['-B', path.join(repo, 'experiments/structure-routing/generated-parser.py'),
+      '--code', code, '--html', observation.rendered_file_absolute], {encoding: 'utf8', windowsHide: true, timeout: 15000, env: environment}));
+    return output.product_urls.map(value => new URL(value, base).href);
+  }
   if (rule.kind === 'bfs' || rule.kind === 'structural') {
     const links = linksFromDom(html, base);
     return (rule.kind === 'bfs' ? links : selectLinks({links}, 'C1', rule.rules, new Set(rule.source_urls), new Set(target.allowed_hosts))).map(link => link.url);
@@ -140,7 +152,7 @@ async function replay(run, manifest) {
     if (!stopped(listing) && listing.page_valid) {
       const domFile = path.join(run, listing.rendered_dom);
       const html = fs.readFileSync(domFile, 'utf8');
-      urls = selectedUrls(rule, html, listing.final_url, {...listing, rendered_file_absolute: domFile}, target);
+      urls = selectedUrls(rule, html, listing.final_url, {...listing, rendered_file_absolute: domFile, run_root_absolute: run}, target);
       const sourceUrls = new Set([target.heldout_listing_url, ...(rule.source_urls || target.seeds.map(seed => seed.url))]);
       urls = [...new Set(urls)].filter(url => allowed(url, target) && !sourceUrls.has(url)).slice(0, 3);
       for (const url of urls) {

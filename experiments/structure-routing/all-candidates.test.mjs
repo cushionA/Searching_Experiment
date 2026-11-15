@@ -34,3 +34,8 @@ test('frozen structural rule applies to unseen URLs without model inference', ()
   const urls = selectedUrls(rule, html, base, {}, target);
   assert.deepEqual(urls, ['https://example.test/item/1?variant=blue#spec', 'https://example.test/item/2?variant=red#spec', 'https://example.test/list?page=3']);
 });
+
+test('generated parser path cannot escape the saved run', () => {
+  assert.throws(() => selectedUrls({kind: 'parser_class', parser_file: '../outside.py'}, html, base,
+    {run_root_absolute: process.cwd()}, target), /parser_artifact_path_or_hash_mismatch/);
+});

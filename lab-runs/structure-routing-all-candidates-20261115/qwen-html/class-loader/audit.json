@@ -1,0 +1,89 @@
+{
+  "status": "validated_class_only_loader",
+  "rule": {
+    "kind": "parser_class",
+    "parser_file": "kaggle-job-002/artifacts/generated_parser.py",
+    "parser_sha256": "b29d59e37e57f57955b51b3882bd9c3bfcb9d57406aca018b416e041a342f4e3"
+  },
+  "loader_path": "experiments\\structure-routing\\generated-parser.py",
+  "raw_generated_source": {
+    "path": "lab-runs\\structure-routing-all-candidates-20261115\\qwen-html\\kaggle-job-002\\artifacts\\generated_parser.py",
+    "sha256": "b29d59e37e57f57955b51b3882bd9c3bfcb9d57406aca018b416e041a342f4e3",
+    "bytes": 894
+  },
+  "sanitization": {
+    "raw_source_sha256": "b29d59e37e57f57955b51b3882bd9c3bfcb9d57406aca018b416e041a342f4e3",
+    "sanitized_source_sha256": "d7028e9429191a6c799d952ff1649c12736d8a344076fe13f3e68b7b9e5f29f7",
+    "sanitized_ast_sha256": "acb530e7c4bc6cec0581715b2575b416260512d10784db58ecb3e6096aa4a7f2",
+    "original_class_ast_sha256": "a7994cb9e31783bd3fbbf78a8715a92f6b135b9753569ce5f7b677189a654b87",
+    "executed_class_ast_sha256": "a7994cb9e31783bd3fbbf78a8715a92f6b135b9753569ce5f7b677189a654b87",
+    "class_ast_unchanged": true,
+    "selector": "//article[@class='product_pod']//h3/a/@href",
+    "retained_imports": [
+      "from lxml import html as lxml_html"
+    ],
+    "removed_imports": [
+      "json",
+      "pathlib as Path"
+    ],
+    "removed_top_level_functions": [
+      "main"
+    ],
+    "excluded_main_guard": true,
+    "execution_boundary": "AST-validated class-only execution with limited builtins; not an OS sandbox"
+  },
+  "seed_application": [
+    {
+      "seed": 1,
+      "input_sha256": "569f5535da173563ade6cb45bd3f92018d2a691421f889e8e7f669b604235309",
+      "input_bytes": 51024,
+      "product_url_count": 20,
+      "product_urls_sha256": "af7d21fa7262881fe92ab70a4a3c4b8364af84f8181917c0ceb6e6f7f6a555e8",
+      "elapsed_seconds": 0.0039
+    },
+    {
+      "seed": 2,
+      "input_sha256": "76bfd7882d13781c4dd6c84f164086ab5fe48096df9304902586d818eacf10a5",
+      "input_bytes": 50344,
+      "product_url_count": 20,
+      "product_urls_sha256": "fe9d6a73fc379a686456594a8c264d7f1ed23e5f7d3ad1cbb7400d23823f6eb5",
+      "elapsed_seconds": 0.004016
+    },
+    {
+      "seed": 3,
+      "input_sha256": "b8964c11fe0eb48843f5e4521fcc8b5c0ec0078d2fee9087c9fe583d263bffb1",
+      "input_bytes": 36773,
+      "product_url_count": 11,
+      "product_urls_sha256": "f64051e25167f53927d8873dd29481fa294bf0ed45736fd7d87a9c87dfce9ccd",
+      "elapsed_seconds": 0.002182
+    }
+  ],
+  "cli_verification": [
+    {
+      "seed": 1,
+      "exit_code": 0,
+      "elapsed_seconds": 0.272912,
+      "top_level_contract": "product_urls:list[str] + _loader_audit",
+      "product_url_count": 20,
+      "product_urls_sha256": "af7d21fa7262881fe92ab70a4a3c4b8364af84f8181917c0ceb6e6f7f6a555e8"
+    },
+    {
+      "seed": 2,
+      "exit_code": 0,
+      "elapsed_seconds": 0.257489,
+      "top_level_contract": "product_urls:list[str] + _loader_audit",
+      "product_url_count": 20,
+      "product_urls_sha256": "fe9d6a73fc379a686456594a8c264d7f1ed23e5f7d3ad1cbb7400d23823f6eb5"
+    },
+    {
+      "seed": 3,
+      "exit_code": 0,
+      "elapsed_seconds": 0.248864,
+      "top_level_contract": "product_urls:list[str] + _loader_audit",
+      "product_url_count": 11,
+      "product_urls_sha256": "f64051e25167f53927d8873dd29481fa294bf0ed45736fd7d87a9c87dfce9ccd"
+    }
+  ],
+  "html_content_or_extracted_urls_saved": false,
+  "runtime_boundary": "AST-validated class-only execution with restricted builtins; not a true OS sandbox"
+}

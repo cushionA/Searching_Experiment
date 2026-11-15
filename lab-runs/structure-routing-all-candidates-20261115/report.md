@@ -6,7 +6,7 @@ MiniLM-L6-dmrはPyTorchを運用環境から外してCPUで実行できた。FP3
 
 ただしモデルの追加価値は未証明である。生の候補集合での固定対象到達はMiniLM 3/6、C1 5/6。navigation等を除外したMiniLMFilteredは6/6になったが、2サイトとも最大の繰返し群を選ぶ規則だけで同じselectorになった。6/6をモデルの効果として扱わない。
 
-Skillの運用には、構造規則とページ送りの標準属性・文字列規則を先に使い、候補が複数残る場合だけ代表DOMでMiniLMを呼ぶ任意経路が妥当。以後は保存selectorを使う。JevForgeとQwen-HTMLを標準Skillの必須依存へ入れる判断はしない。ユーザーの重さへの懸念を受け、QwenはKaggleで初期生成だけを行う参考実験として分離した。
+Skillの運用には、構造規則とページ送りの標準属性・文字列規則を先に使い、候補が複数残る場合だけ代表DOMでMiniLMを呼ぶ任意経路が妥当。以後は保存selectorを使う。JevForgeとQwen-HTMLを標準Skillの必須依存へ入れる判断はしない。ユーザーの重さへの懸念を受け、QwenはKaggleで初期生成だけを行う参考実験として分離した。Qwen＋Co-Scraperは生成クラスのASTを変えず別プロセスで再利用し、未入力の別listingから詳細HTML3件を保存できた。
 
 ## 比較条件と固定対象
 
@@ -14,7 +14,7 @@ Skillの運用には、構造規則とページ送りの標準属性・文字列
 
 候補の出力を見る前に、評価側が別listingから最初の3詳細URLを共通手順で固定し、6件すべてのHTTP200・本文を確認した。評価用の2つのリンク選定パターンはevaluation-privateにだけ置き、候補へ渡していない。goldのURL・タイトル・本文・選定selectorは候補が読まない運用で隔離した。同一checkout内の暗号学的な隔離ではない。
 
-独立選定費用は8文書、HTTP213、acquire42.523秒、全体経過55.828秒。この取得を候補の成功に加算しない。固定6件のURL直接取得が可能であることは確認できたが、独立したB0再試行はしていない。
+独立選定費用は8文書、HTTP213、acquire42.523秒、全体経過55.828秒。この取得を候補の成功に加算しない。固定6件のURL直接取得が可能であることは確認できたが、独立したB0再試行はしていない。本追加試験は代表DOMの移転から始める規則生成とwarm取得であり、完全cold crawlの費用比較ではない。
 
 候補のwarmは保存JSONを会話履歴のない別Nodeプロセスへ読み込み、listingを新規取得、規則を適用、最大3リンク先を新規取得した。Chrome157/Playwright1.63、同じ回線、ja-JP、Tokyo、1365×900、fresh context、Cookie初期化、service worker無効、同一のacquire/document guard、練習サイト間隔1秒以上を共有。同時サイト2・サイト内同時実行1。HTTP取得層の違いをランキングの差に混ぜていない。
 
@@ -29,10 +29,15 @@ Skillの運用には、構造規則とページ送りの標準属性・文字列
 |MiniLM|3/3|0/3|3/6|5|117|0|
 |JevForge|0/3|0/3|0/6|5|150|0|
 |MiniLMFiltered|3/3|3/3|6/6|8|214|0|
+|Co-Scraper class-only|3/3|未実施|3/6（実施分3/3）|4|86|0|
 
 独立HTML検証の正本はscore/score.jsonとper-site.jsonl。listingを保存しただけの件数を商品詳細成功に含めない。MiniLM/JevForgeのOxylabsはactive paginationを選択し、新しい詳細URLが得られなかった。JevForgeのBooksは広いli aを選び、カテゴリ等を取得した。有効なHTML保存と期待する詳細型への成功は区別する。
 
 MiniLMFilteredは失敗原因を見た後の探索的な汎用修復版で、繰返し2件以上・navigation領域外の候補群に限定した。Booksは候補群1でモデル不要、Oxylabsは2群で既存mean scoreを参照した。追加モデル推論0。両方ともmember数最大の規則と同じselectorで、規則だけの別ネットワーク試行は実施していない。サイト専用selector・商品IDを人が追加した数は0。
+
+Gの新しいend-to-end自動graph再実行は0/0で未実施。PinchTabの手動flowは別枠にする。Rは、モデル未入力の別listingに保存規則・コードを当て、本文未観測の詳細を新規取得した上表の範囲。候補抽出はa[href]が中心で、button、URL不変のUI状態、Load More、iframe/Shadow DOM/仮想scrollはこの追加モデル試験では未実施である。
+
+候補が選んだ27リンク先のうち、固定対象集合と一致したのは方式間の重複込み18件、残り9件は固定成功に加えなかった。一般的に有効なHTML保存と誤到達を分けている。同一tuple内の要求URLは重複除去し、方式間の同じURLは意図的なfresh比較として費用計上。同一画面のcanonical同一性や全件の意味的誤成功の人手監査は未実施。
 
 この2サイトの結果を全80サイトの成績へ加算・外挿しない。新しいモデル比較では2サイトを実施、残り78は未実施。以前の80サイトB1/C1、サイトマップ10サイト、Stage Cの100件試験は各過去runに保持した。今回のモデル付きwarmは3対象/サイトまでで、モデルを使った100件連続取得は未実施。
 
@@ -51,7 +56,7 @@ MiniLMFilteredは失敗原因を見た後の探索的な汎用修復版で、繰
 
 int8は採用候補にしない。FP32でもPyTorch比の一貫した高速化は確認していない。利点は運用依存からPyTorch/sentence-transformersを外せたこと。専用venvのfind_spec(torch)、sentence_transformers、onnxはNone、providerはCPUExecutionProvider。量子化・変換そのものには開発環境のPyTorch等を使った。
 
-汎用predictは、任意のHTMLファイルとtaskから候補・群・selector・順位・モデルhash・token数・時間を出せる。gold、ベンチreference、共通manifest、元weightは読まない。generic-predict-validation.jsonで94候補/6群、3 ORT calls、11,073 input tokens、load0.259秒、推論2.56秒、process3.41秒を記録した。
+汎用predictは、任意のHTMLファイルとtaskから候補・群・selector・順位・モデルhash・token数・時間を出せる。gold、ベンチreference、共通manifest、元weightは読まない。generic-predict-validation.jsonで94候補/6群、3 ORT calls、11,073 input tokens、load約0.26秒、推論約2.3〜2.6秒、process約3.4秒を記録した。
 
 全候補のbboxは欠測のゼロplaceholderで、学習時の完全なWebLINX入力ではない。日本語サイト、多店舗、UI状態の一般化は未検証。ONNX実測はWindows CPUのみでLinux/Cloud Runでは未検証。固定revisionのfine-tuned model cardのlicenseは未宣言として記録している。重みはGit/ZIPへ含めず、変換コード・hash・配布元metadataを保存する。
 
@@ -82,7 +87,7 @@ WebNavigatorのeval.pyは例外を内部で捕捉してexit0にするため、ex
 
 ## Qwen-HTML / Co-Scraper
 
-weight revision b1b061d3f708807534d3796414e0c882ac46e883、2 shard合計8,045,981,992 bytes、LFS SHA照合済み。モデルcardはApache-2.0とbase Qwen3-4B条件を記録。Co-Scraper commit a83a1b9740b8883c25365316728c890d4ff68c0e。抽出対象は商品hrefだけで、SKU・価格・属性の抽出精度は採点しない。
+weight revision b1b061d3f708807534d3796414e0c882ac46e883、2 shard合計8,044,981,992 bytes、LFS SHA照合済み。モデルcardはApache-2.0とbase Qwen3-4B条件を記録。Co-Scraper commit a83a1b9740b8883c25365316728c890d4ff68c0e。抽出対象は商品hrefだけで、SKU・価格・属性の抽出精度は採点しない。
 
 ローカルRTX2070Super 8 GiBでは、NF4 4bitでも代表raw HTML約10,388 tokensでOOM。保存した失敗はload11.125秒、失敗まで16.721秒、ruleなし。raw試行は既知3回だが構造化記録は1回だけで、全試行の正確なtoken/時間はunknown。Coの初回ID推論は5,439 tokensに到達後中断し、出力と時間はunknown。専用venv11.1 MBはsystem-site-packagesを使うため全依存量ではない。保存runのprocess peak RSSは約15 GBだった。
 
@@ -94,15 +99,23 @@ v1のraw armは10,369 input/0 output、3.206秒でOOM。native Co armは5,931 in
 
 v2は同じseed・revisionで、入力を削らず512-tokenずつDynamicCacheへ入れる処理、native generation config、ID出力上限2048/code1024へ変更した修復版。小さなQwen3 fixtureではfull対chunkのlogit差2.09e-7、生成5 token一致を確認した。これは実weightでの完全同等性の証明ではない。中間model出力・pruned DOM・生成code・partial結果を保存し、codeは検査を通った場合だけ実行する。
 
-**v2結果は追試完了後にここへ追記する。** 初回pilotはBooksだけで、Oxylabsは未実施のまま残している。全6対象のうち、試していない3件を分母から落とさない。複数変更を含む追試なので改善をchunk処理だけの効果として断定しない。
+v2は完了し、22 outputsと内部continuationのSHAを照合した。T4 peak allocated5,918,034,944 bytes、process peak RSS9,665,220,608 bytes、全体1,273.186秒、モデル5呼出・40,971 input/5,639 output tokens・推論計1,206.925秒。入力切捨て0で、raw10,365 tokensとコード合成15,143 tokensを分割prefillできた。直接selector armは512 outputで打切り、JSON規則を返さなかったため失敗のままとする。
+
+native Coは3回のnode ID選択と1回のコード生成まで完了。生成894 bytesのスクリプトには不要なPath読込CLIが含まれたため、今回の実行器の検査ではmodule全体を実行しなかった。そこで、許可したASTテンプレートのWebPageParserクラスと必要なlxml importだけを消費する汎用loaderを追加した。付属main/if-mainと未使用importを除き、クラスAST・XPathは変更0。これはモデル出力の手動selector修正ではなく、後から追加した実行器のadapter1件である。任意Python全般のsandboxではない。
+
+生成クラスは代表3件で20/20/11 URLを返し、別プロセスからモデル未入力のlistingへ適用した結果、固定詳細3/3件のHTML保存に成功した。追加4文書・HTTP86・acquire12.715秒、warmのモデル呼出0。コードが自動生成されただけを成功にしていない。生のQwen単独selector armの失敗、Coの生成成功、class-only consumerでの到達成功を区別する。
+
+初回pilotはBooksだけで、Oxylabsは未実施のまま残している。全6対象のうち、試していない3件を分母から落とさない。複数変更を含む追試なので改善をchunk処理だけの効果として断定しない。Kaggle quotaの記録は2ジョブ後使用1,619.578秒・予約0・残106,380.422秒で、初期との差は約27分だった。追加のKaggleジョブは開始していない。
 
 ## モデル費用と増分
 
 warm取得中の生成LLM・embedding・ローカルモデル呼出は全方式0。初期解析のモデル使用量は各個別JSONへ保存した。MiniLM pipelineは代表2件で5 forward/16,620 input tokens、JevForgeはdecision API2回・候補path6+7・記録入力548+695 tokens。JevForgeの値はadapterのtoken計測であり、内部全forwardの厳密な合計とは区別する。
 
-ONNX比較・変換・量子化・汎用predict検証で追加の参照推論を行っており、運用pipeline費用へ二重計上しない一方、全実験の推論0ともしていない。export traceの内部forward数、開発再試行の厳密な総数、設計・調査・会話・レポートのnativeモデル使用量はunknown。C1FilteredのJSON参照/DOM処理時間も未計測で、0秒とはしていない。
+ONNX比較・変換・量子化・汎用predict検証で追加の参照推論を行っており、運用pipeline費用へ二重計上しない一方、全実験の推論0ともしていない。export traceの内部forward数、開発再試行の厳密な総数、設計・調査・会話・レポートのnativeモデル使用量はunknown。MiniLMFilteredのJSON参照/DOM処理時間も未計測で、0秒とはしていない。
 
-KaggleのQwen推論は外部の計算環境でのモデル使用としてtokens/時間/回数を明記し、0扱いしない。従量課金LLM/外部embedding APIは使っていない。新しい有料cloud環境は作っていない。サイト文書・HTTP計測と、重みdownload/依存download/Kaggle制御通信/localhost fixture通信は分ける。後者全体の正確なHTTP総数はunknown。
+KaggleのQwen推論は外部の計算環境でのモデル使用としてtokens/時間/回数を明記し、0扱いしない。v1+v2は合計7生成呼出・57,271 input/6,151 output tokens。従量課金LLM/外部embedding APIは使っていない。新しい有料cloud環境は作っていない。サイト文書・HTTP計測と、重みdownload/依存download/Kaggle制御通信/localhost fixture通信は分ける。後者全体の正確なHTTP総数はunknown。
+
+本追加runの公開サイト取得は、評価選定8＋比較warm38＋ページ送り2＝48文書、記録HTTPは213＋1,023＋68＝1,304、XHR/fetch75。過去の代表HTML取得費は別の既計上分として保持し、この48件へ再加算していない。候補モデルを学習する新たなtrainingは行っていない。
 
 ## 再実行と統合案
 
@@ -128,4 +141,6 @@ node --test experiments/structure-routing/all-candidates.test.mjs
 node experiments/structure-routing/pagination-follow.mjs lab-runs/structure-routing-all-candidates-20261115 --rules-only
 ```
 
-Kaggleの再開はjob001/job002のref/versionを固定し、kaggle-ops helperのwaitで同じjobを追う。待機timeoutを再submitへ置き換えない。jobのcontinuationとKaggle内部continuationの両方、出力SHAを確認してから結果を使う。
+Kaggleの再開はjob001/job002のref/versionを固定し、kaggle-ops helperのwaitで同じjobを追う。両jobは完了・回収済みで、再submit不要。jobのcontinuationとKaggle内部continuationの両方、出力SHAを確認してから結果を使う。
+
+追加Nodeチェック10件、HTML scorer9件、Kaggle helper23件、class-only loader3件は通過。project指定の全体test_labはWindows標準文字コードで22 errorsが出たためUTF-8指定で再実行し、81件中2 failures/5 skipsが残った。失敗はCamoufoxのWindowsパス前提とproxyのNO_PROXYテストで、今回変更していない領域。既存不具合と断定する基準checkout比較はしておらず、修正もしない。logを保存した。
