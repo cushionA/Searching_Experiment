@@ -1,3 +1,14 @@
+# 完全チェックポイントの保存再開
+
+既存Cloudのファイルが復旧し、ローカル最終commit29ca3baとリモート中断記録f2a897aを、両方の履歴を残して統合した。このcommitには最終ソース・480行の主比較・完全な最終ZIPを含める。旧「390行のみ保存済み」「最終ZIP未転送」の記述はpublication-historyに保持し、最新のファイル構成はCLOUD-CHECKPOINT.jsonとPERSISTENCE-STATUS.jsonを使う。
+
+最終ZIP: lab-runs/structure-routing-20261115-final-checkpoint.zip（40,251,701 bytes）
+SHA256: f019935119dac6bf2a9cc2fdc9547879bf00de53a9ad78cbcf6228466f87b69d
+
+学習済みモデルの比較は未実施で、今回の採用見送りは自作C1に対する判断。モデル候補そのものを不合格とはしていない。追加の公開取得は行わず、完了済み取得も繰り返していない。
+
+---
+
 # 最終記録 2026-11-15（以下の旧再開コマンドは実施済み）
 
 **比較試行・採点・採否判断を終了。現C1は本番採用見送り。100対象の連続取得目標は未達。** 最新アーカイブとSHA256は `CLOUD-CHECKPOINT.json`。最終判断は `FINAL-DECISION.json`、主報告は `report.md`、全80台帳は `cloud-all-80-sites.csv`。

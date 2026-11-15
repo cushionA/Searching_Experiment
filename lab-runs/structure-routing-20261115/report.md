@@ -73,7 +73,7 @@ B1既知方式経過1238.708秒、C1 1173.763秒。ブラウザ・待機・I/O�
 
 ## モデル価値・楽天/au PAY・採否
 
-C2は追加しない。主な失敗である通信・UI実行器の問題をランキングモデルが直すとは仮定せず、代替候補の可用性も未確認のため。主比較・bulkのページ判断LLM/外部API/埋め込み/ローカルモデル推論は0。モデル価値は未測定であり「効果0」とは違う。既存Autopager監査fixtureは別記録。設計・調査・報告用nativeモデル費用はunknown。Luna指定の委譲は行ったが実モデルを独立検証できておらずmodel_runtime_verified=false。
+C2は追加しない。主な失敗である通信・UI実行器の問題をランキングモデルが直すとは仮定せず、代替候補の可用性も未確認のため。主比較・bulkのページ判断LLM/外部API/埋め込み/ローカルモデル推論は0。学習済み候補の優劣は未判定で、Autopagerのローカルfixture以外は実サイトでの学習済みモデル比較を行っていない。モデル価値は未測定であり「効果0」とは違う。既存Autopager監査fixtureは別記録。設計・調査・報告用nativeモデル費用はunknown。Luna指定の委譲は行ったが実モデルを独立検証できておらずmodel_runtime_verified=false。
 
 楽天61/au PAY62は検索/店舗カテゴリseedからの主比較に加え、同じ15文書方式枠を共有して別台帳で12行の補足を実施。4入口応答全て503で観測商品リンクなし。別店舗・別カテゴリへの規則一般化、query同一性、空SPA判別の有効な商品対象試験は成立していない。固定商品ID・手書き正解経路は埋め込んでいない。元独立評価の商品の取得をC1成功としていない。
 
@@ -85,4 +85,4 @@ C1は自作汎用構造ルールで、pinchtab-webgraph製品実績ではない�
 
 元ZIP SHA256と1,277 inventory全件を照合して復元。Linux再採点は元score-v3と完全一致し、Windowsの相対バックスラッシュは読込側で正規化。元60結果・独立goldを保持した。既存lab81 tests/0 failures/2 skipped、主比較/B0/bulk fixture8件、guard6件、補足分離のlocalhost試験、動的課題localhost試験に成功。
 
-`verify.py` はallow-incompleteなしでエラー0。警告は元逸脱と未保存HTML等で、適合・取得成功へ隠していない。この検証合格は100対象収集の成功ではなく、費用・状態・保存証拠・全80記録の整合性である。最終採否は `FINAL-DECISION.json`。元ZIPを上書きせず最終exportのCRC/SHA256/inventoryを検証し、ブランチへ永続化する。
+`verify.py` はallow-incompleteなしでエラー0。警告は元逸脱と未保存HTML等で、適合・取得成功へ隠していない。この検証合格は100対象収集の成功ではなく、費用・状態・保存証拠・全80記録の整合性である。最終採否は `FINAL-DECISION.json`。元ZIPを保持し、最終exportのCRC/SHA256/inventoryを検証した。このcommitには最終ソースと完全な最終ZIPを含める。中断時の要約・保存状況はpublication-historyに保持し、最新状態はPERSISTENCE-STATUS.jsonを参照。
