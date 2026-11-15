@@ -1,0 +1,74 @@
+{
+  "schema": "structure-routing-b2-evaluation-v1",
+  "frozen_before_candidate_execution": true,
+  "source_master": "lab-runs/structure-routing-20261115-cloud-restored/targets.jsonl",
+  "source_master_sha256": "f56be0ab636616612a3df099e3a9923a9f3ec40f3d8b0cf683f859b234d668b3",
+  "source_manifest": "lab-runs/structure-routing-20261115-cloud-restored/stage-c-independent-manifest-v4.json",
+  "source_manifest_sha256": "56e0834d4ace84cb3d984ad77f3c72de66ae875b76dc209974a4dc0470aa2a1e",
+  "site_ids": [
+    "01",
+    "08",
+    "11",
+    "67",
+    "61",
+    "62"
+  ],
+  "site_count": 6,
+  "allowed_hosts_preserved": true,
+  "scope": "start_url plus generic path and relations observed during execution; no hand-authored extra URL/domain",
+  "gold_policy": "Evaluator-only frozen target file retains 01/08 proxy URLs and all target records for 11/67/61/62. Report strict body-verified, proxy, and unestablished cohorts separately. Target URL/title/type are immutable. Never infer page type from URL alone or add candidate successes to gold.",
+  "methods": [
+    "B1 link BFS",
+    "C1 generic structural rules",
+    "B2 sitemap to URL shape to representative DOM to warm rule reuse"
+  ],
+  "access_limits": {
+    "public_html_targets_max_per_site": 3,
+    "practice_max_targets": 10,
+    "concurrency_per_site": 1,
+    "reject_429_or_robots_denial": "stop",
+    "browser": "Chrome 157 / Playwright 1.63",
+    "locale": "ja-JP",
+    "timezone": "Asia/Tokyo",
+    "cache": "disabled; fresh context",
+    "llm_calls_initial": 0,
+    "cpu_time": "report separately",
+    "unknown_cost": "unknown, never zero"
+  },
+  "outcomes": [
+    "unavailable",
+    "unrun",
+    "truncated",
+    "blocked",
+    "valid",
+    "targetreach"
+  ],
+  "success": "actual HTML persisted; expected type checked using source URI, independent title/h1, and saved raw DOM features. HTTP 200 alone insufficient; exclude error, challenge, login, empty SPA, and menu-only pages.",
+  "metrics": [
+    "URL map gold coverage (fixed denominator retained)",
+    "valid saved HTML rate",
+    "actual HTML count",
+    "cost",
+    "network requests",
+    "model calls",
+    "cold exploration and XML cost",
+    "warm new same-shape URL vs same-URL rerun/cache"
+  ],
+  "denominators": "report all six sites and verified-gold sites separately",
+  "comparison_history": "retain previous main 1800 and stageC 377 costs as baseline references; add B2 cost independently",
+  "gold_snapshot_sha256": "690ba9188df2e75ab66267c360f58a80b5e30771edaba066db86af063cfd521c",
+  "cohorts": {
+    "strict_body_verified": [
+      "11",
+      "61",
+      "62"
+    ],
+    "proxy": [
+      "01",
+      "08"
+    ],
+    "unestablished": [
+      "67"
+    ]
+  }
+}

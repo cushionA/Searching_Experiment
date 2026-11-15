@@ -1,0 +1,128 @@
+{
+  "schema": "structure-routing-b2-supplement-source-gold-audit-v1",
+  "source_master": "lab-runs\\structure-routing-20261115-cloud-restored\\targets.jsonl",
+  "source_master_sha256": "f56be0ab636616612a3df099e3a9923a9f3ec40f3d8b0cf683f859b234d668b3",
+  "source_gold_directory": "lab-runs/structure-routing-20261115-cloud-restored/gold-private-v2",
+  "source_results": {
+    "14": {
+      "path": "lab-runs\\structure-routing-20261115-cloud-restored\\gold-private-v2\\14\\result.json",
+      "sha256": "f5ec749317941869b7847d28b58522b6068516f33d5252f9fd00f6eff058d8fd",
+      "gold_status": "verified",
+      "completed": true,
+      "expected_type": "detail_record"
+    },
+    "17": {
+      "path": "lab-runs\\structure-routing-20261115-cloud-restored\\gold-private-v2\\17\\result.json",
+      "sha256": "fa0efa6d7fc75d43f80b732d88506bd9f4fc5ba3756fbe97d76792547b49fa33",
+      "gold_status": "verified",
+      "completed": true,
+      "expected_type": "article_or_detail_record"
+    },
+    "36": {
+      "path": "lab-runs\\structure-routing-20261115-cloud-restored\\gold-private-v2\\36\\result.json",
+      "sha256": "9e81111414426a59f29cf735109908a478a7110fe22e4394734f269fcf80e264",
+      "gold_status": "verified",
+      "completed": true,
+      "expected_type": "detail_record"
+    },
+    "60": {
+      "path": "lab-runs\\structure-routing-20261115-cloud-restored\\gold-private-v2\\60\\result.json",
+      "sha256": "122435894f81dced1037b6ce7740ad85f269b08c0c61d45242154429cc986ce7",
+      "gold_status": "unverified",
+      "completed": true,
+      "expected_type": "article_or_detail_record"
+    }
+  },
+  "target_records": {
+    "14": [
+      {
+        "url": "https://www.typescriptlang.org/docs/handbook/2/basic-types.html",
+        "label": "target-1-_docs_handbook_2_basic-types.html",
+        "candidate_valid": true,
+        "cohort": "strict_body_verified",
+        "source_status": 200,
+        "source_body_text_length": 20681
+      },
+      {
+        "url": "https://www.typescriptlang.org/docs/handbook/2/classes.html",
+        "label": "target-2-_docs_handbook_2_classes.html",
+        "candidate_valid": true,
+        "cohort": "strict_body_verified",
+        "source_status": 200,
+        "source_body_text_length": 36906
+      }
+    ],
+    "17": [
+      {
+        "url": "https://kubernetes.io/docs/tutorials/hello-minikube/",
+        "label": "target-1-_docs_tutorials_hello-minikube_",
+        "candidate_valid": true,
+        "cohort": "strict_body_verified",
+        "source_status": 200,
+        "source_body_text_length": 9342
+      },
+      {
+        "url": "https://kubernetes.io/docs/tutorials/kubernetes-basics/",
+        "label": "target-2-_docs_tutorials_kubernetes-basics_",
+        "candidate_valid": true,
+        "cohort": "strict_body_verified",
+        "source_status": 200,
+        "source_body_text_length": 2535
+      }
+    ],
+    "36": [
+      {
+        "url": "https://www.nasa.gov/nasa-missions/#",
+        "label": "target-1",
+        "candidate_valid": false,
+        "cohort": "unestablished",
+        "source_status": null,
+        "source_body_text_length": null,
+        "reason": "target_body_not_fetched_or_empty_in_source_gold"
+      },
+      {
+        "url": "https://www.nasa.gov/2026-news-releases/",
+        "label": "target-2-_2026-news-releases_",
+        "candidate_valid": true,
+        "cohort": "strict_body_verified",
+        "source_status": 200,
+        "source_body_text_length": 9574
+      }
+    ],
+    "60": []
+  },
+  "sites": {
+    "14": {
+      "source_gold_status": "verified",
+      "source_target_count": 2,
+      "strict_candidate_count": 2,
+      "unestablished_target_count": 0
+    },
+    "17": {
+      "source_gold_status": "verified",
+      "source_target_count": 2,
+      "strict_candidate_count": 2,
+      "unestablished_target_count": 0
+    },
+    "36": {
+      "source_gold_status": "verified",
+      "source_target_count": 2,
+      "strict_candidate_count": 1,
+      "unestablished_target_count": 1,
+      "note": "NASA fragment target retained as unestablished; no body/status in source gold"
+    },
+    "60": {
+      "source_gold_status": "unverified",
+      "source_target_count": 0,
+      "strict_candidate_count": 0,
+      "unestablished_target_count": 0,
+      "note": "GIGAZINE has 0 fixed target URLs; site retained as unestablished"
+    }
+  },
+  "frozen_gold_path": "lab-runs/structure-routing-b2-supplement-20261115/evaluation-private/frozen-gold.json",
+  "frozen_gold_sha256": "cd01980b3dd23ef57d31f6f826d5bafb1c81d598e966f7aacf7030d46b972a8e",
+  "protocol_path": "lab-runs/structure-routing-b2-supplement-20261115/protocol.json",
+  "source_manifest": "lab-runs/structure-routing-20261115-cloud-restored/stage-c-independent-manifest-v4.json",
+  "source_manifest_sha256": "56e0834d4ace84cb3d984ad77f3c72de66ae875b76dc209974a4dc0470aa2a1e",
+  "targets_sha256": "62bc7bbe5003efcd672d177943880ad02f614c14adcd860bcdd33f4ea7a9c763"
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "structure-routing-b2-evaluation-audit-v1",
+  "events": [
+    {
+      "event": "path_mistake_and_restore",
+      "path": "lab-runs/structure-routing-20261115",
+      "details": "During initial freeze preparation, targets.jsonl and protocol.json were temporarily overwritten while the run directory was mistaken for the B2 run. Both were restored byte-for-byte from lab-runs/structure-routing-20261115-cloud-restored. Evaluation artifacts were copied into the correct B2 run. No other files in the original run were changed.",
+      "restored_files": [
+        "targets.jsonl",
+        "protocol.json"
+      ],
+      "restored_sha256": {
+        "targets.jsonl": "f56be0ab636616612a3df099e3a9923a9f3ec40f3d8b0cf683f859b234d668b3",
+        "protocol.json": "f1c17cf1835b899d07f30841af941977c61dbcdd487493bd1405968fc0141ae4"
+      },
+      "verification": "parent independently confirmed original targets/protocol git diff is clean"
+    }
+  ]
+}

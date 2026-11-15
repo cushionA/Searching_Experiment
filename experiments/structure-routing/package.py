@@ -18,17 +18,19 @@ def included(run, file):
         return False
     if relative.parts[0] == "candidate-audit" and len(relative.parts) > 1 and relative.parts[1] in UPSTREAM:
         return False
-    return file.suffix.lower() not in {".exe", ".bin", ".safetensors", ".pyc", ".zip"} and file.name not in {"inventory.json", "CLOUD-CHECKPOINT.json"}
+    return file.suffix.lower() not in {".exe", ".bin", ".safetensors", ".pyc", ".zip"} and file != run / "inventory.json" and file.name not in {"CLOUD-CHECKPOINT.json", "B2-CHECKPOINT.json"}
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--run", type=Path, required=True)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--expected-targets", type=int, default=80)
     args = parser.parse_args()
     run = args.run.resolve()
     targets = [json.loads(line) for line in (run / "targets.jsonl").read_text(encoding="utf-8").splitlines() if line]
-    assert len(targets) == 80 and len({row["domain"] for row in targets}) == 80
+    assert args.expected_targets > 0
+    assert len(targets) == args.expected_targets and len({row["domain"] for row in targets}) == args.expected_targets
     files = [file for file in sorted(run.rglob("*")) if file.is_file() and included(run, file)]
     code = [file for file in sorted(Path(__file__).parent.iterdir()) if file.suffix in {".py", ".mjs"}]
     inventory = {str(file.relative_to(ROOT)).replace("\\", "/"): {
