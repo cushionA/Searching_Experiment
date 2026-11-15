@@ -1,3 +1,15 @@
+# ローカル継続の区切り 2026-11-15
+
+Cloud成果30d96aeを取り込み、別保存先cloud-restoredでinventory4123件とverifyを検証した。最新の追加結果は `lab-runs/structure-routing-20261115-local-continuation/report.md` と `DECISION.json`。元の480行・gold・rawは変更しない。
+
+- ローカルのBooks/Oxylabs入口は両方HTTP200、有効一覧DOM。
+- 元C1の固定対象到達はBooks50/100、Oxylabs34/100。汎用navigation領域判定だけを修復したC1.1はBooks78/100へ改善。新規候補HTML100件は保存したが、固定100全件到達ではない。
+- MiniLM-L6-dmrを代表DOM1件だけで実推論し、凍結selectorをモデル未入力の次一覧で適用、3件を取得し独立代理照合3/3。候補94/11049tokens/CPU3forward/推論2.034秒、その後のページ別推論0。C1.1を超える追加効果は未証明、最小構成にモデルは必須としない。
+- 予算は追加枠不要だった（main1800、StageC377）。ユーザーは予算を気にせずダメなら打ち切りでよいと述べたため、大規模な拡張はせず今回の判断で終了。完全自動巡回器の本番採用は引き続き見送る。
+- 最新ZIPは `lab-runs/structure-routing-20261115-local-continuation-checkpoint.zip`、SHA256 5f09f19b0cf0979ee54f03a2f724a4dd283ad64f181acba7dfd7fd90d98b54d6。LOCAL-CHECKPOINT.jsonがsidecar。モデル重みは含まない。既存Cloud完全ZIPも保存済み。
+
+---
+
 # 完全チェックポイントの保存再開
 
 既存Cloudのファイルが復旧し、ローカル最終commit29ca3baとリモート中断記録f2a897aを、両方の履歴を残して統合した。このcommitには最終ソース・480行の主比較・完全な最終ZIPを含める。旧「390行のみ保存済み」「最終ZIP未転送」の記述はpublication-historyに保持し、最新のファイル構成はCLOUD-CHECKPOINT.jsonとPERSISTENCE-STATUS.jsonを使う。

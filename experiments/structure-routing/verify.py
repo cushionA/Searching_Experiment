@@ -101,7 +101,8 @@ def main():
             archive = run / Path(checkpoint["archive"]).name
         if not archive.is_file():
             raise FileNotFoundError(checkpoint["archive"])
-        expected_member = f"{run.parent.name}/{run.name}/results.jsonl"
+        archived_run = PurePosixPath(checkpoint["archive"]).name.removesuffix("-checkpoint.zip")
+        expected_member = f"{PurePosixPath(checkpoint['archive']).parent}/{archived_run}/results.jsonl"
         with zipfile.ZipFile(archive) as zf:
             member = expected_member if expected_member in zf.namelist() else None
             if not member:

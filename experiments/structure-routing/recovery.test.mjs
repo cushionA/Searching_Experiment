@@ -5,8 +5,9 @@ import os from 'node:os';
 import path from 'node:path';
 import {spawn} from 'node:child_process';
 import {createServer} from 'node:http';
+import {fileURLToPath} from 'node:url';
 
-const repo = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../..');
+const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const runner = path.join(repo, 'experiments/structure-routing/runner.mjs');
 
 function runRunner(args, options) {
@@ -84,7 +85,7 @@ test('network recovery is isolated and shares the existing per-method document b
     for (const row of coldRows) {
       assert.ok(row.pages.length > 0);
       for (const page of row.pages) {
-        assert.match(page.response_html, /^network_recovery\/cold\//);
+        assert.match(page.response_html.replaceAll('\\', '/'), /^network_recovery\/cold\//);
         const artifact = path.join(dir, 'artifacts', 'fixture', row.method, page.response_html);
         assert.ok(fs.statSync(artifact).size > 0, `missing recovery HTML ${artifact}`);
       }
